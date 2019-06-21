@@ -15,3 +15,9 @@ npm run webserver
 ```
 npm run prod
 ```
+
+### SimSage Server Settings
+```
+app/settings.js
+```
+
