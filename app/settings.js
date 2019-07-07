@@ -1,6 +1,6 @@
 
 const system_config = {
-    version: '5.0.5',
+    version: '5.0.0',
     production: false,
     api_version: 1,
     theme: 'default',

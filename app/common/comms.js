@@ -78,6 +78,20 @@ export class Comms {
             encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
     };
 
+    // get a url that can be used to download a crawler
+    static get_crawler_url(organisation_id, kb_id, crawler_id) {
+        let session = Comms.getSession();
+        return system_config.api_base + '/crawler/download/' + encodeURIComponent(session.id) + '/' +
+            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(crawler_id);
+    };
+
+    // get a url that can be used to download the bot html
+    static get_html_url(html, organisation_id, kb_id) {
+        let session = Comms.getSession();
+        return system_config.api_base + '/knowledgebase/download/' + html + '/' + encodeURIComponent(session.id) + '/' +
+                            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+    };
+
     // get a url that can be used to get the query-logs
     static get_query_log_url(organisation_id, kb_id) {
         let session = Comms.getSession();

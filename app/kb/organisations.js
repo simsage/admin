@@ -33,6 +33,7 @@ const styles = {
         color: '#fff',
     },
     linkButton: {
+        float: 'left',
         padding: '10px',
         color: '#888',
         cursor: 'pointer',
@@ -79,6 +80,9 @@ const styles = {
         marginTop: '20px',
         width: '20px',
     },
+    dlImageSize: {
+        width: '24px',
+    }
 };
 
 
@@ -219,8 +223,12 @@ export class Organisations extends React.Component {
                                                 <div style={styles.label}>{organisation.name}</div>
                                             </TableCell>
                                             <TableCell>
-                                                <a style={styles.linkButton} onClick={() => this.editOrganisation(organisation)}>edit</a>
-                                                <a style={styles.linkButton} onClick={() => this.deleteOrganisationAsk(organisation)}>delete</a>
+                                                <div style={styles.linkButton} onClick={() => this.editOrganisation(organisation)}>
+                                                    <img src="../images/edit.svg" style={styles.dlImageSize} title="edit organisation" alt="edit"/>
+                                                </div>
+                                                <div style={styles.linkButton} onClick={() => this.deleteOrganisationAsk(organisation)}>
+                                                    <img src="../images/delete.svg" style={styles.dlImageSize} title="remove organisation" alt="remove"/>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     )

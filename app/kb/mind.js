@@ -12,6 +12,8 @@ import {MessageDialog} from '../common/message-dialog'
 import {ErrorDialog} from '../common/error-dialog'
 import {AutoComplete} from "../common/autocomplete";
 import {MindEdit} from "./mind-edit";
+import Grid from "@material-ui/core/Grid";
+import {BotSearch} from "../common/bot-search";
 
 
 const styles = {
@@ -79,9 +81,13 @@ const styles = {
         width: '25px',
     },
     linkButton: {
+        float: 'left',
         padding: '10px',
         color: '#888',
         cursor: 'pointer',
+    },
+    dlImageSize: {
+        width: '24px',
     },
     search: {
         marginTop: '2px',
@@ -114,6 +120,9 @@ const styles = {
         marginBottom: '5px',
         float: 'right',
     },
+    spacer: {
+        marginTop: '20px',
+    }
 };
 
 
@@ -306,8 +315,12 @@ export class Mind extends React.Component {
                                                     <div style={styles.label} title={Mind.toAnswer(mindItem)}>{mindItem.expression}</div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <a style={styles.linkButton} onClick={() => this.editMindItem(mindItem)}>edit</a>
-                                                    <a style={styles.linkButton} onClick={() => this.deleteMindItemAsk(mindItem)}>delete</a>
+                                                    <div style={styles.linkButton} onClick={() => this.editMindItem(mindItem)}>
+                                                        <img src="../images/edit.svg" style={styles.dlImageSize} title="edit mind-item" alt="edit"/>
+                                                    </div>
+                                                    <div style={styles.linkButton} onClick={() => this.deleteMindItemAsk(mindItem)}>
+                                                        <img src="../images/delete.svg" style={styles.dlImageSize} title="remove mind-item" alt="remove"/>
+                                                    </div>
                                                 </TableCell>
                                             </TableRow>
                                         )
@@ -334,6 +347,27 @@ export class Mind extends React.Component {
 
                     </Paper>
                 }
+
+                <Grid container spacing={8} style={styles.gridWidth}>
+
+                    {this.kba.selected_knowledgebase_id &&
+                    <Grid item xs={12}><div style={styles.spacer} /></Grid>
+                    }
+
+                    {this.kba.selected_knowledgebase_id &&
+                    <Grid item xs={2}>
+                        <div style={styles.label}>Query the Mind</div>
+                    </Grid>
+                    }
+                    {this.kba.selected_knowledgebase_id &&
+                    <Grid item xs={10}>
+                        <BotSearch onError={(title, err) => this.showError(title, err)}
+                                   kbId={this.kba.selected_knowledgebase_id}
+                                   organisationId={this.kba.selected_organisation_id} />
+                    </Grid>
+                    }
+
+                </Grid>
 
             </div>
         )

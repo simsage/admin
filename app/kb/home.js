@@ -9,13 +9,13 @@ import AppMenu from '../auth/app-menu'
 import ErrorDialog from '../common/error-dialog'
 
 import Organisations from "./organisations";
-import Users from "./users";
+import UserManager from "./user-manager";
 import KnowledgeBases from "./knowledgebases";
-import Knowledge from "./knowledge";
+import KnowledgeManager from "./knowledge-manager";
 import Documents from "./documents";
 import AutoComplete from '../common/autocomplete'
 import KnowledgeBaseAware from "./knowledge_base_aware";
-import Crawlers from "../crawlers/crawlers";
+import DocumentSources from "../crawlers/document-sources";
 import Mind from "./mind";
 import Synonyms from "./synonyms";
 import Reports from "./reports";
@@ -218,8 +218,8 @@ export class Home extends React.Component {
                          }
 
                          { this.state.selected_tab === 'users' &&
-                            <Users onError={(title, errStr) => this.showError(title, errStr)}
-                                   kba={this.kba} />
+                            <UserManager onError={(title, errStr) => this.showError(title, errStr)}
+                                         kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'knowledge bases' &&
@@ -228,13 +228,13 @@ export class Home extends React.Component {
                          }
 
                          { this.state.selected_tab === 'knowledge' &&
-                             <Knowledge onError={(title, errStr) => this.showError(title, errStr)}
-                                        kba={this.kba} />
+                             <KnowledgeManager onError={(title, errStr) => this.showError(title, errStr)}
+                                               kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'document sources' &&
-                            <Crawlers onError={(title, errStr) => this.showError(title, errStr)}
-                                      kba={this.kba} />
+                            <DocumentSources onError={(title, errStr) => this.showError(title, errStr)}
+                                             kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'documents' &&

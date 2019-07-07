@@ -59,9 +59,13 @@ const styles = {
         width: '25px',
     },
     linkButton: {
+        float: 'left',
         padding: '10px',
         color: '#888',
         cursor: 'pointer',
+    },
+    dlImageSize: {
+        width: '24px',
     },
     search: {
         marginTop: '2px',
@@ -282,7 +286,9 @@ export class Documents extends React.Component {
                                                     <div style={styles.label}>{document.url}</div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <a style={styles.linkButton} onClick={() => this.deleteDocumentAsk(document)}>delete</a>
+                                                    <div style={styles.linkButton} onClick={() => this.deleteDocumentAsk(document)}>
+                                                        <img src="../images/delete.svg" style={styles.dlImageSize} title="remove document" alt="remove"/>
+                                                    </div>
                                                     {/*<a style={styles.linkButton} onClick={() => this.viewDocument(document)}>download</a>*/}
                                                 </TableCell>
                                                 <TableCell />

@@ -17,6 +17,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import {Api} from '../common/api'
 import {MessageDialog} from '../common/message-dialog'
 import {ErrorDialog} from '../common/error-dialog'
+import {Comms} from "../common/comms";
 
 const id_style = "<div style='width: 170px; float: left; height: 24px;'>"
 
@@ -30,6 +31,7 @@ const styles = {
         color: '#fff',
     },
     linkButton: {
+        float: 'left',
         padding: '10px',
         color: '#888',
         cursor: 'pointer',
@@ -76,6 +78,9 @@ const styles = {
         marginTop: '20px',
         width: '20px',
     },
+    dlImageSize: {
+        width: '24px',
+    }
 };
 
 
@@ -211,12 +216,15 @@ export class KnowledgeBases extends React.Component {
         }
     }
     viewIds(knowledge_base) {
-        this.setState({message_title: "Your Knowledge Base Ids",
+        this.setState({message_title: '"' + knowledge_base.name + "\" Knowledge Base Ids",
             message_callback: (action) => { this.setState({message: ""}) },
             message: id_style + "organisation id</div><div style='float: left'>" + this.kba.selected_organisation_id + "</div><br clear='both'>" +
                      id_style + "knowledge base id</div><div style='float: left'>" + knowledge_base.kbId + "</div><br clear='both'>" +
                      id_style + "security id</div><div style='float: left'>" + knowledge_base.securityId + "</div><br clear='both'>"
         })
+    }
+    downloadHtml(html, kb) {
+        window.open(Comms.get_html_url(html, this.kba.selected_organisation_id, kb.kbId), '_blank');
     }
     render() {
         if (this.state.has_error) {
@@ -252,9 +260,24 @@ export class KnowledgeBases extends React.Component {
                                                 <div style={styles.label}>{knowledge_base.name}</div>
                                             </TableCell>
                                             <TableCell>
-                                                <a style={styles.linkButton} onClick={() => this.editKnowledgeBase(knowledge_base)}>edit</a>
-                                                <a style={styles.linkButton} onClick={() => this.deleteKnowledgeBaseAsk(knowledge_base)}>delete</a>
-                                                <a style={styles.linkButton} onClick={() => this.viewIds(knowledge_base)}>ids</a>
+                                                <div style={styles.linkButton} onClick={() => this.editKnowledgeBase(knowledge_base)}>
+                                                    <img src="../images/edit.svg" style={styles.dlImageSize} title="edit knowledge base" alt="edit"/>
+                                                </div>
+                                                <div style={styles.linkButton} onClick={() => this.deleteKnowledgeBaseAsk(knowledge_base)}>
+                                                    <img src="../images/delete.svg" style={styles.dlImageSize} title="remove knowledge base" alt="remove"/>
+                                                </div>
+                                                <div style={styles.linkButton} onClick={() => this.viewIds(knowledge_base)}>
+                                                    <img src="../images/id.svg" style={styles.dlImageSize} title="view knowledge base ids" alt="ids"/>
+                                                </div>
+                                                <div style={styles.linkButton} onClick={() => this.downloadHtml("bot", knowledge_base)}>
+                                                    <img src="../images/bot.svg" style={styles.dlImageSize} title="download knowledge-base bot HTML" alt="download bot"/>
+                                                </div>
+                                                <div style={styles.linkButton} onClick={() => this.downloadHtml("operator", knowledge_base)}>
+                                                    <img src="../images/operator.svg" style={styles.dlImageSize} title="download knowledge-base operator HTML" alt="download operator"/>
+                                                </div>
+                                                <div style={styles.linkButton} onClick={() => this.downloadHtml("search", knowledge_base)}>
+                                                    <img src="../images/search.svg" style={styles.dlImageSize} title="download knowledge-base search HTML" alt="download search"/>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     )

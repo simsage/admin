@@ -172,10 +172,9 @@ export class CrawlerDialog extends Component {
 
         } else if (this.state.crawlerType === 'web' && (
                 this.state.web_base_url.length === 0 ||
-                (!this.state.web_base_url.startsWith("http://") && !this.state.web_base_url.startsWith("https://")) |
-                this.state.web_extension_filter.length === 0)) {
+                (!this.state.web_base_url.startsWith("http://") && !this.state.web_base_url.startsWith("https://")) )) {
 
-            this.showError('invalid parameters', 'you must supply a base url of type http:// or https:// and at least one web extension filter.');
+            this.showError('invalid parameters', 'you must supply a base url of type http:// or https://');
 
         } else if (this.state.crawlerType !== 'web' && this.state.crawlerType !== 'file') {
 

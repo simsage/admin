@@ -236,7 +236,8 @@ export class AutoComplete extends Component {
                                         marginTop: 8,
                                         paddingBottom: "20px",
                                         width: '500px',
-                                        height: '300px',
+                                        minHeight: '24px',
+                                        maxHeight: '300px',
                                         overflowX: 'auto',
                                         overflowY: 'auto',
                                     }}

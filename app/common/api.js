@@ -109,13 +109,18 @@ export class Api {
     };
 
     // update a user account
-    static updateUser(organisation_id, id, name, surname, email, password, role_list, success, fail) {
+    static updateUser(organisation_id, id, name, surname, email, password, role_list, kbList, success, fail) {
         const actual_role_data = [];
         for (const roleStr of role_list) {
             actual_role_data.push({"userId": id, "organisationId": organisation_id, "role": roleStr});
         }
+        const actual_kb_list_data = [];
+        for (const kb of kbList) {
+            actual_kb_list_data.push({"userId": id, "organisationId": organisation_id, "kbId": kb.kbId});
+        }
         Comms.http_put('/auth/user/' + encodeURIComponent(organisation_id),
-            {"id": id, "password": password, "firstName": name, "surname": surname, "email": email, "roles": actual_role_data},
+            {"id": id, "password": password, "firstName": name, "surname": surname, "email": email, "roles": actual_role_data,
+                     "operatorKBList": actual_kb_list_data},
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )

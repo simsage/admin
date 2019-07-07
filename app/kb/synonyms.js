@@ -79,9 +79,13 @@ const styles = {
         width: '25px',
     },
     linkButton: {
+        float: 'left',
         padding: '10px',
         color: '#888',
         cursor: 'pointer',
+    },
+    dlImageSize: {
+        width: '24px',
     },
     search: {
         marginTop: '2px',
@@ -292,8 +296,12 @@ export class Synonyms extends React.Component {
                                                     <div style={styles.label}>{synonym.words}</div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <a style={styles.linkButton} onClick={() => this.editSynonym(synonym)}>edit</a>
-                                                    <a style={styles.linkButton} onClick={() => this.deleteSynonymAsk(synonym)}>delete</a>
+                                                    <div style={styles.linkButton} onClick={() => this.editSynonym(synonym)}>
+                                                        <img src="../images/edit.svg" style={styles.dlImageSize} title="edit synonym" alt="edit"/>
+                                                    </div>
+                                                    <div style={styles.linkButton} onClick={() => this.deleteSynonymAsk(synonym)}>
+                                                        <img src="../images/delete.svg" style={styles.dlImageSize} title="remove synonym" alt="remove"/>
+                                                    </div>
                                                 </TableCell>
                                             </TableRow>
                                         )
