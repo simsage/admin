@@ -18,6 +18,7 @@ import KnowledgeBaseAware from "./knowledge_base_aware";
 import DocumentSources from "../crawlers/document-sources";
 import Mind from "./mind";
 import Synonyms from "./synonyms";
+import Semantics from "./semantics";
 import Reports from "./reports";
 
 
@@ -189,6 +190,11 @@ export class Home extends React.Component {
                                   onClick={() => this.setState({selected_tab: 'synonyms'})}>synonyms</div>
                          }
                          {
+                             Home.hasRole(this.state.user, ['admin', 'manager']) &&
+                             <div style={this.getStyle('semantics')}
+                                  onClick={() => this.setState({selected_tab: 'semantics'})}>semantics</div>
+                         }
+                         {
                              Home.hasRole(this.state.user, ['reporter']) &&
                              <div style={this.getStyle('reports')}
                                   onClick={() => this.setState({selected_tab: 'reports'})}>reports</div>
@@ -249,6 +255,11 @@ export class Home extends React.Component {
 
                          { this.state.selected_tab === 'synonyms' &&
                              <Synonyms onError={(title, errStr) => this.showError(title, errStr)}
+                                       kba={this.kba} />
+                         }
+
+                         { this.state.selected_tab === 'semantics' &&
+                             <Semantics onError={(title, errStr) => this.showError(title, errStr)}
                                        kba={this.kba} />
                          }
 

@@ -69,7 +69,20 @@ const styles = {
     },
     dlImageSize: {
         width: '24px',
-    }
+    },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 const roles = ['admin', 'operator', 'crawler', 'manager', 'reporter'];
@@ -81,6 +94,8 @@ export class UserManager extends React.Component {
         this.state = {
             has_error: false,
             onError : props.onError,
+
+            busy: false,
 
             user_list: [],
 
@@ -120,9 +135,10 @@ export class UserManager extends React.Component {
     }
     refreshUsers(org_id, prev_page, page_size) {
         if (org_id && org_id.length > 0) {
+            this.setState({busy: true});
             Api.getUsersPaginated(org_id, prev_page, page_size,
                 (userList) => {
-                    this.setState({user_list: userList})
+                    this.setState({user_list: userList, busy: false})
                 },
                 (errStr) => {
                     this.showError("Error", errStr)
@@ -157,7 +173,7 @@ export class UserManager extends React.Component {
         this.refreshUsers(this.kba.selected_organisation_id, this.state.prev_page, page_size);
     }
     showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg});
+        this.setState({error_title: title, error_msg: error_msg, busy: false});
     }
     closeError() {
         this.setState({error_msg: ''});
@@ -280,11 +296,12 @@ export class UserManager extends React.Component {
     }
     deleteUser(action) {
         if (action) {
+            this.setState({busy: true});
             Api.removeUserFromOrganisation(Comms.getSession().userId, this.kba.selected_organisation_id, () => {
-                this.setState({message_title: "", message: ""});
+                this.setState({message_title: "", message: "", busy: false});
                 this.refreshUsers(this.kba.selected_organisation_id, this.state.prev_page, this.state.page_size);
             }, (errStr) => {
-                this.setState({message_title: "", message: "",
+                this.setState({message_title: "", message: "", busy: false,
                                      error_msg: errStr, error_title: "Error Removing User"});
             })
         } else {
@@ -308,16 +325,16 @@ export class UserManager extends React.Component {
                     error_title: "Incomplete Data"});
 
             } else {
-
+                this.setState({busy: true});
                 Api.updateUser(this.kba.selected_organisation_id, this.state.edit_kb_id,
                     this.state.edit_first_name, this.state.edit_surname, this.state.edit_email,
                     this.state.edit_password, this.state.edit_roles, this.state.edit_kb_list,
                     (user) => {
-                        this.setState({edit_user: false, knowledgeBase: null});
+                        this.setState({edit_user: false, knowledgeBase: null, busy: false});
                         this.refreshUsers(this.kba.selected_organisation_id, this.state.prev_page, this.state.page_size);
                     },
                     (errStr) => {
-                        this.setState({edit_user: false, error_msg: errStr, error_title: "Error Updating User"});
+                        this.setState({edit_user: false, error_msg: errStr, error_title: "Error Updating User", busy: false});
                     });
             }
 
@@ -384,6 +401,11 @@ export class UserManager extends React.Component {
                     open={this.state.message.length > 0}
                     message={this.state.message}
                     title={this.state.message_title} />
+
+                {
+                    this.state.busy &&
+                    <div style={styles.busy} />
+                }
 
                 <Paper>
                     <Table>

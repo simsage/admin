@@ -55,9 +55,26 @@ export class MindEdit extends Component {
     static createActions(answer, links_text) {
         const actions = [];
         if (answer.length > 0) {
-            actions.push({"action": "browser.write", parameters: [answer.replace(/\n/g, "<br />")]});
+            // special user/custom commands?
+            if (answer.trim().indexOf("exec ") === 0) {
+                const commands = answer.split("\n");
+                for (let cmd of commands) {
+                    const parts = cmd.trim().split(" ");
+                    if (parts.length > 1 && parts[0] === "exec") {
+                        const parameters = [];
+                        for (let i = 2; i < parts.length; i += 1) {
+                            if (parts[i].trim().length > 0) {
+                                parameters.push(parts[i].trim());
+                            }
+                        }
+                        actions.push({"action": parts[1], parameters: parameters});
+                    }
+                }
+            } else {
+                actions.push({"action": "browser.write", parameters: [answer.replace(/\n/g, "<br />")]});
+            }
         }
-        const links = links_text.split(",")
+        const links = links_text.split(",");
         for (const link of links) {
             const l = link.trim();
             if (l.length > 0) {
@@ -81,9 +98,20 @@ export class MindEdit extends Component {
         let str = "";
         if (mindItem && mindItem.actionList) {
             for (const action of mindItem.actionList) {
-                if (action && action.action === "browser.write" && action.parameters) {
-                    for (const param of action.parameters) {
-                        str = str + param.replace(/<br \/>/g, "\n");
+                if (action) {
+                    if (action.action === "browser.write" && action.parameters) {
+                        for (const param of action.parameters) {
+                            str = str + param.replace(/<br \/>/g, "\n");
+                        }
+
+                        // user custom command?
+                    } else if (action.action !== "browser.image" && action.action !== "browser.link" && action.action !== "browser.say") {
+                        str = str + "exec " + action.action;
+                        for (const param of action.parameters) {
+                            str += " ";
+                            str += param;
+                        }
+                        str += "\n";
                     }
                 }
             }

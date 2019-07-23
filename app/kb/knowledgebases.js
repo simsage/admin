@@ -19,7 +19,7 @@ import {MessageDialog} from '../common/message-dialog'
 import {ErrorDialog} from '../common/error-dialog'
 import {Comms} from "../common/comms";
 
-const id_style = "<div style='width: 170px; float: left; height: 24px;'>"
+const id_style = "<div style='width: 170px; float: left; height: 24px;'>";
 
 const styles = {
     label: {
@@ -80,7 +80,20 @@ const styles = {
     },
     dlImageSize: {
         width: '24px',
-    }
+    },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 
@@ -92,11 +105,14 @@ export class KnowledgeBases extends React.Component {
             has_error: false,
             onError : props.onError,
 
+            busy: false,
+
             edit_knowledgebase: false,
             knowledgeBase: null,
 
             edit_kb_id: "",
             edit_name: "",
+            edit_email: "",
             edit_security_id: "",
 
             error_msg: "",
@@ -157,6 +173,7 @@ export class KnowledgeBases extends React.Component {
         this.setState({edit_knowledgebase: true, knowledgeBase: null,
             edit_knowledgebase_id: "",
             edit_name: "",
+            edit_email: "",
             edit_security_id: Api.createGuid(),
         })
     }
@@ -168,6 +185,7 @@ export class KnowledgeBases extends React.Component {
             this.setState({edit_knowledgebase: true, knowledgeBase: knowledgeBase,
                 edit_knowledgebase_id: knowledgeBase.kbId,
                 edit_name: knowledgeBase.name,
+                edit_email: knowledgeBase.email,
                 edit_security_id: knowledgeBase.securityId,
             })
         }
@@ -182,12 +200,13 @@ export class KnowledgeBases extends React.Component {
     }
     deleteKnowledgeBase(action) {
         if (action) {
+            this.setState({busy: true});
             Api.deleteKnowledgeBase(this.kba.selected_organisation_id,
                                     this.state.knowledgeBase.kbId, () => {
-                this.setState({message_title: "", message: ""});
+                this.setState({message_title: "", message: "", busy: false});
                 this.kba.deleteKnowledgeBase(this.state.knowledgeBase.kbId, this.state.prev_page, this.state.page_size);
             }, (errStr) => {
-                this.setState({message_title: "", message: "",
+                this.setState({message_title: "", message: "", busy: false,
                     error_msg: errStr, error_title: "Error Removing knowledge Base"});
             })
         } else {
@@ -199,15 +218,15 @@ export class KnowledgeBases extends React.Component {
     }
     editOk() {
         if (this.state.edit_name.length > 0) {
-
+            this.setState({busy: true});
             Api.updateKnowledgeBase(this.kba.selected_organisation_id, this.state.edit_knowledgebase_id,
-                                    this.state.edit_name, this.state.edit_security_id,
+                                    this.state.edit_name, this.state.edit_email, this.state.edit_security_id,
                 (data) => {
-                    this.setState({edit_knowledgebase: false, knowledgeBase: null});
-                    this.kba.updateKnowledgeBase(this.state.edit_name, this.state.edit_knowledgebase_id, this.state.prev_page, this.state.page_size);
+                    this.setState({edit_knowledgebase: false, knowledgeBase: null, busy: false});
+                    this.kba.updateKnowledgeBase(this.state.edit_name, this.state.edit_email, this.state.edit_knowledgebase_id, this.state.prev_page, this.state.page_size);
                 },
                 (errStr) => {
-                    this.setState({edit_knowledgebase: false, error_msg: errStr, error_title: "Error Updating Knowledge Base"});
+                    this.setState({edit_knowledgebase: false, error_msg: errStr, error_title: "Error Updating Knowledge Base", busy: false});
                 });
         } else {
             this.setState({
@@ -243,11 +262,17 @@ export class KnowledgeBases extends React.Component {
                                message={this.state.message}
                                title={this.state.message_title} />
 
+                {
+                    this.state.busy &&
+                    <div style={styles.busy} />
+                }
+
                 <Paper>
                     <Table>
                         <TableHead>
                             <TableRow style={styles.tableHeaderStyle}>
                                 <TableCell style={styles.tableHeaderStyle}>knowledge base</TableCell>
+                                <TableCell style={styles.tableHeaderStyle}>email queries to</TableCell>
                                 <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -258,6 +283,9 @@ export class KnowledgeBases extends React.Component {
                                         <TableRow key={knowledge_base.kbId}>
                                             <TableCell>
                                                 <div style={styles.label}>{knowledge_base.name}</div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div style={styles.label}>{knowledge_base.email}</div>
                                             </TableCell>
                                             <TableCell>
                                                 <div style={styles.linkButton} onClick={() => this.editKnowledgeBase(knowledge_base)}>
@@ -284,6 +312,7 @@ export class KnowledgeBases extends React.Component {
                                 })
                             }
                             <TableRow>
+                                <TableCell />
                                 <TableCell />
                                 <TableCell>
                                     {this.kba.selected_organisation_id.length > 0 &&
@@ -330,6 +359,13 @@ export class KnowledgeBases extends React.Component {
                             label="knowledge base name"
                             value={this.state.edit_name}
                             onChange = {(event) => this.setState({edit_name: event.target.value})}
+                        />
+                        <TextField
+                            style={styles.editBox}
+                            placeholder="email questions to"
+                            label="email questions to"
+                            value={this.state.edit_email}
+                            onChange = {(event) => this.setState({edit_email: event.target.value})}
                         />
                         <div>
                             <div style={styles.textFieldBox}>

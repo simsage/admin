@@ -34,7 +34,20 @@ const styles = {
     hr: {
         border: '0.1px solid #f0f0f0',
         width: '100%',
-    }
+    },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 
@@ -45,6 +58,8 @@ export class SemanticSearchManager extends React.Component {
         this.state = {
             has_error: false,
             onError : props.onError,
+
+            busy: false,
 
             knowledge_base_list: [],
             knowledgeBase: null,
@@ -93,6 +108,11 @@ export class SemanticSearchManager extends React.Component {
                                open={this.state.message.length > 0}
                                message={this.state.message}
                                title={this.state.message_title} />
+
+                {
+                    this.state.busy &&
+                    <div style={styles.busy} />
+                }
 
                 <div style={styles.knowledgeSelect}>
                     <div style={styles.lhs}>knowledge base</div>

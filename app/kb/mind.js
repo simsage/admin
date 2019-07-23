@@ -16,6 +16,7 @@ import Grid from "@material-ui/core/Grid";
 import {BotSearch} from "../common/bot-search";
 
 
+
 const styles = {
     tableStyle: {
         minWidth: '800px',
@@ -122,7 +123,20 @@ const styles = {
     },
     spacer: {
         marginTop: '20px',
-    }
+    },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 
@@ -133,6 +147,8 @@ export class Mind extends React.Component {
         this.state = {
             has_error: false,
             onError : props.onError,
+
+            busy: false,
 
             mind_item_list: [],
             mind_item: null,
@@ -155,12 +171,16 @@ export class Mind extends React.Component {
     }
     componentDidMount() {
     }
+    changeKB() {
+        this.findMindItems(this.state.query);
+    }
     findMindItems(query) {
         if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0 &&
             this.state.query.length > 0) {
+            this.setState({busy: true});
             Api.uiMindFind(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, this.state.query,
                 (mindItemList) => {
-                    this.setState({mind_item_list: mindItemList})
+                    this.setState({mind_item_list: mindItemList, busy: false})
                 },
                 (errStr) => {
                     this.showError("Error", errStr)
@@ -178,12 +198,13 @@ export class Mind extends React.Component {
     }
     deleteMindItem(action) {
         if (action && this.state.mind_item) {
+            this.setState({busy: true});
             Api.uiMindDelete(this.kba.selected_organisation_id,
                                this.kba.selected_knowledgebase_id, this.state.mind_item.id, () => {
-                    this.setState({message_title: "", message: ""});
+                    this.setState({message_title: "", message: "", busy: false});
                     this.findMindItems(this.state.query);
                 }, (errStr) => {
-                    this.setState({message_title: "", message: "",
+                    this.setState({message_title: "", message: "", busy: false,
                                          error_msg: errStr, error_title: "Error Removing Mind Entry"});
                 })
         } else {
@@ -191,7 +212,7 @@ export class Mind extends React.Component {
         }
     }
     showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg});
+        this.setState({error_title: title, error_msg: error_msg, busy: false});
     }
     closeError() {
         this.setState({error_msg: ''});
@@ -228,12 +249,13 @@ export class Mind extends React.Component {
     save(mindItem) {
         if (mindItem) {
             if (mindItem.expression.length > 0 && mindItem.actionList.length > 0) {
+                this.setState({busy: true});
                 Api.uiMindSave(this.kba.selected_organisation_id,
                     this.kba.selected_knowledgebase_id, mindItem, () => {
-                        this.setState({mind_edit: false});
+                        this.setState({mind_edit: false, busy: false});
                         this.findMindItems(this.state.query);
                     }, (errStr) => {
-                        this.setState({error_msg: errStr, error_title: "Error Saving Mind Entry"});
+                        this.setState({error_msg: errStr, error_title: "Error Saving Mind Entry", busy: false});
                     });
             } else {
                 this.setState({error_msg: "mind-item must have an expression and actions", error_title: "Error Saving Mind Entry"});
@@ -264,6 +286,11 @@ export class Mind extends React.Component {
                          onSave={(item) => this.save(item)}
                          onError={(err) => this.showError("Error", err)} />
 
+                {
+                    this.state.busy &&
+                    <div style={styles.busy} />
+                }
+
                 <div style={styles.knowledgeSelect}>
                     <div style={styles.lhs}>knowledge base</div>
                     <div style={styles.rhs}>
@@ -272,24 +299,30 @@ export class Mind extends React.Component {
                             value={this.kba.selected_knowledgebase}
                             onFilter={(text, callback) => this.kba.getKnowledgeBaseListFiltered(text, callback)}
                             minTextSize={1}
-                            onSelect={(label, data) => this.kba.selectKnowledgeBase(label, data)}
+                            onSelect={(label, data) => { this.kba.selectKnowledgeBase(label, data); this.changeKB() }}
                         />
                     </div>
                 </div>
 
-                <div style={styles.findBox}>
-                    <div style={styles.floatLeftLabel}>find questions in the mind</div>
-                    <div style={styles.searchFloatLeft}>
-                        <input type="text" value={this.state.filter} autoFocus={true} style={styles.text}
-                               onKeyPress={(event) => this.handleSearchTextKeydown(event)}
-                               onChange={(event) => {this.setState({query: event.target.value})}} />
+                {
+                    this.kba.selected_knowledgebase_id.length > 0 &&
+
+                    <div style={styles.findBox}>
+                        <div style={styles.floatLeftLabel}>find questions in the mind</div>
+                        <div style={styles.searchFloatLeft}>
+                            <input type="text" value={this.state.filter} autoFocus={true} style={styles.text}
+                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                   onChange={(event) => {
+                                       this.setState({query: event.target.value})
+                                   }}/>
+                        </div>
+                        <div style={styles.floatLeft}>
+                            <img style={styles.search}
+                                 onClick={() => this.findMindItems(this.state.query)}
+                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
+                        </div>
                     </div>
-                    <div style={styles.floatLeft}>
-                        <img style={styles.search}
-                             onClick={() => this.findMindItems(this.state.query)}
-                             src="../images/dark-magnifying-glass.svg" title="search" alt="search" />
-                    </div>
-                </div>
+                }
                 <br clear="both" />
 
                 {

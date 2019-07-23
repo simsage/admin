@@ -58,7 +58,20 @@ const styles = {
         float: 'right',
         width: '80px',
         marginTop: '-15px',
-    }
+    },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 
@@ -71,6 +84,8 @@ export class Reports extends React.Component {
         this.state = {
             has_error: false,
             onError : props.onError,
+
+            busy: false,
 
             reportDate: "" + date.getFullYear() + "/" + (date.getMonth() + 1),
 
@@ -95,9 +110,11 @@ export class Reports extends React.Component {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0) {
+            this.setState({busy: true});
             Api.getStats(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, year, month, top,
                 (report) => {
                     this.setState({
+                        busy: false,
                         botAccessFrequency: GraphHelper.setupList(report.botAccessFrequency, "bot access"),
                         searchAccessFrequency: GraphHelper.setupList(report.searchAccessFrequency, "search access"),
                         generalStatistics: GraphHelper.setupMap(report.generalStatistics, "system"),
@@ -107,6 +124,7 @@ export class Reports extends React.Component {
                 },
                 (errStr) => {
                     if (this.state.onError) {
+                        this.setState({busy: false});
                         this.state.onError("Error", errStr);
                     }
                 });
@@ -143,6 +161,11 @@ export class Reports extends React.Component {
         }
         return (
             <div>
+
+                {
+                    this.state.busy &&
+                    <div style={styles.busy} />
+                }
 
                 <div style={styles.knowledgeSelect}>
                     <div style={styles.lhs}>knowledge base</div>

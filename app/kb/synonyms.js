@@ -118,6 +118,19 @@ const styles = {
         marginBottom: '5px',
         float: 'right',
     },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 
@@ -128,6 +141,8 @@ export class Synonyms extends React.Component {
         this.state = {
             has_error: false,
             onError : props.onError,
+
+            busy: false,
 
             synonym_list: [],
             synonym: null,
@@ -150,12 +165,16 @@ export class Synonyms extends React.Component {
     }
     componentDidMount() {
     }
+    changeKB() {
+        this.findSynonyms(this.state.query);
+    }
     findSynonyms(query) {
         if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0 &&
             this.state.query.length > 0) {
+            this.setState({busy: true});
             Api.findSynonyms(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, this.state.query,
                 (synonymList) => {
-                    this.setState({synonym_list: synonymList})
+                    this.setState({synonym_list: synonymList, busy: false})
                 },
                 (errStr) => {
                     this.showError("Error", errStr)
@@ -173,20 +192,21 @@ export class Synonyms extends React.Component {
     }
     deleteSynonym(action) {
         if (action && this.state.synonym) {
+            this.setState({busy: true});
             Api.deleteSynonym(this.kba.selected_organisation_id,
                                this.kba.selected_knowledgebase_id, this.state.synonym.id, () => {
-                    this.setState({message_title: "", message: ""});
+                    this.setState({message_title: "", message: "", busy: false});
                     this.findSynonyms(this.state.query);
                 }, (errStr) => {
-                    this.setState({message_title: "", message: "",
-                                         error_msg: errStr, error_title: "Error Removing Mind Entry"});
+                    this.setState({message_title: "", message: "", busy: false,
+                                         error_msg: errStr, error_title: "Error Removing Synonym"});
                 })
         } else {
             this.setState({message_title: "", message: ""});
         }
     }
     showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg});
+        this.setState({error_title: title, error_msg: error_msg, busy: false});
     }
     closeError() {
         this.setState({error_msg: ''});
@@ -208,15 +228,16 @@ export class Synonyms extends React.Component {
     save(synonym) {
         if (synonym) {
             if (synonym.words.length > 0 && synonym.words.indexOf(",") > 0) {
+                this.setState({busy: true});
                 Api.saveSynonym(this.kba.selected_organisation_id,
                     this.kba.selected_knowledgebase_id, synonym, () => {
-                        this.setState({synonym_edit: false});
+                        this.setState({synonym_edit: false, busy: false});
                         this.findSynonyms(this.state.query);
                     }, (errStr) => {
                         this.setState({error_msg: errStr, error_title: "Error Saving Synonym"});
                     });
             } else {
-                this.setState({error_msg: "synonym cannot be empty and need more than one item", error_title: "Error Saving Synonym"});
+                this.setState({error_msg: "synonym cannot be empty and need more than one item", error_title: "Error Saving Synonym", busy: false});
             }
         } else {
             this.setState({synonym_edit: false});
@@ -244,6 +265,10 @@ export class Synonyms extends React.Component {
                              onSave={(item) => this.save(item)}
                              onError={(err) => this.showError("Error", err)} />
 
+                {
+                    this.state.busy &&
+                    <div style={styles.busy} />
+                }
 
                 <div style={styles.knowledgeSelect}>
                     <div style={styles.lhs}>knowledge base</div>
@@ -253,24 +278,31 @@ export class Synonyms extends React.Component {
                             value={this.kba.selected_knowledgebase}
                             onFilter={(text, callback) => this.kba.getKnowledgeBaseListFiltered(text, callback)}
                             minTextSize={1}
-                            onSelect={(label, data) => this.kba.selectKnowledgeBase(label, data)}
+                            onSelect={(label, data) => { this.kba.selectKnowledgeBase(label, data); this.changeKB() }}
                         />
                     </div>
                 </div>
 
-                <div style={styles.findBox}>
-                    <div style={styles.floatLeftLabel}>find synonyms</div>
-                    <div style={styles.searchFloatLeft}>
-                        <input type="text" value={this.state.filter} autoFocus={true} style={styles.text}
-                               onKeyPress={(event) => this.handleSearchTextKeydown(event)}
-                               onChange={(event) => {this.setState({query: event.target.value})}} />
+                {
+                    this.kba.selected_knowledgebase_id.length > 0 &&
+
+                    <div style={styles.findBox}>
+                        <div style={styles.floatLeftLabel}>find synonyms</div>
+                        <div style={styles.searchFloatLeft}>
+                            <input type="text" value={this.state.filter} autoFocus={true} style={styles.text}
+                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                   onChange={(event) => {
+                                       this.setState({query: event.target.value})
+                                   }}/>
+                        </div>
+                        <div style={styles.floatLeft}>
+                            <img style={styles.search}
+                                 onClick={() => this.findSynonyms(this.state.query)}
+                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
+                        </div>
                     </div>
-                    <div style={styles.floatLeft}>
-                        <img style={styles.search}
-                             onClick={() => this.findSynonyms(this.state.query)}
-                             src="../images/dark-magnifying-glass.svg" title="search" alt="search" />
-                    </div>
-                </div>
+                }
+
                 <br clear="both" />
 
                 {

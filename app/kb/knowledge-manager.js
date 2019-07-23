@@ -6,6 +6,7 @@ import {MessageDialog} from '../common/message-dialog'
 import {ErrorDialog} from '../common/error-dialog'
 import {AutoComplete} from "../common/autocomplete";
 import {ProgramUpload} from "../common/program-upload";
+import {ProgramConvert} from "../common/program-convert";
 import Button from "@material-ui/core/Button";
 import RestoreUpload from "../common/restore-upload";
 import {Comms} from '../common/comms'
@@ -39,7 +40,20 @@ const styles = {
     },
     exportButton: {
         marginTop: '20px',
-    }
+    },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 
@@ -50,6 +64,8 @@ export class KnowledgeManager extends React.Component {
         this.state = {
             has_error: false,
             onError : props.onError,
+
+            busy: false,
 
             knowledge_base_list: [],
             knowledgeBase: null,
@@ -74,7 +90,7 @@ export class KnowledgeManager extends React.Component {
         console.log(error, info);
     }
     showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg, uploading: false});
+        this.setState({error_title: title, error_msg: error_msg, uploading: false, busy: false});
     }
     closeError() {
         this.setState({error_msg: ''});
@@ -82,6 +98,11 @@ export class KnowledgeManager extends React.Component {
     programUploaded() {
         this.setState({message_title: "done", message: "program uploaded",
         message_callback: () => { this.setState({message: ""})}});
+    }
+    programConverted(program) {
+        if (program) {
+            window.open().document.body.innerHTML += program.replace(/\n/g, "<br />");
+        }
     }
     backup() {
         window.open(Comms.get_backup_url(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id), '_blank');
@@ -94,10 +115,11 @@ export class KnowledgeManager extends React.Component {
     }
     restore(data) {
         if (data) {
-            this.setState({uploading: true});
+            this.setState({uploading: true, busy: true});
             Api.restore(data,
                 () => {
                     this.setState({uploading: false,
+                        busy: false,
                         message_title: "Success",
                         message: "data restored",
                         message_callback: () => { this.setState({message: "", message_title: ""})}
@@ -124,6 +146,11 @@ export class KnowledgeManager extends React.Component {
                                open={this.state.message.length > 0}
                                message={this.state.message}
                                title={this.state.message_title} />
+
+                {
+                    this.state.busy &&
+                    <div style={styles.busy} />
+                }
 
                 <div style={styles.knowledgeSelect}>
                     <div style={styles.lhs}>knowledge base</div>
@@ -156,6 +183,27 @@ export class KnowledgeManager extends React.Component {
                                        organisationId={this.kba.selected_organisation_id}
                                        onUploadDone={() => this.programUploaded()}
                                        onError={(errStr) => this.showError("Error", errStr)}/>
+                    </Grid>
+                    }
+
+
+
+                    {this.kba.selected_knowledgebase_id &&
+                    <Grid item xs={12}><div style={styles.hr} /></Grid>
+                    }
+
+
+                    {this.kba.selected_knowledgebase_id &&
+                    <Grid item xs={4}>
+                        <div style={styles.label}>Convert a SimSage spreadsheet to a SimSage program for review</div>
+                    </Grid>
+                    }
+                    {this.kba.selected_knowledgebase_id &&
+                    <Grid item xs={8}>
+                        <ProgramConvert kbId={this.kba.selected_knowledgebase_id}
+                                        organisationId={this.kba.selected_organisation_id}
+                                        onUploadDone={(program) => this.programConverted(program)}
+                                        onError={(errStr) => this.showError("Error", errStr)}/>
                     </Grid>
                     }
 

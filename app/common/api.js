@@ -151,9 +151,9 @@ export class Api {
     };
 
     // update a knowledge base
-    static updateKnowledgeBase(organisation_id, id, name, security_id, success, fail) {
+    static updateKnowledgeBase(organisation_id, id, name, email, security_id, success, fail) {
         Comms.http_put('/knowledgebase/',
-            {"kbId": id, "organisationId": organisation_id, "name": name, "securityId": security_id},
+            {"kbId": id, "organisationId": organisation_id, "name": name, "email": email, "securityId": security_id},
             (response) => { success(response) },
             (errStr) => { fail(errStr) }
         )
@@ -196,6 +196,26 @@ export class Api {
     }
 
 
+    // delete a crawler's document
+    static deleteCrawlerDocuments(organisationId, kb_id, id, success, fail) {
+        Comms.http_delete('/crawler/crawler/document/' + encodeURIComponent(organisationId) + '/' +
+            encodeURIComponent(kb_id) + '/' + encodeURIComponent(id),
+            (response) => { success(response.data) },
+            (errStr) => { fail(errStr) }
+        )
+    }
+
+
+    // test a specific crawler's connectivity
+    static testCrawler(organisationId, kb_id, id, success, fail) {
+        Comms.http_get('/crawler/crawler/test/' + encodeURIComponent(organisationId) + '/' +
+            encodeURIComponent(kb_id) + '/' + encodeURIComponent(id),
+            (response) => { success(response.data) },
+            (errStr) => { fail(errStr) }
+        )
+    }
+
+
     // perform a semantic search
     static semanticSearch(organisationId, kb_id, keywords, num_results=10, score_threshold=0.1, success, fail) {
         Comms.http_put('/semantic/search', {
@@ -226,7 +246,7 @@ export class Api {
     static deleteDocument(organisationId, kbId, url, success, fail) {
         if (organisationId && kbId && url) {
             const full_url = '/document/document/' + encodeURIComponent(organisationId) + '/' +
-                encodeURIComponent(kbId) + '/' + encodeURIComponent(url.replace(/\./g, "||"));
+                encodeURIComponent(kbId) + '/' + btoa(url);
             console.log(full_url);
             Comms.http_delete(full_url,
                 (response) => { success(response) },
@@ -297,6 +317,33 @@ export class Api {
     static saveSynonym(organisationId, kbId, synonym, success, fail) {
         Comms.http_put('/language/save-synonym/' + encodeURIComponent(organisationId) + '/' +
             encodeURIComponent(kbId), synonym,
+            (response) => { success(response.data) },
+            (errStr) => { fail(errStr) }
+        )
+    }
+
+    // find a list of semantics
+    static findSemantics(organisationId, kbId, query, success, fail) {
+        Comms.http_put('/language/find-semantics', {"organisationId": organisationId, "kbId": kbId,
+                "query": query, "numResults": 10},
+            (response) => { success(response.data) },
+            (errStr) => { fail(errStr) }
+        )
+    }
+
+    // delete a semantic by name
+    static deleteSemantic(organisationId, kbId, word, success, fail) {
+        Comms.http_delete('/language/delete-semantic/' + encodeURIComponent(organisationId) + '/' +
+            encodeURIComponent(kbId) + '/' + encodeURIComponent(word),
+            (response) => { success(response.data) },
+            (errStr) => { fail(errStr) }
+        )
+    }
+
+    // save a semantic
+    static saveSemantic(organisationId, kbId, semantic, success, fail) {
+        Comms.http_put('/language/save-semantic/' + encodeURIComponent(organisationId) + '/' +
+            encodeURIComponent(kbId), semantic,
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )

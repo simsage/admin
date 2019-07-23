@@ -6,24 +6,44 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
 
 import {Api} from '../common/api'
 import {MessageDialog} from '../common/message-dialog'
 import {ErrorDialog} from '../common/error-dialog'
 import {AutoComplete} from "../common/autocomplete";
-import {DocumentUpload} from "../common/document-upload";
+import {SemanticEdit} from "./semantic-edit";
 
 
 const styles = {
     tableStyle: {
         minWidth: '800px',
+        width: '1024px',
+    },
+    smallTableHeaderStyle: {
+        background: '#555',
+        fontSize: '0.95em',
+        color: '#fff',
+        minWidth: '20px',
+    },
+    actionTableHeaderStyle: {
+        background: '#555',
+        fontSize: '0.95em',
+        color: '#fff',
+        minWidth: '100px',
     },
     tableHeaderStyle: {
         background: '#555',
         fontSize: '0.95em',
         color: '#fff',
+        minWidth: '400px',
+        width: '600px',
+    },
+    searchTableHeaderStyle: {
+        background: '#555',
+        fontSize: '0.95em',
+        color: '#fff',
         minWidth: '200px',
+        width: '340px',
     },
     knowledgeSelect: {
         padding: '5px',
@@ -80,10 +100,14 @@ const styles = {
         fontSize: '0.9em',
         fontWeight: '500',
     },
-    floatLeft: {
+    searchFloatLeft: {
         float: 'left',
     },
-    searchFloatLeft: {
+    text: {
+        padding: '4px',
+        width: '280px',
+    },
+    floatLeft: {
         float: 'left',
     },
     manualUploadSection: {
@@ -93,10 +117,6 @@ const styles = {
         padding: '10px',
         marginBottom: '5px',
         float: 'right',
-    },
-    text: {
-        padding: '4px',
-        width: '280px',
     },
     busy: {
         display: 'block',
@@ -114,7 +134,7 @@ const styles = {
 };
 
 
-export class Documents extends React.Component {
+export class Semantics extends React.Component {
     constructor(props) {
         super(props);
         this.kba = props.kba;
@@ -124,25 +144,18 @@ export class Documents extends React.Component {
 
             busy: false,
 
-            document_list: [],
-            num_documents: 0,
-            document: null,
-
-            // pagination maintenance
-            nav_list: [],
-            page: 0,
-
-            error_msg: "",
-            error_title: "",
+            semantic_list: [],
+            semantic: null,
+            semantic_edit: false,
 
             message_title: "",
             message: "",
             message_callback: null,
 
-            // pagination
-            filter: "",
-            page_size: 10,
-            prev_page: 'null',
+            error_msg: "",
+            error_title: "",
+
+            query: "",
         };
     }
     componentDidCatch(error, info) {
@@ -151,19 +164,17 @@ export class Documents extends React.Component {
         this.kba = nextProps.kba;
     }
     componentDidMount() {
-        this.refreshDocuments(this.state.prev_page, this.state.page_size);
     }
     changeKB() {
-        this.setState({prev_page: 'null'});
-        this.refreshDocuments('null', this.state.page_size);
+        this.findSemantics(this.state.query);
     }
-    refreshDocuments(prev_page, page_size) {
-        if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0) {
+    findSemantics(query) {
+        if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0 &&
+            this.state.query.length > 0) {
             this.setState({busy: true});
-            Api.getDocumentsPaginated(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id,
-                                      this.state.filter, prev_page, page_size,
-                (result) => {
-                    this.setState({document_list: result.documentList, num_documents: result.numDocuments, busy: false})
+            Api.findSemantics(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, this.state.query,
+                (semanticList) => {
+                    this.setState({semantic_list: semanticList, busy: false})
                 },
                 (errStr) => {
                     this.showError("Error", errStr)
@@ -171,49 +182,24 @@ export class Documents extends React.Component {
             )
         }
     }
-    changePage(page) {
-        const page0 = this.state.page;
-        const document_list = this.state.document_list;
-        const nav_list = this.state.nav_list;
-        if (page0 !== page && page >= 0) {
-            if (page0 < page) {
-                // next page
-                if (document_list.length > 0) {
-                    const prev = document_list[document_list.length - 1].url;
-                    nav_list.push(prev);
-                    this.setState({nav_list: nav_list, prev_page: prev, page: page});
-                    this.refreshDocuments(prev, this.state.page_size);
-                }
-            } else {
-                // prev page
-                const prev = nav_list[page];
-                this.setState({pev_page: prev, page: page});
-                this.refreshDocuments(prev, this.state.page_size);
-            }
+    deleteSemanticAsk(semantic) {
+        if (semantic) {
+            this.setState({message_title: "Remove Semantic",
+                message_callback: (action) => { this.deleteSemantic(action) },
+                message: "are you sure you want to remove " + semantic.word + " is a " + semantic.semantic + "?",
+                semantic: semantic})
         }
     }
-    changePageSize(page_size) {
-        this.setState({page_size: page_size});
-        this.refreshDocuments(this.state.prev_page, page_size);
-    }
-    deleteDocumentAsk(document) {
-        if (document) {
-            this.setState({message_title: "Remove Document",
-                message_callback: (action) => { this.deleteDocument(action) },
-                message: "are you sure you want to remove \"" + document.url + "\" ?",
-                document: document})
-        }
-    }
-    deleteDocument(action) {
-        if (action && this.state.document) {
+    deleteSemantic(action) {
+        if (action && this.state.semantic) {
             this.setState({busy: true});
-            Api.deleteDocument(this.kba.selected_organisation_id,
-                               this.kba.selected_knowledgebase_id, this.state.document.url, () => {
+            Api.deleteSemantic(this.kba.selected_organisation_id,
+                               this.kba.selected_knowledgebase_id, this.state.semantic.word, () => {
                     this.setState({message_title: "", message: "", busy: false});
-                    this.refreshDocuments(this.state.prev_page, this.state.page_size);
+                    this.findSemantics(this.state.query);
                 }, (errStr) => {
                     this.setState({message_title: "", message: "", busy: false,
-                        error_msg: errStr, error_title: "Error Removing Document"});
+                                         error_msg: errStr, error_title: "Error Removing Semantic"});
                 })
         } else {
             this.setState({message_title: "", message: ""});
@@ -227,19 +213,39 @@ export class Documents extends React.Component {
     }
     handleSearchTextKeydown(event) {
         if (event.key === "Enter") {
-            this.refreshDocuments(this.state.prev_page, this.state.page_size);
+            this.findSemantics(this.state.query);
         }
     }
-    documentUploaded() {
-        this.refreshDocuments(this.state.prev_page, this.state.page_size);
-        this.setState({message_title: "done", message: "document uploaded",
-            message_callback: () => { this.setState({message: ""})}});
+    editSemantic(semantic) {
+        this.setState({semantic_edit: true, semantic: semantic});
     }
-    viewDocument(document) {
+    newSemantic() {
+        this.setState({semantic_edit: true, semantic: {
+                word: "",
+                semantic: "",
+            }});
+    }
+    save(semantic) {
+        if (semantic) {
+            if (semantic.word.length > 0 && semantic.semantic.length > 0) {
+                this.setState({busy: true});
+                Api.saveSemantic(this.kba.selected_organisation_id,
+                    this.kba.selected_knowledgebase_id, semantic, () => {
+                        this.setState({semantic_edit: false, busy: false});
+                        this.findSemantics(this.state.query);
+                    }, (errStr) => {
+                        this.setState({error_msg: errStr, error_title: "Error Saving Semantic"});
+                    });
+            } else {
+                this.setState({error_msg: "word and semantic must have a value", error_title: "Error Saving Semantic", busy: false});
+            }
+        } else {
+            this.setState({semantic_edit: false});
+        }
     }
     render() {
         if (this.state.has_error) {
-            return <h1>documents.js: Something went wrong.</h1>;
+            return <h1>semantics.js: Something went wrong.</h1>;
         }
         return (
             <div>
@@ -253,6 +259,11 @@ export class Documents extends React.Component {
                                open={this.state.message.length > 0}
                                message={this.state.message}
                                title={this.state.message_title} />
+
+                <SemanticEdit open={this.state.semantic_edit}
+                             semantic={this.state.semantic}
+                             onSave={(item) => this.save(item)}
+                             onError={(err) => this.showError("Error", err)} />
 
                 {
                     this.state.busy &&
@@ -274,19 +285,20 @@ export class Documents extends React.Component {
 
                 {
                     this.kba.selected_knowledgebase_id.length > 0 &&
+
                     <div style={styles.findBox}>
-                        <div style={styles.floatLeftLabel}>filter</div>
+                        <div style={styles.floatLeftLabel}>find semantics</div>
                         <div style={styles.searchFloatLeft}>
                             <input type="text" value={this.state.filter} autoFocus={true} style={styles.text}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
-                                       this.setState({filter: event.target.value})
+                                       this.setState({query: event.target.value})
                                    }}/>
                         </div>
                         <div style={styles.floatLeft}>
                             <img style={styles.search}
-                                 onClick={() => this.refreshDocuments(this.state.prev_page, this.state.page_size)}
-                                 src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
+                                 onClick={() => this.findSemantics(this.state.query)}
+                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </div>
                     </div>
                 }
@@ -298,61 +310,55 @@ export class Documents extends React.Component {
                     <Paper>
                         <Table style={styles.tableStyle}>
                             <TableHead>
-                                <TableRow style={styles.tableHeaderStyle}>
-                                    <TableCell style={styles.tableHeaderStyle}>url</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
+                                <TableRow>
+                                    <TableCell style={styles.smallTableHeaderStyle}>word</TableCell>
+                                    <TableCell style={styles.tableHeaderStyle}>semantic</TableCell>
+                                    <TableCell style={styles.actionTableHeaderStyle}>actions</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {
-                                    this.state.document_list.map((document) => {
+                                    this.state.semantic_list.map((semantic) => {
                                         return (
-                                            <TableRow key={document.url}>
+                                            <TableRow key={semantic.word + ":" + semantic.semantic}>
                                                 <TableCell>
-                                                    <div style={styles.label}>{document.url}</div>
+                                                    <div style={styles.label}>{semantic.word}</div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div style={styles.linkButton} onClick={() => this.deleteDocumentAsk(document)}>
-                                                        <img src="../images/delete.svg" style={styles.dlImageSize} title="remove document" alt="remove"/>
+                                                    <div style={styles.label}>{semantic.semantic}</div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div style={styles.linkButton} onClick={() => this.editSemantic(semantic)}>
+                                                        <img src="../images/edit.svg" style={styles.dlImageSize} title="edit semantic" alt="edit"/>
                                                     </div>
-                                                    {/*<a style={styles.linkButton} onClick={() => this.viewDocument(document)}>download</a>*/}
+                                                    <div style={styles.linkButton} onClick={() => this.deleteSemanticAsk(semantic)}>
+                                                        <img src="../images/delete.svg" style={styles.dlImageSize} title="remove semantic" alt="remove"/>
+                                                    </div>
                                                 </TableCell>
                                             </TableRow>
                                         )
                                     })
                                 }
+                                <TableRow>
+                                    <TableCell/>
+                                    <TableCell/>
+                                    <TableCell>
+                                        {this.kba.selected_organisation_id.length > 0 &&
+                                        <a style={styles.imageButton} onClick={() => this.newSemantic()}><img
+                                            style={styles.addImage} src="../images/add.svg" title="new semantic"
+                                            alt="new semantic"/></a>
+                                        }
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell />
+                                    <TableCell />
+                                    <TableCell />
+                                </TableRow>
                             </TableBody>
                         </Table>
 
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            component="div"
-                            count={this.state.num_documents}
-                            rowsPerPage={this.state.page_size}
-                            page={this.state.page}
-                            backIconButtonProps={{
-                                'aria-label': 'Previous Page',
-                            }}
-                            nextIconButtonProps={{
-                                'aria-label': 'Next Page',
-                            }}
-                            onChangePage={(event, page) => this.changePage(page)}
-                            onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
-                        />
-
                     </Paper>
-                }
-
-                {this.kba.selected_knowledgebase_id &&
-                    <div style={styles.manualUploadSection}>
-                        <div>manually upload a document</div>
-                        <div>
-                            <DocumentUpload kbId={this.kba.selected_knowledgebase_id}
-                                            organisationId={this.kba.selected_organisation_id}
-                                            onUploadDone={() => this.documentUploaded()}
-                                            onError={(errStr) => this.showError("Error", errStr)}/>
-                        </div>
-                    </div>
                 }
 
             </div>
@@ -360,4 +366,4 @@ export class Documents extends React.Component {
     }
 }
 
-export default Documents;
+export default Semantics;

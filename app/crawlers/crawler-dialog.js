@@ -14,6 +14,7 @@ import TimeSelect from '../common/time-select'
 import CrawlerGeneral from './crawler-general'
 import CrawlerFile from './crawler-file'
 import CrawlerWeb from "./crawler-web";
+import CrawlerDatabase from "./crawler-database";
 
 
 const styles = {
@@ -30,27 +31,33 @@ const styles = {
     }
 };
 
-// time schedule all selected
-const defaultAllTimesSelected = 'mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3,mon-4,tue-4,wed-4,thu-4,fri-4,sat-4,sun-4,mon-5,tue-5,wed-5,thu-5,fri-5,sat-5,sun-5,mon-6,tue-6,wed-6,thu-6,fri-6,sat-6,sun-6,mon-7,tue-7,wed-7,thu-7,fri-7,sat-7,sun-7,mon-8,tue-8,wed-8,thu-8,fri-8,sat-8,sun-8,mon-9,tue-9,wed-9,thu-9,fri-9,sat-9,sun-9,mon-10,tue-10,wed-10,thu-10,fri-10,sat-10,sun-10,mon-11,tue-11,wed-11,thu-11,fri-11,sat-11,sun-11,mon-12,tue-12,wed-12,thu-12,fri-12,sat-12,sun-12,mon-13,tue-13,wed-13,thu-13,fri-13,sat-13,sun-13,mon-14,tue-14,wed-14,thu-14,fri-14,sat-14,sun-14,mon-15,tue-15,wed-15,thu-15,fri-15,sat-15,sun-15,mon-16,tue-16,wed-16,thu-16,fri-16,sat-16,sun-16,mon-17,tue-17,wed-17,thu-17,fri-17,sat-17,sun-17,mon-18,tue-18,wed-18,thu-18,fri-18,sat-18,sun-18,mon-19,tue-19,wed-19,thu-19,fri-19,sat-19,sun-19,mon-20,tue-20,wed-20,thu-20,fri-20,sat-20,sun-20,mon-21,tue-21,wed-21,thu-21,fri-21,sat-21,sun-21,mon-22,tue-22,wed-22,thu-22,fri-22,sat-22,sun-22,mon-23,tue-23,wed-23,thu-23,fri-23,sat-23,sun-23';
-
 export class CrawlerDialog extends Component {
     constructor(props) {
         super(props);
+        const crawler = props.crawler;
         this.state = {
             open: props.open,
 
             onSave: props.onSave,  // save callback
+
             onError: props.onError,
+            error_title: props.error_title,
+            error_msg: props.error_msg,
 
             selectedTab: 'general',
 
+            // organisational details
+            organisation_id: props.organisation_id,
+            kb_id: props.kb_id,
+
             // general tab items
-            id: '',
-            name: '',
+            id: crawler.id ? crawler.id : '',
+            name: crawler.name ? crawler.name : '',
             filesPerSecond: '',
             crawlerType: '',
             // time schedule
             schedule: '',
+            deleteFiles: false,
 
             // file crawler settings
             file_username: '',
@@ -59,6 +66,12 @@ export class CrawlerDialog extends Component {
             file_domain: '',
             file_share_name: '',
             file_share_path: '',
+
+            db_username: '',
+            db_password: '',
+            db_jdbc: '',
+            db_query: '',
+            db_template: '',
 
             // web crawler settings
             web_base_url: '',
@@ -104,13 +117,34 @@ export class CrawlerDialog extends Component {
 
                 let web_base_url = '';
                 let web_extension_filter = '';
+                let web_extension_filter_ignore = '';
                 let web_css = '';
+                let web_css_ignore = '';
                 if (crawler.crawlerType === "web") {
                     if (crawler.specificJson && crawler.specificJson.length > 0) {
                         const obj = JSON.parse(crawler.specificJson);
                         web_base_url = obj['baseUrlList'];
-                        web_extension_filter = obj['validExtensions'];
-                        web_css = obj['webCss'];
+                        web_extension_filter = obj['validExtensions'] ? obj['validExtensions'] : '';
+                        web_extension_filter_ignore = obj['validExtensionsIgnore'] ? obj['validExtensionsIgnore'] : '';
+                        web_css = obj['webCss'] ? obj['webCss'] : '';
+                        web_css_ignore = obj['webCssIgnore'] ? obj['webCssIgnore']: '';
+                    }
+                }
+
+                let db_username = '';
+                let db_password = '';
+                let db_jdbc = '';
+                let db_query = '';
+                let db_template = '';
+
+                if (crawler.crawlerType === "database") {
+                    if (crawler.specificJson && crawler.specificJson.length > 0) {
+                        const obj = JSON.parse(crawler.specificJson);
+                        db_username = obj['username'];
+                        db_password = obj['password'];
+                        db_jdbc = obj['jdbc'];
+                        db_query = obj['query'];
+                        db_template = obj['template'];
                     }
                 }
 
@@ -119,13 +153,20 @@ export class CrawlerDialog extends Component {
                     title: nextProps.title,
 
                     onSave: nextProps.onSave,
+
                     onError: nextProps.onError,
+                    error_title: nextProps.error_title,
+                    error_msg: nextProps.error_msg,
+
+                    organisation_id: nextProps.organisation_id,
+                    kb_id: nextProps.kb_id,
 
                     id: crawler.id ? crawler.id : '',
                     name: crawler.name,
                     crawlerType: crawler.crawlerType,
                     filesPerSecond: crawler.filesPerSecond,
-                    schedule: (crawler.schedule ? crawler.schedule : defaultAllTimesSelected),
+                    schedule: (crawler.schedule ? crawler.schedule : ''),
+                    deleteFiles: crawler.deleteFiles,
 
                     file_username: file_username,
                     file_password: file_password,
@@ -136,7 +177,15 @@ export class CrawlerDialog extends Component {
 
                     web_base_url: web_base_url,
                     web_extension_filter: web_extension_filter,
+                    web_extension_filter_ignore: web_extension_filter_ignore,
                     web_css: web_css,
+                    web_css_ignore: web_css_ignore,
+
+                    db_username: db_username,
+                    db_password: db_password,
+                    db_jdbc: db_jdbc,
+                    db_query: db_query,
+                    db_template: db_template,
 
                 });
             } else {
@@ -176,7 +225,14 @@ export class CrawlerDialog extends Component {
 
             this.showError('invalid parameters', 'you must supply a base url of type http:// or https://');
 
-        } else if (this.state.crawlerType !== 'web' && this.state.crawlerType !== 'file') {
+        } else if (this.state.crawlerType === 'database' && (
+                this.state.db_jdbc.length === 0 ||
+                this.state.db_query.length === 0 ||
+                this.state.db_template.length === 0)) {
+
+            this.showError('invalid parameters', 'you must supply crawler-type, jdbc, query, and template as a minimum.');
+
+        } else if (this.state.crawlerType !== 'web' && this.state.crawlerType !== 'file' && this.state.crawlerType !== 'database') {
 
             this.showError('invalid parameters', 'you must select a crawler-type first.');
 
@@ -192,11 +248,21 @@ export class CrawlerDialog extends Component {
                     shareName: this.state.file_share_name,
                     sharePath: this.state.file_share_path,
                 });
+            } else if (this.state.crawlerType === 'database') {
+                specificJson = JSON.stringify({
+                    username: this.state.db_username,
+                    password: this.state.db_password,
+                    jdbc: this.state.db_jdbc,
+                    query: this.state.db_query,
+                    template: this.state.db_template,
+                });
             } else if (this.state.crawlerType === 'web') {
                 specificJson = JSON.stringify({
                     baseUrlList: this.state.web_base_url,
                     validExtensions: this.state.web_extension_filter,
+                    validExtensionsIgnore: this.state.web_extension_filter_ignore,
                     webCss: this.state.web_css,
+                    webCssIgnore: this.state.web_css_ignore,
                 });
             }
 
@@ -206,6 +272,7 @@ export class CrawlerDialog extends Component {
                     id: this.state.id,
                     name: this.state.name,
                     crawlerType: this.state.crawlerType,
+                    deleteFiles: this.state.deleteFiles,
                     filesPerSecond: parseInt(this.state.filesPerSecond),
                     schedule: this.state.schedule,
                     specificJson: specificJson,
@@ -241,15 +308,22 @@ export class CrawlerDialog extends Component {
                                 <Tab label="general" value="general" style={styles.tab} />
                                 {this.state.crawlerType === "file" && <Tab label="file-crawler" value="file crawler" style={styles.tab} />}
                                 {this.state.crawlerType === "web" && <Tab label="web-crawler" value="web crawler" style={styles.tab} />}
+                                {this.state.crawlerType === "database" && <Tab label="database-crawler" value="database crawler" style={styles.tab} />}
                                 <Tab label="schedule" value="schedule" style={styles.tab} />
                             </Tabs>
 
                             <div style={styles.formContent}>
                                 {t_value === 'general' &&
                                                             <CrawlerGeneral
+                                                                id={this.state.id}
+                                                                organisation_id={this.state.organisation_id}
+                                                                kb_id={this.state.kb_id}
                                                                 name={this.state.name}
                                                                 filesPerSecond={this.state.filesPerSecond}
                                                                 crawlerType={this.state.crawlerType}
+                                                                deleteFiles={this.state.deleteFiles}
+                                                                error_title={this.state.crawler_error_title}
+                                                                error_msg={this.state.crawler_error_msg}
                                                                 onError={(title, errStr) => this.showError(title, errStr)}
                                                                 onSave={(crawler) => this.update_control_data(crawler)}/>
                                 }
@@ -268,7 +342,19 @@ export class CrawlerDialog extends Component {
                                                             <CrawlerWeb
                                                                 web_base_url={this.state.web_base_url}
                                                                 web_css={this.state.web_css}
+                                                                web_css_ignore={this.state.web_css_ignore}
                                                                 web_extension_filter={this.state.web_extension_filter}
+                                                                web_extension_filter_ignore={this.state.web_extension_filter_ignore}
+                                                                onError={(title, errStr) => this.showError(title, errStr)}
+                                                                onSave={(crawler) => this.update_control_data(crawler)}/>
+                                }
+                                {t_value === 'database crawler' &&
+                                                            <CrawlerDatabase
+                                                                db_username={this.state.db_username}
+                                                                db_password={this.state.db_password}
+                                                                db_jdbc={this.state.db_jdbc}
+                                                                db_query={this.state.db_query}
+                                                                db_template={this.state.db_template}
                                                                 onError={(title, errStr) => this.showError(title, errStr)}
                                                                 onSave={(crawler) => this.update_control_data(crawler)}/>
                                 }

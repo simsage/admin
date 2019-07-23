@@ -83,7 +83,7 @@ export class KnowledgeBaseAware {
     }
 
     // change the name of a kb
-    updateKnowledgeBase(name, id, prev_page, page_size) {
+    updateKnowledgeBase(name, email, id, prev_page, page_size) {
         if (id && this.selected_knowledgebase_id === id) {
             this.selected_knowledgebase = name;
         }

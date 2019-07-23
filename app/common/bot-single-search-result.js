@@ -191,26 +191,54 @@ export class BotSingleSearchResult extends React.Component {
                                     text_list.push(param);
                                 }
                             }
-                            if (action['action'] === 'browser.say') {
+                            else if (action['action'] === 'browser.say') {
                                 for (let j = 0; j < action['parameters'].length; j++) {
                                     const param = action['parameters'][j];
                                     item.sayList.push(param);
                                 }
                             }
-                            if (action['action'] === 'browser.image') {
+                            else if (action['action'] === 'browser.image') {
                                 for (let j = 0; j < action['parameters'].length; j++) {
                                     const param = action['parameters'][j];
                                     item.imageList.push(param);
                                 }
                             }
-                            if (action['action'] === 'browser.url') {
+                            else if (action['action'] === 'browser.url') {
                                 for (let j = 0; j < action['parameters'].length; j++) {
                                     const param = action['parameters'][j];
                                     item.urlList.push(param);
                                 }
                             }
+                            else { // custom user command
+                                text_list.push(action['action']);
+                                text_list.push("(");
+                                for (let j = 0; j < action['parameters'].length; j++) {
+                                    if (j > 0) {
+                                        text_list.push(",");
+                                    }
+                                    const param = action['parameters'][j];
+                                    if (item.context && item.context[param] !== undefined) {
+                                        text_list.push(item.context[param]);
+                                    } else {
+                                        text_list.push(param);
+                                    }
+                                }
+                                text_list.push(")\n");
+                            }
                         }
                         item.display = text_list.join(' ');
+
+                        // context?
+                        if (item.context) {
+                            const list = [];
+                            Object.keys(item.context).forEach(function(key) {
+                                const value = item.context[key];
+                                list.push(key + ' = ' + value);
+                            });
+                            if (list.length > 0) {
+                                item.display += "context: {" + list.join(', ') + "}"
+                            }
+                        }
 
                     } else { // nothing?
                         item.display = '';

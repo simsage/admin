@@ -137,7 +137,6 @@ export class BotSearch extends Component {
                 </div>
                 <div style={styles.searchTextBox}>
                     <TextField
-                        autoFocus={true}
                         onChange={(event) => this.setState({searchText: event.target.value})}
                         onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                         label="test the bot by asking it something"

@@ -18,8 +18,6 @@ import {Api} from '../common/api'
 import {MessageDialog} from '../common/message-dialog'
 import {ErrorDialog} from '../common/error-dialog'
 
-const id_style = "<div style='width: 170px; float: left; height: 24px;'>"
-
 const styles = {
     tableWidth: {
         width: '750px'
@@ -82,7 +80,20 @@ const styles = {
     },
     dlImageSize: {
         width: '24px',
-    }
+    },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 
@@ -96,6 +107,8 @@ export class Organisations extends React.Component {
 
             edit_organisation: false,
             organisation: null,
+
+            busy: false,
 
             edit_organisation_id: "",
             edit_name: "",
@@ -154,11 +167,12 @@ export class Organisations extends React.Component {
     }
     deleteOrganisation(action) {
         if (action) {
+            this.setState({busy: true});
             Api.deleteOrganisation(this.state.organisation.id, () => {
-                this.setState({message_title: "", message: ""});
+                this.setState({message_title: "", message: "", busy: false});
                 this.kba.deleteOrganisation(this.state.organisation.id, this.state.page, this.state.page_size);
             }, (errStr) => {
-                this.setState({message_title: "", message: "",
+                this.setState({message_title: "", message: "", busy: false,
                     error_msg: errStr, error_title: "Error Removing Organisation"});
             })
         } else {
@@ -174,14 +188,14 @@ export class Organisations extends React.Component {
     }
     editOk() {
         if (this.state.edit_name.length > 0) {
-
+            this.setState({busy: true});
             Api.updateOrganisation(this.state.edit_organisation_id, this.state.edit_name,
                 (data) => {
-                    this.setState({edit_organisation: false, organisation: null});
+                    this.setState({edit_organisation: false, organisation: null, busy: false});
                     this.kba.getOrganisationList(this.state.page, this.state.page_size);
                 },
                 (errStr) => {
-                    this.setState({edit_organisation: false, error_msg: errStr, error_title: "Error Updating Organisation"});
+                    this.setState({edit_organisation: false, error_msg: errStr, error_title: "Error Updating Organisation", busy: false});
                 });
         } else {
             this.setState({
@@ -205,6 +219,11 @@ export class Organisations extends React.Component {
                                open={this.state.message.length > 0}
                                message={this.state.message}
                                title={this.state.message_title} />
+
+                {
+                    this.state.busy &&
+                    <div style={styles.busy} />
+                }
 
                 <Paper>
                     <Table style={styles.tableWidth}>

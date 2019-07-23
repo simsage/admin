@@ -27,7 +27,9 @@ export class CrawlerWeb extends Component {
             // web specific
             web_base_url: props.web_base_url ? props.web_base_url : '',
             web_css: props.web_css ? props.web_css : '',
+            web_css_ignore: props.web_css_ignore ? props.web_css_ignore : '',
             web_extension_filter: props.web_extension_filter ? props.web_extension_filter : '',
+            web_extension_filter_ignore: props.web_extension_filter_ignore ? props.web_extension_filter_ignore : '',
         };
 
     }
@@ -43,8 +45,10 @@ export class CrawlerWeb extends Component {
         // see if we have data to start this dialog
         if (nextProps !== null) {
             this.setState(this.construct_data({web_base_url: nextProps.web_base_url,
-                web_css: nextProps.web_css,
-                web_extension_filter: nextProps.web_extension_filter,
+                web_css: nextProps.web_css ? nextProps.web_css : '',
+                web_extension_filter: nextProps.web_extension_filter ? nextProps.web_extension_filter : '',
+                web_css_ignore: nextProps.web_css_ignore ? nextProps.web_css_ignore : '',
+                web_extension_filter_ignore: nextProps.web_extension_filter_ignore ? nextProps.web_extension_filter_ignore : '',
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
             }));
@@ -53,7 +57,9 @@ export class CrawlerWeb extends Component {
     construct_data(data) {
         return {web_base_url: data.web_base_url ? data.web_base_url : this.state.web_base_url,
             web_css: data.web_css ? data.web_css : this.state.web_css,
+            web_css_ignore: data.web_css_ignore ? data.web_css_ignore : this.state.web_css_ignore,
             web_extension_filter: data.web_extension_filter ? data.web_extension_filter : this.state.web_extension_filter,
+            web_extension_filter_ignore: data.web_extension_filter_ignore ? data.web_extension_filter_ignore : this.state.web_extension_filter_ignore ,
         };
     }
     change_callback(data) {
@@ -71,7 +77,7 @@ export class CrawlerWeb extends Component {
                 <TextField
                     placeholder="http/s base name list"
                     multiline={true}
-                    rows="5"
+                    rows="3"
                     label="http/s base name list"
                     value={this.state.web_base_url}
                     onChange={(event) => {this.change_callback({web_base_url: event.target.value})}}
@@ -81,7 +87,7 @@ export class CrawlerWeb extends Component {
                 <br />
 
                 <TextField
-                    label="file extension csv list (excluding html/html)"
+                    label="file extensions to include (csv list)"
                     value={this.state.web_extension_filter}
                     onChange={(event) => {this.change_callback({web_extension_filter: event.target.value})}}
                     style={styles.textField}
@@ -89,12 +95,31 @@ export class CrawlerWeb extends Component {
                 <br />
 
                 <TextField
-                    placeholder="css/html root fragments"
+                    label="file extensions to exclude (csv list)"
+                    value={this.state.web_extension_filter_ignore}
+                    onChange={(event) => {this.change_callback({web_extension_filter_ignore: event.target.value})}}
+                    style={styles.textField}
+                />
+                <br />
+
+                <TextField
+                    placeholder="css/html root fragments to include csv"
                     multiline={true}
-                    rows="5"
-                    label="css/html root fragments"
+                    rows="3"
+                    label="css/html root fragments to include csv (e.g. div.class or id)"
                     value={this.state.web_css}
                     onChange={(event) => {this.change_callback({web_css: event.target.value})}}
+                    style={styles.textField}
+                />
+                <br />
+
+                <TextField
+                    placeholder="css/html root fragments to exclude csv"
+                    multiline={true}
+                    rows="3"
+                    label="css/html root fragments to exclude csv (e.g. div.class or id)"
+                    value={this.state.web_css_ignore}
+                    onChange={(event) => {this.change_callback({web_css_ignore: event.target.value})}}
                     style={styles.textField}
                 />
 

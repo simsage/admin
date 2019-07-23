@@ -13,8 +13,9 @@ import MessageDialog from '../common/message-dialog'
 import ErrorDialog from '../common/error-dialog'
 import {AutoComplete} from "../common/autocomplete";
 import {Api} from "../common/api";
-import {Grid} from "@material-ui/core";
 import {Comms} from "../common/comms";
+
+const id_style = "<div style='width: 170px; float: left; height: 24px;'>";
 
 const styles = {
     tab: {
@@ -77,7 +78,20 @@ const styles = {
         marginTop: '20px',
         marginBottom: '5px',
         fontSize: '0.8em',
-    }
+    },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 export class DocumentSources extends Component {
@@ -86,6 +100,8 @@ export class DocumentSources extends Component {
         this.kba = props.kba;
         this.state = {
             has_error: false,
+
+            busy: false,
 
             crawler_list: [],
 
@@ -108,13 +124,13 @@ export class DocumentSources extends Component {
             title: '',
             selected_crawler: {},
 
-            // delete crawler
-            remove_crawler_message: '',
+            message_title: '',
+            message: '',
             crawler_ask: null,
         };
     }
     componentDidCatch(error, info) {
-        this.setState({has_error: true});
+        this.setState({has_error: true, busy: false});
         console.log(error, info);
     }
     componentWillReceiveProps(nextProps) {
@@ -124,10 +140,14 @@ export class DocumentSources extends Component {
         this.getCrawlerList(this.state.prev_page, this.state.page_size);
     }
     showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg});
+        this.setState({error_title: title, error_msg: error_msg, busy: false});
     }
     closeError() {
         this.setState({error_msg: ''});
+    }
+    changeKB() {
+        this.setState({prev_page: 'null'});
+        this.getCrawlerList('null', this.state.page_size);
     }
     changePage(page) {
         const page0 = this.state.page;
@@ -165,11 +185,13 @@ export class DocumentSources extends Component {
     }
     getCrawlerList(prev_page, page_size) {
         if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0) {
+            this.setState({busy: true});
             Api.getCrawlersPaginated(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, prev_page, page_size,
                 (crawler_list) => {
-                    if (crawler_list && crawler_list.length) {
+                    if (crawler_list) {
                         this.setState({crawler_list: crawler_list});
                     }
+                    this.setState({busy: false});
                 },
                 (errStr) => {
                     this.showError("Error", errStr);
@@ -179,7 +201,9 @@ export class DocumentSources extends Component {
     deleteCrawlerAsk(crawler) {
         this.setState({
             crawler_ask: crawler,
-            remove_crawler_message: 'Are you sure you want to remove the crawler named <b>' + crawler.name + '</b>?'
+            message_callback: (action) => this.confirmCrawlerDelete(action),
+            message_title: 'delete "' + crawler.name + '"?',
+            message: 'Are you sure you want to remove the crawler named <b>' + crawler.name + '</b>?'
         });
     }
     saveCrawler(crawler) {
@@ -187,13 +211,14 @@ export class DocumentSources extends Component {
             const self = this;
             crawler.organisationId = this.kba.selected_organisation_id;
             crawler.kbId = this.kba.selected_knowledgebase_id;
+            this.setState({busy: true});
             Api.updateCrawler(crawler,
                 (response) => {
-                    self.setState({open: false, selected_crawler: null});
+                    self.setState({open: false, selected_crawler: null, busy: false});
                     self.getCrawlerList(self.state.prev_page, self.state.page_size);
                 },
                 (error) => {
-                    this.setState({crawler_error_title: 'Error', crawler_error_msg: error, selected_crawler: crawler});
+                    this.setState({crawler_error_title: 'Error', crawler_error_msg: error, selected_crawler: crawler, busy: false});
                 }
             )
         } else {
@@ -202,12 +227,14 @@ export class DocumentSources extends Component {
     }
     confirmCrawlerDelete(confirm) {
         const self = this;
-        this.setState({remove_crawler_message: ''});
+        this.setState({message: '', message_title: ''});
         if (confirm) {
+            this.setState({busy: true});
             const crawler = this.state.crawler_ask;
             const self = this;
             Api.deleteCrawler(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, crawler.id,
                 (response) => {
+                    this.setState({busy: false});
                     self.getCrawlerList(self.state.prev_page, self.state.page_size);
                 },
                 (error) => {
@@ -220,6 +247,12 @@ export class DocumentSources extends Component {
         window.open(Comms.get_crawler_url(this.kba.selected_organisation_id,
                                           this.kba.selected_knowledgebase_id, crawler.id), '_blank');
     }
+    viewIds(crawler) {
+        this.setState({message_title: '"' + crawler.name + "\" Crawler Id",
+            message_callback: (action) => { this.setState({message: ""}) },
+            message: id_style + "crawler id</div><div style='float: left'>" + crawler.id + "</div><br clear='both'>"
+        })
+    }
     render() {
         if (this.state.has_error) {
             return <h1>crawlers.js: Something went wrong.</h1>;
@@ -228,9 +261,10 @@ export class DocumentSources extends Component {
         return (
             <div>
 
-                <MessageDialog title='Remove crawler'
-                               message={this.state.remove_crawler_message}
-                               callback={this.confirmCrawlerDelete.bind(this)} />
+                <MessageDialog callback={(action) => this.state.message_callback(action)}
+                               open={this.state.message.length > 0}
+                               message={this.state.message}
+                               title={this.state.message_title} />
 
                 <ErrorDialog title={this.state.error_title}
                              message={this.state.error_msg}
@@ -239,12 +273,19 @@ export class DocumentSources extends Component {
                 <CrawlerDialog
                     open={this.state.open}
                     title={this.state.title}
+                    organisation_id={this.kba.selected_organisation_id}
+                    kb_id={this.kba.selected_knowledgebase_id}
                     onSave={(crawler) => this.saveCrawler(crawler)}
                     onError={(title, errStr) => this.showError(title, errStr)}
                     error_title={this.state.crawler_error_title}
                     error_msg={this.state.crawler_error_msg}
                     crawler={this.state.selected_crawler}
                 />
+
+                {
+                    this.state.busy &&
+                    <div style={styles.busy} />
+                }
 
                 <div style={styles.knowledgeSelect}>
                     <div style={styles.lhs}>knowledge base</div>
@@ -254,7 +295,7 @@ export class DocumentSources extends Component {
                             value={this.kba.selected_knowledgebase}
                             onFilter={(text, callback) => this.kba.getKnowledgeBaseListFiltered(text, callback)}
                             minTextSize={1}
-                            onSelect={(label, data) => this.kba.selectKnowledgeBase(label, data)}
+                            onSelect={(label, data) => { this.kba.selectKnowledgeBase(label, data); this.changeKB() }}
                         />
                     </div>
                 </div>
@@ -288,9 +329,12 @@ export class DocumentSources extends Component {
                                                     <div style={styles.linkButton} onClick={() => this.deleteCrawlerAsk(crawler)}>
                                                         <img src="../images/delete.svg" style={styles.downloadImage} title="remove crawler" alt="remove"/>
                                                     </div>
-                                                    <div style={styles.linkButton} onClick={() => this.downloadCrawler(crawler)}>
-                                                        <img style={styles.downloadImage} alt="download" title="download crawler software" src="../images/download.svg" />
-                                                    </div>
+                                                    {/*<div style={styles.linkButton} onClick={() => this.viewIds(crawler)}>*/}
+                                                    {/*    <img src="../images/id.svg" style={styles.downloadImage} title="view crawler ids" alt="ids"/>*/}
+                                                    {/*</div>*/}
+                                                    {/*<div style={styles.linkButton} onClick={() => this.downloadCrawler(crawler)}>*/}
+                                                    {/*    <img style={styles.downloadImage} alt="download" title="download crawler software" src="../images/download.svg" />*/}
+                                                    {/*</div>*/}
                                                 </TableCell>
                                             </TableRow>
                                         )

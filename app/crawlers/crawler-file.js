@@ -129,7 +129,7 @@ export class CrawlerFile extends Component {
                 <br />
 
                 <TextField
-                    placeholder="path inside share"
+                    placeholder="path inside share (optional)"
                     label="path inside share"
                     value={this.state.file_share_path}
                     onChange={(event) => {this.change_callback({file_share_path: event.target.value})}}
