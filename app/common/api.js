@@ -1,4 +1,5 @@
 import {Comms} from "../common/comms";
+import system_config from "../settings";
 
 // api wrappers
 export class Api {
@@ -13,11 +14,30 @@ export class Api {
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     };
 
+    // convert unix timestamp to string
+    static unixTimeConvert(timestamp){
+        const a = new Date(timestamp);
+        const year = a.getFullYear();
+        const month = a.getMonth() + 1;
+        const date = a.getDate();
+        const hour = a.getHours();
+        const min = a.getMinutes();
+        const sec = a.getSeconds();
+        return year + '/' + Api.pad2(month) + '/' + Api.pad2(date) + ' ' + Api.pad2(hour) + ':' + Api.pad2(min) + ':' + Api.pad2(sec);
+    }
+
+    static pad2(item) {
+        return ("" + item).padStart(2, '0');
+    }
+
     // perform a sign-in
     static signIn(email, password, success, fail) {
         if (email && email.length > 0 && password && password.length > 0) {
             Comms.http_post('/auth/sign-in', {"email": email, "password": password},
-                (response) => { success(response.data.session, response.data.user) },
+                (response) => {
+                    success(response.data.session, response.data.user);
+                    Api.setupTimer();
+                },
                 (errStr) => { fail(errStr) }
             )
         }
@@ -25,6 +45,15 @@ export class Api {
             fail('please complete and check all fields');
         }
     };
+
+    // kill timer
+    static signOut() {
+    };
+
+    // setup the timer
+    static setupTimer() {
+        return true;
+    }
 
     // start a password reset request
     static passwordResetRequest(email, success, fail) {
@@ -268,6 +297,14 @@ export class Api {
         )
     }
 
+    // get OS statistics (like disk usage and memory usage, single node only)
+    static getOSMessages(success, fail) {
+        Comms.http_get('/stats/stats/os/web',
+            (response) => { success(response.data) },
+            (errStr) => { fail(errStr) }
+        )
+    }
+
     // find a list of mind items
     static uiMindFind(organisationId, kbId, query, success, fail) {
         Comms.http_put('/bot/ui-find', {"organisationId": organisationId, "kbId": kbId,
@@ -353,6 +390,22 @@ export class Api {
     static restore(data, success, fail) {
         console.log(data);
         Comms.http_put('/backup/restore', data,
+            (response) => { success(response.data) },
+            (errStr) => { fail(errStr) }
+        )
+    }
+
+    // get the SimSage license
+    static getLicense(success, fail) {
+        Comms.http_get('/auth/license',
+            (response) => { success(response.data) },
+            (errStr) => { fail(errStr) }
+        )
+    }
+
+    // install the SimSage license
+    static installLicense(licenseStr, success, fail) {
+        Comms.http_post('/auth/license', {"license": licenseStr},
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )

@@ -12,7 +12,7 @@ const crawler_list = [
     {"key": "none", "value": "please select crawler type"},
     {"key": "file", "value": "file crawler"},
     {"key": "web", "value": "web crawler"},
-    {"key": "database", "value": "database crawler"},
+    //{"key": "database", "value": "database crawler"},
 ];
 
 
@@ -75,7 +75,8 @@ export class CrawlerGeneral extends Component {
     componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
-            this.setState(this.construct_data({filesPerSecond: nextProps.filesPerSecond,
+            this.setState(this.construct_data({
+                            filesPerSecond: nextProps.filesPerSecond,
                             crawlerType: nextProps.crawlerType,
                             deleteFiles: nextProps.deleteFiles,
                             organisation_id: nextProps.organisation_id,

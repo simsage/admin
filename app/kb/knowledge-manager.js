@@ -96,8 +96,6 @@ export class KnowledgeManager extends React.Component {
         this.setState({error_msg: ''});
     }
     programUploaded() {
-        this.setState({message_title: "done", message: "program uploaded",
-        message_callback: () => { this.setState({message: ""})}});
     }
     programConverted(program) {
         if (program) {

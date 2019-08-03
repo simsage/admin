@@ -13,7 +13,6 @@ import { LicenseAgreement } from "./auth/license_agreement";
 
 import { Home } from './kb/home'
 
-
 export const sessionReducer = (state = {}) => {
     return state;
 };

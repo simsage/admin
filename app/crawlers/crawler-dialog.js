@@ -39,6 +39,7 @@ export class CrawlerDialog extends Component {
             open: props.open,
 
             onSave: props.onSave,  // save callback
+            onUpdate: props.onUpdate, // update callback
 
             onError: props.onError,
             error_title: props.error_title,
@@ -50,36 +51,9 @@ export class CrawlerDialog extends Component {
             organisation_id: props.organisation_id,
             kb_id: props.kb_id,
 
-            // general tab items
-            id: crawler.id ? crawler.id : '',
-            name: crawler.name ? crawler.name : '',
-            filesPerSecond: '',
-            crawlerType: '',
-            // time schedule
-            schedule: '',
-            deleteFiles: false,
-
-            // file crawler settings
-            file_username: '',
-            file_password: '',
-            file_server: '',
-            file_domain: '',
-            file_share_name: '',
-            file_share_path: '',
-
-            db_username: '',
-            db_password: '',
-            db_jdbc: '',
-            db_query: '',
-            db_template: '',
-
-            // web crawler settings
-            web_base_url: '',
-            web_extension_filter: '',
-            web_css: '',
-
             has_error: false,
         };
+        this.setupFromCrawler(props.crawler);
     }
 
     componentWillUnmount() {
@@ -93,66 +67,13 @@ export class CrawlerDialog extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps !== null) {
             if (nextProps.crawler && nextProps.crawler) {
-
-                const crawler = nextProps.crawler;
-
-                let file_username = '';
-                let file_password = '';
-                let file_domain = '';
-                let file_server = '';
-                let file_share_name = '';
-                let file_share_path = '';
-
-                if (crawler.crawlerType === "file") {
-                    if (crawler.specificJson && crawler.specificJson.length > 0) {
-                        const obj = JSON.parse(crawler.specificJson);
-                        file_username = obj['username'];
-                        file_password = obj['password'];
-                        file_domain = obj['domain'];
-                        file_server = obj['server'];
-                        file_share_name = obj['shareName'];
-                        file_share_path = obj['sharePath'];
-                    }
-                }
-
-                let web_base_url = '';
-                let web_extension_filter = '';
-                let web_extension_filter_ignore = '';
-                let web_css = '';
-                let web_css_ignore = '';
-                if (crawler.crawlerType === "web") {
-                    if (crawler.specificJson && crawler.specificJson.length > 0) {
-                        const obj = JSON.parse(crawler.specificJson);
-                        web_base_url = obj['baseUrlList'];
-                        web_extension_filter = obj['validExtensions'] ? obj['validExtensions'] : '';
-                        web_extension_filter_ignore = obj['validExtensionsIgnore'] ? obj['validExtensionsIgnore'] : '';
-                        web_css = obj['webCss'] ? obj['webCss'] : '';
-                        web_css_ignore = obj['webCssIgnore'] ? obj['webCssIgnore']: '';
-                    }
-                }
-
-                let db_username = '';
-                let db_password = '';
-                let db_jdbc = '';
-                let db_query = '';
-                let db_template = '';
-
-                if (crawler.crawlerType === "database") {
-                    if (crawler.specificJson && crawler.specificJson.length > 0) {
-                        const obj = JSON.parse(crawler.specificJson);
-                        db_username = obj['username'];
-                        db_password = obj['password'];
-                        db_jdbc = obj['jdbc'];
-                        db_query = obj['query'];
-                        db_template = obj['template'];
-                    }
-                }
-
+                this.setupFromCrawler(nextProps.crawler);
                 this.setState({
                     open: nextProps.open,
                     title: nextProps.title,
 
                     onSave: nextProps.onSave,
+                    onUpdate: nextProps.onUpdate,
 
                     onError: nextProps.onError,
                     error_title: nextProps.error_title,
@@ -160,34 +81,8 @@ export class CrawlerDialog extends Component {
 
                     organisation_id: nextProps.organisation_id,
                     kb_id: nextProps.kb_id,
-
-                    id: crawler.id ? crawler.id : '',
-                    name: crawler.name,
-                    crawlerType: crawler.crawlerType,
-                    filesPerSecond: crawler.filesPerSecond,
-                    schedule: (crawler.schedule ? crawler.schedule : ''),
-                    deleteFiles: crawler.deleteFiles,
-
-                    file_username: file_username,
-                    file_password: file_password,
-                    file_domain: file_domain,
-                    file_server: file_server,
-                    file_share_name: file_share_name,
-                    file_share_path: file_share_path,
-
-                    web_base_url: web_base_url,
-                    web_extension_filter: web_extension_filter,
-                    web_extension_filter_ignore: web_extension_filter_ignore,
-                    web_css: web_css,
-                    web_css_ignore: web_css_ignore,
-
-                    db_username: db_username,
-                    db_password: db_password,
-                    db_jdbc: db_jdbc,
-                    db_query: db_query,
-                    db_template: db_template,
-
                 });
+
             } else {
                 this.setState({
                     open: nextProps.open,
@@ -198,6 +93,87 @@ export class CrawlerDialog extends Component {
                 });
             }
         }
+    }
+    setupFromCrawler(crawler) {
+        let file_username = '';
+        let file_password = '';
+        let file_domain = '';
+        let file_server = '';
+        let file_share_name = '';
+        let file_share_path = '';
+
+        if (crawler.crawlerType === "file") {
+            if (crawler.specificJson && crawler.specificJson.length > 0) {
+                const obj = JSON.parse(crawler.specificJson);
+                file_username = obj['username'];
+                file_password = obj['password'];
+                file_domain = obj['domain'];
+                file_server = obj['server'];
+                file_share_name = obj['shareName'];
+                file_share_path = obj['sharePath'];
+            }
+        }
+
+        let web_base_url = '';
+        let web_extension_filter = '';
+        let web_extension_filter_ignore = '';
+        let web_css = '';
+        let web_css_ignore = '';
+        if (crawler.crawlerType === "web") {
+            if (crawler.specificJson && crawler.specificJson.length > 0) {
+                const obj = JSON.parse(crawler.specificJson);
+                web_base_url = obj['baseUrlList'];
+                web_extension_filter = obj['validExtensions'] ? obj['validExtensions'] : '';
+                web_extension_filter_ignore = obj['validExtensionsIgnore'] ? obj['validExtensionsIgnore'] : '';
+                web_css = obj['webCss'] ? obj['webCss'] : '';
+                web_css_ignore = obj['webCssIgnore'] ? obj['webCssIgnore']: '';
+            }
+        }
+
+        let db_username = '';
+        let db_password = '';
+        let db_jdbc = '';
+        let db_query = '';
+        let db_template = '';
+
+        if (crawler.crawlerType === "database") {
+            if (crawler.specificJson && crawler.specificJson.length > 0) {
+                const obj = JSON.parse(crawler.specificJson);
+                db_username = obj['username'];
+                db_password = obj['password'];
+                db_jdbc = obj['jdbc'];
+                db_query = obj['query'];
+                db_template = obj['template'];
+            }
+        }
+
+        this.setState({
+            id: crawler.id ? crawler.id : '',
+            name: crawler.name,
+            crawlerType: crawler.crawlerType,
+            filesPerSecond: crawler.filesPerSecond,
+            schedule: (crawler.schedule ? crawler.schedule : ''),
+            deleteFiles: crawler.deleteFiles,
+
+            file_username: file_username,
+            file_password: file_password,
+            file_domain: file_domain,
+            file_server: file_server,
+            file_share_name: file_share_name,
+            file_share_path: file_share_path,
+
+            web_base_url: web_base_url,
+            web_extension_filter: web_extension_filter,
+            web_extension_filter_ignore: web_extension_filter_ignore,
+            web_css: web_css,
+            web_css_ignore: web_css_ignore,
+
+            db_username: db_username,
+            db_password: db_password,
+            db_jdbc: db_jdbc,
+            db_query: db_query,
+            db_template: db_template,
+        });
     }
     showError(title, error_msg) {
         if (this.props.onError) {
@@ -237,56 +213,75 @@ export class CrawlerDialog extends Component {
             this.showError('invalid parameters', 'you must select a crawler-type first.');
 
         } else {
-
-            let specificJson = {};
-            if (this.state.crawlerType === 'file') {
-                specificJson = JSON.stringify({
-                    username: this.state.file_username,
-                    password: this.state.file_password,
-                    domain: this.state.file_domain,
-                    server: this.state.file_server,
-                    shareName: this.state.file_share_name,
-                    sharePath: this.state.file_share_path,
-                });
-            } else if (this.state.crawlerType === 'database') {
-                specificJson = JSON.stringify({
-                    username: this.state.db_username,
-                    password: this.state.db_password,
-                    jdbc: this.state.db_jdbc,
-                    query: this.state.db_query,
-                    template: this.state.db_template,
-                });
-            } else if (this.state.crawlerType === 'web') {
-                specificJson = JSON.stringify({
-                    baseUrlList: this.state.web_base_url,
-                    validExtensions: this.state.web_extension_filter,
-                    validExtensionsIgnore: this.state.web_extension_filter_ignore,
-                    webCss: this.state.web_css,
-                    webCssIgnore: this.state.web_css_ignore,
-                });
-            }
-
-            // check parameters
+            // save setup?
             if (this.state.onSave) {
-                this.state.onSave({
-                    id: this.state.id,
-                    name: this.state.name,
-                    crawlerType: this.state.crawlerType,
-                    deleteFiles: this.state.deleteFiles,
-                    filesPerSecond: parseInt(this.state.filesPerSecond),
-                    schedule: this.state.schedule,
-                    specificJson: specificJson,
-                });
+                this.state.onSave(this.getCrawlerData(this.state));
             }
         }
     };
+    getCrawlerData(data) {
+        let specificJson = this.convertSpecificJson(this.state);
+        return {
+            id: data.id,
+            name: data.name,
+            crawlerType: data.crawlerType,
+            deleteFiles: data.deleteFiles,
+            filesPerSecond: parseInt(data.filesPerSecond),
+            schedule: data.schedule,
+            specificJson: specificJson,
+        }
+    };
+    convertSpecificJson(data) {
+        let specificJson = {};
+        if (data) {
+            if (this.state.crawlerType === 'file') {
+                specificJson = JSON.stringify({
+                    username: data.file_username ? data.file_username : '',
+                    password: data.file_password ? data.file_password : '',
+                    domain: data.file_domain ? data.file_domain : '',
+                    server: data.file_server ? data.file_server : '',
+                    shareName: data.file_share_name ? data.file_share_name : '',
+                    sharePath: data.file_share_path ? data.file_share_path : '',
+                });
+            } else if (this.state.crawlerType === 'database') {
+                specificJson = JSON.stringify({
+                    username: data.db_username ? data.db_username : '',
+                    password: data.db_password ? data.db_password : '',
+                    jdbc: data.db_jdbc ? data.db_jdbc : '',
+                    query: data.db_query ? data.db_query : '',
+                    template: data.db_template ? data.db_template : '',
+                });
+            } else if (this.state.crawlerType === 'web') {
+                specificJson = JSON.stringify({
+                    baseUrlList: data.web_base_url ? data.web_base_url : '',
+                    validExtensions: data.web_extension_filter ? data.web_extension_filter : '',
+                    validExtensionsIgnore: data.web_extension_filter_ignore ? data.web_extension_filter_ignore : '',
+                    webCss: data.web_css ? data.web_css : '',
+                    webCssIgnore: data.web_css_ignore ? data.web_css_ignore : '',
+                });
+            }
+        }
+        return specificJson;
+    };
     updateSchedule(time) {
         if (time !== null) {
-            this.setState({schedule: time})
+            this.setState({schedule: time});
+            if (this.state.onUpdate) {
+                this.state.onUpdate({...this.getCrawlerData(this.state), "schedule": time});
+            }
+        }
+    }
+    update_general_data(data) {
+        this.setState({...this.state, data});
+        if (this.state.onUpdate) {
+            this.state.onUpdate(this.getCrawlerData(data));
         }
     }
     update_control_data(data) {
-        this.setState(data);
+        this.setState({...this.state, data});
+        if (this.state.onUpdate) {
+            this.state.onUpdate({...this.getCrawlerData(this.state), "specificJson": this.convertSpecificJson(data)});
+        }
     }
     render() {
         if (this.state.has_error) {
@@ -325,7 +320,7 @@ export class CrawlerDialog extends Component {
                                                                 error_title={this.state.crawler_error_title}
                                                                 error_msg={this.state.crawler_error_msg}
                                                                 onError={(title, errStr) => this.showError(title, errStr)}
-                                                                onSave={(crawler) => this.update_control_data(crawler)}/>
+                                                                onSave={(crawler) => this.update_general_data(crawler)}/>
                                 }
                                 {t_value === 'file crawler' &&
                                                             <CrawlerFile

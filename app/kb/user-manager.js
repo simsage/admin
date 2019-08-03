@@ -128,7 +128,6 @@ export class UserManager extends React.Component {
     }
     componentWillReceiveProps(props) {
         this.kba = props.kba;
-        this.refreshUsers(this.kba.selected_organisation_id, this.state.prev_page, this.state.page_size);
     }
     componentDidMount() {
         this.refreshUsers(this.kba.selected_organisation_id, this.state.prev_page, this.state.page_size);
@@ -305,7 +304,7 @@ export class UserManager extends React.Component {
                                      error_msg: errStr, error_title: "Error Removing User"});
             })
         } else {
-            this.setState({message_title: "", message: ""});
+            this.setState({message_title: "", message: "", busy: false});
         }
     }
     editCancel() {
@@ -343,6 +342,7 @@ export class UserManager extends React.Component {
                 error_msg: "Please complete all fields.  " +
                     "Must have email-address, first-name, surname, and at least one role.  " +
                     "New Accounts must have a password.",
+                busy: false,
                 error_title: "Incomplete Data"});
         }
     }

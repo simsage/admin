@@ -1,6 +1,6 @@
 
 const system_config = {
-    version: '5.0.11',
+    version: '5.0.14',
     production: false,
     api_version: 1,
     theme: 'default',
@@ -9,7 +9,6 @@ const system_config = {
     web_base: 'http://simsage.nz/',
     // date pickers display format
     date_format: 'yyyy/MM',
-
 };
 
 export default system_config;

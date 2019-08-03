@@ -1,6 +1,27 @@
 
 export class GraphHelper {
 
+    // labelList: array of strings
+    // valueList: array of same size of values (data)
+    static setupDoughnut(labelList, valueList) {
+        return {
+            labels: labelList,
+            datasets: [{
+                data: valueList,
+                backgroundColor: [
+                    '#36A2EB',
+                    '#FF6384',
+                    '#56CE56'
+                ],
+                hoverBackgroundColor: [
+                    '#36A2EB',
+                    '#FF6384',
+                    '#56CE56'
+                ]
+            }]
+        };
+    }
+
     // setup items in a hash-map separated by frequencies
     static setupMap(map, description) {
         if (map) {
@@ -113,6 +134,78 @@ export class GraphHelper {
         return {labels: []};
     }
 
+    // setup a list of values {user, system, idle}
+    static setupCpuList(list, num_points = 50, scale = 1.0) {
+        if (list && list.length) {
+            let labels = [];
+            let values1 = [];
+            let values2 = [];
+
+            let listStart = 0;
+            if (list.length > num_points) {
+                listStart = list.length - num_points;
+            }
+            for (let i = listStart; i < listStart + num_points; i++) {
+                labels.push('');
+                if (i < list.length) {
+                    values1.push(list[i].idle / scale);
+                    values2.push((list[i].user + list[i].system) / scale);
+                } else {
+                    values1.push(0.0);
+                    values2.push(0.0);
+                }
+            }
+            return {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "busy",
+                        fill: true,
+                        lineTension: 0.1,
+                        backgroundColor: 'rgba(192, 75,120,0.7)',
+                        borderColor: 'rgba(192, 75,120,1)',
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: 'rgba(192, 75, 120,1)',
+                        pointHoverBackgroundColor: 'rgba(192, 75,120,1)',
+                        pointHoverBorderColor: 'rgba(220,220,220,1)',
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: values2
+                    },
+                    {
+                        label: "idle",
+                        fill: true,
+                        lineTension: 0.1,
+                        backgroundColor: 'rgba(75,192,120,0.4)',
+                        borderColor: 'rgba(75,192,120,1)',
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: 'rgba(75, 192,120,1)',
+                        pointHoverBackgroundColor: 'rgba(75,192,120,1)',
+                        pointHoverBorderColor: 'rgba(220,220,220,1)',
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 0,
+                        data: values1
+                    },
+                ]
+            };
+        }
+        return {labels: []};
+    }
+
     // setup the options for a graph
     static getGraphOptions(title) {
         return {
@@ -139,6 +232,23 @@ export class GraphHelper {
                         stepValue: 5,
                     }
                 }]
+            },
+            title: {
+                display: true,
+                text: title
+            }
+        };
+    }
+
+    // setup the doughnut options for a graph
+    static getDoughnutOptions(title) {
+        return {
+            responsive: true,
+            legend: {
+                position: 'bottom',
+            },
+            hover: {
+                mode: 'label'
             },
             title: {
                 display: true,

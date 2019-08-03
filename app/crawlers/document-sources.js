@@ -178,6 +178,9 @@ export class DocumentSources extends Component {
         this.setState({open: true, selected_crawler: {id: '', crawlerType: '', name: '', description: '',
                              schedule: '', filesPerSecond: '0', specificJson: ''}, title: 'Create New Crawler'});
     }
+    updateUI(crawler) {
+        this.setState({selected_crawler: crawler});
+    }
     editCrawler(crawler) {
         if (crawler) {
             this.setState({open: true, selected_crawler: crawler, title: 'Edit Crawler'});
@@ -276,6 +279,7 @@ export class DocumentSources extends Component {
                     organisation_id={this.kba.selected_organisation_id}
                     kb_id={this.kba.selected_knowledgebase_id}
                     onSave={(crawler) => this.saveCrawler(crawler)}
+                    onUpdate={(crawler) => this.updateUI(crawler)}
                     onError={(title, errStr) => this.showError(title, errStr)}
                     error_title={this.state.crawler_error_title}
                     error_msg={this.state.crawler_error_msg}

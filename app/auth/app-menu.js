@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
+import Api from '../common/api';
 
 import system_config from "../settings";
 import {State} from "../common/state";
@@ -84,9 +85,10 @@ export class AppMenu extends Component {
                             </div>
                         }
                         {
-                            State.isSignedIn() &&
+                            State.isSignedIn() && Api.setupTimer() &&
                             <div style={styles.signOutImageContainer}>
-                                <img src="../images/sign-out.svg" alt="sign-out" title="sign-out" onClick={() => State.signOut()} style={styles.signOutImage}/>
+                                <img src="../images/sign-out.svg" alt="sign-out" title="sign-out"
+                                     onClick={() => { Api.signOut(); State.signOut(); }} style={styles.signOutImage}/>
                             </div>
                         }
                     </Grid>
