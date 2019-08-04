@@ -1,13 +1,14 @@
 
 const system_config = {
+    // SimSage platform version (used for display only in UI)
     version: '5.0.14',
-    production: false,
+    // api version of api_base
     api_version: 1,
-    theme: 'default',
+    // the service layer end-point, change "localhost:8080" to ...
     api_base: 'http://localhost:8080/api',
-    ws_base: 'http://localhost:8080/ws-api',
+    // the web-site to go to when SimSage logo is clicked on the login page
     web_base: 'http://simsage.nz/',
-    // date pickers display format
+    // date picker display format
     date_format: 'yyyy/MM',
 };
 
