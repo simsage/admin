@@ -1,0 +1,32 @@
+
+
+a {
+    color: #37474f;
+}
+
+a:visited {
+    color: #78909c;
+}
+
+
+.button-style {
+    margin: 15px;
+    width: 250px;
+}
+
+
+.hl1 {
+    font-weight: 700;
+    background-color: #ffff20;
+}
+
+.hl2 {
+    font-weight: 700;
+    background-color: #ffffa0;
+}
+
+.hl3 {
+    font-weight: 700;
+    background-color: #ffffe0;
+}
+
