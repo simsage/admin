@@ -59,6 +59,8 @@ export class SemanticEdit extends Component {
             <Dialog aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                     open={this.state.open}
+                    disableBackdropClick={true}
+                    disableEscapeKeyDown={true}
                     fullWidth={true}
                     maxWidth="lg"
                     onClose={() => this.handleCancel()} >

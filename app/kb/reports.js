@@ -89,6 +89,9 @@ export class Reports extends React.Component {
 
             reportDate: "" + date.getFullYear() + "/" + (date.getMonth() + 1),
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             botAccessFrequency: {labels: []},
             searchAccessFrequency: {labels: []},
 
@@ -101,6 +104,10 @@ export class Reports extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         this.kba = nextProps.kba;
+        this.setState({
+            openDialog: nextProps.openDialog,
+            closeDialog: nextProps.closeDialog,
+        });
     }
     componentDidMount() {
         this.getReports(this.state.reportDate);

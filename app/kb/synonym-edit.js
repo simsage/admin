@@ -55,6 +55,8 @@ export class SynonymEdit extends Component {
                     aria-describedby="alert-dialog-description"
                     open={this.state.open}
                     fullWidth={true}
+                    disableBackdropClick={true}
+                    disableEscapeKeyDown={true}
                     maxWidth="lg"
                     onClose={() => this.handleCancel()} >
 

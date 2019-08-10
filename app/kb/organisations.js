@@ -116,6 +116,9 @@ export class Organisations extends React.Component {
             error_msg: "",
             error_title: "",
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             message_title: "",
             message: "",
             message_callback: null,
@@ -131,6 +134,10 @@ export class Organisations extends React.Component {
     }
     componentWillReceiveProps(props) {
         this.kba = props.kba;
+        this.setState({
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+        });
     }
     componentDidMount() {
     }
@@ -141,6 +148,9 @@ export class Organisations extends React.Component {
         this.setState({error_msg: ''});
     }
     addNewOrganisation() {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({edit_organisation: true, organisation: null,
             edit_organisation_id: "",
             edit_name: "",
@@ -151,6 +161,9 @@ export class Organisations extends React.Component {
     }
     editOrganisation(organisation) {
         if (organisation) {
+            if (this.state.openDialog) {
+                this.state.openDialog();
+            }
             this.setState({edit_organisation: true, organisation: organisation,
                 edit_organisation_id: organisation.id,
                 edit_name: organisation.name,
@@ -181,6 +194,9 @@ export class Organisations extends React.Component {
     }
     editCancel() {
         this.setState({edit_organisation: false, organisation: null})
+        if (this.state.closeDialog) {
+            this.state.closeDialog();
+        }
     }
     changePageSize(page_size) {
         this.setState({page_size: page_size});
@@ -193,9 +209,15 @@ export class Organisations extends React.Component {
                 (data) => {
                     this.setState({edit_organisation: false, organisation: null, busy: false});
                     this.kba.getOrganisationList(this.state.page, this.state.page_size);
+                    if (this.state.closeDialog) {
+                        this.state.closeDialog();
+                    }
                 },
                 (errStr) => {
                     this.setState({edit_organisation: false, error_msg: errStr, error_title: "Error Updating Organisation", busy: false});
+                    if (this.state.closeDialog) {
+                        this.state.closeDialog();
+                    }
                 });
         } else {
             this.setState({
@@ -286,6 +308,8 @@ export class Organisations extends React.Component {
                 <Dialog aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                         open={this.state.edit_organisation}
+                        disableBackdropClick={true}
+                        disableEscapeKeyDown={true}
                         fullWidth={true}
                         maxWidth="md"
                         onClose={() => this.setState({edit_organisation: false, organisation: null})} >

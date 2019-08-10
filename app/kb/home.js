@@ -81,7 +81,7 @@ const styles = {
         float: 'left',
     },
     notifications: {
-        position: 'absolute',
+        position: 'fixed',
         left: '0',
         right: '0',
         bottom: '2px',
@@ -139,6 +139,7 @@ export class Home extends React.Component {
             notification_list: [],
             show_notifications: false,
             os_get_busy: false,
+            dialog_open: false,
         };
         this.timer = null;
     }
@@ -154,10 +155,15 @@ export class Home extends React.Component {
         }
     }
     componentWillUnmount() {
+        if (this.timer !== null) {
+            console.log("stopping stats collection");
+            clearInterval(this.timer);
+            this.timer = null;
+        }
     }
     // get the stats system wide
     refresh() {
-        if (!this.state.os_get_busy) {
+        if (!this.state.os_get_busy && !this.state.dialog_open) {
             this.setState({os_get_busy: true});
             Api.getOSMessages(
                 (osStats) => {
@@ -228,6 +234,12 @@ export class Home extends React.Component {
     getStyle(tab) {
         return this.state.selected_tab === tab ? styles.selectedNavItem : styles.navItem;
     }
+    openDialog() {
+        this.setState({dialog_open: true});
+    }
+    closeDialog() {
+        this.setState({dialog_open: false});
+    }
     static getTab(user) {
         if (Home.hasRole(user, ['admin'])) {
             return "organisations";
@@ -252,10 +264,14 @@ export class Home extends React.Component {
     static pad(item) {
         return ("" + item).padStart(2, '0');
     }
+    static pad2(item) {
+        return ("" + item).padStart(3, '0');
+    }
     render() {
         if (this.state.has_error) {
             return <h1>home.js: Something went wrong.</h1>;
         }
+        const selected_organisation_id = this.kba.selected_organisation_id;
         return (
             <MuiThemeProvider theme={uiTheme}>
 
@@ -274,13 +290,13 @@ export class Home extends React.Component {
                          }
                          {
                              Home.hasRole(this.state.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('users')}
-                                  onClick={() => this.setState({selected_tab: 'users'})}>user manager</div>
-                         }
-                         {
-                             Home.hasRole(this.state.user, ['admin', 'manager']) &&
                              <div style={this.getStyle('knowledge bases')}
                                   onClick={() => this.setState({selected_tab: 'knowledge bases'})}>knowledge bases</div>
+                         }
+                         {
+                             Home.hasRole(this.state.user, ['admin']) &&
+                             <div style={this.getStyle('users')}
+                                  onClick={() => this.setState({selected_tab: 'users'})}>user manager</div>
                          }
                          {
                              Home.hasRole(this.state.user, ['admin', 'manager']) &&
@@ -314,7 +330,7 @@ export class Home extends React.Component {
                                   onClick={() => this.setState({selected_tab: 'semantics'})}>semantics</div>
                          }
                          {
-                             Home.hasRole(this.state.user, ['reporter']) &&
+                             Home.hasRole(this.state.user, ['admin', 'manager']) &&
                              <div style={this.getStyle('reports')}
                                   onClick={() => this.setState({selected_tab: 'reports'})}>reports</div>
                          }
@@ -350,56 +366,80 @@ export class Home extends React.Component {
 
                          { this.state.selected_tab === 'organisations' &&
                              <Organisations kba={this.kba}
+                                            openDialog={() => this.openDialog()}
+                                            closeDialog={() => this.closeDialog()}
                                             onError={(title, errStr) => this.showError(title, errStr)} />
                          }
 
                          { this.state.selected_tab === 'users' &&
                             <UserManager onError={(title, errStr) => this.showError(title, errStr)}
+                                         selected_organisation_id={selected_organisation_id}
+                                         openDialog={() => this.openDialog()}
+                                         closeDialog={() => this.closeDialog()}
                                          kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'knowledge bases' &&
                             <KnowledgeBases onError={(title, errStr) => this.showError(title, errStr)}
+                                            openDialog={() => this.openDialog()}
+                                            closeDialog={() => this.closeDialog()}
                                             kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'knowledge' &&
                              <KnowledgeManager onError={(title, errStr) => this.showError(title, errStr)}
+                                               openDialog={() => this.openDialog()}
+                                               closeDialog={() => this.closeDialog()}
                                                kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'document sources' &&
                             <DocumentSources onError={(title, errStr) => this.showError(title, errStr)}
+                                             openDialog={() => this.openDialog()}
+                                             closeDialog={() => this.closeDialog()}
                                              kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'documents' &&
                              <Documents onError={(title, errStr) => this.showError(title, errStr)}
+                                        openDialog={() => this.openDialog()}
+                                        closeDialog={() => this.closeDialog()}
                                         kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'mind' &&
                              <Mind onError={(title, errStr) => this.showError(title, errStr)}
+                                   openDialog={() => this.openDialog()}
+                                   closeDialog={() => this.closeDialog()}
                                    kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'synonyms' &&
                              <Synonyms onError={(title, errStr) => this.showError(title, errStr)}
+                                       openDialog={() => this.openDialog()}
+                                       closeDialog={() => this.closeDialog()}
                                        kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'semantics' &&
                              <Semantics onError={(title, errStr) => this.showError(title, errStr)}
+                                        openDialog={() => this.openDialog()}
+                                        closeDialog={() => this.closeDialog()}
                                        kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'reports' &&
                              <Reports onError={(title, errStr) => this.showError(title, errStr)}
+                                      openDialog={() => this.openDialog()}
+                                      closeDialog={() => this.closeDialog()}
                                       kba={this.kba} />
                          }
 
                          { this.state.selected_tab === 'license' &&
-                             <License onError={(title, errStr) => this.showError(title, errStr)} />
+                             <License
+                                 openDialog={() => this.openDialog()}
+                                 closeDialog={() => this.closeDialog()}
+                                 onError={(title, errStr) => this.showError(title, errStr)} />
                          }
 
                          {/*{ this.state.selected_tab === 'os' &&*/}
@@ -426,8 +466,11 @@ export class Home extends React.Component {
                             this.getNotifications().map((notification) => {
                                 return (
                                     <div key={notification.id} style={styles.info}>
-                                        <div style={styles.infoDate}>{notification.year}/{Home.pad(notification.month)}/{Home.pad(notification.day)}
-                                        {Home.pad(notification.hour)}:{Home.pad(notification.minute)}</div>
+                                        <div style={styles.infoDate}>{notification.year}/{Home.pad(notification.month)}/{Home.pad(notification.day)}&nbsp;
+                                            {Home.pad(notification.hour)}:{Home.pad(notification.minute)}:
+                                            {Home.pad(parseInt(notification.created / 1000) % 60)}.
+                                            {Home.pad2(notification.created % 1000)}
+                                        </div>
                                         <div style={styles.infoText}>{notification.message}</div>
                                     </div>
                                 )

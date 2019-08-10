@@ -250,7 +250,8 @@ export class Api {
         Comms.http_put('/semantic/search', {
                 organisationId: organisationId,
                 kbId: kb_id,
-                keywords: keywords,
+                botQuery: keywords,         // raw text
+                superSearch: keywords,      // super search markup
                 numResults: num_results,
                 scoreThreshold: score_threshold,
             },

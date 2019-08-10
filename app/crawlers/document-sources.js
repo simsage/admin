@@ -124,6 +124,9 @@ export class DocumentSources extends Component {
             title: '',
             selected_crawler: {},
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             message_title: '',
             message: '',
             crawler_ask: null,
@@ -135,6 +138,10 @@ export class DocumentSources extends Component {
     }
     componentWillReceiveProps(nextProps) {
         this.kba = nextProps.kba;
+        this.setState({
+            openDialog: nextProps.openDialog,
+            closeDialog: nextProps.closeDialog,
+        });
     }
     componentWillMount() {
         this.getCrawlerList(this.state.prev_page, this.state.page_size);
@@ -175,6 +182,9 @@ export class DocumentSources extends Component {
         this.getCrawlerList(this.state.prev_page, page_size);
     }
     addNewCrawler() {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({open: true, selected_crawler: {id: '', crawlerType: '', name: '', description: '',
                              schedule: '', filesPerSecond: '0', specificJson: ''}, title: 'Create New Crawler'});
     }
@@ -183,6 +193,9 @@ export class DocumentSources extends Component {
     }
     editCrawler(crawler) {
         if (crawler) {
+            if (this.state.openDialog) {
+                this.state.openDialog();
+            }
             this.setState({open: true, selected_crawler: crawler, title: 'Edit Crawler'});
         }
     }
@@ -219,6 +232,9 @@ export class DocumentSources extends Component {
                 (response) => {
                     self.setState({open: false, selected_crawler: null, busy: false});
                     self.getCrawlerList(self.state.prev_page, self.state.page_size);
+                    if (this.state.closeDialog) {
+                        this.state.closeDialog();
+                    }
                 },
                 (error) => {
                     this.setState({crawler_error_title: 'Error', crawler_error_msg: error, selected_crawler: crawler, busy: false});
@@ -226,6 +242,9 @@ export class DocumentSources extends Component {
             )
         } else {
             this.setState({open: false});
+            if (this.state.closeDialog) {
+                this.state.closeDialog();
+            }
         }
     }
     confirmCrawlerDelete(confirm) {

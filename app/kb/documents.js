@@ -135,6 +135,9 @@ export class Documents extends React.Component {
             error_msg: "",
             error_title: "",
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             message_title: "",
             message: "",
             message_callback: null,
@@ -149,6 +152,10 @@ export class Documents extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         this.kba = nextProps.kba;
+        this.setState({
+            openDialog: nextProps.openDialog,
+            closeDialog: nextProps.closeDialog,
+        });
     }
     componentDidMount() {
         this.refreshDocuments(this.state.prev_page, this.state.page_size);

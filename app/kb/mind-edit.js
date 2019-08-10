@@ -149,6 +149,8 @@ export class MindEdit extends Component {
         return (
             <Dialog aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
+                    disableBackdropClick={true}
+                    disableEscapeKeyDown={true}
                     open={this.state.open}
                     fullWidth={true}
                     maxWidth="lg"

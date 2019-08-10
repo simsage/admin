@@ -122,6 +122,9 @@ export class KnowledgeBases extends React.Component {
             message: "",
             message_callback: null,
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             // pagination
             page_size: 5,
             nav_list: ['null'],
@@ -135,6 +138,10 @@ export class KnowledgeBases extends React.Component {
     }
     componentWillReceiveProps(props) {
         this.kba = props.kba;
+        this.setState({
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+        });
     }
     componentDidMount() {
     }
@@ -170,6 +177,9 @@ export class KnowledgeBases extends React.Component {
         this.setState({error_msg: ''});
     }
     addNewKnowledgeBase() {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({edit_knowledgebase: true, knowledgeBase: null,
             edit_knowledgebase_id: "",
             edit_name: "",
@@ -182,6 +192,9 @@ export class KnowledgeBases extends React.Component {
     }
     editKnowledgeBase(knowledgeBase) {
         if (knowledgeBase) {
+            if (this.state.openDialog) {
+                this.state.openDialog();
+            }
             this.setState({edit_knowledgebase: true, knowledgeBase: knowledgeBase,
                 edit_knowledgebase_id: knowledgeBase.kbId,
                 edit_name: knowledgeBase.name,
@@ -215,6 +228,9 @@ export class KnowledgeBases extends React.Component {
     }
     editCancel() {
         this.setState({edit_knowledgebase: false, knowledgeBase: null})
+        if (this.state.closeDialog) {
+            this.state.closeDialog();
+        }
     }
     editOk() {
         if (this.state.edit_name.length > 0) {
@@ -224,9 +240,15 @@ export class KnowledgeBases extends React.Component {
                 (data) => {
                     this.setState({edit_knowledgebase: false, knowledgeBase: null, busy: false});
                     this.kba.updateKnowledgeBase(this.state.edit_name, this.state.edit_email, this.state.edit_knowledgebase_id, this.state.prev_page, this.state.page_size);
+                    if (this.state.closeDialog) {
+                        this.state.closeDialog();
+                    }
                 },
                 (errStr) => {
                     this.setState({edit_knowledgebase: false, error_msg: errStr, error_title: "Error Updating Knowledge Base", busy: false});
+                    if (this.state.closeDialog) {
+                        this.state.closeDialog();
+                    }
                 });
         } else {
             this.setState({
@@ -347,6 +369,8 @@ export class KnowledgeBases extends React.Component {
                 <Dialog aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                         open={this.state.edit_knowledgebase}
+                        disableBackdropClick={true}
+                        disableEscapeKeyDown={true}
                         fullWidth={true}
                         maxWidth="md"
                         onClose={() => this.setState({edit_knowledgebase: false, knowledgeBase: null})} >

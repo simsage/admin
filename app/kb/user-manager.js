@@ -115,11 +115,16 @@ export class UserManager extends React.Component {
             message_title: "",
             message: "",
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             // pagination
             page_size: 5,
             nav_list: ['null'],
             page: 0,
             prev_page: 'null',
+
+            selected_organisation_id: props.selected_organisation_id,
         };
     }
     componentDidCatch(error, info) {
@@ -128,9 +133,18 @@ export class UserManager extends React.Component {
     }
     componentWillReceiveProps(props) {
         this.kba = props.kba;
+        const prev_selected_organisation_id = this.state.selected_organisation_id;
+        this.setState({
+            selected_organisation_id: props.selected_organisation_id,
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+        });
+        if (prev_selected_organisation_id !== props.selected_organisation_id) {
+            this.refreshUsers(props.selected_organisation_id, this.state.prev_page, this.state.page_size);
+        }
     }
     componentDidMount() {
-        this.refreshUsers(this.kba.selected_organisation_id, this.state.prev_page, this.state.page_size);
+        this.refreshUsers(this.state.selected_organisation_id, this.state.prev_page, this.state.page_size);
     }
     refreshUsers(org_id, prev_page, page_size) {
         if (org_id && org_id.length > 0) {
@@ -156,20 +170,20 @@ export class UserManager extends React.Component {
                     const prev = user_list[user_list.length - 1].email;
                     nav_list.push(prev);
                     this.setState({nav_list: nav_list, page: page});
-                    this.refreshUsers(this.kba.selected_organisation_id, prev, this.state.page_size);
+                    this.refreshUsers(this.state.selected_organisation_id, prev, this.state.page_size);
                 }
             } else {
                 // prev page
                 const prev = nav_list[page];
                 this.setState({page: page});
-                this.refreshUsers(this.kba.selected_organisation_id, prev, this.state.page_size);
+                this.refreshUsers(this.state.selected_organisation_id, prev, this.state.page_size);
             }
         }
     }
     changePageSize(page_size) {
         console.log(page_size);
         this.setState({page_size: page_size});
-        this.refreshUsers(this.kba.selected_organisation_id, this.state.prev_page, page_size);
+        this.refreshUsers(this.state.selected_organisation_id, this.state.prev_page, page_size);
     }
     showError(title, error_msg) {
         this.setState({error_title: title, error_msg: error_msg, busy: false});
@@ -205,6 +219,9 @@ export class UserManager extends React.Component {
         return list;
     }
     addNewUser() {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({edit_user: true, knowledgeBase: null,
             edit_kb_id: "",
             edit_first_name: "",
@@ -217,7 +234,7 @@ export class UserManager extends React.Component {
     }
     editUser(user) {
         if (user) {
-            const filtered_roles = user.roles.filter(x => x.organisationId === this.kba.selected_organisation_id);
+            const filtered_roles = user.roles.filter(x => x.organisationId === this.state.selected_organisation_id);
             const role_list = [];
             for (const role of filtered_roles) {
                 role_list.push(role.role);
@@ -231,6 +248,9 @@ export class UserManager extends React.Component {
                         }
                     }
                 }
+            }
+            if (this.state.openDialog) {
+                this.state.openDialog();
             }
             this.setState({edit_user: true, knowledgeBase: user,
                 edit_kb_id: user.id,
@@ -296,9 +316,9 @@ export class UserManager extends React.Component {
     deleteUser(action) {
         if (action) {
             this.setState({busy: true});
-            Api.removeUserFromOrganisation(Comms.getSession().userId, this.kba.selected_organisation_id, () => {
+            Api.removeUserFromOrganisation(Comms.getSession().userId, this.state.selected_organisation_id, () => {
                 this.setState({message_title: "", message: "", busy: false});
-                this.refreshUsers(this.kba.selected_organisation_id, this.state.prev_page, this.state.page_size);
+                this.refreshUsers(this.state.selected_organisation_id, this.state.prev_page, this.state.page_size);
             }, (errStr) => {
                 this.setState({message_title: "", message: "", busy: false,
                                      error_msg: errStr, error_title: "Error Removing User"});
@@ -309,6 +329,9 @@ export class UserManager extends React.Component {
     }
     editCancel() {
         this.setState({edit_user: false, knowledgeBase: null})
+        if (this.state.closeDialog) {
+            this.state.closeDialog();
+        }
     }
     editOk() {
         if (this.state.edit_first_name.length > 0 &&
@@ -325,15 +348,21 @@ export class UserManager extends React.Component {
 
             } else {
                 this.setState({busy: true});
-                Api.updateUser(this.kba.selected_organisation_id, this.state.edit_kb_id,
+                Api.updateUser(this.state.selected_organisation_id, this.state.edit_kb_id,
                     this.state.edit_first_name, this.state.edit_surname, this.state.edit_email,
                     this.state.edit_password, this.state.edit_roles, this.state.edit_kb_list,
                     (user) => {
                         this.setState({edit_user: false, knowledgeBase: null, busy: false});
-                        this.refreshUsers(this.kba.selected_organisation_id, this.state.prev_page, this.state.page_size);
+                        this.refreshUsers(this.state.selected_organisation_id, this.state.prev_page, this.state.page_size);
+                        if (this.state.closeDialog) {
+                            this.state.closeDialog();
+                        }
                     },
                     (errStr) => {
                         this.setState({edit_user: false, error_msg: errStr, error_title: "Error Updating User", busy: false});
+                        if (this.state.closeDialog) {
+                            this.state.closeDialog();
+                        }
                     });
             }
 
@@ -433,7 +462,7 @@ export class UserManager extends React.Component {
                                                 <div style={styles.label}>{user.surname}</div>
                                             </TableCell>
                                             <TableCell>
-                                                <div style={styles.label}>{UserManager.formatRoles(this.kba.selected_organisation_id, user.roles)}</div>
+                                                <div style={styles.label}>{UserManager.formatRoles(this.state.selected_organisation_id, user.roles)}</div>
                                             </TableCell>
                                             <TableCell>
                                                 <div style={styles.linkButton} title="Edit this user" onClick={() => this.editUser(user)}>
@@ -453,7 +482,7 @@ export class UserManager extends React.Component {
                                 <TableCell />
                                 <TableCell />
                                 <TableCell>
-                                    {this.kba.selected_organisation_id.length > 0 &&
+                                    {this.state.selected_organisation_id.length > 0 &&
                                     <a style={styles.imageButton} onClick={() => this.addNewUser()}><img
                                         style={styles.addImage} src="../images/add.svg" title="add new user"
                                         alt="add new user"/></a>
@@ -485,6 +514,8 @@ export class UserManager extends React.Component {
                 <Dialog aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                         open={this.state.edit_user}
+                        disableBackdropClick={true}
+                        disableEscapeKeyDown={true}
                         fullWidth={true}
                         maxWidth="md"
                         onClose={() => this.setState({edit_user: false, knowledgeBase: null})} >

@@ -77,6 +77,9 @@ export class KnowledgeManager extends React.Component {
             message: "",
             message_callback: null,
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             selected_organisation_id: props.selectedOrganisationId,
             uploading: false,
 
@@ -88,6 +91,12 @@ export class KnowledgeManager extends React.Component {
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
         console.log(error, info);
+    }
+    componentWillReceiveProps(props) {
+        this.setState({
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+        });
     }
     showError(title, error_msg) {
         this.setState({error_title: title, error_msg: error_msg, uploading: false, busy: false});

@@ -148,6 +148,9 @@ export class Synonyms extends React.Component {
             synonym: null,
             synonym_edit: false,
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             message_title: "",
             message: "",
             message_callback: null,
@@ -162,6 +165,10 @@ export class Synonyms extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         this.kba = nextProps.kba;
+        this.setState({
+            openDialog: nextProps.openDialog,
+            closeDialog: nextProps.closeDialog,
+        });
     }
     componentDidMount() {
     }
@@ -217,9 +224,15 @@ export class Synonyms extends React.Component {
         }
     }
     editSynonym(synonym) {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({synonym_edit: true, synonym: synonym});
     }
     newSynonym() {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({synonym_edit: true, synonym: {
                 id: Api.createGuid(),
                 words: "",
@@ -233,6 +246,9 @@ export class Synonyms extends React.Component {
                     this.kba.selected_knowledgebase_id, synonym, () => {
                         this.setState({synonym_edit: false, busy: false});
                         this.findSynonyms(this.state.query);
+                        if (this.state.closeDialog) {
+                            this.state.closeDialog();
+                        }
                     }, (errStr) => {
                         this.setState({error_msg: errStr, error_title: "Error Saving Synonym"});
                     });
@@ -241,6 +257,9 @@ export class Synonyms extends React.Component {
             }
         } else {
             this.setState({synonym_edit: false});
+            if (this.state.closeDialog) {
+                this.state.closeDialog();
+            }
         }
     }
     render() {

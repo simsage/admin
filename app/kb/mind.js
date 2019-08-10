@@ -158,6 +158,9 @@ export class Mind extends React.Component {
             message: "",
             message_callback: null,
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             error_msg: "",
             error_title: "",
 
@@ -168,6 +171,10 @@ export class Mind extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         this.kba = nextProps.kba;
+        this.setState({
+            openDialog: nextProps.openDialog,
+            closeDialog: nextProps.closeDialog,
+        });
     }
     componentDidMount() {
     }
@@ -236,9 +243,15 @@ export class Mind extends React.Component {
         return str;
     }
     editMindItem(mindItem) {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({mind_edit: true, mind_item: mindItem});
     }
     newMindItem() {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({mind_edit: true, mind_item: {
                 id: Api.createGuid(),
                 expression: "",
@@ -254,6 +267,9 @@ export class Mind extends React.Component {
                     this.kba.selected_knowledgebase_id, mindItem, () => {
                         this.setState({mind_edit: false, busy: false});
                         this.findMindItems(this.state.query);
+                        if (this.state.closeDialog) {
+                            this.state.closeDialog();
+                        }
                     }, (errStr) => {
                         this.setState({error_msg: errStr, error_title: "Error Saving Mind Entry", busy: false});
                     });
@@ -262,6 +278,9 @@ export class Mind extends React.Component {
             }
         } else {
             this.setState({mind_edit: false});
+            if (this.state.closeDialog) {
+                this.state.closeDialog();
+            }
         }
     }
     render() {

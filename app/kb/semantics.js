@@ -152,6 +152,9 @@ export class Semantics extends React.Component {
             message: "",
             message_callback: null,
 
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
+
             error_msg: "",
             error_title: "",
 
@@ -162,6 +165,10 @@ export class Semantics extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         this.kba = nextProps.kba;
+        this.setState({
+            openDialog: nextProps.openDialog,
+            closeDialog: nextProps.closeDialog,
+        });
     }
     componentDidMount() {
     }
@@ -217,9 +224,15 @@ export class Semantics extends React.Component {
         }
     }
     editSemantic(semantic) {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({semantic_edit: true, semantic: semantic});
     }
     newSemantic() {
+        if (this.state.openDialog) {
+            this.state.openDialog();
+        }
         this.setState({semantic_edit: true, semantic: {
                 word: "",
                 semantic: "",
@@ -233,6 +246,9 @@ export class Semantics extends React.Component {
                     this.kba.selected_knowledgebase_id, semantic, () => {
                         this.setState({semantic_edit: false, busy: false});
                         this.findSemantics(this.state.query);
+                        if (this.state.closeDialog) {
+                            this.state.closeDialog();
+                        }
                     }, (errStr) => {
                         this.setState({error_msg: errStr, error_title: "Error Saving Semantic"});
                     });
@@ -241,6 +257,9 @@ export class Semantics extends React.Component {
             }
         } else {
             this.setState({semantic_edit: false});
+            if (this.state.closeDialog) {
+                this.state.closeDialog();
+            }
         }
     }
     render() {

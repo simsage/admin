@@ -58,12 +58,21 @@ export class License extends React.Component {
             busy: false,
             license: {},
             licenseStr: '',
+
+            openDialog: props.openDialog,
+            closeDialog: props.closeDialog,
         };
     }
     componentDidMount() {
         this.getLicense();
     }
     componentDidCatch(error, info) {
+    }
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            openDialog: nextProps.openDialog,
+            closeDialog: nextProps.closeDialog,
+        });
     }
     getLicense() {
         this.setState({busy: true});
