@@ -12,6 +12,7 @@ import {MessageDialog} from '../common/message-dialog'
 import {ErrorDialog} from '../common/error-dialog'
 import {AutoComplete} from "../common/autocomplete";
 import {SynonymEdit} from "./synonym-edit";
+import TablePagination from "@material-ui/core/TablePagination";
 
 
 const styles = {
@@ -155,6 +156,9 @@ export class Synonyms extends React.Component {
             message: "",
             message_callback: null,
 
+            page: 0,
+            page_size: 5,
+
             error_msg: "",
             error_title: "",
 
@@ -174,6 +178,23 @@ export class Synonyms extends React.Component {
     }
     changeKB() {
         this.findSynonyms(this.state.query);
+    }
+    changePage(page) {
+        this.setState({page: page});
+    }
+    changePageSize(page_size) {
+        this.setState({page_size: page_size});
+    }
+    getSynonyms() {
+        const paginated_list = [];
+        const first = this.state.page * this.state.page_size;
+        const last = first + this.state.page_size;
+        for (const i in this.state.synonym_list) {
+            if (i >= first && i < last) {
+                paginated_list.push(this.state.synonym_list[i]);
+            }
+        }
+        return paginated_list;
     }
     findSynonyms(query) {
         if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0 &&
@@ -337,7 +358,7 @@ export class Synonyms extends React.Component {
                             </TableHead>
                             <TableBody>
                                 {
-                                    this.state.synonym_list.map((synonym) => {
+                                    this.getSynonyms().map((synonym) => {
                                         return (
                                             <TableRow key={synonym.id}>
                                                 <TableCell>
@@ -376,6 +397,22 @@ export class Synonyms extends React.Component {
                                 </TableRow>
                             </TableBody>
                         </Table>
+
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={this.state.synonym_list.length}
+                            rowsPerPage={this.state.page_size}
+                            page={this.state.page}
+                            backIconButtonProps={{
+                                'aria-label': 'Previous Page',
+                            }}
+                            nextIconButtonProps={{
+                                'aria-label': 'Next Page',
+                            }}
+                            onChangePage={(event, page) => this.changePage(page)}
+                            onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
+                        />
 
                     </Paper>
                 }

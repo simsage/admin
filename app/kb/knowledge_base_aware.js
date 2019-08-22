@@ -23,7 +23,7 @@ export class KnowledgeBaseAware {
     componentDidMount() {
         this.getOrganisationList("null", 100);
         if (this.selected_organisation_id.length > 0) {
-            this.getKnowledgeBaseList("null", 100);
+            this.getKnowledgeBaseList();
         } else {
             this.refresh();
         }
@@ -33,27 +33,25 @@ export class KnowledgeBaseAware {
         if (this.parent) this.parent.forceUpdate();
     }
 
-    getKnowledgeBaseList(prev_page, page_size) {
-        if (this.selected_organisation_id.length > 0) {
-            this.getKnowledgeBaseListWithId(this.selected_organisation_id, prev_page, page_size)
-        }
+    getKnowledgeBaseList() {
+        this.getKnowledgeBaseListWithId()
     }
 
-    getKnowledgeBaseListWithId(id, prev_page, page_size) {
+    getKnowledgeBaseListWithId() {
         if (this.selected_organisation_id.length > 0) {
-            Api.getKnowledgeBasesPaginated(this.selected_organisation_id, prev_page, page_size,
+            Api.getKnowledgeBases(this.selected_organisation_id,
                 (knowledge_base_list) => {
                     console.log('knowledge_base_list size = ' + knowledge_base_list.length);
                     this.knowledge_base_list = knowledge_base_list;
                     this.refresh();
                 },
-                (errStr) => { console.error('getKnowledgeBaseList:' + errStr); }
+                (errStr) => { console.error('getKnowledgeBaseListWithId:' + errStr); }
             )
         }
     }
 
-    refreshKnowledgeBaseList(prev_page, page_size) {
-        this.getKnowledgeBaseList(prev_page, page_size);
+    refreshKnowledgeBaseList() {
+        this.getKnowledgeBaseList();
     }
 
     getKnowledgeBaseListFiltered(filter_text, callback) {
@@ -87,7 +85,7 @@ export class KnowledgeBaseAware {
         if (id && this.selected_knowledgebase_id === id) {
             this.selected_knowledgebase = name;
         }
-        this.getKnowledgeBaseList(prev_page, page_size);
+        this.getKnowledgeBaseList();
     }
 
     // remove a kb
@@ -96,7 +94,7 @@ export class KnowledgeBaseAware {
             this.selected_knowledgebase_id = "";
             this.selected_knowledgebase = "";
         }
-        this.getKnowledgeBaseList(prev_page, page_size);
+        this.getKnowledgeBaseList();
     }
 
     // remove an organisation
@@ -128,7 +126,7 @@ export class KnowledgeBaseAware {
         this.selected_organisation_id = id;
         this.selected_knowledgebase_id = "";
         this.selected_knowledgebase = "";
-        this.getKnowledgeBaseListWithId(id, "null", 100); // does the refresh
+        this.getKnowledgeBaseListWithId(); // does the refresh
     }
 
     getOrganisationListFiltered(filter_text, callback) {

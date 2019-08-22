@@ -114,10 +114,8 @@ export class DocumentSources extends Component {
             crawler_error_msg: '',
 
             // pagination
-            page_size: 10,
-            nav_list: ['null'],
+            page_size: 5,
             page: 0,
-            prev_page: 'null',
 
             // dialog
             open: false,
@@ -144,7 +142,7 @@ export class DocumentSources extends Component {
         });
     }
     componentWillMount() {
-        this.getCrawlerList(this.state.prev_page, this.state.page_size);
+        this.getCrawlerList(this.state.page, this.state.page_size);
     }
     showError(title, error_msg) {
         this.setState({error_title: title, error_msg: error_msg, busy: false});
@@ -157,29 +155,21 @@ export class DocumentSources extends Component {
         this.getCrawlerList('null', this.state.page_size);
     }
     changePage(page) {
-        const page0 = this.state.page;
-        const crawler_list = this.state.crawler_list;
-        const nav_list = this.state.nav_list;
-        if (page0 !== page && page >= 0) {
-            if (page0 < page) {
-                // next page
-                if (crawler_list.length > 0) {
-                    const prev = crawler_list[crawler_list.length - 1].id;
-                    nav_list.push(prev);
-                    this.setState({nav_list: nav_list, page: page});
-                    this.getCrawlerList(prev, this.state.page_size);
-                }
-            } else {
-                // prev page
-                const prev = nav_list[page];
-                this.setState({page: page});
-                this.getCrawlerList(prev, this.state.page_size);
-            }
-        }
+        this.setState({page: page});
     }
     changePageSize(page_size) {
         this.setState({page_size: page_size});
-        this.getCrawlerList(this.state.prev_page, page_size);
+    }
+    getCrawlers() {
+        const paginated_list = [];
+        const first = this.state.page * this.state.page_size;
+        const last = first + this.state.page_size;
+        for (const i in this.state.crawler_list) {
+            if (i >= first && i < last) {
+                paginated_list.push(this.state.crawler_list[i]);
+            }
+        }
+        return paginated_list;
     }
     addNewCrawler() {
         if (this.state.openDialog) {
@@ -202,7 +192,7 @@ export class DocumentSources extends Component {
     getCrawlerList(prev_page, page_size) {
         if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0) {
             this.setState({busy: true});
-            Api.getCrawlersPaginated(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, prev_page, page_size,
+            Api.getCrawlers(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id,
                 (crawler_list) => {
                     if (crawler_list) {
                         this.setState({crawler_list: crawler_list});
@@ -231,7 +221,7 @@ export class DocumentSources extends Component {
             Api.updateCrawler(crawler,
                 (response) => {
                     self.setState({open: false, selected_crawler: null, busy: false});
-                    self.getCrawlerList(self.state.prev_page, self.state.page_size);
+                    self.getCrawlerList(self.state.page, self.state.page_size);
                     if (this.state.closeDialog) {
                         this.state.closeDialog();
                     }
@@ -257,7 +247,7 @@ export class DocumentSources extends Component {
             Api.deleteCrawler(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, crawler.id,
                 (response) => {
                     this.setState({busy: false});
-                    self.getCrawlerList(self.state.prev_page, self.state.page_size);
+                    self.getCrawlerList(self.state.page, self.state.page_size);
                 },
                 (error) => {
                     self.showError('Error', error);
@@ -336,7 +326,7 @@ export class DocumentSources extends Component {
                             </TableHead>
                             <TableBody>
                                 {
-                                    this.state.crawler_list.map((crawler) => {
+                                    this.getCrawlers().map((crawler) => {
                                         return (
                                             <TableRow key={crawler.id}>
                                                 <TableCell>
@@ -380,7 +370,7 @@ export class DocumentSources extends Component {
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
-                            count={this.state.crawler_list.length + 1}
+                            count={this.state.crawler_list.length}
                             rowsPerPage={this.state.page_size}
                             page={this.state.page}
                             backIconButtonProps={{

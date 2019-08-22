@@ -120,9 +120,7 @@ export class UserManager extends React.Component {
 
             // pagination
             page_size: 5,
-            nav_list: ['null'],
             page: 0,
-            prev_page: 'null',
 
             selected_organisation_id: props.selected_organisation_id,
         };
@@ -140,16 +138,16 @@ export class UserManager extends React.Component {
             closeDialog: props.closeDialog,
         });
         if (prev_selected_organisation_id !== props.selected_organisation_id) {
-            this.refreshUsers(props.selected_organisation_id, this.state.prev_page, this.state.page_size);
+            this.refreshUsers(props.selected_organisation_id);
         }
     }
     componentDidMount() {
-        this.refreshUsers(this.state.selected_organisation_id, this.state.prev_page, this.state.page_size);
+        this.refreshUsers(this.state.selected_organisation_id);
     }
-    refreshUsers(org_id, prev_page, page_size) {
+    refreshUsers(org_id) {
         if (org_id && org_id.length > 0) {
             this.setState({busy: true});
-            Api.getUsersPaginated(org_id, prev_page, page_size,
+            Api.getUsers(org_id,
                 (userList) => {
                     this.setState({user_list: userList, busy: false})
                 },
@@ -160,30 +158,21 @@ export class UserManager extends React.Component {
         }
     }
     changePage(page) {
-        const page0 = this.state.page;
-        const user_list = this.state.user_list;
-        const nav_list = this.state.nav_list;
-        if (page0 !== page && page >= 0) {
-            if (page0 < page) {
-                // next page
-                if (user_list.length > 0) {
-                    const prev = user_list[user_list.length - 1].email;
-                    nav_list.push(prev);
-                    this.setState({nav_list: nav_list, page: page});
-                    this.refreshUsers(this.state.selected_organisation_id, prev, this.state.page_size);
-                }
-            } else {
-                // prev page
-                const prev = nav_list[page];
-                this.setState({page: page});
-                this.refreshUsers(this.state.selected_organisation_id, prev, this.state.page_size);
+        this.setState({page: page});
+    }
+    getUsers() {
+        const paginated_list = [];
+        const first = this.state.page * this.state.page_size;
+        const last = first + this.state.page_size;
+        for (const i in this.state.user_list) {
+            if (i >= first && i < last) {
+                paginated_list.push(this.state.user_list[i]);
             }
         }
+        return paginated_list;
     }
     changePageSize(page_size) {
-        console.log(page_size);
         this.setState({page_size: page_size});
-        this.refreshUsers(this.state.selected_organisation_id, this.state.prev_page, page_size);
     }
     showError(title, error_msg) {
         this.setState({error_title: title, error_msg: error_msg, busy: false});
@@ -318,7 +307,7 @@ export class UserManager extends React.Component {
             this.setState({busy: true});
             Api.removeUserFromOrganisation(Comms.getSession().userId, this.state.selected_organisation_id, () => {
                 this.setState({message_title: "", message: "", busy: false});
-                this.refreshUsers(this.state.selected_organisation_id, this.state.prev_page, this.state.page_size);
+                this.refreshUsers(this.state.selected_organisation_id);
             }, (errStr) => {
                 this.setState({message_title: "", message: "", busy: false,
                                      error_msg: errStr, error_title: "Error Removing User"});
@@ -353,7 +342,7 @@ export class UserManager extends React.Component {
                     this.state.edit_password, this.state.edit_roles, this.state.edit_kb_list,
                     (user) => {
                         this.setState({edit_user: false, knowledgeBase: null, busy: false});
-                        this.refreshUsers(this.state.selected_organisation_id, this.state.prev_page, this.state.page_size);
+                        this.refreshUsers(this.state.selected_organisation_id);
                         if (this.state.closeDialog) {
                             this.state.closeDialog();
                         }
@@ -449,7 +438,7 @@ export class UserManager extends React.Component {
                         </TableHead>
                         <TableBody>
                             {
-                                this.state.user_list.map((user) => {
+                                this.getUsers().map((user) => {
                                     return (
                                         <TableRow key={user.id}>
                                             <TableCell>
@@ -495,7 +484,7 @@ export class UserManager extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={this.state.user_list.length + 1}
+                        count={this.state.user_list.length}
                         rowsPerPage={this.state.page_size}
                         page={this.state.page}
                         backIconButtonProps={{

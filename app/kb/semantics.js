@@ -12,6 +12,7 @@ import {MessageDialog} from '../common/message-dialog'
 import {ErrorDialog} from '../common/error-dialog'
 import {AutoComplete} from "../common/autocomplete";
 import {SemanticEdit} from "./semantic-edit";
+import TablePagination from "@material-ui/core/TablePagination";
 
 
 const styles = {
@@ -146,6 +147,7 @@ export class Semantics extends React.Component {
 
             semantic_list: [],
             semantic: null,
+            prev_semantic: {word: "", semantic: ""},
             semantic_edit: false,
 
             message_title: "",
@@ -158,6 +160,9 @@ export class Semantics extends React.Component {
             error_msg: "",
             error_title: "",
 
+            page: 0,
+            page_size: 5,
+
             query: "",
         };
     }
@@ -169,6 +174,23 @@ export class Semantics extends React.Component {
             openDialog: nextProps.openDialog,
             closeDialog: nextProps.closeDialog,
         });
+    }
+    changePage(page) {
+        this.setState({page: page});
+    }
+    changePageSize(page_size) {
+        this.setState({page_size: page_size});
+    }
+    getSemantics() {
+        const paginated_list = [];
+        const first = this.state.page * this.state.page_size;
+        const last = first + this.state.page_size;
+        for (const i in this.state.semantic_list) {
+            if (i >= first && i < last) {
+                paginated_list.push(this.state.semantic_list[i]);
+            }
+        }
+        return paginated_list;
     }
     componentDidMount() {
     }
@@ -227,13 +249,26 @@ export class Semantics extends React.Component {
         if (this.state.openDialog) {
             this.state.openDialog();
         }
-        this.setState({semantic_edit: true, semantic: semantic});
+        this.setState({semantic_edit: true,
+            prev_semantic: {
+                word: semantic.word,
+                semantic: semantic.semantic,
+            },
+            semantic: {
+                word: semantic.word,
+                semantic: semantic.semantic,
+            }});
     }
     newSemantic() {
         if (this.state.openDialog) {
             this.state.openDialog();
         }
-        this.setState({semantic_edit: true, semantic: {
+        this.setState({semantic_edit: true,
+            prev_semantic: {
+                word: "",
+                semantic: "",
+            },
+            semantic: {
                 word: "",
                 semantic: "",
             }});
@@ -242,16 +277,36 @@ export class Semantics extends React.Component {
         if (semantic) {
             if (semantic.word.length > 0 && semantic.semantic.length > 0) {
                 this.setState({busy: true});
-                Api.saveSemantic(this.kba.selected_organisation_id,
-                    this.kba.selected_knowledgebase_id, semantic, () => {
-                        this.setState({semantic_edit: false, busy: false});
-                        this.findSemantics(this.state.query);
-                        if (this.state.closeDialog) {
-                            this.state.closeDialog();
-                        }
-                    }, (errStr) => {
-                        this.setState({error_msg: errStr, error_title: "Error Saving Semantic"});
-                    });
+                // delete the previous semantic?
+                if (this.state.prev_semantic.word !== "" && this.state.prev_semantic.word !== semantic.word) {
+                    Api.deleteSemantic(this.kba.selected_organisation_id,
+                        this.kba.selected_knowledgebase_id, this.state.semantic.word, () => {
+                            Api.saveSemantic(this.kba.selected_organisation_id,
+                                this.kba.selected_knowledgebase_id, semantic, () => {
+                                    this.setState({semantic_edit: false, busy: false});
+                                    this.findSemantics(this.state.query);
+                                    if (this.state.closeDialog) {
+                                        this.state.closeDialog();
+                                    }
+                                }, (errStr) => {
+                                    this.setState({error_msg: errStr, error_title: "Error Saving Semantic"});
+                                });
+                        }, (errStr) => {
+                            this.setState({message_title: "", message: "", busy: false,
+                                error_msg: errStr, error_title: "Error Removing Semantic"});
+                        })
+                } else {
+                    Api.saveSemantic(this.kba.selected_organisation_id,
+                        this.kba.selected_knowledgebase_id, semantic, () => {
+                            this.setState({semantic_edit: false, busy: false});
+                            this.findSemantics(this.state.query);
+                            if (this.state.closeDialog) {
+                                this.state.closeDialog();
+                            }
+                        }, (errStr) => {
+                            this.setState({error_msg: errStr, error_title: "Error Saving Semantic"});
+                        });
+                }
             } else {
                 this.setState({error_msg: "word and semantic must have a value", error_title: "Error Saving Semantic", busy: false});
             }
@@ -337,7 +392,7 @@ export class Semantics extends React.Component {
                             </TableHead>
                             <TableBody>
                                 {
-                                    this.state.semantic_list.map((semantic) => {
+                                    this.getSemantics().map((semantic) => {
                                         return (
                                             <TableRow key={semantic.word + ":" + semantic.semantic}>
                                                 <TableCell>
@@ -376,6 +431,22 @@ export class Semantics extends React.Component {
                                 </TableRow>
                             </TableBody>
                         </Table>
+
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={this.state.semantic_list.length}
+                            rowsPerPage={this.state.page_size}
+                            page={this.state.page}
+                            backIconButtonProps={{
+                                'aria-label': 'Previous Page',
+                            }}
+                            nextIconButtonProps={{
+                                'aria-label': 'Next Page',
+                            }}
+                            onChangePage={(event, page) => this.changePage(page)}
+                            onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
+                        />
 
                     </Paper>
                 }

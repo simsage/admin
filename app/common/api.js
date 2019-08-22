@@ -112,8 +112,8 @@ export class Api {
 
 
     // get a paginated list of users
-    static getUsersPaginated(organisationId, prev_user_email, page_size, success, fail) {
-        Comms.http_get('/auth/users/' + encodeURIComponent(organisationId) + '/' + encodeURIComponent(prev_user_email) + '/' + encodeURIComponent(page_size),
+    static getUsers(organisationId, success, fail) {
+        Comms.http_get('/auth/users/' + encodeURIComponent(organisationId),
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )
@@ -164,8 +164,8 @@ export class Api {
     }
 
     // get a paginated list of knowledge bases
-    static getKnowledgeBasesPaginated(organisationId, prev_kb_id, page_size, success, fail) {
-        Comms.http_get('/knowledgebase/' + encodeURIComponent(organisationId) + '/' + encodeURIComponent(prev_kb_id) + '/' + encodeURIComponent(page_size),
+    static getKnowledgeBases(organisationId, success, fail) {
+        Comms.http_get('/knowledgebase/' + encodeURIComponent(organisationId),
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )
@@ -205,10 +205,8 @@ export class Api {
     }
 
     // save or create a crawler
-    static getCrawlersPaginated(organisationId, kb_id, prev_id, page_size, success, fail) {
-        Comms.http_get('/crawler/crawlers/' + encodeURIComponent(organisationId) + '/' +
-                            encodeURIComponent(kb_id) + '/' + encodeURIComponent(prev_id) + '/' +
-                            encodeURIComponent(page_size),
+    static getCrawlers(organisationId, kb_id, success, fail) {
+        Comms.http_get('/crawler/crawlers/' + encodeURIComponent(organisationId) + '/' + encodeURIComponent(kb_id),
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )
@@ -336,7 +334,7 @@ export class Api {
     // find a list of synonyms
     static findSynonyms(organisationId, kbId, query, success, fail) {
         Comms.http_put('/language/find-synonyms', {"organisationId": organisationId, "kbId": kbId,
-                "query": query, "numResults": 10},
+                "query": query, "numResults": 1000},
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )
@@ -363,7 +361,7 @@ export class Api {
     // find a list of semantics
     static findSemantics(organisationId, kbId, query, success, fail) {
         Comms.http_put('/language/find-semantics', {"organisationId": organisationId, "kbId": kbId,
-                "query": query, "numResults": 10},
+                "query": query, "numResults": 1000},
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )

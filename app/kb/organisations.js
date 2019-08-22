@@ -198,9 +198,22 @@ export class Organisations extends React.Component {
             this.state.closeDialog();
         }
     }
+    changePage(page) {
+        this.setState({page: page});
+    }
     changePageSize(page_size) {
         this.setState({page_size: page_size});
-        this.kba.getOrganisationList(this.state.page, page_size);
+    }
+    getOrganisations() {
+        const paginated_list = [];
+        const first = this.state.page * this.state.page_size;
+        const last = first + this.state.page_size;
+        for (const i in this.kba.organisation_list) {
+            if (i >= first && i < last) {
+                paginated_list.push(this.kba.organisation_list[i]);
+            }
+        }
+        return paginated_list;
     }
     editOk() {
         if (this.state.edit_name.length > 0) {
@@ -257,7 +270,7 @@ export class Organisations extends React.Component {
                         </TableHead>
                         <TableBody>
                             {
-                                this.kba.organisation_list.map((organisation) => {
+                                this.getOrganisations().map((organisation) => {
                                     return (
                                         <TableRow key={organisation.id}>
                                             <TableCell>
@@ -289,7 +302,7 @@ export class Organisations extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={this.kba.organisation_list.length + 1}
+                        count={this.kba.organisation_list.length}
                         rowsPerPage={this.state.page_size}
                         page={this.state.page}
                         backIconButtonProps={{

@@ -3,7 +3,6 @@ import React from 'react';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import uiTheme from "../theme-ui";
 
-import system_config from "../settings";
 import {State} from '../common/state'
 import {Api} from '../common/api'
 import AppMenu from '../auth/app-menu'
@@ -11,7 +10,7 @@ import ErrorDialog from '../common/error-dialog'
 
 import Organisations from "./organisations";
 import UserManager from "./user-manager";
-import KnowledgeBases from "./knowledgebases";
+import KnowledgeBases from "./knowledge-bases";
 import KnowledgeManager from "./knowledge-manager";
 import Documents from "./documents";
 import AutoComplete from '../common/autocomplete'
