@@ -114,7 +114,7 @@ export class Register extends Component {
     }
     gotoLogin() {
         this.setState({info_msg: ''});
-        this.props.history.push('/sign-in');
+        this.props.history.push('/');
     }
     render() {
         if (this.state.has_error) {
@@ -132,7 +132,7 @@ export class Register extends Component {
                                  message={this.state.info_msg}
                                  callback={this.gotoLogin.bind(this)} />
 
-                    <Grid container spacing={16}>
+                    <Grid container spacing={1}>
 
                         <Grid item xs={3} />
                         <Grid item xs={6}>
@@ -222,7 +222,7 @@ export class Register extends Component {
                         <Grid item xs={3} />
                         <Grid item xs={6}>
                             <div>
-                                <Button variant="contained" onClick={() => window.location = "/#/sign-in"} className="button-style">Return to Sign-in</Button>
+                                <Button variant="contained" onClick={() => window.location = "/"} className="button-style">Return to Sign-in</Button>
                             </div>
                         </Grid>
                         <Grid item xs={3} />

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 import TextField from '@material-ui/core/TextField';
-
+import Api from '../common/api'
 
 const styles = {
     formContent: {
@@ -25,12 +25,12 @@ export class CrawlerFile extends Component {
             onError: props.onError,
 
             // file specific
-            file_username: props.file_username ? props.file_username : '',
-            file_password: props.file_password ? props.file_password : '',
-            file_server: props.file_server ? props.file_server : '',
-            file_domain: props.file_domain ? props.file_domain : '',
-            file_share_name: props.file_share_name ? props.file_share_name : '',
-            file_share_path: props.file_share_path ? props.file_share_path : '',
+            file_username: Api.defined(props.file_username) ? props.file_username : '',
+            file_password: Api.defined(props.file_password) ? props.file_password : '',
+            file_server: Api.defined(props.file_server) ? props.file_server : '',
+            file_domain: Api.defined(props.file_domain) ? props.file_domain : '',
+            file_share_name: Api.defined(props.file_share_name) ? props.file_share_name : '',
+            file_share_path: Api.defined(props.file_share_path) ? props.file_share_path : '',
         };
 
     }
@@ -42,7 +42,7 @@ export class CrawlerFile extends Component {
         this.setState({ has_error: true });
         console.log(error, info);
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
             this.setState(this.construct_data({file_username: nextProps.file_username,
@@ -57,12 +57,12 @@ export class CrawlerFile extends Component {
         }
     }
     construct_data(data) {
-        return {file_username: data.file_username ? data.file_username : this.state.file_username,
-            file_password: data.file_password ? data.file_password : this.state.file_password,
-            file_domain: data.file_domain ? data.file_domain : this.state.file_domain,
-            file_server: data.file_server ? data.file_server : this.state.file_server,
-            file_share_name: data.file_share_name ? data.file_share_name : this.state.file_share_name,
-            file_share_path: data.file_share_path ? data.file_share_path : this.state.file_share_path,
+        return {file_username: Api.defined(data.file_username) ? data.file_username : this.state.file_username,
+            file_password: Api.defined(data.file_password) ? data.file_password : this.state.file_password,
+            file_domain: Api.defined(data.file_domain) ? data.file_domain : this.state.file_domain,
+            file_server: Api.defined(data.file_server) ? data.file_server : this.state.file_server,
+            file_share_name: Api.defined(data.file_share_name) ? data.file_share_name : this.state.file_share_name,
+            file_share_path: Api.defined(data.file_share_path) ? data.file_share_path : this.state.file_share_path,
         };
     }
     change_callback(data) {

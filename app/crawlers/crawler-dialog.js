@@ -10,6 +10,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
 import TimeSelect from '../common/time-select'
+import Api from '../common/api'
 
 import CrawlerGeneral from './crawler-general'
 import CrawlerFile from './crawler-file'
@@ -34,7 +35,6 @@ const styles = {
 export class CrawlerDialog extends Component {
     constructor(props) {
         super(props);
-        const crawler = props.crawler;
         this.state = {
             open: props.open,
 
@@ -52,11 +52,9 @@ export class CrawlerDialog extends Component {
             kb_id: props.kb_id,
 
             has_error: false,
-        };
-        this.setupFromCrawler(props.crawler);
-    }
 
-    componentWillUnmount() {
+            ...this.setupFromCrawler(props.crawler)
+        }
     }
 
     componentDidCatch(error, info) {
@@ -64,10 +62,9 @@ export class CrawlerDialog extends Component {
         console.log(error, info);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps !== null) {
             if (nextProps.crawler && nextProps.crawler) {
-                this.setupFromCrawler(nextProps.crawler);
                 this.setState({
                     open: nextProps.open,
                     title: nextProps.title,
@@ -81,6 +78,8 @@ export class CrawlerDialog extends Component {
 
                     organisation_id: nextProps.organisation_id,
                     kb_id: nextProps.kb_id,
+
+                    ...this.setupFromCrawler(nextProps.crawler)
                 });
 
             } else {
@@ -95,6 +94,7 @@ export class CrawlerDialog extends Component {
         }
     }
     setupFromCrawler(crawler) {
+
         let file_username = '';
         let file_password = '';
         let file_domain = '';
@@ -119,14 +119,15 @@ export class CrawlerDialog extends Component {
         let web_extension_filter_ignore = '';
         let web_css = '';
         let web_css_ignore = '';
+
         if (crawler.crawlerType === "web") {
             if (crawler.specificJson && crawler.specificJson.length > 0) {
                 const obj = JSON.parse(crawler.specificJson);
                 web_base_url = obj['baseUrlList'];
-                web_extension_filter = obj['validExtensions'] ? obj['validExtensions'] : '';
-                web_extension_filter_ignore = obj['validExtensionsIgnore'] ? obj['validExtensionsIgnore'] : '';
-                web_css = obj['webCss'] ? obj['webCss'] : '';
-                web_css_ignore = obj['webCssIgnore'] ? obj['webCssIgnore']: '';
+                web_extension_filter = Api.defined(obj['validExtensions']) ? obj['validExtensions'] : '';
+                web_extension_filter_ignore = Api.defined(obj['validExtensionsIgnore']) ? obj['validExtensionsIgnore'] : '';
+                web_css = Api.defined(obj['webCss']) ? obj['webCss'] : '';
+                web_css_ignore = Api.defined(obj['webCssIgnore']) ? obj['webCssIgnore']: '';
             }
         }
 
@@ -147,12 +148,12 @@ export class CrawlerDialog extends Component {
             }
         }
 
-        this.setState({
-            id: crawler.id ? crawler.id : '',
+        return {
+            id: crawler.id,
             name: crawler.name,
             crawlerType: crawler.crawlerType,
             filesPerSecond: crawler.filesPerSecond,
-            schedule: (crawler.schedule ? crawler.schedule : ''),
+            schedule: (Api.defined(crawler.schedule) ? crawler.schedule : ''),
             deleteFiles: crawler.deleteFiles,
 
             file_username: file_username,
@@ -173,9 +174,9 @@ export class CrawlerDialog extends Component {
             db_jdbc: db_jdbc,
             db_query: db_query,
             db_template: db_template,
-        });
+        }
     }
-    showError(title, error_msg) {
+    setError(title, error_msg) {
         if (this.props.onError) {
             this.props.onError(title, error_msg);
         }
@@ -193,24 +194,28 @@ export class CrawlerDialog extends Component {
             this.state.file_server.length === 0 ||
             this.state.file_share_name.length === 0)) {
 
-            this.showError('invalid parameters', 'you must supply crawler-type, name, username, server and share path as a minimum.');
+            this.setError('invalid parameters', 'you must supply crawler-type, name, username, server and share path as a minimum.');
 
         } else if (this.state.crawlerType === 'web' && (
                 this.state.web_base_url.length === 0 ||
                 (!this.state.web_base_url.startsWith("http://") && !this.state.web_base_url.startsWith("https://")) )) {
 
-            this.showError('invalid parameters', 'you must supply a base url of type http:// or https://');
+            this.setError('invalid parameters', 'you must supply a base url of type http:// or https://');
 
         } else if (this.state.crawlerType === 'database' && (
                 this.state.db_jdbc.length === 0 ||
                 this.state.db_query.length === 0 ||
                 this.state.db_template.length === 0)) {
 
-            this.showError('invalid parameters', 'you must supply crawler-type, jdbc, query, and template as a minimum.');
+            this.setError('invalid parameters', 'you must supply crawler-type, jdbc, query, and template as a minimum.');
 
         } else if (this.state.crawlerType !== 'web' && this.state.crawlerType !== 'file' && this.state.crawlerType !== 'database') {
 
-            this.showError('invalid parameters', 'you must select a crawler-type first.');
+            this.setError('invalid parameters', 'you must select a crawler-type first.');
+
+        } else if (isNaN(this.state.filesPerSecond)) {
+
+            this.setError("invalid parameters", "files-per-second must be a number");
 
         } else {
             // save setup?
@@ -226,7 +231,7 @@ export class CrawlerDialog extends Component {
             name: data.name,
             crawlerType: data.crawlerType,
             deleteFiles: data.deleteFiles,
-            filesPerSecond: parseInt(data.filesPerSecond),
+            filesPerSecond: data.filesPerSecond,
             schedule: data.schedule,
             specificJson: specificJson,
         }
@@ -321,7 +326,7 @@ export class CrawlerDialog extends Component {
                                                                 deleteFiles={this.state.deleteFiles}
                                                                 error_title={this.state.crawler_error_title}
                                                                 error_msg={this.state.crawler_error_msg}
-                                                                onError={(title, errStr) => this.showError(title, errStr)}
+                                                                onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_general_data(crawler)}/>
                                 }
                                 {t_value === 'file crawler' &&
@@ -332,7 +337,7 @@ export class CrawlerDialog extends Component {
                                                                 file_domain={this.state.file_domain}
                                                                 file_share_name={this.state.file_share_name}
                                                                 file_share_path={this.state.file_share_path}
-                                                                onError={(title, errStr) => this.showError(title, errStr)}
+                                                                onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_control_data(crawler)}/>
                                                             }
                                 {t_value === 'web crawler' &&
@@ -342,7 +347,7 @@ export class CrawlerDialog extends Component {
                                                                 web_css_ignore={this.state.web_css_ignore}
                                                                 web_extension_filter={this.state.web_extension_filter}
                                                                 web_extension_filter_ignore={this.state.web_extension_filter_ignore}
-                                                                onError={(title, errStr) => this.showError(title, errStr)}
+                                                                onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_control_data(crawler)}/>
                                 }
                                 {t_value === 'database crawler' &&
@@ -352,7 +357,7 @@ export class CrawlerDialog extends Component {
                                                                 db_jdbc={this.state.db_jdbc}
                                                                 db_query={this.state.db_query}
                                                                 db_template={this.state.db_template}
-                                                                onError={(title, errStr) => this.showError(title, errStr)}
+                                                                onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_control_data(crawler)}/>
                                 }
                                 {t_value === 'schedule' &&

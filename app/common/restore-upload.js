@@ -60,7 +60,7 @@ export class RestoreUpload extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             uploading: nextProps.uploading,
             kbId: nextProps.kbId,

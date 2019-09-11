@@ -108,7 +108,7 @@ export class TimeSelect extends Component {
             this.state.onSave(null);
         }
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
             const time_map = this.setupTimeMap(nextProps.time);

@@ -6,10 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import Comms from './comms'
 import BotSingleSearchResult from './bot-single-search-result'
 
-// size of the return results
-const pageSize = 10;
-const scoreThreshold = 0.9;
-
 // styles of form
 const styles = {
     busyBox: {
@@ -41,107 +37,68 @@ export class BotSearch extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            has_error: false,
-
             onError: props.onError,
 
-            // search system
-            busy: false,
-            searchText: '',
+            botQuery: props.botQuery, // callback functions
+            setBotQueryString: props.setBotQueryString,
 
+            // search system
+            botQueryString: props.botQueryString,
+            // results
+            queryResultList: props.queryResultList,
             // a result list if applicable after asking
             hasSearched: false,
-            queryResultList: [],
-
-            organisationId: props.organisationId,
-            kbId: props.kbId,
         };
 
     }
     componentDidCatch(error, info) {
-        this.setState({ has_error: true });
+        this.props.onError(error, info);
         console.log(error, info);
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
-            organisationId: nextProps.organisationId,
-            kbId: nextProps.kbId,
+            botQueryString: nextProps.botQueryString,
+            queryResultList: nextProps.queryResultList,
+            setBotQueryString: nextProps.setBotQueryString,
+            botQuery: nextProps.botQuery,
             onError: nextProps.onError,
         })
     }
     handleSearchTextKeydown(event) {
-        if (event.key === "Enter" && this.state.searchText.length > 0) {
-            const page = 0;
-            this.setState({page: page});
-            this.doSearch(page);
+        if (event.key === "Enter") {
+            this.doClickSearch();
         }
     }
     doClickSearch() {
-        const page = 0;
-        this.setState({page: page});
-        this.doSearch(page);
-    }
-    doSearch(page) {
-        // check about and help - special cases
-        const self = this;
-        if (!self.state.busy) {
-            if (this.state.searchText.length > 0) {
-                self.setState({busy: true});
-                const data = {
-                    organisationId: this.state.organisationId,
-                    kbId: this.state.kbId,
-                    query: this.state.searchText,
-                    numResults: pageSize,
-                    scoreThreshold: scoreThreshold,
-                };
-                Comms.http_put('/bot/query', data,
-                    (response) => {
-                        if (response.data) {
-                            const list = response.data;
-                            // process
-                            BotSingleSearchResult.updateResults(list);
-                            self.setState({queryResultList: list, hasSearched: true, busy: false});
-                        }
-                    },
-                    (error) => {
-                        self.setState({busy: false});
-                        if (self.state.onError)
-                            self.state.onError('Error', error);
-                    }
-                );
-            }
-            else {
-                if (self.state.onError)
-                    self.state.onError('Error', 'Input field value is missing');
-            }
+        if (this.props.botQuery) {
+            this.setState({hasSearched: true});
+            this.props.botQuery();
         }
     }
     getResultList() {
-        return this.state.queryResultList; // copy
+        const copy = JSON.parse(JSON.stringify(this.props.queryResultList));
+        BotSingleSearchResult.updateResults(copy);
+        return copy;
     }
     openDocument(url) {
-        const session_id = getSession();
-        const window_url = toUrl('/document/' + encodeURIComponent(session_id) + '/' + encodeURIComponent(url));
+        const session_id = Comms.getSession();
+        const window_url = Comms.toUrl('/document/' + encodeURIComponent(session_id) + '/' + encodeURIComponent(url));
         window.open(window_url, "_blank");
     }
     render() {
-        if (this.state.has_error) {
-            return <h1>bot-search.js: Something went wrong.</h1>;
-        }
         return (
             <div>
-
                 <div style={styles.busyBox}>
                     <img alt="busy" src="../images/busy2.gif"
                          style={{'display': this.state.busy ? '' : 'none', width: '32px'}}/>
                 </div>
                 <div style={styles.searchTextBox}>
                     <TextField
-                        onChange={(event) => this.setState({searchText: event.target.value})}
+                        onChange={(event) => this.props.setBotQueryString(event.target.value)}
                         onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                         label="test the bot by asking it something"
                         fullWidth={true}
-                        value={this.state.searchText}
+                        value={this.props.botQueryString}
                     />
                 </div>
                 <div style={styles.searchButtonBox}>

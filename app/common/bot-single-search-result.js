@@ -86,11 +86,15 @@ const styles = {
         fontSize: '0.8em',
         color: '#009',
         marginRight: '10px',
+        marginLeft: '70px',
         cursor: 'pointer',
     },
     graph_size: {
         width: '600px',
     },
+    spacer: {
+        height: '10px',
+    }
 };
 
 
@@ -104,7 +108,7 @@ export class BotSingleSearchResult extends React.Component {
             openDocument: props.openDocument,
         };
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps) {
             this.setState({
@@ -256,7 +260,7 @@ export class BotSingleSearchResult extends React.Component {
         const self = this;
         const item = this.state.item;
         return (
-            <Grid container spacing={8} style={styles.gridWidth}>
+            <Grid container spacing={0} style={styles.gridWidth}>
                 <Grid item xs={1}>
                     <div style={styles.tinmanScore}>{item.score.toFixed(2)}</div>
                 </Grid>
@@ -276,6 +280,9 @@ export class BotSingleSearchResult extends React.Component {
                             return (<div style={styles.urlStyle} key={url}><a href={url} target={"_blank"}>{url}</a></div>);
                         })
                     }
+                </Grid>
+                <Grid item xs={12}>
+                    <div style={styles.spacer}>&nbsp;</div>
                 </Grid>
             </Grid>
         )

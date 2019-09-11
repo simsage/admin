@@ -104,7 +104,7 @@ export class SingleSemanticSearchResult extends React.Component {
             openDocument: props.openDocument,
         };
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps) {
             this.setState({
@@ -228,7 +228,7 @@ export class SingleSemanticSearchResult extends React.Component {
         const self = this;
         const item = this.state.item;
         return (
-            <Grid container spacing={8} style={styles.gridWidth}>
+            <Grid container spacing={1} style={styles.gridWidth}>
                 <Grid item xs={1}>
                     <div style={styles.tinmanScore}>{item.score.toFixed(2)}</div>
                 </Grid>

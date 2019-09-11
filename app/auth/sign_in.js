@@ -8,8 +8,12 @@ import Grid from '@material-ui/core/Grid';
 
 import AppMenu from './app-menu';
 import ErrorDialog from '../common/error-dialog'
-import {Api} from "../common/api";
-import {State} from "../common/state";
+import State from '../common/state'
+
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { appCreators } from "../actions/appActions";
+
 
 const styles = {
     hr: {
@@ -88,47 +92,19 @@ export class SignIn extends Component {
         super(props);
 
         this.state={
-
             email: '',
             password: '',
-
-            session: Object,
-
-            busy: false,
-
-            error_title: '',
-            error_msg: '',
-
-            spinnerStyle: styles.spinnerInvisible,
-
-            has_error: false,  // error trapping
-        };
-    }
-    componentDidCatch(error, info) {
-        this.setState({ has_error: true });
-        console.log(error, info);
+        }
     }
     componentDidMount() {
-        State.clearAll(); // nuke local strorage
+        State.clearAll();
+    }
+    componentDidCatch(error, info) {
+        this.props.setError(error, info);
+        console.log(error, info);
     }
     handleClick() {
-        this.setState({busy: true});
-        Api.signIn(this.state.email, this.state.password,
-            (session, user) => {
-                this.setState({busy: false});
-                State.set("session", session);
-                State.set("user", user);
-                window.location = '/#/home'
-            },
-            (errStr) => {
-                this.showError('Error', errStr);
-            })
-    }
-    showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg, busy: false});
-    }
-    closeError() {
-        this.setState({error_msg: ''});
+        this.props.signIn(this.state.email, this.state.password);
     }
     onKeyPress(event) {
         if (event.key === "Enter") {
@@ -136,25 +112,21 @@ export class SignIn extends Component {
         }
     }
     render() {
-        if (this.state.has_error) {
-            return <h1>SingInScreen: Something went wrong.</h1>;
-        }
-        const self = this;
         return (
             <div style={styles.page}>
                 <MuiThemeProvider theme={uiTheme}>
                     <div>
-                        <AppMenu title="administration" loggedIn={false} />
-                        <ErrorDialog title={this.state.error_title}
-                                     message={this.state.error_msg}
-                                     callback={this.closeError.bind(this)} />
+                        <AppMenu title="administration" signed_in={false} />
+                        <ErrorDialog title={this.props.error_title}
+                                     message={this.props.error}
+                                     callback={() => this.props.closeError()} />
 
                         {
-                            this.state.busy &&
+                            this.props.busy &&
                             <div style={styles.busy} />
                         }
 
-                        <Grid container spacing={16}>
+                        <Grid container spacing={1}>
 
                             <Grid item xs={12}>
                                 <div style={styles.hr}/>
@@ -163,6 +135,7 @@ export class SignIn extends Component {
                             <Grid item xs={3} />
                             <Grid item xs={6}>
                                 <TextField
+                                    disabled={this.props.busy}
                                     autoFocus
                                     placeholder="Enter your email"
                                     label="email"
@@ -176,6 +149,7 @@ export class SignIn extends Component {
                             <Grid item xs={3} />
                             <Grid item xs={6}>
                                 <TextField
+                                    disabled={this.props.busy}
                                     type="password"
                                     placeholder="Enter your Password"
                                     label="Password"
@@ -189,7 +163,7 @@ export class SignIn extends Component {
                             <Grid item xs={3} />
                             <Grid item xs={6}>
                                 <Button variant="contained" color="primary" className="button-style"
-                                              onClick={() => this.handleClick()}>Sign-in
+                                              disabled={this.props.busy} onClick={() => this.handleClick()}>Sign-in
                                 </Button>
                             </Grid>
                             <Grid item xs={3} />
@@ -197,18 +171,6 @@ export class SignIn extends Component {
                             <Grid item xs={12}>
                                 <div style={styles.hr}/>
                             </Grid>
-
-                            {/*<Grid item xs={3} />*/}
-                            {/*<Grid item xs={6}>*/}
-                            {/*    <div style={styles.helpText}>don't have an account?</div>*/}
-                            {/*</Grid>*/}
-                            {/*<Grid item xs={3} />*/}
-                            {/*<Grid item xs={3} />*/}
-                            {/*<Grid item xs={6}>*/}
-                            {/*    <Button variant="contained" onClick={() => window.location = '/#/register'} className="button-style">Create a new Account</Button>*/}
-                            {/*</Grid>*/}
-                            {/*<Grid item xs={3} />*/}
-
 
                             <Grid item xs={3} />
                             <Grid item xs={6}>
@@ -219,7 +181,8 @@ export class SignIn extends Component {
 
                             <Grid item xs={3} />
                             <Grid item xs={6}>
-                                <Button variant="contained" onClick={() => window.location = '/#/reset-password-request'} className="button-style">Reset my Password</Button>
+                                <Button variant="contained" onClick={() => window.location = '/#/reset-password-request'}
+                                        disabled={this.props.busy}  className="button-style">Reset my Password</Button>
                             </Grid>
                             <Grid item xs={3} />
 
@@ -229,7 +192,8 @@ export class SignIn extends Component {
                             <Grid item xs={3} />
                             <Grid item xs={6}>
                                 <div style={styles.license}>
-                                    <Button variant="contained" onClick={() => window.location = '/#/os-license'} className="button-style">open source licenses</Button>
+                                    <Button variant="contained" onClick={() => window.location = '/#/os-license'}
+                                            disabled={this.props.busy} className="button-style">open source licenses</Button>
                                 </div>
                             </Grid>
                             <Grid item xs={3} />
@@ -244,4 +208,16 @@ export class SignIn extends Component {
 
 }
 
-export default SignIn;
+
+
+const mapStateToProps = function(state) {
+    return {
+        error: state.appReducer.error,
+        error_title: state.appReducer.error_title,
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    dispatch => bindActionCreators(appCreators, dispatch)
+)(SignIn);

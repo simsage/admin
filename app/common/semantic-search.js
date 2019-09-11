@@ -62,7 +62,7 @@ export class SemanticSearch extends Component {
         this.setState({ has_error: true });
         console.log(error, info);
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             organisationId: nextProps.organisationId,
             kbId: nextProps.kbId,
@@ -120,8 +120,8 @@ export class SemanticSearch extends Component {
         return this.state.queryResultList; // copy
     }
     openDocument(url) {
-        const session_id = getSession();
-        const window_url = toUrl('/document/' + encodeURIComponent(session_id) + '/' + encodeURIComponent(url));
+        const session_id = Comms.getSession();
+        const window_url = Comms.toUrl('/document/' + encodeURIComponent(session_id) + '/' + encodeURIComponent(url));
         window.open(window_url, "_blank");
     }
     render() {

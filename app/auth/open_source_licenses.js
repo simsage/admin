@@ -64,7 +64,7 @@ export class OpenSourceLicenses extends Component {
                                  message={this.state.error_msg}
                                  callback={this.closeError.bind(this)} />
 
-                    <Grid container spacing={8}>
+                    <Grid container spacing={2}>
 
                         <Grid item xs={3} />
                         <Grid item xs={6}>
@@ -183,7 +183,7 @@ export class OpenSourceLicenses extends Component {
                         <Grid item xs={3} />
                         <Grid item xs={6}>
                             <div style={styles.bottomLink}>
-                                <Button variant="contained" onClick={() => window.location = "/#/sign-in"} className="button-style">Return to Sign-in</Button>
+                                <Button variant="contained" onClick={() => window.location = "/"} className="button-style">Return to Sign-in</Button>
                             </div>
                         </Grid>
                         <Grid item xs={3} />

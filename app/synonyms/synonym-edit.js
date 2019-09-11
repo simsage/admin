@@ -37,7 +37,7 @@ export class SynonymEdit extends Component {
             this.state.onSave(null);
         }
     }
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         this.setState({
             open: props.open,
             synonym: props.synonym,
@@ -62,7 +62,7 @@ export class SynonymEdit extends Component {
 
                 <DialogTitle id="alert-dialog-title">Edit Synonym</DialogTitle>
                 <DialogContent>
-                    <Grid container spacing={8}>
+                    <Grid container spacing={1}>
 
                         <Grid item xs={1} />
                         <Grid item xs={1}>

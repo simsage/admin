@@ -1,0 +1,120 @@
+
+import Api from '../common/api'
+
+//
+// this defines the initial state of the entire application - the state store
+//
+export function initializeState() {
+    return {
+        // which tab is selected in the app
+        selected_tab: 'organisations',
+
+        // notification system
+        notification_list: [],
+        show_notifications: false,
+        notification_time_in_ms: 5000,
+        notification_busy: false,
+        notification_list_display_size: 50,
+
+        // organisational data
+        selected_organisation_id: "",
+        selected_organisation: "",
+        organisation_list: [],
+
+        // kb status
+        selected_knowledgebase: null,
+        selected_knowledgebase_id: "",
+        knowledge_base_list: [],
+
+        // the users
+        user_list: [],
+
+        // crawlers
+        crawler_list: [],
+
+        // system busy
+        busy: false,
+
+        // program busy uploading
+        uploading: false,
+
+        // session and user objects
+        session: null,
+        user: null,
+
+        // system license
+        license: null,
+
+        // documents
+        document_list: [],
+        document_previous: null,
+        document_filter: '',
+        document_page: 0,
+        document_page_size: 5,
+        num_documents: 0,
+        // nav-list with page 0 id
+        document_nav_list: ["null"],
+
+        // mind items
+        mind_item_list: [],
+        mind_page_size: 10,
+        mind_item_filter: '',
+
+        // mind query (aka. bot query)
+        bot_query: "",
+        bot_query_result_list: [],
+        bot_query_page_size: 10,
+        bot_query_threshold: 0.01,
+
+        // synonyms
+        synonym_filter: "",
+        synonym_list: [],
+        synonym_page_size: 1000,
+
+        // semantics
+        semantic_filter: "",
+        semantic_list: [],
+        semantic_page_size: 1000,
+
+        // reports
+        report_date: Api.toIsoDate(new Date()),
+        report_num_items: 20,
+        bot_access_frequency: {labels: []},
+        search_access_frequency: {labels: []},
+        general_statistics: [],
+        query_word_frequency: [],
+        file_type_statistics: [],
+
+        // application error messages
+        error_title: "Error",
+        error: "",
+    }
+}
+
+
+export function loadState() {
+    try {
+        let serializedState = localStorage.getItem("https://simsage.nz:state");
+
+        if (serializedState === null) {
+            return initializeState();
+        }
+
+        return JSON.parse(serializedState);
+    }
+    catch (err) {
+        return initializeState();
+    }
+}
+
+
+export function saveState(state) {
+    try {
+        let serializedState = JSON.stringify(state);
+        localStorage.setItem("https://simsage.nz:state", serializedState);
+
+    }
+    catch (err) {
+    }
+}
+

@@ -28,7 +28,7 @@ export class MessageDialog extends Component {
             this.state.callback(true);
         }
     }
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         // see if we have data to start this dialog
         this.setState({
             open: (props.message.length > 0),

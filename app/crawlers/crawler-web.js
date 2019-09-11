@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 import TextField from '@material-ui/core/TextField';
+import Api from '../common/api';
 
 
 const styles = {
@@ -25,11 +26,11 @@ export class CrawlerWeb extends Component {
             onSave: props.onSave,
 
             // web specific
-            web_base_url: props.web_base_url ? props.web_base_url : '',
-            web_css: props.web_css ? props.web_css : '',
-            web_css_ignore: props.web_css_ignore ? props.web_css_ignore : '',
-            web_extension_filter: props.web_extension_filter ? props.web_extension_filter : '',
-            web_extension_filter_ignore: props.web_extension_filter_ignore ? props.web_extension_filter_ignore : '',
+            web_base_url: Api.defined(props.web_base_url) ? props.web_base_url : '',
+            web_css: Api.defined(props.web_css) ? props.web_css : '',
+            web_css_ignore: Api.defined(props.web_css_ignore) ? props.web_css_ignore : '',
+            web_extension_filter: Api.defined(props.web_extension_filter) ? props.web_extension_filter : '',
+            web_extension_filter_ignore: Api.defined(props.web_extension_filter_ignore) ? props.web_extension_filter_ignore : '',
         };
 
     }
@@ -41,25 +42,25 @@ export class CrawlerWeb extends Component {
         this.setState({ has_error: true });
         console.log(error, info);
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
             this.setState(this.construct_data({web_base_url: nextProps.web_base_url,
-                web_css: nextProps.web_css ? nextProps.web_css : '',
-                web_extension_filter: nextProps.web_extension_filter ? nextProps.web_extension_filter : '',
-                web_css_ignore: nextProps.web_css_ignore ? nextProps.web_css_ignore : '',
-                web_extension_filter_ignore: nextProps.web_extension_filter_ignore ? nextProps.web_extension_filter_ignore : '',
+                web_css: Api.defined(nextProps.web_css) ? nextProps.web_css : '',
+                web_extension_filter: Api.defined(nextProps.web_extension_filter) ? nextProps.web_extension_filter : '',
+                web_css_ignore: Api.defined(nextProps.web_css_ignore) ? nextProps.web_css_ignore : '',
+                web_extension_filter_ignore: Api.defined(nextProps.web_extension_filter_ignore) ? nextProps.web_extension_filter_ignore : '',
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
             }));
         }
     }
     construct_data(data) {
-        return {web_base_url: data.web_base_url ? data.web_base_url : this.state.web_base_url,
-            web_css: data.web_css ? data.web_css : this.state.web_css,
-            web_css_ignore: data.web_css_ignore ? data.web_css_ignore : this.state.web_css_ignore,
-            web_extension_filter: data.web_extension_filter ? data.web_extension_filter : this.state.web_extension_filter,
-            web_extension_filter_ignore: data.web_extension_filter_ignore ? data.web_extension_filter_ignore : this.state.web_extension_filter_ignore ,
+        return {web_base_url: Api.defined(data.web_base_url) ? data.web_base_url : this.state.web_base_url,
+            web_css: Api.defined(data.web_css) ? data.web_css : this.state.web_css,
+            web_css_ignore: Api.defined(data.web_css_ignore) ? data.web_css_ignore : this.state.web_css_ignore,
+            web_extension_filter: Api.defined(data.web_extension_filter) ? data.web_extension_filter : this.state.web_extension_filter,
+            web_extension_filter_ignore: Api.defined(data.web_extension_filter_ignore) ? data.web_extension_filter_ignore : this.state.web_extension_filter_ignore ,
         };
     }
     change_callback(data) {

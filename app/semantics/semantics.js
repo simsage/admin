@@ -8,11 +8,12 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 import {Api} from '../common/api'
-import {MessageDialog} from '../common/message-dialog'
-import {ErrorDialog} from '../common/error-dialog'
-import {AutoComplete} from "../common/autocomplete";
 import {SemanticEdit} from "./semantic-edit";
 import TablePagination from "@material-ui/core/TablePagination";
+
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "../actions/appActions";
 
 
 const styles = {
@@ -138,42 +139,28 @@ const styles = {
 export class Semantics extends React.Component {
     constructor(props) {
         super(props);
-        this.kba = props.kba;
         this.state = {
-            has_error: false,
-            onError : props.onError,
-
-            busy: false,
-
-            semantic_list: [],
-            semantic: null,
+            semantic: {},
             prev_semantic: {word: "", semantic: ""},
             semantic_edit: false,
-
-            message_title: "",
-            message: "",
-            message_callback: null,
 
             openDialog: props.openDialog,
             closeDialog: props.closeDialog,
 
-            error_msg: "",
-            error_title: "",
-
-            page: 0,
+            // pagination
             page_size: 5,
-
-            query: "",
+            page: 0,
         };
     }
-    componentDidCatch(error, info) {
-    }
-    componentWillReceiveProps(nextProps) {
-        this.kba = nextProps.kba;
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             openDialog: nextProps.openDialog,
             closeDialog: nextProps.closeDialog,
         });
+    }
+    componentDidCatch(error, info) {
+        this.props.setError(error, info);
+        console.log(error, info);
     }
     changePage(page) {
         this.setState({page: page});
@@ -183,72 +170,39 @@ export class Semantics extends React.Component {
     }
     getSemantics() {
         const paginated_list = [];
-        const first = this.state.page * this.state.page_size;
-        const last = first + this.state.page_size;
-        for (const i in this.state.semantic_list) {
-            if (i >= first && i < last) {
-                paginated_list.push(this.state.semantic_list[i]);
+        if (Api.defined(this.props.semantic_list)) {
+            const first = this.state.page * this.state.page_size;
+            const last = first + this.state.page_size;
+            for (const i in this.props.semantic_list) {
+                if (i >= first && i < last) {
+                    paginated_list.push(this.props.semantic_list[i]);
+                }
             }
         }
         return paginated_list;
     }
-    componentDidMount() {
-    }
-    changeKB() {
-        this.findSemantics(this.state.query);
-    }
-    findSemantics(query) {
-        if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0 &&
-            this.state.query.length > 0) {
-            this.setState({busy: true});
-            Api.findSemantics(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, this.state.query,
-                (semanticList) => {
-                    this.setState({semantic_list: semanticList, busy: false})
-                },
-                (errStr) => {
-                    this.showError("Error", errStr)
-                }
-            )
-        }
-    }
     deleteSemanticAsk(semantic) {
         if (semantic) {
-            this.setState({message_title: "Remove Semantic",
-                message_callback: (action) => { this.deleteSemantic(action) },
-                message: "are you sure you want to remove " + semantic.word + " is a " + semantic.semantic + "?",
-                semantic: semantic})
+            this.props.openDialog("are you sure you want to remove " + semantic.word + " is a " + semantic.semantic + "?",
+                "Remove Semantic", (action) => { this.deleteSemantic(action) });
+            this.setState({semantic: semantic});
         }
     }
     deleteSemantic(action) {
         if (action && this.state.semantic) {
-            this.setState({busy: true});
-            Api.deleteSemantic(this.kba.selected_organisation_id,
-                               this.kba.selected_knowledgebase_id, this.state.semantic.word, () => {
-                    this.setState({message_title: "", message: "", busy: false});
-                    this.findSemantics(this.state.query);
-                }, (errStr) => {
-                    this.setState({message_title: "", message: "", busy: false,
-                                         error_msg: errStr, error_title: "Error Removing Semantic"});
-                })
-        } else {
-            this.setState({message_title: "", message: ""});
+            this.props.deleteSemantic(this.state.semantic.word);
         }
-    }
-    showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg, busy: false});
-    }
-    closeError() {
-        this.setState({error_msg: ''});
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
+        }
+        this.setState({semantic_edit: false, semantic: {}});
     }
     handleSearchTextKeydown(event) {
         if (event.key === "Enter") {
-            this.findSemantics(this.state.query);
+            this.props.findSemantics();
         }
     }
     editSemantic(semantic) {
-        if (this.state.openDialog) {
-            this.state.openDialog();
-        }
         this.setState({semantic_edit: true,
             prev_semantic: {
                 word: semantic.word,
@@ -260,9 +214,6 @@ export class Semantics extends React.Component {
             }});
     }
     newSemantic() {
-        if (this.state.openDialog) {
-            this.state.openDialog();
-        }
         this.setState({semantic_edit: true,
             prev_semantic: {
                 word: "",
@@ -276,102 +227,50 @@ export class Semantics extends React.Component {
     save(semantic) {
         if (semantic) {
             if (semantic.word.length > 0 && semantic.semantic.length > 0) {
-                this.setState({busy: true});
                 // delete the previous semantic?
                 if (this.state.prev_semantic.word !== "" && this.state.prev_semantic.word !== semantic.word) {
-                    Api.deleteSemantic(this.kba.selected_organisation_id,
-                        this.kba.selected_knowledgebase_id, this.state.semantic.word, () => {
-                            Api.saveSemantic(this.kba.selected_organisation_id,
-                                this.kba.selected_knowledgebase_id, semantic, () => {
-                                    this.setState({semantic_edit: false, busy: false});
-                                    this.findSemantics(this.state.query);
-                                    if (this.state.closeDialog) {
-                                        this.state.closeDialog();
-                                    }
-                                }, (errStr) => {
-                                    this.setState({error_msg: errStr, error_title: "Error Saving Semantic"});
-                                });
-                        }, (errStr) => {
-                            this.setState({message_title: "", message: "", busy: false,
-                                error_msg: errStr, error_title: "Error Removing Semantic"});
-                        })
-                } else {
-                    Api.saveSemantic(this.kba.selected_organisation_id,
-                        this.kba.selected_knowledgebase_id, semantic, () => {
-                            this.setState({semantic_edit: false, busy: false});
-                            this.findSemantics(this.state.query);
-                            if (this.state.closeDialog) {
-                                this.state.closeDialog();
-                            }
-                        }, (errStr) => {
-                            this.setState({error_msg: errStr, error_title: "Error Saving Semantic"});
-                        });
+                    this.props.deleteSemantic(this.state.semantic.word);
+                }
+                this.props.saveSemantic(semantic);
+                this.setState({semantic_edit: false, semantic: {}});
+                if (this.state.closeDialog) {
+                    this.state.closeDialog();
                 }
             } else {
-                this.setState({error_msg: "word and semantic must have a value", error_title: "Error Saving Semantic", busy: false});
+                this.props.setError("Error Saving Semantic", "word and semantic must have a value");
             }
         } else {
-            this.setState({semantic_edit: false});
-            if (this.state.closeDialog) {
-                this.state.closeDialog();
-            }
+            this.setState({semantic_edit: false, semantic: {}});
         }
     }
     render() {
-        if (this.state.has_error) {
-            return <h1>semantics.js: Something went wrong.</h1>;
-        }
         return (
             <div>
-                <ErrorDialog
-                    callback={() => { this.closeError() }}
-                    open={this.state.error_msg.length > 0}
-                    message={this.state.error_msg}
-                    title={this.state.error_title} />
-
-                <MessageDialog callback={(action) => this.state.message_callback(action)}
-                               open={this.state.message.length > 0}
-                               message={this.state.message}
-                               title={this.state.message_title} />
-
-                <SemanticEdit open={this.state.semantic_edit}
-                             semantic={this.state.semantic}
-                             onSave={(item) => this.save(item)}
-                             onError={(err) => this.showError("Error", err)} />
-
                 {
                     this.state.busy &&
                     <div style={styles.busy} />
                 }
 
-                <div style={styles.knowledgeSelect}>
-                    <div style={styles.lhs}>knowledge base</div>
-                    <div style={styles.rhs}>
-                        <AutoComplete
-                            label='knowledge base'
-                            value={this.kba.selected_knowledgebase}
-                            onFilter={(text, callback) => this.kba.getKnowledgeBaseListFiltered(text, callback)}
-                            minTextSize={1}
-                            onSelect={(label, data) => { this.kba.selectKnowledgeBase(label, data); this.changeKB() }}
-                        />
-                    </div>
-                </div>
+                <SemanticEdit open={this.state.semantic_edit}
+                             semantic={this.state.semantic}
+                             onSave={(item) => this.save(item)}
+                             onError={(err) => this.props.setError("Error", err)} />
 
                 {
-                    this.kba.selected_knowledgebase_id.length > 0 &&
+                    this.props.selected_knowledgebase_id.length > 0 &&
 
                     <div style={styles.findBox}>
                         <div style={styles.floatLeftLabel}>find semantics</div>
                         <div style={styles.searchFloatLeft}>
-                            <input type="text" value={this.state.filter} autoFocus={true} style={styles.text}
+                            <input type="text" value={this.props.semantic_filter} autoFocus={true} style={styles.text}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
-                                       this.setState({query: event.target.value})
+                                       this.props.setSemanticFilter(event.target.value);
                                    }}/>
                         </div>
                         <div style={styles.floatLeft}>
                             <img style={styles.search}
-                                 onClick={() => this.findSemantics(this.state.query)}
+                                 onClick={() => this.props.findSemantics()}
                                  src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </div>
                     </div>
@@ -380,7 +279,7 @@ export class Semantics extends React.Component {
                 <br clear="both" />
 
                 {
-                    this.kba.selected_knowledgebase_id.length > 0 &&
+                    this.props.selected_knowledgebase_id.length > 0 &&
                     <Paper>
                         <Table style={styles.tableStyle}>
                             <TableHead>
@@ -417,7 +316,7 @@ export class Semantics extends React.Component {
                                     <TableCell/>
                                     <TableCell/>
                                     <TableCell>
-                                        {this.kba.selected_organisation_id.length > 0 &&
+                                        {this.props.selected_knowledgebase_id.length > 0 &&
                                         <a style={styles.imageButton} onClick={() => this.newSemantic()}><img
                                             style={styles.addImage} src="../images/add.svg" title="new semantic"
                                             alt="new semantic"/></a>
@@ -425,28 +324,26 @@ export class Semantics extends React.Component {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell />
-                                    <TableCell />
-                                    <TableCell />
+                                    <TableCell colSpan={3}>
+                                        <TablePagination
+                                            rowsPerPageOptions={[5, 10, 25]}
+                                            component="div"
+                                            count={this.props.semantic_list.length}
+                                            rowsPerPage={this.state.page_size}
+                                            page={this.state.page}
+                                            backIconButtonProps={{
+                                                'aria-label': 'Previous Page',
+                                            }}
+                                            nextIconButtonProps={{
+                                                'aria-label': 'Next Page',
+                                            }}
+                                            onChangePage={(event, page) => this.changePage(page)}
+                                            onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
+                                        />
+                                    </TableCell>
                                 </TableRow>
                             </TableBody>
                         </Table>
-
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            component="div"
-                            count={this.state.semantic_list.length}
-                            rowsPerPage={this.state.page_size}
-                            page={this.state.page}
-                            backIconButtonProps={{
-                                'aria-label': 'Previous Page',
-                            }}
-                            nextIconButtonProps={{
-                                'aria-label': 'Next Page',
-                            }}
-                            onChangePage={(event, page) => this.changePage(page)}
-                            onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
-                        />
 
                     </Paper>
                 }
@@ -456,4 +353,22 @@ export class Semantics extends React.Component {
     }
 }
 
-export default Semantics;
+const mapStateToProps = function(state) {
+    return {
+        error: state.appReducer.error,
+        error_title: state.appReducer.error_title,
+
+        semantic_list: state.appReducer.semantic_list,
+        semantic_filter: state.appReducer.semantic_filter,
+
+        selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+
+        busy: state.appReducer.busy,
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    dispatch => bindActionCreators(appCreators, dispatch)
+)(Semantics);
+

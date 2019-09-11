@@ -20,6 +20,9 @@ const styles = {
         fontSize: '1.0em',
         fontFamily: 'Tahoma',
     },
+    spacer: {
+        height: '10px',
+    }
 };
 
 
@@ -96,7 +99,7 @@ export class ResetPasswordResponse extends Component {
                                  message={this.state.error_msg}
                                  callback={this.closeError.bind(this)} />
 
-                    <Grid container spacing={16}>
+                    <Grid container spacing={1}>
 
                         <Grid item xs={3} />
                         <Grid item xs={6}>
@@ -136,6 +139,10 @@ export class ResetPasswordResponse extends Component {
                         </Grid>
                         <Grid item xs={3} />
 
+                        <Grid item xs={12}>
+                            <div style={styles.spacer}>&nbsp;</div>
+                        </Grid>
+
                         <Grid item xs={3} />
                         <Grid item xs={6}>
                             <div>
@@ -158,7 +165,7 @@ export class ResetPasswordResponse extends Component {
                         <Grid item xs={3} />
                         <Grid item xs={6}>
                             <div>
-                                <Button variant="contained" className="button-style" onClick={() => window.location = '/#/sign-in'}>
+                                <Button variant="contained" className="button-style" onClick={() => window.location = '/'}>
                                     Return to Sign-in
                                 </Button>
                             </div>

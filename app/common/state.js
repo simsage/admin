@@ -37,7 +37,7 @@ export class State {
     static checkSession() {
         const session = State.get("session");
         if (!session) {
-            window.location = '/#/sign-in';
+            window.location = '/';
         }
     }
 
@@ -48,7 +48,7 @@ export class State {
 
     static signOut() {
         State.clearAll();
-        window.location = '/#/sign-in';
+        window.location = '/';
     }
 
 

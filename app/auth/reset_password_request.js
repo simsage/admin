@@ -72,7 +72,7 @@ export class ResetPasswordRequest extends Component {
                                  message={this.state.error_msg}
                                  callback={this.closeError.bind(this)} />
 
-                    <Grid container spacing={16}>
+                    <Grid container spacing={3}>
 
                         <Grid item xs={12} />
                         <Grid item xs={12} />
@@ -113,7 +113,7 @@ export class ResetPasswordRequest extends Component {
                         <Grid item xs={3} />
                         <Grid item xs={6}>
                             <div>
-                                <Button variant="contained" onClick={() => window.location = '/#/sign-in'} className="button-style">Return to Sign-in</Button>
+                                <Button variant="contained" onClick={() => window.location = '/'} className="button-style">Return to Sign-in</Button>
                             </div>
                         </Grid>
                         <Grid item xs={3} />

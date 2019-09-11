@@ -8,13 +8,13 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 import {Api} from '../common/api'
-import {MessageDialog} from '../common/message-dialog'
-import {ErrorDialog} from '../common/error-dialog'
-import {AutoComplete} from "../common/autocomplete";
 import {MindEdit} from "./mind-edit";
 import Grid from "@material-ui/core/Grid";
 import {BotSearch} from "../common/bot-search";
 
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "../actions/appActions";
 
 
 const styles = {
@@ -64,6 +64,12 @@ const styles = {
     label: {
         padding: '10px',
         color: '#555',
+    },
+    queryMindLabel: {
+        marginTop: '12px',
+        padding: '10px',
+        color: '#555',
+        float: 'right',
     },
     gridWidth: {
         width: '800px',
@@ -143,90 +149,36 @@ const styles = {
 export class Mind extends React.Component {
     constructor(props) {
         super(props);
-        this.kba = props.kba;
         this.state = {
-            has_error: false,
-            onError : props.onError,
-
-            busy: false,
-
-            mind_item_list: [],
             mind_item: null,
             mind_edit: false,
-
-            message_title: "",
-            message: "",
-            message_callback: null,
-
-            openDialog: props.openDialog,
-            closeDialog: props.closeDialog,
-
-            error_msg: "",
-            error_title: "",
-
-            query: "",
         };
     }
     componentDidCatch(error, info) {
-    }
-    componentWillReceiveProps(nextProps) {
-        this.kba = nextProps.kba;
-        this.setState({
-            openDialog: nextProps.openDialog,
-            closeDialog: nextProps.closeDialog,
-        });
+        this.props.setError(error, info);
+        console.log(error, info);
     }
     componentDidMount() {
-    }
-    changeKB() {
-        this.findMindItems(this.state.query);
-    }
-    findMindItems(query) {
-        if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0 &&
-            this.state.query.length > 0) {
-            this.setState({busy: true});
-            Api.uiMindFind(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, this.state.query,
-                (mindItemList) => {
-                    this.setState({mind_item_list: mindItemList, busy: false})
-                },
-                (errStr) => {
-                    this.showError("Error", errStr)
-                }
-            )
-        }
+        this.props.mindFind();
     }
     deleteMindItemAsk(mindItem) {
         if (mindItem) {
-            this.setState({message_title: "Remove Mind Entry",
-                message_callback: (action) => { this.deleteMindItem(action) },
-                message: "are you sure you want to remove id " + mindItem.id + "?<br/><br/>(" + mindItem.expression + ")",
-                mind_item: mindItem})
+            this.props.openDialog("are you sure you want to remove id " + mindItem.id + "?<br/><br/>(" + mindItem.expression + ")",
+                                    "Remove Mind Entry", (action) => { this.deleteMindItem(action) });
+            this.setState({mind_item: mindItem});
         }
     }
     deleteMindItem(action) {
-        if (action && this.state.mind_item) {
-            this.setState({busy: true});
-            Api.uiMindDelete(this.kba.selected_organisation_id,
-                               this.kba.selected_knowledgebase_id, this.state.mind_item.id, () => {
-                    this.setState({message_title: "", message: "", busy: false});
-                    this.findMindItems(this.state.query);
-                }, (errStr) => {
-                    this.setState({message_title: "", message: "", busy: false,
-                                         error_msg: errStr, error_title: "Error Removing Mind Entry"});
-                })
-        } else {
-            this.setState({message_title: "", message: ""});
+        if (action && Api.defined(this.state.mind_item)) {
+            this.props.deleteMindItem(this.state.mind_item.id);
         }
-    }
-    showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg, busy: false});
-    }
-    closeError() {
-        this.setState({error_msg: ''});
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
+        }
     }
     handleSearchTextKeydown(event) {
         if (event.key === "Enter") {
-            this.findMindItems(this.state.query);
+            this.props.mindFind();
         }
     }
     static toAnswer(mindItem) {
@@ -243,15 +195,9 @@ export class Mind extends React.Component {
         return str;
     }
     editMindItem(mindItem) {
-        if (this.state.openDialog) {
-            this.state.openDialog();
-        }
         this.setState({mind_edit: true, mind_item: mindItem});
     }
     newMindItem() {
-        if (this.state.openDialog) {
-            this.state.openDialog();
-        }
         this.setState({mind_edit: true, mind_item: {
                 id: Api.createGuid(),
                 expression: "",
@@ -262,82 +208,49 @@ export class Mind extends React.Component {
     save(mindItem) {
         if (mindItem) {
             if (mindItem.expression.length > 0 && mindItem.actionList.length > 0) {
-                this.setState({busy: true});
-                Api.uiMindSave(this.kba.selected_organisation_id,
-                    this.kba.selected_knowledgebase_id, mindItem, () => {
-                        this.setState({mind_edit: false, busy: false});
-                        this.findMindItems(this.state.query);
-                        if (this.state.closeDialog) {
-                            this.state.closeDialog();
-                        }
-                    }, (errStr) => {
-                        this.setState({error_msg: errStr, error_title: "Error Saving Mind Entry", busy: false});
-                    });
+                this.props.saveMindItem(mindItem);
+                this.setState({mind_edit: false});
             } else {
-                this.setState({error_msg: "mind-item must have an expression and actions", error_title: "Error Saving Mind Entry"});
+                this.props.setError("Error Saving Mind Entry", "mind-item must have an expression and actions");
             }
         } else {
             this.setState({mind_edit: false});
-            if (this.state.closeDialog) {
-                this.state.closeDialog();
-            }
         }
     }
-    render() {
-        if (this.state.has_error) {
-            return <h1>mind.js: Something went wrong.</h1>;
+    getMindItemList() {
+        if (this.props.mind_item_list) {
+            return this.props.mind_item_list;
         }
+        return [];
+    }
+    render() {
         return (
             <div>
-                <ErrorDialog
-                    callback={() => { this.closeError() }}
-                    open={this.state.error_msg.length > 0}
-                    message={this.state.error_msg}
-                    title={this.state.error_title} />
-
-                <MessageDialog callback={(action) => this.state.message_callback(action)}
-                               open={this.state.message.length > 0}
-                               message={this.state.message}
-                               title={this.state.message_title} />
-
-               <MindEdit open={this.state.mind_edit}
-                         mindItem={this.state.mind_item}
-                         onSave={(item) => this.save(item)}
-                         onError={(err) => this.showError("Error", err)} />
-
                 {
                     this.state.busy &&
                     <div style={styles.busy} />
                 }
 
-                <div style={styles.knowledgeSelect}>
-                    <div style={styles.lhs}>knowledge base</div>
-                    <div style={styles.rhs}>
-                        <AutoComplete
-                            label='knowledge base'
-                            value={this.kba.selected_knowledgebase}
-                            onFilter={(text, callback) => this.kba.getKnowledgeBaseListFiltered(text, callback)}
-                            minTextSize={1}
-                            onSelect={(label, data) => { this.kba.selectKnowledgeBase(label, data); this.changeKB() }}
-                        />
-                    </div>
-                </div>
+               <MindEdit open={this.state.mind_edit}
+                         mindItem={this.state.mind_item}
+                         onSave={(item) => this.save(item)}
+                         onError={(err) => this.props.setError("Error", err)} />
 
                 {
-                    this.kba.selected_knowledgebase_id.length > 0 &&
+                    this.props.selected_knowledgebase_id.length > 0 &&
 
                     <div style={styles.findBox}>
                         <div style={styles.floatLeftLabel}>find questions in the mind</div>
                         <div style={styles.searchFloatLeft}>
-                            <input type="text" value={this.state.filter} autoFocus={true} style={styles.text}
+                            <input type="text" value={this.props.mind_item_filter} autoFocus={true} style={styles.text}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
-                                       this.setState({query: event.target.value})
+                                       this.props.setMindItemFilter(event.target.value)
                                    }}/>
                         </div>
                         <div style={styles.floatLeft}>
                             <img style={styles.search}
-                                 onClick={() => this.findMindItems(this.state.query)}
+                                 onClick={() => this.props.mindFind()}
                                  src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </div>
                     </div>
@@ -345,7 +258,7 @@ export class Mind extends React.Component {
                 <br clear="both" />
 
                 {
-                    this.kba.selected_knowledgebase_id.length > 0 &&
+                    this.props.selected_knowledgebase_id.length > 0 &&
                     <Paper>
                         <Table style={styles.tableStyle}>
                             <TableHead>
@@ -357,7 +270,7 @@ export class Mind extends React.Component {
                             </TableHead>
                             <TableBody>
                                 {
-                                    this.state.mind_item_list.map((mindItem) => {
+                                    this.getMindItemList().map((mindItem) => {
                                         return (
                                             <TableRow key={mindItem.id}>
                                                 <TableCell>
@@ -382,17 +295,12 @@ export class Mind extends React.Component {
                                     <TableCell/>
                                     <TableCell/>
                                     <TableCell>
-                                        {this.kba.selected_organisation_id.length > 0 &&
+                                        {this.props.selected_organisation_id.length > 0 &&
                                         <a style={styles.imageButton} onClick={() => this.newMindItem()}><img
                                             style={styles.addImage} src="../images/add.svg" title="new mind item"
                                             alt="new mind item"/></a>
                                         }
                                     </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell />
-                                    <TableCell />
-                                    <TableCell />
                                 </TableRow>
                             </TableBody>
                         </Table>
@@ -400,22 +308,24 @@ export class Mind extends React.Component {
                     </Paper>
                 }
 
-                <Grid container spacing={8} style={styles.gridWidth}>
+                <Grid container spacing={1} style={styles.gridWidth}>
 
-                    {this.kba.selected_knowledgebase_id &&
+                    {this.props.selected_knowledgebase_id &&
                     <Grid item xs={12}><div style={styles.spacer} /></Grid>
                     }
 
-                    {this.kba.selected_knowledgebase_id &&
-                    <Grid item xs={2}>
-                        <div style={styles.label}>Query the Mind</div>
+                    {this.props.selected_knowledgebase_id &&
+                    <Grid item xs={3}>
+                        <div style={styles.queryMindLabel}>Query the Mind</div>
                     </Grid>
                     }
-                    {this.kba.selected_knowledgebase_id &&
-                    <Grid item xs={10}>
-                        <BotSearch onError={(title, err) => this.showError(title, err)}
-                                   kbId={this.kba.selected_knowledgebase_id}
-                                   organisationId={this.kba.selected_organisation_id} />
+                    {this.props.selected_knowledgebase_id &&
+                    <Grid item xs={9}>
+                        <BotSearch onError={(title, err) => this.props.setError(title, err)}
+                                   botQuery={this.props.botQuery}
+                                   botQueryString={this.props.bot_query}
+                                   setBotQueryString={this.props.setBotQueryString}
+                                   queryResultList={this.props.bot_query_result_list} />
                     </Grid>
                     }
 
@@ -426,4 +336,24 @@ export class Mind extends React.Component {
     }
 }
 
-export default Mind;
+const mapStateToProps = function(state) {
+    return {
+        error: state.appReducer.error,
+        error_title: state.appReducer.error_title,
+
+        mind_item_list: state.appReducer.mind_item_list,
+        mind_item_filter: state.appReducer.mind_item_filter,
+        bot_query: state.appReducer.bot_query,
+        bot_query_result_list: state.appReducer.bot_query_result_list,
+
+        selected_organisation_id: state.appReducer.selected_organisation_id,
+        selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+        busy: state.appReducer.busy,
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    dispatch => bindActionCreators(appCreators, dispatch)
+)(Mind);
+

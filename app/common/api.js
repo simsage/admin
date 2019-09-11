@@ -1,8 +1,13 @@
 import {Comms} from "../common/comms";
 import system_config from "../settings";
+import {parseISODate} from "luxon/src/impl/regexParser";
 
 // api wrappers
 export class Api {
+
+    static defined(value) {
+        return (value !== null && value !== undefined);
+    }
 
     // generate a guid
     static createGuid() {
@@ -26,25 +31,17 @@ export class Api {
         return year + '/' + Api.pad2(month) + '/' + Api.pad2(date) + ' ' + Api.pad2(hour) + ':' + Api.pad2(min) + ':' + Api.pad2(sec);
     }
 
+    // convert a date object to an iso date string
+    static toIsoDate(date){
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return year + '-' + Api.pad2(month) + '-' + Api.pad2(day) + 'T00:00:00.000';
+    }
+
     static pad2(item) {
         return ("" + item).padStart(2, '0');
     }
-
-    // perform a sign-in
-    static signIn(email, password, success, fail) {
-        if (email && email.length > 0 && password && password.length > 0) {
-            Comms.http_post('/auth/sign-in', {"email": email, "password": password},
-                (response) => {
-                    success(response.data.session, response.data.user);
-                    Api.setupTimer();
-                },
-                (errStr) => { fail(errStr) }
-            )
-        }
-        else{
-            fail('please complete and check all fields');
-        }
-    };
 
     // kill timer
     static signOut() {
@@ -53,6 +50,27 @@ export class Api {
     // setup the timer
     static setupTimer() {
         return true;
+    }
+
+    // merge two notifications lists together and return the resulting unique list of items
+    static merge_notifications(original, list) {
+        const seen = {};
+        const new_list = [];
+        if (original) {
+            for (const item of original) {
+                seen[item.id] = true;
+                new_list.push(item);
+            }
+        }
+        if (list) {
+            for (const item of list) {
+                if (!seen.hasOwnProperty(item.id)) {
+                    seen[item.id] = true;
+                    new_list.push(item);
+                }
+            }
+        }
+        return new_list;
     }
 
     // start a password reset request
@@ -91,26 +109,6 @@ export class Api {
         return null;
     }
 
-    // update an organisation
-    static updateOrganisation(organisation_id, name, success, fail) {
-        Comms.http_put('/auth/organisation',
-            {"id": organisation_id, "name": name},
-            (response) => { success(response) },
-            (errStr) => { fail(errStr) }
-        )
-    };
-
-    // remove an organisation (delete it)
-    static deleteOrganisation(organisationId, success, fail) {
-        if (organisationId) {
-            Comms.http_delete('/auth/organisation/' + encodeURIComponent(organisationId),
-                (response) => { success(response) },
-                (errStr) => { fail(errStr) }
-            )
-        }
-    }
-
-
     // get a paginated list of users
     static getUsers(organisationId, success, fail) {
         Comms.http_get('/auth/users/' + encodeURIComponent(organisationId),
@@ -137,57 +135,6 @@ export class Api {
         )
     };
 
-    // update a user account
-    static updateUser(organisation_id, id, name, surname, email, password, role_list, kbList, success, fail) {
-        const actual_role_data = [];
-        for (const roleStr of role_list) {
-            actual_role_data.push({"userId": id, "organisationId": organisation_id, "role": roleStr});
-        }
-        const actual_kb_list_data = [];
-        for (const kb of kbList) {
-            actual_kb_list_data.push({"userId": id, "organisationId": organisation_id, "kbId": kb.kbId});
-        }
-        Comms.http_put('/auth/user/' + encodeURIComponent(organisation_id),
-            {"id": id, "password": password, "firstName": name, "surname": surname, "email": email, "roles": actual_role_data,
-                     "operatorKBList": actual_kb_list_data},
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    };
-
-    // return a list of organisations this user has admin access over
-    static getUserOrganisationList(success, fail) {
-        Comms.http_get('/auth/user/organisations',
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // get a paginated list of knowledge bases
-    static getKnowledgeBases(organisationId, success, fail) {
-        Comms.http_get('/knowledgebase/' + encodeURIComponent(organisationId),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    };
-
-    // remove / delete a knowledge base by id
-    static deleteKnowledgeBase(organisation_id, knowledge_base_id, success, fail) {
-        Comms.http_delete('/knowledgebase/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(knowledge_base_id),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    };
-
-    // update a knowledge base
-    static updateKnowledgeBase(organisation_id, id, name, email, security_id, success, fail) {
-        Comms.http_put('/knowledgebase/',
-            {"kbId": id, "organisationId": organisation_id, "name": name, "email": email, "securityId": security_id},
-            (response) => { success(response) },
-            (errStr) => { fail(errStr) }
-        )
-    };
-
     // upload data to the system
     static uploadDocument(payload, success, fail) {
         Comms.http_put('/document/upload', payload,
@@ -195,33 +142,6 @@ export class Api {
             (errStr) => { fail(errStr) }
         )
     };
-
-    // save or create a crawler
-    static updateCrawler(crawler, success, fail) {
-        Comms.http_post('/crawler/crawler', crawler,
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // save or create a crawler
-    static getCrawlers(organisationId, kb_id, success, fail) {
-        Comms.http_get('/crawler/crawlers/' + encodeURIComponent(organisationId) + '/' + encodeURIComponent(kb_id),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-
-    // delete a crawler
-    static deleteCrawler(organisationId, kb_id, id, success, fail) {
-        Comms.http_delete('/crawler/crawler/' + encodeURIComponent(organisationId) + '/' +
-            encodeURIComponent(kb_id) + '/' + encodeURIComponent(id),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
 
     // delete a crawler's document
     static deleteCrawlerDocuments(organisationId, kb_id, id, success, fail) {
@@ -389,14 +309,6 @@ export class Api {
     static restore(data, success, fail) {
         console.log(data);
         Comms.http_put('/backup/restore', data,
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // get the SimSage license
-    static getLicense(success, fail) {
-        Comms.http_get('/auth/license',
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )

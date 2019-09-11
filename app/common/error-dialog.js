@@ -28,7 +28,7 @@ export class ErrorDialog extends React.Component {
             this.state.callback();
         }
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null && nextProps.message) {
             this.setState({

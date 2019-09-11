@@ -15,8 +15,10 @@ import TextField from '@material-ui/core/TextField';
 import TablePagination from '@material-ui/core/TablePagination';
 
 import {Api} from '../common/api'
-import {MessageDialog} from '../common/message-dialog'
-import {ErrorDialog} from '../common/error-dialog'
+
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "../actions/appActions";
 
 const styles = {
     tableWidth: {
@@ -100,103 +102,54 @@ const styles = {
 export class Organisations extends React.Component {
     constructor(props) {
         super(props);
-        this.kba = props.kba;
         this.state = {
-            has_error: false,
-            onError : props.onError,
-
             edit_organisation: false,
-            organisation: null,
-
-            busy: false,
-
             edit_organisation_id: "",
             edit_name: "",
-
-            error_msg: "",
-            error_title: "",
-
-            openDialog: props.openDialog,
-            closeDialog: props.closeDialog,
-
-            message_title: "",
-            message: "",
-            message_callback: null,
-
+            organisation: null,
             // pagination
             page_size: 5,
             page: 0,
         };
     }
     componentDidCatch(error, info) {
-        this.setState({ has_error: true });
+        this.props.setError(error, info);
         console.log(error, info);
     }
-    componentWillReceiveProps(props) {
-        this.kba = props.kba;
-        this.setState({
-            openDialog: props.openDialog,
-            closeDialog: props.closeDialog,
-        });
-    }
-    componentDidMount() {
-    }
-    showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg});
-    }
-    closeError() {
-        this.setState({error_msg: ''});
-    }
     addNewOrganisation() {
-        if (this.state.openDialog) {
-            this.state.openDialog();
-        }
-        this.setState({edit_organisation: true, organisation: null,
-            edit_organisation_id: "",
-            edit_name: "",
-        })
+        this.setState({edit_organisation: true,
+                             organisation: null,
+                             edit_organisation_id: "",
+                             edit_name: ""})
     }
     refreshSecurityId() {
         this.setState({edit_security_id: Api.createGuid()})
     }
     editOrganisation(organisation) {
         if (organisation) {
-            if (this.state.openDialog) {
-                this.state.openDialog();
-            }
-            this.setState({edit_organisation: true, organisation: organisation,
-                edit_organisation_id: organisation.id,
-                edit_name: organisation.name,
-            })
+            this.setState({edit_organisation: true,
+                                 organisation: organisation,
+                                 edit_organisation_id: organisation.id,
+                                 edit_name: organisation.name})
         }
     }
     deleteOrganisationAsk(organisation) {
-        if (organisation) {
-            this.setState({message_title: "Remove Organisation",
-                message_callback: (action) => { this.deleteOrganisation(action) },
-                message: "are you sure you want to remove \"" + organisation.name + "\" ?",
-                organisation: organisation})
+        if (organisation && this.props.openDialog) {
+            this.props.openDialog("are you sure you want to remove \"" + organisation.name + "\" ?",
+                                  "Remove Organisation", (action) => { this.deleteOrganisation(action) });
+            this.setState({organisation: organisation})
         }
     }
     deleteOrganisation(action) {
         if (action) {
-            this.setState({busy: true});
-            Api.deleteOrganisation(this.state.organisation.id, () => {
-                this.setState({message_title: "", message: "", busy: false});
-                this.kba.deleteOrganisation(this.state.organisation.id, this.state.page, this.state.page_size);
-            }, (errStr) => {
-                this.setState({message_title: "", message: "", busy: false,
-                    error_msg: errStr, error_title: "Error Removing Organisation"});
-            })
-        } else {
-            this.setState({message_title: "", message: ""});
+            this.props.deleteOrganisation(this.state.organisation.id);
+        }
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
         }
     }
     editCancel() {
-        this.setState({edit_organisation: false, organisation: null})
-        if (this.state.closeDialog) {
-            this.state.closeDialog();
-        }
+        this.setState({edit_organisation: false, organisation: null});
     }
     changePage(page) {
         this.setState({page: page});
@@ -208,53 +161,24 @@ export class Organisations extends React.Component {
         const paginated_list = [];
         const first = this.state.page * this.state.page_size;
         const last = first + this.state.page_size;
-        for (const i in this.kba.organisation_list) {
+        for (const i in this.props.organisation_list) {
             if (i >= first && i < last) {
-                paginated_list.push(this.kba.organisation_list[i]);
+                paginated_list.push(this.props.organisation_list[i]);
             }
         }
         return paginated_list;
     }
     editOk() {
         if (this.state.edit_name.length > 0) {
-            this.setState({busy: true});
-            Api.updateOrganisation(this.state.edit_organisation_id, this.state.edit_name,
-                (data) => {
-                    this.setState({edit_organisation: false, organisation: null, busy: false});
-                    this.kba.getOrganisationList(this.state.page, this.state.page_size);
-                    if (this.state.closeDialog) {
-                        this.state.closeDialog();
-                    }
-                },
-                (errStr) => {
-                    this.setState({edit_organisation: false, error_msg: errStr, error_title: "Error Updating Organisation", busy: false});
-                    if (this.state.closeDialog) {
-                        this.state.closeDialog();
-                    }
-                });
+            this.props.updateOrganisation(this.state.edit_organisation_id, this.state.edit_name);
+            this.setState({edit_organisation: false, organisation: null});
         } else {
-            this.setState({
-                error_msg: "Please complete all fields.  Must have a name.",
-                error_title: "Incomplete Data"});
+            this.props.setError("Incomplete Data", "Please complete all fields.  Must have a name.");
         }
     }
     render() {
-        if (this.state.has_error) {
-            return <h1>organisations.js: Something went wrong.</h1>;
-        }
         return (
             <div>
-                <ErrorDialog
-                    callback={() => { this.closeError() }}
-                    open={this.state.error_msg.length > 0}
-                    message={this.state.error_msg}
-                    title={this.state.error_title} />
-
-                <MessageDialog callback={(action) => this.state.message_callback(action)}
-                               open={this.state.message.length > 0}
-                               message={this.state.message}
-                               title={this.state.message_title} />
-
                 {
                     this.state.busy &&
                     <div style={styles.busy} />
@@ -302,7 +226,7 @@ export class Organisations extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={this.kba.organisation_list.length}
+                        count={this.props.organisation_list.length}
                         rowsPerPage={this.state.page_size}
                         page={this.state.page}
                         backIconButtonProps={{
@@ -349,4 +273,17 @@ export class Organisations extends React.Component {
     }
 }
 
-export default Organisations;
+const mapStateToProps = function(state) {
+    return {
+        error: state.appReducer.error,
+        error_title: state.appReducer.error_title,
+
+        organisation_list: state.appReducer.organisation_list,
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    dispatch => bindActionCreators(appCreators, dispatch)
+)(Organisations);
+

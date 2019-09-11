@@ -72,7 +72,7 @@ export class AutoComplete extends Component {
     }
     componentDidMount() {
     }
-    componentWillReceiveProps(next) {
+    UNSAFE_componentWillReceiveProps(next) {
         // see if we have data to start this dialog
         if (next !== null) {
             this.setState({
@@ -206,10 +206,15 @@ export class AutoComplete extends Component {
                                     placeholder={this.state.label}
                                     inputProps={{fontSize: '30px'}}
                                     value={this.state.value}
-                                    onFocus={() => this.showAllData(true)}
                                     onClick={() => this.showAllData(true)}
                                     onBlur={() => this.closeControl()}
-                                    onKeyDown={(event) => { if (this.state.isOpen) this.handleKey(event)}}
+                                    spellCheck={false}
+                                    onKeyDown={(event) => {
+                                        if (this.state.isOpen)
+                                            this.handleKey(event);
+                                        else
+                                            this.showAllData(true);
+                                    }}
                                     onChange={(event) => {  this.setState({value: event.target.value});
                                         this.getLookupData(event.target.value);
                                     }}

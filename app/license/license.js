@@ -1,9 +1,11 @@
 import React from 'react';
 import {Api} from '../common/api'
-import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import DialogContent from "@material-ui/core/DialogContent";
 import Button from "@material-ui/core/Button";
+
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "../actions/appActions";
 
 
 
@@ -53,64 +55,27 @@ export class License extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            has_error: false,
-            onError : props.onError,
-            busy: false,
             license: {},
             licenseStr: '',
-
-            openDialog: props.openDialog,
-            closeDialog: props.closeDialog,
         };
     }
-    componentDidMount() {
-        this.getLicense();
-    }
     componentDidCatch(error, info) {
+        this.props.setError(error, info);
+        console.log(error, info);
     }
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            openDialog: nextProps.openDialog,
-            closeDialog: nextProps.closeDialog,
-        });
-    }
-    getLicense() {
-        this.setState({busy: true});
-        Api.getLicense((license) => {
-                this.setState({license: license, busy: false})
-            },
-            (errStr) => {
-                this.setState({busy: false});
-                if (this.state.onError) {
-                    this.state.onError("error getting license", errStr);
-                }
-            })
+    componentDidMount() {
+        this.props.getLicense();
     }
     installLicense() {
         const licenseStr = this.state.licenseStr;
         if (licenseStr.length > 0) {
-            this.setState({busy: true});
-            Api.installLicense(licenseStr, () => {
-                    this.setState({licenseStr: ''});
-                    this.getLicense();
-                },
-                (errStr) => {
-                    this.setState({busy: false});
-                    if (this.state.onError) {
-                        this.state.onError("error installing license", errStr);
-                    }
-                })
+            this.props.installLicense(licenseStr);
         } else {
-            if (this.state.onError) {
-                this.state.onError("invalid license code","invalid (empty)");
-            }
+            this.props.setError("invalid license code", "invalid license code (empty)");
         }
     }
     render() {
-        if (this.state.has_error) {
-            return <h1>license.js: Something went wrong.</h1>;
-        }
-        const license = this.state.license;
+        const license = this.props.license;
         return (
             <div style={styles.page}>
 
@@ -138,7 +103,7 @@ export class License extends React.Component {
                 }
 
                 {
-                    (license.licenseId === undefined || license.licenseId === "") &&
+                    (!license || license.licenseId === undefined || license.licenseId === "") &&
                     <div>
                         no license installed
                     </div>
@@ -170,4 +135,18 @@ export class License extends React.Component {
     }
 }
 
-export default License;
+const mapStateToProps = function(state) {
+    return {
+        error: state.appReducer.error,
+        error_title: state.appReducer.error_title,
+
+        license: state.appReducer.license,
+        busy: state.appReducer.busy,
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    dispatch => bindActionCreators(appCreators, dispatch)
+)(License);
+

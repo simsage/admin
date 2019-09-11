@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -25,15 +26,16 @@ const definePlugin = new webpack.DefinePlugin({
 const compressionPlugin = new CompressionPlugin();
 
 module.exports = {
+    mode: process.env.NODE_ENV,
     context: path.join(__dirname, 'app'),
     entry: path.join(__dirname, 'app', 'app.js'),
     watch: false,
+
     output: {
         publicPath: '/',
         filename: 'bundle.js',
         path: path.join(__dirname, 'dist')
     },
-    mode: process.env.NODE_ENV || 'development',
     resolve: {
         modules: [path.resolve(__dirname, 'app'), 'node_modules']
     },
@@ -55,16 +57,22 @@ module.exports = {
         ])
     ],
     module: {
-        rules: [{
-            test: /\.js$/, // include .js files
-            include: [
-                path.resolve(__dirname, "app")
-            ],
-            // enforce: "pre", // preload the loader
-            exclude: /node_modules/, // exclude any and all files in the node_modules folder
-            loader: "babel-loader",
-            options: {
-                presets: ["react", "stage-0", "es2015"]
+        rules: [
+            {
+                test: /\.js$/, // include .js files
+                include: [path.resolve(__dirname, "app")],
+                // enforce: "pre", // preload the loader
+                exclude: /node_modules/, // exclude any and all files in the node_modules folder
+                loader: "babel-loader",
+                options: {
+                    presets: ["react", "stage-0", "env"]
+                }
             },
-        }]
-    }};
+            { test: /(\.css$)/, loaders: ["style-loader", "css-loader"] },
+            {
+                test: /\.(png|gif|woff|woff2|eot|ttf|svg)$/,
+                loader: "url-loader?limit=100000"
+            }
+        ]
+    }
+};

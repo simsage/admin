@@ -1,6 +1,9 @@
 import axios from "axios/index";
 import system_config from "../settings";
 
+import {loadState} from '../reducers/stateLoader'
+
+
 // communications common to all components
 export class Comms {
 
@@ -46,7 +49,9 @@ export class Comms {
 
     static http_get(url, fn_success, fn_fail) {
         const api_base = system_config.api_base;
-        console.log('GET ' + api_base + url);
+        if (url !== '/stats/stats/os/web') {
+            console.log('GET ' + api_base + url);
+        }
         return axios.get(api_base + url, Comms.getHeaders())
             .then(function (response) {
                 if (fn_success) {
@@ -119,6 +124,10 @@ export class Comms {
             });
     };
 
+    static toUrl(str) {
+        return system_config.api_base + str;
+    }
+
     // convert js response to its error output equivalent
     static get_error(error) {
         if (typeof error === "string" && error.indexOf("{") === 0) {
@@ -147,9 +156,9 @@ export class Comms {
     };
 
     static getSession() {
-        let session = localStorage.getItem("session");
-        if (session && session.startsWith("{")) {
-            return JSON.parse(session);
+        const state = loadState();
+        if (state && state.appReducer && state.appReducer.session) {
+            return state.appReducer.session;
         }
         return null;
     }

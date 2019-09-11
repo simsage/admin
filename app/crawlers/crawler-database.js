@@ -41,7 +41,7 @@ export class CrawlerDatabase extends Component {
         this.setState({ has_error: true });
         console.log(error, info);
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
             this.setState(this.construct_data({file_username: nextProps.file_username,

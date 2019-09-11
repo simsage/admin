@@ -53,13 +53,13 @@ export class CrawlerGeneral extends Component {
             message: '',
             message_title: '',
 
-            organisation_id: props.organisation_id ? props.organisation_id : '',
-            kb_id: props.kb_id ? props.kb_id : '',
-            id: props.id ? props.id : '',
+            organisation_id: Api.defined(props.organisation_id) ? props.organisation_id : '',
+            kb_id: Api.defined(props.kb_id) ? props.kb_id : '',
+            id: Api.defined(props.id) ? props.id : '',
 
-            name: props.name ? props.name : '',
-            filesPerSecond: props.filesPerSecond ? props.filesPerSecond : '0',
-            crawlerType: props.crawlerType ? props.crawlerType : 'none',
+            name: Api.defined(props.name) ? props.name : '',
+            filesPerSecond: Api.defined(props.filesPerSecond) ? props.filesPerSecond : '0',
+            crawlerType: Api.defined(props.crawlerType) ? props.crawlerType : 'none',
             deleteFiles: props.deleteFiles,
         };
 
@@ -72,7 +72,7 @@ export class CrawlerGeneral extends Component {
         this.setState({ has_error: true });
         console.log(error, info);
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
             this.setState(this.construct_data({
@@ -92,13 +92,14 @@ export class CrawlerGeneral extends Component {
         }
     }
     construct_data(data) {
-        return {filesPerSecond: data.filesPerSecond ? data.filesPerSecond : this.state.filesPerSecond,
-                crawlerType: data.crawlerType ? data.crawlerType : this.state.crawlerType,
-                deleteFiles: (data.deleteFiles !== undefined) ? data.deleteFiles : this.state.deleteFiles,
-                name: data.name ? data.name : this.state.name,
+        return {filesPerSecond: Api.defined(data.filesPerSecond) ? data.filesPerSecond : this.state.filesPerSecond,
+                crawlerType: Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType,
+                deleteFiles: Api.defined(data.deleteFiles) ? data.deleteFiles : this.state.deleteFiles,
+                name: Api.defined(data.name) ? data.name : this.state.name,
+                id: Api.defined(data.id) ? data.id : this.state.id,
             };
     }
-    showError(title, error_msg) {
+    setError(title, error_msg) {
         if (this.props.onError) {
             this.props.onError(title, error_msg);
         }
@@ -122,7 +123,7 @@ export class CrawlerGeneral extends Component {
             Api.deleteCrawlerDocuments(this.state.organisation_id, this.state.kb_id, this.state.id,
                 (response) => {},
                 (err) => {
-                    this.showError("Error removing all documents", err);
+                    this.setError("Error removing all documents", err);
                 });
         }
     }
@@ -138,7 +139,7 @@ export class CrawlerGeneral extends Component {
             (err) => {
                 console.log("crawler-test error:");
                 console.log(err);
-                this.showError("Error Testing Crawler", err);
+                this.setError("Error Testing Crawler", err);
             });
     }
     render() {

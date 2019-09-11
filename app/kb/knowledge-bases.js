@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,9 +15,11 @@ import TextField from '@material-ui/core/TextField';
 import TablePagination from '@material-ui/core/TablePagination';
 
 import {Api} from '../common/api'
-import {MessageDialog} from '../common/message-dialog'
-import {ErrorDialog} from '../common/error-dialog'
 import {Comms} from "../common/comms";
+
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { appCreators } from "../actions/appActions";
 
 const id_style = "<div style='width: 170px; float: left; height: 24px;'>";
 
@@ -97,17 +99,12 @@ const styles = {
 };
 
 
-export class KnowledgeBases extends React.Component {
+export class KnowledgeBases extends Component {
     constructor(props) {
         super(props);
-        this.kba = props.kba;
         this.state = {
-            has_error: false,
-            onError : props.onError,
-
-            busy: false,
-
             edit_knowledgebase: false,
+            edit_knowledgebase_id: "",
             knowledgeBase: null,
 
             edit_kb_id: "",
@@ -115,33 +112,14 @@ export class KnowledgeBases extends React.Component {
             edit_email: "",
             edit_security_id: "",
 
-            error_msg: "",
-            error_title: "",
-
-            message_title: "",
-            message: "",
-            message_callback: null,
-
-            openDialog: props.openDialog,
-            closeDialog: props.closeDialog,
-
             // pagination
             page_size: 5,
             page: 0,
         };
     }
     componentDidCatch(error, info) {
-        this.setState({ has_error: true });
+        this.props.setError(error, info);
         console.log(error, info);
-    }
-    componentWillReceiveProps(props) {
-        this.kba = props.kba;
-        this.setState({
-            openDialog: props.openDialog,
-            closeDialog: props.closeDialog,
-        });
-    }
-    componentDidMount() {
     }
     changePage(page) {
         this.setState({page: page});
@@ -149,27 +127,7 @@ export class KnowledgeBases extends React.Component {
     changePageSize(page_size) {
         this.setState({page_size: page_size});
     }
-    getKnowledgeBases() {
-        const paginated_list = [];
-        const first = this.state.page * this.state.page_size;
-        const last = first + this.state.page_size;
-        for (const i in this.kba.knowledge_base_list) {
-            if (i >= first && i < last) {
-                paginated_list.push(this.kba.knowledge_base_list[i]);
-            }
-        }
-        return paginated_list;
-    }
-    showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg});
-    }
-    closeError() {
-        this.setState({error_msg: ''});
-    }
     addNewKnowledgeBase() {
-        if (this.state.openDialog) {
-            this.state.openDialog();
-        }
         this.setState({edit_knowledgebase: true, knowledgeBase: null,
             edit_knowledgebase_id: "",
             edit_name: "",
@@ -182,9 +140,6 @@ export class KnowledgeBases extends React.Component {
     }
     editKnowledgeBase(knowledgeBase) {
         if (knowledgeBase) {
-            if (this.state.openDialog) {
-                this.state.openDialog();
-            }
             this.setState({edit_knowledgebase: true, knowledgeBase: knowledgeBase,
                 edit_knowledgebase_id: knowledgeBase.kbId,
                 edit_name: knowledgeBase.name,
@@ -195,85 +150,53 @@ export class KnowledgeBases extends React.Component {
     }
     deleteKnowledgeBaseAsk(knowledgeBase) {
         if (knowledgeBase) {
-            this.setState({message_title: "Remove Knowledge Base",
-                message_callback: (action) => { this.deleteKnowledgeBase(action) },
-                message: "are you sure you want to remove \"" + knowledgeBase.name + "\" ?",
-                knowledgeBase: knowledgeBase})
+            this.props.openDialog("are you sure you want to remove \"" + knowledgeBase.name + "\" ?", "Remove Knowledge base", (action) => { this.deleteKnowledgeBase(action) });
+            this.setState({knowledgeBase: knowledgeBase});
         }
     }
     deleteKnowledgeBase(action) {
         if (action) {
-            this.setState({busy: true});
-            Api.deleteKnowledgeBase(this.kba.selected_organisation_id,
-                                    this.state.knowledgeBase.kbId, () => {
-                this.setState({message_title: "", message: "", busy: false});
-                this.kba.deleteKnowledgeBase(this.state.knowledgeBase.kbId, this.state.prev_page, this.state.page_size);
-            }, (errStr) => {
-                this.setState({message_title: "", message: "", busy: false,
-                    error_msg: errStr, error_title: "Error Removing knowledge Base"});
-            })
-        } else {
-            this.setState({message_title: "", message: ""});
+            this.props.deleteKnowledgeBase(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
+        }
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
         }
     }
     editCancel() {
-        this.setState({edit_knowledgebase: false, knowledgeBase: null})
-        if (this.state.closeDialog) {
-            this.state.closeDialog();
-        }
+        this.setState({edit_knowledgebase: false, knowledgeBase: null});
     }
     editOk() {
         if (this.state.edit_name.length > 0) {
-            this.setState({busy: true});
-            Api.updateKnowledgeBase(this.kba.selected_organisation_id, this.state.edit_knowledgebase_id,
-                                    this.state.edit_name, this.state.edit_email, this.state.edit_security_id,
-                (data) => {
-                    this.setState({edit_knowledgebase: false, knowledgeBase: null, busy: false});
-                    this.kba.updateKnowledgeBase(this.state.edit_name, this.state.edit_email, this.state.edit_knowledgebase_id, this.state.prev_page, this.state.page_size);
-                    if (this.state.closeDialog) {
-                        this.state.closeDialog();
-                    }
-                },
-                (errStr) => {
-                    this.setState({edit_knowledgebase: false, error_msg: errStr, error_title: "Error Updating Knowledge Base", busy: false});
-                    if (this.state.closeDialog) {
-                        this.state.closeDialog();
-                    }
-                });
+            this.props.updateKnowledgeBase(this.props.selected_organisation_id, this.state.edit_knowledgebase_id,
+                                           this.state.edit_name, this.state.edit_email, this.state.edit_security_id);
+            this.setState({edit_knowledgebase: false, knowledgeBase: null});
         } else {
-            this.setState({
-                error_msg: "Please complete all fields.  Must have a name.",
-                error_title: "Incomplete Data"});
+            this.props.setError("Incomplete Data", "Please complete all fields.");
         }
     }
     viewIds(knowledge_base) {
-        this.setState({message_title: '"' + knowledge_base.name + "\" Knowledge Base Ids",
-            message_callback: (action) => { this.setState({message: ""}) },
-            message: id_style + "organisation id</div><div style='float: left'>" + this.kba.selected_organisation_id + "</div><br clear='both'>" +
-                     id_style + "knowledge base id</div><div style='float: left'>" + knowledge_base.kbId + "</div><br clear='both'>" +
-                     id_style + "security id</div><div style='float: left'>" + knowledge_base.securityId + "</div><br clear='both'>"
-        })
+        const idStr = id_style + "organisation id</div><div style='float: left'>" + this.props.selected_organisation_id + "</div><br clear='both'>" +
+                      id_style + "knowledge base id</div><div style='float: left'>" + knowledge_base.kbId + "</div><br clear='both'>" +
+                      id_style + "security id</div><div style='float: left'>" + knowledge_base.securityId + "</div><br clear='both'>";
+        this.props.openDialog(idStr, "IDS", (action) => { this.props.closeDialog() });
     }
     downloadHtml(html, kb) {
-        window.open(Comms.get_html_url(html, this.kba.selected_organisation_id, kb.kbId), '_blank');
+        window.open(Comms.get_html_url(html, this.props.selected_organisation_id, kb.kbId), '_blank');
+    }
+    getKnowledgeBases() {
+        const paginated_list = [];
+        const first = this.state.page * this.state.page_size;
+        const last = first + this.state.page_size;
+        for (const i in this.props.knowledge_base_list) {
+            if (i >= first && i < last) {
+                paginated_list.push(this.props.knowledge_base_list[i]);
+            }
+        }
+        return paginated_list;
     }
     render() {
-        if (this.state.has_error) {
-            return <h1>knowledge-bases.js: Something went wrong.</h1>;
-        }
         return (
             <div>
-                <ErrorDialog
-                    callback={() => { this.closeError() }}
-                    open={this.state.error_msg.length > 0}
-                    message={this.state.error_msg}
-                    title={this.state.error_title} />
-
-                <MessageDialog callback={(action) => this.state.message_callback(action)}
-                               open={this.state.message.length > 0}
-                               message={this.state.message}
-                               title={this.state.message_title} />
-
                 {
                     this.state.busy &&
                     <div style={styles.busy} />
@@ -327,7 +250,7 @@ export class KnowledgeBases extends React.Component {
                                 <TableCell />
                                 <TableCell />
                                 <TableCell>
-                                    {this.kba.selected_organisation_id.length > 0 &&
+                                    {this.props.selected_organisation_id.length > 0 &&
                                     <a style={styles.imageButton} onClick={() => this.addNewKnowledgeBase()}><img
                                         style={styles.addImage} src="../images/add.svg" title="add new user"
                                         alt="add new user"/></a>
@@ -340,7 +263,7 @@ export class KnowledgeBases extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={this.kba.knowledge_base_list.length}
+                        count={this.props.knowledge_base_list.length}
                         rowsPerPage={this.state.page_size}
                         page={this.state.page}
                         backIconButtonProps={{
@@ -411,4 +334,18 @@ export class KnowledgeBases extends React.Component {
     }
 }
 
-export default KnowledgeBases;
+
+const mapStateToProps = function(state) {
+    return {
+        error: state.appReducer.error,
+        error_title: state.appReducer.error_title,
+
+        selected_organisation_id: state.appReducer.selected_organisation_id,
+        knowledge_base_list: state.appReducer.knowledge_base_list,
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    dispatch => bindActionCreators(appCreators, dispatch)
+)(KnowledgeBases);

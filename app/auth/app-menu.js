@@ -57,6 +57,7 @@ export class AppMenu extends Component {
 
         this.state={
             title: props.title,
+            signed_in: props.signed_in,
             showDocumentation: window.location.toString().indexOf('/#/documentation') < 0,
         };
     }
@@ -66,7 +67,7 @@ export class AppMenu extends Component {
     render() {
         return (
             <div style={styles.background}>
-                <Grid container spacing={24}>
+                <Grid container spacing={1}>
                     <Grid item xs={1}>
                         <img alt="SimSage" title="SimSage: breathe life into your data." style={styles.logo} src="../images/simsage-logo.svg" onClick={() => this.goWeb()} />
                     </Grid>
@@ -77,7 +78,7 @@ export class AppMenu extends Component {
                     <Grid item xs={5} />
                     <Grid item xs={1}>
                         {
-                            !State.isSignedIn() &&
+                            !this.state.signed_in &&
                             <div style={styles.homeImageContainer}>
                                 <img src="../images/home.svg" alt="home" title="home" onClick={() => this.goWeb()}
                                      style={styles.homeImage}/>
@@ -85,7 +86,7 @@ export class AppMenu extends Component {
                             </div>
                         }
                         {
-                            State.isSignedIn() && Api.setupTimer() &&
+                            this.state.signed_in &&
                             <div style={styles.signOutImageContainer}>
                                 <img src="../images/sign-out.svg" alt="sign-out" title="sign-out"
                                      onClick={() => { Api.signOut(); State.signOut(); }} style={styles.signOutImage}/>

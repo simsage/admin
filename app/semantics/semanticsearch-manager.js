@@ -54,7 +54,6 @@ const styles = {
 export class SemanticSearchManager extends React.Component {
     constructor(props) {
         super(props);
-        this.kba = props.kba;
         this.state = {
             has_error: false,
             onError : props.onError,
@@ -119,52 +118,52 @@ export class SemanticSearchManager extends React.Component {
                     <div style={styles.rhs}>
                         <AutoComplete
                             label='knowledge base'
-                            value={this.kba.selected_knowledgebase}
-                            onFilter={(text, callback) => this.kba.getKnowledgeBaseListFiltered(text, callback)}
+                            value={this.props.selected_knowledgebase}
+                            onFilter={(text, callback) => this.props.getKnowledgeBaseListFiltered(text, callback)}
                             minTextSize={1}
-                            onSelect={(label, data) => this.kba.selectKnowledgeBase(label, data)}
+                            onSelect={(label, data) => this.props.selectKnowledgeBase(label, data)}
                         />
                     </div>
                 </div>
 
-                <Grid container spacing={8} style={styles.gridWidth}>
+                <Grid container spacing={1} style={styles.gridWidth}>
 
-                    {this.kba.selected_knowledgebase_id &&
+                    {this.props.selected_knowledgebase_id &&
                     <Grid item xs={12}><div style={styles.hr} /></Grid>
                     }
 
-                    {this.kba.selected_knowledgebase_id &&
+                    {this.props.selected_knowledgebase_id &&
                     <Grid item xs={4}>
                         <div style={styles.label}>Upload a document for semantic-search.</div>
                     </Grid>
                     }
-                    {this.kba.selected_knowledgebase_id &&
+                    {this.props.selected_knowledgebase_id &&
                     <Grid item xs={8}>
-                        <DocumentUpload kbId={this.kba.selected_knowledgebase_id}
-                                        organisationId={this.kba.selected_organisation_id}
+                        <DocumentUpload kbId={this.props.selected_knowledgebase_id}
+                                        organisationId={this.props.selected_organisation_id}
                                         onUploadDone={() => this.documentUploaded()}
                                         onError={(errStr) => this.showError("Error", errStr)}/>
                     </Grid>
                     }
 
-                    {this.kba.selected_knowledgebase_id &&
+                    {this.props.selected_knowledgebase_id &&
                     <Grid item xs={12}><div style={styles.hr} /></Grid>
                     }
 
-                    {this.kba.selected_knowledgebase_id &&
+                    {this.props.selected_knowledgebase_id &&
                     <Grid item xs={2}>
                         <div style={styles.label}>Semantic Search</div>
                     </Grid>
                     }
-                    {this.kba.selected_knowledgebase_id &&
+                    {this.props.selected_knowledgebase_id &&
                     <Grid item xs={10}>
                         <SemanticSearch onError={(title, err) => this.showError(title, err)}
-                                        kbId={this.kba.selected_knowledgebase_id}
-                                        organisationId={this.kba.selected_organisation_id} />
+                                        kbId={this.props.selected_knowledgebase_id}
+                                        organisationId={this.props.selected_organisation_id} />
                     </Grid>
                     }
 
-                    {this.kba.selected_knowledgebase_id &&
+                    {this.props.selected_knowledgebase_id &&
                     <Grid item xs={12}><div style={styles.hr} /></Grid>
                     }
 

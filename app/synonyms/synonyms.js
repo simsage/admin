@@ -8,11 +8,12 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 import {Api} from '../common/api'
-import {MessageDialog} from '../common/message-dialog'
-import {ErrorDialog} from '../common/error-dialog'
-import {AutoComplete} from "../common/autocomplete";
 import {SynonymEdit} from "./synonym-edit";
 import TablePagination from "@material-ui/core/TablePagination";
+
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "../actions/appActions";
 
 
 const styles = {
@@ -138,46 +139,27 @@ const styles = {
 export class Synonyms extends React.Component {
     constructor(props) {
         super(props);
-        this.kba = props.kba;
         this.state = {
-            has_error: false,
-            onError : props.onError,
-
-            busy: false,
-
-            synonym_list: [],
-            synonym: null,
+            synonym: {},
             synonym_edit: false,
 
             openDialog: props.openDialog,
             closeDialog: props.closeDialog,
 
-            message_title: "",
-            message: "",
-            message_callback: null,
-
-            page: 0,
+            // pagination
             page_size: 5,
-
-            error_msg: "",
-            error_title: "",
-
-            query: "",
+            page: 0,
         };
     }
-    componentDidCatch(error, info) {
-    }
-    componentWillReceiveProps(nextProps) {
-        this.kba = nextProps.kba;
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             openDialog: nextProps.openDialog,
             closeDialog: nextProps.closeDialog,
         });
     }
-    componentDidMount() {
-    }
-    changeKB() {
-        this.findSynonyms(this.state.query);
+    componentDidCatch(error, info) {
+        this.props.setError(error, info);
+        console.log(error, info);
     }
     changePage(page) {
         this.setState({page: page});
@@ -187,73 +169,42 @@ export class Synonyms extends React.Component {
     }
     getSynonyms() {
         const paginated_list = [];
-        const first = this.state.page * this.state.page_size;
-        const last = first + this.state.page_size;
-        for (const i in this.state.synonym_list) {
-            if (i >= first && i < last) {
-                paginated_list.push(this.state.synonym_list[i]);
+        if (Api.defined(this.props.synonym_list)) {
+            const first = this.state.page * this.state.page_size;
+            const last = first + this.state.page_size;
+            for (const i in this.props.synonym_list) {
+                if (i >= first && i < last) {
+                    paginated_list.push(this.props.synonym_list[i]);
+                }
             }
         }
         return paginated_list;
     }
-    findSynonyms(query) {
-        if (this.kba.selected_organisation_id.length > 0 && this.kba.selected_knowledgebase_id.length > 0 &&
-            this.state.query.length > 0) {
-            this.setState({busy: true});
-            Api.findSynonyms(this.kba.selected_organisation_id, this.kba.selected_knowledgebase_id, this.state.query,
-                (synonymList) => {
-                    this.setState({synonym_list: synonymList, busy: false})
-                },
-                (errStr) => {
-                    this.showError("Error", errStr)
-                }
-            )
-        }
-    }
     deleteSynonymAsk(synonym) {
         if (synonym) {
-            this.setState({message_title: "Remove Synonym",
-                message_callback: (action) => { this.deleteSynonym(action) },
-                message: "are you sure you want to remove id " + synonym.id + "?<br/><br/>(" + synonym.words + ")",
-                synonym: synonym})
+            this.props.openDialog("are you sure you want to remove id " + synonym.id + "?<br/><br/>(" + synonym.words + ")",
+                                    "Remove Synonym", (action) => { this.deleteSynonym(action) });
+            this.setState({synonym: synonym});
         }
     }
     deleteSynonym(action) {
         if (action && this.state.synonym) {
-            this.setState({busy: true});
-            Api.deleteSynonym(this.kba.selected_organisation_id,
-                               this.kba.selected_knowledgebase_id, this.state.synonym.id, () => {
-                    this.setState({message_title: "", message: "", busy: false});
-                    this.findSynonyms(this.state.query);
-                }, (errStr) => {
-                    this.setState({message_title: "", message: "", busy: false,
-                                         error_msg: errStr, error_title: "Error Removing Synonym"});
-                })
-        } else {
-            this.setState({message_title: "", message: ""});
+            this.props.deleteSynonym(this.state.synonym.id);
         }
-    }
-    showError(title, error_msg) {
-        this.setState({error_title: title, error_msg: error_msg, busy: false});
-    }
-    closeError() {
-        this.setState({error_msg: ''});
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
+        }
+        this.setState({synonym_edit: false, synonym: {}});
     }
     handleSearchTextKeydown(event) {
         if (event.key === "Enter") {
-            this.findSynonyms(this.state.query);
+            this.props.findSynonyms();
         }
     }
     editSynonym(synonym) {
-        if (this.state.openDialog) {
-            this.state.openDialog();
-        }
         this.setState({synonym_edit: true, synonym: synonym});
     }
     newSynonym() {
-        if (this.state.openDialog) {
-            this.state.openDialog();
-        }
         this.setState({synonym_edit: true, synonym: {
                 id: Api.createGuid(),
                 words: "",
@@ -262,82 +213,43 @@ export class Synonyms extends React.Component {
     save(synonym) {
         if (synonym) {
             if (synonym.words.length > 0 && synonym.words.indexOf(",") > 0) {
-                this.setState({busy: true});
-                Api.saveSynonym(this.kba.selected_organisation_id,
-                    this.kba.selected_knowledgebase_id, synonym, () => {
-                        this.setState({synonym_edit: false, busy: false});
-                        this.findSynonyms(this.state.query);
-                        if (this.state.closeDialog) {
-                            this.state.closeDialog();
-                        }
-                    }, (errStr) => {
-                        this.setState({error_msg: errStr, error_title: "Error Saving Synonym"});
-                    });
+                this.props.saveSynonym(synonym);
+                this.setState({synonym_edit: false, synonym: {}});
             } else {
-                this.setState({error_msg: "synonym cannot be empty and need more than one item", error_title: "Error Saving Synonym", busy: false});
+                this.props.setError("Error Saving Synonym", "synonym cannot be empty and need more than one item");
             }
         } else {
-            this.setState({synonym_edit: false});
-            if (this.state.closeDialog) {
-                this.state.closeDialog();
-            }
+            this.setState({synonym_edit: false, synonym: {}});
         }
     }
     render() {
-        if (this.state.has_error) {
-            return <h1>synonyms.js: Something went wrong.</h1>;
-        }
         return (
             <div>
-                <ErrorDialog
-                    callback={() => { this.closeError() }}
-                    open={this.state.error_msg.length > 0}
-                    message={this.state.error_msg}
-                    title={this.state.error_title} />
-
-                <MessageDialog callback={(action) => this.state.message_callback(action)}
-                               open={this.state.message.length > 0}
-                               message={this.state.message}
-                               title={this.state.message_title} />
-
-                <SynonymEdit open={this.state.synonym_edit}
-                             synonym={this.state.synonym}
-                             onSave={(item) => this.save(item)}
-                             onError={(err) => this.showError("Error", err)} />
-
                 {
                     this.state.busy &&
                     <div style={styles.busy} />
                 }
 
-                <div style={styles.knowledgeSelect}>
-                    <div style={styles.lhs}>knowledge base</div>
-                    <div style={styles.rhs}>
-                        <AutoComplete
-                            label='knowledge base'
-                            value={this.kba.selected_knowledgebase}
-                            onFilter={(text, callback) => this.kba.getKnowledgeBaseListFiltered(text, callback)}
-                            minTextSize={1}
-                            onSelect={(label, data) => { this.kba.selectKnowledgeBase(label, data); this.changeKB() }}
-                        />
-                    </div>
-                </div>
+                <SynonymEdit open={this.state.synonym_edit}
+                             synonym={this.state.synonym}
+                             onSave={(item) => this.save(item)}
+                             onError={(err) => this.props.setError("Error", err)} />
 
                 {
-                    this.kba.selected_knowledgebase_id.length > 0 &&
+                    this.props.selected_knowledgebase_id.length > 0 &&
 
                     <div style={styles.findBox}>
                         <div style={styles.floatLeftLabel}>find synonyms</div>
                         <div style={styles.searchFloatLeft}>
-                            <input type="text" value={this.state.filter} autoFocus={true} style={styles.text}
+                            <input type="text" value={this.props.synonym_filter} autoFocus={true} style={styles.text}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
-                                       this.setState({query: event.target.value})
+                                       this.props.setSynonymFilter(event.target.value)
                                    }}/>
                         </div>
                         <div style={styles.floatLeft}>
                             <img style={styles.search}
-                                 onClick={() => this.findSynonyms(this.state.query)}
+                                 onClick={() => this.props.findSynonyms()}
                                  src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </div>
                     </div>
@@ -346,7 +258,7 @@ export class Synonyms extends React.Component {
                 <br clear="both" />
 
                 {
-                    this.kba.selected_knowledgebase_id.length > 0 &&
+                    this.props.selected_knowledgebase_id.length > 0 &&
                     <Paper>
                         <Table style={styles.tableStyle}>
                             <TableHead>
@@ -383,36 +295,38 @@ export class Synonyms extends React.Component {
                                     <TableCell/>
                                     <TableCell/>
                                     <TableCell>
-                                        {this.kba.selected_organisation_id.length > 0 &&
+                                        {this.props.selected_knowledgebase_id.length > 0 &&
                                         <a style={styles.imageButton} onClick={() => this.newSynonym()}><img
                                             style={styles.addImage} src="../images/add.svg" title="new synonym"
                                             alt="new synonym"/></a>
                                         }
                                     </TableCell>
                                 </TableRow>
+
                                 <TableRow>
-                                    <TableCell />
-                                    <TableCell />
-                                    <TableCell />
+                                    <TableCell colSpan={3}>
+                                        <TablePagination
+                                            rowsPerPageOptions={[5, 10, 25]}
+                                            component="div"
+                                            count={this.props.synonym_list.length}
+                                            rowsPerPage={this.state.page_size}
+                                            page={this.state.page}
+                                            backIconButtonProps={{
+                                                'aria-label': 'Previous Page',
+                                            }}
+                                            nextIconButtonProps={{
+                                                'aria-label': 'Next Page',
+                                            }}
+                                            onChangePage={(event, page) => this.changePage(page)}
+                                            onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
+                                        />
+                                    </TableCell>
                                 </TableRow>
+
                             </TableBody>
+
                         </Table>
 
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            component="div"
-                            count={this.state.synonym_list.length}
-                            rowsPerPage={this.state.page_size}
-                            page={this.state.page}
-                            backIconButtonProps={{
-                                'aria-label': 'Previous Page',
-                            }}
-                            nextIconButtonProps={{
-                                'aria-label': 'Next Page',
-                            }}
-                            onChangePage={(event, page) => this.changePage(page)}
-                            onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
-                        />
 
                     </Paper>
                 }
@@ -422,4 +336,22 @@ export class Synonyms extends React.Component {
     }
 }
 
-export default Synonyms;
+const mapStateToProps = function(state) {
+    return {
+        error: state.appReducer.error,
+        error_title: state.appReducer.error_title,
+
+        synonym_list: state.appReducer.synonym_list,
+        synonym_filter: state.appReducer.synonym_filter,
+
+        selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+
+        busy: state.appReducer.busy,
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    dispatch => bindActionCreators(appCreators, dispatch)
+)(Synonyms);
+

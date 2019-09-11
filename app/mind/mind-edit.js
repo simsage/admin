@@ -41,7 +41,7 @@ export class MindEdit extends Component {
             this.state.onSave(null);
         }
     }
-    componentWillReceiveProps(props) {
+    UNSAFE_componentWillReceiveProps(props) {
         this.setState({
             open: props.open,
             mindItem: props.mindItem,
@@ -158,7 +158,7 @@ export class MindEdit extends Component {
 
                 <DialogTitle id="alert-dialog-title">Edit Mind Item</DialogTitle>
                 <DialogContent>
-                    <Grid container spacing={8}>
+                    <Grid container spacing={1}>
 
                         <Grid item xs={1} />
                         <Grid item xs={1}>

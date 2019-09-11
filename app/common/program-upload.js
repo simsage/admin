@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import Button from "@material-ui/core/Button";
 
-import {Comms} from "./comms"
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "../actions/appActions";
 
 const styles = {
     uploadContainer: {
@@ -45,7 +47,7 @@ const styles = {
     },
 };
 
-export class ProgramUpload extends React.Component {
+export class ProgramUpload extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -53,21 +55,7 @@ export class ProgramUpload extends React.Component {
             file_type: '',
             filter: '',
             binary_data: null,
-            uploading: false,
-            pageSize: 10,
-
-            kbId: props.kbId,
-            organisationId: props.organisationId,
-
-            onUploadDone: props.onUploadDone,
-            onError: props.onError,
         };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps) {
-            this.setState({filter: nextProps.filter, kbId: nextProps.kbId});
-        }
     }
 
     _handleImageChange(e) {
@@ -92,28 +80,13 @@ export class ProgramUpload extends React.Component {
     upload() {
         const self = this;
         if (this.state.binary_data) {
-            self.setState({uploading: true});
             const payload = {
                 base64Text: this.state.binary_data,
                 fileType: this.state.file_type,
-                kbId: this.state.kbId,
-                organisationId: this.state.organisationId,
+                kbId: this.props.selected_knowledgebase_id,
+                organisationId: this.props.selected_organisation_id,
             };
-            Comms.http_put('/knowledgebase/upload', payload,
-                (response) => {
-                        self.setState({uploading: false});
-                        if (self.state.onUploadDone) {
-                            self.state.onUploadDone(response.data);
-                        }
-                    },
-                (errorStr) => {
-                    self.setState({uploading: false});
-                    console.log(errorStr);
-                    if (self.state.onError) {
-                        self.state.onError(errorStr);
-                    }
-                }
-            );
+            this.props.uploadProgram(payload);
         }
     }
 
@@ -130,9 +103,9 @@ export class ProgramUpload extends React.Component {
                                 <Button variant='contained'
                                         color='primary'
                                         style={styles.uploadButton}
-                                        disabled={this.state.binary_data === null || this.state.uploading}
+                                        disabled={this.state.binary_data === null || this.props.uploading}
                                         onClick={this.upload.bind(this)}>upload</Button>
-                                {this.state.uploading &&
+                                {this.props.uploading &&
                                 <div style={styles.uploadWheel}><img src="../images/busy2.gif" alt="busy" style={styles.busyImage}/></div>
                                 }
                             </div>
@@ -144,4 +117,16 @@ export class ProgramUpload extends React.Component {
     }
 }
 
-export default ProgramUpload;
+const mapStateToProps = function(state) {
+    return {
+        uploading: state.appReducer.uploading,
+        selected_organisation_id: state.appReducer.selected_organisation_id,
+        selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    dispatch => bindActionCreators(appCreators, dispatch)
+)(ProgramUpload);
+
