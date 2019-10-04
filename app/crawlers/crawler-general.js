@@ -128,12 +128,13 @@ export class CrawlerGeneral extends Component {
         }
     }
     testCrawler() {
+        const name = this.state.name;
         Api.testCrawler(this.state.organisation_id, this.state.kb_id, this.state.id,
             (response) => {
                 this.setState({
                     message_callback: (action) => { this.setState({message_title: '', message: ''})},
                     message_title: 'Crawler Test',
-                    message: 'Success!  Working!'
+                    message: 'Success!  crawler "' + name + '" can communicate with its intended end-point.'
                 });
             },
             (err) => {

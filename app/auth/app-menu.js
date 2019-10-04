@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
-import Api from '../common/api';
 
 import system_config from "../settings";
-import {State} from "../common/state";
+import { clearState } from '../reducers/stateLoader'
 
 const styles = {
     background: {
@@ -64,6 +63,10 @@ export class AppMenu extends Component {
     goWeb() {
         window.location = system_config.web_base;
     }
+    signOut() {
+        clearState();
+        window.location = "/";
+    }
     render() {
         return (
             <div style={styles.background}>
@@ -89,7 +92,7 @@ export class AppMenu extends Component {
                             this.state.signed_in &&
                             <div style={styles.signOutImageContainer}>
                                 <img src="../images/sign-out.svg" alt="sign-out" title="sign-out"
-                                     onClick={() => { Api.signOut(); State.signOut(); }} style={styles.signOutImage}/>
+                                     onClick={() => { this.signOut() }} style={styles.signOutImage}/>
                             </div>
                         }
                     </Grid>

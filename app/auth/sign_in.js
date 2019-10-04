@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 
 import AppMenu from './app-menu';
 import ErrorDialog from '../common/error-dialog'
-import State from '../common/state'
+import { clearState } from '../reducers/stateLoader'
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -49,9 +49,6 @@ const styles = {
         justifyContent: 'center',
         width: "100%"
     },
-    passwordText: {
-        marginBottom: '10px',
-    },
     helpText: {
         marginTop: '10px',
         fontSize: '0.9em',
@@ -83,7 +80,11 @@ const styles = {
         backgroundSize: '100px',
         background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
     },
-
+    textBox: {
+        width: '250px',
+        borderRadius: '3px',
+        marginBottom: '10px',
+    },
 };
 
 // sign-in screen
@@ -97,7 +98,7 @@ export class SignIn extends Component {
         }
     }
     componentDidMount() {
-        State.clearAll();
+        clearState();
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
@@ -136,6 +137,7 @@ export class SignIn extends Component {
                             <Grid item xs={6}>
                                 <TextField
                                     disabled={this.props.busy}
+                                    style={styles.textBox}
                                     autoFocus
                                     placeholder="Enter your email"
                                     label="email"
@@ -150,12 +152,12 @@ export class SignIn extends Component {
                             <Grid item xs={6}>
                                 <TextField
                                     disabled={this.props.busy}
+                                    style={styles.textBox}
                                     type="password"
                                     placeholder="Enter your Password"
                                     label="Password"
                                     onChange = {(event) => this.setState({password: event.target.value})}
                                     onKeyPress = {this.onKeyPress.bind(this)}
-                                    style={styles.passwordText}
                                 />
                             </Grid>
                             <Grid item xs={3} />
@@ -214,6 +216,7 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        busy: state.appReducer.busy,
     };
 };
 

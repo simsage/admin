@@ -1,6 +1,6 @@
 {
   "name": "simsage",
-  "version": "5.0.18",
+  "version": "5.0.21",
   "description": "Simsage: breathe life into your data",
   "repository": "git@gitlab.com:peter3125/simsage.git",
   "homepage": "/",
@@ -64,6 +64,7 @@
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-router-redux": "^4.0.8",
+    "react-stomp": "^4.2.0",
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
     "redux-persist": "^5.10.0",

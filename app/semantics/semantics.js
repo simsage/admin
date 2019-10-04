@@ -120,19 +120,6 @@ const styles = {
         marginBottom: '5px',
         float: 'right',
     },
-    busy: {
-        display: 'block',
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: '9999',
-        borderRadius: '10px',
-        opacity: '0.8',
-        backgroundSize: '100px',
-        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
-    },
 };
 
 
@@ -246,11 +233,6 @@ export class Semantics extends React.Component {
     render() {
         return (
             <div>
-                {
-                    this.state.busy &&
-                    <div style={styles.busy} />
-                }
-
                 <SemanticEdit open={this.state.semantic_edit}
                              semantic={this.state.semantic}
                              onSave={(item) => this.save(item)}
@@ -362,8 +344,6 @@ const mapStateToProps = function(state) {
         semantic_filter: state.appReducer.semantic_filter,
 
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
-
-        busy: state.appReducer.busy,
     };
 };
 

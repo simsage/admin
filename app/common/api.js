@@ -43,10 +43,6 @@ export class Api {
         return ("" + item).padStart(2, '0');
     }
 
-    // kill timer
-    static signOut() {
-    };
-
     // setup the timer
     static setupTimer() {
         return true;
@@ -109,32 +105,6 @@ export class Api {
         return null;
     }
 
-    // get a paginated list of users
-    static getUsers(organisationId, success, fail) {
-        Comms.http_get('/auth/users/' + encodeURIComponent(organisationId),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    };
-
-    // remove / delete a user
-    static removeUserFromOrganisation(user_id, organisation_id, success, fail) {
-        Comms.http_delete('/auth/organisation/user/' + encodeURIComponent(user_id) + '/' +
-                            encodeURIComponent(organisation_id),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    };
-
-    // set user's primary organisation
-    static setUserPrimaryOrganisation(user_id, organisation_id, success, fail) {
-        Comms.http_put('/auth/active/organisation/' + encodeURIComponent(user_id) + '/' + encodeURIComponent(organisation_id),
-            {},
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    };
-
     // upload data to the system
     static uploadDocument(payload, success, fail) {
         Comms.http_put('/document/upload', payload,
@@ -178,145 +148,10 @@ export class Api {
         )
     }
 
-
-    // get a paginated list of documents
-    static getDocumentsPaginated(organisationId, kb_id, filter, prev_document, page_size, success, fail) {
-        Comms.http_post('/document/documents', {"organisationId": organisationId, "kbId": kb_id,
-                "prevUrl": prev_document, "pageSize": page_size,
-                "filter": filter},
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    };
-
-
-    // remove an organisation (delete it)
-    static deleteDocument(organisationId, kbId, url, success, fail) {
-        if (organisationId && kbId && url) {
-            const full_url = '/document/document/' + encodeURIComponent(organisationId) + '/' +
-                encodeURIComponent(kbId) + '/' + btoa(url);
-            console.log(full_url);
-            Comms.http_delete(full_url,
-                (response) => { success(response) },
-                (errStr) => { fail(errStr) }
-            )
-        }
-    }
-
-
-    // get all the statistics
-    static getStats(organisationId, kbId, year, month, top, success, fail) {
-        Comms.http_get('/stats/stats/' + encodeURIComponent(organisationId) + '/' +
-                                             encodeURIComponent(kbId) + '/' +
-                                             encodeURIComponent(year) + '/' +
-                                             encodeURIComponent(month) + '/' +
-                                             encodeURIComponent(top),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // get OS statistics (like disk usage and memory usage, single node only)
-    static getOSMessages(success, fail) {
-        Comms.http_get('/stats/stats/os/web',
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // find a list of mind items
-    static uiMindFind(organisationId, kbId, query, success, fail) {
-        Comms.http_put('/bot/ui-find', {"organisationId": organisationId, "kbId": kbId,
-                "query": query, "numResults": 10},
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // delete a mind item by id
-    static uiMindDelete(organisationId, kbId, id, success, fail) {
-        Comms.http_delete('/bot/ui-delete/' + encodeURIComponent(organisationId) + '/' +
-            encodeURIComponent(kbId) + '/' + encodeURIComponent(id),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // save a mind item
-    static uiMindSave(organisationId, kbId, mindItem, success, fail) {
-        Comms.http_put('/bot/ui-save/' + encodeURIComponent(organisationId) + '/' +
-            encodeURIComponent(kbId), mindItem,
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // find a list of synonyms
-    static findSynonyms(organisationId, kbId, query, success, fail) {
-        Comms.http_put('/language/find-synonyms', {"organisationId": organisationId, "kbId": kbId,
-                "query": query, "numResults": 1000},
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // delete a synonym by id
-    static deleteSynonym(organisationId, kbId, id, success, fail) {
-        Comms.http_delete('/language/delete-synonym/' + encodeURIComponent(organisationId) + '/' +
-            encodeURIComponent(kbId) + '/' + encodeURIComponent(id),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // save a synonym
-    static saveSynonym(organisationId, kbId, synonym, success, fail) {
-        Comms.http_put('/language/save-synonym/' + encodeURIComponent(organisationId) + '/' +
-            encodeURIComponent(kbId), synonym,
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // find a list of semantics
-    static findSemantics(organisationId, kbId, query, success, fail) {
-        Comms.http_put('/language/find-semantics', {"organisationId": organisationId, "kbId": kbId,
-                "query": query, "numResults": 1000},
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // delete a semantic by name
-    static deleteSemantic(organisationId, kbId, word, success, fail) {
-        Comms.http_delete('/language/delete-semantic/' + encodeURIComponent(organisationId) + '/' +
-            encodeURIComponent(kbId) + '/' + encodeURIComponent(word),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // save a semantic
-    static saveSemantic(organisationId, kbId, semantic, success, fail) {
-        Comms.http_put('/language/save-semantic/' + encodeURIComponent(organisationId) + '/' +
-            encodeURIComponent(kbId), semantic,
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
     // restore SimSage
     static restore(data, success, fail) {
         console.log(data);
         Comms.http_put('/backup/restore', data,
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // install the SimSage license
-    static installLicense(licenseStr, success, fail) {
-        Comms.http_post('/auth/license', {"license": licenseStr},
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )

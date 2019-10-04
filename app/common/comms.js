@@ -49,7 +49,7 @@ export class Comms {
 
     static http_get(url, fn_success, fn_fail) {
         const api_base = system_config.api_base;
-        if (url !== '/stats/stats/os/web') {
+        if (url !== '/stats/stats/os') {
             console.log('GET ' + api_base + url);
         }
         return axios.get(api_base + url, Comms.getHeaders())

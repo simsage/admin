@@ -83,19 +83,6 @@ const styles = {
     dlImageSize: {
         width: '24px',
     },
-    busy: {
-        display: 'block',
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: '9999',
-        borderRadius: '10px',
-        opacity: '0.8',
-        backgroundSize: '100px',
-        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
-    },
 };
 
 
@@ -197,11 +184,6 @@ export class KnowledgeBases extends Component {
     render() {
         return (
             <div>
-                {
-                    this.state.busy &&
-                    <div style={styles.busy} />
-                }
-
                 <Paper>
                     <Table>
                         <TableHead>

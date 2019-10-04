@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
 import { Route } from 'react-router'
+import { Welcome } from "./welcome/welcome";
 
 import configureStore from "./reducers/configureStore";
 import {saveState} from "./reducers/stateLoader";
@@ -35,6 +36,7 @@ ReactDOM.render(
                 <Route path="/reset-password-response" component={ResetPasswordResponse} />
                 <Route exact path="/os-license" component={OpenSourceLicenses} />
                 <Route exact path="/license-agreement" component={LicenseAgreement} />
+                <Route exact path="/welcome" component={Welcome} />
             </div>
         </HashRouter>
     </div>

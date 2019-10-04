@@ -13,7 +13,6 @@ export function initializeState() {
         notification_list: [],
         show_notifications: false,
         notification_time_in_ms: 5000,
-        notification_busy: false,
         notification_list_display_size: 50,
 
         // organisational data
@@ -49,6 +48,7 @@ export function initializeState() {
         document_list: [],
         document_previous: null,
         document_filter: '',
+        prev_document_filter: '',   // see what the last filter was (reset pagination if changed)
         document_page: 0,
         document_page_size: 5,
         num_documents: 0,
@@ -85,6 +85,27 @@ export function initializeState() {
         query_word_frequency: [],
         file_type_statistics: [],
 
+        // operator
+        conversation_list: [],
+        operator_connected: false,
+        num_active_connections: 0,
+        operator_ready: false,
+        // operator teaching
+        question_id: '',
+        question: '',
+        answer_id: '',
+        answer: '',
+        // operator connected clients
+        client_id: '',
+        client_kb_id: '',
+        client_kb_name: '',
+        // operator previous answer
+        current_question: '',
+        prev_answer: '',
+
+        // html5 notification permissions asked already?
+        html5_notifications: '',
+
         // application error messages
         error_title: "Error",
         error: "",
@@ -112,7 +133,15 @@ export function saveState(state) {
     try {
         let serializedState = JSON.stringify(state);
         localStorage.setItem("https://simsage.nz:state", serializedState);
+    }
+    catch (err) {
+    }
+}
 
+
+export function clearState(state) {
+    try {
+        localStorage.removeItem("https://simsage.nz:state");
     }
     catch (err) {
     }

@@ -79,19 +79,6 @@ const styles = {
         width: '24px',
         opacity: '0.2'
     },
-    busy: {
-        display: 'block',
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: '9999',
-        borderRadius: '10px',
-        opacity: '0.8',
-        backgroundSize: '100px',
-        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
-    },
 };
 
 const roles = ['admin', 'operator', 'crawler', 'manager']; // reporter has been removed temporarily
@@ -274,10 +261,19 @@ export class UserManager extends React.Component {
         roles.push(role);
         this.setState({edit_roles: roles});
     }
-    deleteUserAsk(user) {
+    deleteUserAsk(user, isAdmin) {
         if (user) {
-            this.props.openDialog("are you sure you want to remove " + user.firstName + " " + user.surname + " from this organisation?",
-                                  "Remove User", (action) => { this.deleteUser(action) });
+            if (isAdmin) {
+                this.props.openDialog("are you sure you want to remove " + user.firstName + " " + user.surname + "?",
+                    "Remove User", (action) => {
+                        this.deleteUser(action)
+                    });
+            } else {
+                this.props.openDialog("are you sure you want to remove " + user.firstName + " " + user.surname + " from this organisation?",
+                    "Remove User Roles", (action) => {
+                        this.deleteUser(action)
+                    });
+            }
             this.setState({user: user});
         }
     }
@@ -290,7 +286,7 @@ export class UserManager extends React.Component {
         }
     }
     editCancel() {
-        this.setState({edit_user: false, user: null})
+        this.setState({edit_user: false, user: null});
         if (this.state.closeDialog) {
             this.state.closeDialog();
         }
@@ -308,7 +304,7 @@ export class UserManager extends React.Component {
             } else {
                 // organisation_id, user_id, name, surname, email, password, role_list, kb_list
                 this.props.updateUser(this.props.selected_organisation_id, this.state.edit_user_id,
-                                      this.state.edit_name, this.state.edit_surname, this.state.edit_email,
+                                      this.state.edit_first_name, this.state.edit_surname, this.state.edit_email,
                                       this.state.edit_password, this.state.edit_roles, this.state.edit_kb_list);
                 this.setState({edit_user: false, user: null});
             }
@@ -316,23 +312,6 @@ export class UserManager extends React.Component {
             this.props.setError("Incomplete Data", "Please complete all fields.  " +
                 "Must have email-address, first-name, surname, and at least one role.  " +
                 "New Accounts must have a password.");
-        const self = this;
-        this.setState({message: '', message_title: ''});
-        if (confirm) {
-            this.setState({busy: true});
-            const crawler = this.state.crawler_ask;
-            const self = this;
-            Api.deleteCrawler(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, crawler.id,
-                (response) => {
-                    this.setState({busy: false});
-                    self.getCrawlerList(self.state.page, self.state.page_size);
-                },
-                (error) => {
-                    self.props.setError('Error', error);
-                }
-            );
-        }
-
         }
     }
     static hasOperatorRole(edit_roles) {
@@ -376,13 +355,9 @@ export class UserManager extends React.Component {
     }
     render() {
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
+        const isManager = Home.hasRole(this.props.user, ['manager']);
         return (
             <div>
-                {
-                    this.props.busy &&
-                    <div style={styles.busy} />
-                }
-
                 <Paper>
                     <Table>
                         <TableHead>
@@ -397,6 +372,8 @@ export class UserManager extends React.Component {
                         <TableBody>
                             {
                                 this.getUsers(isAdmin).map((user) => {
+                                    const canEdit = Home.canEdit(user, isAdmin, isManager);
+                                    const canDelete = Home.canDelete(user, this.props.user, isAdmin, isManager);
                                     return (
                                         <TableRow key={user.id}>
                                             <TableCell>
@@ -412,13 +389,13 @@ export class UserManager extends React.Component {
                                                 <div style={styles.label}>{UserManager.formatRoles(this.props.selected_organisation_id, user.roles)}</div>
                                             </TableCell>
                                             <TableCell>
-                                                { Home.hasRole(user, ['admin']) && !isAdmin &&
+                                                { !canEdit &&
                                                     <div style={styles.disabledLinkButton} title="cannot edit this user">
                                                         <img src="../images/edit.svg" style={styles.dlImageSizeDisabled}
                                                              title="cannot edit this user" alt="cannot edit this user"/>
                                                     </div>
                                                 }
-                                                { (isAdmin || !Home.hasRole(user, ['admin'])) &&
+                                                { canEdit &&
                                                     <div style={styles.linkButton} title="Edit this user"
                                                          onClick={() => this.editUser(user)}>
                                                         <img src="../images/edit.svg" style={styles.dlImageSize}
@@ -426,18 +403,18 @@ export class UserManager extends React.Component {
                                                     </div>
                                                 }
                                                 {
-                                                    (this.props.user.email === user.email || !isAdmin) &&
+                                                    !canDelete &&
                                                     <div style={styles.disabledLinkButton} title="cannot remove this user">
                                                         <img src="../images/delete.svg" style={styles.dlImageSizeDisabled}
                                                              title="cannot remove this user" alt="cannot remove this user"/>
                                                     </div>
                                                 }
                                                 {
-                                                    this.props.user.email !== user.email && isAdmin &&
+                                                    canDelete &&
                                                     <div style={styles.linkButton} title="Remove this user"
-                                                         onClick={() => this.deleteUserAsk(user)}>
+                                                         onClick={() => this.deleteUserAsk(user, isAdmin)}>
                                                         <img src="../images/delete.svg" style={styles.dlImageSize}
-                                                             title="remove user" alt="remove"/>
+                                                             title={isAdmin ? "remove user" : "remove user roles"} alt="remove"/>
                                                     </div>
                                                 }
                                             </TableCell>
@@ -451,7 +428,7 @@ export class UserManager extends React.Component {
                                 <TableCell />
                                 <TableCell />
                                 <TableCell>
-                                    {this.props.selected_organisation_id.length > 0 && isAdmin &&
+                                    {this.props.selected_organisation_id.length > 0 && (isAdmin || isManager) &&
                                     <a style={styles.imageButton} onClick={() => this.addNewUser()}><img
                                         style={styles.addImage} src="../images/add.svg" title="add new user"
                                         alt="add new user"/></a>
@@ -603,7 +580,6 @@ const mapStateToProps = function(state) {
         user_list: state.appReducer.user_list,
         selected_organisation_id: state.appReducer.selected_organisation_id,
         knowledge_base_list: state.appReducer.knowledge_base_list,
-        busy: state.appReducer.busy,
         user: state.appReducer.user,
     };
 };

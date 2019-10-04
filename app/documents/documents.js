@@ -100,19 +100,6 @@ const styles = {
         padding: '4px',
         width: '280px',
     },
-    busy: {
-        display: 'block',
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: '9999',
-        borderRadius: '10px',
-        opacity: '0.8',
-        backgroundSize: '100px',
-        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
-    },
 };
 
 
@@ -159,6 +146,9 @@ export class Documents extends React.Component {
     getDocuments() {
         return this.props.document_list;
     }
+    static isWeb(url) {
+        return (url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://"));
+    }
     static adjustUrl(url) {
         if (url && url.length > maxUrlDisplayLength) {
             const half = Math.floor(maxUrlDisplayLength / 2);
@@ -171,11 +161,6 @@ export class Documents extends React.Component {
     render() {
         return (
             <div>
-                {
-                    this.state.busy &&
-                    <div style={styles.busy} />
-                }
-
                 {
                     this.props.selected_knowledgebase_id.length > 0 &&
                     <div style={styles.findBox}>
@@ -215,7 +200,16 @@ export class Documents extends React.Component {
                                         return (
                                             <TableRow key={document.url}>
                                                 <TableCell>
-                                                    <div style={styles.label}>{Documents.adjustUrl(document.url)}</div>
+                                                    {
+                                                        Documents.isWeb(document.url) &&
+                                                        <div style={styles.label}>
+                                                            <a href={document.url} title={document.url} target="_blank">{Documents.adjustUrl(document.url)}</a>
+                                                        </div>
+                                                    }
+                                                    {
+                                                        !Documents.isWeb(document.url) &&
+                                                        <div style={styles.label}>{Documents.adjustUrl(document.url)}</div>
+                                                    }
                                                 </TableCell>
                                                 <TableCell>
                                                     <div style={styles.label}>{document.origin}</div>
@@ -290,7 +284,6 @@ const mapStateToProps = function(state) {
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
-        busy: state.appReducer.busy,
     };
 };
 

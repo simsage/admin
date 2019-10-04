@@ -40,19 +40,6 @@ const styles = {
     exportButton: {
         marginTop: '20px',
     },
-    busy: {
-        display: 'block',
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: '9999',
-        borderRadius: '10px',
-        opacity: '0.8',
-        backgroundSize: '100px',
-        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
-    },
 };
 
 
@@ -84,11 +71,10 @@ export class KnowledgeManager extends React.Component {
     }
     restore(data) {
         if (data) {
-            this.setState({uploading: true, busy: true});
+            this.setState({uploading: true});
             Api.restore(data,
                 () => {
                     this.setState({uploading: false,
-                        busy: false,
                         message_title: "Success",
                         message: "data restored",
                         message_callback: () => { this.setState({message: "", message_title: ""})}
@@ -102,11 +88,6 @@ export class KnowledgeManager extends React.Component {
     render() {
         return (
             <div>
-                {
-                    this.props.busy &&
-                    <div style={styles.busy} />
-                }
-
                 <Grid container spacing={1} style={styles.gridWidth}>
 
                     {this.props.selected_knowledgebase_id &&
@@ -155,7 +136,7 @@ export class KnowledgeManager extends React.Component {
 
                     {this.props.selected_knowledgebase_id &&
                     <Grid item xs={4}>
-                        <div style={styles.label}>Export SimSage Mind CSV</div>
+                        <div style={styles.label}>Export SimSage Spreadsheet</div>
                     </Grid>
                     }
                     {this.props.selected_knowledgebase_id &&
@@ -235,7 +216,6 @@ const mapStateToProps = function(state) {
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
         knowledge_base_list: state.appReducer.knowledge_base_list,
-        busy: state.appReducer.busy,
     };
 };
 

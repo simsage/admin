@@ -22,6 +22,10 @@ import Synonyms from "./synonyms/synonyms";
 import Semantics from "./semantics/semantics";
 import Reports from "./reports/reports";
 import License from "./license/license";
+import Operator from "./operator/operator";
+
+import system_config from 'settings'
+import SockJsClient from 'react-stomp';
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -66,9 +70,24 @@ const styles = {
         borderRadius: '2px',
         marginBottom: '5px',
     },
+    navItemDisabled: {
+        marginLeft: '10px',
+        textAlign: 'center',
+        width: '180px',
+        padding: '10px',
+        border: '1px solid #bbb',
+        background: '#f8f8f8',
+        color: '#e0e0e0',
+        borderRadius: '2px',
+        marginBottom: '5px',
+        cursor: 'not-allowed',
+    },
     organisationSelect: {
         padding: '5px',
         marginBottom: '40px',
+    },
+    organisationLabel: {
+        marginTop: '-10px',
     },
     knowledgeSelect: {
         padding: '5px',
@@ -103,7 +122,7 @@ const styles = {
         overflowY: 'scroll',
     },
     notificationsHidden: {
-        position: 'absolute',
+        position: 'fixed',
         left: '0',
         right: '0',
         bottom: '2px',
@@ -129,11 +148,29 @@ const styles = {
         marginLeft: '20px',
         fontSize: '0.8em',
     },
+    infoType: {
+        display: 'inline-block',
+        width: '100px',
+        fontSize: '0.9em',
+    },
     infoText: {
         display: 'inline-block',
-        width: '80%',
+        width: '70%',
         fontSize: '0.9em',
-    }
+    },
+    busy: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.8',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
+    },
 };
 
 export class Home extends Component {
@@ -162,11 +199,47 @@ export class Home extends Component {
             }
 
             // get state every notification_time_in_ms interval
+            const isAdminOrManager = Home.hasRole(this.props.user, ['admin', 'manager']);
+            const isOperator = Home.hasRole(this.props.user, ['operator']);
             const self = this;
-            setInterval(() => { self.props.getNotifications(); }, this.props.notification_time_in_ms);
+            if (isAdminOrManager) {
+                // refresh notifications and operator at interval
+                setInterval(() => {
+                    self.refreshNotifications(self);
+                    self.refreshOperator(self);
+                }, this.props.notification_time_in_ms);
+            } else if (isOperator) {
+                setInterval(() => {
+                    self.refreshOperator(self);
+                }, this.props.notification_time_in_ms);
+            }
+
+            if (isOperator) {
+                // if this user has an operator role at all - we need to ask for events
+                if (this.props.html5_notifications.length === 0) {
+                    this.props.getHtml5Notifications();
+                }
+            }
+
         }
     }
-    getStyle(tab) {
+    refreshNotifications(self) {
+        self.props.getNotifications();
+    }
+    refreshOperator(self) {
+        // keep operator alive if they're active and ready
+        if (self.props.operator_ready && self.props.selected_organisation_id.length > 0) {
+            const data = {
+                sessionId: self.props.session.id,
+                organisationId: self.props.selected_organisation_id,
+            };
+            this.sendMessage('/ws/ops/refresh', data);
+        }
+    }
+    getStyle(tab, disabled) {
+        if (disabled) {
+            return styles.navItemDisabled;
+        }
         return this.props.selected_tab === tab ? styles.selectedNavItem : styles.navItem;
     }
     static getTab(user) {
@@ -189,6 +262,28 @@ export class Home extends Component {
             }
         }
         return false;
+    }
+    // is this user entitle to edit the user passed in?
+    static canEdit(user, isAdmin, isManager) {
+        // admin can edit anyone, always
+        if (isAdmin) return true;
+        // a non admin user can never edit an administrator
+        const userIsAdmin = Home.hasRole(user, ['admin']);
+        if (userIsAdmin) return false;
+        // managers can edit everyone else
+        return isManager;
+    }
+    // is this user entitle to edit the user passed in?
+    static canDelete(user, signedInUser, isAdmin, isManager) {
+        // one cannot delete the signed-in user
+        if (user.email === signedInUser.email) return false;
+        // admin can edit anyone, always
+        if (isAdmin) return true;
+        // a non admin user can never edit an administrator
+        const userIsAdmin = Home.hasRole(user, ['admin']);
+        if (userIsAdmin) return false;
+        // managers can edit everyone else
+        return isManager;
     }
     static pad(item) {
         return ("" + item).padStart(2, '0');
@@ -247,9 +342,25 @@ export class Home extends Component {
     closeDialog() {
         this.setState({dialog_open: false, message: "", message_title: "", message_callback: null});
     }
+    sendMessage(endpoint, data) {
+        if (this.clientRef) {
+            this.clientRef.sendMessage(endpoint, JSON.stringify(data));
+        }
+    }
+    connectionError(error) {
+        this.props.setOperatorConnected(false);
+        this.props.setError("Operator Connection", error);
+    }
     render() {
+        const isAdmin = Home.hasRole(this.props.user, ['admin']);
+        const isOperator = Home.hasRole(this.props.user, ['operator']);
         return (
             <MuiThemeProvider theme={uiTheme}>
+
+                {
+                    this.props.busy &&
+                    <div style={styles.busy} />
+                }
 
                 <AppMenu title="" signed_in={true} />
 
@@ -262,47 +373,58 @@ export class Home extends Component {
                                message={this.state.message}
                                title={this.state.message_title} />
 
+                <SockJsClient url={system_config.ws_base} topics={['/chat/' + this.props.session.id]}
+                              ref={ (client) => { this.clientRef = client }}
+                              onMessage={(msg) => { this.props.processOperatorMessage(msg) }}
+                              onConnect={() => this.props.setOperatorConnected(true)}
+                              onDisconnect={() => this.props.setOperatorConnected(false)}
+                              onError={(error) => this.connectionError(error)} />
+
                  <div style={styles.page}>
 
                      <div style={styles.pageNav}>
                          {
                              Home.hasRole(this.props.user, ['admin']) &&
-                             <div style={this.getStyle('organisations')} onClick={() => this.props.selectTab('organisations')}>organisations</div>
+                             <div style={this.getStyle('organisations', false)} onClick={() => this.props.selectTab('organisations')}>organisations</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('knowledge bases')}
+                             <div style={this.getStyle('knowledge bases', false)}
                                   onClick={() => this.props.selectTab('knowledge bases')}>knowledge bases</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('users')}
+                             <div style={this.getStyle('users', false)}
                                   onClick={() => this.props.selectTab('users')}>user manager</div>
                          }
                          {
+                             <div style={this.getStyle('operator', !this.props.operator_connected || !isOperator)}
+                                  onClick={() => { if (isOperator) this.props.selectTab('operator')}}>operator</div>
+                         }
+                         {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('knowledge')}
+                             <div style={this.getStyle('knowledge', false)}
                                   onClick={() => this.props.selectTab('knowledge')}>knowledge manager</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('document sources')}
+                             <div style={this.getStyle('document sources', false)}
                                   onClick={() => this.props.selectTab('document sources')}>document
                                  sources</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('documents')}
+                             <div style={this.getStyle('documents', false)}
                                   onClick={() => this.props.selectTab('documents')}>documents</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('mind')}
+                             <div style={this.getStyle('mind', false)}
                                   onClick={() => this.props.selectTab('mind')}>the mind</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('synonyms')}
+                             <div style={this.getStyle('synonyms', false)}
                                   onClick={() => this.props.selectTab('synonyms')}>synonyms</div>
                          }
                          {
@@ -312,12 +434,12 @@ export class Home extends Component {
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('reports')}
+                             <div style={this.getStyle('reports', false)}
                                   onClick={() => this.props.selectTab('reports')}>reports</div>
                          }
                          {
-                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('license')}
+                             Home.hasRole(this.props.user, ['admin']) &&
+                             <div style={this.getStyle('license', false)}
                                   onClick={() => this.props.selectTab('license')}>license</div>
                          }
                      </div>
@@ -325,7 +447,7 @@ export class Home extends Component {
                      <div style={styles.pageContent}>
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
-                          this.props.selected_tab !== 'license' &&
+                          this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'license' && isAdmin &&
                              <div style={styles.organisationSelect}>
                                  <div style={styles.lhs}>organisation</div>
                                  <div style={styles.rhs}>
@@ -340,8 +462,18 @@ export class Home extends Component {
                              </div>
                          }
 
+                         {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
+                          this.props.selected_tab !== 'license' && this.props.selected_tab !== 'operator' && !isAdmin &&
+                             <div style={styles.organisationSelect}>
+                                 <div style={styles.lhs}>organisation</div>
+                                 <div style={styles.rhs}>
+                                     <div style={styles.organisationLabel}>{this.props.selected_organisation}</div>
+                                 </div>
+                             </div>
+                         }
+
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' && this.props.selected_tab !== 'users' &&
-                          this.props.selected_tab !== 'license' && this.props.selected_tab !== 'knowledge bases' &&
+                          this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'license' && this.props.selected_tab !== 'knowledge bases' &&
                              <div style={styles.knowledgeSelect}>
                                  <div style={styles.lhs}>knowledge base</div>
                                  <div style={styles.rhs}>
@@ -374,6 +506,13 @@ export class Home extends Component {
                             <UserManager
                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                 closeDialog={() => this.closeDialog()} />
+                         }
+
+                         { this.props.selected_tab === 'operator' &&
+                             <Operator
+                                 sendMessage={(endpoint, data) => this.sendMessage(endpoint, data)}
+                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                                 closeDialog={() => this.closeDialog()} />
                          }
 
                          { this.props.selected_tab === 'knowledge' &&
@@ -442,6 +581,7 @@ export class Home extends Component {
                         <div style={styles.notifications}>
                             {
                                 this.getNotifications().map((notification) => {
+                                    console.log(notification);
                                     return (
                                         <div key={notification.id} style={styles.info}>
                                             <div style={styles.infoDate}>{notification.year}/{Home.pad(notification.month)}/{Home.pad(notification.day)}&nbsp;
@@ -449,6 +589,7 @@ export class Home extends Component {
                                                 {Home.pad(parseInt(notification.created / 1000) % 60)}.
                                                 {Home.pad2(notification.created % 1000)}
                                             </div>
+                                            <div style={styles.infoType}>{notification.service}</div>
                                             <div style={styles.infoText}>{notification.message}</div>
                                         </div>
                                     )
@@ -481,13 +622,21 @@ const mapStateToProps = function(state) {
         notification_time_in_ms: state.appReducer.notification_time_in_ms,
         notification_list_display_size: state.appReducer.notification_list_display_size,
 
+        busy: state.appReducer.busy,
+
         user: state.appReducer.user,
         selected_tab: state.appReducer.selected_tab,
+        session: state.appReducer.session,
+        operator_connected: state.appReducer.operator_connected,
 
         organisation_list: state.appReducer.organisation_list,
         knowledge_base_list: state.appReducer.knowledge_base_list,
+        operator_ready: state.appReducer.operator_ready,
+
+        html5_notifications: state.appReducer.html5_notifications,
 
         selected_organisation: state.appReducer.selected_organisation,
+        selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase: state.appReducer.selected_knowledgebase,
     };
 };

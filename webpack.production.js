@@ -50,6 +50,10 @@ module.exports = {
                 to: 'images'
             },
             {
+                from: 'resources',
+                to: 'resources'
+            },
+            {
                 from: 'css',
                 to: 'css'
             },

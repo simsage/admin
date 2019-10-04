@@ -57,19 +57,6 @@ const styles = {
         marginTop: '3px',
         marginRight: '5px',
     },
-    busy: {
-        display: 'block',
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: '9999',
-        borderRadius: '10px',
-        opacity: '0.8',
-        backgroundSize: '100px',
-        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
-    },
 };
 
 
@@ -129,11 +116,6 @@ export class Reports extends React.Component {
         const date = new Date(this.props.report_date);
         return (
             <div>
-                {
-                    this.state.busy &&
-                    <div style={styles.busy} />
-                }
-
                 <br clear="both" />
                 <div style={styles.downloadButton}>
                     <Button variant="outlined" onClick={() => this.downloadReport()}>download report</Button>
@@ -216,8 +198,6 @@ const mapStateToProps = function(state) {
         general_statistics: state.appReducer.general_statistics,
         query_word_frequency: state.appReducer.query_word_frequency,
         file_type_statistics: state.appReducer.file_type_statistics,
-
-        busy: state.appReducer.busy,
     };
 };
 
