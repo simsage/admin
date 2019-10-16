@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {createMuiTheme } from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 import deepOrange from "@material-ui/core/colors/deepOrange";
 import blueGrey from "@material-ui/core/colors/blueGrey";
 

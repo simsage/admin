@@ -21,7 +21,7 @@ import CrawlerDatabase from "./crawler-database";
 const styles = {
     formContent: {
         overflowY: 'scroll',
-        height: '400px',
+        height: '500px',
     },
     tab: {
         backgroundColor: '#f8f8f8',
@@ -155,6 +155,7 @@ export class CrawlerDialog extends Component {
             filesPerSecond: crawler.filesPerSecond,
             schedule: (Api.defined(crawler.schedule) ? crawler.schedule : ''),
             deleteFiles: crawler.deleteFiles,
+            allowAnonymous: crawler.allowAnonymous,
 
             file_username: file_username,
             file_password: file_password,
@@ -231,6 +232,7 @@ export class CrawlerDialog extends Component {
             name: data.name,
             crawlerType: data.crawlerType,
             deleteFiles: data.deleteFiles,
+            allowAnonymous: data.allowAnonymous,
             filesPerSecond: data.filesPerSecond,
             schedule: data.schedule,
             specificJson: specificJson,
@@ -301,7 +303,7 @@ export class CrawlerDialog extends Component {
                         disableBackdropClick={true}
                         disableEscapeKeyDown={true}
                         fullWidth={true}
-                        maxWidth="md"
+                        maxWidth="lg"
                         onClose={this.handleCancel.bind(this)} >
                     <DialogTitle id="alert-dialog-title">{this.state.title}</DialogTitle>
                     <div>
@@ -324,6 +326,7 @@ export class CrawlerDialog extends Component {
                                                                 filesPerSecond={this.state.filesPerSecond}
                                                                 crawlerType={this.state.crawlerType}
                                                                 deleteFiles={this.state.deleteFiles}
+                                                                allowAnonymous={this.state.allowAnonymous}
                                                                 error_title={this.state.crawler_error_title}
                                                                 error_msg={this.state.crawler_error_msg}
                                                                 onError={(title, errStr) => this.setError(title, errStr)}

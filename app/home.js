@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import uiTheme from "./theme-ui";
@@ -21,15 +21,15 @@ import Mind from "./mind/mind";
 import Synonyms from "./synonyms/synonyms";
 import Semantics from "./semantics/semantics";
 import Reports from "./reports/reports";
-import License from "./license/license";
+// import License from "./license/license";
 import Operator from "./operator/operator";
 
 import system_config from 'settings'
 import SockJsClient from 'react-stomp';
 
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { appCreators } from "./actions/appActions";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "./actions/appActions";
 
 const styles = {
     page: {
@@ -437,11 +437,11 @@ export class Home extends Component {
                              <div style={this.getStyle('reports', false)}
                                   onClick={() => this.props.selectTab('reports')}>reports</div>
                          }
-                         {
-                             Home.hasRole(this.props.user, ['admin']) &&
-                             <div style={this.getStyle('license', false)}
-                                  onClick={() => this.props.selectTab('license')}>license</div>
-                         }
+                         {/*{*/}
+                         {/*    Home.hasRole(this.props.user, ['admin']) &&*/}
+                         {/*    <div style={this.getStyle('license', false)}*/}
+                         {/*         onClick={() => this.props.selectTab('license')}>license</div>*/}
+                         {/*}*/}
                      </div>
 
                      <div style={styles.pageContent}>
@@ -557,11 +557,11 @@ export class Home extends Component {
                                  closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'license' &&
-                             <License
-                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                 closeDialog={() => this.closeDialog()} />
-                         }
+                         {/*{ this.props.selected_tab === 'license' &&*/}
+                         {/*    <License*/}
+                         {/*        openDialog={(message, title, callback) => this.openDialog(message, title, callback)}*/}
+                         {/*        closeDialog={() => this.closeDialog()} />*/}
+                         {/*}*/}
 
                          {
                              this.props.selected_tab === 'invalid' &&

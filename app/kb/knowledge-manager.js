@@ -66,6 +66,9 @@ export class KnowledgeManager extends React.Component {
     mindDump() {
         window.open(Comms.get_mind_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
     }
+    summaryDump() {
+        window.open(Comms.get_summary_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
+    }
     queryLogDump() {
         window.open(Comms.get_query_log_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
     }
@@ -143,6 +146,27 @@ export class KnowledgeManager extends React.Component {
                     <Grid item xs={3}>
                         <Button color="primary" variant="outlined" style={styles.exportButton}
                                 onClick={() => this.mindDump()}>Export</Button>
+                    </Grid>
+                    }
+                    {this.props.selected_knowledgebase_id &&
+                    <Grid item xs={7}/>
+                    }
+
+
+                    {this.props.selected_knowledgebase_id &&
+                    <Grid item xs={12}><div style={styles.hr} /></Grid>
+                    }
+
+
+                    {this.props.selected_knowledgebase_id &&
+                    <Grid item xs={4}>
+                        <div style={styles.label}>Knowledgebase Itemization</div>
+                    </Grid>
+                    }
+                    {this.props.selected_knowledgebase_id &&
+                    <Grid item xs={3}>
+                        <Button color="primary" variant="outlined" style={styles.exportButton}
+                                onClick={() => this.summaryDump()}>Export</Button>
                     </Grid>
                     }
                     {this.props.selected_knowledgebase_id &&

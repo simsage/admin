@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Downshift from 'downshift';
 import Paper from '@material-ui/core/Paper';
@@ -223,13 +223,13 @@ export class AutoComplete extends Component {
                                 {
                                     !this.state.isOpen &&
                                     <div style={styles.pullDownBox}>
-                                        <img src="../images/pulldown.svg" style={styles.pullDownImage} alt="auto complete" />
+                                        <img src="../images/pulldown.svg" style={styles.pullDownImage} onClick={() => this.showAllData(false)} alt="auto complete" />
                                     </div>
                                 }
                                 {
                                     this.state.isOpen &&
                                     <div style={styles.pullDownBox}>
-                                        <img src="../images/pulldown-rotated.svg" style={styles.pullDownImage} alt="auto complete" />
+                                        <img src="../images/pulldown-rotated.svg" style={styles.pullDownImage} onClick={() => this.showAllData(false)} alt="auto complete" />
                                     </div>
                                 }
                                 {this.state.isOpen &&

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Grid from '@material-ui/core/Grid';
 
 import system_config from "../settings";
-import { clearState } from '../reducers/stateLoader'
+import {clearState} from '../reducers/stateLoader'
 
 const styles = {
     background: {

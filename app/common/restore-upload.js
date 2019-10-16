@@ -1,7 +1,5 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Button from "@material-ui/core/Button";
-
-import {Api} from "./api"
 
 const styles = {
     uploadContainer: {

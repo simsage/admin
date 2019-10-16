@@ -2,8 +2,7 @@ import React from 'react';
 
 import Button from '@material-ui/core/Button';
 
-import {Bar} from 'react-chartjs-2'
-import {Line} from 'react-chartjs-2'
+import {Bar, Line} from 'react-chartjs-2'
 
 import {GraphHelper} from "../common/graph-helper";
 
@@ -13,7 +12,6 @@ import {appCreators} from "../actions/appActions";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {parseISODate} from "luxon/src/impl/regexParser";
 
 const top = 20;
 const graphHeight = 350;

@@ -1,7 +1,7 @@
-import { applyMiddleware, combineReducers, compose, createStore } from "redux";
+import {applyMiddleware, combineReducers, compose, createStore} from "redux";
 import thunk from "redux-thunk";
-import { createLogger } from "redux-logger";
-import { routerMiddleware, routerReducer } from "react-router-redux";
+import {createLogger} from "redux-logger";
+import {routerMiddleware, routerReducer} from "react-router-redux";
 import * as AppReducer from "./appReducer";
 
 import {loadState} from "./stateLoader";

@@ -83,6 +83,13 @@ export class Comms {
             encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
     };
 
+    // get a url that can be used to summarize the system
+    static get_summary_dump_url(organisation_id, kb_id) {
+        let session = Comms.getSession();
+        return system_config.api_base + '/document/summarize/' + encodeURIComponent(session.id) + '/' +
+            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+    };
+
     // get a url that can be used to download a crawler
     static get_crawler_url(organisation_id, kb_id, crawler_id) {
         let session = Comms.getSession();

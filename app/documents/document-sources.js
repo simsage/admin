@@ -14,7 +14,8 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
-const empty_crawler= {id: '', crawlerType: '', name: '', description: '', schedule: '', filesPerSecond: '0', specificJson: ''};
+const empty_crawler= {id: '', crawlerType: '', name: '', deleteFiles: false, allowAnonymous: true,
+                      description: '', schedule: '', filesPerSecond: '0', specificJson: ''};
 
 const styles = {
     tab: {

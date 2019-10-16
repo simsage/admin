@@ -8,7 +8,6 @@ import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
 
-
 const styles = {
     page: {
         width: '90%',

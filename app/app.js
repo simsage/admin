@@ -1,14 +1,13 @@
 import React from 'react';
 import 'babel-polyfill'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import { HashRouter } from 'react-router-dom'
-import { Route } from 'react-router'
-import { Welcome } from "./welcome/welcome";
+import {Provider} from 'react-redux'
+import {HashRouter} from 'react-router-dom'
+import {Route} from 'react-router'
+import {Welcome} from "./welcome/welcome";
 
 import configureStore from "./reducers/configureStore";
 import {saveState} from "./reducers/stateLoader";
-
 // must not have {} to work
 import SignIn from './auth/sign_in'
 

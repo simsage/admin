@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -17,9 +17,9 @@ import TablePagination from '@material-ui/core/TablePagination';
 import {Api} from '../common/api'
 import {Comms} from "../common/comms";
 
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { appCreators } from "../actions/appActions";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "../actions/appActions";
 
 const id_style = "<div style='width: 170px; float: left; height: 24px;'>";
 

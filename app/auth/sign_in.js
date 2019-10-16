@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import Button from '@material-ui/core/Button';
@@ -8,11 +8,11 @@ import Grid from '@material-ui/core/Grid';
 
 import AppMenu from './app-menu';
 import ErrorDialog from '../common/error-dialog'
-import { clearState } from '../reducers/stateLoader'
+import {clearState} from '../reducers/stateLoader'
 
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { appCreators } from "../actions/appActions";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "../actions/appActions";
 
 
 const styles = {

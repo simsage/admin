@@ -61,6 +61,7 @@ export class CrawlerGeneral extends Component {
             filesPerSecond: Api.defined(props.filesPerSecond) ? props.filesPerSecond : '0',
             crawlerType: Api.defined(props.crawlerType) ? props.crawlerType : 'none',
             deleteFiles: props.deleteFiles,
+            allowAnonymous: props.allowAnonymous,
         };
 
     }
@@ -79,6 +80,7 @@ export class CrawlerGeneral extends Component {
                             filesPerSecond: nextProps.filesPerSecond,
                             crawlerType: nextProps.crawlerType,
                             deleteFiles: nextProps.deleteFiles,
+                            allowAnonymous: nextProps.allowAnonymous,
                             organisation_id: nextProps.organisation_id,
                             kb_id: nextProps.kb_id,
                             id: nextProps.id,
@@ -95,6 +97,7 @@ export class CrawlerGeneral extends Component {
         return {filesPerSecond: Api.defined(data.filesPerSecond) ? data.filesPerSecond : this.state.filesPerSecond,
                 crawlerType: Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType,
                 deleteFiles: Api.defined(data.deleteFiles) ? data.deleteFiles : this.state.deleteFiles,
+                allowAnonymous: Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous,
                 name: Api.defined(data.name) ? data.name : this.state.name,
                 id: Api.defined(data.id) ? data.id : this.state.id,
             };
@@ -184,7 +187,7 @@ export class CrawlerGeneral extends Component {
                 />
                 <br/>
                 <br/>
-                <div style={{float: 'left'}}>
+                <div style={{float: 'left'}} title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automtically from SimSage.">
                     <Checkbox
                         checked={this.state.deleteFiles}
                         onChange={(event) => { this.change_callback({deleteFiles: event.target.checked}); }}
@@ -194,6 +197,20 @@ export class CrawlerGeneral extends Component {
                         }}
                     />
                     remove un-seen files?
+                </div>
+                <br clear="both" />
+
+                <br/>
+                <div style={{float: 'left'}} title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it.">
+                    <Checkbox
+                        checked={this.state.allowAnonymous}
+                        onChange={(event) => { this.change_callback({allowAnonymous: event.target.checked}); }}
+                        value="allow anonymous access to these files?"
+                        inputProps={{
+                            'aria-label': 'primary checkbox',
+                        }}
+                    />
+                    allow anonymous access to these files?
                 </div>
                 <br clear="both" />
 
