@@ -24,6 +24,10 @@ export function initializeState() {
         selected_knowledgebase_id: "",
         knowledge_base_list: [],
 
+        // inventory items for a given kb
+        inventorize_list: [],
+        inventorize_busy: false,
+
         // the users
         user_list: [],
 

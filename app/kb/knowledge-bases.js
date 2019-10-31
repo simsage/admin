@@ -217,9 +217,6 @@ export class KnowledgeBases extends Component {
                                                 <div style={styles.linkButton} onClick={() => this.downloadHtml("bot", knowledge_base)}>
                                                     <img src="../images/bot.svg" style={styles.dlImageSize} title="download knowledge-base bot HTML" alt="download bot"/>
                                                 </div>
-                                                <div style={styles.linkButton} onClick={() => this.downloadHtml("operator", knowledge_base)}>
-                                                    <img src="../images/operator.svg" style={styles.dlImageSize} title="download knowledge-base operator HTML" alt="download operator"/>
-                                                </div>
                                                 <div style={styles.linkButton} onClick={() => this.downloadHtml("search", knowledge_base)}>
                                                     <img src="../images/search.svg" style={styles.dlImageSize} title="download knowledge-base search HTML" alt="download search"/>
                                                 </div>

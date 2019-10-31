@@ -44,6 +44,9 @@ const styles = {
         padding: '10px',
         color: '#555',
     },
+    statusImage: {
+        width: '24px',
+    },
     gridWidth: {
         width: '800px',
     },
@@ -127,7 +130,7 @@ export class Documents extends React.Component {
     }
     deleteDocument(action) {
         if (action && Api.defined(this.state.document)) {
-            this.props.deleteDocument(this.state.document.url);
+            this.props.deleteDocument(this.state.document.url, this.state.document.crawlerId);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
@@ -156,7 +159,51 @@ export class Documents extends React.Component {
         }
         return url;
     }
-    viewDocument(document) {
+    // return: 0 => to do, 1 => done, 2 => disabled
+    getActive(document, stage) {
+        if (stage === "crawled") {
+            return 1;
+        } else if (stage === "converted") {
+            if (document.converted > 0)
+                return 1;
+            else if (document.coverted < 0)
+                return 2;
+        } else if (stage === "parsed") {
+            if (document.converted < document.parsed)
+                return 1;
+            else if (document.parsed < 0)
+                return 2;
+        } else if (stage === "indexed") {
+            if (document.parsed < document.indexed)
+                return 1;
+            else if (document.indexed < 0)
+                return 2;
+        } else if (stage === "previewed") {
+            console.log("document.previewed " + document.previewed);
+            if (document.indexed < document.previewed)
+                return 1;
+            else if (document.previewed < 0)
+                return 2;
+        }
+        return 0;
+    }
+    getStatus(document, stage) {
+        const status = this.getActive(document, stage);
+        if (status === 1)
+            return "../images/dot-green.svg";
+        else if (status === 0)
+            return "../images/dot-orange.svg";
+        else
+            return "../images/dot-grey.svg";
+    }
+    getStatusText(document, stage, staging) {
+        const status = this.getActive(document, stage);
+        if (status === 1)
+            return "document " + stage;
+        else if (status === 0)
+            return "document not yet " + stage;
+        else
+            return staging + " disabled for this document-source";
     }
     render() {
         return (
@@ -191,6 +238,7 @@ export class Documents extends React.Component {
                                     <TableCell style={styles.tableHeaderStyle}>url</TableCell>
                                     <TableCell style={styles.tableHeaderStyle}>source</TableCell>
                                     <TableCell style={styles.tableHeaderStyle}>last modified</TableCell>
+                                    <TableCell style={styles.tableHeaderStyle}>status</TableCell>
                                     <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -216,6 +264,15 @@ export class Documents extends React.Component {
                                                 </TableCell>
                                                 <TableCell>
                                                     <div style={styles.label}>{Api.unixTimeConvert(document.lastModified)}</div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div style={styles.label}>
+                                                        <img src={this.getStatus(document, "crawled")} style={styles.statusImage} alt="crawler" title={this.getStatusText(document, "crawled", "crawling")} />
+                                                        <img src={this.getStatus(document, "converted")} style={styles.statusImage} alt="converted" title={this.getStatusText(document, "converted", "converting")} />
+                                                        <img src={this.getStatus(document, "parsed")} style={styles.statusImage} alt="parsed" title={this.getStatusText(document, "parsed", "parsing")} />
+                                                        <img src={this.getStatus(document, "indexed")} style={styles.statusImage} alt="indexed" title={this.getStatusText(document, "indexed", "indexing")} />
+                                                        <img src={this.getStatus(document, "previewed")} style={styles.statusImage} alt="previewed" title={this.getStatusText(document, "previewed", "preview generation")} />
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div style={styles.linkButton} onClick={() => this.deleteDocumentAsk(document)}>

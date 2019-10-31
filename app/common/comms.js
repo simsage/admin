@@ -84,10 +84,11 @@ export class Comms {
     };
 
     // get a url that can be used to summarize the system
-    static get_summary_dump_url(organisation_id, kb_id) {
+    static get_inventorize_dump_url(organisation_id, kb_id, dateTime) {
         let session = Comms.getSession();
-        return system_config.api_base + '/document/summarize/' + encodeURIComponent(session.id) + '/' +
-            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        return system_config.api_base + '/document/spreadsheet/' + encodeURIComponent(session.id) + '/' +
+            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' +
+            encodeURIComponent(dateTime);
     };
 
     // get a url that can be used to download a crawler
@@ -105,10 +106,11 @@ export class Comms {
     };
 
     // get a url that can be used to get the query-logs
-    static get_query_log_url(organisation_id, kb_id) {
+    static get_query_log_url(organisation_id, kb_id, year, month) {
         let session = Comms.getSession();
         return system_config.api_base + '/stats/query-logs/' + encodeURIComponent(session.id) + '/' +
-            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' +
+            encodeURIComponent(year) + '/' + encodeURIComponent(month);
     };
 
     static http_delete(url, fn_success, fn_fail) {

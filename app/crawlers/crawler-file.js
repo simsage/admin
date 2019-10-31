@@ -99,7 +99,7 @@ export class CrawlerFile extends Component {
                 <br />
 
                 <TextField
-                    placeholder="domain"
+                    placeholder="domain (leave blank for default or no domain)"
                     label="domain"
                     value={this.state.file_domain}
                     onChange={(event) => {this.change_callback({file_domain: event.target.value})}}
@@ -109,7 +109,7 @@ export class CrawlerFile extends Component {
                 <br />
 
                 <TextField
-                    placeholder="server"
+                    placeholder="server (hostname or ip-address)"
                     label="server"
                     value={this.state.file_server}
                     onChange={(event) => {this.change_callback({file_server: event.target.value})}}

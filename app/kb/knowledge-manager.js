@@ -2,10 +2,18 @@ import React from 'react';
 
 import Grid from '@material-ui/core/Grid';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from "@material-ui/core/Paper";
+
 import ProgramUpload from "../common/program-upload";
 import Button from "@material-ui/core/Button";
 
 import Comms from '../common/comms';
+import Api from '../common/api';
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -40,6 +48,39 @@ const styles = {
     exportButton: {
         marginTop: '20px',
     },
+    snapshotItem: {
+        float: 'right',
+        marginBottom: '5px',
+    },
+    refreshImage: {
+        float: 'right',
+        marginTop: '20px',
+        width: '32px',
+        cursor: 'pointer',
+    },
+    tableHeaderStyle: {
+        background: '#555',
+        fontSize: '0.95em',
+        color: '#fff',
+    },
+    linkButton: {
+        float: 'left',
+        padding: '10px',
+        color: '#888',
+        cursor: 'pointer',
+    },
+    imageButton: {
+        float: 'right',
+        padding: '10px',
+        color: '#888',
+        cursor: 'pointer',
+    },
+    downloadImage: {
+        width: '24px',
+    },
+    tableWidth: {
+        width: '440px',
+    }
 };
 
 
@@ -47,11 +88,15 @@ export class KnowledgeManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            date_time: 0,
         };
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
         console.log(error, info);
+    }
+    componentDidMount() {
+        this.props.getInventoryList();
     }
     programUploaded() {
     }
@@ -63,14 +108,24 @@ export class KnowledgeManager extends React.Component {
     backup() {
         window.open(Comms.get_backup_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
     }
+    inventorizeDump(dateTime) {
+        window.open(Comms.get_inventorize_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime), '_blank');
+    }
+    deleteInventorizeAsk(dateTime) {
+        this.setState({date_time: dateTime});
+        this.props.openDialog("are you sure you want to remove the report dated <b>" + Api.unixTimeConvert(dateTime) + "</b>?",
+            "Remove Inventory Report", (action) => { this.deleteReport(action) });
+    }
+    deleteReport(action) {
+        if (action) {
+            this.props.deleteInventoryItem(this.state.date_time);
+        }
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
+        }
+    }
     mindDump() {
         window.open(Comms.get_mind_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
-    }
-    summaryDump() {
-        window.open(Comms.get_summary_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
-    }
-    queryLogDump() {
-        window.open(Comms.get_query_log_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
     }
     restore(data) {
         if (data) {
@@ -157,49 +212,6 @@ export class KnowledgeManager extends React.Component {
                     <Grid item xs={12}><div style={styles.hr} /></Grid>
                     }
 
-
-                    {this.props.selected_knowledgebase_id &&
-                    <Grid item xs={4}>
-                        <div style={styles.label}>Knowledgebase Itemization</div>
-                    </Grid>
-                    }
-                    {this.props.selected_knowledgebase_id &&
-                    <Grid item xs={3}>
-                        <Button color="primary" variant="outlined" style={styles.exportButton}
-                                onClick={() => this.summaryDump()}>Export</Button>
-                    </Grid>
-                    }
-                    {this.props.selected_knowledgebase_id &&
-                    <Grid item xs={7}/>
-                    }
-
-
-                    {this.props.selected_knowledgebase_id &&
-                    <Grid item xs={12}><div style={styles.hr} /></Grid>
-                    }
-
-
-                    {this.props.selected_knowledgebase_id &&
-                    <Grid item xs={4}>
-                        <div style={styles.label}>Export Query-logs CSV</div>
-                    </Grid>
-                    }
-                    {this.props.selected_knowledgebase_id &&
-                    <Grid item xs={3}>
-                        <Button color="primary" variant="outlined" style={styles.exportButton}
-                                onClick={() => this.queryLogDump()}>Export</Button>
-                    </Grid>
-                    }
-                    {this.props.selected_knowledgebase_id &&
-                    <Grid item xs={7}/>
-                    }
-
-
-                    {this.props.selected_knowledgebase_id &&
-                    <Grid item xs={12}><div style={styles.hr} /></Grid>
-                    }
-
-
                     {/*{this.props.selected_knowledgebase_id &&*/}
                     {/*<Grid item xs={2}/>*/}
                     {/*}*/}
@@ -239,6 +251,7 @@ const mapStateToProps = function(state) {
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+        inventorize_list: state.appReducer.inventorize_list,
         knowledge_base_list: state.appReducer.knowledge_base_list,
     };
 };

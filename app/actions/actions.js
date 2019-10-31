@@ -13,6 +13,8 @@ export const SELECT_ORGANISATION = "select organisation";
 
 export const GET_KNOWLEDGE_BASES = "get knowledge bases";
 export const SELECT_KNOWLEDGE_BASE = "selected knowledge base";
+export const GET_INVENTORIZE_LIST = "get inventorize list";
+export const GET_INVENTORIZE_BUSY = "get inventorize busy";
 
 export const UPLOADING_PROGRAM = "uploading program";
 export const UPLOADING_PROGRAM_FINISHED = "uploading program finished";

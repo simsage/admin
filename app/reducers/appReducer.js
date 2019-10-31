@@ -10,6 +10,8 @@ import {
     GET_DOCUMENTS_PAGINATED,
     GET_HTML5_NOTIFICATIONS,
     GET_KNOWLEDGE_BASES,
+    GET_INVENTORIZE_LIST,
+    GET_INVENTORIZE_BUSY,
     GET_LICENSE,
     GET_ORGANISATION_LIST,
     GET_USERS,
@@ -27,6 +29,7 @@ import {
     SET_BOT_QUERY_STRING,
     SET_DOCUMENT_FILTER,
     SET_DOCUMENT_PAGE,
+    SET_DOCUMENT_PAGE_SIZE,
     SET_MIND_ITEM_FILTER,
     SET_NOTIFICATION_LIST,
     SET_OPERATOR_ANSWER,
@@ -133,6 +136,22 @@ export const reducer = (state, action) => {
             return {
                 ...state,
                 knowledge_base_list: action.knowledge_base_list,
+                busy: false,
+            };
+        }
+
+        case GET_INVENTORIZE_LIST: {
+            return {
+                ...state,
+                inventorize_list: action.inventorize_list,
+                busy: false,
+            };
+        }
+
+        case GET_INVENTORIZE_BUSY: {
+            return {
+                ...state,
+                inventorize_busy: action.busy,
                 busy: false,
             };
         }
@@ -263,6 +282,13 @@ export const reducer = (state, action) => {
                 document_previous: action.prev_url,
                 document_nav_list: document_nav_list,
                 busy: false,
+            }
+        }
+
+        case SET_DOCUMENT_PAGE_SIZE: {
+            return {
+                ...state,
+                document_page_size: action.page_size,
             }
         }
 

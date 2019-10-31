@@ -21,7 +21,7 @@ import CrawlerDatabase from "./crawler-database";
 const styles = {
     formContent: {
         overflowY: 'scroll',
-        height: '500px',
+        height: '550px',
     },
     tab: {
         backgroundColor: '#f8f8f8',
@@ -156,6 +156,8 @@ export class CrawlerDialog extends Component {
             schedule: (Api.defined(crawler.schedule) ? crawler.schedule : ''),
             deleteFiles: crawler.deleteFiles,
             allowAnonymous: crawler.allowAnonymous,
+            enablePreview: crawler.enablePreview,
+            enableIndexing: crawler.enableIndexing,
 
             file_username: file_username,
             file_password: file_password,
@@ -233,6 +235,8 @@ export class CrawlerDialog extends Component {
             crawlerType: data.crawlerType,
             deleteFiles: data.deleteFiles,
             allowAnonymous: data.allowAnonymous,
+            enablePreview: data.enablePreview,
+            enableIndexing: data.enableIndexing,
             filesPerSecond: data.filesPerSecond,
             schedule: data.schedule,
             specificJson: specificJson,
@@ -327,6 +331,8 @@ export class CrawlerDialog extends Component {
                                                                 crawlerType={this.state.crawlerType}
                                                                 deleteFiles={this.state.deleteFiles}
                                                                 allowAnonymous={this.state.allowAnonymous}
+                                                                enablePreview={this.state.enablePreview}
+                                                                enableIndexing={this.state.enableIndexing}
                                                                 error_title={this.state.crawler_error_title}
                                                                 error_msg={this.state.crawler_error_msg}
                                                                 onError={(title, errStr) => this.setError(title, errStr)}

@@ -11,8 +11,10 @@ import {
     GET_DOCUMENTS_PAGINATED,
     GET_HTML5_NOTIFICATIONS,
     GET_KNOWLEDGE_BASES,
+    GET_INVENTORIZE_LIST,
     GET_LICENSE,
     GET_ORGANISATION_LIST,
+    GET_INVENTORIZE_BUSY,
     GET_OS_MESSAGES,
     GET_STATS,
     GET_USERS,
@@ -83,6 +85,21 @@ async function _getKnowledgeBases(organisation_id, dispatch) {
         },
         (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
     )
+}
+
+async function _getInventorizeList(organisation_id, kb_id, dispatch) {
+    if (kb_id && organisation_id) {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_get('/document/spreadsheets/' + encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(kb_id) + '/0/5',
+            (response) => {
+                dispatch({type: GET_INVENTORIZE_LIST, inventorize_list: response.data});
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    }
 }
 
 async function _getUsers(organisation_id, dispatch) {
@@ -373,6 +390,7 @@ export const appCreators = {
             dispatch({type: SELECT_KNOWLEDGE_BASE, name, id});
             if (tab === 'document sources') {
                 await _getCrawlers(organisation_id, id, dispatch);
+
             } else if (tab === 'documents') {
                 const organisation_id = getState().appReducer.selected_organisation_id;
                 const kb_id = getState().appReducer.selected_knowledgebase_id;
@@ -381,6 +399,9 @@ export const appCreators = {
                 const document_page_size = getState().appReducer.document_page_size;
                 await _getDocuments(organisation_id, kb_id, document_previous, document_page_size, document_filter, dispatch);
                 dispatch({type:RESET_DOCUMENT_PAGINATION});
+
+            } else if (tab === 'inventory') {
+                await _getInventorizeList(organisation_id, id, dispatch);
             }
         }
     },
@@ -410,6 +431,59 @@ export const appCreators = {
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
+    },
+
+    createInventory: () => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await Comms.http_post('/document/inventorize',
+            {"kbId": kb_id, "organisationId": organisation_id},
+            (response) => {
+                _getInventorizeList(organisation_id, kb_id, dispatch);
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    },
+
+    getInventoryList: () => async (dispatch, getState) => {
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await _getInventorizeList(organisation_id, kb_id, dispatch);
+    },
+
+    // remove a document (delete) from the system
+    deleteInventoryItem: (dateTime) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        if (organisation_id && kb_id) {
+            const full_url = '/document/spreadsheet/' + encodeURIComponent(organisation_id) + '/' +
+                                encodeURIComponent(kb_id) + '/' + encodeURIComponent(dateTime);
+            await Comms.http_delete(full_url,
+                (response) => {
+                    _getInventorizeList(organisation_id, kb_id, dispatch);
+                },
+                (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+            )
+        }
+    },
+
+    getInventoryBusy: () => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        await Comms.http_get('/document/inventorize/' + encodeURIComponent(organisation_id),
+            (response) => {
+                dispatch({type: GET_INVENTORIZE_BUSY, busy: response.data});
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    forceInventoryBusy: () => (dispatch, getState) => {
+        dispatch({type: GET_INVENTORIZE_BUSY, busy: true});
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -540,7 +614,7 @@ export const appCreators = {
     setDocumentFilter: (filter) => ({type: SET_DOCUMENT_FILTER, filter}),
 
     // remove a document (delete) from the system
-    deleteDocument: (url) => async (dispatch, getState) => {
+    deleteDocument: (url, crawler_id) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
@@ -555,7 +629,7 @@ export const appCreators = {
                 document_previous = null;
             }
             const full_url = '/document/document/' + encodeURIComponent(organisation_id) + '/' +
-                                    encodeURIComponent(kb_id) + '/' + btoa(url);
+                                    encodeURIComponent(kb_id) + '/' + btoa(url) + '/' + encodeURIComponent(crawler_id);
             await Comms.http_delete(full_url,
                 (response) => {
                     _getDocuments(organisation_id, kb_id, document_previous, document_page_size, document_filter, dispatch);

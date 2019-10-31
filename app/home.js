@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import {ThemeProvider} from '@material-ui/core/styles';
 import uiTheme from "./theme-ui";
 
 import AppMenu from './auth/app-menu'
@@ -15,6 +15,7 @@ import Organisations from "./organisations/organisations";
 import UserManager from "./users/user-manager";
 import KnowledgeBases from "./kb/knowledge-bases";
 import KnowledgeManager from "./kb/knowledge-manager";
+import Inventory from './inventory/inventory'
 import DocumentSources from "./documents/document-sources";
 import Documents from "./documents/documents";
 import Mind from "./mind/mind";
@@ -216,7 +217,7 @@ export class Home extends Component {
 
             if (isOperator) {
                 // if this user has an operator role at all - we need to ask for events
-                if (this.props.html5_notifications.length === 0) {
+                if (!this.props.html5_notifications || this.props.html5_notifications.length === 0) {
                     this.props.getHtml5Notifications();
                 }
             }
@@ -355,7 +356,7 @@ export class Home extends Component {
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         const isOperator = Home.hasRole(this.props.user, ['operator']);
         return (
-            <MuiThemeProvider theme={uiTheme}>
+            <ThemeProvider theme={uiTheme}>
 
                 {
                     this.props.busy &&
@@ -405,6 +406,11 @@ export class Home extends Component {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              <div style={this.getStyle('knowledge', false)}
                                   onClick={() => this.props.selectTab('knowledge')}>knowledge manager</div>
+                         }
+                         {
+                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
+                             <div style={this.getStyle('inventory', false)}
+                                  onClick={() => this.props.selectTab('inventory')}>inventory</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
@@ -521,6 +527,12 @@ export class Home extends Component {
                                  closeDialog={() => this.closeDialog()} />
                          }
 
+                         { this.props.selected_tab === 'inventory' &&
+                             <Inventory
+                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                                 closeDialog={() => this.closeDialog()} />
+                         }
+
                          { this.props.selected_tab === 'document sources' &&
                             <DocumentSources
                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
@@ -607,7 +619,7 @@ export class Home extends Component {
                     </div>
                 }
 
-            </MuiThemeProvider>
+            </ThemeProvider>
         )
     }
 }

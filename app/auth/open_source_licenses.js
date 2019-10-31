@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import {ThemeProvider} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import uiTheme from "../theme-ui";
 import Grid from '@material-ui/core/Grid';
@@ -56,7 +56,7 @@ export class OpenSourceLicenses extends Component {
         }
         return (
             <div style={styles.page}>
-                <MuiThemeProvider theme={uiTheme}>
+                <ThemeProvider theme={uiTheme}>
 
                     <AppMenu title="open source licenses" loggedIn={false} />
 
@@ -190,7 +190,7 @@ export class OpenSourceLicenses extends Component {
 
                     </Grid>
 
-                </MuiThemeProvider>
+                </ThemeProvider>
             </div>
         );
     }

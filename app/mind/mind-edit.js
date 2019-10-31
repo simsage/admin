@@ -186,7 +186,7 @@ export class MindEdit extends Component {
                         <Grid item xs={9}>
                             <TextField
                                 onChange={(event) => this.setState({answer: event.target.value})}
-                                placeholder="answer"
+                                placeholder="answer, or function (e.g. 'exec show_help person1 person2 date1')"
                                 multiline={true}
                                 rows={5}
                                 variant="outlined"

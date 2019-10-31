@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import {ThemeProvider} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import uiTheme from "../theme-ui";
 import Grid from '@material-ui/core/Grid';
 
 import AppMenu from './app-menu';
-import ErrorDialog from '../common/error-dialog'
-import {clearState} from '../reducers/stateLoader'
+import ErrorDialog from '../common/error-dialog';
+import {clearState} from '../reducers/stateLoader';
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -115,7 +115,7 @@ export class SignIn extends Component {
     render() {
         return (
             <div style={styles.page}>
-                <MuiThemeProvider theme={uiTheme}>
+                <ThemeProvider theme={uiTheme}>
                     <div>
                         <AppMenu title="administration" signed_in={false} />
                         <ErrorDialog title={this.props.error_title}
@@ -203,7 +203,7 @@ export class SignIn extends Component {
                         </Grid>
 
                     </div>
-                </MuiThemeProvider>
+                </ThemeProvider>
             </div>
         );
     }

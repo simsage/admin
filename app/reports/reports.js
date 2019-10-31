@@ -12,6 +12,7 @@ import {appCreators} from "../actions/appActions";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Comms from "../common/comms";
 
 const top = 20;
 const graphHeight = 350;
@@ -89,26 +90,7 @@ export class Reports extends React.Component {
         const date = new Date(this.state.reportDate);
         const year = date.getFullYear();
         const month1 = date.getMonth() + 1;
-
-        const rows = [];
-        GraphHelper.processList(rows, this.props.bot_access_frequency, "bot access " + year + "/" + month1);
-        GraphHelper.processList(rows, this.props.search_access_frequency, "search access " + year + "/" + month1);
-        GraphHelper.processSet(rows, this.props.general_statistics, "system statistics");
-        GraphHelper.processSet(rows, this.props.query_word_frequency, "query frequency");
-        GraphHelper.processSet(rows, this.props.file_type_statistics, "file types");
-
-        let csvContent = "data:text/csv;charset=utf-8,"
-            + rows.map(e => e.join(",")).join("\n");
-        var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        let month = "" + month1;
-        if (month1 < 10) {
-            month = "0" + month;
-        }
-        link.setAttribute("download", "SimSage-stats-" + year + "-" + month + ".csv");
-        document.body.appendChild(link); // Required for FF
-        link.click(); // This will download the data file named "my_data.csv".
+        window.open(Comms.get_query_log_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, year, month1), '_blank');
     }
     render() {
         const date = new Date(this.props.report_date);

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import {ThemeProvider} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import uiTheme from "../theme-ui";
 
@@ -62,7 +62,7 @@ export class LicenseAgreement extends Component {
         }
         return (
             <div style={styles.page}>
-                <MuiThemeProvider theme={uiTheme}>
+                <ThemeProvider theme={uiTheme}>
                     <div>
                         <AppMenu title="" loggedIn={false} />
                         <ErrorDialog title={this.state.error_title}
@@ -250,7 +250,7 @@ export class LicenseAgreement extends Component {
                         </div>
 
                     </div>
-                </MuiThemeProvider>
+                </ThemeProvider>
             </div>
         );
     }

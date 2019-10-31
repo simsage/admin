@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import {ThemeProvider} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import uiTheme from "../theme-ui";
@@ -64,7 +64,7 @@ export class ResetPasswordRequest extends Component {
         }
         return (
             <div style={styles.page}>
-                <MuiThemeProvider theme={uiTheme}>
+                <ThemeProvider theme={uiTheme}>
 
                     <AppMenu title="administration" loggedIn={false} />
 
@@ -120,7 +120,7 @@ export class ResetPasswordRequest extends Component {
 
                     </Grid>
 
-                </MuiThemeProvider>
+                </ThemeProvider>
             </div>
         );
     }

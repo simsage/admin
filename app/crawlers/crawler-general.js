@@ -62,6 +62,8 @@ export class CrawlerGeneral extends Component {
             crawlerType: Api.defined(props.crawlerType) ? props.crawlerType : 'none',
             deleteFiles: props.deleteFiles,
             allowAnonymous: props.allowAnonymous,
+            enablePreview: props.enablePreview,
+            enableIndexing: props.enableIndexing,
         };
 
     }
@@ -81,6 +83,8 @@ export class CrawlerGeneral extends Component {
                             crawlerType: nextProps.crawlerType,
                             deleteFiles: nextProps.deleteFiles,
                             allowAnonymous: nextProps.allowAnonymous,
+                            enablePreview: nextProps.enablePreview,
+                            enableIndexing: nextProps.enableIndexing,
                             organisation_id: nextProps.organisation_id,
                             kb_id: nextProps.kb_id,
                             id: nextProps.id,
@@ -98,6 +102,8 @@ export class CrawlerGeneral extends Component {
                 crawlerType: Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType,
                 deleteFiles: Api.defined(data.deleteFiles) ? data.deleteFiles : this.state.deleteFiles,
                 allowAnonymous: Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous,
+                enablePreview: Api.defined(data.enablePreview) ? data.enablePreview : this.state.enablePreview,
+                enableIndexing: Api.defined(data.enableIndexing) ? data.enableIndexing : this.state.enableIndexing,
                 name: Api.defined(data.name) ? data.name : this.state.name,
                 id: Api.defined(data.id) ? data.id : this.state.id,
             };
@@ -211,6 +217,41 @@ export class CrawlerGeneral extends Component {
                         }}
                     />
                     allow anonymous access to these files?
+                </div>
+                <br clear="both" />
+
+                <br/>
+                <div style={{float: 'left'}} title="Check this box if you want the content of this source to be searchable.">
+                    <Checkbox
+                        checked={this.state.enableIndexing}
+                        onChange={(event) => {
+                            if (!event.target.checked) {
+                                this.change_callback({enablePreview: false, enableIndexing: false});
+                            } else {
+                                this.change_callback({enableIndexing: event.target.checked});
+                            }
+                        }}
+                        value="enable document search?"
+                        inputProps={{
+                            'aria-label': 'primary checkbox',
+                        }}
+                    />
+                    enable document search?
+                </div>
+                <br clear="both" />
+
+                <br/>
+                <div style={{float: 'left'}} title="Check this box if you preview images generated for each document.  Document search must be enabled for this to work.">
+                    <Checkbox
+                        checked={this.state.enablePreview}
+                        disabled={!this.state.enableIndexing}
+                        onChange={(event) => { this.change_callback({enablePreview: event.target.checked}); }}
+                        value="enable document image previews?"
+                        inputProps={{
+                            'aria-label': 'primary checkbox',
+                        }}
+                    />
+                    enable document image previews?
                 </div>
                 <br clear="both" />
 
