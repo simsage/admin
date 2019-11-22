@@ -335,6 +335,7 @@ export class CrawlerDialog extends Component {
                                                                 enableIndexing={this.state.enableIndexing}
                                                                 error_title={this.state.crawler_error_title}
                                                                 error_msg={this.state.crawler_error_msg}
+                                                                refreshDocuments={this.props.refreshDocuments}
                                                                 onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_general_data(crawler)}/>
                                 }

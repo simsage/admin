@@ -97,6 +97,10 @@ export class MindEdit extends Component {
     static getAnswerText(mindItem) {
         let str = "";
         if (mindItem && mindItem.actionList) {
+            // val BROWSER_WRITE = "browser.write"
+            // val BROWSER_URL = "browser.url"
+            // val BROWSER_IMAGE = "browser.image"
+            // val BROWSER_SAY = "browser.say"
             for (const action of mindItem.actionList) {
                 if (action) {
                     if (action.action === "browser.write" && action.parameters) {
@@ -105,7 +109,7 @@ export class MindEdit extends Component {
                         }
 
                         // user custom command?
-                    } else if (action.action !== "browser.image" && action.action !== "browser.link" && action.action !== "browser.say") {
+                    } else if (action.action !== "browser.image" && action.action !== "browser.url" && action.action !== "browser.say") {
                         str = str + "exec " + action.action;
                         for (const param of action.parameters) {
                             str += " ";
@@ -130,7 +134,7 @@ export class MindEdit extends Component {
                         str = str + param.replace(/<br \/>/g, "\n");
                     }
                 }
-                if (action && action.action === "browser.link" && action.parameters) {
+                if (action && action.action === "browser.url" && action.parameters) {
                     if (str.length > 0) {
                         str += "\n";
                     }

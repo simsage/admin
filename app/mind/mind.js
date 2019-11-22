@@ -19,8 +19,8 @@ import {appCreators} from "../actions/appActions";
 
 const styles = {
     tableStyle: {
-        minWidth: '800px',
-        width: '1024px',
+        minWidth: '900px',
+        width: '900px',
     },
     smallTableHeaderStyle: {
         background: '#555',
@@ -72,7 +72,7 @@ const styles = {
         float: 'right',
     },
     gridWidth: {
-        width: '800px',
+        width: '900px',
     },
     hr: {
         border: '0.1px solid #f0f0f0',
@@ -163,6 +163,18 @@ export class Mind extends React.Component {
             this.props.closeDialog();
         }
     }
+    deleteAllMindItemsAsk() {
+        this.props.openDialog("are you sure you want to remove all mind-items of this knowledge-base?",
+            "Remove All Mind Items", (action) => { this.deleteAllMindItems(action) });
+    }
+    deleteAllMindItems(action) {
+        if (action) {
+            this.props.deleteAllMindItems();
+        }
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
+        }
+    }
     handleSearchTextKeydown(event) {
         if (event.key === "Enter") {
             this.props.mindFind();
@@ -187,8 +199,11 @@ export class Mind extends React.Component {
     newMindItem() {
         this.setState({mind_edit: true, mind_item: {
                 id: Api.createGuid(),
+                preContext: "",
+                postContext: "",
                 expression: "",
                 actionList: [],
+                metadata: ""
             }
             });
     }
@@ -277,10 +292,15 @@ export class Mind extends React.Component {
                                     <TableCell/>
                                     <TableCell/>
                                     <TableCell>
-                                        {this.props.selected_organisation_id.length > 0 &&
+                                        {this.props.selected_knowledgebase_id.length > 0 &&
                                         <a style={styles.imageButton} onClick={() => this.newMindItem()}><img
                                             style={styles.addImage} src="../images/add.svg" title="new mind item"
                                             alt="new mind item"/></a>
+                                        }
+                                        {this.props.selected_knowledgebase_id.length > 0 &&
+                                            <a style={styles.imageButton} onClick={() => this.deleteAllMindItemsAsk()}><img
+                                                style={styles.addImage} src="../images/delete.svg" title="remove all mind items of this knowledgebase"
+                                                alt="remove all mind items"/></a>
                                         }
                                     </TableCell>
                                 </TableRow>

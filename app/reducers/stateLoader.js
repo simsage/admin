@@ -109,6 +109,12 @@ export function initializeState() {
         // html5 notification permissions asked already?
         html5_notifications: '',
 
+        // list of log files
+        log_size: 100,
+        log_list: [],
+        selected_log: 'auth',
+        active_components: {}, // what processes are active
+
         // application error messages
         error_title: "Error",
         error: "",

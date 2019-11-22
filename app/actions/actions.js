@@ -72,3 +72,5 @@ export const OPERATOR_CLEAR_USER = "operator clear user";
 export const CLEAR_PREVIOUS_ANSWER = "clear previous answer";
 
 export const GET_HTML5_NOTIFICATIONS = "get html5 notifications";
+
+export const SET_LOG_LIST = "set log list";

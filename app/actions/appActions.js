@@ -53,6 +53,7 @@ import {
     UPDATE_USER,
     UPLOADING_PROGRAM,
     UPLOADING_PROGRAM_FINISHED,
+    SET_LOG_LIST,
 } from "./actions";
 
 import {Comms} from "../common/comms";
@@ -90,7 +91,7 @@ async function _getKnowledgeBases(organisation_id, dispatch) {
 async function _getInventorizeList(organisation_id, kb_id, dispatch) {
     if (kb_id && organisation_id) {
         dispatch({type: BUSY, busy: true});
-        await Comms.http_get('/document/spreadsheets/' + encodeURIComponent(organisation_id) + '/' +
+        await Comms.http_get('/document/parquets/' + encodeURIComponent(organisation_id) + '/' +
             encodeURIComponent(kb_id) + '/0/5',
             (response) => {
                 dispatch({type: GET_INVENTORIZE_LIST, inventorize_list: response.data});
@@ -460,7 +461,7 @@ export const appCreators = {
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         if (organisation_id && kb_id) {
-            const full_url = '/document/spreadsheet/' + encodeURIComponent(organisation_id) + '/' +
+            const full_url = '/document/parquet/' + encodeURIComponent(organisation_id) + '/' +
                                 encodeURIComponent(kb_id) + '/' + encodeURIComponent(dateTime);
             await Comms.http_delete(full_url,
                 (response) => {
@@ -677,6 +678,40 @@ export const appCreators = {
         await _getDocuments(organisation_id, kb_id,document_previous, page_size, document_filter, dispatch);
     },
 
+
+    // refresh / re-parse etc. a document
+    refreshDocument: (document) => async (dispatch, getState) => {
+        const document_filter = getState().appReducer.document_filter;
+        const document_previous = getState().appReducer.document_previous;
+        const page_size = getState().appReducer.document_page_size;
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_post('/document/refresh', {
+                "organisationId": document.organisationId, "kbId": document.kbId, "url": document.url
+            },
+            (response) => {
+                _getDocuments(document.organisationId, document.kbId, document_previous, page_size, document_filter, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+
+    // refresh / re-parse etc. a document
+    refreshDocuments: (source_id) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await Comms.http_post('/document/refresh/all', {
+                "organisationId": organisation_id, "kbId": kb_id, "source": source_id
+            },
+            (response) => {
+                dispatch({type: BUSY, busy: false});
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // mind items
 
@@ -705,6 +740,21 @@ export const appCreators = {
         const mind_page_size = getState().appReducer.mind_page_size;
         await Comms.http_delete('/bot/ui-delete/' + encodeURIComponent(organisation_id) + '/' +
             encodeURIComponent(kb_id) + '/' + encodeURIComponent(id),
+            (response) => {
+                _getMindItems(organisation_id, kb_id, mind_item_filter, mind_page_size, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    // remove a mind item by id
+    deleteAllMindItems: () => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const mind_item_filter = getState().appReducer.mind_item_filter;
+        const mind_page_size = getState().appReducer.mind_page_size;
+        await Comms.http_delete('/bot/ui-delete-all/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
             (response) => {
                 _getMindItems(organisation_id, kb_id, mind_item_filter, mind_page_size, dispatch);
             },
@@ -888,6 +938,33 @@ export const appCreators = {
     clearPreviousAnswer: () => ({type: CLEAR_PREVIOUS_ANSWER}),
 
     clearUser: () => ({type: OPERATOR_CLEAR_USER}),
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // log list
+
+    getLogList: (subSystem) => async (dispatch, getState) => {
+        // /stats/get-logs/{sessionId}/{organisationId}/{subSystem}/{top}
+        dispatch({type: BUSY, busy: true});
+        const session = getState().appReducer.session;
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const top = getState().appReducer.log_size;
+        await Comms.http_get('/stats/get-logs/' + encodeURIComponent(session.id) + '/' +
+                             encodeURIComponent(organisation_id) + '/' +
+                             encodeURIComponent(subSystem) + '/' +
+                             encodeURIComponent(top),
+            (response) => {
+                const data = response.data;
+                dispatch({type: SET_LOG_LIST, log_list: data.logs, selected_log: subSystem,
+                            active_components: { "auth": data.auth,
+                                    "conversion": data.conversion, "crawler": data.crawler, "document": data.document,
+                                    "index": data.index, "knowledgebase": data.knowledgebase, "language": data.language,
+                                    "mind": data.mind, "operator": data.operator, "search": data.search,
+                                    "stats": data.stats, "web": data.web}
+                });
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
+        )
+    },
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     // html 5 notification permissions

@@ -135,8 +135,8 @@ export class AutoComplete extends Component {
                 selected={isHighlighted}
                 component="div"
                 style={{
-                    height: '15px',
-                    fontSize: '0.9em',
+                    height: '22px',
+                    fontSize: '16px',
                     fontWeight: isSelected ? 500 : 400,
                 }}
             >
@@ -241,7 +241,7 @@ export class AutoComplete extends Component {
                                         marginTop: 8,
                                         paddingBottom: "20px",
                                         width: '500px',
-                                        minHeight: '24px',
+                                        minHeight: '30px',
                                         maxHeight: '300px',
                                         overflowX: 'auto',
                                         overflowY: 'auto',

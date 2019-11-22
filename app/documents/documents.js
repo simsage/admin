@@ -13,19 +13,30 @@ import {Api} from '../common/api'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
+import Grid from "@material-ui/core/Grid";
 
 // display length of a url
 const maxUrlDisplayLength = 50;
 
 const styles = {
     tableStyle: {
-        minWidth: '800px',
+        width: '900px',
+    },
+    gridWidth: {
+        width: '900px',
     },
     tableHeaderStyle: {
         background: '#555',
         fontSize: '0.95em',
+        width: '900px',
         color: '#fff',
-        minWidth: '200px',
+        minWidth: '100px',
+    },
+    tableColumnStyle: {
+        background: '#555',
+        fontSize: '0.95em',
+        color: '#fff',
+        minWidth: '100px',
     },
     knowledgeSelect: {
         padding: '5px',
@@ -40,15 +51,17 @@ const styles = {
     rhs: {
         float: 'left',
     },
+    urlLabel: {
+        padding: '10px',
+        color: '#555',
+        maxWidth: '200px',
+    },
     label: {
         padding: '10px',
         color: '#555',
     },
     statusImage: {
-        width: '24px',
-    },
-    gridWidth: {
-        width: '800px',
+        width: '16px',
     },
     hr: {
         border: '0.1px solid #f0f0f0',
@@ -71,6 +84,7 @@ const styles = {
     },
     dlImageSize: {
         width: '24px',
+        marginRight: '10px',
     },
     search: {
         marginTop: '2px',
@@ -162,25 +176,25 @@ export class Documents extends React.Component {
     // return: 0 => to do, 1 => done, 2 => disabled
     getActive(document, stage) {
         if (stage === "crawled") {
-            return 1;
+            if (document.crawled > 0)
+                return 1;
         } else if (stage === "converted") {
             if (document.converted > 0)
                 return 1;
-            else if (document.coverted < 0)
+            else if (document.converted < 0)
                 return 2;
         } else if (stage === "parsed") {
-            if (document.converted < document.parsed)
+            if (document.converted > 0 && document.converted <= document.parsed)
                 return 1;
             else if (document.parsed < 0)
                 return 2;
         } else if (stage === "indexed") {
-            if (document.parsed < document.indexed)
+            if (document.converted > 0 && document.parsed > 0 && document.parsed <= document.indexed)
                 return 1;
             else if (document.indexed < 0)
                 return 2;
         } else if (stage === "previewed") {
-            console.log("document.previewed " + document.previewed);
-            if (document.indexed < document.previewed)
+            if (document.previewed > 0)
                 return 1;
             else if (document.previewed < 0)
                 return 2;
@@ -207,100 +221,107 @@ export class Documents extends React.Component {
     }
     render() {
         return (
-            <div>
+            <Grid container spacing={1} style={styles.gridWidth}>
+
                 {
                     this.props.selected_knowledgebase_id.length > 0 &&
-                    <div style={styles.findBox}>
-                        <div style={styles.floatLeftLabel}>filter</div>
-                        <div style={styles.searchFloatLeft}>
-                            <input type="text" value={this.state.filter} autoFocus={true} style={styles.text}
-                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
-                                   onChange={(event) => {
-                                       this.props.setDocumentFilter(event.target.value)
-                                   }}/>
+                    <Grid item xs={12}>
+                        <div style={styles.findBox}>
+                            <div style={styles.floatLeftLabel}>filter</div>
+                            <div style={styles.searchFloatLeft}>
+                                <input type="text" value={this.props.document_filter} autoFocus={true} style={styles.text}
+                                       onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                       onChange={(event) => {
+                                           this.props.setDocumentFilter(event.target.value)
+                                       }}/>
+                            </div>
+                            <div style={styles.floatLeft}>
+                                <img style={styles.search}
+                                     onClick={() => this.props.getDocuments()}
+                                     src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
+                            </div>
                         </div>
-                        <div style={styles.floatLeft}>
-                            <img style={styles.search}
-                                 onClick={() => this.props.getDocuments()}
-                                 src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
-                        </div>
-                    </div>
+                    </Grid>
                 }
 
-                <br clear="both" />
 
                 {
                     this.props.selected_knowledgebase_id.length > 0 &&
-                    <Paper>
-                        <Table style={styles.tableStyle}>
+                    <Paper style={styles.tableStyle}>
+                        <Table>
+
                             <TableHead>
                                 <TableRow style={styles.tableHeaderStyle}>
-                                    <TableCell style={styles.tableHeaderStyle}>url</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>source</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>last modified</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>status</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
+                                    <TableCell style={styles.tableColumnStyle}>url</TableCell>
+                                    <TableCell style={styles.tableColumnStyle}>source</TableCell>
+                                    <TableCell style={styles.tableColumnStyle}>last modified</TableCell>
+                                    <TableCell style={styles.tableColumnStyle}>status</TableCell>
+                                    <TableCell style={styles.tableColumnStyle}>actions</TableCell>
                                 </TableRow>
                             </TableHead>
+
                             <TableBody>
                                 {
                                     this.getDocuments().map((document) => {
                                         return (
-                                            <TableRow key={document.url}>
-                                                <TableCell>
-                                                    {
-                                                        Documents.isWeb(document.url) &&
+                                                <TableRow>
+                                                    <TableCell>
+                                                        {
+                                                            Documents.isWeb(document.url) &&
+                                                            <div style={styles.urlLabel}>
+                                                                <a href={document.url} title={document.url} target="_blank">{Documents.adjustUrl(document.url)}</a>
+                                                            </div>
+                                                        }
+                                                        {
+                                                            !Documents.isWeb(document.url) &&
+                                                            <div style={styles.label}>{Documents.adjustUrl(document.url)}</div>
+                                                        }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div style={styles.label}>{document.origin}</div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div style={styles.label}>{Api.unixTimeConvert(document.lastModified)}</div>
+                                                    </TableCell>
+                                                    <TableCell>
                                                         <div style={styles.label}>
-                                                            <a href={document.url} title={document.url} target="_blank">{Documents.adjustUrl(document.url)}</a>
+                                                            <img src={this.getStatus(document, "crawled")} style={styles.statusImage} alt="crawler" title={this.getStatusText(document, "crawled", "crawling")} />
+                                                            <img src={this.getStatus(document, "converted")} style={styles.statusImage} alt="converted" title={this.getStatusText(document, "converted", "converting")} />
+                                                            <img src={this.getStatus(document, "parsed")} style={styles.statusImage} alt="parsed" title={this.getStatusText(document, "parsed", "parsing")} />
+                                                            <img src={this.getStatus(document, "indexed")} style={styles.statusImage} alt="indexed" title={this.getStatusText(document, "indexed", "indexing")} />
+                                                            <img src={this.getStatus(document, "previewed")} style={styles.statusImage} alt="previewed" title={this.getStatusText(document, "previewed", "preview generation")} />
                                                         </div>
-                                                    }
-                                                    {
-                                                        !Documents.isWeb(document.url) &&
-                                                        <div style={styles.label}>{Documents.adjustUrl(document.url)}</div>
-                                                    }
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.label}>{document.origin}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.label}>{Api.unixTimeConvert(document.lastModified)}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.label}>
-                                                        <img src={this.getStatus(document, "crawled")} style={styles.statusImage} alt="crawler" title={this.getStatusText(document, "crawled", "crawling")} />
-                                                        <img src={this.getStatus(document, "converted")} style={styles.statusImage} alt="converted" title={this.getStatusText(document, "converted", "converting")} />
-                                                        <img src={this.getStatus(document, "parsed")} style={styles.statusImage} alt="parsed" title={this.getStatusText(document, "parsed", "parsing")} />
-                                                        <img src={this.getStatus(document, "indexed")} style={styles.statusImage} alt="indexed" title={this.getStatusText(document, "indexed", "indexing")} />
-                                                        <img src={this.getStatus(document, "previewed")} style={styles.statusImage} alt="previewed" title={this.getStatusText(document, "previewed", "preview generation")} />
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.linkButton} onClick={() => this.deleteDocumentAsk(document)}>
-                                                        <img src="../images/delete.svg" style={styles.dlImageSize} title="remove document" alt="remove"/>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div style={styles.linkButton} onClick={() => this.deleteDocumentAsk(document)}>
+                                                            <img src="../images/delete.svg" style={styles.dlImageSize} title="remove document" alt="remove"/>
+                                                        </div>
+                                                        <div style={styles.linkButton} onClick={() => this.props.refreshDocument(document)}>
+                                                            <img src="../images/refresh.svg" style={styles.dlImageSize} title="re-process document" alt="re-process"/>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
                                         )
                                     })
                                 }
                             </TableBody>
                         </Table>
 
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            component="div"
-                            count={this.props.num_documents}
-                            rowsPerPage={this.props.document_page_size}
-                            page={this.props.document_page}
-                            backIconButtonProps={{
-                                'aria-label': 'Previous Page',
-                            }}
-                            nextIconButtonProps={{
-                                'aria-label': 'Next Page',
-                            }}
-                            onChangePage={(event, page) => this.props.setDocumentPage(page)}
-                            onChangeRowsPerPage={(event) => this.props.setDocumentPageSize(event.target.value)}
-                        />
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 25]}
+                                component="div"
+                                count={this.props.num_documents}
+                                rowsPerPage={this.props.document_page_size}
+                                page={this.props.document_page}
+                                backIconButtonProps={{
+                                    'aria-label': 'Previous Page',
+                                }}
+                                nextIconButtonProps={{
+                                    'aria-label': 'Next Page',
+                                }}
+                                onChangePage={(event, page) => this.props.setDocumentPage(page)}
+                                onChangeRowsPerPage={(event) => this.props.setDocumentPageSize(event.target.value)}
+                            />
 
                     </Paper>
                 }
@@ -322,7 +343,7 @@ export class Documents extends React.Component {
                 {/*    </div>*/}
                 {/*}*/}
 
-            </div>
+            </Grid>
         )
     }
 }

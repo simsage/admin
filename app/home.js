@@ -21,8 +21,8 @@ import Documents from "./documents/documents";
 import Mind from "./mind/mind";
 import Synonyms from "./synonyms/synonyms";
 import Semantics from "./semantics/semantics";
+import Logs from "./reports/logs";
 import Reports from "./reports/reports";
-// import License from "./license/license";
 import Operator from "./operator/operator";
 
 import system_config from 'settings'
@@ -35,12 +35,14 @@ import {appCreators} from "./actions/appActions";
 const styles = {
     page: {
         float: 'left',
+        minWidth: '1200px',
     },
     pageNav: {
         float: 'left',
         marginRight: '50px',
         background: '#fdfdfd',
         borderRadius: '10px',
+        padding: '5px',
     },
     pageContent: {
         float: 'left',
@@ -206,7 +208,6 @@ export class Home extends Component {
             if (isAdminOrManager) {
                 // refresh notifications and operator at interval
                 setInterval(() => {
-                    self.refreshNotifications(self);
                     self.refreshOperator(self);
                 }, this.props.notification_time_in_ms);
             } else if (isOperator) {
@@ -223,9 +224,6 @@ export class Home extends Component {
             }
 
         }
-    }
-    refreshNotifications(self) {
-        self.props.getNotifications();
     }
     refreshOperator(self) {
         // keep operator alive if they're active and ready
@@ -443,16 +441,17 @@ export class Home extends Component {
                              <div style={this.getStyle('reports', false)}
                                   onClick={() => this.props.selectTab('reports')}>reports</div>
                          }
-                         {/*{*/}
-                         {/*    Home.hasRole(this.props.user, ['admin']) &&*/}
-                         {/*    <div style={this.getStyle('license', false)}*/}
-                         {/*         onClick={() => this.props.selectTab('license')}>license</div>*/}
-                         {/*}*/}
+                         {
+                             Home.hasRole(this.props.user, ['admin']) &&
+                             <div style={this.getStyle('logs', false)}
+                                  onClick={() => this.props.selectTab('logs')}>logs</div>
+                         }
                      </div>
 
                      <div style={styles.pageContent}>
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
+                          this.props.selected_tab !== 'logs' &&
                           this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'license' && isAdmin &&
                              <div style={styles.organisationSelect}>
                                  <div style={styles.lhs}>organisation</div>
@@ -469,6 +468,7 @@ export class Home extends Component {
                          }
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
+                          this.props.selected_tab !== 'logs' &&
                           this.props.selected_tab !== 'license' && this.props.selected_tab !== 'operator' && !isAdmin &&
                              <div style={styles.organisationSelect}>
                                  <div style={styles.lhs}>organisation</div>
@@ -480,6 +480,7 @@ export class Home extends Component {
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' && this.props.selected_tab !== 'users' &&
                           this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'license' && this.props.selected_tab !== 'knowledge bases' &&
+                          this.props.selected_tab !== 'logs' &&
                              <div style={styles.knowledgeSelect}>
                                  <div style={styles.lhs}>knowledge base</div>
                                  <div style={styles.rhs}>
@@ -569,11 +570,11 @@ export class Home extends Component {
                                  closeDialog={() => this.closeDialog()} />
                          }
 
-                         {/*{ this.props.selected_tab === 'license' &&*/}
-                         {/*    <License*/}
-                         {/*        openDialog={(message, title, callback) => this.openDialog(message, title, callback)}*/}
-                         {/*        closeDialog={() => this.closeDialog()} />*/}
-                         {/*}*/}
+                         { this.props.selected_tab === 'logs' &&
+                             <Logs
+                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                                 closeDialog={() => this.closeDialog()} />
+                         }
 
                          {
                              this.props.selected_tab === 'invalid' &&
@@ -607,14 +608,6 @@ export class Home extends Component {
                                     )
                                 })
                             }
-                        </div>
-                    </div>
-                }
-
-                { this.props.notification_list.length > 0 && !this.props.show_notifications &&
-                    <div style={styles.notificationsHidden}>
-                        <div style={styles.displayAll} onClick={() => { this.props.showNotifications() }}>
-                            <img src="images/double-up-arrow.svg" style={styles.showAllImage} alt="show all" title="show logs" />
                         </div>
                     </div>
                 }

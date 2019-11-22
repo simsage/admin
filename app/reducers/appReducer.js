@@ -47,6 +47,7 @@ import {
     UPDATE_USER,
     UPLOADING_PROGRAM,
     UPLOADING_PROGRAM_FINISHED,
+    SET_LOG_LIST,
 } from "../actions/actions";
 import {initializeState} from './stateLoader'
 
@@ -627,6 +628,18 @@ export const reducer = (state, action) => {
                 html5_notifications: action.status,
             }
         }
+
+
+        case SET_LOG_LIST: {
+            return {
+                ...state,
+                log_list: action.log_list,
+                selected_log: action.selected_log,
+                active_components: action.active_components,
+                busy: false,
+            }
+        }
+
 
     }
 

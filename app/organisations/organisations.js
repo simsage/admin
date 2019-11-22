@@ -22,7 +22,7 @@ import {appCreators} from "../actions/appActions";
 
 const styles = {
     tableWidth: {
-        width: '750px'
+        width: '900px'
     },
     label: {
         color: '#555',

@@ -13,12 +13,16 @@ import {CrawlerDialog} from '../crawlers/crawler-dialog'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
+import CrawlerGeneral from "../crawlers/crawler-general";
 
 const empty_crawler= {id: '', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: true,
                       enablePreview: false, enableIndexing: true, description: '', schedule: '',
                       filesPerSecond: '0', specificJson: ''};
 
 const styles = {
+    pageWidth: {
+        width: '900px',
+    },
     tab: {
         backgroundColor: '#f8f8f8',
         color: '#000',
@@ -157,6 +161,7 @@ export class DocumentSources extends Component {
                     title={this.state.title}
                     organisation_id={this.props.selected_organisation_id}
                     kb_id={this.props.selected_knowledgebase_id}
+                    refreshDocuments={this.props.refreshDocuments}
                     onSave={(crawler) => this.saveCrawler(crawler)}
                     onUpdate={(crawler) => this.onUpdate(crawler)}
                     onError={(title, errStr) => this.props.setError(title, errStr)}
@@ -167,7 +172,7 @@ export class DocumentSources extends Component {
 
                 {
                     this.props.selected_knowledgebase_id.length > 0 &&
-                    <Paper>
+                    <Paper style={styles.pageWidth}>
                         <Table>
                             <TableHead>
                                 <TableRow style={styles.tableHeaderStyle}>

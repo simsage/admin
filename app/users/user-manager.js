@@ -22,6 +22,9 @@ import {appCreators} from "../actions/appActions";
 
 
 const styles = {
+    pageWidth: {
+        width: '900px',
+    },
     label: {
         color: '#555',
     },
@@ -263,17 +266,10 @@ export class UserManager extends React.Component {
     }
     deleteUserAsk(user, isAdmin) {
         if (user) {
-            if (isAdmin) {
-                this.props.openDialog("are you sure you want to remove " + user.firstName + " " + user.surname + "?",
-                    "Remove User", (action) => {
-                        this.deleteUser(action)
-                    });
-            } else {
-                this.props.openDialog("are you sure you want to remove " + user.firstName + " " + user.surname + " from this organisation?",
-                    "Remove User Roles", (action) => {
-                        this.deleteUser(action)
-                    });
-            }
+            this.props.openDialog("are you sure you want to remove " + user.firstName + " " + user.surname + "?",
+                "Remove User", (action) => {
+                    this.deleteUser(action)
+                });
             this.setState({user: user});
         }
     }
@@ -358,7 +354,7 @@ export class UserManager extends React.Component {
         const isManager = Home.hasRole(this.props.user, ['manager']);
         return (
             <div>
-                <Paper>
+                <Paper style={styles.pageWidth}>
                     <Table>
                         <TableHead>
                             <TableRow style={styles.tableHeaderStyle}>

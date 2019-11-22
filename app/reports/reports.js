@@ -19,6 +19,9 @@ const graphHeight = 350;
 const graphWidth = 400;
 
 const styles = {
+    pageWidth: {
+        width: '900px',
+    },
     knowledgeSelect: {
         padding: '5px',
         marginBottom: '50px',
@@ -95,7 +98,7 @@ export class Reports extends React.Component {
     render() {
         const date = new Date(this.props.report_date);
         return (
-            <div>
+            <div style={styles.pageWidth}>
                 <br clear="both" />
                 <div style={styles.downloadButton}>
                     <Button variant="outlined" onClick={() => this.downloadReport()}>download report</Button>

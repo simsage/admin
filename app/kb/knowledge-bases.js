@@ -24,6 +24,9 @@ import {appCreators} from "../actions/appActions";
 const id_style = "<div style='width: 170px; float: left; height: 24px;'>";
 
 const styles = {
+    pageWidth: {
+        width: '900px',
+    },
     label: {
         color: '#555',
     },
@@ -165,7 +168,7 @@ export class KnowledgeBases extends Component {
         const idStr = id_style + "organisation id</div><div style='float: left'>" + this.props.selected_organisation_id + "</div><br clear='both'>" +
                       id_style + "knowledge base id</div><div style='float: left'>" + knowledge_base.kbId + "</div><br clear='both'>" +
                       id_style + "security id</div><div style='float: left'>" + knowledge_base.securityId + "</div><br clear='both'>";
-        this.props.openDialog(idStr, "IDS", (action) => { this.props.closeDialog() });
+        this.props.openDialog(idStr, knowledge_base.name + " IDS", (action) => { this.props.closeDialog() });
     }
     downloadHtml(html, kb) {
         window.open(Comms.get_html_url(html, this.props.selected_organisation_id, kb.kbId), '_blank');
@@ -184,7 +187,7 @@ export class KnowledgeBases extends Component {
     render() {
         return (
             <div>
-                <Paper>
+                <Paper style={styles.pageWidth}>
                     <Table>
                         <TableHead>
                             <TableRow style={styles.tableHeaderStyle}>
@@ -205,12 +208,6 @@ export class KnowledgeBases extends Component {
                                                 <div style={styles.label}>{knowledge_base.email}</div>
                                             </TableCell>
                                             <TableCell>
-                                                <div style={styles.linkButton} onClick={() => this.editKnowledgeBase(knowledge_base)}>
-                                                    <img src="../images/edit.svg" style={styles.dlImageSize} title="edit knowledge base" alt="edit"/>
-                                                </div>
-                                                <div style={styles.linkButton} onClick={() => this.deleteKnowledgeBaseAsk(knowledge_base)}>
-                                                    <img src="../images/delete.svg" style={styles.dlImageSize} title="remove knowledge base" alt="remove"/>
-                                                </div>
                                                 <div style={styles.linkButton} onClick={() => this.viewIds(knowledge_base)}>
                                                     <img src="../images/id.svg" style={styles.dlImageSize} title="view knowledge base ids" alt="ids"/>
                                                 </div>
@@ -219,6 +216,12 @@ export class KnowledgeBases extends Component {
                                                 </div>
                                                 <div style={styles.linkButton} onClick={() => this.downloadHtml("search", knowledge_base)}>
                                                     <img src="../images/search.svg" style={styles.dlImageSize} title="download knowledge-base search HTML" alt="download search"/>
+                                                </div>
+                                                <div style={styles.linkButton} onClick={() => this.editKnowledgeBase(knowledge_base)}>
+                                                    <img src="../images/edit.svg" style={styles.dlImageSize} title="edit knowledge base" alt="edit"/>
+                                                </div>
+                                                <div style={styles.linkButton} onClick={() => this.deleteKnowledgeBaseAsk(knowledge_base)}>
+                                                    <img src="../images/delete.svg" style={styles.dlImageSize} title="remove knowledge base" alt="remove"/>
                                                 </div>
                                             </TableCell>
                                         </TableRow>

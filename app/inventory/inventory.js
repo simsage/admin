@@ -9,9 +9,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from "@material-ui/core/Paper";
 
-import ProgramUpload from "../common/program-upload";
-import Button from "@material-ui/core/Button";
-
 import Comms from '../common/comms';
 import Api from '../common/api';
 
@@ -27,7 +24,7 @@ const styles = {
         color: '#555',
     },
     gridWidth: {
-        width: '800px',
+        width: '900px',
     },
     hr: {
         border: '0.5px solid #f0f0f0',
@@ -106,6 +103,9 @@ export class Inventory extends React.Component {
     inventorizeDump(dateTime) {
         window.open(Comms.get_inventorize_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime), '_blank');
     }
+    inventorizeDumpSpreadsheet(dateTime) {
+        window.open(Comms.get_inventorize_dump_spreadhseet_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime), '_blank');
+    }
     deleteInventorizeAsk(dateTime) {
         this.setState({date_time: dateTime});
         this.props.openDialog("are you sure you want to remove the report dated <b>" + Api.unixTimeConvert(dateTime) + "</b>?",
@@ -182,7 +182,10 @@ export class Inventory extends React.Component {
                                                         </TableCell>
                                                         <TableCell>
                                                             <div style={styles.linkButton} onClick={() => this.inventorizeDump(item)}>
-                                                                <img src="../images/download.svg" style={styles.downloadImage} title="download report" alt="download"/>
+                                                                <img src="../images/parquet.png" style={styles.downloadImage} title="download as parquet-file" alt="download parquet"/>
+                                                            </div>
+                                                            <div style={styles.linkButton} onClick={() => this.inventorizeDumpSpreadsheet(item)}>
+                                                                <img src="../images/xlsx.svg" style={styles.downloadImage} title="download as spreadsheet-xlsx" alt="download spreadsheet"/>
                                                             </div>
                                                             <div style={styles.linkButton} onClick={() => this.deleteInventorizeAsk(item)}>
                                                                 <img src="../images/delete.svg" style={styles.downloadImage} title="remove report" alt="remove"/>

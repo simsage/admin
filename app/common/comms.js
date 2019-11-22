@@ -86,6 +86,14 @@ export class Comms {
     // get a url that can be used to summarize the system
     static get_inventorize_dump_url(organisation_id, kb_id, dateTime) {
         let session = Comms.getSession();
+        return system_config.api_base + '/document/parquet/' + encodeURIComponent(session.id) + '/' +
+            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' +
+            encodeURIComponent(dateTime);
+    };
+
+    // get a url that can be used to summarize the system using a spreadsheet
+    static get_inventorize_dump_spreadhseet_url(organisation_id, kb_id, dateTime) {
+        let session = Comms.getSession();
         return system_config.api_base + '/document/spreadsheet/' + encodeURIComponent(session.id) + '/' +
             encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' +
             encodeURIComponent(dateTime);

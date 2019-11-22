@@ -18,8 +18,8 @@ import {appCreators} from "../actions/appActions";
 
 const styles = {
     tableStyle: {
-        minWidth: '800px',
-        width: '1024px',
+        minWidth: '900px',
+        width: '900px',
     },
     smallTableHeaderStyle: {
         background: '#555',
@@ -65,7 +65,7 @@ const styles = {
         color: '#555',
     },
     gridWidth: {
-        width: '800px',
+        width: '900px',
     },
     hr: {
         border: '0.1px solid #f0f0f0',

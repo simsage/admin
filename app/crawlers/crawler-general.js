@@ -259,6 +259,10 @@ export class CrawlerGeneral extends Component {
                 <div>
                     <Button color="primary" variant="outlined" style={styles.exportButton}
                             onClick={() => this.deleteDocuments()}>Remove Documents</Button>
+                    {this.state.id &&
+                    <Button color="primary" variant="outlined" style={styles.exportButton}
+                            onClick={() => this.props.refreshDocuments(this.state.id)}>Refresh Documents</Button>
+                    }
                     <Button color="secondary" variant="outlined" style={styles.exportButton}
                             onClick={() => this.testCrawler()}>Test</Button>
                 </div>

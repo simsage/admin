@@ -34,7 +34,7 @@ const styles = {
     conversations: {
         marginTop: '10px',
         backgroundColor: '#fafafa',
-        width: '1024px',
+        width: '900px',
         height: '500px',
         borderRadius: '10px',
         overflowY: 'auto',
