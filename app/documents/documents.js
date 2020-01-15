@@ -132,9 +132,6 @@ export class Documents extends React.Component {
         console.log(error, info);
     }
     componentDidMount() {
-        this.props.getDocuments();
-    }
-    refreshDocuments(prev_page, page_size) {
     }
     deleteDocumentAsk(document) {
         if (document) {
@@ -144,7 +141,7 @@ export class Documents extends React.Component {
     }
     deleteDocument(action) {
         if (action && Api.defined(this.state.document)) {
-            this.props.deleteDocument(this.state.document.url, this.state.document.crawlerId);
+            this.props.deleteDocument(this.state.document.url, this.state.document.sourceId);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
@@ -156,7 +153,6 @@ export class Documents extends React.Component {
         }
     }
     documentUploaded() {
-        this.refreshDocuments(this.state.prev_page, this.state.page_size);
         this.setState({message_title: "done", message: "document uploaded",
             message_callback: () => { this.setState({message: ""})}});
     }
@@ -296,8 +292,8 @@ export class Documents extends React.Component {
                                                         <div style={styles.linkButton} onClick={() => this.deleteDocumentAsk(document)}>
                                                             <img src="../images/delete.svg" style={styles.dlImageSize} title="remove document" alt="remove"/>
                                                         </div>
-                                                        <div style={styles.linkButton} onClick={() => this.props.refreshDocument(document)}>
-                                                            <img src="../images/refresh.svg" style={styles.dlImageSize} title="re-process document" alt="re-process"/>
+                                                        <div style={styles.linkButton} onClick={() => this.props.reprocessDocument(document)}>
+                                                            <img src="../images/refresh.svg" style={styles.dlImageSize} title="reprocess document (remove it, re-parse and re-index the document." alt="reprocess"/>
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

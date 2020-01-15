@@ -87,7 +87,6 @@ export class Reports extends React.Component {
         });
     }
     componentDidMount() {
-        this.props.getReports();
     }
     downloadReport() {
         const date = new Date(this.state.reportDate);
@@ -119,7 +118,7 @@ export class Reports extends React.Component {
 
                 <div style={styles.barGraphs}>
                     {
-                        this.props.general_statistics.map( (stats) => {
+                        this.props.selected_knowledgebase_id && this.props.general_statistics.map( (stats) => {
                             return (<div key={stats.id} style={styles.barGraph}>
                                 <Bar data={stats} options={GraphHelper.getGraphOptions('')} width={graphWidth} height={graphHeight}/>
                             </div>)
@@ -127,7 +126,7 @@ export class Reports extends React.Component {
                     }
 
                     {
-                        this.props.file_type_statistics.map( (stats) => {
+                        this.props.selected_knowledgebase_id && this.props.file_type_statistics.map( (stats) => {
                             return (<div key={stats.id} style={styles.barGraph}>
                                 <Bar data={stats} options={GraphHelper.getGraphOptions('')} width={graphWidth} height={graphHeight}/>
                             </div>)
@@ -135,7 +134,7 @@ export class Reports extends React.Component {
                     }
 
                     {
-                        this.props.query_word_frequency.map( (stats) => {
+                        this.props.selected_knowledgebase_id && this.props.query_word_frequency.map( (stats) => {
                             return (<div key={stats.id} style={styles.barGraph}>
                                 <Bar data={stats} options={GraphHelper.getGraphOptions('queries')} width={graphWidth} height={graphHeight}/>
                             </div>)
@@ -143,7 +142,7 @@ export class Reports extends React.Component {
                     }
 
                     {
-                        this.props.bot_access_frequency.labels.length > 0 &&
+                        this.props.selected_knowledgebase_id && this.props.bot_access_frequency.labels.length > 0 &&
                         <div style={styles.barGraph}>
                             <Line data={this.props.bot_access_frequency}
                                   options={GraphHelper.getGraphOptions('bot access count')} width={graphWidth}
@@ -152,7 +151,7 @@ export class Reports extends React.Component {
                     }
 
                     {
-                        this.props.search_access_frequency.labels.length > 0 &&
+                        this.props.selected_knowledgebase_id && this.props.search_access_frequency.labels.length > 0 &&
                         <div style={styles.barGraph}>
                             <Line data={this.props.search_access_frequency}
                                   options={GraphHelper.getGraphOptions('search access count')} width={graphWidth}

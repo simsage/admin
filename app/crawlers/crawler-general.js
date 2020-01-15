@@ -55,7 +55,7 @@ export class CrawlerGeneral extends Component {
 
             organisation_id: Api.defined(props.organisation_id) ? props.organisation_id : '',
             kb_id: Api.defined(props.kb_id) ? props.kb_id : '',
-            id: Api.defined(props.id) ? props.id : '',
+            sourceId: Api.defined(props.sourceId) ? props.sourceId : '0',
 
             name: Api.defined(props.name) ? props.name : '',
             filesPerSecond: Api.defined(props.filesPerSecond) ? props.filesPerSecond : '0',
@@ -87,7 +87,7 @@ export class CrawlerGeneral extends Component {
                             enableIndexing: nextProps.enableIndexing,
                             organisation_id: nextProps.organisation_id,
                             kb_id: nextProps.kb_id,
-                            id: nextProps.id,
+                            sourceId: nextProps.sourceId,
                             name: nextProps.name,
                             onSave: nextProps.onSave,
 
@@ -105,7 +105,7 @@ export class CrawlerGeneral extends Component {
                 enablePreview: Api.defined(data.enablePreview) ? data.enablePreview : this.state.enablePreview,
                 enableIndexing: Api.defined(data.enableIndexing) ? data.enableIndexing : this.state.enableIndexing,
                 name: Api.defined(data.name) ? data.name : this.state.name,
-                id: Api.defined(data.id) ? data.id : this.state.id,
+                sourceId: Api.defined(data.sourceId) ? data.sourceId : this.state.sourceId,
             };
     }
     setError(title, error_msg) {
@@ -129,7 +129,7 @@ export class CrawlerGeneral extends Component {
     confirmDocumentsDelete(action) {
         this.setState({message: '', message_title: ''});
         if (action) {
-            Api.deleteCrawlerDocuments(this.state.organisation_id, this.state.kb_id, this.state.id,
+            Api.deleteCrawlerDocuments(this.state.organisation_id, this.state.kb_id, this.state.sourceId,
                 (response) => {},
                 (err) => {
                     this.setError("Error removing all documents", err);
@@ -138,7 +138,7 @@ export class CrawlerGeneral extends Component {
     }
     testCrawler() {
         const name = this.state.name;
-        Api.testCrawler(this.state.organisation_id, this.state.kb_id, this.state.id,
+        Api.testCrawler(this.state.organisation_id, this.state.kb_id, this.state.sourceId,
             (response) => {
                 this.setState({
                     message_callback: (action) => { this.setState({message_title: '', message: ''})},
@@ -255,16 +255,12 @@ export class CrawlerGeneral extends Component {
                 </div>
                 <br clear="both" />
 
-                {this.state.id && this.state.id.length > 0 &&
+                {this.state.sourceId && this.state.sourceId > 0 &&
                 <div>
                     <Button color="primary" variant="outlined" style={styles.exportButton}
                             onClick={() => this.deleteDocuments()}>Remove Documents</Button>
-                    {this.state.id &&
-                    <Button color="primary" variant="outlined" style={styles.exportButton}
-                            onClick={() => this.props.refreshDocuments(this.state.id)}>Refresh Documents</Button>
-                    }
                     <Button color="secondary" variant="outlined" style={styles.exportButton}
-                            onClick={() => this.testCrawler()}>Test</Button>
+                            onClick={() => this.testCrawler()}>Test Connection</Button>
                 </div>
                 }
             </div>

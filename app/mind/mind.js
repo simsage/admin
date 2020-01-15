@@ -146,7 +146,6 @@ export class Mind extends React.Component {
         console.log(error, info);
     }
     componentDidMount() {
-        this.props.mindFind();
     }
     deleteMindItemAsk(mindItem) {
         if (mindItem) {

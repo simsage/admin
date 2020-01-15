@@ -61,7 +61,6 @@ export class Logs extends React.Component {
         });
     }
     componentDidMount() {
-        this.props.getLogList(this.props.selected_log);
     }
     componentDidUpdate(prevPops, prevState, snapshot) {
         this.scrollToBottom()

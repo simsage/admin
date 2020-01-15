@@ -89,7 +89,7 @@ async function _getKnowledgeBases(organisation_id, dispatch) {
 }
 
 async function _getInventorizeList(organisation_id, kb_id, dispatch) {
-    if (kb_id && organisation_id) {
+    if (organisation_id.length > 0 && kb_id.length > 0) {
         dispatch({type: BUSY, busy: true});
         await Comms.http_get('/document/parquets/' + encodeURIComponent(organisation_id) + '/' +
             encodeURIComponent(kb_id) + '/0/5',
@@ -114,78 +114,101 @@ async function _getUsers(organisation_id, dispatch) {
 }
 
 async function _getCrawlers(organisation_id, kb_id, dispatch) {
-    dispatch({type: BUSY, busy: true});
-    await Comms.http_get('/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
-        (response) => {
-            dispatch({type: GET_CRAWLERS, crawler_list: response.data});
-        },
-        (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
-    )
-}
-
-async function _getDocuments(organisation_id, kb_id, document_previous, document_page_size, document_filter, dispatch) {
-    dispatch({type: BUSY, busy: true});
-    await Comms.http_post('/document/documents', {
-            "organisationId": organisation_id, "kbId": kb_id,
-            "prevUrl": document_previous ? document_previous : 'null',
-            "pageSize": document_page_size,
-            "filter": document_filter
-        },
-        (response) => {
-            const document_list = response.data.documentList;
-            const num_documents = response.data.numDocuments;
-            dispatch(({type: GET_DOCUMENTS_PAGINATED, document_list: document_list, num_documents: num_documents, document_filter: document_filter}));
-        },
-        (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
-    )
-}
-
-async function _getMindItems(organisation_id, kb_id, mind_filter, mind_page_size, dispatch) {
-    dispatch({type: BUSY, busy: true});
-    await Comms.http_put('/bot/ui-find', {"organisationId": organisation_id, "kbId": kb_id,
-            "query": mind_filter, "numResults": mind_page_size},
-        (response) => {
-            dispatch({type: MIND_FIND, mind_item_list: response.data});
-        },
-        (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
-    )
-}
-
-async function _getSynonyms(organisation_id, kb_id, synonym_filter, synonym_page_size, dispatch) {
-    if (synonym_filter) {
+    if (organisation_id.length > 0 && kb_id.length > 0) {
         dispatch({type: BUSY, busy: true});
-        await Comms.http_put('/language/find-synonyms', {
-                "organisationId": organisation_id, "kbId": kb_id,
-                "query": synonym_filter, "numResults": synonym_page_size
-            },
+        await Comms.http_get('/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
             (response) => {
-                dispatch({type: SET_SYNONYM_LIST, synonym_list: response.data});
+                dispatch({type: GET_CRAWLERS, crawler_list: response.data});
             },
             (errStr) => {
                 dispatch({type: ERROR, title: "Error", error: errStr})
             }
         )
-    } else {
-        dispatch({type: SET_SYNONYM_LIST, synonym_list: []});
+    }
+}
+
+async function _getDocuments(organisation_id, kb_id, document_previous, document_page_size, document_filter, dispatch) {
+    if (organisation_id.length > 0 && kb_id.length > 0) {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_post('/document/documents', {
+                "organisationId": organisation_id, "kbId": kb_id,
+                "prevUrl": document_previous ? document_previous : 'null',
+                "pageSize": document_page_size,
+                "filter": document_filter
+            },
+            (response) => {
+                const document_list = response.data.documentList;
+                const num_documents = response.data.numDocuments;
+                dispatch(({
+                    type: GET_DOCUMENTS_PAGINATED,
+                    document_list: document_list,
+                    num_documents: num_documents,
+                    document_filter: document_filter
+                }));
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    }
+}
+
+async function _getMindItems(organisation_id, kb_id, mind_filter, mind_page_size, dispatch) {
+    if (organisation_id.length > 0 && kb_id.length > 0) {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_put('/bot/ui-find', {
+                "organisationId": organisation_id, "kbId": kb_id,
+                "query": mind_filter, "numResults": mind_page_size
+            },
+            (response) => {
+                dispatch({type: MIND_FIND, mind_item_list: response.data});
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    }
+}
+
+async function _getSynonyms(organisation_id, kb_id, synonym_filter, synonym_page_size, dispatch) {
+    if (organisation_id.length > 0 && kb_id.length > 0) {
+        if (synonym_filter) {
+            dispatch({type: BUSY, busy: true});
+            await Comms.http_put('/language/find-synonyms', {
+                    "organisationId": organisation_id, "kbId": kb_id,
+                    "query": synonym_filter, "numResults": synonym_page_size
+                },
+                (response) => {
+                    dispatch({type: SET_SYNONYM_LIST, synonym_list: response.data});
+                },
+                (errStr) => {
+                    dispatch({type: ERROR, title: "Error", error: errStr})
+                }
+            )
+        } else {
+            dispatch({type: SET_SYNONYM_LIST, synonym_list: []});
+        }
     }
 }
 
 async function _getSemantics(organisation_id, kb_id, semantic_filter, semantic_page_size, dispatch) {
-    if (semantic_filter) {
-        dispatch({type: BUSY, busy: true});
-        await Comms.http_put('/language/find-semantics', {
-                "organisationId": organisation_id, "kbId": kb_id,
-                "query": semantic_filter, "numResults": semantic_page_size
-            },
-            (response) => {
-                dispatch({type: SET_SEMANTIC_LIST, semantic_list: response.data});
-            },
-            (errStr) => {
-                dispatch({type: ERROR, title: "Error", error: errStr})
-            }
-        )
-    } else {
-        dispatch({type: SET_SEMANTIC_LIST, semantic_list: []});
+    if (organisation_id.length > 0 && kb_id.length > 0) {
+        if (semantic_filter) {
+            dispatch({type: BUSY, busy: true});
+            await Comms.http_put('/language/find-semantics', {
+                    "organisationId": organisation_id, "kbId": kb_id,
+                    "query": semantic_filter, "numResults": semantic_page_size
+                },
+                (response) => {
+                    dispatch({type: SET_SEMANTIC_LIST, semantic_list: response.data});
+                },
+                (errStr) => {
+                    dispatch({type: ERROR, title: "Error", error: errStr})
+                }
+            )
+        } else {
+            dispatch({type: SET_SEMANTIC_LIST, semantic_list: []});
+        }
     }
 }
 
@@ -211,6 +234,39 @@ async function _getReports(organisation_id, kb_id, year, month, top, dispatch) {
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
         )
+    } else {
+        dispatch({type: SET_REPORT_GRAPHS,
+            bot_access_frequency: GraphHelper.setupList([]), search_access_frequency: GraphHelper.setupList([]),
+            general_statistics: GraphHelper.setupMap([]), query_word_frequency: GraphHelper.setupMap([]),
+            file_type_statistics: GraphHelper.setupMap([])});
+    }
+}
+
+// get list of logs
+async function _getLogList(session, organisation_id, subSystem, top, dispatch) {
+    if (organisation_id !== '') {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_get('/stats/get-logs/' + encodeURIComponent(session.id) + '/' +
+            encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(subSystem) + '/' +
+            encodeURIComponent(top),
+            (response) => {
+                const data = response.data;
+                dispatch({
+                    type: SET_LOG_LIST, log_list: data.logs, selected_log: subSystem,
+                    active_components: {
+                        "auth": data.auth,
+                        "conversion": data.conversion, "crawler": data.crawler, "document": data.document,
+                        "index": data.index, "knowledgebase": data.knowledgebase, "language": data.language,
+                        "mind": data.mind, "operator": data.operator, "search": data.search,
+                        "stats": data.stats, "web": data.web
+                    }
+                });
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
     }
 }
 
@@ -226,6 +282,53 @@ async function _getHtmlNotifications(dispatch) {
         })
     }
 }
+
+// setup a page for different tabs
+async function _setupPage(selected_tab, dispatch, getState) {
+    const organisation_id = getState().appReducer.selected_organisation_id;
+    const kb_id = getState().appReducer.selected_knowledgebase_id;
+    if (selected_tab === 'users' && organisation_id !== '') {
+        await _getUsers(organisation_id, dispatch);
+
+    } else if (selected_tab === 'document sources' && organisation_id !== '' && kb_id !== '') {
+        await _getCrawlers(organisation_id, kb_id, dispatch);
+
+    } else if (selected_tab === 'documents' && organisation_id !== '' && kb_id !== '') {
+        const document_filter = getState().appReducer.document_filter;
+        const document_previous = 'null'; // reset
+        const document_page_size = getState().appReducer.document_page_size;
+        await _getDocuments(organisation_id, kb_id, document_previous, document_page_size, document_filter, dispatch);
+        dispatch({type:RESET_DOCUMENT_PAGINATION});
+
+    } else if (selected_tab === 'inventory' && organisation_id !== '' && kb_id !== '') {
+        await _getInventorizeList(organisation_id, kb_id, dispatch);
+
+    } else if (selected_tab === 'reports' && organisation_id !== '' && kb_id !== '') {
+        const top = getState().appReducer.report_num_items;
+        const date = new Date(getState().appReducer.report_date);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        await _getReports(organisation_id, kb_id, year, month, top, dispatch);
+
+    } else if (selected_tab === 'logs' && organisation_id !== '') {
+        const session = getState().appReducer.session;
+        const subSystem = getState().appReducer.selected_log;
+        const top = getState().appReducer.log_size;
+        await _getLogList(session, organisation_id, subSystem, top, dispatch);
+
+    } else if (selected_tab === 'mind') {
+        dispatch({type: BUSY, busy: true});
+        const mind_item_filter = getState().appReducer.mind_item_filter;
+        const mind_page_size = getState().appReducer.mind_page_size;
+        if (organisation_id && kb_id && mind_item_filter) {
+            await _getMindItems(organisation_id, kb_id, mind_item_filter, mind_page_size, dispatch);
+        } else {
+            dispatch({type: MIND_FIND, mind_item_list: []});
+        }
+    }
+
+}
+
 
 // application creators / actions
 export const appCreators = {
@@ -285,15 +388,7 @@ export const appCreators = {
     // set the active tab
     selectTab: (selected_tab) => async (dispatch, getState) => {
         dispatch(({type: SELECT_TAB, selected_tab}));
-        const organisation_id = getState().appReducer.selected_organisation_id;
-        const kb_id = getState().appReducer.selected_knowledgebase_id;
-        if (selected_tab === 'users' && organisation_id !== '') {
-            await _getUsers(organisation_id, dispatch);
-        }
-        if (selected_tab === 'document sources' && organisation_id !== '' && kb_id !== '') {
-            await _getCrawlers(organisation_id, kb_id, dispatch);
-        }
-        // todo: get stats
+        await _setupPage(selected_tab, dispatch, getState);
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -340,10 +435,9 @@ export const appCreators = {
             dispatch({type: BUSY, busy: true});
             dispatch(({type: SELECT_ORGANISATION, name, id}));
             await _getKnowledgeBases(id, dispatch);
-            const tab = getState().appReducer.selected_tab;
-            if (tab === "users") {
-                await _getUsers(id, dispatch);
-            }
+
+            const selected_tab = getState().appReducer.selected_tab;
+            await _setupPage(selected_tab, dispatch, getState);
         }
     },
 
@@ -386,24 +480,9 @@ export const appCreators = {
     selectKnowledgeBase: (name, id) => async (dispatch, getState) => {
         if (id && id.length > 0) {
             dispatch({type: BUSY, busy: true});
-            const tab = getState().appReducer.selected_tab;
-            const organisation_id = getState().appReducer.selected_organisation_id;
+            const selected_tab = getState().appReducer.selected_tab;
             dispatch({type: SELECT_KNOWLEDGE_BASE, name, id});
-            if (tab === 'document sources') {
-                await _getCrawlers(organisation_id, id, dispatch);
-
-            } else if (tab === 'documents') {
-                const organisation_id = getState().appReducer.selected_organisation_id;
-                const kb_id = getState().appReducer.selected_knowledgebase_id;
-                const document_filter = getState().appReducer.document_filter;
-                const document_previous = 'null'; // reset
-                const document_page_size = getState().appReducer.document_page_size;
-                await _getDocuments(organisation_id, kb_id, document_previous, document_page_size, document_filter, dispatch);
-                dispatch({type:RESET_DOCUMENT_PAGINATION});
-
-            } else if (tab === 'inventory') {
-                await _getInventorizeList(organisation_id, id, dispatch);
-            }
+            await _setupPage(selected_tab, dispatch, getState);
         }
     },
 
@@ -457,10 +536,10 @@ export const appCreators = {
 
     // remove a document (delete) from the system
     deleteInventoryItem: (dateTime) => async (dispatch, getState) => {
-        dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
-        if (organisation_id && kb_id) {
+        if (organisation_id.length > 0 && kb_id.length > 0) {
+            dispatch({type: BUSY, busy: true});
             const full_url = '/document/parquet/' + encodeURIComponent(organisation_id) + '/' +
                                 encodeURIComponent(kb_id) + '/' + encodeURIComponent(dateTime);
             await Comms.http_delete(full_url,
@@ -473,14 +552,19 @@ export const appCreators = {
     },
 
     getInventoryBusy: () => async (dispatch, getState) => {
-        dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
-        await Comms.http_get('/document/inventorize/' + encodeURIComponent(organisation_id),
-            (response) => {
-                dispatch({type: GET_INVENTORIZE_BUSY, busy: response.data});
-            },
-            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
-        )
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        if (organisation_id.length > 0 && kb_id.length > 0) {
+            dispatch({type: BUSY, busy: true});
+            await Comms.http_get('/document/inventorize/' + encodeURIComponent(organisation_id),
+                (response) => {
+                    dispatch({type: GET_INVENTORIZE_BUSY, busy: response.data});
+                },
+                (errStr) => {
+                    dispatch({type: ERROR, title: "Error", error: errStr})
+                }
+            )
+        }
     },
 
     forceInventoryBusy: () => (dispatch, getState) => {
@@ -680,12 +764,12 @@ export const appCreators = {
 
 
     // refresh / re-parse etc. a document
-    refreshDocument: (document) => async (dispatch, getState) => {
+    reprocessDocument: (document) => async (dispatch, getState) => {
         const document_filter = getState().appReducer.document_filter;
         const document_previous = getState().appReducer.document_previous;
         const page_size = getState().appReducer.document_page_size;
         dispatch({type: BUSY, busy: true});
-        await Comms.http_post('/document/refresh', {
+        await Comms.http_post('/document/reprocess', {
                 "organisationId": document.organisationId, "kbId": document.kbId, "url": document.url
             },
             (response) => {
@@ -696,26 +780,10 @@ export const appCreators = {
     },
 
 
-    // refresh / re-parse etc. a document
-    refreshDocuments: (source_id) => async (dispatch, getState) => {
-        dispatch({type: BUSY, busy: true});
-        const organisation_id = getState().appReducer.selected_organisation_id;
-        const kb_id = getState().appReducer.selected_knowledgebase_id;
-        await Comms.http_post('/document/refresh/all', {
-                "organisationId": organisation_id, "kbId": kb_id, "source": source_id
-            },
-            (response) => {
-                dispatch({type: BUSY, busy: false});
-            },
-            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
-        )
-    },
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // mind items
 
-    mindFind: (page_size) => async (dispatch, getState) => {
+    mindFind: () => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
@@ -943,27 +1011,10 @@ export const appCreators = {
     // log list
 
     getLogList: (subSystem) => async (dispatch, getState) => {
-        // /stats/get-logs/{sessionId}/{organisationId}/{subSystem}/{top}
-        dispatch({type: BUSY, busy: true});
         const session = getState().appReducer.session;
         const organisation_id = getState().appReducer.selected_organisation_id;
         const top = getState().appReducer.log_size;
-        await Comms.http_get('/stats/get-logs/' + encodeURIComponent(session.id) + '/' +
-                             encodeURIComponent(organisation_id) + '/' +
-                             encodeURIComponent(subSystem) + '/' +
-                             encodeURIComponent(top),
-            (response) => {
-                const data = response.data;
-                dispatch({type: SET_LOG_LIST, log_list: data.logs, selected_log: subSystem,
-                            active_components: { "auth": data.auth,
-                                    "conversion": data.conversion, "crawler": data.crawler, "document": data.document,
-                                    "index": data.index, "knowledgebase": data.knowledgebase, "language": data.language,
-                                    "mind": data.mind, "operator": data.operator, "search": data.search,
-                                    "stats": data.stats, "web": data.web}
-                });
-            },
-            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
-        )
+        await _getLogList(session, organisation_id, subSystem, top, dispatch);
     },
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -149,7 +149,7 @@ export class CrawlerDialog extends Component {
         }
 
         return {
-            id: crawler.id,
+            sourceId: crawler.sourceId,
             name: crawler.name,
             crawlerType: crawler.crawlerType,
             filesPerSecond: crawler.filesPerSecond,
@@ -230,7 +230,7 @@ export class CrawlerDialog extends Component {
     getCrawlerData(data) {
         let specificJson = this.convertSpecificJson(this.state);
         return {
-            id: data.id,
+            sourceId: data.sourceId,
             name: data.name,
             crawlerType: data.crawlerType,
             deleteFiles: data.deleteFiles,
@@ -323,7 +323,7 @@ export class CrawlerDialog extends Component {
                             <div style={styles.formContent}>
                                 {t_value === 'general' &&
                                                             <CrawlerGeneral
-                                                                id={this.state.id}
+                                                                sourceId={this.state.sourceId}
                                                                 organisation_id={this.state.organisation_id}
                                                                 kb_id={this.state.kb_id}
                                                                 name={this.state.name}
@@ -335,7 +335,6 @@ export class CrawlerDialog extends Component {
                                                                 enableIndexing={this.state.enableIndexing}
                                                                 error_title={this.state.crawler_error_title}
                                                                 error_msg={this.state.crawler_error_msg}
-                                                                refreshDocuments={this.props.refreshDocuments}
                                                                 onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_general_data(crawler)}/>
                                 }

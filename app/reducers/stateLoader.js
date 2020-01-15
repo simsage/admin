@@ -112,7 +112,7 @@ export function initializeState() {
         // list of log files
         log_size: 100,
         log_list: [],
-        selected_log: 'auth',
+        selected_log: 'web',
         active_components: {}, // what processes are active
 
         // application error messages

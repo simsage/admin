@@ -90,8 +90,6 @@ export class Inventory extends React.Component {
         console.log(error, info);
     }
     componentDidMount() {
-        this.props.getInventoryList();
-        this.props.getInventoryBusy();
     }
     programUploaded() {
     }

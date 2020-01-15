@@ -229,7 +229,7 @@ export class Home extends Component {
         // keep operator alive if they're active and ready
         if (self.props.operator_ready && self.props.selected_organisation_id.length > 0) {
             const data = {
-                sessionId: self.props.session.id,
+                operatorId: self.props.session.id,
                 organisationId: self.props.selected_organisation_id,
             };
             this.sendMessage('/ws/ops/refresh', data);

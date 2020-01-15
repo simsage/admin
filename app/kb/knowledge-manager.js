@@ -96,7 +96,6 @@ export class KnowledgeManager extends React.Component {
         console.log(error, info);
     }
     componentDidMount() {
-        this.props.getInventoryList();
     }
     programUploaded() {
     }

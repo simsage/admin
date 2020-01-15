@@ -161,7 +161,6 @@ export class DocumentSources extends Component {
                     title={this.state.title}
                     organisation_id={this.props.selected_organisation_id}
                     kb_id={this.props.selected_knowledgebase_id}
-                    refreshDocuments={this.props.refreshDocuments}
                     onSave={(crawler) => this.saveCrawler(crawler)}
                     onUpdate={(crawler) => this.onUpdate(crawler)}
                     onError={(title, errStr) => this.props.setError(title, errStr)}
