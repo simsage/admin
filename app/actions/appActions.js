@@ -8,6 +8,7 @@ import {
     CLOSE_ERROR,
     ERROR,
     GET_CRAWLERS,
+    GET_DOMAINS,
     GET_DOCUMENTS_PAGINATED,
     GET_HTML5_NOTIFICATIONS,
     GET_KNOWLEDGE_BASES,
@@ -47,6 +48,9 @@ import {
     SET_SEMANTIC_LIST,
     SET_SYNONYM_FILTER,
     SET_SYNONYM_LIST,
+    SET_SYNSET_LIST,
+    SET_SYNSET_FILTER,
+    RESET_SYNSET_PAGINATION,
     SHOW_NOTIFICATIONS,
     SIGN_IN,
     SIGN_OUT,
@@ -119,6 +123,22 @@ async function _getCrawlers(organisation_id, kb_id, dispatch) {
         await Comms.http_get('/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
             (response) => {
                 dispatch({type: GET_CRAWLERS, crawler_list: response.data});
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    }
+}
+
+async function _getDomains(organisation_id, kb_id, page, page_size, filter, dispatch) {
+    if (organisation_id.length > 0 && kb_id.length > 0) {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_put('/knowledgebase/domains', {
+                "organisationId": organisation_id, "kbId": kb_id, "page": page, "pageSize": page_size, "filter": filter
+            },
+            (response) => {
+                dispatch({type: GET_DOMAINS, domain_list: response.data});
             },
             (errStr) => {
                 dispatch({type: ERROR, title: "Error", error: errStr})
@@ -212,6 +232,23 @@ async function _getSemantics(organisation_id, kb_id, semantic_filter, semantic_p
     }
 }
 
+async function _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch) {
+    if (organisation_id.length > 0 && kb_id.length > 0) {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_put('/language/find-syn-sets', {
+                "organisationId": organisation_id, "kbId": kb_id,
+                "page": page, "pageSize": page_size, "filter": filter
+            },
+            (response) => {
+                dispatch({type: SET_SYNSET_LIST, synset_list: response.data.list, total_size: response.data.totalSize});
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    }
+}
+
 async function _getReports(organisation_id, kb_id, year, month, top, dispatch) {
     if (organisation_id.length > 0 && kb_id.length > 0) {
         dispatch({type: BUSY, busy: true});
@@ -257,7 +294,7 @@ async function _getLogList(session, organisation_id, subSystem, top, dispatch) {
                     active_components: {
                         "auth": data.auth,
                         "conversion": data.conversion, "crawler": data.crawler, "document": data.document,
-                        "index": data.index, "knowledgebase": data.knowledgebase, "language": data.language,
+                        "knowledgebase": data.knowledgebase, "language": data.language,
                         "mind": data.mind, "operator": data.operator, "search": data.search,
                         "stats": data.stats, "web": data.web
                     }
@@ -300,6 +337,13 @@ async function _setupPage(selected_tab, dispatch, getState) {
         await _getDocuments(organisation_id, kb_id, document_previous, document_page_size, document_filter, dispatch);
         dispatch({type:RESET_DOCUMENT_PAGINATION});
 
+    } else if (selected_tab === 'syn-sets' && organisation_id !== '' && kb_id !== '') {
+        const page = getState().appReducer.synset_page;
+        const page_size = getState().appReducer.synset_page_size;
+        const filter = getState().appReducer.synset_filter;
+        await _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch);
+        dispatch({type: RESET_SYNSET_PAGINATION});
+
     } else if (selected_tab === 'inventory' && organisation_id !== '' && kb_id !== '') {
         await _getInventorizeList(organisation_id, kb_id, dispatch);
 
@@ -324,6 +368,13 @@ async function _setupPage(selected_tab, dispatch, getState) {
             await _getMindItems(organisation_id, kb_id, mind_item_filter, mind_page_size, dispatch);
         } else {
             dispatch({type: MIND_FIND, mind_item_list: []});
+        }
+    } else if (selected_tab === 'active directory') {
+        dispatch({type: BUSY, busy: true});
+        if (organisation_id && kb_id) {
+            await _getDomains(organisation_id, kb_id, 0, 10, '', dispatch);
+        } else {
+            dispatch({type: GET_DOMAINS, domain_list: []});
         }
     }
 
@@ -676,6 +727,51 @@ export const appCreators = {
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Active Directory / Domains
+
+    getDomains: (organisation_id, kb_id) => async (dispatch, getState) => {
+        await _getDomains(organisation_id, kb_id, 0, 10, "", dispatch);
+    },
+
+    updateDomain: (domain) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await Comms.http_put('/knowledgebase/domain', domain,
+            (response) => {
+                _getDomains(organisation_id, kb_id, 0, 10, "", dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    testDomain: (domain) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await Comms.http_put('/knowledgebase/domain/test', domain,
+            (response) => {
+                dispatch({type: ERROR, title: "Success", error: "Connected Successfully"});
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+
+    deleteDomain: (domain_id) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await Comms.http_delete('/knowledgebase/domain/' + encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(kb_id) + '/' + encodeURIComponent(domain_id),
+            (response) => {
+                _getDomains(organisation_id, kb_id, 0, 10, "", dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Documents
 
     getDocuments: () => async (dispatch, getState) => {
@@ -969,6 +1065,80 @@ export const appCreators = {
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // syn-sets
+
+    deleteSynSet: (lemma) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const page = getState().appReducer.synset_page;
+        const page_size = getState().appReducer.synset_page_size;
+        const filter = getState().appReducer.synset_filter;
+        await Comms.http_delete('/language/delete-syn-set/' + encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(kb_id) + '/' + encodeURIComponent(lemma),
+            (response) => {
+                _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
+        )
+    },
+
+    findSynSets: () => async (dispatch, getState) => {
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const page = getState().appReducer.synset_page;
+        const page_size = getState().appReducer.synset_page_size;
+        const filter = getState().appReducer.synset_filter;
+        await _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch);
+    },
+
+    saveSynSet: (syn_set) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const page = getState().appReducer.synset_page;
+        const page_size = getState().appReducer.synset_page_size;
+        const filter = getState().appReducer.synset_filter;
+        Comms.http_put('/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(kb_id), syn_set,
+            (response) => {
+                _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
+        )
+    },
+
+    setSynSetFilter: (filter) => async (dispatch, getState) => {
+        dispatch({type: SET_SYNSET_FILTER, synset_filter: filter});
+    },
+
+    // update the syn-set page
+    setSynSetPage: (page) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const page_size = getState().appReducer.synset_page_size;
+        const filter = getState().appReducer.synset_filter;
+
+        dispatch(({type: SET_SYNSET_PAGE, page: page}));
+        await _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch);
+    },
+
+    // update the syn-set pagination size
+    setSynSetPageSize: (page_size) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        dispatch(({type: SET_SYNSET_PAGE_SIZE, page_size: page_size}));
+
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const page = getState().appReducer.synset_page;
+        const filter = getState().appReducer.synset_filter;
+
+        await _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch);
+    },
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // reports
 
     setReportDate: (report_date) => ({type: SET_REPORT_DATE, report_date}),
@@ -1015,6 +1185,17 @@ export const appCreators = {
         const organisation_id = getState().appReducer.selected_organisation_id;
         const top = getState().appReducer.log_size;
         await _getLogList(session, organisation_id, subSystem, top, dispatch);
+    },
+
+    restartService: (subSystem) => async (dispatch, getState) => {
+        const session = getState().appReducer.session;
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        await Comms.http_get('/stats/restart-service/' + encodeURIComponent(session.id) + '/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(subSystem),
+            (response) => {},
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
     },
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////

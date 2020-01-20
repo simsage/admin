@@ -21,9 +21,11 @@ import Documents from "./documents/documents";
 import Mind from "./mind/mind";
 import Synonyms from "./synonyms/synonyms";
 import Semantics from "./semantics/semantics";
+import SynSets from "./synsets/synsets";
 import Logs from "./reports/logs";
 import Reports from "./reports/reports";
 import Operator from "./operator/operator";
+import Domains from "./ad/domains";
 
 import system_config from 'settings'
 import SockJsClient from 'react-stomp';
@@ -423,6 +425,11 @@ export class Home extends Component {
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
+                             <div style={this.getStyle('active directory', false)}
+                                  onClick={() => this.props.selectTab('active directory')}>active directory</div>
+                         }
+                         {
+                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              <div style={this.getStyle('mind', false)}
                                   onClick={() => this.props.selectTab('mind')}>the mind</div>
                          }
@@ -435,6 +442,11 @@ export class Home extends Component {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              <div style={this.getStyle('semantics')}
                                   onClick={() => this.props.selectTab('semantics')}>semantics</div>
+                         }
+                         {
+                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
+                             <div style={this.getStyle('syn-sets')}
+                                  onClick={() => this.props.selectTab('syn-sets')}>syn-sets</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
@@ -546,6 +558,12 @@ export class Home extends Component {
                                  closeDialog={() => this.closeDialog()} />
                          }
 
+                         { this.props.selected_tab === 'active directory' &&
+                             <Domains
+                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                                 closeDialog={() => this.closeDialog()} />
+                         }
+
                          { this.props.selected_tab === 'mind' &&
                              <Mind
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
@@ -560,6 +578,12 @@ export class Home extends Component {
 
                          { this.props.selected_tab === 'semantics' &&
                              <Semantics
+                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                                 closeDialog={() => this.closeDialog()} />
+                         }
+
+                         { this.props.selected_tab === 'syn-sets' &&
+                             <SynSets
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
                          }

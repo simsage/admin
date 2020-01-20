@@ -1,7 +1,7 @@
 
 const system_config = {
     // SimSage platform version (used for display only in UI)
-    version: '5.2.0',
+    version: '5.2.1',
     // api version of api_base
     api_version: 1,
     // the service layer end-point, change "localhost:8080" to ...

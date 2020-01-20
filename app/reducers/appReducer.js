@@ -7,6 +7,7 @@ import {
     CLOSE_ERROR,
     ERROR,
     GET_CRAWLERS,
+    GET_DOMAINS,
     GET_DOCUMENTS_PAGINATED,
     GET_HTML5_NOTIFICATIONS,
     GET_KNOWLEDGE_BASES,
@@ -41,6 +42,11 @@ import {
     SET_SEMANTIC_LIST,
     SET_SYNONYM_FILTER,
     SET_SYNONYM_LIST,
+    SET_SYNSET_FILTER,
+    SET_SYNSET_LIST,
+    SET_SYNSET_PAGE,
+    SET_SYNSET_PAGE_SIZE,
+    RESET_SYNSET_PAGINATION,
     SHOW_NOTIFICATIONS,
     SIGN_IN,
     SIGN_OUT,
@@ -240,6 +246,14 @@ export const reducer = (state, action) => {
             };
         }
 
+        case GET_DOMAINS: {
+            return {
+                ...state,
+                domain_list: action.domain_list,
+                busy: false,
+            };
+        }
+
         case UPLOADING_PROGRAM: {
             return {
                 ...state,
@@ -361,6 +375,45 @@ export const reducer = (state, action) => {
                 ...state,
                 semantic_filter: action.semantic_filter,
             };
+        }
+
+        case SET_SYNSET_LIST: {
+            return {
+                ...state,
+                synset_list: action.synset_list,
+                synset_total_size: action.total_size,
+                busy: false,
+            };
+        }
+
+        case SET_SYNSET_FILTER: {
+            return {
+                ...state,
+                synset_filter: action.synset_filter,
+            };
+        }
+
+        case SET_SYNSET_PAGE: {
+            return {
+                ...state,
+                synset_page: action.page,
+                busy: false,
+            }
+        }
+
+        case SET_SYNSET_PAGE_SIZE: {
+            return {
+                ...state,
+                synset_page_size: action.page_size,
+            }
+        }
+
+        case RESET_SYNSET_PAGINATION: {
+            return {
+                ...state,
+                synset_page: 0,
+                busy: false,
+            }
         }
 
         case SET_REPORT_DATE: {

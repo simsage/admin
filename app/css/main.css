@@ -71,7 +71,6 @@ a:visited {
     text-decoration:underline;
 }
 
-
 /******* logging chips **********/
 
 .chip {
@@ -85,7 +84,7 @@ a:visited {
     margin-right: 5px;
     margin-bottom: 10px;
     cursor: default;
-    min-width: 150px;
+    width: 200px;
 }
 
 .selected-chip {
@@ -98,7 +97,7 @@ a:visited {
     background-color: #bbb;
     margin-right: 5px;
     cursor: default;
-    min-width: 150px;
+    width: 200px;
 }
 
 .chip-image-area {
@@ -126,5 +125,11 @@ a:visited {
     margin-left: 5px;
     width: 40px;
     height: 40px;
+}
+
+.restart-image {
+    float: right;
+    margin-top: 10px;
+    margin-left: 10px;
 }
 

@@ -291,8 +291,7 @@ export class UserManager extends React.Component {
         if (this.state.edit_first_name.length > 0 &&
             this.state.edit_surname.length > 0 &&
             this.state.edit_email.length > 0 &&
-            (this.state.edit_user_id.length > 0 || this.state.edit_password.length > 0) &&
-            this.state.edit_roles.length > 0) {
+            (this.state.edit_user_id.length > 0 || this.state.edit_password.length > 0)) {
 
             // do we have an operator and knowledge bases?
             if (UserManager.hasOperatorRole(this.state.edit_roles) && this.state.edit_kb_list.length === 0) {

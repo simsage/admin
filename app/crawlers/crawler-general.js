@@ -98,10 +98,12 @@ export class CrawlerGeneral extends Component {
         }
     }
     construct_data(data) {
+        const crawlerType = Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType;
+        const allowAnonymous = (Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous) || (crawlerType === 'web');
         return {filesPerSecond: Api.defined(data.filesPerSecond) ? data.filesPerSecond : this.state.filesPerSecond,
-                crawlerType: Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType,
+                crawlerType: crawlerType,
                 deleteFiles: Api.defined(data.deleteFiles) ? data.deleteFiles : this.state.deleteFiles,
-                allowAnonymous: Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous,
+                allowAnonymous: allowAnonymous,
                 enablePreview: Api.defined(data.enablePreview) ? data.enablePreview : this.state.enablePreview,
                 enableIndexing: Api.defined(data.enableIndexing) ? data.enableIndexing : this.state.enableIndexing,
                 name: Api.defined(data.name) ? data.name : this.state.name,
@@ -120,11 +122,15 @@ export class CrawlerGeneral extends Component {
         }
     }
     deleteDocuments() {
-        this.setState({
-            message_callback: (action) => this.confirmDocumentsDelete(action),
-            message_title: 'remove all documents for "' + this.state.name + '"?',
-            message: 'Are you sure you want to remove ALL DOCUMENTS for <b>' + this.state.name + '</b>?'
-        });
+        if (this.props.schedule === "") {
+            this.setState({
+                message_callback: (action) => this.confirmDocumentsDelete(action),
+                message_title: 'remove all documents for "' + this.state.name + '"?',
+                message: 'Are you sure you want to remove ALL DOCUMENTS for <b>' + this.state.name + '</b>?'
+            });
+        } else {
+            this.setError("ERROR: disable schedule", "Please clear the crawler's scheduled times first.");
+        }
     }
     confirmDocumentsDelete(action) {
         this.setState({message: '', message_title: ''});
@@ -207,9 +213,10 @@ export class CrawlerGeneral extends Component {
                 <br clear="both" />
 
                 <br/>
-                <div style={{float: 'left'}} title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it.">
+                <div style={{float: 'left'}} title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
                     <Checkbox
-                        checked={this.state.allowAnonymous}
+                        checked={this.state.allowAnonymous || this.state.crawlerType === 'web'}
+                        disabled={this.state.crawlerType === 'web'}
                         onChange={(event) => { this.change_callback({allowAnonymous: event.target.checked}); }}
                         value="allow anonymous access to these files?"
                         inputProps={{

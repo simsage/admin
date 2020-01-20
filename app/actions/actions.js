@@ -20,6 +20,7 @@ export const UPLOADING_PROGRAM = "uploading program";
 export const UPLOADING_PROGRAM_FINISHED = "uploading program finished";
 
 export const GET_CRAWLERS = "get crawlers";
+export const GET_DOMAINS = "get domains";
 
 export const GET_DOCUMENTS_PAGINATED = "get documents paginated";
 export const SET_DOCUMENT_FILTER = "set document filter";
@@ -43,6 +44,12 @@ export const SET_SYNONYM_FILTER = "set synonym filter";
 
 export const SET_SEMANTIC_LIST = "set semantic list";
 export const SET_SEMANTIC_FILTER = "set semantic filter";
+
+export const SET_SYNSET_FILTER = "set synset filter";
+export const SET_SYNSET_LIST = "set synset list";
+export const SET_SYNSET_PAGE = "set synset page";
+export const SET_SYNSET_PAGE_SIZE = "set synset page size";
+export const RESET_SYNSET_PAGINATION = "reset synset pagination";
 
 export const RESTORE_SYSTEM = "restore system";
 

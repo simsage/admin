@@ -79,6 +79,13 @@ export function initializeState() {
         semantic_list: [],
         semantic_page_size: 1000,
 
+        // syn-sets
+        synset_filter: "",
+        synset_list: [],
+        synset_page: 0,
+        synset_page_size: 10,
+        synset_total_size: 0,
+
         // reports
         report_date: Api.toIsoDate(new Date()),
         report_num_items: 20,
@@ -114,6 +121,9 @@ export function initializeState() {
         log_list: [],
         selected_log: 'web',
         active_components: {}, // what processes are active
+
+        // ad domain manager
+        domain_list: [],
 
         // application error messages
         error_title: "Error",

@@ -47,6 +47,9 @@ export class CrawlerDialog extends Component {
 
             selectedTab: 'general',
 
+            // cache
+            schedule: '',
+
             // organisational details
             organisation_id: props.organisation_id,
             kb_id: props.kb_id,
@@ -285,7 +288,7 @@ export class CrawlerDialog extends Component {
     update_general_data(data) {
         this.setState({...this.state, data});
         if (this.state.onUpdate) {
-            this.state.onUpdate(this.getCrawlerData(data));
+            this.state.onUpdate({...this.getCrawlerData(data), "schedule": this.state.schedule});
         }
     }
     update_control_data(data) {
@@ -334,6 +337,7 @@ export class CrawlerDialog extends Component {
                                                                 enablePreview={this.state.enablePreview}
                                                                 enableIndexing={this.state.enableIndexing}
                                                                 error_title={this.state.crawler_error_title}
+                                                                schedule={this.state.schedule}
                                                                 error_msg={this.state.crawler_error_msg}
                                                                 onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_general_data(crawler)}/>

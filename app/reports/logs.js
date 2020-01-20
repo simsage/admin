@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
+import {Home} from "../home";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -69,6 +70,9 @@ export class Logs extends React.Component {
         this.setState({selectedItem: log});
         this.props.getLogList(log);
     }
+    restart(log) {
+        this.props.restartService(log);
+    }
     selected(log) {
         if (log === this.props.selected_log) {
             return "selected-chip";
@@ -96,6 +100,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/login-icon.png" alt="auth" width="96" height="96" />
                             </div>
                             Authentication
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart authentication service" onClick={() => this.restart('auth')}/>
+                            }
                         </div>
 
                         <div className={this.selected('conversion')} onClick={() => this.showLogs('conversion')} title="show conversion system logs">
@@ -103,6 +112,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/conversion.svg" alt="auth" width="96" height="96" />
                             </div>
                             Conversion
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart conversion service" onClick={() => this.restart('conversion')}/>
+                            }
                         </div>
 
                         <div className={this.selected('crawler')} onClick={() => this.showLogs('crawler')} title="show crawler system logs">
@@ -110,6 +124,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/web-crawler.svg" alt="auth" width="96" height="96" />
                             </div>
                             Crawler
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart crawler service" onClick={() => this.restart('crawler')}/>
+                            }
                         </div>
 
                         <div className={this.selected('document')} onClick={() => this.showLogs('document')} title="show document system logs">
@@ -117,13 +136,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/edit.svg" alt="auth" width="96" height="96" />
                             </div>
                             Document
-                        </div>
-
-                        <div className={this.selected('index')} onClick={() => this.showLogs('index')} title="show index system logs">
-                            <div className={this.get_active('index')}>
-                                <img className="chip-image-area-img" src="../images/index.svg" alt="auth" width="96" height="96" />
-                            </div>
-                            Indexer
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart document service" onClick={() => this.restart('document')}/>
+                            }
                         </div>
 
                         <div className={this.selected('knowledgebase')} onClick={() => this.showLogs('knowledgebase')} title="show knowledge-base system logs">
@@ -131,6 +148,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/kb.svg" alt="auth" width="96" height="96" />
                             </div>
                             Knowledgebase
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart knowledge-base service" onClick={() => this.restart('knowledgebase')}/>
+                            }
                         </div>
 
                         <div className={this.selected('language')} onClick={() => this.showLogs('language')} title="show language system logs">
@@ -138,6 +160,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/language.svg" alt="auth" width="96" height="96" />
                             </div>
                             Language
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart language service" onClick={() => this.restart('language')}/>
+                            }
                         </div>
 
                         <div className={this.selected('mind')} onClick={() => this.showLogs('mind')} title="show mind system logs">
@@ -145,6 +172,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/mind.svg" alt="auth" width="96" height="96" />
                             </div>
                             SimSage Mind
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart mind service" onClick={() => this.restart('mind')}/>
+                            }
                         </div>
 
                         <div className={this.selected('operator')} onClick={() => this.showLogs('operator')} title="show operator system logs">
@@ -152,6 +184,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/operator.svg" alt="auth" width="96" height="96" />
                             </div>
                             Operator
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart operator service" onClick={() => this.restart('operator')}/>
+                            }
                         </div>
 
                         <div className={this.selected('search')} onClick={() => this.showLogs('search')} title="show search system logs">
@@ -159,6 +196,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/search.svg" alt="auth" width="96" height="96" />
                             </div>
                             Search
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart search service" onClick={() => this.restart('search')}/>
+                            }
                         </div>
 
                         <div className={this.selected('stats')} onClick={() => this.showLogs('stats')} title="show statistics system logs">
@@ -166,6 +208,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/stats.svg" alt="auth" width="96" height="96" />
                             </div>
                             Statistics
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart statistics service" onClick={() => this.restart('stats')}/>
+                            }
                         </div>
 
                         <div className={this.selected('web')} onClick={() => this.showLogs('web')} title="show web-server system logs">
@@ -173,6 +220,11 @@ export class Logs extends React.Component {
                                 <img className="chip-image-area-img" src="../images/web.svg" alt="auth" width="96" height="96" />
                             </div>
                             Web server
+                            {Home.hasRole(this.props.user, ['admin']) &&
+                            <img className="restart-image" src="../images/refresh.svg" alt="restart" width="24"
+                                 height="24"
+                                 title="restart web service" onClick={() => this.restart('web')}/>
+                            }
                         </div>
 
                     </div>
@@ -182,7 +234,7 @@ export class Logs extends React.Component {
                     {
                         this.props.log_list &&
                         this.props.log_list.map((line) => {
-                            return (<div style={styles.logLine}>{line}</div>)
+                            return (<div style={styles.logLine} id={line}>{line}</div>)
                         })
                     }
                     <div ref={this.messagesEndRef} />
@@ -204,6 +256,8 @@ const mapStateToProps = function(state) {
         log_list: state.appReducer.log_list,
         selected_log: state.appReducer.selected_log,
         active_components: state.appReducer.active_components,
+
+        user: state.appReducer.user,
     };
 };
 
