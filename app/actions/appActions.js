@@ -18,7 +18,8 @@ import {
     GET_INVENTORIZE_BUSY,
     GET_OS_MESSAGES,
     GET_STATS,
-    GET_USERS,
+    SET_USER_LIST,
+    SET_USER_FILTER,
     HIDE_NOTIFICATIONS,
     MARK_CONVERSATION_USED,
     MIND_FIND,
@@ -42,6 +43,10 @@ import {
     SET_OPERATOR_ANSWER,
     SET_OPERATOR_CONNECTED,
     SET_OPERATOR_QUESTION,
+    STOP_CLIENT_TYPING,
+    ADD_OPERATOR,
+    REMOVE_OPERATOR,
+    MAX_OPERATORS,
     SET_REPORT_DATE,
     SET_REPORT_GRAPHS,
     SET_SEMANTIC_FILTER,
@@ -107,11 +112,14 @@ async function _getInventorizeList(organisation_id, kb_id, dispatch) {
     }
 }
 
-async function _getUsers(organisation_id, dispatch) {
+async function _getUsers(organisation_id, filter, dispatch) {
     dispatch({type: BUSY, busy: true});
-    await Comms.http_get('/auth/users/' + encodeURIComponent(organisation_id),
+    if (!filter || filter.trim() === '') {
+        filter = 'null';
+    }
+    await Comms.http_get('/auth/users/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(filter),
         (response) => {
-            dispatch({type: GET_USERS, user_list: response.data});
+            dispatch({type: SET_USER_LIST, user_list: response.data});
         },
         (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
     )
@@ -325,7 +333,8 @@ async function _setupPage(selected_tab, dispatch, getState) {
     const organisation_id = getState().appReducer.selected_organisation_id;
     const kb_id = getState().appReducer.selected_knowledgebase_id;
     if (selected_tab === 'users' && organisation_id !== '') {
-        await _getUsers(organisation_id, dispatch);
+        const filter = getState().appReducer.user_filter;
+        await _getUsers(organisation_id, filter, dispatch);
 
     } else if (selected_tab === 'document sources' && organisation_id !== '' && kb_id !== '') {
         await _getCrawlers(organisation_id, kb_id, dispatch);
@@ -626,11 +635,13 @@ export const appCreators = {
     // Users
 
     getUsers: (organisation_id) => async (dispatch, getState) => {
-        await _getUsers(organisation_id, dispatch)
+        const filter = getState().appReducer.user_filter;
+        await _getUsers(organisation_id, filter, dispatch)
     },
 
     updateUser: (organisation_id, user_id, name, surname, email, password, role_list, kb_list) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
+        const filter = getState().appReducer.user_filter;
         const signed_in_user = getState().appReducer.user;
         const actual_role_data = [];
         for (const roleStr of role_list) {
@@ -664,7 +675,7 @@ export const appCreators = {
                     }
                     dispatch({type: UPDATE_USER, user: user});
                 }
-                _getUsers(organisation_id, dispatch)
+                _getUsers(organisation_id, filter, dispatch)
 
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
@@ -673,15 +684,17 @@ export const appCreators = {
 
     deleteUser: (organisation_id, user_id) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
+        const filter = getState().appReducer.user_filter;
         await Comms.http_delete('/auth/organisation/user/' + encodeURIComponent(user_id) + '/' +
             encodeURIComponent(organisation_id),
             (response) => {
-                _getUsers(organisation_id, dispatch)
+                _getUsers(organisation_id, filter, dispatch)
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
     },
 
+    setUserFilter: (filter) => ({type: SET_USER_FILTER, filter}),
 
     uploadProgram: (payload) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
@@ -1163,19 +1176,30 @@ export const appCreators = {
     setOperatorConnected: (connected) => ({type: SET_OPERATOR_CONNECTED, connected}),
 
     // add a conversation to the list
-    addConversation: (item) => ({type: ADD_CONVERSATION, item}),
+    addConversation: (operatorId, item) => ({type: ADD_CONVERSATION, operatorId, item}),
 
-    markConversationItemUsed: (id) => ({type: MARK_CONVERSATION_USED, id}),
+    markConversationItemUsed: (operatorId, id) => ({type: MARK_CONVERSATION_USED, operatorId, id}),
 
-    operatorReady: (ready) => ({type: OPERATOR_READY, ready}),
+    operatorReady: (operatorId, ready) => ({type: OPERATOR_READY, operatorId, ready}),
 
-    setOperatorAnswer: (id, answer) => ({type: SET_OPERATOR_ANSWER, id, answer}),
+    setOperatorAnswer: (operatorId, id, answer) => ({type: SET_OPERATOR_ANSWER, operatorId, id, answer}),
 
-    setOperatorQuestion: (id, question) => ({type: SET_OPERATOR_QUESTION, id, question}),
+    setOperatorQuestion: (operatorId, id, question) => ({type: SET_OPERATOR_QUESTION, operatorId, id, question}),
 
-    clearPreviousAnswer: () => ({type: CLEAR_PREVIOUS_ANSWER}),
+    clearPreviousAnswer: (operatorId) => ({type: CLEAR_PREVIOUS_ANSWER, operatorId}),
 
-    clearUser: () => ({type: OPERATOR_CLEAR_USER}),
+    clearUser: (operatorId) => ({type: OPERATOR_CLEAR_USER, operatorId}),
+
+    addOperator: () => async (dispatch, getState) => {
+        const operators = getState().appReducer.operators;
+        if (operators.length < MAX_OPERATORS) {
+            dispatch({type: ADD_OPERATOR});
+        }
+    },
+
+    removeOperator: (id) => ({type: REMOVE_OPERATOR, id: id}),
+
+    stopClientTyping: (operator_id) => ({type: STOP_CLIENT_TYPING, operator_id: operator_id}),
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     // log list

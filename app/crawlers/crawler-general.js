@@ -12,6 +12,7 @@ const crawler_list = [
     {"key": "none", "value": "please select crawler type"},
     {"key": "file", "value": "file crawler"},
     {"key": "web", "value": "web crawler"},
+    {"key": "office365", "value": "office 365 crawler"},
     //{"key": "database", "value": "database crawler"},
 ];
 
@@ -119,27 +120,6 @@ export class CrawlerGeneral extends Component {
         this.setState(data);
         if (this.state.onSave) {
             this.state.onSave(this.construct_data(data));
-        }
-    }
-    deleteDocuments() {
-        if (this.props.schedule === "") {
-            this.setState({
-                message_callback: (action) => this.confirmDocumentsDelete(action),
-                message_title: 'remove all documents for "' + this.state.name + '"?',
-                message: 'Are you sure you want to remove ALL DOCUMENTS for <b>' + this.state.name + '</b>?'
-            });
-        } else {
-            this.setError("ERROR: disable schedule", "Please clear the crawler's scheduled times first.");
-        }
-    }
-    confirmDocumentsDelete(action) {
-        this.setState({message: '', message_title: ''});
-        if (action) {
-            Api.deleteCrawlerDocuments(this.state.organisation_id, this.state.kb_id, this.state.sourceId,
-                (response) => {},
-                (err) => {
-                    this.setError("Error removing all documents", err);
-                });
         }
     }
     testCrawler() {
@@ -264,8 +244,6 @@ export class CrawlerGeneral extends Component {
 
                 {this.state.sourceId && this.state.sourceId > 0 &&
                 <div>
-                    <Button color="primary" variant="outlined" style={styles.exportButton}
-                            onClick={() => this.deleteDocuments()}>Remove Documents</Button>
                     <Button color="secondary" variant="outlined" style={styles.exportButton}
                             onClick={() => this.testCrawler()}>Test Connection</Button>
                 </div>

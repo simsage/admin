@@ -86,7 +86,7 @@ export class OpenSourceLicenses extends Component {
 
                         <Grid item xs={3} />
                         <Grid item xs={6}>
-                            <div style={styles.link}><a href="https://hazelcast.org/" target="_blank">Hazelcast license</a></div>
+                            <div style={styles.link}><a href="https://activemq.apache.org/what-is-the-license" target="_blank">Apache Artemis license</a></div>
                         </Grid>
                         <Grid item xs={3} />
 

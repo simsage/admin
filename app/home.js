@@ -24,7 +24,7 @@ import Semantics from "./semantics/semantics";
 import SynSets from "./synsets/synsets";
 import Logs from "./reports/logs";
 import Reports from "./reports/reports";
-import Operator from "./operator/operator";
+import OperatorTabs from "./operator/operator_tabs";
 import Domains from "./ad/domains";
 
 import system_config from 'settings'
@@ -178,6 +178,7 @@ const styles = {
     },
 };
 
+
 export class Home extends Component {
     constructor(props) {
         super(props);
@@ -205,7 +206,7 @@ export class Home extends Component {
 
             // get state every notification_time_in_ms interval
             const isAdminOrManager = Home.hasRole(this.props.user, ['admin', 'manager']);
-            const isOperator = Home.hasRole(this.props.user, ['operator']);
+            const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
             const self = this;
             if (isAdminOrManager) {
                 // refresh notifications and operator at interval
@@ -228,13 +229,24 @@ export class Home extends Component {
         }
     }
     refreshOperator(self) {
+        console.log('refreshOperator');
         // keep operator alive if they're active and ready
-        if (self.props.operator_ready && self.props.selected_organisation_id.length > 0) {
-            const data = {
-                operatorId: self.props.session.id,
-                organisationId: self.props.selected_organisation_id,
-            };
-            this.sendMessage('/ws/ops/refresh', data);
+        if (self.props.selected_organisation_id.length > 0 &&
+            self.props.operators && self.props.operators.length > 0) {
+            const operatorList = [];
+            for (const op of self.props.operators) {
+                if (op.operator_ready) {
+                    operatorList.push({"operatorId": op.id, "isTyping": op.is_typing, "clientId": op.client_id});
+                }
+            }
+            if (operatorList.length > 0) {
+                const data = {
+                    sessionId: self.props.session.id,
+                    organisationId: self.props.selected_organisation_id,
+                    operatorList: operatorList,
+                };
+                this.sendMessage('/ws/ops/refresh', data);
+            }
         }
     }
     getStyle(tab, disabled) {
@@ -258,6 +270,16 @@ export class Home extends Component {
         if (user && user.roles) {
             for (const role of user.roles) {
                 if (role_name_list.indexOf(role.role) >= 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    static hasRoleInOrganisation(user, organisationId, role_name_list) {
+        if (user && user.roles) {
+            for (const role of user.roles) {
+                if (role.organisationId === organisationId && role_name_list.indexOf(role.role) >= 0) {
                     return true;
                 }
             }
@@ -354,7 +376,13 @@ export class Home extends Component {
     }
     render() {
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
-        const isOperator = Home.hasRole(this.props.user, ['operator']);
+        const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
+        const operator_id_list = [];
+        for (const operator of this.props.operators) {
+            if (operator && operator.id) {
+                operator_id_list.push('/chat/' + operator.id);
+            }
+        }
         return (
             <ThemeProvider theme={uiTheme}>
 
@@ -374,7 +402,7 @@ export class Home extends Component {
                                message={this.state.message}
                                title={this.state.message_title} />
 
-                <SockJsClient url={system_config.ws_base} topics={['/chat/' + this.props.session.id]}
+                <SockJsClient url={system_config.ws_base} topics={operator_id_list}
                               ref={ (client) => { this.clientRef = client }}
                               onMessage={(msg) => { this.props.processOperatorMessage(msg) }}
                               onConnect={() => this.props.setOperatorConnected(true)}
@@ -528,7 +556,7 @@ export class Home extends Component {
                          }
 
                          { this.props.selected_tab === 'operator' &&
-                             <Operator
+                             <OperatorTabs
                                  sendMessage={(endpoint, data) => this.sendMessage(endpoint, data)}
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
@@ -657,10 +685,10 @@ const mapStateToProps = function(state) {
         selected_tab: state.appReducer.selected_tab,
         session: state.appReducer.session,
         operator_connected: state.appReducer.operator_connected,
+        operators: state.appReducer.operators,
 
         organisation_list: state.appReducer.organisation_list,
         knowledge_base_list: state.appReducer.knowledge_base_list,
-        operator_ready: state.appReducer.operator_ready,
 
         html5_notifications: state.appReducer.html5_notifications,
 

@@ -15,12 +15,15 @@ import {
     GET_INVENTORIZE_BUSY,
     GET_LICENSE,
     GET_ORGANISATION_LIST,
-    GET_USERS,
+    SET_USER_LIST,
+    SET_USER_FILTER,
     HIDE_NOTIFICATIONS,
     MARK_CONVERSATION_USED,
     MIND_FIND,
     OPERATOR_CLEAR_USER,
     OPERATOR_READY,
+    ADD_OPERATOR,
+    REMOVE_OPERATOR,
     PROCESS_OPERATOR_MESSAGE,
     RESET_DOCUMENT_PAGINATION,
     SELECT_KNOWLEDGE_BASE,
@@ -36,6 +39,7 @@ import {
     SET_OPERATOR_ANSWER,
     SET_OPERATOR_CONNECTED,
     SET_OPERATOR_QUESTION,
+    STOP_CLIENT_TYPING,
     SET_REPORT_DATE,
     SET_REPORT_GRAPHS,
     SET_SEMANTIC_FILTER,
@@ -59,9 +63,29 @@ import {initializeState} from './stateLoader'
 
 // operator message types
 const mt_ActiveConnections = "active connections";
+const mt_Disconnect = "disconnect";
 const mt_Error = "error";
 const mt_Message = "message";
+const mt_Typing = "typing";
 const mt_TeachingSuccessful = "teaching success";
+
+// remove all client attributes from an operator
+function clear_operator(op) {
+    if (op) {
+        op.conversation_list = [];
+        op.client_id = '';
+        op.client_kb_id = '';
+        op.client_kb_name = '';
+        op.question_id = '';
+        op.question = '';
+        op.answer_id = '';
+        op.answer = '';
+        op.prev_answer = '';
+        op.current_question = '';
+        op.is_typing = false;
+        op.typing_time = 0;
+    }
+}
 
 export const reducer = (state, action) => {
     state = state || initializeState();
@@ -114,6 +138,7 @@ export const reducer = (state, action) => {
                     }
                 }
             }
+            // redirect sign-in to either orgs or operator (depending on access)
             return {
                 ...state,
                 session: action.session,
@@ -222,11 +247,18 @@ export const reducer = (state, action) => {
             }
         }
 
-        case GET_USERS: {
+        case SET_USER_LIST: {
             return {
                 ...state,
                 user_list: action.user_list,
                 busy: false,
+            };
+        }
+
+        case SET_USER_FILTER: {
+            return {
+                ...state,
+                user_filter: action.filter,
             };
         }
 
@@ -436,60 +468,121 @@ export const reducer = (state, action) => {
         }
 
         case SET_OPERATOR_ANSWER: {
+            const new_list = [];
+            for (const op of state.operators) {
+                if (op.id === action.operatorId) {
+                    op.answer_id = action.id;
+                    op.answer = action.answer;
+                }
+                new_list.push(op);
+            }
             return {
                 ...state,
-                answer_id: action.id,
-                answer: action.answer,
+                operators: new_list,
             }
         }
 
         case SET_OPERATOR_QUESTION: {
+            const new_list = [];
+            for (const op of state.operators) {
+                if (op.id === action.operatorId) {
+                    op.question_id = action.id;
+                    op.question = action.question;
+                }
+                new_list.push(op);
+            }
             return {
                 ...state,
-                question_id: action.id,
-                question: action.question,
+                operators: new_list,
             }
         }
 
         case OPERATOR_READY: {
             if (action.ready) {
+                const new_list = [];
+                for (const op of state.operators) {
+                    if (op.id === action.operatorId) {
+                        op.operator_ready = true;
+                    }
+                    new_list.push(op);
+                }
                 return {
                     ...state,
-                    operator_ready: true,
+                    operators: new_list,
                 }
             } else {
+
+                const new_list = [];
+                for (const op of state.operators) {
+                    if (op.id === action.operatorId) {
+                        const emptyOperator = Api.createOperator();
+                        emptyOperator.id = action.operatorId;
+                        new_list.push(emptyOperator);
+                    } else {
+                        new_list.push(op);
+                    }
+                }
                 return {
                     ...state,
-                    operator_ready: false,
-                    conversation_list: [],
-                    num_active_connections: 0,
-                    question_id: '',
-                    question: '',
-                    answer_id: '',
-                    answer: '',
-                    client_id: '',
-                    client_kb_id: '',
-                    client_kb_name: '',
-                    current_question: '',
-                    prev_answer: '',
+                    operators: new_list,
                 }
             }
         }
 
         // next-user / ban-user set
         case OPERATOR_CLEAR_USER: {
+            const new_list = [];
+            for (const op of state.operators) {
+                if (op.id === action.operatorId) {
+                    const emptyOperator = Api.createOperator();
+                    emptyOperator.id = action.operatorId; // don't wipe these
+                    emptyOperator.operator_ready = op.operator_ready;
+                    new_list.push(emptyOperator);
+                } else {
+                    new_list.push(op);
+                }
+            }
             return {
                 ...state,
-                conversation_list: [],
-                question_id: '',
-                question: '',
-                answer_id: '',
-                answer: '',
-                client_id: '',
-                client_kb_id: '',
-                client_kb_name: '',
-                current_question: '',
-                prev_answer: '',
+                operators: new_list,
+            }
+        }
+
+        case ADD_OPERATOR: {
+            const new_list = JSON.parse(JSON.stringify(state.operators));
+            new_list.push(Api.createOperator());
+            return {
+                ...state,
+                operators: new_list,
+            }
+        }
+
+        case REMOVE_OPERATOR: {
+            const new_list = [];
+            for (const operator of state.operators) {
+                if (operator.id !== action.id) {
+                    new_list.push(operator);
+                }
+            }
+            return {
+                ...state,
+                operators: new_list
+            }
+        }
+
+        case STOP_CLIENT_TYPING: {
+            const operator_id = action.operator_id; // client's id
+            const new_list = [];
+            for (const op of state.operators) {
+                if (op.id === operator_id) {
+                    op.is_typing = false;
+                    op.typing_time = 0;
+                }
+                new_list.push(op);
+            }
+            return {
+                ...state,
+                operators: new_list,
             }
         }
 
@@ -512,6 +605,28 @@ export const reducer = (state, action) => {
                     uploading: false,
                 }
             }
+            if (data.messageType === mt_Disconnect) {
+                const new_list = [];
+                for (const op of state.operators) {
+                    if (op.id === data.operatorId) {
+                        clear_operator(op);
+                    }
+                    new_list.push(op);
+                }
+                if (data.disconnectedByClient) {
+                    return {
+                        ...state,
+                        operators: new_list,
+                        error_title: "Disconnected",
+                        error: "the client has terminated this conversation.",
+                    }
+                } else {
+                    return {
+                        ...state,
+                        operators: new_list,
+                    }
+                }
+            }
             if (data.messageType === mt_TeachingSuccessful) {
                 // needed by javascript interface - not this app
                 return {
@@ -525,6 +640,24 @@ export const reducer = (state, action) => {
                     num_active_connections: data.connectionCount,
                 }
             }
+
+            // an is-typing message arrives
+            if (data.messageType === mt_Typing) {
+                // find the organisation
+                const new_list = [];
+                for (const op of state.operators) {
+                    if (op.id === data.toId) {
+                        op.is_typing = data.fromIsTyping;
+                        op.typing_time = Api.getSystemTime() + 2000;
+                    }
+                    new_list.push(op);
+                }
+                return {
+                    ...state,
+                    operators: new_list,
+                }
+            }
+
             // a message (response) arrives
             if (data.messageType === mt_Message) {
 
@@ -533,88 +666,129 @@ export const reducer = (state, action) => {
                     return {
                         ...state,
                         error_title: "error",
-                        error:  "client text does not include a valid knowledge-base id.",
+                        error: "message does not include a valid knowledge-base id.",
+                        busy: false,
+                        uploading: false,
+                    }
+
+                } else if (!data.operatorId || data.operatorId.length === 0) {
+                    // bad - must have an operator-id so we can assign it
+                    return {
+                        ...state,
+                        error_title: "error",
+                        error:  "message does not include a valid operator-id.",
                         busy: false,
                         uploading: false,
                     }
 
                 } else {
 
-                    // get the history list (complete / abs list)
-                    let conversation_list = []; // always change the list (must update!)
-                    let current_question = ''; // the current question asked from the user
-                    if (state.conversation_list.length === 0 && data.conversationList && data.conversationList.length > 0) {
-                        // does the message come with some of the conversation data of previous attempts
-                        conversation_list = []; // reset the list - we have data
-                        let count = conversation_list.length + 1; // unique ids assigned for REACT
-                        for (const index in data.conversationList) {
-                            if (data.conversationList.hasOwnProperty(index)) {
-                                let ci = data.conversationList[index];
-                                const is_simsage = ci.origin !== "user";
-                                conversation_list.push({
-                                    id: count, primary: ci.conversationText,
-                                    secondary: is_simsage ? "You" : "user", used: false, is_simsage: is_simsage
-                                });
-                                count += 1;
+                    // find the organisation
+                    let operator = null;
+                    for (const op of state.operators) {
+                        if (op.id === data.operatorId) {
+                            operator = op;
+                            break;
+                        }
+                    }
+
+                    if (operator != null) {
+
+                        // get the history list (complete / abs list)
+                        let conversation_list = []; // always change the list (must update!)
+                        let current_question = ''; // the current question asked from the user
+                        if (operator.conversation_list.length === 0 && data.conversationList && data.conversationList.length > 0) {
+                            // does the message come with some of the conversation data of previous attempts
+                            conversation_list = []; // reset the list - we have data
+                            let count = conversation_list.length + 1; // unique ids assigned for REACT
+                            for (const index in data.conversationList) {
+                                if (data.conversationList.hasOwnProperty(index)) {
+                                    let ci = data.conversationList[index];
+                                    const is_simsage = ci.origin !== "user";
+                                    conversation_list.push({
+                                        id: count, primary: ci.conversationText,
+                                        secondary: is_simsage ? "You" : "user", used: false, is_simsage: is_simsage
+                                    });
+                                    count += 1;
+                                }
+                            }
+
+                            const last_item = data.conversationList[data.conversationList.length - 1];
+                            if (!last_item.is_simsage) {
+                                current_question = last_item.primary;
+                            }
+
+                        } else if (data.text && data.text.length > 0) {
+                            // otherwise - get the conversation from what just was said by the user
+                            conversation_list = JSON.parse(JSON.stringify(operator.conversation_list)); // copy existing list
+                            // add new item
+                            conversation_list.push({
+                                id: conversation_list.length + 1, primary: data.text,
+                                secondary: "user", used: false, is_simsage: false
+                            });
+                            current_question = data.text;
+                        } else {
+                            // the list didn't change
+                            conversation_list = operator.conversation_list;
+                        }
+
+                        // html 5 notifications enabled?
+                        if (data.text && data.text.length > 0 &&
+                            window.Notification && window.Notification.permission === "granted") {  // we have notification permission?
+                            const title = "the Operator needs your Attention"; // title
+                            const options = {
+                                body: "A new question just came in.  Click here to open the operator window.  \"" + data.text + "\""
+                            };
+                            const notification = new Notification(title, options);  // display notification
+                            notification.onclick = function () {
+                                window.focus();
                             }
                         }
 
-                        const last_item = data.conversationList[data.conversationList.length - 1];
-                        if (!last_item.is_simsage) {
-                            current_question = last_item.primary;
+                        let prev_answer = operator.prev_answer;
+                        if (data.previousAnswer && data.previousAnswer.length > 0) {
+                            operator.prev_answer = data.previousAnswer;
                         }
 
-                    } else if (data.text && data.text.length > 0) {
-                        // otherwise - get the conversation from what just was said by the user
-                        conversation_list = JSON.parse(JSON.stringify(state.conversation_list)); // copy existing list
-                        // add new item
-                        conversation_list.push({id: conversation_list.length + 1, primary: data.text,
-                                                secondary: "user", used: false, is_simsage: false});
-                        current_question = data.text;
-                    } else {
-                        // the list didn't change
-                        conversation_list = state.conversation_list;
+                        let client_id = operator.client_id;
+                        let client_kb_id = operator.client_kb_id;
+                        if (data.clientId.length > 5) {
+                            operator.client_id = data.clientId;
+                            operator.client_kb_id = data.kbId;
+                        }
+
+                        // set the name of the knowledge base connected to
+                        let client_kb_name = operator.client_kb_name;
+                        if (data.kbName && data.kbName.length > 0) {
+                            operator.client_kb_name = data.kbName;
+                        }
+
+                        // set potentially changed items
+                        operator.conversation_list = conversation_list;
+                        operator.is_typing = false;
+                        operator.typing_time = 0;
+
+                        // create the new organisation list
+                        const new_list = [];
+                        for (const op of state.operators) {
+                            if (op.id !== data.organisationId) {
+                                new_list.push(op);
+                            } else {
+                                new_list.push(operator);
+                            }
+                        }
+
+                        return {
+                            ...state,
+                            operators: new_list,
+                        }
+
+                    } // organisation != null
+                    else {
+                        console.log("organisation id not found:" + data.organisationId);
                     }
 
-                    // html 5 notifications enabled?
-                    if (data.text && data.text.length > 0 &&
-                        window.Notification && window.Notification.permission === "granted") {  // we have notification permission?
-                        const title = "the Operator needs your Attention"; // title
-                        const options = {
-                            body: "A new question just came in.  Click here to open the operator window.  \"" + data.text + "\""
-                        };
-                        const notification = new Notification(title, options);  // display notification
-                        notification.onclick = function() { window.focus(); }
-                    }
-
-                    let prev_answer = state.prev_answer;
-                    if (data.previousAnswer && data.previousAnswer.length > 0) {
-                        prev_answer = data.previousAnswer;
-                    }
-
-                    let client_id = state.client_id;
-                    let client_kb_id = state.client_kb_id;
-                    if (data.clientId.length > 5) {
-                        client_id = data.clientId;
-                        client_kb_id = data.kbId;
-                    }
-
-                    // set the name of the knowledge base connected to
-                    let client_kb_name = state.client_kb_name;
-                    if (data.kbName && data.kbName.length > 0) {
-                        client_kb_name = data.kbName;
-                    }
-
-                    return {
-                        ...state,
-                        conversation_list: conversation_list,
-                        current_question: current_question,
-                        client_kb_name: client_kb_name,
-                        client_id: client_id,
-                        client_kb_id: client_kb_id,
-                        prev_answer: prev_answer,
-                    }
-                }
+                } // else
 
             } // if mt_message
 
@@ -624,53 +798,67 @@ export const reducer = (state, action) => {
         }
 
         case SET_OPERATOR_CONNECTED: {
+            const new_list = [];
+            for (const op of state.operators) {
+                op.operator_ready = false;
+                clear_operator(op);
+                new_list.push(op);
+            }
             return {
                 ...state,
-                operator_ready: false,
                 operator_connected: action.connected,
-                conversation_list: [],
                 num_active_connections: 0,
-                question_id: '',
-                question: '',
-                answer_id: '',
-                answer: '',
-                client_id: '',
-                client_kb_id: '',
-                client_kb_name: '',
-                current_question: '',
-                prev_answer: '',
+                operators: new_list,
             }
         }
 
         case CLEAR_PREVIOUS_ANSWER: {
+            const new_list = [];
+            for (const op of state.operators) {
+                if (op.id === action.operatorId) {
+                    op.current_question = '';
+                    op.prev_answer = '';
+                }
+                new_list.push(op);
+            }
             return {
                 ...state,
-                current_question: '',
-                prev_answer: '',
+                operators: new_list,
             }
         }
 
         case ADD_CONVERSATION: {
-            // copy list to make a new one
-            const message_list = JSON.parse(JSON.stringify(state.conversation_list));
-            message_list.push(action.item);
+            const new_list = [];
+            for (const op of state.operators) {
+                if (op.id === action.operatorId) {
+                    op.conversation_list.push(action.item);
+                }
+                new_list.push(op);
+            }
             return {
                 ...state,
-                conversation_list: message_list,
+                operators: new_list,
             }
         }
 
         case MARK_CONVERSATION_USED: {
-            // copy list to make a new one
-            const message_list = JSON.parse(JSON.stringify(state.conversation_list));
-            for (const message of message_list) {
-                if (message.id === action.id) {
-                    message.used = true;
+            const new_list = [];
+            for (const op of state.operators) {
+                if (op.id === action.operatorId) {
+                    const message_list = op.conversation_list;
+                    for (const message of message_list) {
+                        if (message.id === action.id) {
+                            message.used = true;
+                        }
+                    }
+                    op.conversation_list = message_list;
                 }
+                new_list.push(op);
             }
+            // copy list to make a new one
             return {
                 ...state,
-                conversation_list: message_list,
+                operators: new_list,
             }
         }
 

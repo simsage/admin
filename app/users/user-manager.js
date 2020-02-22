@@ -19,6 +19,7 @@ import {Home} from '../home';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
+import Grid from "@material-ui/core/Grid";
 
 
 const styles = {
@@ -81,6 +82,33 @@ const styles = {
     dlImageSizeDisabled: {
         width: '24px',
         opacity: '0.2'
+    },
+    searchBox: {
+        boxShadow: 'none',
+    },
+    floatLeftLabel: {
+        float: 'left',
+        marginRight: '6px',
+        marginTop: '4px',
+        fontSize: '0.9em',
+        fontWeight: '500',
+    },
+    floatLeft: {
+        float: 'left',
+    },
+    searchFloatLeft: {
+        float: 'left',
+    },
+    findBox: {
+        padding: '10px',
+        marginBottom: '5px',
+        float: 'right',
+    },
+    search: {
+        marginTop: '2px',
+        marginLeft: '15px',
+        width: '18px',
+        color: '#000',
     },
 };
 
@@ -319,6 +347,11 @@ export class UserManager extends React.Component {
         }
         return false;
     }
+    handleSearchTextKeydown(event) {
+        if (event.key === "Enter") {
+            this.props.getUsers();
+        }
+    }
     removeKBFromUser(kb) {
         const new_kbs = [];
         for (const ekb of this.state.edit_kb_list) {
@@ -353,6 +386,27 @@ export class UserManager extends React.Component {
         const isManager = Home.hasRole(this.props.user, ['manager']);
         return (
             <div>
+
+                <div style={styles.searchBox}>
+                    <Grid item xs={12}>
+                        <div style={styles.findBox}>
+                            <div style={styles.floatLeftLabel}>filter</div>
+                            <div style={styles.searchFloatLeft}>
+                                <input type="text" value={this.props.user_filter} autoFocus={true} style={styles.text}
+                                       onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                       onChange={(event) => {
+                                           this.props.setUserFilter(event.target.value)
+                                       }}/>
+                            </div>
+                            <div style={styles.floatLeft}>
+                                <img style={styles.search}
+                                     onClick={() => this.props.getUsers()}
+                                     src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
+                            </div>
+                        </div>
+                    </Grid>
+                </div>
+
                 <Paper style={styles.pageWidth}>
                     <Table>
                         <TableHead>
@@ -573,6 +627,7 @@ const mapStateToProps = function(state) {
         error_title: state.appReducer.error_title,
 
         user_list: state.appReducer.user_list,
+        user_filter: state.appReducer.user_filter,
         selected_organisation_id: state.appReducer.selected_organisation_id,
         knowledge_base_list: state.appReducer.knowledge_base_list,
         user: state.appReducer.user,

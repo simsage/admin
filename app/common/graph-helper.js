@@ -44,7 +44,6 @@ export class GraphHelper {
                     }
                 }
                 if (labels.length > 0) {
-                    labels.sort();
                     stat_list.push({
                         id: i,
                         labels: labels,

@@ -30,6 +30,7 @@ export function initializeState() {
 
         // the users
         user_list: [],
+        user_filter: '',
 
         // crawlers
         crawler_list: [],
@@ -96,22 +97,9 @@ export function initializeState() {
         file_type_statistics: [],
 
         // operator
-        conversation_list: [],
-        operator_connected: false,
+        operators: [Api.createOperator()],
         num_active_connections: 0,
-        operator_ready: false,
-        // operator teaching
-        question_id: '',
-        question: '',
-        answer_id: '',
-        answer: '',
-        // operator connected clients
-        client_id: '',
-        client_kb_id: '',
-        client_kb_name: '',
-        // operator previous answer
-        current_question: '',
-        prev_answer: '',
+        operator_connected: false,
 
         // html5 notification permissions asked already?
         html5_notifications: '',

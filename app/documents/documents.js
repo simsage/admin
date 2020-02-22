@@ -292,9 +292,9 @@ export class Documents extends React.Component {
                                                         <div style={styles.linkButton} onClick={() => this.deleteDocumentAsk(document)}>
                                                             <img src="../images/delete.svg" style={styles.dlImageSize} title="remove document" alt="remove"/>
                                                         </div>
-                                                        <div style={styles.linkButton} onClick={() => this.props.reprocessDocument(document)}>
-                                                            <img src="../images/refresh.svg" style={styles.dlImageSize} title="reprocess document (remove it, re-parse and re-index the document." alt="reprocess"/>
-                                                        </div>
+                                                        {/*<div style={styles.linkButton} onClick={() => this.props.reprocessDocument(document)}>*/}
+                                                        {/*    <img src="../images/refresh.svg" style={styles.dlImageSize} title="reprocess document (remove it, re-parse and re-index the document." alt="reprocess"/>*/}
+                                                        {/*</div>*/}
                                                     </TableCell>
                                                 </TableRow>
                                         )

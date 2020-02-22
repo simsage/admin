@@ -17,6 +17,18 @@ export class Api {
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     };
 
+    // create an empty operator packet
+    static createOperator() {
+        return {id: Api.createGuid(),
+            conversation_list: [], operator_ready: false,
+            question_id: '', question: '', answer_id: '', answer: '',
+            // operator connected clients
+            client_id: '', client_kb_id: '', client_kb_name: '', is_typing: false, typing_time: 0,
+            // operator previous answer
+            current_question: '', prev_answer: '',
+        }
+    };
+
     // convert unix timestamp to string
     static unixTimeConvert(timestamp){
         const a = new Date(timestamp);
@@ -27,6 +39,11 @@ export class Api {
         const min = a.getMinutes();
         const sec = a.getSeconds();
         return year + '/' + Api.pad2(month) + '/' + Api.pad2(date) + ' ' + Api.pad2(hour) + ':' + Api.pad2(min) + ':' + Api.pad2(sec);
+    }
+
+    // get current time in milli-seconds
+    static getSystemTime() {
+        return new Date().getTime();
     }
 
     // convert a date object to an iso date string
@@ -70,7 +87,7 @@ export class Api {
     // start a password reset request
     static passwordResetRequest(email, success, fail) {
         if (email && email.length > 0) {
-            Comms.http_get('/auth/reset-password-request' + encodeURIComponent(email),
+            Comms.http_post('/auth/reset-password-request', {"email": email},
                 (response) => { success(response.data.session, response.data.user) },
                 (errStr) => { fail(errStr) }
             )
@@ -125,7 +142,13 @@ export class Api {
     static testCrawler(organisationId, kb_id, id, success, fail) {
         Comms.http_get('/crawler/crawler/test/' + encodeURIComponent(organisationId) + '/' +
             encodeURIComponent(kb_id) + '/' + encodeURIComponent(id),
-            (response) => { success(response.data) },
+            (response) => {
+                if (response.data && response.data.errorStr && response.data.errorStr.length > 0) {
+                    fail(response.data.errorStr);
+                } else {
+                    success(response.data)
+                }
+            },
             (errStr) => { fail(errStr) }
         )
     }

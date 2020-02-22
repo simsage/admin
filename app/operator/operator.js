@@ -19,6 +19,7 @@ import TextField from "@material-ui/core/TextField";
 import OperatorTeach from "./operator-teach";
 import OperatorPreviousAnswer from './operator-previous-answer'
 import Home from '../home'
+import Api from '../common/api'
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -26,10 +27,17 @@ import {appCreators} from "../actions/appActions";
 
 const styles = {
     buttonsTop: {
-        marginTop: '-50px',
+        marginTop: '10px',
     },
     topButton: {
         marginLeft: '10px',
+    },
+    closeButton: {
+        marginTop: '-35px',
+        marginRight: '30px',
+        height: '20px',
+        float: 'right',
+        cursor: 'pointer',
     },
     conversations: {
         marginTop: '10px',
@@ -56,9 +64,13 @@ const styles = {
     },
     kbName: {
         float: 'right',
+        marginLeft: '5px',
         marginTop: '4px',
         marginRight: '100px',
         fontSize: '0.9em'
+    },
+    typingDots: {
+        width: '60px',
     }
 };
 
@@ -68,7 +80,11 @@ export class Operator extends React.Component {
         super(props);
         this.state = {
             operator_reply: '', // operator text
+            last_time: 0,
         };
+    }
+    componentDidMount() {
+        window.setInterval(() => this.checkClientTyping(), 1000);
     }
     componentDidCatch(error, info) {
         console.log(error, info);
@@ -82,32 +98,57 @@ export class Operator extends React.Component {
     readyForChat() {
         const data = {
             sessionId: this.props.session.id,
+            operatorId: this.props.operator.id,
             organisationId: this.props.selected_organisation_id,
             userId: this.props.user.id,
         };
         this.props.sendMessage('/ws/ops/ready', data);
-        this.props.operatorReady(true);
+        this.props.operatorReady(this.props.operator.id, true);
+    }
+    isTyping() {
+        const last_time = this.state.last_time;
+        const curr_time = Api.getSystemTime();
+        if (last_time < curr_time) {
+            this.setState({last_time: curr_time + 2000});
+            if (this.props.operator.client_id && this.props.operator.id) {
+                const data = {
+                    fromId: this.props.operator.id,
+                    toId: this.props.operator.client_id,
+                    isTyping: true
+                };
+                this.props.sendMessage('/ws/ops/typing', data);
+            }
+        }
+    }
+    checkClientTyping() {
+        // signal the client is no longer typing?  (on a timer, see mounted)
+        if (this.props.operator && this.props.operator.is_typing &&
+            this.props.operator.typing_time < Api.getSystemTime()) {
+            this.props.stopClientTyping(this.props.operator.id);
+        }
     }
     takeBreak() {
         const data = {
             sessionId: this.props.session.id,
+            operatorId: this.props.operator.id,
             organisationId: this.props.selected_organisation_id,
-            clientId: this.props.client_id,
+            clientId: this.props.operator.client_id,
         };
         this.props.sendMessage('/ws/ops/take-break', data);
-        this.props.operatorReady(false);
+        this.props.operatorReady(this.props.operator.id, false);
     }
     nextUser() {
         const data = {
             sessionId: this.props.session.id,
+            operatorId: this.props.operator.id,
             organisationId: this.props.selected_organisation_id,
-            clientId: this.props.client_id,
+            clientId: this.props.operator.client_id,
         };
         this.props.sendMessage('/ws/ops/next-user', data);
-        this.props.clearUser();
+        this.props.clearUser(this.props.operator.id);
     }
     banUserConfirm() {
-        if (this.props.client_id && this.props.client_id.length > 0) {
+        if (this.props.operator.client_id && this.props.operator.client_id.length > 0) {
             this.props.openDialog("are you sure you want to ban this user?",
                 "Ban User", (action) => {
                     this.banUser(action)
@@ -118,29 +159,31 @@ export class Operator extends React.Component {
         if (act) {
             const data = {
                 sessionId: this.props.session.id,
+                operatorId: this.props.operator.id,
                 organisationId: this.props.selected_organisation_id,
-                clientId: this.props.client_id,
+                clientId: this.props.operator.client_id,
             };
             this.props.sendMessage('/ws/ops/ban-user', data);
-            this.props.clearUser();
+            this.props.clearUser(this.props.operator.id);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
         }
     }
     operatorReply(text) {
-        if (this.props.client_id.length > 0 && text.length > 0) {
+        if (this.props.operator.client_id.length > 0 && text.length > 0) {
             const data = {
                 sessionId: this.props.session.id,
+                operatorId: this.props.operator.id,
                 organisationId: this.props.selected_organisation_id,
-                clientId: this.props.client_id,
-                kbId: this.props.client_kb_id,
+                clientId: this.props.operator.client_id,
+                kbId: this.props.operator.client_kb_id,
                 text: text,
             };
             this.props.sendMessage('/ws/ops/chat', data);
 
             // add a new conversation to the list
-            this.props.addConversation({id: this.props.conversation_list.length + 1, primary: text,
+            this.props.addConversation(this.props.operator.id, {id: this.props.operator.conversation_list.length + 1, primary: text,
                                         secondary: "You", used: false, is_simsage: true});
 
             this.setState({operator_reply: ''});
@@ -148,57 +191,60 @@ export class Operator extends React.Component {
     }
     selectForLearn(item) {
         if (item && item.is_simsage) {
-            if (item.id === this.props.answer_id)
-                this.props.setOperatorAnswer('', '');
+            if (item.id === this.props.operator.answer_id)
+                this.props.setOperatorAnswer(this.props.operator.id, '', '');
             else
-                this.props.setOperatorAnswer(item.id, item.primary);
+                this.props.setOperatorAnswer(this.props.operator.id, item.id, item.primary);
         } else if (item) {
-            if (item.id === this.props.question_id)
-                this.props.setOperatorQuestion('', '');
+            if (item.id === this.props.operator.question_id)
+                this.props.setOperatorQuestion(this.props.operator.id, '', '');
             else
-                this.props.setOperatorQuestion(item.id, item.primary);
+                this.props.setOperatorQuestion(this.props.operator.id, item.id, item.primary);
         }
     }
-    teachSimSage(teach) {
+    teachSimSage(teach, links) {
         if (teach) {
-            if (this.props.client_id.length > 0 && this.props.question.length > 0 && this.props.answer.length > 0) {
+            if (this.props.operator.client_id.length > 0 && this.props.operator.question.length > 0 &&
+                this.props.operator.answer.length > 0) {
                 const data = {
                     sessionId: this.props.session.id,
+                    operatorId: this.props.operator.id,
                     organisationId: this.props.selected_organisation_id,
-                    clientId: this.props.client_id,
-                    kbId: this.props.client_kb_id,
-                    text: this.props.question,
-                    answer: this.props.answer,
+                    clientId: this.props.operator.client_id,
+                    kbId: this.props.operator.client_kb_id,
+                    text: this.props.operator.question,
+                    answer: this.props.operator.answer,
+                    links: links,
                 };
                 this.props.sendMessage('/ws/ops/teach', data);
 
                 // mark these two items as used
-                const conversation_list = this.props.conversation_list;
+                const conversation_list = this.props.operator.conversation_list;
                 for (const item of conversation_list) {
-                    if (item.id === this.props.question_id || item.id === this.props.answer_id) {
-                        this.props.markConversationItemUsed(item.id);
+                    if (item.id === this.props.operator.question_id || item.id === this.props.operator.answer_id) {
+                        this.props.markConversationItemUsed(this.props.operator.id, item.id);
                     }
                 }
             }
         }
-        this.props.setOperatorAnswer('', '');
-        this.props.setOperatorQuestion('', '');
+        this.props.setOperatorAnswer(this.props.operator.id, '', '');
+        this.props.setOperatorQuestion(this.props.operator.id, '', '');
     }
     usePreviousQuestion(use) {
-        if (use && this.props.prev_answer.length > 0) {
-            this.operatorReply(this.props.prev_answer);
+        if (use && this.props.operator.prev_answer.length > 0) {
+            this.operatorReply(this.props.operator.prev_answer);
         }
-        this.props.clearPreviousAnswer();
+        this.props.clearPreviousAnswer(this.state.operator.id);
     }
     getAvatarStyle(item) {
         if (item.is_simsage) {
-            if (item.id === this.props.answer_id || item.used) {
+            if (item.id === this.props.operator.answer_id || item.used) {
                 return styles.simSageIconSelected;
             } else {
                 return styles.simSageIcon;
             }
         } else {
-            if (item.id === this.props.question_id || item.used) {
+            if (item.id === this.props.operator.question_id || item.used) {
                 return styles.personIconSelected;
             } else {
                 return styles.personIcon;
@@ -207,26 +253,26 @@ export class Operator extends React.Component {
     }
     render() {
         const isOperator = Home.hasRole(this.props.user, ['operator']);
-        const active = this.props.operator_ready && this.props.operator_connected && isOperator;
-        const has_user = this.props.client_id && this.props.client_id.length > 0;
+        const active = this.props.operator.operator_ready && this.props.operator_connected && isOperator;
+        const has_user = this.props.operator.client_id && this.props.operator.client_id.length > 0;
         return (
             <div>
                 <OperatorTeach
-                    open={this.props.question_id !== '' && this.props.answer_id !== ''}
-                    question={this.props.question}
-                    onSave={(teach) => this.teachSimSage(teach)}
-                    answer={this.props.answer}
+                    open={this.props.operator.question_id !== '' && this.props.operator.answer_id !== ''}
+                    question={this.props.operator.question}
+                    onSave={(teach, links) => this.teachSimSage(teach, links)}
+                    answer={this.props.operator.answer}
                     />
 
                 <OperatorPreviousAnswer
-                    open={this.props.current_question !== '' && this.props.prev_answer !== ''}
-                    question={this.props.current_question}
+                    open={this.props.operator.current_question !== '' && this.props.operator.prev_answer !== ''}
+                    question={this.props.operator.current_question}
                     onSave={(use) => this.usePreviousQuestion(use)}
-                    answer={this.props.prev_answer}
+                    answer={this.props.operator.prev_answer}
                 />
 
                 <div style={styles.buttonsTop}>
-                    <Button variant="contained" style={styles.topButton} disabled={this.props.operator_ready || !this.props.operator_connected}
+                    <Button variant="contained" style={styles.topButton} disabled={this.props.operator.operator_ready || !this.props.operator_connected}
                             color="secondary" title="Signal that you are ready to go and converse with customers."
                             onClick={() => this.readyForChat()}>
                         <KeyboardVoiceIcon />
@@ -257,18 +303,24 @@ export class Operator extends React.Component {
                     <div style={styles.kbName}>bot connections: <b>{this.props.num_active_connections}</b></div>
 
                     {
-                        this.props.client_kb_name && this.props.client_kb_name.length > 0 &&
-                        <div style={styles.kbName}>{this.props.client_kb_name}</div>
+                        this.props.operator.client_kb_name && this.props.operator.client_kb_name.length > 0 &&
+                        <div style={styles.kbName}>{this.props.operator.client_kb_name}</div>
                     }
 
                 </div>
 
+                {
+                    !this.props.isFirst &&
+                    <div style={styles.closeButton}
+                         title="Remove this operator"
+                         onClick={() => { this.props.onCloseTab(); this.props.removeOperator(this.props.operator.id); }}>x</div>
+                }
 
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                         <div>
                             <List style={styles.conversations} dense={true} ref={ (list) => { this.listRef = list }}>
-                                {this.props.conversation_list.map((item) => {
+                                {this.props.operator.conversation_list.map((item) => {
                                     return (
                                         <ListItem key={item.id} onClick={() => {if (active) this.selectForLearn(item)}}>
                                             <ListItemAvatar>
@@ -285,6 +337,11 @@ export class Operator extends React.Component {
                                     )
                                 }
                                 )}
+                                {this.props.operator.is_typing &&
+                                    <ListItem>
+                                        <img src="../images/dots.gif" style={styles.typingDots} alt="typing" />
+                                    </ListItem>
+                                }
                             </List>
                         </div>
                     </Grid>
@@ -300,6 +357,7 @@ export class Operator extends React.Component {
                                 if (event.key === "Enter") {
                                     this.operatorReply(this.state.operator_reply);
                                 }
+                                this.isTyping();
                             }}
                             label="your reply"
                             fullWidth={true}
@@ -330,19 +388,7 @@ const mapStateToProps = function(state) {
         user: state.appReducer.user,
 
         operator_connected: state.appReducer.operator_connected,
-        conversation_list: state.appReducer.conversation_list,
         num_active_connections: state.appReducer.num_active_connections,
-        operator_ready: state.appReducer.operator_ready,
-        question_id: state.appReducer.question_id,
-        question: state.appReducer.question,
-        answer_id: state.appReducer.answer_id,
-        answer: state.appReducer.answer,
-        client_id: state.appReducer.client_id,
-        client_kb_id: state.appReducer.client_kb_id,
-        client_kb_name: state.appReducer.client_kb_name,
-
-        current_question: state.appReducer.current_question,
-        prev_answer: state.appReducer.prev_answer,
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
     };

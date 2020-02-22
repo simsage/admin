@@ -5,8 +5,9 @@ export const SIGN_OUT = "sign out";
 export const PASSWORD_RESET_REQUEST = "password reset request";
 export const RESET_PASSWORD = "reset password";
 
-export const GET_USERS = "get users";
+export const SET_USER_LIST = "set user list";
 export const UPDATE_USER = "update user";
+export const SET_USER_FILTER = "set user filter";
 
 export const GET_ORGANISATION_LIST = "get organisation list";
 export const SELECT_ORGANISATION = "select organisation";
@@ -77,6 +78,10 @@ export const SET_OPERATOR_ANSWER = "set operator answer";
 export const SET_OPERATOR_QUESTION = "set operator question";
 export const OPERATOR_CLEAR_USER = "operator clear user";
 export const CLEAR_PREVIOUS_ANSWER = "clear previous answer";
+export const ADD_OPERATOR = "add operator";
+export const REMOVE_OPERATOR = "remove operator";
+export const STOP_CLIENT_TYPING = "stop client typing";
+export const MAX_OPERATORS = 5;
 
 export const GET_HTML5_NOTIFICATIONS = "get html5 notifications";
 

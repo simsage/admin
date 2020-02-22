@@ -13,7 +13,8 @@ import {CrawlerDialog} from '../crawlers/crawler-dialog'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-import CrawlerGeneral from "../crawlers/crawler-general";
+import {Api} from "../common/api";
+import MessageDialog from "../common/message-dialog";
 
 const empty_crawler= {id: '', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: true,
                       enablePreview: false, enableIndexing: true, description: '', schedule: '',
@@ -98,6 +99,11 @@ export class DocumentSources extends Component {
             title: '',
             selected_crawler: {},
             crawler_ask: null,
+
+            // messages
+            message_callback: null,
+            message: '',
+            message_title: '',
         };
     }
     componentDidCatch(error, info) {
@@ -153,6 +159,28 @@ export class DocumentSources extends Component {
         }
         this.setState({open: false});
     }
+    deleteDocuments(crawler) {
+        if (crawler.schedule === "") {
+            this.setState({
+                message_callback: (action) => this.confirmDocumentsDelete(action, crawler),
+                message_title: 'remove all documents for "' + crawler.name + '"?',
+                message: 'Are you sure you want to remove ALL DOCUMENTS for <b>' + crawler.name + '</b>?'
+            });
+        } else {
+            this.props.setError("ERROR: Crawler Active", "Please clear the crawler's scheduled times first.");
+        }
+    }
+    confirmDocumentsDelete(action, crawler) {
+        const self = this;
+        this.setState({message: '', message_title: ''});
+        if (action && crawler) {
+            Api.deleteCrawlerDocuments(crawler.organisationId, crawler.kbId, crawler.sourceId,
+                (response) => {},
+                (err) => {
+                    self.props.setError("Error removing all documents", err);
+                });
+        }
+    }
     render() {
         return (
             <div>
@@ -168,6 +196,11 @@ export class DocumentSources extends Component {
                     error_msg={this.props.error}
                     crawler={this.state.selected_crawler}
                 />
+
+                <MessageDialog callback={(action) => this.state.message_callback(action)}
+                               open={this.state.message.length > 0}
+                               message={this.state.message}
+                               title={this.state.message_title} />
 
                 {
                     this.props.selected_knowledgebase_id.length > 0 &&
@@ -194,6 +227,9 @@ export class DocumentSources extends Component {
                                                 <TableCell>
                                                     <div style={styles.linkButton} onClick={() => this.editCrawler(crawler)}>
                                                         <img src="../images/edit.svg" style={styles.downloadImage} title="edit crawler" alt="edit"/>
+                                                    </div>
+                                                    <div style={styles.linkButton} onClick={() => this.deleteDocuments(crawler)}>
+                                                        <img src="../images/delete-files.svg" style={styles.downloadImage} title="remove a crawler's documents" alt="remove documents"/>
                                                     </div>
                                                     <div style={styles.linkButton} onClick={() => this.deleteCrawlerAsk(crawler)}>
                                                         <img src="../images/delete.svg" style={styles.downloadImage} title="remove crawler" alt="remove"/>

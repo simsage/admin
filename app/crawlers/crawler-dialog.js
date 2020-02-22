@@ -16,6 +16,7 @@ import CrawlerGeneral from './crawler-general'
 import CrawlerFile from './crawler-file'
 import CrawlerWeb from "./crawler-web";
 import CrawlerDatabase from "./crawler-database";
+import CrawlerOffice365 from "./crawler-office365";
 
 
 const styles = {
@@ -151,6 +152,38 @@ export class CrawlerDialog extends Component {
             }
         }
 
+        let tenantId = '';
+        let clientId = '';
+        let clientSecret = '';
+        let redirectUrl = '';
+        let crawlOneDrive = false;
+        let crawlAllOfOneDrive = false;
+        let oneDriveUsersToCrawl = [];
+        let crawlSharePoint = false;
+        let crawlRootSite = false;
+        let sharePointSitesToCrawl = [];
+        let crawlExchange = false;
+        let crawlAllOfExchange = false;
+        let exchangeUsersToCrawl = [];
+        if (crawler.crawlerType === "office365") {
+            if (crawler.specificJson && crawler.specificJson.length > 0) {
+                const obj = JSON.parse(crawler.specificJson);
+                tenantId = obj['tenantId'];
+                clientId = obj['clientId'];
+                clientSecret = obj['clientSecret'];
+                redirectUrl = obj['redirectUrl'];
+                crawlOneDrive = obj['crawlOneDrive'];
+                crawlAllOfOneDrive = obj['crawlAllOfOneDrive'];
+                oneDriveUsersToCrawl = obj['oneDriveUsersToCrawl'];
+                crawlSharePoint = obj['crawlSharePoint'];
+                crawlRootSite = obj['crawlRootSite'];
+                sharePointSitesToCrawl = obj['sharePointSitesToCrawl'];
+                crawlExchange = obj['crawlExchange'];
+                crawlAllOfExchange = obj['crawlAllOfExchange'];
+                exchangeUsersToCrawl = obj['exchangeUsersToCrawl'];
+            }
+        }
+
         return {
             sourceId: crawler.sourceId,
             name: crawler.name,
@@ -180,6 +213,20 @@ export class CrawlerDialog extends Component {
             db_jdbc: db_jdbc,
             db_query: db_query,
             db_template: db_template,
+
+            tenantId: tenantId,
+            clientId: clientId,
+            clientSecret: clientSecret,
+            redirectUrl: redirectUrl,
+            crawlOneDrive: crawlOneDrive,
+            crawlAllOfOneDrive: crawlAllOfOneDrive,
+            oneDriveUsersToCrawl: oneDriveUsersToCrawl,
+            crawlSharePoint: crawlSharePoint,
+            crawlRootSite: crawlRootSite,
+            sharePointSitesToCrawl: sharePointSitesToCrawl,
+            crawlExchange: crawlExchange,
+            crawlAllOfExchange: crawlAllOfExchange,
+            exchangeUsersToCrawl: exchangeUsersToCrawl,
         }
     }
     setError(title, error_msg) {
@@ -194,8 +241,11 @@ export class CrawlerDialog extends Component {
         this.setState({open: false});
     };
     handleSave() {
-        if (this.state.crawlerType === 'file' && (
-            this.state.name.length === 0 ||
+        if (this.state.name.length === 0) {
+
+            this.setError('invalid parameters', 'you must supply a crawler name as a minimum.');
+
+        } else if (this.state.crawlerType === 'file' && (
             this.state.file_username.length === 0 ||
             this.state.file_server.length === 0 ||
             this.state.file_share_name.length === 0)) {
@@ -215,7 +265,16 @@ export class CrawlerDialog extends Component {
 
             this.setError('invalid parameters', 'you must supply crawler-type, jdbc, query, and template as a minimum.');
 
-        } else if (this.state.crawlerType !== 'web' && this.state.crawlerType !== 'file' && this.state.crawlerType !== 'database') {
+        } else if (this.state.crawlerType === 'office365' && (
+                this.state.tenantId.length === 0 ||
+                this.state.clientId.length === 0 ||
+                this.state.redirectUrl.length === 0 ||
+                this.state.clientSecret.length === 0)) {
+
+            this.setError('invalid parameters', 'you must supply tenant-id, client-id, client-secret, and redirect-url as a minimum.');
+
+        } else if (this.state.crawlerType !== 'web' && this.state.crawlerType !== 'file' && this.state.crawlerType !== 'database' &&
+                   this.state.crawlerType !== 'office365') {
 
             this.setError('invalid parameters', 'you must select a crawler-type first.');
 
@@ -227,6 +286,9 @@ export class CrawlerDialog extends Component {
             // save setup?
             if (this.state.onSave) {
                 this.state.onSave(this.getCrawlerData(this.state));
+
+                // and reset the tabs to the first tab
+                this.setState({selectedTab: 'general'});
             }
         }
     };
@@ -264,6 +326,22 @@ export class CrawlerDialog extends Component {
                     jdbc: data.db_jdbc ? data.db_jdbc : '',
                     query: data.db_query ? data.db_query : '',
                     template: data.db_template ? data.db_template : '',
+                });
+            } else if (this.state.crawlerType === 'office365') {
+                specificJson = JSON.stringify({
+                    tenantId: data.tenantId ? data.tenantId : '',
+                    clientId: data.clientId ? data.clientId : '',
+                    clientSecret: data.clientSecret ? data.clientSecret : '',
+                    redirectUrl: data.redirectUrl ? data.redirectUrl : '',
+                    crawlOneDrive: Api.defined(data.crawlOneDrive) ? data.crawlOneDrive : false,
+                    crawlAllOfOneDrive: Api.defined(data.crawlAllOfOneDrive) ? data.crawlAllOfOneDrive : false,
+                    oneDriveUsersToCrawl: data.oneDriveUsersToCrawl ? data.oneDriveUsersToCrawl : [],
+                    crawlSharePoint: Api.defined(data.crawlSharePoint) ? data.crawlSharePoint : false,
+                    crawlRootSite: Api.defined(data.crawlRootSite) ? data.crawlRootSite : false,
+                    sharePointSitesToCrawl: data.sharePointSitesToCrawl ? data.sharePointSitesToCrawl : [],
+                    crawlExchange: Api.defined(data.crawlExchange) ? data.crawlExchange : false,
+                    crawlAllOfExchange: Api.defined(data.crawlAllOfExchange) ? data.crawlAllOfExchange : false,
+                    exchangeUsersToCrawl: data.exchangeUsersToCrawl ? data.exchangeUsersToCrawl : [],
                 });
             } else if (this.state.crawlerType === 'web') {
                 specificJson = JSON.stringify({
@@ -320,6 +398,7 @@ export class CrawlerDialog extends Component {
                                 {this.state.crawlerType === "file" && <Tab label="file-crawler" value="file crawler" style={styles.tab} />}
                                 {this.state.crawlerType === "web" && <Tab label="web-crawler" value="web crawler" style={styles.tab} />}
                                 {this.state.crawlerType === "database" && <Tab label="database-crawler" value="database crawler" style={styles.tab} />}
+                                {this.state.crawlerType === "office365" && <Tab label="office 365-crawler" value="office365 crawler" style={styles.tab} />}
                                 <Tab label="schedule" value="schedule" style={styles.tab} />
                             </Tabs>
 
@@ -370,6 +449,24 @@ export class CrawlerDialog extends Component {
                                                                 db_jdbc={this.state.db_jdbc}
                                                                 db_query={this.state.db_query}
                                                                 db_template={this.state.db_template}
+                                                                onError={(title, errStr) => this.setError(title, errStr)}
+                                                                onSave={(crawler) => this.update_control_data(crawler)}/>
+                                }
+                                {t_value === 'office365 crawler' &&
+                                                            <CrawlerOffice365
+                                                                tenantId={this.state.tenantId}
+                                                                clientId={this.state.clientId}
+                                                                clientSecret={this.state.clientSecret}
+                                                                redirectUrl={this.state.redirectUrl}
+                                                                crawlOneDrive={this.state.crawlOneDrive}
+                                                                crawlAllOfOneDrive={this.state.crawlAllOfOneDrive}
+                                                                oneDriveUsersToCrawl={this.state.oneDriveUsersToCrawl}
+                                                                crawlSharePoint={this.state.crawlSharePoint}
+                                                                crawlRootSite={this.state.crawlRootSite}
+                                                                sharePointSitesToCrawl={this.state.sharePointSitesToCrawl}
+                                                                crawlExchange={this.state.crawlExchange}
+                                                                crawlAllOfExchange={this.state.crawlAllOfExchange}
+                                                                exchangeUsersToCrawl={this.state.exchangeUsersToCrawl}
                                                                 onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_control_data(crawler)}/>
                                 }

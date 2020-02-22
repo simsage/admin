@@ -70,9 +70,15 @@ export class SynSetEdit extends Component {
     handleSave() {
         if (this.state.onSave) {
             const syn = this.state.synSet;
-            syn.word = this.state.word;
+            syn.word = this.state.word.trim();
             syn.wordCloudCsvList = this.state.cloud_list;
-            this.state.onSave(syn);
+
+            const index = syn.word.indexOf(' ');
+            if (index >= 0) {
+                this.state.onError("syn-sets must be a single words without spaces.")
+            } else {
+                this.state.onSave(syn);
+            }
         }
     }
     handleCancel() {
