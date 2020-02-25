@@ -313,7 +313,7 @@ export class Operator extends React.Component {
                     !this.props.isFirst &&
                     <div style={styles.closeButton}
                          title="Remove this operator"
-                         onClick={() => { this.props.onCloseTab(); this.props.removeOperator(this.props.operator.id); }}>x</div>
+                         onClick={() => { this.takeBreak(); this.props.onCloseTab(); this.props.removeOperator(this.props.operator.id); }}>x</div>
                 }
 
                 <Grid container spacing={2}>
