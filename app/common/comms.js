@@ -69,11 +69,11 @@ export class Comms {
             });
     };
 
-    // get a url that can be used to backup the system
-    static get_backup_url(organisation_id, kb_id) {
+    // get a url that can be used to backup the system, regime e {all (backup all orgs), specific (backup specified org)}
+    static get_backup_url(organisation_id, regime) {
         let session = Comms.getSession();
         return system_config.api_base + '/backup/backup/' + encodeURIComponent(session.id) + '/' +
-                encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+                encodeURIComponent(organisation_id) + '/' + encodeURIComponent(regime);
     };
 
     // get a url that can be used to backup the system
@@ -107,10 +107,10 @@ export class Comms {
     };
 
     // get a url that can be used to download the bot html
-    static get_html_url(html, organisation_id, kb_id) {
+    static get_html_url(html, organisation_id) {
         let session = Comms.getSession();
         return system_config.api_base + '/knowledgebase/download/' + html + '/' + encodeURIComponent(session.id) + '/' +
-                            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+                            encodeURIComponent(organisation_id);
     };
 
     // get a url that can be used to get the query-logs

@@ -31,7 +31,7 @@ export class OperatorPreviousAnswer extends Component {
         this.setState({ has_error: true });
         console.log(error, info);
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             open: nextProps.open,
         })

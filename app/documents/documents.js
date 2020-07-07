@@ -260,7 +260,7 @@ export class Documents extends React.Component {
                                 {
                                     this.getDocuments().map((document) => {
                                         return (
-                                                <TableRow>
+                                                <TableRow key={document.url}>
                                                     <TableCell>
                                                         {
                                                             Documents.isWeb(document.url) &&

@@ -42,20 +42,20 @@ export class OperatorTabs extends React.Component {
 
                 <Tabs value={this.state.selectedTab} onChange={(event, value)=> this.setState({selectedTab: value})}>
                     {
-                        this.props.operators.map((operator, index) => {
+                        this.props.operators && this.props.operators.map((operator, index) => {
                             return (<Tab label={'operator ' + (index + 1)} key={'tab' + (index + 1)} value={'' + (index + 1)} style={styles.tab} />);
                         })
                     }
                 </Tabs>
                 {
-                    this.props.operators.length < MAX_OPERATORS &&
+                    this.props.operators && this.props.operators.length < MAX_OPERATORS &&
                     <Button variant="contained" onClick={() => this.props.addOperator()}
                             title="add operator"
                             style={styles.add_button}>+</Button>
                 }
 
                 {
-                    this.props.operators.map((operator, index) => {
+                    this.props.operators && this.props.operators.map((operator, index) => {
                         if ('' + (index + 1) === this.state.selectedTab) {
                             return (<Operator
                                     key={'display' + (index + 1)}

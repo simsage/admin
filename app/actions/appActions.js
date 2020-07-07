@@ -15,6 +15,7 @@ import {
     GET_INVENTORIZE_LIST,
     GET_LICENSE,
     GET_ORGANISATION_LIST,
+    SET_ORGANISATION_FILTER,
     GET_INVENTORIZE_BUSY,
     GET_OS_MESSAGES,
     GET_STATS,
@@ -32,6 +33,7 @@ import {
     RESTORE_SYSTEM,
     SELECT_KNOWLEDGE_BASE,
     SELECT_ORGANISATION,
+    UPDATE_ORGANISATION,
     SELECT_TAB,
     SET_BOT_QUERY_LIST,
     SET_BOT_QUERY_STRING,
@@ -51,6 +53,7 @@ import {
     SET_REPORT_GRAPHS,
     SET_SEMANTIC_FILTER,
     SET_SEMANTIC_LIST,
+    SET_SEMANTIC_DISPLAY_LIST,
     SET_SYNONYM_FILTER,
     SET_SYNONYM_LIST,
     SET_SYNSET_LIST,
@@ -70,9 +73,13 @@ import {Comms} from "../common/comms";
 // not in state system - bad in the state system
 let notification_busy = false;
 
-async function _getOrganisationList(current_org_name, current_org_id, change_organisation, dispatch) {
+async function _getOrganisationList(current_org_name, current_org_id, _filter, change_organisation, dispatch) {
     dispatch({type: BUSY, busy: true});
-    await Comms.http_get('/auth/user/organisations',
+    let filter = _filter;
+    if (!_filter || _filter.trim() === "") {
+        filter = "null";
+    }
+    await Comms.http_get('/auth/user/organisations/' + encodeURIComponent(filter),
         (response) => {
             const organisation_list = response.data;
             dispatch({type: GET_ORGANISATION_LIST, organisation_list: organisation_list});
@@ -240,6 +247,25 @@ async function _getSemantics(organisation_id, kb_id, semantic_filter, semantic_p
     }
 }
 
+async function _getSemanticDisplayCategories(organisation_id, kb_id, dispatch) {
+    if (organisation_id.length > 0 && kb_id.length > 0) {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_get('/language/semantic-display-categories/' +
+            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
+            (response) => {
+                dispatch({type: SET_SEMANTIC_DISPLAY_LIST,
+                    semantic_display_category_list: response.data.semanticDisplayCategoryList,
+                    defined_semantic_list: response.data.semanticList
+                });
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            });
+    } else {
+        dispatch({type: SET_SEMANTIC_DISPLAY_LIST, semantic_display_category_list: [], defined_semantic_list: []});
+    }
+}
+
 async function _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch) {
     if (organisation_id.length > 0 && kb_id.length > 0) {
         dispatch({type: BUSY, busy: true});
@@ -332,14 +358,22 @@ async function _getHtmlNotifications(dispatch) {
 async function _setupPage(selected_tab, dispatch, getState) {
     const organisation_id = getState().appReducer.selected_organisation_id;
     const kb_id = getState().appReducer.selected_knowledgebase_id;
+
     if (selected_tab === 'users' && organisation_id !== '') {
         const filter = getState().appReducer.user_filter;
         await _getUsers(organisation_id, filter, dispatch);
+
+    } else if (selected_tab === 'organisations') {
+        const name = getState().appReducer.selected_organisation;
+        const id = getState().appReducer.selected_organisation_id;
+        const filter = getState().appReducer.organisation_filter;
+        await _getOrganisationList(name, id, filter, true, dispatch);
 
     } else if (selected_tab === 'document sources' && organisation_id !== '' && kb_id !== '') {
         await _getCrawlers(organisation_id, kb_id, dispatch);
 
     } else if (selected_tab === 'documents' && organisation_id !== '' && kb_id !== '') {
+        dispatch({type: BUSY, busy: true});
         const document_filter = getState().appReducer.document_filter;
         const document_previous = 'null'; // reset
         const document_page_size = getState().appReducer.document_page_size;
@@ -385,6 +419,8 @@ async function _setupPage(selected_tab, dispatch, getState) {
         } else {
             dispatch({type: GET_DOMAINS, domain_list: []});
         }
+    } else if (selected_tab === 'semantic categories') {
+        await _getSemanticDisplayCategories(organisation_id, kb_id, dispatch);
     }
 
 }
@@ -410,6 +446,10 @@ export const appCreators = {
     },
 
     signOut: () => ({type: SIGN_OUT}),
+
+    notBusy: () => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: false});
+    },
 
     passwordResetRequest: (email) => ({type: PASSWORD_RESET_REQUEST}),
 
@@ -486,7 +526,8 @@ export const appCreators = {
         dispatch({type: BUSY, busy: true});
         const name = getState().appReducer.selected_organisation;
         const id = getState().appReducer.selected_organisation_id;
-        await _getOrganisationList(name, id, true, dispatch);
+        const filter = getState().appReducer.organisation_filter;
+        await _getOrganisationList(name, id, filter, true, dispatch);
     },
 
     // select an organisation for operational stuff
@@ -501,15 +542,15 @@ export const appCreators = {
         }
     },
 
+    setOrganisationFilter: (filter) => ({type: SET_ORGANISATION_FILTER, filter}),
+
     // organisation save
-    updateOrganisation: (organisation_id, name) => async (dispatch, getState) => {
+    updateOrganisation: (organisation) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
-        const organisation_name = getState().appReducer.selected_organisation;
-        const id = getState().appReducer.selected_organisation_id;
         await Comms.http_put('/auth/organisation',
-            {"id": organisation_id, "name": name},
+            organisation,
             (response) => {
-                _getOrganisationList(organisation_name, id, false, dispatch);
+                dispatch(({type: UPDATE_ORGANISATION, organisation: response.data}));
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
@@ -520,9 +561,10 @@ export const appCreators = {
         dispatch({type: BUSY, busy: true});
         const name = getState().appReducer.selected_organisation;
         const id = getState().appReducer.selected_organisation_id;
+        const filter = getState().appReducer.organisation_filter;
         await Comms.http_delete('/auth/organisation/' + encodeURIComponent(organisation_id),
             (response) => {
-                _getOrganisationList(name, id, false, dispatch);
+                _getOrganisationList(name, id, filter, false, dispatch);
                 // did we just delete the active organisation?
                 if (id === organisation_id) {
                     dispatch({type: SELECT_ORGANISATION, name: '', id: ''});
@@ -788,6 +830,7 @@ export const appCreators = {
     // Documents
 
     getDocuments: () => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const document_filter = getState().appReducer.document_filter;
@@ -867,8 +910,7 @@ export const appCreators = {
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const document_filter = getState().appReducer.document_filter;
-        const document_previous = getState().appReducer.document_previous;
-        await _getDocuments(organisation_id, kb_id,document_previous, page_size, document_filter, dispatch);
+        await _getDocuments(organisation_id, kb_id, null, page_size, document_filter, dispatch);
     },
 
 
@@ -1077,6 +1119,37 @@ export const appCreators = {
         dispatch({type: SET_SEMANTIC_FILTER, semantic_filter: filter});
     },
 
+    getSemanticDisplayCategories: () => async (dispatch, getState) => {
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await _getSemanticDisplayCategories(organisation_id, kb_id, dispatch);
+    },
+
+    saveSemanticDisplayCategory: (prevDisplayName, displayName, semanticList) => async (dispatch, getState) => {
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await Comms.http_put('/language/semantic-display-category/',
+            {"organisationId": organisation_id, "kbId": kb_id, "prevDisplayName": prevDisplayName,
+                    "displayName": displayName, "semanticList": semanticList},
+            (response) => {
+                _getSemanticDisplayCategories(organisation_id, kb_id, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
+        )
+    },
+
+    deleteSemanticDisplayCategory: (displayName) => async (dispatch, getState) => {
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await Comms.http_delete('/language/semantic-display-category/' + encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(kb_id) + '/' + encodeURIComponent(displayName),
+            (response) => {
+                _getSemanticDisplayCategories(organisation_id, kb_id, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
+        )
+    },
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // syn-sets
 
@@ -1227,6 +1300,20 @@ export const appCreators = {
 
     getHtml5Notifications: () => async (dispatch, getState) => {
         await _getHtmlNotifications(dispatch);
+    },
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // restore a text file on the server
+
+    restore: (base64_text) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_put('/backup/restore', {"data": base64_text},
+            (response) => {
+                dispatch({type: BUSY, busy: false});
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            })
     },
 
 

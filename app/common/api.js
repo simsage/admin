@@ -29,16 +29,19 @@ export class Api {
         }
     };
 
-    // convert unix timestamp to string
+    // convert unix timestamp to string if it's for a reasonable time in the future
     static unixTimeConvert(timestamp){
-        const a = new Date(timestamp);
-        const year = a.getFullYear();
-        const month = a.getMonth() + 1;
-        const date = a.getDate();
-        const hour = a.getHours();
-        const min = a.getMinutes();
-        const sec = a.getSeconds();
-        return year + '/' + Api.pad2(month) + '/' + Api.pad2(date) + ' ' + Api.pad2(hour) + ':' + Api.pad2(min) + ':' + Api.pad2(sec);
+        if (timestamp > 1000) {
+            const a = new Date(timestamp);
+            const year = a.getFullYear();
+            const month = a.getMonth() + 1;
+            const date = a.getDate();
+            const hour = a.getHours();
+            const min = a.getMinutes();
+            const sec = a.getSeconds();
+            return year + '/' + Api.pad2(month) + '/' + Api.pad2(date) + ' ' + Api.pad2(hour) + ':' + Api.pad2(min) + ':' + Api.pad2(sec);
+        }
+        return "";
     }
 
     // get current time in milli-seconds
@@ -164,15 +167,6 @@ export class Api {
                 numResults: num_results,
                 scoreThreshold: score_threshold,
             },
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-    // restore SimSage
-    static restore(data, success, fail) {
-        console.log(data);
-        Comms.http_put('/backup/restore', data,
             (response) => { success(response.data) },
             (errStr) => { fail(errStr) }
         )

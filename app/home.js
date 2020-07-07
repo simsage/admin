@@ -26,6 +26,7 @@ import Logs from "./reports/logs";
 import Reports from "./reports/reports";
 import OperatorTabs from "./operator/operator_tabs";
 import Domains from "./ad/domains";
+import SynonymCategories from "./semantics/semantic-categories";
 
 import system_config from 'settings'
 import SockJsClient from 'react-stomp';
@@ -229,7 +230,6 @@ export class Home extends Component {
         }
     }
     refreshOperator(self) {
-        console.log('refreshOperator');
         // keep operator alive if they're active and ready
         if (self.props.selected_organisation_id.length > 0 &&
             self.props.operators && self.props.operators.length > 0) {
@@ -378,9 +378,11 @@ export class Home extends Component {
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
         const operator_id_list = [];
-        for (const operator of this.props.operators) {
-            if (operator && operator.id) {
-                operator_id_list.push('/chat/' + operator.id);
+        if (this.props.operators) {
+            for (const operator of this.props.operators) {
+                if (operator && operator.id) {
+                    operator_id_list.push('/chat/' + operator.id);
+                }
             }
         }
         return (
@@ -473,6 +475,11 @@ export class Home extends Component {
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
+                             <div style={this.getStyle('semantic categories', false)}
+                                  onClick={() => this.props.selectTab('semantic categories')}>semantic categories</div>
+                         }
+                         {
+                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              <div style={this.getStyle('syn-sets')}
                                   onClick={() => this.props.selectTab('syn-sets')}>syn-sets</div>
                          }
@@ -481,11 +488,12 @@ export class Home extends Component {
                              <div style={this.getStyle('reports', false)}
                                   onClick={() => this.props.selectTab('reports')}>reports</div>
                          }
-                         {
-                             Home.hasRole(this.props.user, ['admin']) &&
-                             <div style={this.getStyle('logs', false)}
-                                  onClick={() => this.props.selectTab('logs')}>logs</div>
-                         }
+                         {/* this doesn't work for k8s clusters */}
+                         {/*{*/}
+                         {/*    Home.hasRole(this.props.user, ['admin']) &&*/}
+                         {/*    <div style={this.getStyle('logs', false)}*/}
+                         {/*         onClick={() => this.props.selectTab('logs')}>logs</div>*/}
+                         {/*}*/}
                      </div>
 
                      <div style={styles.pageContent}>
@@ -600,6 +608,12 @@ export class Home extends Component {
 
                          { this.props.selected_tab === 'synonyms' &&
                              <Synonyms
+                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                                 closeDialog={() => this.closeDialog()} />
+                         }
+
+                         { this.props.selected_tab === 'semantic categories' &&
+                             <SynonymCategories
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
                          }

@@ -17,6 +17,9 @@ import CrawlerFile from './crawler-file'
 import CrawlerWeb from "./crawler-web";
 import CrawlerDatabase from "./crawler-database";
 import CrawlerOffice365 from "./crawler-office365";
+import CrawlerDropbox from "./crawler-dropbox";
+import CrawlerWordpress from "./crawler-wordpress";
+import CrawlerGDrive from "./crawler-gdrive";
 
 
 const styles = {
@@ -123,6 +126,8 @@ export class CrawlerDialog extends Component {
         let web_extension_filter_ignore = '';
         let web_css = '';
         let web_css_ignore = '';
+        let web_article_filter_incl_csv = '';
+        let web_article_filter_excl_csv = '';
 
         if (crawler.crawlerType === "web") {
             if (crawler.specificJson && crawler.specificJson.length > 0) {
@@ -132,13 +137,21 @@ export class CrawlerDialog extends Component {
                 web_extension_filter_ignore = Api.defined(obj['validExtensionsIgnore']) ? obj['validExtensionsIgnore'] : '';
                 web_css = Api.defined(obj['webCss']) ? obj['webCss'] : '';
                 web_css_ignore = Api.defined(obj['webCssIgnore']) ? obj['webCssIgnore']: '';
+                web_article_filter_incl_csv = Api.defined(obj['articleIncludeWordsCsv']) ? obj['articleIncludeWordsCsv']: '';
+                web_article_filter_excl_csv = Api.defined(obj['articleExcludeWordsCsv']) ? obj['articleExcludeWordsCsv']: '';
             }
         }
 
         let db_username = '';
         let db_password = '';
         let db_jdbc = '';
+        let db_type = 'none';
         let db_query = '';
+        let db_pk = '';
+        let db_title = '';
+        let db_author = '';
+        let db_created = '';
+        let db_last_modified = '';
         let db_template = '';
 
         if (crawler.crawlerType === "database") {
@@ -147,7 +160,13 @@ export class CrawlerDialog extends Component {
                 db_username = obj['username'];
                 db_password = obj['password'];
                 db_jdbc = obj['jdbc'];
+                db_type = obj['type'];
                 db_query = obj['query'];
+                db_pk = obj['pk'];
+                db_title = obj['title'];
+                db_author = obj['author'];
+                db_created = obj['created'];
+                db_last_modified = obj['last_modified'];
                 db_template = obj['template'];
             }
         }
@@ -158,13 +177,13 @@ export class CrawlerDialog extends Component {
         let redirectUrl = '';
         let crawlOneDrive = false;
         let crawlAllOfOneDrive = false;
-        let oneDriveUsersToCrawl = [];
+        let oneDriveUsersToCrawl = '';
         let crawlSharePoint = false;
         let crawlRootSite = false;
-        let sharePointSitesToCrawl = [];
+        let sharePointSitesToCrawl = '';
         let crawlExchange = false;
         let crawlAllOfExchange = false;
-        let exchangeUsersToCrawl = [];
+        let exchangeUsersToCrawl = '';
         if (crawler.crawlerType === "office365") {
             if (crawler.specificJson && crawler.specificJson.length > 0) {
                 const obj = JSON.parse(crawler.specificJson);
@@ -184,8 +203,41 @@ export class CrawlerDialog extends Component {
             }
         }
 
+        let clientToken = '';
+        let folderList = '';
+        let userList = '';
+        if (crawler.crawlerType === "dropbox") {
+            if (crawler.specificJson && crawler.specificJson.length > 0) {
+                const obj = JSON.parse(crawler.specificJson);
+                clientToken = obj['clientToken'];
+                folderList = obj['folderList'];
+                userList = Api.defined(obj['userList']) ? obj['userList']: '';
+            }
+        }
+
+        let gdrive_projectId = '';
+        let gdrive_clientId = '';
+        let gdrive_clientSecret = '';
+        let gdrive_clientName = '';
+        let gdrive_clientPort = '';
+        let gdrive_userList = '';
+        if (crawler.crawlerType === "gdrive") {
+            if (crawler.specificJson && crawler.specificJson.length > 0) {
+                const obj = JSON.parse(crawler.specificJson);
+                gdrive_projectId = Api.defined(obj['gdrive_projectId']) ? obj['gdrive_projectId']: '';
+                gdrive_clientId = Api.defined(obj['gdrive_clientId']) ? obj['gdrive_clientId']: '';
+                gdrive_clientSecret = Api.defined(obj['gdrive_clientSecret']) ? obj['gdrive_clientSecret']: '';
+                gdrive_clientName = Api.defined(obj['gdrive_clientName']) ? obj['gdrive_clientName']: '';
+                gdrive_clientPort = Api.defined(obj['gdrive_clientPort']) ? obj['gdrive_clientPort']: '';
+                gdrive_userList = Api.defined(obj['gdrive_userList']) ? obj['gdrive_userList']: '';
+            }
+        }
+
+        // wordpress has no additional properties
+
         return {
             sourceId: crawler.sourceId,
+            nodeId: crawler.nodeId,
             name: crawler.name,
             crawlerType: crawler.crawlerType,
             filesPerSecond: crawler.filesPerSecond,
@@ -193,7 +245,9 @@ export class CrawlerDialog extends Component {
             deleteFiles: crawler.deleteFiles,
             allowAnonymous: crawler.allowAnonymous,
             enablePreview: crawler.enablePreview,
-            enableIndexing: crawler.enableIndexing,
+            processingLevel: crawler.processingLevel,
+            maxItems: crawler.maxItems,
+            maxBotItems: crawler.maxBotItems,
 
             file_username: file_username,
             file_password: file_password,
@@ -207,11 +261,19 @@ export class CrawlerDialog extends Component {
             web_extension_filter_ignore: web_extension_filter_ignore,
             web_css: web_css,
             web_css_ignore: web_css_ignore,
+            web_article_filter_incl_csv: web_article_filter_incl_csv,
+            web_article_filter_excl_csv: web_article_filter_excl_csv,
 
             db_username: db_username,
             db_password: db_password,
             db_jdbc: db_jdbc,
+            db_type: db_type,
             db_query: db_query,
+            db_pk: db_pk,
+            db_title: db_title,
+            db_author: db_author,
+            db_created: db_created,
+            db_last_modified: db_last_modified,
             db_template: db_template,
 
             tenantId: tenantId,
@@ -227,6 +289,18 @@ export class CrawlerDialog extends Component {
             crawlExchange: crawlExchange,
             crawlAllOfExchange: crawlAllOfExchange,
             exchangeUsersToCrawl: exchangeUsersToCrawl,
+
+            gdrive_projectId: gdrive_projectId,
+            gdrive_clientId: gdrive_clientId,
+            gdrive_clientSecret: gdrive_clientSecret,
+            gdrive_clientName: gdrive_clientName,
+            gdrive_clientPort: gdrive_clientPort,
+            gdrive_userList: gdrive_userList,
+
+            // for now shared between gdrive and dropbox
+            clientToken: clientToken,
+            folderList: folderList,
+            userList: userList,
         }
     }
     setError(title, error_msg) {
@@ -260,10 +334,11 @@ export class CrawlerDialog extends Component {
 
         } else if (this.state.crawlerType === 'database' && (
                 this.state.db_jdbc.length === 0 ||
-                this.state.db_query.length === 0 ||
+                this.state.db_type.length === 0 || this.state.db_type === 'none' ||
+                this.state.db_query.length === 0 || this.state.db_pk.length === 0 ||
                 this.state.db_template.length === 0)) {
 
-            this.setError('invalid parameters', 'you must supply crawler-type, jdbc, query, and template as a minimum.');
+            this.setError('invalid parameters', 'you must supply a jdbc connection string, database-type, a query, a primary-key, and a SQL-template as a minimum.');
 
         } else if (this.state.crawlerType === 'office365' && (
                 this.state.tenantId.length === 0 ||
@@ -273,8 +348,20 @@ export class CrawlerDialog extends Component {
 
             this.setError('invalid parameters', 'you must supply tenant-id, client-id, client-secret, and redirect-url as a minimum.');
 
+        } else if (this.state.crawlerType === 'dropbox' && (this.state.clientToken.length === 0 ||
+                   this.state.userList.length === 0)) {
+
+            this.setError('invalid parameters', 'you must supply a client-token, and select a user as a minimum.');
+
+        } else if (this.state.crawlerType === 'gdrive' && (this.state.gdrive_clientId.length === 0 || this.state.gdrive_projectId.length === 0 ||
+                   this.state.gdrive_clientSecret.length === 0 || this.state.gdrive_clientName.length === 0 || this.state.gdrive_clientPort.length ===0 ||
+                   this.state.gdrive_userList.length === 0)) {
+
+            this.setError('invalid parameters', 'you must supply values for all fields, and select one user as a minimum.');
+
         } else if (this.state.crawlerType !== 'web' && this.state.crawlerType !== 'file' && this.state.crawlerType !== 'database' &&
-                   this.state.crawlerType !== 'office365') {
+                   this.state.crawlerType !== 'office365' && this.state.crawlerType !== 'dropbox' &&
+                   this.state.crawlerType !== 'wordpress' && this.state.crawlerType !== 'gdrive') {
 
             this.setError('invalid parameters', 'you must select a crawler-type first.');
 
@@ -286,7 +373,6 @@ export class CrawlerDialog extends Component {
             // save setup?
             if (this.state.onSave) {
                 this.state.onSave(this.getCrawlerData(this.state));
-
                 // and reset the tabs to the first tab
                 this.setState({selectedTab: 'general'});
             }
@@ -296,12 +382,15 @@ export class CrawlerDialog extends Component {
         let specificJson = this.convertSpecificJson(this.state);
         return {
             sourceId: data.sourceId,
+            nodeId: data.nodeId,
             name: data.name,
             crawlerType: data.crawlerType,
             deleteFiles: data.deleteFiles,
             allowAnonymous: data.allowAnonymous,
             enablePreview: data.enablePreview,
-            enableIndexing: data.enableIndexing,
+            processingLevel: data.processingLevel,
+            maxItems: data.maxItems,
+            maxBotItems: data.maxBotItems,
             filesPerSecond: data.filesPerSecond,
             schedule: data.schedule,
             specificJson: specificJson,
@@ -324,7 +413,13 @@ export class CrawlerDialog extends Component {
                     username: data.db_username ? data.db_username : '',
                     password: data.db_password ? data.db_password : '',
                     jdbc: data.db_jdbc ? data.db_jdbc : '',
+                    type: data.db_type ? data.db_type : 'none',
                     query: data.db_query ? data.db_query : '',
+                    pk: data.db_pk ? data.db_pk : '',
+                    title: data.db_title ? data.db_title : '',
+                    author: data.db_author ? data.db_author : '',
+                    created: data.db_created ? data.db_created : '',
+                    last_modified: data.db_last_modified ? data.db_last_modified : '',
                     template: data.db_template ? data.db_template : '',
                 });
             } else if (this.state.crawlerType === 'office365') {
@@ -335,13 +430,33 @@ export class CrawlerDialog extends Component {
                     redirectUrl: data.redirectUrl ? data.redirectUrl : '',
                     crawlOneDrive: Api.defined(data.crawlOneDrive) ? data.crawlOneDrive : false,
                     crawlAllOfOneDrive: Api.defined(data.crawlAllOfOneDrive) ? data.crawlAllOfOneDrive : false,
-                    oneDriveUsersToCrawl: data.oneDriveUsersToCrawl ? data.oneDriveUsersToCrawl : [],
+                    oneDriveUsersToCrawl: data.oneDriveUsersToCrawl ? data.oneDriveUsersToCrawl : '',
                     crawlSharePoint: Api.defined(data.crawlSharePoint) ? data.crawlSharePoint : false,
                     crawlRootSite: Api.defined(data.crawlRootSite) ? data.crawlRootSite : false,
-                    sharePointSitesToCrawl: data.sharePointSitesToCrawl ? data.sharePointSitesToCrawl : [],
+                    sharePointSitesToCrawl: data.sharePointSitesToCrawl ? data.sharePointSitesToCrawl : '',
                     crawlExchange: Api.defined(data.crawlExchange) ? data.crawlExchange : false,
                     crawlAllOfExchange: Api.defined(data.crawlAllOfExchange) ? data.crawlAllOfExchange : false,
-                    exchangeUsersToCrawl: data.exchangeUsersToCrawl ? data.exchangeUsersToCrawl : [],
+                    exchangeUsersToCrawl: data.exchangeUsersToCrawl ? data.exchangeUsersToCrawl : '',
+                });
+            } else if (this.state.crawlerType === 'dropbox') {
+                specificJson = JSON.stringify({
+                    clientToken: data.clientToken ? data.clientToken : '',
+                    folderList: data.folderList ? data.folderList : '',
+                    userList: data.userList ? data.userList : '',
+                });
+            } else if (this.state.crawlerType === 'gdrive') {
+                specificJson = JSON.stringify({
+                    gdrive_projectId: data.gdrive_projectId ? data.gdrive_projectId : '',
+                    gdrive_clientId: data.gdrive_clientId ? data.gdrive_clientId : '',
+                    gdrive_clientSecret: data.gdrive_clientSecret ? data.gdrive_clientSecret : '',
+                    gdrive_clientName: data.gdrive_clientName ? data.gdrive_clientName : '',
+                    gdrive_clientPort: data.gdrive_clientPort ? data.gdrive_clientPort : '',
+                    gdrive_userList: data.gdrive_userList ? data.gdrive_userList : '',
+                });
+            } else if (this.state.crawlerType === 'wordpress') {
+                // dummy value in order to save
+                specificJson = JSON.stringify({
+                    crawlerType: 'wordpress',
                 });
             } else if (this.state.crawlerType === 'web') {
                 specificJson = JSON.stringify({
@@ -350,6 +465,8 @@ export class CrawlerDialog extends Component {
                     validExtensionsIgnore: data.web_extension_filter_ignore ? data.web_extension_filter_ignore : '',
                     webCss: data.web_css ? data.web_css : '',
                     webCssIgnore: data.web_css_ignore ? data.web_css_ignore : '',
+                    articleIncludeWordsCsv: data.web_article_filter_incl_csv ? data.web_article_filter_incl_csv : '',
+                    articleExcludeWordsCsv: data.web_article_filter_excl_csv ? data.web_article_filter_excl_csv : '',
                 });
             }
         }
@@ -399,13 +516,17 @@ export class CrawlerDialog extends Component {
                                 {this.state.crawlerType === "web" && <Tab label="web-crawler" value="web crawler" style={styles.tab} />}
                                 {this.state.crawlerType === "database" && <Tab label="database-crawler" value="database crawler" style={styles.tab} />}
                                 {this.state.crawlerType === "office365" && <Tab label="office 365-crawler" value="office365 crawler" style={styles.tab} />}
-                                <Tab label="schedule" value="schedule" style={styles.tab} />
+                                {this.state.crawlerType === "dropbox" && <Tab label="dropbox-crawler" value="dropbox crawler" style={styles.tab} />}
+                                {this.state.crawlerType === "wordpress" && <Tab label="wordpress-crawler" value="wordpress crawler" style={styles.tab} />}
+                                {this.state.crawlerType === "gdrive" && <Tab label="gdrive-crawler" value="google drive crawler" style={styles.tab} />}
+                                {this.state.crawlerType !== "wordpress" && <Tab label="schedule" value="schedule" style={styles.tab} />}
                             </Tabs>
 
                             <div style={styles.formContent}>
                                 {t_value === 'general' &&
                                                             <CrawlerGeneral
                                                                 sourceId={this.state.sourceId}
+                                                                nodeId={this.state.nodeId}
                                                                 organisation_id={this.state.organisation_id}
                                                                 kb_id={this.state.kb_id}
                                                                 name={this.state.name}
@@ -414,7 +535,9 @@ export class CrawlerDialog extends Component {
                                                                 deleteFiles={this.state.deleteFiles}
                                                                 allowAnonymous={this.state.allowAnonymous}
                                                                 enablePreview={this.state.enablePreview}
-                                                                enableIndexing={this.state.enableIndexing}
+                                                                processingLevel={this.state.processingLevel}
+                                                                maxItems={this.state.maxItems}
+                                                                maxBotItems={this.state.maxBotItems}
                                                                 error_title={this.state.crawler_error_title}
                                                                 schedule={this.state.schedule}
                                                                 error_msg={this.state.crawler_error_msg}
@@ -439,6 +562,8 @@ export class CrawlerDialog extends Component {
                                                                 web_css_ignore={this.state.web_css_ignore}
                                                                 web_extension_filter={this.state.web_extension_filter}
                                                                 web_extension_filter_ignore={this.state.web_extension_filter_ignore}
+                                                                web_article_filter_incl_csv={this.state.web_article_filter_incl_csv}
+                                                                web_article_filter_excl_csv={this.state.web_article_filter_excl_csv}
                                                                 onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_control_data(crawler)}/>
                                 }
@@ -447,7 +572,13 @@ export class CrawlerDialog extends Component {
                                                                 db_username={this.state.db_username}
                                                                 db_password={this.state.db_password}
                                                                 db_jdbc={this.state.db_jdbc}
+                                                                db_type={this.state.db_type}
                                                                 db_query={this.state.db_query}
+                                                                db_pk={this.state.db_pk}
+                                                                db_title={this.state.db_title}
+                                                                db_author={this.state.db_author}
+                                                                db_created={this.state.db_created}
+                                                                db_last_modified={this.state.db_last_modified}
                                                                 db_template={this.state.db_template}
                                                                 onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_control_data(crawler)}/>
@@ -470,7 +601,33 @@ export class CrawlerDialog extends Component {
                                                                 onError={(title, errStr) => this.setError(title, errStr)}
                                                                 onSave={(crawler) => this.update_control_data(crawler)}/>
                                 }
-                                {t_value === 'schedule' &&
+                                {t_value === 'dropbox crawler' &&
+                                    <CrawlerDropbox
+                                        clientToken={this.state.clientToken}
+                                        folderList={this.state.folderList}
+                                        userList={this.state.userList}
+                                        availableUserList={this.props.user_list}
+                                        onError={(title, errStr) => this.setError(title, errStr)}
+                                        onSave={(crawler) => this.update_control_data(crawler)}/>
+                                }
+                                {t_value === 'google drive crawler' &&
+                                    <CrawlerGDrive
+                                        gdrive_projectId={this.state.gdrive_projectId}
+                                        gdrive_clientId={this.state.gdrive_clientId}
+                                        gdrive_clientSecret={this.state.gdrive_clientSecret}
+                                        gdrive_clientName={this.state.gdrive_clientName}
+                                        gdrive_clientPort={this.state.gdrive_clientPort}
+                                        gdrive_userList={this.state.gdrive_userList}
+                                        availableUserList={this.props.user_list}
+                                        onError={(title, errStr) => this.setError(title, errStr)}
+                                        onSave={(crawler) => this.update_control_data(crawler)}/>
+                                }
+                                {t_value === 'wordpress crawler' &&
+                                    <CrawlerWordpress
+                                        onError={(title, errStr) => this.setError(title, errStr)}
+                                        onSave={(crawler) => this.update_control_data(crawler)}/>
+                                }
+                                {t_value === 'schedule' && this.state.crawlerType !== "wordpress" &&
                                                             <div style={styles.timeTabContent}>
                                                                 <TimeSelect time={this.state.schedule}
                                                                             onSave={(time) => this.updateSchedule(time)}/>

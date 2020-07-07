@@ -17,6 +17,7 @@ export function initializeState() {
         // organisational data
         selected_organisation_id: "",
         selected_organisation: "",
+        organisation_filter: "",
         organisation_list: [],
 
         // kb status
@@ -112,6 +113,11 @@ export function initializeState() {
 
         // ad domain manager
         domain_list: [],
+
+        // semantic display categories for org:kb
+        semantic_display_category_list: [],
+        // list of semantics that are existing / defined for org:kb
+        defined_semantic_list: [],
 
         // application error messages
         error_title: "Error",

@@ -254,6 +254,7 @@ export class Operator extends React.Component {
     render() {
         const isOperator = Home.hasRole(this.props.user, ['operator']);
         const active = this.props.operator.operator_ready && this.props.operator_connected && isOperator;
+        const isReady = this.props.operator.operator_ready || !this.props.operator_connected;
         const has_user = this.props.operator.client_id && this.props.operator.client_id.length > 0;
         return (
             <div>
@@ -272,7 +273,7 @@ export class Operator extends React.Component {
                 />
 
                 <div style={styles.buttonsTop}>
-                    <Button variant="contained" style={styles.topButton} disabled={this.props.operator.operator_ready || !this.props.operator_connected}
+                    <Button variant="contained" style={styles.topButton} disabled={isReady}
                             color="secondary" title="Signal that you are ready to go and converse with customers."
                             onClick={() => this.readyForChat()}>
                         <KeyboardVoiceIcon />
@@ -306,6 +307,7 @@ export class Operator extends React.Component {
                         this.props.operator.client_kb_name && this.props.operator.client_kb_name.length > 0 &&
                         <div style={styles.kbName}>{this.props.operator.client_kb_name}</div>
                     }
+
 
                 </div>
 

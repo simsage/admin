@@ -575,7 +575,7 @@ export class UserManager extends React.Component {
                                                           label={role} variant="outlined" />)
                                         })
                                     }
-                                </div>
+                                </div>roles
                             </div>
                         </div>
                         { UserManager.hasOperatorRole(this.state.edit_roles) &&

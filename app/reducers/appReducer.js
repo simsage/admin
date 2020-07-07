@@ -15,6 +15,7 @@ import {
     GET_INVENTORIZE_BUSY,
     GET_LICENSE,
     GET_ORGANISATION_LIST,
+    SET_ORGANISATION_FILTER,
     SET_USER_LIST,
     SET_USER_FILTER,
     HIDE_NOTIFICATIONS,
@@ -28,6 +29,7 @@ import {
     RESET_DOCUMENT_PAGINATION,
     SELECT_KNOWLEDGE_BASE,
     SELECT_ORGANISATION,
+    UPDATE_ORGANISATION,
     SELECT_TAB,
     SET_BOT_QUERY_LIST,
     SET_BOT_QUERY_STRING,
@@ -44,6 +46,7 @@ import {
     SET_REPORT_GRAPHS,
     SET_SEMANTIC_FILTER,
     SET_SEMANTIC_LIST,
+    SET_SEMANTIC_DISPLAY_LIST,
     SET_SYNONYM_FILTER,
     SET_SYNONYM_LIST,
     SET_SYNSET_FILTER,
@@ -100,13 +103,28 @@ export const reducer = (state, action) => {
 
         // set an error
         case ERROR: {
-            return {
-                ...state,
-                error_title: action.title,
-                error: action.error,
-                busy: false,
-                uploading: false,
-            };
+            // is this an "invalid session id"
+            if (action.error.indexOf("invalid session id") >= 0) {
+                // wipe session and user objects - this is now a logout event
+                window.location = "/#/";
+                return {
+                    ...state,
+                    session: null,
+                    user: null,
+                    error_title: action.title,
+                    error: action.error,
+                    busy: false,
+                    uploading: false,
+                };
+            } else {
+                return {
+                    ...state,
+                    error_title: action.title,
+                    error: action.error,
+                    busy: false,
+                    uploading: false,
+                }
+            }
         }
 
         // close any error messages
@@ -164,6 +182,13 @@ export const reducer = (state, action) => {
             };
         }
 
+        case SET_ORGANISATION_FILTER: {
+            return {
+                ...state,
+                organisation_filter: action.filter,
+            };
+        }
+
         case GET_KNOWLEDGE_BASES: {
             return {
                 ...state,
@@ -195,6 +220,28 @@ export const reducer = (state, action) => {
                 selected_organisation: action.name,
                 selected_knowledgebase_id: "",
                 selected_knowledgebase: "",
+                busy: false,
+            }
+        }
+
+        case UPDATE_ORGANISATION: {
+            const new_list = [];
+            const organisation = action.organisation;
+            let found = false;
+            for (const org of state.organisation_list) {
+                if (org.id === organisation.id) {
+                    new_list.push(organisation);
+                    found = true;
+                } else {
+                    new_list.push(org);
+                }
+            }
+            if (!found) {
+                new_list.push(organisation);
+            }
+            return {
+                ...state,
+                organisation_list: new_list,
                 busy: false,
             }
         }
@@ -335,6 +382,9 @@ export const reducer = (state, action) => {
         case SET_DOCUMENT_PAGE_SIZE: {
             return {
                 ...state,
+                document_page: 0,
+                document_previous: null,
+                document_nav_list: ['null'],
                 document_page_size: action.page_size,
             }
         }
@@ -402,6 +452,15 @@ export const reducer = (state, action) => {
             };
         }
 
+        case SET_SEMANTIC_DISPLAY_LIST: {
+            return {
+                ...state,
+                semantic_display_category_list: action.semantic_display_category_list,
+                defined_semantic_list: action.defined_semantic_list,
+                busy: false,
+            };
+        }
+
         case SET_SEMANTIC_FILTER: {
             return {
                 ...state,
@@ -436,6 +495,7 @@ export const reducer = (state, action) => {
         case SET_SYNSET_PAGE_SIZE: {
             return {
                 ...state,
+                synset_page: 0,
                 synset_page_size: action.page_size,
             }
         }

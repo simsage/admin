@@ -11,6 +11,8 @@ export const SET_USER_FILTER = "set user filter";
 
 export const GET_ORGANISATION_LIST = "get organisation list";
 export const SELECT_ORGANISATION = "select organisation";
+export const UPDATE_ORGANISATION = "update organisation";
+export const SET_ORGANISATION_FILTER = "set organisation filter";
 
 export const GET_KNOWLEDGE_BASES = "get knowledge bases";
 export const SELECT_KNOWLEDGE_BASE = "selected knowledge base";
@@ -45,6 +47,7 @@ export const SET_SYNONYM_FILTER = "set synonym filter";
 
 export const SET_SEMANTIC_LIST = "set semantic list";
 export const SET_SEMANTIC_FILTER = "set semantic filter";
+export const SET_SEMANTIC_DISPLAY_LIST = "set semantic display list";
 
 export const SET_SYNSET_FILTER = "set synset filter";
 export const SET_SYNSET_LIST = "set synset list";

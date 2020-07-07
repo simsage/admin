@@ -110,6 +110,10 @@ export class DocumentSources extends Component {
         this.props.setError(error, info);
         console.log(error, info);
     }
+    componentDidMount() {
+        this.props.setUserFilter('');
+        this.props.getUsers(this.props.selected_organisation_id);
+    }
     changePage(page) {
         this.setState({page: page});
     }
@@ -189,6 +193,7 @@ export class DocumentSources extends Component {
                     title={this.state.title}
                     organisation_id={this.props.selected_organisation_id}
                     kb_id={this.props.selected_knowledgebase_id}
+                    user_list={this.props.user_list}
                     onSave={(crawler) => this.saveCrawler(crawler)}
                     onUpdate={(crawler) => this.onUpdate(crawler)}
                     onError={(title, errStr) => this.props.setError(title, errStr)}
@@ -284,6 +289,8 @@ const mapStateToProps = function(state) {
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+        user_list: state.appReducer.user_list,
+        user_filter: state.appReducer.user_filter,
         crawler_list: state.appReducer.crawler_list,
     };
 };

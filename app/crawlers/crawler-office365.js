@@ -3,16 +3,16 @@ import React, {Component} from 'react';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from "@material-ui/core/Checkbox";
 import Api from '../common/api'
+import Grid from "@material-ui/core/Grid";
 
 
 const styles = {
     formContent: {
         marginTop: '20px',
-        marginLeft: '20px',
+        width: '98%',
     },
     textField: {
-        marginRight: '10px',
-        width: '500px',
+        width: '95%',
     },
     dlText: {
         marginTop: '-2px',
@@ -47,18 +47,15 @@ export class CrawlerOffice365 extends Component {
 
             crawlOneDrive: Api.defined(props.crawlOneDrive) ? props.crawlOneDrive : false,
             crawlAllOfOneDrive: Api.defined(props.crawlAllOfOneDrive) ? props.crawlAllOfOneDrive : false,
-            oneDriveUsersToCrawl: props.oneDriveUsersToCrawl ? props.oneDriveUsersToCrawl : [],
-            oneDriveUsersToCrawlStr: '',
+            oneDriveUsersToCrawl: props.oneDriveUsersToCrawl ? props.oneDriveUsersToCrawl : '',
 
             crawlSharePoint: Api.defined(props.crawlSharePoint) ? props.crawlSharePoint : false,
             crawlRootSite: Api.defined(props.crawlRootSite) ? props.crawlRootSite : false,
-            sharePointSitesToCrawl: props.sharePointSitesToCrawl ? props.sharePointSitesToCrawl : [],
-            sharePointSitesToCrawlStr: '',
+            sharePointSitesToCrawl: props.sharePointSitesToCrawl ? props.sharePointSitesToCrawl : '',
 
             crawlExchange: Api.defined(props.crawlExchange) ? props.crawlExchange : false,
             crawlAllOfExchange: Api.defined(props.crawlAllOfExchange) ? props.crawlAllOfExchange : false,
-            exchangeUsersToCrawl: props.exchangeUsersToCrawl ? props.exchangeUsersToCrawl : [],
-            exchangeUsersToCrawlStr: '',
+            exchangeUsersToCrawl: props.exchangeUsersToCrawl ? props.exchangeUsersToCrawl : '',
         };
 
     }
@@ -128,167 +125,203 @@ export class CrawlerOffice365 extends Component {
         }
         return (
             <div style={styles.formContent}>
-                <TextField
-                    placeholder="tenant id"
-                    label="tenant id"
-                    value={this.state.tenantId}
-                    onChange={(event) => {this.change_callback({tenantId: event.target.value})}}
-                    style={styles.textField}
-                />
 
-                <div style={styles.manualBox}>
-                    <a href="../resources/simsage-office365-setup.pdf" id="dlOffice365" target="_blank" title="download the SimSage Office 365 setup guide">
-                        <div style={styles.dlText}>download Microsoft Azure configuration instructions</div>
-                        <img src="../images/pdf-icon.png" alt="offce 365 setup guide" style={styles.manualImage}/></a>
-                </div>
+                <Grid container spacing={1}>
 
-                <br />
+                    <Grid item xs={1} />
+                    <Grid item xs={5}>
+                        <TextField
+                            placeholder="tenant id"
+                            label="tenant id"
+                            autoFocus={true}
+                            value={this.state.tenantId}
+                            onChange={(event) => {this.change_callback({tenantId: event.target.value})}}
+                            style={styles.textField}
+                        />
+                    </Grid>
+                    <Grid item xs={5}>
+                        <div style={styles.manualBox}>
+                            <a href="../resources/simsage-office365-setup.pdf" id="dlOffice365" target="_blank" title="download the SimSage Office 365 setup guide">
+                                <div style={styles.dlText}>download Microsoft Azure configuration instructions</div>
+                                <img src="../images/pdf-icon.png" alt="offce 365 setup guide" style={styles.manualImage}/></a>
+                        </div>
+                    </Grid>
+                    <Grid item xs={1} />
 
-                <TextField
-                    placeholder="client id"
-                    label="client id"
-                    value={this.state.clientId}
-                    onChange={(event) => {this.change_callback({clientId: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
+                    <Grid item xs={1} />
+                    <Grid item xs={5}>
+                        <TextField
+                            placeholder="client id"
+                            label="client id"
+                            value={this.state.clientId}
+                            onChange={(event) => {this.change_callback({clientId: event.target.value})}}
+                            style={styles.textField}
+                        />
+                    </Grid>
+                    <Grid item xs={5}>
+                        <TextField
+                            placeholder="client secret"
+                            label="client secret"
+                            value={this.state.clientSecret}
+                            onChange={(event) => {this.change_callback({clientSecret: event.target.value})}}
+                            style={styles.textField}
+                        />
+                    </Grid>
+                    <Grid item xs={1} />
 
-                <TextField
-                    placeholder="client secret"
-                    label="client secret"
-                    value={this.state.clientSecret}
-                    onChange={(event) => {this.change_callback({clientSecret: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
-
-                <TextField
-                    placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."
-                    label="redirect url"
-                    value={this.state.redirectUrl}
-                    onChange={(event) => {this.change_callback({redirectUrl: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
-
-                <div style={{float: 'left'}} title="Check this box if you want OneDrive of your Office365 to be included">
-                    <Checkbox
-                        checked={this.state.crawlOneDrive}
-                        onChange={(event) => { this.change_callback({crawlOneDrive: event.target.checked}); }}
-                        value="enable OneDrive?"
-                        inputProps={{
-                            'aria-label': 'primary checkbox',
-                        }}
-                    />
-                    enable OneDrive?
-                </div>
-                <br clear="both" />
-
-                <div style={{float: 'left'}} title="Check this box if you want ALL of OneDrive to be included">
-                    <Checkbox
-                        checked={this.state.crawlAllOfOneDrive}
-                        disabled={!this.state.crawlOneDrive}
-                        onChange={(event) => { this.change_callback({crawlAllOfOneDrive: event.target.checked}); }}
-                        value="crawl all of OneDrive?"
-                        inputProps={{
-                            'aria-label': 'primary checkbox',
-                        }}
-                    />
-                    crawl all of OneDrive?
-                </div>
-                <br clear="both" />
-
-                <TextField
-                    placeholder="specific one-drive accounts (comma separated email addresses)"
-                    label="specific one-drive accounts (comma separated email addresses)"
-                    disabled={this.state.crawlAllOfOneDrive || !this.state.crawlOneDrive}
-                    multiline={true}
-                    rows={2}
-                    value={this.state.oneDriveUsersToCrawlStr}
-                    onChange={(event) => {this.change_callback({oneDriveUsersToCrawlStr: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
+                    <Grid item xs={1} />
+                    <Grid item xs={5}>
+                        <TextField
+                            placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."
+                            label="redirect url"
+                            value={this.state.redirectUrl}
+                            onChange={(event) => {this.change_callback({redirectUrl: event.target.value})}}
+                            style={styles.textField}
+                        />
+                    </Grid>
+                    <Grid item xs={6} />
 
 
-                <div style={{float: 'left'}} title="Check this box if you want SharePoint of your Office365 to be included">
-                    <Checkbox
-                        checked={this.state.crawlSharePoint}
-                        onChange={(event) => { this.change_callback({crawlSharePoint: event.target.checked}); }}
-                        value="enable SharePoint indexing?"
-                        inputProps={{
-                            'aria-label': 'primary checkbox',
-                        }}
-                    />
-                    enable SharePoint indexing?
-                </div>
-                <br clear="both" />
+                    <Grid item xs={1} />
+                    <Grid item xs={5}>
+                        <div style={{float: 'left'}} title="Check this box if you want OneDrive of your Office365 to be included">
+                            <Checkbox
+                                checked={this.state.crawlOneDrive}
+                                onChange={(event) => { this.change_callback({crawlOneDrive: event.target.checked}); }}
+                                value="enable OneDrive?"
+                                inputProps={{
+                                    'aria-label': 'primary checkbox',
+                                }}
+                            />
+                            enable OneDrive?
+                        </div>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <div style={{float: 'left'}} title="Check this box if you want ALL of OneDrive to be included">
+                            <Checkbox
+                                checked={this.state.crawlAllOfOneDrive}
+                                disabled={!this.state.crawlOneDrive}
+                                onChange={(event) => { this.change_callback({crawlAllOfOneDrive: event.target.checked}); }}
+                                value="crawl all of OneDrive?"
+                                inputProps={{
+                                    'aria-label': 'primary checkbox',
+                                }}
+                            />
+                            crawl all of OneDrive?
+                        </div>
+                    </Grid>
+                    <Grid item xs={1} />
 
-                <div style={{float: 'left'}} title="Check this box if you want the root SharePoint site to be indexed">
-                    <Checkbox
-                        checked={this.state.crawlRootSite}
-                        disabled={!this.state.crawlSharePoint}
-                        onChange={(event) => { this.change_callback({crawlRootSite: event.target.checked}); }}
-                        value="crawl SharePoint root site?"
-                        inputProps={{
-                            'aria-label': 'primary checkbox',
-                        }}
-                    />
-                    crawl SharePoint root site?
-                </div>
-                <br clear="both" />
-
-                <TextField
-                    placeholder="other SharePoint sites (comma separated ids)"
-                    label="other SharePoint sites (comma separated ids)"
-                    disabled={!this.state.crawlSharePoint}
-                    multiline={true}
-                    rows={2}
-                    value={this.state.sharePointSitesToCrawlStr}
-                    onChange={(event) => {this.change_callback({sharePointSitesToCrawlStr: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
+                    <Grid item xs={1} />
+                    <Grid item xs={10}>
+                        <TextField
+                            placeholder="specific one-drive accounts (comma separated email addresses)"
+                            label="specific one-drive accounts (comma separated email addresses)"
+                            disabled={this.state.crawlAllOfOneDrive || !this.state.crawlOneDrive}
+                            variant="outlined"
+                            multiline={true}
+                            rows={2}
+                            value={this.state.oneDriveUsersToCrawl}
+                            onChange={(event) => {this.change_callback({oneDriveUsersToCrawl: event.target.value})}}
+                            style={styles.textField}
+                        />
+                    </Grid>
+                    <Grid item xs={1} />
 
 
-                <div style={{float: 'left'}} title="Check this box if you want Exchange of your Office365 to be included">
-                    <Checkbox
-                        checked={this.state.crawlExchange}
-                        onChange={(event) => { this.change_callback({crawlExchange: event.target.checked}); }}
-                        value="enable Exchange?"
-                        inputProps={{
-                            'aria-label': 'primary checkbox',
-                        }}
-                    />
-                    enable Exchange?
-                </div>
-                <br clear="both" />
+                    <Grid item xs={1} />
+                    <Grid item xs={5}>
+                        <div style={{float: 'left'}} title="Check this box if you want SharePoint of your Office365 to be included">
+                            <Checkbox
+                                checked={this.state.crawlSharePoint}
+                                onChange={(event) => { this.change_callback({crawlSharePoint: event.target.checked}); }}
+                                value="enable SharePoint indexing?"
+                                inputProps={{
+                                    'aria-label': 'primary checkbox',
+                                }}
+                            />
+                            enable SharePoint indexing?
+                        </div>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <div style={{float: 'left'}} title="Check this box if you want the root SharePoint site to be indexed">
+                            <Checkbox
+                                checked={this.state.crawlRootSite}
+                                disabled={!this.state.crawlSharePoint}
+                                onChange={(event) => { this.change_callback({crawlRootSite: event.target.checked}); }}
+                                value="crawl SharePoint root site?"
+                                inputProps={{
+                                    'aria-label': 'primary checkbox',
+                                }}
+                            />
+                            crawl SharePoint root site?
+                        </div>
+                    </Grid>
+                    <Grid item xs={1} />
 
-                <div style={{float: 'left'}} title="Check this box if you want ALL of Exchange to be included">
-                    <Checkbox
-                        checked={this.state.crawlAllOfExchange}
-                        disabled={!this.state.crawlExchange}
-                        onChange={(event) => { this.change_callback({crawlAllOfExchange: event.target.checked}); }}
-                        value="crawl all of Exchange?"
-                        inputProps={{
-                            'aria-label': 'primary checkbox',
-                        }}
-                    />
-                    crawl all of Exchange?
-                </div>
-                <br clear="both" />
+                    <Grid item xs={1} />
+                    <Grid item xs={10}>
+                        <TextField
+                            placeholder="other SharePoint sites (comma separated ids)"
+                            label="other SharePoint sites (comma separated ids)"
+                            disabled={!this.state.crawlSharePoint}
+                            variant="outlined"
+                            multiline={true}
+                            rows={2}
+                            value={this.state.sharePointSitesToCrawl}
+                            onChange={(event) => {this.change_callback({sharePointSitesToCrawl: event.target.value})}}
+                            style={styles.textField}
+                        />
+                    </Grid>
+                    <Grid item xs={1} />
 
-                <TextField
-                    placeholder="specific exchange accounts (comma separated email addresses)"
-                    label="specific exchange accounts (comma separated email addresses)"
-                    disabled={this.state.crawlAllOfExchange || !this.state.crawlExchange}
-                    multiline={true}
-                    rows={2}
-                    value={this.state.exchangeUsersToCrawlStr}
-                    onChange={(event) => {this.change_callback({exchangeUsersToCrawlStr: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
+                    <Grid item xs={1} />
+                    <Grid item xs={5}>
+                        <div style={{float: 'left'}} title="Check this box if you want Exchange of your Office365 to be included">
+                            <Checkbox
+                                checked={this.state.crawlExchange}
+                                onChange={(event) => { this.change_callback({crawlExchange: event.target.checked}); }}
+                                value="enable Exchange?"
+                                inputProps={{
+                                    'aria-label': 'primary checkbox',
+                                }}
+                            />
+                            enable Exchange?
+                        </div>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <div style={{float: 'left'}} title="Check this box if you want ALL of Exchange to be included">
+                            <Checkbox
+                                checked={this.state.crawlAllOfExchange}
+                                disabled={!this.state.crawlExchange}
+                                onChange={(event) => { this.change_callback({crawlAllOfExchange: event.target.checked}); }}
+                                value="crawl all of Exchange?"
+                                inputProps={{
+                                    'aria-label': 'primary checkbox',
+                                }}
+                            />
+                            crawl all of Exchange?
+                        </div>
+                    </Grid>
+                    <Grid item xs={1} />
+
+                    <Grid item xs={1} />
+                    <Grid item xs={10}>
+                        <TextField
+                            placeholder="specific exchange accounts (comma separated email addresses)"
+                            label="specific exchange accounts (comma separated email addresses)"
+                            disabled={this.state.crawlAllOfExchange || !this.state.crawlExchange}
+                            variant="outlined"
+                            multiline={true}
+                            rows={2}
+                            value={this.state.exchangeUsersToCrawl}
+                            onChange={(event) => {this.change_callback({exchangeUsersToCrawl: event.target.value})}}
+                            style={styles.textField}
+                        />
+                    </Grid>
+                    <Grid item xs={1} />
+
+                </Grid>
 
             </div>
         );

@@ -104,9 +104,6 @@ export class KnowledgeManager extends React.Component {
             window.open().document.body.innerHTML += program.replace(/\n/g, "<br />");
         }
     }
-    backup() {
-        window.open(Comms.get_backup_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
-    }
     inventorizeDump(dateTime) {
         window.open(Comms.get_inventorize_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime), '_blank');
     }

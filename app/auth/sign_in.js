@@ -99,6 +99,7 @@ export class SignIn extends Component {
     }
     componentDidMount() {
         clearState();
+        this.props.notBusy();
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);

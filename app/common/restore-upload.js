@@ -3,12 +3,11 @@ import Button from "@material-ui/core/Button";
 
 const styles = {
     uploadContainer: {
-        margin: '10px',
-        width: '450px',
-        minWidth: '450px',
+        float: 'left',
+        width: '400px',
+        minWidth: '400px',
         // border: '1px solid lightgray',
-        borderRadius: '15px',
-        padding: '12px',
+        padding: '1px',
         marginLeft: '10px',
         background: 'white',
         fontWeight: 700,
@@ -19,11 +18,17 @@ const styles = {
         marginTop: '-20px',
     },
     uploadControl: {
-        marginTop: '5px',
-        float: 'left',
+        marginTop: '10px',
     },
-    uploadButton: {
+    imageButton: {
         float: 'left',
+        marginRight: '20px',
+        paddingTop: '10px',
+        color: '#888',
+        cursor: 'pointer',
+    },
+    restoreImage: {
+        width: '25px',
     },
     busyImage: {
         width: '28px',
@@ -49,21 +54,14 @@ export class RestoreUpload extends React.Component {
             filename: '',
             fileType: '',
             data: '',
-
-            uploading: props.uploading,
-            kbId: props.kbId,
             organisationId: props.organisationId,
-            doUpload: props.doUpload,
             onError: props.onError,
         };
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
-            uploading: nextProps.uploading,
-            kbId: nextProps.kbId,
             organisationId: nextProps.organisationId,
-            doUpload: nextProps.doUpload,
             onError: nextProps.onError,
         });
     }
@@ -92,13 +90,10 @@ export class RestoreUpload extends React.Component {
         if (this.state.data) {
             const payload = {
                 organisationId: this.state.organisationId,
-                kbId: this.state.kbId,
-                url: this.state.filename,
-                fileType: this.state.fileType,
                 data: this.state.data,
             };
-            if (this.state.doUpload) {
-                this.state.doUpload(payload);
+            if (this.props.doUpload) {
+                this.props.doUpload(payload);
             }
         }
     }
@@ -108,21 +103,16 @@ export class RestoreUpload extends React.Component {
             <div>
                 <form onSubmit={(e) => this._handleSubmit(e)} style={styles.uploadContainer}>
                     <div style={styles.formWidth}>
+                        {
+                            this.state.data && this.state.data.length > 0 && this.state.fileType === "text/plain" &&
+                            <a style={styles.imageButton} onClick={() => this.upload()}><img
+                                style={styles.restoreImage} src="../images/restore.svg"
+                                title={"Click here to restore data from \"" + this.state.filename + "\""}
+                                alt="restore data from file"/></a>
+                        }
                         <input style={styles.uploadControl}
                                type="file"
                                onChange={(e) => this._handleImageChange(e)}/>
-                        <div style={styles.uploadButton}>
-                            <div style={styles.uploadInput}>
-                                <Button variant='outlined'
-                                        color='primary'
-                                        style={styles.uploadButton}
-                                        disabled={this.state.data.length === 0 || this.state.uploading}
-                                        onClick={() => this.upload()}>Restore</Button>
-                                {this.state.uploading &&
-                                <div style={styles.uploadWheel}><img src="../images/busy2.gif" alt="busy" style={styles.busyImage}/></div>
-                                }
-                            </div>
-                        </div>
                     </div>
                 </form>
             </div>

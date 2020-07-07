@@ -6,12 +6,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import TextField from '@material-ui/core/TextField';
 import TablePagination from '@material-ui/core/TablePagination';
 
 import {Api} from '../common/api'
@@ -19,6 +13,11 @@ import {Api} from '../common/api'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
+import Comms from "../common/comms";
+import {Home} from "../home";
+import {OrganisationEdit} from "./organisation-edit"
+import Grid from "@material-ui/core/Grid";
+import RestoreUpload from "../common/restore-upload";
 
 const styles = {
     tableWidth: {
@@ -83,6 +82,36 @@ const styles = {
     dlImageSize: {
         width: '24px',
     },
+
+    searchBox: {
+        boxShadow: 'none',
+    },
+    floatLeftLabel: {
+        float: 'left',
+        marginRight: '6px',
+        marginTop: '4px',
+        fontSize: '0.9em',
+        fontWeight: '500',
+    },
+    floatLeft: {
+        float: 'left',
+    },
+    searchFloatLeft: {
+        float: 'left',
+    },
+    findBox: {
+        padding: '10px',
+        marginBottom: '5px',
+        float: 'right',
+    },
+    search: {
+        marginTop: '2px',
+        marginLeft: '15px',
+        width: '18px',
+        color: '#000',
+    },
+
+
 };
 
 
@@ -91,8 +120,17 @@ export class Organisations extends React.Component {
         super(props);
         this.state = {
             edit_organisation: false,
+
             edit_organisation_id: "",
             edit_name: "",
+            max_tpm: 0,
+            analytics_window_size_in_months: 12,
+            enabled: true,
+            bot_enabled: true,
+            analytics_enabled: true,
+            operator_enabled: true,
+            language_enabled: true,
+
             organisation: null,
             // pagination
             page_size: 5,
@@ -107,7 +145,15 @@ export class Organisations extends React.Component {
         this.setState({edit_organisation: true,
                              organisation: null,
                              edit_organisation_id: "",
-                             edit_name: ""})
+                             edit_name: "",
+                             max_tpm: 0,
+                             analytics_window_size_in_months: 12,
+                             enabled: true,
+                             bot_enabled: true,
+                             analytics_enabled: true,
+                             operator_enabled: true,
+                             language_enabled: true,
+        })
     }
     refreshSecurityId() {
         this.setState({edit_security_id: Api.createGuid()})
@@ -116,8 +162,16 @@ export class Organisations extends React.Component {
         if (organisation) {
             this.setState({edit_organisation: true,
                                  organisation: organisation,
-                                 edit_organisation_id: organisation.id,
-                                 edit_name: organisation.name})
+                                 id: organisation.id,
+                                 name: organisation.name,
+                                 max_tpm: Api.defined(organisation.maxTransactionsPerMonth) ? organisation.maxTransactionsPerMonth : 0,
+                                 analytics_window_size_in_months: Api.defined(organisation.analyticsWindowInMonths) ? organisation.analyticsWindowInMonths : 12,
+                                 enabled: Api.defined(organisation.enabled) ? organisation.enabled : true,
+                                 bot_enabled: Api.defined(organisation.botEnabled) ? organisation.botEnabled : true,
+                                 analytics_enabled: Api.defined(organisation.analyticsEnabled) ? organisation.analyticsEnabled : true,
+                                 operator_enabled: Api.defined(organisation.operatorEnabled) ? organisation.operatorEnabled : true,
+                                 language_enabled: Api.defined(organisation.languageEnabled) ? organisation.languageEnabled : true,
+            })
         }
     }
     deleteOrganisationAsk(organisation) {
@@ -135,14 +189,16 @@ export class Organisations extends React.Component {
             this.props.closeDialog();
         }
     }
-    editCancel() {
-        this.setState({edit_organisation: false, organisation: null});
-    }
     changePage(page) {
         this.setState({page: page});
     }
     changePageSize(page_size) {
         this.setState({page_size: page_size});
+    }
+    handleSearchTextKeydown(event) {
+        if (event.key === "Enter") {
+            this.props.getOrganisationList();
+        }
     }
     getOrganisations() {
         const paginated_list = [];
@@ -150,22 +206,77 @@ export class Organisations extends React.Component {
         const last = first + this.state.page_size;
         for (const i in this.props.organisation_list) {
             if (i >= first && i < last) {
-                paginated_list.push(this.props.organisation_list[i]);
+                if (this.props.organisation_list.hasOwnProperty(i))
+                    paginated_list.push(this.props.organisation_list[i]);
             }
         }
         return paginated_list;
     }
-    editOk() {
-        if (this.state.edit_name.length > 0) {
-            this.props.updateOrganisation(this.state.edit_organisation_id, this.state.edit_name);
-            this.setState({edit_organisation: false, organisation: null});
+    save(organisation) {
+        if (organisation) {
+            if (organisation.name.length > 0) {
+                this.props.updateOrganisation({
+                    id: Api.defined(organisation.id) ? organisation.id : '', name: organisation.name,
+                    maxTransactionsPerMonth: organisation.max_tpm,
+                    analyticsWindowInMonths: organisation.analytics_window_size_in_months, enabled: organisation.enabled,
+                    botEnabled: organisation.bot_enabled, analyticsEnabled: organisation.analytics_enabled,
+                    operatorEnabled: organisation.operator_enabled, languageEnabled: organisation.language_enabled,
+                });
+                this.setState({edit_organisation: false, organisation: null});
+            } else {
+                this.props.setError("Incomplete Data", "Please complete all fields.  Must have a name.");
+            }
         } else {
-            this.props.setError("Incomplete Data", "Please complete all fields.  Must have a name.");
+            this.setState({edit_organisation: false, organisation: null});
         }
     }
+    backupAll() {
+        window.open(Comms.get_backup_url(this.props.selected_organisation_id, 'all'), '_blank');
+    }
+    backup(organisationId) {
+        window.open(Comms.get_backup_url(organisationId, 'specific'), '_blank');
+    }
+    restore(data) {
+        if (data && data.data && data.data.length > 0) {
+            this.props.restore(data.data);
+        }
+    }
+    downloadHtml(html, organisation) {
+        window.open(Comms.get_html_url(html, organisation.id), '_blank');
+    }
     render() {
+        const isAdmin = Home.hasRole(this.props.user, ['admin']);
         return (
             <div>
+                <OrganisationEdit open={this.state.edit_organisation}
+                                    id={this.state.id} name={this.state.name} max_tpm={this.state.max_tpm}
+                                    analytics_window_size_in_months={this.state.analytics_window_size_in_months}
+                                    enabled={this.state.enabled} bot_enabled={this.state.bot_enabled}
+                                    analytics_enabled={this.state.analytics_enabled} operator_enabled={this.state.operator_enabled}
+                                    language_enabled={this.state.language_enabled}
+                                    onError={(title, err) => this.props.showError(title, err)}
+                                    onSave={(data) => this.save(data)} />
+
+                <div style={styles.searchBox}>
+                    <Grid item xs={12}>
+                        <div style={styles.findBox}>
+                            <div style={styles.floatLeftLabel}>filter</div>
+                            <div style={styles.searchFloatLeft}>
+                                <input type="text" value={this.props.user_filter} autoFocus={true} style={styles.text}
+                                       onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                       onChange={(event) => {
+                                           this.props.setOrganisationFilter(event.target.value)
+                                       }}/>
+                            </div>
+                            <div style={styles.floatLeft}>
+                                <img style={styles.search}
+                                     onClick={() => this.props.getOrganisationList()}
+                                     src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
+                            </div>
+                        </div>
+                    </Grid>
+                </div>
+
                 <Paper>
                     <Table style={styles.tableWidth}>
                         <TableHead>
@@ -189,17 +300,37 @@ export class Organisations extends React.Component {
                                                 <div style={styles.linkButton} onClick={() => this.deleteOrganisationAsk(organisation)}>
                                                     <img src="../images/delete.svg" style={styles.dlImageSize} title="remove organisation" alt="remove"/>
                                                 </div>
+                                                <div style={styles.linkButton} onClick={() => this.downloadHtml("search", organisation)}>
+                                                    <img src="../images/search.svg" style={styles.dlImageSize} title="download this organisation's search interface (html)" alt="download search interface"/>
+                                                </div>
+                                                {isAdmin &&
+                                                <div style={styles.linkButton} onClick={() => this.backup(organisation.id)}>
+                                                    <img src="../images/backup.svg" style={styles.dlImageSize} title={"backup this organisation"}
+                                                         alt={"backup " + organisation.name} />
+                                                </div>
+                                                }
                                             </TableCell>
                                         </TableRow>
                                     )
                                 })
                             }
                             <TableRow>
-                                <TableCell />
-                                <TableCell>
+                                <TableCell colSpan={2}>
+                                    {isAdmin &&
+                                    <a style={styles.imageButton} onClick={() => this.backupAll()}><img
+                                        style={styles.addImage} src="../images/backup.svg"
+                                        title="backup all organisations"
+                                        alt="backup all organisations"/></a>
+                                    }
                                     <a style={styles.imageButton} onClick={() => this.addNewOrganisation()}><img
                                         style={styles.addImage} src="../images/add.svg" title="add new organisation"
                                         alt="add new organisation"/></a>
+                                    <br />
+                                    {isAdmin &&
+                                    <RestoreUpload doUpload={(data) => this.restore(data)}
+                                                   organisationId={this.props.selected_organisation_id}
+                                                   onError={(err) => this.props.setError("Error", err)} />
+                                    }
                                 </TableCell>
                             </TableRow>
                         </TableBody>
@@ -223,33 +354,6 @@ export class Organisations extends React.Component {
 
                 </Paper>
 
-
-                <Dialog aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                        open={this.state.edit_organisation}
-                        disableBackdropClick={true}
-                        disableEscapeKeyDown={true}
-                        fullWidth={true}
-                        maxWidth="md"
-                        onClose={() => this.setState({edit_organisation: false, organisation: null})} >
-                    <DialogTitle>{this.state.edit_organisation_id ? "Edit Organisation" : "Add New Organisation"}</DialogTitle>
-                    <DialogContent>
-                        <TextField
-                            autoFocus={true}
-                            style={styles.editBox}
-                            placeholder="organisation name"
-                            label="organisation name"
-                            value={this.state.edit_name}
-                            onChange = {(event) => this.setState({edit_name: event.target.value})}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button color="primary" onClick={() => this.editCancel()}>Cancel</Button>
-                        <Button variant="outlined" color="secondary" onClick={() => this.editOk()}>Save</Button>
-                    </DialogActions>
-                </Dialog>
-
-
             </div>
         )
     }
@@ -259,6 +363,7 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        user: state.appReducer.user,
 
         organisation_list: state.appReducer.organisation_list,
     };
