@@ -99,7 +99,7 @@ export class ProgramConvert extends React.Component {
                 kbId: this.state.kbId,
                 organisationId: this.state.organisationId,
             };
-            Comms.http_put('/knowledgebase/convert/csv', payload,
+            Comms.http_put('/knowledgebase/convert/spreadsheet', payload,
                 (response) => {
                         self.setState({uploading: false});
                         if (self.state.onUploadDone) {

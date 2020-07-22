@@ -102,7 +102,7 @@ export class Operator extends React.Component {
             organisationId: this.props.selected_organisation_id,
             userId: this.props.user.id,
         };
-        this.props.sendMessage('/ws/ops/ready', data);
+        this.props.sendOperatorMessage('/ops/ready', data);
         this.props.operatorReady(this.props.operator.id, true);
     }
     isTyping() {
@@ -116,7 +116,7 @@ export class Operator extends React.Component {
                     toId: this.props.operator.client_id,
                     isTyping: true
                 };
-                this.props.sendMessage('/ws/ops/typing', data);
+                this.props.sendOperatorMessage('/ops/typing', data);
             }
         }
     }
@@ -134,7 +134,7 @@ export class Operator extends React.Component {
             organisationId: this.props.selected_organisation_id,
             clientId: this.props.operator.client_id,
         };
-        this.props.sendMessage('/ws/ops/take-break', data);
+        this.props.sendOperatorMessage('/ops/take-break', data);
         this.props.operatorReady(this.props.operator.id, false);
     }
     nextUser() {
@@ -144,7 +144,7 @@ export class Operator extends React.Component {
             organisationId: this.props.selected_organisation_id,
             clientId: this.props.operator.client_id,
         };
-        this.props.sendMessage('/ws/ops/next-user', data);
+        this.props.sendOperatorMessage('/ops/next-user', data);
         this.props.clearUser(this.props.operator.id);
     }
     banUserConfirm() {
@@ -163,7 +163,7 @@ export class Operator extends React.Component {
                 organisationId: this.props.selected_organisation_id,
                 clientId: this.props.operator.client_id,
             };
-            this.props.sendMessage('/ws/ops/ban-user', data);
+            this.props.sendOperatorMessage('/ops/ban-user', data);
             this.props.clearUser(this.props.operator.id);
         }
         if (this.props.closeDialog) {
@@ -180,7 +180,7 @@ export class Operator extends React.Component {
                 kbId: this.props.operator.client_kb_id,
                 text: text,
             };
-            this.props.sendMessage('/ws/ops/chat', data);
+            this.props.sendOperatorMessage('/ops/chat', data);
 
             // add a new conversation to the list
             this.props.addConversation(this.props.operator.id, {id: this.props.operator.conversation_list.length + 1, primary: text,
@@ -216,7 +216,7 @@ export class Operator extends React.Component {
                     answer: this.props.operator.answer,
                     links: links,
                 };
-                this.props.sendMessage('/ws/ops/teach', data);
+                this.props.sendOperatorMessage('/ops/teach', data);
 
                 // mark these two items as used
                 const conversation_list = this.props.operator.conversation_list;

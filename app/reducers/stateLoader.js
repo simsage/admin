@@ -91,8 +91,7 @@ export function initializeState() {
         // reports
         report_date: Api.toIsoDate(new Date()),
         report_num_items: 20,
-        bot_access_frequency: {labels: []},
-        search_access_frequency: {labels: []},
+        access_frequency: {labels: []},
         general_statistics: [],
         query_word_frequency: [],
         file_type_statistics: [],

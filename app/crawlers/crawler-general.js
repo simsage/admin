@@ -18,6 +18,7 @@ const crawler_list = [
     {"key": "dropbox", "value": "dropbox crawler"},
     {"key": "wordpress", "value": "WordPress external crawler"},
     {"key": "gdrive", "value": "Google-drive crawler"},
+    {"key": "nfs", "value": "nfs external crawler"},
     {"key": "database", "value": "database crawler"},
 ];
 
@@ -51,7 +52,7 @@ function markText(value) {
 
 const styles = {
     customWidth: {
-        width: '98%',
+        width: '48%',
     },
     textField: {
         width: '98%',
@@ -110,7 +111,7 @@ export class CrawlerGeneral extends Component {
         if (nextProps !== null) {
             this.setState(this.construct_data({
                             filesPerSecond: nextProps.filesPerSecond,
-                            crawlerType: nextProps.crawlerType,
+                            crawlerType: Api.defined(nextProps.crawlerType) ? nextProps.crawlerType : 'none',
                             deleteFiles: nextProps.deleteFiles,
                             allowAnonymous: nextProps.allowAnonymous,
                             enablePreview: nextProps.enablePreview,

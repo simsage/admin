@@ -20,6 +20,7 @@ import CrawlerOffice365 from "./crawler-office365";
 import CrawlerDropbox from "./crawler-dropbox";
 import CrawlerWordpress from "./crawler-wordpress";
 import CrawlerGDrive from "./crawler-gdrive";
+import CrawlerNFS from "./crawler-nfs";
 
 
 const styles = {
@@ -233,19 +234,29 @@ export class CrawlerDialog extends Component {
             }
         }
 
+        let nfs_local_folder = '';
+        let nfs_userList = '';
+        if (crawler.crawlerType === "nfs") {
+            if (crawler.specificJson && crawler.specificJson.length > 0) {
+                const obj = JSON.parse(crawler.specificJson);
+                nfs_local_folder = Api.defined(obj['nfs_local_folder']) ? obj['nfs_local_folder']: '';
+                nfs_userList = Api.defined(obj['nfs_userList']) ? obj['nfs_userList']: '';
+            }
+        }
+
         // wordpress has no additional properties
 
         return {
             sourceId: crawler.sourceId,
             nodeId: crawler.nodeId,
             name: crawler.name,
-            crawlerType: crawler.crawlerType,
+            crawlerType: Api.defined(crawler.crawlerType) && crawler.crawlerType.length > 0 ? crawler.crawlerType : 'none',
             filesPerSecond: crawler.filesPerSecond,
             schedule: (Api.defined(crawler.schedule) ? crawler.schedule : ''),
             deleteFiles: crawler.deleteFiles,
             allowAnonymous: crawler.allowAnonymous,
             enablePreview: crawler.enablePreview,
-            processingLevel: crawler.processingLevel,
+            processingLevel: (Api.defined(crawler.processingLevel)) ? crawler.processingLevel : 'SEARCH',
             maxItems: crawler.maxItems,
             maxBotItems: crawler.maxBotItems,
 
@@ -297,6 +308,9 @@ export class CrawlerDialog extends Component {
             gdrive_clientPort: gdrive_clientPort,
             gdrive_userList: gdrive_userList,
 
+            nfs_local_folder: nfs_local_folder,
+            nfs_userList: nfs_userList,
+
             // for now shared between gdrive and dropbox
             clientToken: clientToken,
             folderList: folderList,
@@ -317,7 +331,11 @@ export class CrawlerDialog extends Component {
     handleSave() {
         if (this.state.name.length === 0) {
 
-            this.setError('invalid parameters', 'you must supply a crawler name as a minimum.');
+            this.setError('invalid parameters', 'you must supply a crawler name.');
+
+        } else if (this.state.crawlerType === 'none') {
+
+            this.setError('invalid parameters', 'you must select a crawler-type.');
 
         } else if (this.state.crawlerType === 'file' && (
             this.state.file_username.length === 0 ||
@@ -359,8 +377,12 @@ export class CrawlerDialog extends Component {
 
             this.setError('invalid parameters', 'you must supply values for all fields, and select one user as a minimum.');
 
+        } else if (this.state.crawlerType === 'nfs' && (this.state.nfs_local_folder.length === 0 || this.state.nfs_userList.length === 0)) {
+
+            this.setError('invalid parameters', 'you must supply values for all fields, and select one user as a minimum.');
+
         } else if (this.state.crawlerType !== 'web' && this.state.crawlerType !== 'file' && this.state.crawlerType !== 'database' &&
-                   this.state.crawlerType !== 'office365' && this.state.crawlerType !== 'dropbox' &&
+                   this.state.crawlerType !== 'office365' && this.state.crawlerType !== 'dropbox' && this.state.crawlerType !== 'nfs' &&
                    this.state.crawlerType !== 'wordpress' && this.state.crawlerType !== 'gdrive') {
 
             this.setError('invalid parameters', 'you must select a crawler-type first.');
@@ -453,6 +475,11 @@ export class CrawlerDialog extends Component {
                     gdrive_clientPort: data.gdrive_clientPort ? data.gdrive_clientPort : '',
                     gdrive_userList: data.gdrive_userList ? data.gdrive_userList : '',
                 });
+            } else if (this.state.crawlerType === 'nfs') {
+                specificJson = JSON.stringify({
+                    nfs_local_folder: data.nfs_local_folder ? data.nfs_local_folder : '',
+                    nfs_userList: data.nfs_userList ? data.nfs_userList : '',
+                });
             } else if (this.state.crawlerType === 'wordpress') {
                 // dummy value in order to save
                 specificJson = JSON.stringify({
@@ -519,6 +546,7 @@ export class CrawlerDialog extends Component {
                                 {this.state.crawlerType === "dropbox" && <Tab label="dropbox-crawler" value="dropbox crawler" style={styles.tab} />}
                                 {this.state.crawlerType === "wordpress" && <Tab label="wordpress-crawler" value="wordpress crawler" style={styles.tab} />}
                                 {this.state.crawlerType === "gdrive" && <Tab label="gdrive-crawler" value="google drive crawler" style={styles.tab} />}
+                                {this.state.crawlerType === "nfs" && <Tab label="nfs-crawler" value="nfs crawler" style={styles.tab} />}
                                 {this.state.crawlerType !== "wordpress" && <Tab label="schedule" value="schedule" style={styles.tab} />}
                             </Tabs>
 
@@ -621,6 +649,14 @@ export class CrawlerDialog extends Component {
                                         availableUserList={this.props.user_list}
                                         onError={(title, errStr) => this.setError(title, errStr)}
                                         onSave={(crawler) => this.update_control_data(crawler)}/>
+                                }
+                                {t_value === 'nfs crawler' &&
+                                <CrawlerNFS
+                                    nfs_local_folder={this.state.nfs_local_folder}
+                                    nfs_userList={this.state.nfs_userList}
+                                    availableUserList={this.props.user_list}
+                                    onError={(title, errStr) => this.setError(title, errStr)}
+                                    onSave={(crawler) => this.update_control_data(crawler)}/>
                                 }
                                 {t_value === 'wordpress crawler' &&
                                     <CrawlerWordpress

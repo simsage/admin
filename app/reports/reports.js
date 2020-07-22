@@ -142,19 +142,10 @@ export class Reports extends React.Component {
                     }
 
                     {
-                        this.props.selected_knowledgebase_id && this.props.bot_access_frequency.labels.length > 0 &&
+                        this.props.selected_knowledgebase_id && this.props.access_frequency.labels.length > 0 &&
                         <div style={styles.barGraph}>
-                            <Line data={this.props.bot_access_frequency}
-                                  options={GraphHelper.getGraphOptions('bot access count')} width={graphWidth}
-                                  height={graphHeight}/>
-                        </div>
-                    }
-
-                    {
-                        this.props.selected_knowledgebase_id && this.props.search_access_frequency.labels.length > 0 &&
-                        <div style={styles.barGraph}>
-                            <Line data={this.props.search_access_frequency}
-                                  options={GraphHelper.getGraphOptions('search access count')} width={graphWidth}
+                            <Line data={this.props.access_frequency}
+                                  options={GraphHelper.getGraphOptions('access count')} width={graphWidth}
                                   height={graphHeight}/>
                         </div>
                     }
@@ -175,8 +166,7 @@ const mapStateToProps = function(state) {
         selected_organisation_id: state.appReducer.selected_organisation_id,
 
         report_date: state.appReducer.report_date,
-        bot_access_frequency: state.appReducer.bot_access_frequency,
-        search_access_frequency: state.appReducer.search_access_frequency,
+        access_frequency: state.appReducer.access_frequency,
         general_statistics: state.appReducer.general_statistics,
         query_word_frequency: state.appReducer.query_word_frequency,
         file_type_statistics: state.appReducer.file_type_statistics,

@@ -518,8 +518,7 @@ export const reducer = (state, action) => {
         case SET_REPORT_GRAPHS: {
             return {
                 ...state,
-                bot_access_frequency: action.bot_access_frequency,
-                search_access_frequency: action.search_access_frequency,
+                access_frequency: action.access_frequency,
                 general_statistics: action.general_statistics,
                 query_word_frequency: action.query_word_frequency,
                 file_type_statistics: action.file_type_statistics,
@@ -731,12 +730,12 @@ export const reducer = (state, action) => {
                         uploading: false,
                     }
 
-                } else if (!data.operatorId || data.operatorId.length === 0) {
+                } else if (!data.assignedOperatorId || data.assignedOperatorId.length === 0) {
                     // bad - must have an operator-id so we can assign it
                     return {
                         ...state,
                         error_title: "error",
-                        error:  "message does not include a valid operator-id.",
+                        error:  "message does not include a valid assigned-operator-id.",
                         busy: false,
                         uploading: false,
                     }
@@ -746,7 +745,7 @@ export const reducer = (state, action) => {
                     // find the organisation
                     let operator = null;
                     for (const op of state.operators) {
-                        if (op.id === data.operatorId) {
+                        if (op.id === data.assignedOperatorId) {
                             operator = op;
                             break;
                         }

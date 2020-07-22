@@ -293,21 +293,21 @@ async function _getReports(organisation_id, kb_id, year, month, top, dispatch) {
                                 encodeURIComponent(top),
             (response) => {
                 const report = response.data;
-                const bot_access_frequency = GraphHelper.setupList(report.botAccessFrequency, "bot access");
-                const search_access_frequency = GraphHelper.setupList(report.searchAccessFrequency, "search access");
+                const access_frequency = GraphHelper.setupList(report.accessFrequency, "access");
                 const general_statistics = GraphHelper.setupMap(report.generalStatistics, "system");
                 const query_word_frequency = GraphHelper.setupMap(report.queryWordFrequency, "queries (top " + top + ")");
                 const file_type_statistics = GraphHelper.setupMap(report.fileTypeStatistics, "file types");
-                dispatch({type: SET_REPORT_GRAPHS, bot_access_frequency: bot_access_frequency,
-                    search_access_frequency: search_access_frequency, general_statistics: general_statistics,
-                    query_word_frequency: query_word_frequency, file_type_statistics: file_type_statistics
+                dispatch({type: SET_REPORT_GRAPHS, access_frequency: access_frequency,
+                                    general_statistics: general_statistics,
+                                    query_word_frequency: query_word_frequency,
+                                    file_type_statistics: file_type_statistics
                 });
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
         )
     } else {
         dispatch({type: SET_REPORT_GRAPHS,
-            bot_access_frequency: GraphHelper.setupList([]), search_access_frequency: GraphHelper.setupList([]),
+            access_frequency: GraphHelper.setupList([]),
             general_statistics: GraphHelper.setupMap([]), query_word_frequency: GraphHelper.setupMap([]),
             file_type_statistics: GraphHelper.setupMap([])});
     }
@@ -373,12 +373,12 @@ async function _setupPage(selected_tab, dispatch, getState) {
         await _getCrawlers(organisation_id, kb_id, dispatch);
 
     } else if (selected_tab === 'documents' && organisation_id !== '' && kb_id !== '') {
+        dispatch({type:RESET_DOCUMENT_PAGINATION});
         dispatch({type: BUSY, busy: true});
         const document_filter = getState().appReducer.document_filter;
         const document_previous = 'null'; // reset
         const document_page_size = getState().appReducer.document_page_size;
         await _getDocuments(organisation_id, kb_id, document_previous, document_page_size, document_filter, dispatch);
-        dispatch({type:RESET_DOCUMENT_PAGINATION});
 
     } else if (selected_tab === 'syn-sets' && organisation_id !== '' && kb_id !== '') {
         const page = getState().appReducer.synset_page;
@@ -1273,6 +1273,17 @@ export const appCreators = {
     removeOperator: (id) => ({type: REMOVE_OPERATOR, id: id}),
 
     stopClientTyping: (operator_id) => ({type: STOP_CLIENT_TYPING, operator_id: operator_id}),
+
+    // POST data to url for operator processing
+    sendOperatorMessage: (url, data) => async (dispatch, getState) => {
+        await Comms.http_post(url, data,
+            (response) => {
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    },
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     // log list

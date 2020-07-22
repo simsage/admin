@@ -245,7 +245,7 @@ export class Home extends Component {
                     organisationId: self.props.selected_organisation_id,
                     operatorList: operatorList,
                 };
-                this.sendMessage('/ws/ops/refresh', data);
+                this.props.sendOperatorMessage('/ops/refresh', data);
             }
         }
     }
@@ -364,11 +364,6 @@ export class Home extends Component {
     }
     closeDialog() {
         this.setState({dialog_open: false, message: "", message_title: "", message_callback: null});
-    }
-    sendMessage(endpoint, data) {
-        if (this.clientRef) {
-            this.clientRef.sendMessage(endpoint, JSON.stringify(data));
-        }
     }
     connectionError(error) {
         this.props.setOperatorConnected(false);
@@ -565,7 +560,6 @@ export class Home extends Component {
 
                          { this.props.selected_tab === 'operator' &&
                              <OperatorTabs
-                                 sendMessage={(endpoint, data) => this.sendMessage(endpoint, data)}
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
                          }

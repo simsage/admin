@@ -62,7 +62,6 @@ export class OperatorTabs extends React.Component {
                                     operator={operator}
                                     isFirst={index === 0}
                                     onCloseTab={() => this.setState({selectedTab: '1'})}
-                                    sendMessage={(endpoint, data) => this.props.sendMessage(endpoint, data)}
                                     openDialog={(message, title, callback) => this.props.openDialog(message, title, callback)}
                                     closeDialog={() => this.props.closeDialog()} />);
                         }
