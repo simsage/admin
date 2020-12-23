@@ -1,25 +1,32 @@
+# SimSage admin interface
 
-# SimSage Admin ui
+node 12, npm 6 build
 
-This is a REACT-web based application for managing the SimSage natural language platform.  Use the latest version of `node` and the node package manager `npm` to install and run this software.
+## installing node 12 on Ubuntu
 
-## Install
+```
+sudo apt update
+sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates gcc g++ make
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+
+sudo apt install nodejs
+```
+
+## checking versions
+
+```
+node --version
+npm --version
+```
+
+## installing
+Make sure you remove any existing `package-lock.json` first
 ```
 npm install
 ```
 
-## Run
-```
-npm run webserver
-```
+## running this UI
 
-### Build for deployment
 ```
-npm run prod
+npm run start
 ```
-
-### SimSage Server Settings
-```
-app/settings.js
-```
-
