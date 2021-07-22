@@ -60,8 +60,8 @@ export class SynonymEdit extends Component {
                     maxWidth="lg"
                     onClose={() => this.handleCancel()} >
 
-                <DialogTitle id="alert-dialog-title">Edit Synonym</DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title" className={this.props.theme}>Edit Synonym</DialogTitle>
+                <DialogContent className={this.props.theme}>
                     <Grid container spacing={1}>
 
                         <Grid item xs={1} />
@@ -73,6 +73,7 @@ export class SynonymEdit extends Component {
                                 autoFocus={true}
                                 onChange={(event) => this.setState({words: event.target.value})}
                                 placeholder="words"
+                                spellCheck={false}
                                 multiline={true}
                                 rows={5}
                                 variant="outlined"
@@ -84,9 +85,9 @@ export class SynonymEdit extends Component {
 
                     </Grid>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={this.props.theme}>
                     <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="outlined" color="secondary" onClick={() => this.handleSave()}>Save</Button>
+                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
                 </DialogActions>
             </Dialog>
         );

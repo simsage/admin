@@ -4,6 +4,7 @@ import Api from '../common/api'
 import {
     ADD_CONVERSATION,
     BUSY,
+    SET_THEME,
     RESET_SELECTED_KB,
     CLEAR_PREVIOUS_ANSWER,
     CLOSE_ERROR,
@@ -15,7 +16,7 @@ import {
     GET_KNOWLEDGE_BASES,
     GET_INVENTORIZE_LIST,
     GET_LICENSE,
-    GET_ORGANISATION_LIST,
+    SET_ORGANISATION_LIST,
     SET_ORGANISATION_FILTER,
     GET_INVENTORIZE_BUSY,
     GET_OS_MESSAGES,
@@ -35,6 +36,7 @@ import {
     SET_SYNSET_PAGE_SIZE,
     RESTORE_SYSTEM,
     SELECT_KNOWLEDGE_BASE,
+    SELECT_EDGE_DEVICE,
     SELECT_ORGANISATION,
     UPDATE_ORGANISATION,
     SELECT_TAB,
@@ -89,6 +91,15 @@ import {
     UPLOADING_WP_ARCHIVE_FINISHED,
 
     SET_LOG_LIST,
+    SET_LOG_DATE,
+    SET_LOG_HOURS,
+    SET_LOG_TYPE,
+    SET_LOG_SERVICE,
+    SET_LOG_REFRESH,
+
+    // the edge
+    GET_EDGE_DEVICES,
+    GET_EDGE_DEVICE_COMMANDS,
 } from "./actions";
 
 import {Comms} from "../common/comms";
@@ -105,7 +116,7 @@ async function _getOrganisationList(current_org_name, current_org_id, _filter, c
     await Comms.http_get('/auth/user/organisations/' + encodeURIComponent(filter),
         (response) => {
             const organisation_list = response.data;
-            dispatch({type: GET_ORGANISATION_LIST, organisation_list: organisation_list});
+            dispatch({type: SET_ORGANISATION_LIST, organisation_list: organisation_list});
             // select an organisation if there is one to select and none yet has been selected
             if (change_organisation && organisation_list && organisation_list.length > 0 && current_org_id.length === 0) {
                 dispatch({type: SELECT_ORGANISATION, name: organisation_list[0].name, id: organisation_list[0].id});
@@ -331,25 +342,16 @@ async function _getReports(organisation_id, kb_id, year, month, top, dispatch) {
 }
 
 // get list of logs
-async function _getLogList(session, organisation_id, subSystem, top, dispatch) {
-    if (organisation_id !== '') {
+async function _getLogList(year, month, day, hour, hours, dispatch) {
+    if (year && month && day && hour && hours) {
         dispatch({type: BUSY, busy: true});
-        await Comms.http_get('/stats/get-logs/' + encodeURIComponent(session.id) + '/' +
-            encodeURIComponent(organisation_id) + '/' +
-            encodeURIComponent(subSystem) + '/' +
-            encodeURIComponent(top),
+        await Comms.http_get('/stats/system-logs/' + encodeURIComponent(year) + '/' + encodeURIComponent(month) +
+            '/' + encodeURIComponent(day) + '/' + encodeURIComponent(hour) + '/' + encodeURIComponent(hours),
             (response) => {
                 const data = response.data;
                 dispatch({
-                    type: SET_LOG_LIST, log_list: data.logs, selected_log: subSystem,
-                    active_components: {
-                        "auth": data.auth,
-                        "conversion": data.conversion, "crawler": data.crawler, "document": data.document,
-                        "knowledgebase": data.knowledgebase, "language": data.language,
-                        "mind": data.mind, "operator": data.operator, "search": data.search,
-                        "stats": data.stats, "web": data.web
-                    }
-                });
+                    type: SET_LOG_LIST, log_list: data.logList,
+                })
             },
             (errStr) => {
                 dispatch({type: ERROR, title: "Error", error: errStr})
@@ -370,6 +372,30 @@ async function _getHtmlNotifications(dispatch) {
         })
     }
 }
+
+
+async function _getEdgeDevices(organisation_id, dispatch) {
+    dispatch({type: BUSY, busy: true});
+    await Comms.http_get('/edge/' + encodeURIComponent(organisation_id),
+        (response) => {
+            dispatch({type: GET_EDGE_DEVICES, edge_device_list: response.data});
+        },
+        (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+    )
+}
+
+
+async function _getEdgeDeviceCommands(organisation_id, edge_id, dispatch) {
+    dispatch({type: BUSY, busy: true});
+    await Comms.http_get('/edge/command/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(edge_id),
+        (response) => {
+            dispatch({type: GET_EDGE_DEVICE_COMMANDS, edge_device_command_list: response.data});
+        },
+        (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+    )
+}
+
+
 
 // setup a page for different tabs
 async function _setupPage(selected_tab, dispatch, getState) {
@@ -392,6 +418,21 @@ async function _setupPage(selected_tab, dispatch, getState) {
         const id = getState().appReducer.selected_organisation_id;
         const filter = getState().appReducer.organisation_filter;
         await _getOrganisationList(name, id, filter, true, dispatch);
+
+    } else if (selected_tab === 'edge devices' && organisation_id !== '') {
+        await _getEdgeDevices(organisation_id, dispatch);
+
+    } else if (selected_tab === 'edge commands' && organisation_id !== '') {
+        const edge_id = getState().appReducer.selected_edge_device_id;
+        if (edge_id && edge_id !== '') {
+            await _getEdgeDeviceCommands(organisation_id, edge_id, dispatch);
+        }
+
+    } else if (selected_tab === 'knowledge bases') {
+        const id = getState().appReducer.selected_organisation_id;
+        if (id !== '') {
+            await _getKnowledgeBases(id, dispatch);
+        }
 
     } else if (selected_tab === 'document sources' && organisation_id !== '' && kb_id !== '') {
         await _getUsers(organisation_id, '', dispatch);
@@ -423,10 +464,13 @@ async function _setupPage(selected_tab, dispatch, getState) {
         await _getReports(organisation_id, kb_id, year, month, top, dispatch);
 
     } else if (selected_tab === 'logs' && organisation_id !== '') {
-        const session = getState().appReducer.session;
-        const subSystem = getState().appReducer.selected_log;
-        const top = getState().appReducer.log_size;
-        await _getLogList(session, organisation_id, subSystem, top, dispatch);
+        const date = new Date(getState().appReducer.log_date);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const hour = date.getHours();
+        const hours = getState().appReducer.log_hours;
+        await _getLogList(year, month, day, hour, hours, dispatch);
 
     } else if (selected_tab === 'mind') {
         dispatch({type:RESET_MIND_ITEM_PAGINATION});
@@ -468,8 +512,6 @@ async function _setupPage(selected_tab, dispatch, getState) {
         } else {
             dispatch({type: GET_DOMAINS, domain_list: []});
         }
-    } else if (selected_tab === 'semantic categories') {
-        await _getSemanticDisplayCategories(organisation_id, kb_id, dispatch);
     }
 
 }
@@ -479,13 +521,15 @@ async function _setupPage(selected_tab, dispatch, getState) {
 export const appCreators = {
 
     // do a sign in
-    signIn: (email, password) => async (dispatch, getState) => {
+    signIn: (email, password, callback) => async (dispatch, getState) => {
         if (email && email.length > 0 && password && password.length > 0) {
             dispatch({type: BUSY, busy: true});
             await Comms.http_post('/auth/sign-in', {"email": email, "password": password},
                 (response) => {
                     dispatch({type: SIGN_IN, session: response.data.session, user: response.data.user});
-                    window.location = '/#/home';
+                    if (callback) {
+                        callback();
+                    }
                 },
                 (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
             )
@@ -494,10 +538,17 @@ export const appCreators = {
         }
     },
 
-    signOut: () => ({type: SIGN_OUT}),
+    signOut: () => async (dispatch, getState) => {
+        appCreators.setLogRefresh(0);   // stop log fetching
+        dispatch({type: SIGN_OUT});
+    },
 
     notBusy: () => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: false});
+    },
+
+    setTheme: (theme) => async (dispatch, getState) => {
+        dispatch({type: SET_THEME, theme: theme});
     },
 
     passwordResetRequest: (email) => ({type: PASSWORD_RESET_REQUEST}),
@@ -538,6 +589,12 @@ export const appCreators = {
     selectTab: (selected_tab) => async (dispatch, getState) => {
         dispatch(({type: SELECT_TAB, selected_tab}));
         await _setupPage(selected_tab, dispatch, getState);
+    },
+
+    setupManager: () => async (dispatch, getState) => {
+        dispatch(({type: SELECT_TAB, selected_tab: 'knowledge bases'}));
+        await _getOrganisationList('', '', '', true, dispatch);
+        await _setupPage('knowledge bases', dispatch, getState);
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -628,6 +685,16 @@ export const appCreators = {
     // Knowledge bases
 
     // selected a knowledge base for operational stuff
+    selectEdgeDevice: (name, id) => async (dispatch, getState) => {
+        if (id && id.length > 0) {
+            dispatch({type: BUSY, busy: true});
+            const selected_tab = getState().appReducer.selected_tab;
+            dispatch({type: SELECT_EDGE_DEVICE, name, id});
+            await _setupPage(selected_tab, dispatch, getState);
+        }
+    },
+
+    // selected a knowledge base for operational stuff
     selectKnowledgeBase: (name, id) => async (dispatch, getState) => {
         if (id && id.length > 0) {
             dispatch({type: BUSY, busy: true});
@@ -646,6 +713,16 @@ export const appCreators = {
         dispatch({type: BUSY, busy: true});
         const data = {'organisationId': organisation_id, 'kbId': kb_id};
         await Comms.http_put('/language/optimize-indexes', data,
+            (response) => {
+                dispatch({type: BUSY, busy: false});
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    reIndex: (organisation_id, kb_id) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_get('/knowledgebase/re-index/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
             (response) => {
                 dispatch({type: BUSY, busy: false});
             },
@@ -672,7 +749,6 @@ export const appCreators = {
             "securityId": security_id, "maxQueriesPerDay": max_queries_per_day, "enabled": enabled,
             "analyticsWindowInMonths": analytics_window_size_in_months, "operatorEnabled": operator_enabled,
             "capacityWarnings": capacity_warnings, "created": created, "indexOptimizationSchedule": index_optimization_schedule};
-        console.log(payload);
         await Comms.http_put('/knowledgebase/', payload,
             (response) => {
                 _getKnowledgeBases(organisation_id, dispatch);
@@ -858,6 +934,18 @@ export const appCreators = {
         )
     },
 
+    deleteCrawlerDocuments: (crawler_id) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await Comms.http_delete('/crawler/crawler/document/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(crawler_id),
+            (response) => {
+                _getCrawlers(organisation_id, kb_id, dispatch)
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
     deleteCrawler: (crawler_id) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
@@ -954,7 +1042,8 @@ export const appCreators = {
                 document_previous = null;
             }
             const full_url = '/document/document/' + encodeURIComponent(organisation_id) + '/' +
-                                    encodeURIComponent(kb_id) + '/' + btoa(url) + '/' + encodeURIComponent(crawler_id);
+                                    encodeURIComponent(kb_id) + '/' + btoa(unescape(encodeURIComponent(url))) + '/' +
+                                    encodeURIComponent(crawler_id);
             await Comms.http_delete(full_url,
                 (response) => {
                     _getDocuments(organisation_id, kb_id, document_previous, document_page_size, document_filter, dispatch);
@@ -1529,11 +1618,26 @@ export const appCreators = {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     // log list
 
-    getLogList: (subSystem) => async (dispatch, getState) => {
-        const session = getState().appReducer.session;
-        const organisation_id = getState().appReducer.selected_organisation_id;
-        const top = getState().appReducer.log_size;
-        await _getLogList(session, organisation_id, subSystem, top, dispatch);
+    getLogs: () => async (dispatch, getState) => {
+        const date = new Date(getState().appReducer.log_date);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const hour = date.getHours();
+        const hours = getState().appReducer.log_hours;
+        await _getLogList(year, month, day, hour, hours, dispatch);
+    },
+
+    setLogDate: (log_date) => ({type: SET_LOG_DATE, log_date}),
+
+    setLogHours: (log_hours) => ({type: SET_LOG_HOURS, log_hours}),
+
+    setLogType: (log_type) => ({type: SET_LOG_TYPE, log_type}),
+
+    setLogService: (log_service) => ({type: SET_LOG_SERVICE, log_service}),
+
+    setLogRefresh: (log_refresh) => async (dispatch, getState) => {
+        dispatch({type: SET_LOG_REFRESH, log_refresh})
     },
 
     restartService: (subSystem) => async (dispatch, getState) => {
@@ -1544,6 +1648,57 @@ export const appCreators = {
             (errStr) => {
                 dispatch({type: ERROR, title: "Error", error: errStr})
             }
+        )
+    },
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Edge devices
+
+    // retrieve list of all organisations from server
+    getEdgeDevices: () => async (dispatch, getState) => {
+        await _getEdgeDevices(getState().appReducer.selected_organisation_id, dispatch);
+    },
+
+    deleteEdgeDevice: (organisation_id, edge_id) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_delete('/edge/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(edge_id),
+            (response) => {
+                _getEdgeDevices(organisation_id, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    updateEdgeDevice: (organisation_id, edge_id, name, created) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const payload = {"edgeId": edge_id, "organisationId": organisation_id, "name": name, "created": created};
+        await Comms.http_put('/edge/', payload,
+            (response) => {
+                _getEdgeDevices(organisation_id, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    updateEdgeDeviceCommand: (organisation_id, edge_id, command, parameters, created) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const payload = {"edgeId": edge_id, "organisationId": organisation_id, "command": command,
+                         "parameters": parameters, "created": created, "executed": 0, "result": ""};
+        await Comms.http_put('/edge/command', payload,
+            (response) => {
+                _getEdgeDeviceCommands(organisation_id, edge_id, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    deleteEdgeDeviceCommand: (organisation_id, edge_id, created) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_delete('/edge/command/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(edge_id) + '/' + encodeURIComponent(created),
+            (response) => {
+                _getEdgeDeviceCommands(organisation_id, edge_id, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
     },
 

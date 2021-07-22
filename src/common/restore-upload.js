@@ -8,7 +8,6 @@ const styles = {
         // border: '1px solid lightgray',
         padding: '1px',
         marginLeft: '10px',
-        background: 'white',
         fontWeight: 700,
         fontSize: '10pt',
         cursor: 'pointer',
@@ -23,7 +22,6 @@ const styles = {
         float: 'left',
         marginRight: '20px',
         paddingTop: '10px',
-        color: '#888',
         cursor: 'pointer',
     },
     restoreImage: {

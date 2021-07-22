@@ -1,19 +1,9 @@
 import React from 'react';
 
-import Button from '@material-ui/core/Button';
 import KeyboardVoiceIcon from '@material-ui/icons/KeyboardVoice';
 import FreeBreakfastIcon from '@material-ui/icons/FreeBreakfast';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
-
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import SimSageIcon from '@material-ui/icons/Adb';
-import PersonIcon from '@material-ui/icons/Person';
 
 import TextField from "@material-ui/core/TextField";
 import OperatorTeach from "./operator-teach";
@@ -26,23 +16,13 @@ import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
 const styles = {
-    buttonsTop: {
-        marginTop: '10px',
-    },
     topButton: {
         marginLeft: '10px',
-    },
-    closeButton: {
-        marginTop: '-35px',
-        marginRight: '30px',
-        height: '20px',
-        float: 'right',
-        cursor: 'pointer',
     },
     conversations: {
         marginTop: '10px',
         backgroundColor: '#fafafa',
-        width: '900px',
+        width: '75vw',
         height: '500px',
         borderRadius: '10px',
         overflowY: 'auto',
@@ -76,12 +56,14 @@ const styles = {
 
 
 export class Operator extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
             operator_reply: '', // operator text
             last_time: 0,
         };
+        this.messagesEndRef = React.createRef();
     }
     componentDidMount() {
         window.setInterval(() => this.checkClientTyping(), 1000);
@@ -91,9 +73,7 @@ export class Operator extends React.Component {
         this.props.setError(error, info);
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.listRef) {
-            this.listRef.scrollTop = this.listRef.scrollHeight;
-        }
+        this.scrollToBottom();
     }
     readyForChat() {
         const data = {
@@ -237,29 +217,39 @@ export class Operator extends React.Component {
         this.props.clearPreviousAnswer(this.state.operator.id);
     }
     getAvatarStyle(item) {
+        const theme = this.props.theme;
+        var add_text = "";
+        if (theme !== 'light') {
+            add_text = "-dark";
+        }
         if (item.is_simsage) {
             if (item.id === this.props.operator.answer_id || item.used) {
-                return styles.simSageIconSelected;
+                return "operator-text-box-selected" + add_text;
             } else {
-                return styles.simSageIcon;
+                return "operator-text-box" + add_text;
             }
         } else {
             if (item.id === this.props.operator.question_id || item.used) {
-                return styles.personIconSelected;
+                return "user-text-selected" + add_text;
             } else {
-                return styles.personIcon;
+                return "user-text" + add_text;
             }
         }
+    }
+    scrollToBottom = () => {
+        this.messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
     render() {
         const isOperator = Home.hasRole(this.props.user, ['operator']);
         const active = this.props.operator.operator_ready && this.props.operator_connected && isOperator;
         const isReady = this.props.operator.operator_ready || !this.props.operator_connected;
         const has_user = this.props.operator.client_id && this.props.operator.client_id.length > 0;
+        const operatorButtonStyle = this.props.theme === 'light' ? "operator-buttons-top" : "operator-buttons-top-dark";
         return (
             <div>
                 <OperatorTeach
                     open={this.props.operator.question_id !== '' && this.props.operator.answer_id !== ''}
+                    theme={this.props.theme}
                     question={this.props.operator.question}
                     onSave={(teach, links) => this.teachSimSage(teach, links)}
                     answer={this.props.operator.answer}
@@ -267,41 +257,40 @@ export class Operator extends React.Component {
 
                 <OperatorPreviousAnswer
                     open={this.props.operator.current_question !== '' && this.props.operator.prev_answer !== ''}
+                    theme={this.props.theme}
                     question={this.props.operator.current_question}
                     onSave={(use) => this.usePreviousQuestion(use)}
                     answer={this.props.operator.prev_answer}
                 />
 
-                <div style={styles.buttonsTop}>
-                    <Button variant="contained" style={styles.topButton} disabled={isReady}
-                            color="secondary" title="Signal that you are ready to go and converse with customers."
+                <div className={operatorButtonStyle}>
+                    <button className="operator-button" disabled={isReady}
+                            title={isReady ? "Disabled, click 'Break' top stop any conversations." : "Signal that you are ready to go and converse with customers."}
                             onClick={() => this.readyForChat()}>
-                        <KeyboardVoiceIcon />
-                        Ready
-                    </Button>
+                        <KeyboardVoiceIcon className="operator-button-icon" />
+                        <span className="operator-button-text">Ready</span>
+                    </button>
 
-                    <Button variant="contained" style={styles.topButton} disabled={!active}
-                            color="secondary" title="take a break, stop participating in conversations while you have a break."
+                    <button className="operator-button" disabled={!active}
+                            title={!active ? "Disabled, click Ready before you take a break." : "take a break, stop participating in conversations while you have a break."}
                             onClick={() => this.takeBreak()}>
-                        <FreeBreakfastIcon />
-                        Break
-                    </Button>
+                        <FreeBreakfastIcon className="operator-button-icon" />
+                        <span className="operator-button-text">Break</span>
+                    </button>
 
-                    <Button variant="contained" style={styles.topButton} disabled={!has_user}
-                            color="secondary" title="We have finished the current conversation and are ready for a next one."
-                            onClick={() => this.nextUser()}>
-                        <SupervisedUserCircleIcon />
-                        Next User
-                    </Button>
-
-                    <Button variant="contained" style={styles.topButton} disabled={!has_user}
-                            color="secondary" title="The current conversation is abusive or bad spirited, ban this user from the system."
+                    <button className="operator-button operator-button-margin-left" disabled={!has_user}
+                            title={!has_user ? "Disabled, you aren't currently connected to any user." : "The current conversation is abusive or bad spirited, ban this user from the system."}
                             onClick={() => this.banUserConfirm()}>
-                        <PersonAddDisabledIcon />
-                        Ban User
-                    </Button>
+                        <PersonAddDisabledIcon className="operator-button-icon" />
+                        <span className="operator-button-text">Ban User</span>
+                    </button>
 
-                    <div style={styles.kbName}>clients connected: <b>{this.props.num_active_connections}</b></div>
+                    <button className="operator-button operator-button-margin-left" disabled={!has_user}
+                            title={!has_user ? "Disabled, you aren't currently connected to any users." : "We have finished the current conversation and are ready for a next one."}
+                            onClick={() => this.nextUser()}>
+                        <SupervisedUserCircleIcon className="operator-button-icon" />
+                        <span className="operator-button-text">End Chat</span>
+                    </button>
 
                     {
                         this.props.operator.client_kb_name && this.props.operator.client_kb_name.length > 0 &&
@@ -311,48 +300,32 @@ export class Operator extends React.Component {
 
                 </div>
 
-                {
-                    !this.props.isFirst &&
-                    <div style={styles.closeButton}
-                         title="Remove this operator"
-                         onClick={() => { this.takeBreak(); this.props.onCloseTab(); this.props.removeOperator(this.props.operator.id); }}>x</div>
-                }
-
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
+                <div className="operator-conversation-area">
+                    {this.props.operator.conversation_list.map((item) => {
+                        return (
+                            <div key={item.id} className={item.is_simsage ? "operator-box" : "user-box"} onClick={() => {if (active) this.selectForLearn(item)}}>
+                                <div className={item.is_simsage ? "operator-line" : "user-line"}>
+                                    <span className="user-label">{item.is_simsage ? "You" : "User"}</span>
+                                    <span className="hyphen">-</span>
+                                    <span className="time">{Api.unixTimeConvert(item.created)}</span>
+                                </div>
+                                <div className={this.getAvatarStyle(item)}>{item.primary}</div>
+                            </div>
+                        )
+                    })}
+                    {this.props.operator.is_typing &&
                         <div>
-                            <List style={styles.conversations} dense={true} ref={ (list) => { this.listRef = list }}>
-                                {this.props.operator.conversation_list.map((item) => {
-                                    return (
-                                        <ListItem key={item.id} onClick={() => {if (active) this.selectForLearn(item)}}>
-                                            <ListItemAvatar>
-                                                <Avatar style={styles.avatarBackground}>
-                                                    { item.is_simsage && <SimSageIcon style={this.getAvatarStyle(item)} /> }
-                                                    { !item.is_simsage && <PersonIcon style={this.getAvatarStyle(item)}/> }
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText
-                                                primary={item.primary}
-                                                secondary={item.secondary}
-                                            />
-                                        </ListItem>
-                                    )
-                                }
-                                )}
-                                {this.props.operator.is_typing &&
-                                    <ListItem>
-                                        <img src="../images/dots.gif" style={styles.typingDots} alt="typing" />
-                                    </ListItem>
-                                }
-                            </List>
+                        <img src="../images/dots.gif" style={styles.typingDots} alt="typing" />
                         </div>
-                    </Grid>
-                </Grid>
+                    }
+                    <div ref={this.messagesEndRef} />
+                </div>
 
-                <Grid container spacing={1}>
-                    <Grid item xs={1} />
-                    <Grid item xs={9}>
+                <div className="operator-reply-area">
+                    <span className="operator-reply-text-box">
                         <TextField
+                            title={!has_user ? "Disabled, you aren't in a chat with a user." : "Type your reply and press enter, or click the 'Reply' button."}
+                            className="operator-reply-text"
                             onChange={(event) => this.setState({operator_reply: event.target.value})}
                             disabled={!has_user}
                             onKeyPress={(event) => {
@@ -362,19 +335,17 @@ export class Operator extends React.Component {
                                 this.isTyping();
                             }}
                             label="your reply"
-                            fullWidth={true}
                             value={this.state.operator_reply}
                         />
-                    </Grid>
-                    <Grid item xs={2} style={{marginTop: '12px'}}>
-                        <Button variant="outlined"
-                                disabled={!has_user}
-                                color="secondary"
+                    </span>
+                    <span className="operator-reply-button-box">
+                        <button disabled={!has_user} className="operator-button"
+                                title={!has_user ? "Disabled, you aren't in a chat with a user." : "Send the text you've typed to the user (or press enter in the reply field)."}
                                 onClick={() => this.operatorReply(this.state.operator_reply)}>
                             Reply
-                        </Button>
-                    </Grid>
-                </Grid>
+                        </button>
+                    </span>
+                </div>
 
             </div>
         )
@@ -385,6 +356,7 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
 
         session: state.appReducer.session,
         user: state.appReducer.user,
@@ -393,7 +365,7 @@ const mapStateToProps = function(state) {
         num_active_connections: state.appReducer.num_active_connections,
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
-    };
+    }
 };
 
 export default connect(

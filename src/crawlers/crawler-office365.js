@@ -56,6 +56,8 @@ export class CrawlerOffice365 extends Component {
             crawlExchange: Api.defined(props.crawlExchange) ? props.crawlExchange : false,
             crawlAllOfExchange: Api.defined(props.crawlAllOfExchange) ? props.crawlAllOfExchange : false,
             exchangeUsersToCrawl: props.exchangeUsersToCrawl ? props.exchangeUsersToCrawl : '',
+
+            specific_json: props.specific_json,
         };
 
     }
@@ -70,9 +72,9 @@ export class CrawlerOffice365 extends Component {
     UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
-            this.setState(this.construct_data({tenantId: nextProps.tenantId,
+            this.setState(this.construct_data({
+                tenantId: nextProps.tenantId,
                 clientId: nextProps.clientId,
-                db_password: nextProps.db_password,
                 clientSecret: nextProps.clientSecret,
                 redirectUrl: nextProps.redirectUrl,
 
@@ -88,6 +90,8 @@ export class CrawlerOffice365 extends Component {
                 crawlAllOfExchange: nextProps.crawlAllOfExchange,
                 exchangeUsersToCrawl: nextProps.exchangeUsersToCrawl,
 
+                specific_json: nextProps.specific_json,
+
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
             }));
@@ -95,22 +99,24 @@ export class CrawlerOffice365 extends Component {
     }
     construct_data(data) {
         return {
-            tenantId: data.tenantId ? data.tenantId : this.state.tenantId,
-            clientId: data.clientId ? data.clientId : this.state.clientId,
-            clientSecret: data.clientSecret ? data.clientSecret : this.state.clientSecret,
-            redirectUrl: data.redirectUrl ? data.redirectUrl : this.state.redirectUrl,
+            ...this.state.specific_json,
+
+            tenantId: Api.defined(data.tenantId) ? data.tenantId : this.state.tenantId,
+            clientId: Api.defined(data.clientId) ? data.clientId : this.state.clientId,
+            clientSecret: Api.defined(data.clientSecret) ? data.clientSecret : this.state.clientSecret,
+            redirectUrl: Api.defined(data.redirectUrl) ? data.redirectUrl : this.state.redirectUrl,
 
             crawlOneDrive: Api.defined(data.crawlOneDrive) ? data.crawlOneDrive : this.state.crawlOneDrive,
             crawlAllOfOneDrive: Api.defined(data.crawlAllOfOneDrive) ? data.crawlAllOfOneDrive : this.state.crawlAllOfOneDrive,
-            oneDriveUsersToCrawl: data.oneDriveUsersToCrawl ? data.oneDriveUsersToCrawl : this.state.oneDriveUsersToCrawl,
+            oneDriveUsersToCrawl: Api.defined(data.oneDriveUsersToCrawl) ? data.oneDriveUsersToCrawl : this.state.oneDriveUsersToCrawl,
 
             crawlSharePoint: Api.defined(data.crawlSharePoint) ? data.crawlSharePoint : this.state.crawlSharePoint,
             crawlRootSite: Api.defined(data.crawlRootSite) ? data.crawlRootSite : this.state.crawlRootSite,
-            sharePointSitesToCrawl: data.sharePointSitesToCrawl ? data.sharePointSitesToCrawl : this.state.sharePointSitesToCrawl,
+            sharePointSitesToCrawl: Api.defined(data.sharePointSitesToCrawl) ? data.sharePointSitesToCrawl : this.state.sharePointSitesToCrawl,
 
             crawlExchange: Api.defined(data.crawlExchange) ? data.crawlExchange : this.state.crawlExchange,
             crawlAllOfExchange: Api.defined(data.crawlAllOfExchange) ? data.crawlAllOfExchange : this.state.crawlAllOfExchange,
-            exchangeUsersToCrawl: data.exchangeUsersToCrawl ? data.exchangeUsersToCrawl : this.state.exchangeUsersToCrawl,
+            exchangeUsersToCrawl: Api.defined(data.exchangeUsersToCrawl) ? data.exchangeUsersToCrawl : this.state.exchangeUsersToCrawl,
         };
     }
     change_callback(data) {

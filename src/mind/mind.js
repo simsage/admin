@@ -24,6 +24,17 @@ const styles = {
         minWidth: '900px',
         width: '900px',
     },
+    tableLight: {
+    },
+    text: {
+        border: '1px solid #808080',
+        borderRadius: '4px',
+        padding: '4px',
+        width: '280px',
+    },
+    tableDark: {
+        background: '#d0d0d0',
+    },
     smallTableHeaderStyle: {
         background: '#555',
         fontSize: '0.95em',
@@ -113,10 +124,6 @@ const styles = {
     },
     searchFloatLeft: {
         float: 'left',
-    },
-    text: {
-        padding: '4px',
-        width: '280px',
     },
     floatLeft: {
         float: 'left',
@@ -242,9 +249,11 @@ export class Mind extends React.Component {
             this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
     }
     render() {
+        const theme = this.props.theme;
         return (
             <div>
                <MindEdit open={this.state.mind_edit}
+                         theme={theme}
                          mindItem={this.state.mind_item}
                          onSave={(item) => this.save(item)}
                          onError={(err) => this.props.setError("Error", err)} />
@@ -255,7 +264,7 @@ export class Mind extends React.Component {
                     <div style={styles.findBox}>
                         <div style={styles.floatLeftLabel}>find items in the mind</div>
                         <div style={styles.searchFloatLeft}>
-                            <input type="text" value={this.props.mind_item_filter} autoFocus={true} style={styles.text}
+                            <input type="text" value={this.props.mind_item_filter} autoFocus={true} style={styles.text} className={theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setMindItemFilter(event.target.value)
@@ -277,12 +286,12 @@ export class Mind extends React.Component {
                         <Table style={styles.tableStyle}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell style={styles.smallTableHeaderStyle}>id</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>expression</TableCell>
-                                    <TableCell style={styles.actionTableHeaderStyle}>actions</TableCell>
+                                    <TableCell className='table-header'>id</TableCell>
+                                    <TableCell className='table-header'>expression</TableCell>
+                                    <TableCell className='table-header'>actions</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                                 {
                                     this.getMindItemList().map((mindItem) => {
                                         return (
@@ -317,7 +326,7 @@ export class Mind extends React.Component {
                                         }
                                         {this.props.selected_knowledgebase_id.length > 0 &&
                                             <div style={styles.export}>
-                                                <Button color="primary" variant="outlined" style={styles.exportButton}
+                                                <Button variant="contained" color="secondary" style={styles.exportButton}
                                                         onClick={() => this.mindDump()}>Export</Button>
 
                                             </div>
@@ -338,6 +347,7 @@ export class Mind extends React.Component {
                         </Table>
 
                         <TablePagination
+                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
                             count={this.props.num_mind_items}
@@ -365,6 +375,7 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
 
         mind_item_list: state.appReducer.mind_item_list,
         mind_item_filter: state.appReducer.mind_item_filter,

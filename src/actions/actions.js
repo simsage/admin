@@ -2,6 +2,8 @@
 export const SIGN_IN = "sign in";
 export const SIGN_OUT = "sign out";
 
+export const SET_THEME = "set theme";
+
 export const PASSWORD_RESET_REQUEST = "password reset request";
 export const RESET_PASSWORD = "reset password";
 
@@ -9,7 +11,7 @@ export const SET_USER_LIST = "set user list";
 export const UPDATE_USER = "update user";
 export const SET_USER_FILTER = "set user filter";
 
-export const GET_ORGANISATION_LIST = "get organisation list";
+export const SET_ORGANISATION_LIST = "get organisation list";
 export const SELECT_ORGANISATION = "select organisation";
 export const UPDATE_ORGANISATION = "update organisation";
 export const SET_ORGANISATION_FILTER = "set organisation filter";
@@ -17,6 +19,7 @@ export const RESET_SELECTED_KB = "reset selected kb";
 
 export const GET_KNOWLEDGE_BASES = "get knowledge bases";
 export const SELECT_KNOWLEDGE_BASE = "selected knowledge base";
+export const SELECT_EDGE_DEVICE = "select edge device";
 export const GET_INVENTORIZE_LIST = "get inventorize list";
 export const GET_INVENTORIZE_BUSY = "get inventorize busy";
 
@@ -104,3 +107,12 @@ export const MAX_OPERATORS = 5;
 export const GET_HTML5_NOTIFICATIONS = "get html5 notifications";
 
 export const SET_LOG_LIST = "set log list";
+export const SET_LOG_DATE = "set log date";
+export const SET_LOG_HOURS = "set log hours";
+export const SET_LOG_TYPE = "set log type";
+export const SET_LOG_SERVICE = "set log service";
+export const SET_LOG_REFRESH = "set log refresh";
+
+// edge
+export const GET_EDGE_DEVICES = "get edge devices";
+export const GET_EDGE_DEVICE_COMMANDS = "get edge device commands";

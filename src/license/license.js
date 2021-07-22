@@ -108,7 +108,7 @@ export class License extends React.Component {
                 </div>
 
                 <div style={styles.downloadButton}>
-                    <Button variant="outlined" onClick={() => this.installLicense()}>install license</Button>
+                    <Button variant="contained" onClick={() => this.installLicense()}>install license</Button>
                 </div>
 
             </div>

@@ -15,10 +15,16 @@ import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
 
+
 const styles = {
     tableStyle: {
         minWidth: '900px',
         width: '900px',
+    },
+    tableLight: {
+    },
+    tableDark: {
+        background: '#d0d0d0',
     },
     smallTableHeaderStyle: {
         background: '#555',
@@ -105,6 +111,8 @@ const styles = {
         float: 'left',
     },
     text: {
+        border: '1px solid #808080',
+        borderRadius: '4px',
         padding: '4px',
         width: '280px',
     },
@@ -227,12 +235,14 @@ export class Semantics extends React.Component {
             this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
     }
     render() {
+        const theme = this.props.theme;
         return (
             <div>
                 <SemanticEdit open={this.state.semantic_edit}
-                             semantic={this.state.semantic}
-                             onSave={(item) => this.save(item)}
-                             onError={(err) => this.props.setError("Error", err)} />
+                              theme={theme}
+                              semantic={this.state.semantic}
+                              onSave={(item) => this.save(item)}
+                              onError={(err) => this.props.setError("Error", err)} />
 
                 {
                     this.isVisible() &&
@@ -240,7 +250,7 @@ export class Semantics extends React.Component {
                     <div style={styles.findBox}>
                         <div style={styles.floatLeftLabel}>find semantics</div>
                         <div style={styles.searchFloatLeft}>
-                            <input type="text" value={this.props.semantic_filter} autoFocus={true} style={styles.text}
+                            <input type="text" value={this.props.semantic_filter} autoFocus={true} style={styles.text} className={theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setSemanticFilter(event.target.value);
@@ -262,12 +272,12 @@ export class Semantics extends React.Component {
                         <Table style={styles.tableStyle}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell style={styles.smallTableHeaderStyle}>word</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>semantic</TableCell>
-                                    <TableCell style={styles.actionTableHeaderStyle}>actions</TableCell>
+                                    <TableCell className='table-header'>word</TableCell>
+                                    <TableCell className='table-header'>semantic</TableCell>
+                                    <TableCell className='table-header'>actions</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                                 {
                                     this.getSemanticList().map((semantic) => {
                                         return (
@@ -305,6 +315,7 @@ export class Semantics extends React.Component {
                         </Table>
 
                         <TablePagination
+                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
                             count={this.props.num_semantics}
@@ -332,6 +343,7 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
 
         semantic_list: state.appReducer.semantic_list,
         semantic_filter: state.appReducer.semantic_filter,

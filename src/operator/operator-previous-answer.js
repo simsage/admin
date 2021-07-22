@@ -50,6 +50,7 @@ export class OperatorPreviousAnswer extends Component {
         if (this.state.has_error) {
             return <h1>operator-previous-answer.js: Something went wrong.</h1>;
         }
+        const theme = this.props.theme;
         return (
             <Dialog aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
@@ -60,8 +61,8 @@ export class OperatorPreviousAnswer extends Component {
                     maxWidth="lg"
                     onClose={() => this.handleCancel()} >
 
-                <DialogTitle id="alert-dialog-title">Use Previous Answer?</DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title" className={theme}>Use Previous Answer?</DialogTitle>
+                <DialogContent className={theme}>
                     <Grid container spacing={1}>
 
                         <Grid item xs={1} />
@@ -82,9 +83,9 @@ export class OperatorPreviousAnswer extends Component {
 
                     </Grid>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={theme}>
                     <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="outlined" color="secondary" onClick={() => this.handleSave()}>Use this Answer</Button>
+                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Use this Answer</Button>
                 </DialogActions>
             </Dialog>
         );

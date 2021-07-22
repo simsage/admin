@@ -40,15 +40,18 @@ export class CrawlerDatabase extends Component {
             onError: props.onError,
 
             // database specific
-            db_username: props.db_username ? props.db_username : '',
-            db_password: props.db_password ? props.db_password : '',
-            db_jdbc: props.db_jdbc ? props.db_jdbc : '',
-            db_type: Api.defined(props.db_type) ? props.db_type : 'none',
-            db_query: props.db_query ? props.db_query : '',
-            db_pk: props.db_pk ? props.db_pk : '',
-            db_template: props.db_template ? props.db_template : '',
-            db_text: props.db_text ? props.db_text : '',
-            metadata_list: props.metadata_list ? props.metadata_list : [],
+            username: props.username ? props.username : '',
+            password: props.password ? props.password : '',
+            jdbc: props.jdbc ? props.jdbc : '',
+            type: Api.defined(props.type) ? props.type : 'none',
+            query: props.query ? props.query : '',
+            pk: props.pk ? props.pk : '',
+            template: props.template ? props.template : '',
+            text: props.text ? props.text : '',
+            content_url: props.content_url ? props.content_url : '',
+            customRender: props.customRender,
+
+            specific_json: props.specific_json,
         };
 
     }
@@ -63,16 +66,19 @@ export class CrawlerDatabase extends Component {
     UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
-            this.setState(this.construct_data({file_username: nextProps.file_username,
-                db_username: nextProps.db_username,
-                db_password: nextProps.db_password,
-                db_jdbc: nextProps.db_jdbc,
-                db_type: Api.defined(nextProps.db_type) ? nextProps.db_type : 'none',
-                db_query: nextProps.db_query,
-                db_pk: nextProps.db_pk,
-                db_template: nextProps.db_template,
-                db_text: nextProps.db_text,
-                metadata_list: nextProps.metadata_list,
+            this.setState(this.construct_data({
+                username: nextProps.username,
+                password: nextProps.password,
+                jdbc: nextProps.jdbc,
+                type: Api.defined(nextProps.type) ? nextProps.type : 'none',
+                query: nextProps.query,
+                pk: nextProps.pk,
+                template: nextProps.template,
+                text: nextProps.text,
+                content_url: nextProps.content_url,
+                customRender: nextProps.customRender,
+
+                specific_json: nextProps.specific_json,
 
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
@@ -80,15 +86,17 @@ export class CrawlerDatabase extends Component {
         }
     }
     construct_data(data) {
-        return {db_username: Api.defined(data.db_username) ? data.db_username : this.state.db_username,
-            db_password: Api.defined(data.db_password) ? data.db_password : this.state.db_password,
-            db_jdbc: Api.defined(data.db_jdbc) ? data.db_jdbc : this.state.db_jdbc,
-            db_type: Api.defined(data.db_type) ? data.db_type : this.state.db_type,
-            db_query: Api.defined(data.db_query) ? data.db_query : this.state.db_query,
-            db_pk: Api.defined(data.db_pk) ? data.db_pk : this.state.db_pk,
-            db_template: Api.defined(data.db_template) ? data.db_template : this.state.db_template,
-            db_text: Api.defined(data.db_text) ? data.db_text : this.state.db_text,
-            metadata_list: Api.defined(data.metadata_list) ? data.metadata_list : this.state.metadata_list,
+        return {
+            ...this.state.specific_json,
+            username: Api.defined(data.username) ? data.username : this.state.username,
+            password: Api.defined(data.password) ? data.password : this.state.password,
+            jdbc: Api.defined(data.jdbc) ? data.jdbc : this.state.jdbc,
+            type: Api.defined(data.type) ? data.type : this.state.type,
+            query: Api.defined(data.query) ? data.query : this.state.query,
+            pk: Api.defined(data.pk) ? data.pk : this.state.pk,
+            template: Api.defined(data.template) ? data.template : this.state.template,
+            text: Api.defined(data.text) ? data.text : this.state.text,
+            content_url: Api.defined(data.content_url) ? data.content_url : this.state.content_url,
         };
     }
     change_callback(data) {
@@ -112,8 +120,8 @@ export class CrawlerDatabase extends Component {
                             placeholder="the user name for accessing this database"
                             label="user name"
                             variant="outlined"
-                            value={this.state.db_username}
-                            onChange={(event) => {this.change_callback({db_username: event.target.value})}}
+                            value={this.state.username}
+                            onChange={(event) => {this.change_callback({username: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>
@@ -123,8 +131,8 @@ export class CrawlerDatabase extends Component {
                             label="password (enter a value to change it)"
                             type="password"
                             variant="outlined"
-                            value={this.state.db_password}
-                            onChange={(event) => {this.change_callback({db_password: event.target.value})}}
+                            value={this.state.password}
+                            onChange={(event) => {this.change_callback({password: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>
@@ -136,8 +144,8 @@ export class CrawlerDatabase extends Component {
                             placeholder="jdbc connection string, e.g. jdbc:microsoft:sqlserver://HOST:1433;DatabaseName=DATABASE"
                             label="jdbc connection string"
                             variant="outlined"
-                            value={this.state.db_jdbc}
-                            onChange={(event) => {this.change_callback({db_jdbc: event.target.value})}}
+                            value={this.state.jdbc}
+                            onChange={(event) => {this.change_callback({jdbc: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>
@@ -149,9 +157,10 @@ export class CrawlerDatabase extends Component {
                     </Grid>
                     <Grid item xs={3}>
                         <Select
-                            value={this.state.db_type}
+                            disableUnderline
+                            value={this.state.type}
                             style={styles.fieldWidth}
-                            onChange={(event) => {this.change_callback({db_type: event.target.value})}}>
+                            onChange={(event) => {this.change_callback({type: event.target.value})}}>
                             {
                                 type_list.map((value) => {
                                     return (<MenuItem key={value.key} value={value.key}>{value.value}</MenuItem>)
@@ -165,8 +174,8 @@ export class CrawlerDatabase extends Component {
                             placeholder="the name of the primary key field for this SELECT"
                             label="primary key name"
                             variant="outlined"
-                            value={this.state.db_pk}
-                            onChange={(event) => {this.change_callback({db_pk: event.target.value})}}
+                            value={this.state.pk}
+                            onChange={(event) => {this.change_callback({pk: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>
@@ -180,8 +189,23 @@ export class CrawlerDatabase extends Component {
                             variant="outlined"
                             multiline={true}
                             rows={3}
-                            value={this.state.db_query}
-                            onChange={(event) => {this.change_callback({db_query: event.target.value})}}
+                            value={this.state.query}
+                            onChange={(event) => {this.change_callback({query: event.target.value})}}
+                            style={styles.fieldWidth}
+                        />
+                    </Grid>
+                    <Grid item xs={1} />
+
+                    <Grid item xs={1} />
+                    <Grid item xs={10}>
+                        <TextField
+                            placeholder="document http/https reference SQL fields in square brackets [FIELD-NAME]"
+                            label="document http/https reference (non custom-renders)"
+                            variant="outlined"
+                            multiline={false}
+                            disabled={this.state.customRender}
+                            value={this.state.content_url}
+                            onChange={(event) => {this.change_callback({content_url: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>
@@ -191,12 +215,13 @@ export class CrawlerDatabase extends Component {
                     <Grid item xs={10}>
                         <TextField
                             placeholder="sql text index template, an text template referencing SQL fields in square brackets [FIELD-NAME]"
-                            label="sql text index template"
+                            label="sql text index template (custom-render only)"
                             variant="outlined"
                             multiline={true}
+                            disabled={!this.state.customRender}
                             rows={7}
-                            value={this.state.db_text}
-                            onChange={(event) => {this.change_callback({db_text: event.target.value})}}
+                            value={this.state.text}
+                            onChange={(event) => {this.change_callback({text: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>
@@ -206,12 +231,13 @@ export class CrawlerDatabase extends Component {
                     <Grid item xs={10}>
                         <TextField
                             placeholder="sql html render template, an html template referencing SQL fields in square brackets [FIELD-NAME]"
-                            label="sql html render template"
+                            label="sql html render template (custom-render only)"
                             variant="outlined"
                             multiline={true}
+                            disabled={!this.state.customRender}
                             rows={7}
-                            value={this.state.db_template}
-                            onChange={(event) => {this.change_callback({db_template: event.target.value})}}
+                            value={this.state.template}
+                            onChange={(event) => {this.change_callback({template: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>

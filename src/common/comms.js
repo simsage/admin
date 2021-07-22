@@ -68,6 +68,26 @@ export class Comms {
             });
     };
 
+    static http_delete(url, fn_success, fn_fail) {
+        const api_base = window.ENV.api_base;
+        console.log('DELETE ' + api_base + url);
+        axios.delete(api_base + url, Comms.getHeaders())
+            .then(function (response) {
+                if (fn_success) {
+                    fn_success(response);
+                }
+            })
+            .catch(function (error) {
+                if (fn_fail) {
+                    if (error === undefined || error.response === undefined) {
+                        fn_fail('Servers not responding or cannot contact Servers');
+                    } else {
+                        fn_fail(Comms.get_error(error));
+                    }
+                }
+            });
+    };
+
     // get a url that can be used to backup the system, regime e {all (backup all orgs), specific (backup specified org)}
     static get_backup_url(organisation_id, regime) {
         let session = Comms.getSession();
@@ -127,26 +147,6 @@ export class Comms {
             encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
     };
 
-    static http_delete(url, fn_success, fn_fail) {
-        const api_base = window.ENV.api_base;
-        console.log('DELETE ' + api_base + url);
-        axios.delete(api_base + url, Comms.getHeaders())
-            .then(function (response) {
-                if (fn_success) {
-                    fn_success(response);
-                }
-            })
-            .catch(function (error) {
-                if (fn_fail) {
-                    if (error.response === undefined) {
-                        fn_fail('Servers not responding or cannot contact Servers');
-                    } else {
-                        fn_fail(Comms.get_error(error));
-                    }
-                }
-            });
-    };
-
     static toUrl(str) {
         return window.ENV.api_base + str;
     }
@@ -180,7 +180,7 @@ export class Comms {
 
     static getSession() {
         const state = loadState();
-        if (state && state.appReducer && state.appReducer.session) {
+        if (state && state.appReducer && state.appReducer.session && state.appReducer.session.id) {
             return state.appReducer.session;
         }
         return null;

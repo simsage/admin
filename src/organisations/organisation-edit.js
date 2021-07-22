@@ -30,7 +30,8 @@ export class OrganisationEdit extends Component {
     }
     handleSave() {
         if (this.state.onSave) {
-            this.state.onSave({id: this.state.id,
+            this.state.onSave({
+                id: this.state.id,
                 name: this.state.name,
                 enabled: this.state.enabled,
             });
@@ -49,38 +50,32 @@ export class OrganisationEdit extends Component {
 
             id: props.id,
             name: props.name,
-            max_tpm: props.max_tpm,
-            analytics_window_size_in_months: props.analytics_window_size_in_months,
             enabled: props.enabled,
-            bot_enabled: props.bot_enabled,
-            analytics_enabled: props.analytics_enabled,
-            operator_enabled: props.operator_enabled,
-            language_enabled: props.language_enabled,
         })
     }
     render() {
         if (this.state.has_error) {
             return <h1>organisation-edit.js: Something went wrong.</h1>;
         }
+        const theme = this.props.theme;
         return (
             <Dialog aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                     disableBackdropClick={true}
                     disableEscapeKeyDown={true}
                     open={this.state.open}
-                    fullWidth={true}
                     maxWidth="lg"
                     onClose={() => this.handleCancel()} >
 
-                <DialogTitle id="alert-dialog-title">Edit Organisation</DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title" className={theme}>Edit Organisation</DialogTitle>
+                <DialogContent className={theme}>
                     <Grid container spacing={2}>
 
                         <Grid item xs={1} />
-                        <Grid item xs={3}>
-                            <div>organisation's name</div>
+                        <Grid item xs={2}>
+                            <div>name</div>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={7}>
                             <TextField
                                 autoFocus={true}
                                 onChange={(event) => this.setState({name: event.target.value})}
@@ -110,9 +105,9 @@ export class OrganisationEdit extends Component {
 
                     </Grid>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={theme}>
                     <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="outlined" color="secondary" onClick={() => this.handleSave()}>Save</Button>
+                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
                 </DialogActions>
             </Dialog>
         );

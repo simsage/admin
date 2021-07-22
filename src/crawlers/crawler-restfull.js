@@ -31,11 +31,14 @@ export class CrawlerRestFull extends Component {
             onError: props.onError,
 
             // database specific
-            rest_pk: props.rest_pk ? props.rest_pk : '',
-            rest_url: props.rest_url ? props.rest_url : '',
-            rest_template: props.rest_template ? props.rest_template : '',
-            rest_text: props.rest_text ? props.rest_text : '',
-            metadata_list: props.metadata_list ? props.metadata_list : [],
+            pk: props.pk ? props.pk : '',
+            url: props.url ? props.url : '',
+            template: props.template ? props.template : '',
+            text: props.text ? props.text : '',
+            content_url: props.content_url ? props.content_url : '',
+            customRender: props.customRender ? props.customRender : false,
+
+            specific_json: props.specific_json,
         };
 
     }
@@ -51,11 +54,14 @@ export class CrawlerRestFull extends Component {
         // see if we have data to start this dialog
         if (nextProps !== null) {
             this.setState(this.construct_data({
-                rest_pk: nextProps.rest_pk,
-                rest_url: nextProps.rest_url,
-                rest_template: nextProps.rest_template,
-                rest_text: nextProps.rest_text,
-                metadata_list: nextProps.metadata_list,
+                pk: nextProps.pk,
+                url: nextProps.url,
+                template: nextProps.template,
+                text: nextProps.text,
+                content_url: nextProps.content_url ? nextProps.content_url : '',
+                customRender: nextProps.customRender ? nextProps.customRender : false,
+
+                specific_json: nextProps.specific_json,
 
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
@@ -63,11 +69,13 @@ export class CrawlerRestFull extends Component {
         }
     }
     construct_data(data) {
-        return {rest_url: Api.defined(data.rest_url) ? data.rest_url : this.state.rest_url,
-            rest_template: Api.defined(data.rest_template) ? data.rest_template : this.state.rest_template,
-            rest_text: Api.defined(data.rest_text) ? data.rest_text : this.state.rest_text,
-            rest_pk: Api.defined(data.rest_pk) ? data.rest_pk : this.state.rest_pk,
-            metadata_list: Api.defined(data.metadata_list) ? data.metadata_list : this.state.metadata_list,
+        return {
+            ...this.state.specific_json,
+            url: Api.defined(data.url) ? data.url : this.state.url,
+            template: Api.defined(data.template) ? data.template : this.state.template,
+            text: Api.defined(data.text) ? data.text : this.state.text,
+            content_url: Api.defined(data.content_url) ? data.content_url : this.state.content_url,
+            pk: Api.defined(data.pk) ? data.pk : this.state.pk,
         };
     }
     change_callback(data) {
@@ -91,8 +99,8 @@ export class CrawlerRestFull extends Component {
                             placeholder="url"
                             label="url"
                             variant="outlined"
-                            value={this.state.rest_url}
-                            onChange={(event) => {this.change_callback({rest_url: event.target.value})}}
+                            value={this.state.url}
+                            onChange={(event) => {this.change_callback({url: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>
@@ -104,8 +112,8 @@ export class CrawlerRestFull extends Component {
                             placeholder="the name of the primary key in the record"
                             label="primary key name"
                             variant="outlined"
-                            value={this.state.rest_pk}
-                            onChange={(event) => {this.change_callback({rest_pk: event.target.value})}}
+                            value={this.state.pk}
+                            onChange={(event) => {this.change_callback({pk: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>
@@ -114,13 +122,29 @@ export class CrawlerRestFull extends Component {
                     <Grid item xs={1} />
                     <Grid item xs={10}>
                         <TextField
+                            placeholder="document http/https reference SQL fields in square brackets [FIELD-NAME]"
+                            label="document http/https reference (non custom-renders)"
+                            variant="outlined"
+                            multiline={false}
+                            disabled={this.state.customRender}
+                            value={this.state.content_url}
+                            onChange={(event) => {this.change_callback({content_url: event.target.value})}}
+                            style={styles.fieldWidth}
+                        />
+                    </Grid>
+                    <Grid item xs={1} />
+
+                    <Grid item xs={1} />
+                    <Grid item xs={10}>
+                        <TextField
                             placeholder="REST text index template, an text template referencing REST fields in square brackets [FIELD-NAME]"
                             label="REST text index template"
                             variant="outlined"
+                            disabled={!this.state.customRender}
                             multiline={true}
                             rows={7}
-                            value={this.state.rest_text}
-                            onChange={(event) => {this.change_callback({rest_text: event.target.value})}}
+                            value={this.state.text}
+                            onChange={(event) => {this.change_callback({text: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>
@@ -132,10 +156,11 @@ export class CrawlerRestFull extends Component {
                             placeholder="REST html render template, an html template referencing REST fields in square brackets [FIELD-NAME]"
                             label="REST html render template"
                             variant="outlined"
+                            disabled={!this.state.customRender}
                             multiline={true}
                             rows={7}
-                            value={this.state.rest_template}
-                            onChange={(event) => {this.change_callback({rest_template: event.target.value})}}
+                            value={this.state.template}
+                            onChange={(event) => {this.change_callback({template: event.target.value})}}
                             style={styles.fieldWidth}
                         />
                     </Grid>

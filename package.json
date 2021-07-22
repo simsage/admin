@@ -1,8 +1,8 @@
 {
-  "name": "simsage",
-  "version": "5.4.1",
+  "name": "simsage-admin",
+  "version": "5.6.2",
   "private": true,
-  "description": "Simsage AI: more find, less search",
+  "description": "SimSage: search less; find more",
   "repository": "git@gitlab.com:peter3125/simsage.git",
   "homepage": "https://simsage.ai/",
   "main": "app.js",
@@ -44,7 +44,8 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
-    "typeface-roboto": "^0.0.75",
+    "styled-components": "^5.2.1",
+    "typeface-roboto": "0.0.75",
     "url-loader": "^4.1.0"
   },
   "eslintConfig": {

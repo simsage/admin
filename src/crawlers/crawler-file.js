@@ -10,7 +10,7 @@ const styles = {
     },
     textField: {
         marginRight: '10px',
-        width: '500px',
+        width: '670px',
     },
 };
 
@@ -25,12 +25,14 @@ export class CrawlerFile extends Component {
             onError: props.onError,
 
             // file specific
-            file_username: Api.defined(props.file_username) ? props.file_username : '',
-            file_password: Api.defined(props.file_password) ? props.file_password : '',
-            file_server: Api.defined(props.file_server) ? props.file_server : '',
-            file_domain: Api.defined(props.file_domain) ? props.file_domain : '',
-            file_share_name: Api.defined(props.file_share_name) ? props.file_share_name : '',
-            file_share_path: Api.defined(props.file_share_path) ? props.file_share_path : '',
+            username: Api.defined(props.username) ? props.username : '',
+            password: Api.defined(props.password) ? props.password : '',
+            server: Api.defined(props.server) ? props.server : '',
+            domain: Api.defined(props.domain) ? props.domain : '',
+            fqdn: Api.defined(props.fqdn) ? props.fqdn : '',
+            shareName: Api.defined(props.shareName) ? props.shareName : '',
+            sharePath: Api.defined(props.sharePath) ? props.sharePath : '',
+            specific_json: props.specific_json,
         };
 
     }
@@ -45,24 +47,29 @@ export class CrawlerFile extends Component {
     UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
-            this.setState(this.construct_data({file_username: nextProps.file_username,
-                file_password: nextProps.file_password,
-                file_domain: nextProps.file_domain,
-                file_server: nextProps.file_server,
-                file_share_name: nextProps.file_share_name,
-                file_share_path: nextProps.file_share_path,
+            this.setState(this.construct_data({username: nextProps.username,
+                password: nextProps.password,
+                domain: nextProps.domain,
+                fqdn: nextProps.fqdn,
+                server: nextProps.server,
+                shareName: nextProps.shareName,
+                sharePath: nextProps.sharePath,
+                specific_json: nextProps.specific_json,
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
             }));
         }
     }
     construct_data(data) {
-        return {file_username: Api.defined(data.file_username) ? data.file_username : this.state.file_username,
-            file_password: Api.defined(data.file_password) ? data.file_password : this.state.file_password,
-            file_domain: Api.defined(data.file_domain) ? data.file_domain : this.state.file_domain,
-            file_server: Api.defined(data.file_server) ? data.file_server : this.state.file_server,
-            file_share_name: Api.defined(data.file_share_name) ? data.file_share_name : this.state.file_share_name,
-            file_share_path: Api.defined(data.file_share_path) ? data.file_share_path : this.state.file_share_path,
+        return {
+            ...this.state.specific_json,
+            username: Api.defined(data.username) ? data.username : this.state.username,
+            password: Api.defined(data.password) ? data.password : this.state.password,
+            domain: Api.defined(data.domain) ? data.domain : this.state.domain,
+            fqdn: Api.defined(data.fqdn) ? data.fqdn : this.state.fqdn,
+            server: Api.defined(data.server) ? data.server : this.state.server,
+            shareName: Api.defined(data.shareName) ? data.shareName : this.state.shareName,
+            sharePath: Api.defined(data.sharePath) ? data.sharePath : this.state.sharePath,
         };
     }
     change_callback(data) {
@@ -80,8 +87,8 @@ export class CrawlerFile extends Component {
                 <TextField
                     placeholder="user name"
                     label="user name"
-                    value={this.state.file_username}
-                    onChange={(event) => {this.change_callback({file_username: event.target.value})}}
+                    value={this.state.username}
+                    onChange={(event) => {this.change_callback({username: event.target.value})}}
                     style={styles.textField}
                 />
                 <br />
@@ -91,18 +98,28 @@ export class CrawlerFile extends Component {
                     placeholder="password"
                     label="password"
                     type="password"
-                    value={this.state.file_password}
-                    onChange={(event) => {this.change_callback({file_password: event.target.value})}}
+                    value={this.state.password}
+                    onChange={(event) => {this.change_callback({password: event.target.value})}}
                     style={styles.textField}
                 />
                 <br />
                 <br />
 
                 <TextField
-                    placeholder="domain (leave blank for default or no domain)"
-                    label="domain"
-                    value={this.state.file_domain}
-                    onChange={(event) => {this.change_callback({file_domain: event.target.value})}}
+                    label="domain (leave blank for default or no domain)"
+                    placeholder="domain name"
+                    value={this.state.domain}
+                    onChange={(event) => {this.change_callback({domain: event.target.value})}}
+                    style={styles.textField}
+                />
+                <br />
+                <br />
+
+                <TextField
+                    label="Fully Qualified Domain Name"
+                    placeholder="e.g.  simsage.ai  (this will form your user's email addresses, eg. account-name@simsage.ai)"
+                    value={this.state.fqdn}
+                    onChange={(event) => {this.change_callback({fqdn: event.target.value})}}
                     style={styles.textField}
                 />
                 <br />
@@ -111,8 +128,8 @@ export class CrawlerFile extends Component {
                 <TextField
                     placeholder="server (hostname or ip-address)"
                     label="server"
-                    value={this.state.file_server}
-                    onChange={(event) => {this.change_callback({file_server: event.target.value})}}
+                    value={this.state.server}
+                    onChange={(event) => {this.change_callback({server: event.target.value})}}
                     style={styles.textField}
                 />
                 <br />
@@ -121,8 +138,8 @@ export class CrawlerFile extends Component {
                 <TextField
                     placeholder="share name"
                     label="share name"
-                    value={this.state.file_share_name}
-                    onChange={(event) => {this.change_callback({file_share_name: event.target.value})}}
+                    value={this.state.shareName}
+                    onChange={(event) => {this.change_callback({shareName: event.target.value})}}
                     style={styles.textField}
                 />
                 <br />
@@ -131,8 +148,8 @@ export class CrawlerFile extends Component {
                 <TextField
                     placeholder="path inside share (optional)"
                     label="path inside share"
-                    value={this.state.file_share_path}
-                    onChange={(event) => {this.change_callback({file_share_path: event.target.value})}}
+                    value={this.state.sharePath}
+                    onChange={(event) => {this.change_callback({sharePath: event.target.value})}}
                     style={styles.textField}
                 />
                 <br />

@@ -183,8 +183,8 @@ export class MindEdit extends Component {
                     maxWidth="lg"
                     onClose={() => this.handleCancel()} >
 
-                <DialogTitle id="alert-dialog-title">Edit Mind Item</DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title" className={this.props.theme}>Edit Mind Item</DialogTitle>
+                <DialogContent className={this.props.theme}>
                     <Grid container spacing={1}>
 
                         <Grid item xs={1} />
@@ -258,9 +258,9 @@ export class MindEdit extends Component {
 
                     </Grid>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={this.props.theme}>
                     <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="outlined" color="secondary" onClick={() => this.handleSave()}>Save</Button>
+                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
                 </DialogActions>
             </Dialog>
         );

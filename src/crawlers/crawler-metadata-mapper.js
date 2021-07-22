@@ -15,14 +15,16 @@ const metadata_list = [
     {"key": "image from binary-blob", "display": null, "field1": "binary-blob-image", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "image from base64", "display": null, "field1": "base64-image", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "image from url", "display": null, "field1": "url-image", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "category", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
+    {"key": "category", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "two level category", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "number range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "monetary x 100 range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "monetary range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "star rating", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "select if true", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "csv string", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
+    {"key": "select if true", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
+    {"key": "created date range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
+    {"key": "last modified date ranges", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
+    {"key": "csv string", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
 ];
 
 
@@ -30,6 +32,12 @@ const styles = {
     formContent: {
         marginTop: '20px',
         width: '98%',
+    },
+    text: {
+        border: '1px solid #808080',
+        borderRadius: '4px',
+        height: '32px',
+        padding: '4px',
     },
     instructionLabel: {
         fontSize: '10px',
@@ -127,6 +135,10 @@ const styles = {
         width: '24px',
     },
     dbFieldWidth: {
+        border: '1px solid #808080',
+        borderRadius: '4px',
+        height: '32px',
+        padding: '4px',
         width: '250px',
     },
     tdMetadataFieldName: {
@@ -153,7 +165,7 @@ export class CrawlerMetadataMapper extends Component {
             onError: props.onError,
 
             // metadata set
-            metadata_list: props.metadata_list ? props.metadata_list : [],
+            specificJson: props.specificJson ? props.specificJson : {},
         };
 
     }
@@ -165,41 +177,46 @@ export class CrawlerMetadataMapper extends Component {
         // see if we have data to start this dialog
         if (nextProps !== null) {
             this.setState(this.construct_data({
-                metadata_list: nextProps.metadata_list,
+                specificJson: nextProps.specificJson ? nextProps.specificJson : {},
 
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
             }));
         }
     }
-    construct_data(data) {
+    get_md_list() {
+        return this.state && this.state.specificJson && this.state.specificJson.metadata_list ?
+            this.state.specificJson.metadata_list : [];
+    }
+    construct_data(md_list) {
         return {
-            ...this.props.owner_data, metadata_list: Api.defined(data.metadata_list) ? data.metadata_list : this.state.metadata_list
+            ...this.props.specificJson, metadata_list: Api.defined(md_list) ? md_list : this.get_md_list()
         };
     }
     set_db(record, index, value) {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
             md_list[index].db1 = value;
-            this.setState({metadata_list: md_list});
+            this.setState({specificJson: this.construct_data(md_list)});
             if (this.state.onSave) {
-                this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+                this.state.onSave(this.construct_data(md_list));
             }
         }
     }
     set_db_extra(record, index, value) {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
             md_list[index].db2 = value;
-            this.setState({metadata_list: md_list});
+            this.setState({specificJson: this.construct_data(md_list)});
             if (this.state.onSave) {
-                this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+                this.state.onSave(this.construct_data(md_list));
             }
         }
     }
     set_md_type(record, index, value) {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
+            // find the right item type in the preset list of items
             let match_item = null;
             for (const item of metadata_list) {
                 if (item.key === value) {
@@ -209,55 +226,55 @@ export class CrawlerMetadataMapper extends Component {
             }
             if (match_item != null) {
                 md_list[index] = JSON.parse(JSON.stringify(match_item));
-                this.setState({metadata_list: md_list});
+                this.setState({specificJson: this.construct_data(md_list)});
                 if (this.state.onSave) {
-                    this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+                    this.state.onSave(this.construct_data(md_list));
                 }
             }
         }
     }
     setDisplayName(record, index, value) {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
             md_list[index].display = value;
-            this.setState({metadata_list: md_list});
+            this.setState({specificJson: this.construct_data(md_list)});
             if (this.state.onSave) {
-                this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+                this.state.onSave(this.construct_data(md_list));
             }
         }
     }
     setUserMetadataName1(record, index, value) {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
             md_list[index].field1 = value;
-            this.setState({metadata_list: md_list});
+            this.setState({specificJson: this.construct_data(md_list)});
             if (this.state.onSave) {
-                this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+                this.state.onSave(this.construct_data(md_list));
             }
         }
     }
     setSort(record, index, value) {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
             md_list[index].sort = value ? "true" : "false";
-            this.setState({metadata_list: md_list});
+            this.setState({specificJson: this.construct_data(md_list)});
             if (this.state.onSave) {
-                this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+                this.state.onSave(this.construct_data(md_list));
             }
         }
     }
     setValue(record, index, field_name, value) {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
             md_list[index][field_name] = value;
-            this.setState({metadata_list: md_list});
+            this.setState({specificJson: this.construct_data(md_list)});
             if (this.state.onSave) {
-                this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+                this.state.onSave(this.construct_data(md_list));
             }
         }
     }
     setDefaultSort(record, index, direction, value) {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
             md_list[index].sort_default = (value ? direction : "");
             for (const i in md_list) {
@@ -265,32 +282,32 @@ export class CrawlerMetadataMapper extends Component {
                     md_list[i].sort_default = "";
                 }
             }
-            this.setState({metadata_list: md_list});
+            this.setState({specificJson: this.construct_data(md_list)});
             if (this.state.onSave) {
-                this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+                this.state.onSave(this.construct_data(md_list));
             }
         }
     }
     deleteMetadataItem(index) {
         const md_list = [];
         const i_index = '' + index
-        for (let i in this.state.metadata_list) {
+        const old_md_list = this.get_md_list();
+        for (let i in old_md_list) {
             if (i !== i_index) {
-                if (this.state.metadata_list.hasOwnProperty(i))
-                    md_list.push(this.state.metadata_list[i]);
+                md_list.push(old_md_list[i]);
             }
         }
-        this.setState({metadata_list: md_list});
+        this.setState({specificJson: this.construct_data(md_list)});
         if (this.state.onSave) {
-            this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+            this.state.onSave(this.construct_data(md_list));
         }
     }
     addNewMetadataMapping() {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         md_list.push(JSON.parse(JSON.stringify(metadata_list[0]))); // add a copy of item 0
-        this.setState({metadata_list: md_list});
+        this.setState({specificJson: this.construct_data(md_list)});
         if (this.state.onSave) {
-            this.state.onSave(this.construct_data({...this.state, metadata_list: md_list}));
+            this.state.onSave(this.construct_data(md_list));
         }
     }
     checkMetadataName(event) {
@@ -307,25 +324,32 @@ export class CrawlerMetadataMapper extends Component {
     }
     move_row_up(md, index) {
         if (index > 0) {
-            const md_list = this.state.metadata_list;
+            const md_list = this.get_md_list();
             const temp = md_list[index-1];
             md_list[index-1] = md;
             md_list[index] = temp;
-            this.setState({metadata_list: md_list});
+            this.setState({specificJson: this.construct_data(md_list)});
+            if (this.state.onSave) {
+                this.state.onSave(this.construct_data(md_list));
+            }
         }
     }
     move_row_down(md, index) {
-        const md_list = this.state.metadata_list;
+        const md_list = this.get_md_list();
         if (index + 1 < md_list.length) {
             const temp = md_list[index+1];
             md_list[index+1] = md;
             md_list[index] = temp;
-            this.setState({metadata_list: md_list});
+            this.setState({specificJson: this.construct_data(md_list)});
+            if (this.state.onSave) {
+                this.state.onSave(this.construct_data(md_list));
+            }
         }
     }
     needs_metadata_field(md) {
         return (md.key === "category" || md.key === "number range" || md.key === "two level category" ||
                 md.key === "monetary x 100 range" || md.key === "monetary range" || md.key === "star rating" ||
+                md.key === "created date range" || md.key === "last modified date ranges" ||
                 md.key === "select if true" || md.key === "csv string");
     }
     render() {
@@ -333,7 +357,8 @@ export class CrawlerMetadataMapper extends Component {
             return <h1>crawler-metadata-mapper.js: Something went wrong.</h1>;
         }
         const self = this;
-        const num_rows = this.state.metadata_list.length;
+        const num_rows = this.get_md_list().length;
+        const theme = this.props.theme;
         return (
             <div style={styles.formContent}>
 
@@ -358,11 +383,12 @@ export class CrawlerMetadataMapper extends Component {
                     </tr>
 
                     {
-                        this.state.metadata_list.map(function(md, index) {
+                        this.get_md_list().map(function(md, index) {
                             return (<tr key={index}>
 
                                 <td style={styles.mdDropbox}>
                                     <Select
+                                        disableUnderline
                                         value={md.key}
                                         style={styles.metadata_dropdown}
                                         title="select what kind of metadata field to use"
@@ -378,6 +404,7 @@ export class CrawlerMetadataMapper extends Component {
                                 {md.key !== "two level category" &&
                                 <td style={styles.db_field}>
                                     <input type="text"
+                                        className={theme}
                                         placeholder="source [field-name]"
                                         title="the source-name field to use for this category"
                                         value={md.db1}
@@ -392,6 +419,7 @@ export class CrawlerMetadataMapper extends Component {
                                 <td style={styles.db_field}>
                                     <input type="text"
                                         placeholder="level 1 [field-name]"
+                                        className={theme}
                                         value={md.db1}
                                         title="the first source field to use for this double category"
                                         onChange={(event) => {
@@ -400,6 +428,7 @@ export class CrawlerMetadataMapper extends Component {
                                         style={styles.dbFieldWidth}/>
                                     <input type="text"
                                         placeholder="level 2 [field-name]"
+                                        className={theme}
                                         value={md.db2}
                                         title="the second source field to use for this double category"
                                         onChange={(event) => {
@@ -415,6 +444,8 @@ export class CrawlerMetadataMapper extends Component {
                                         md.display !== null &&
                                         <span>
                                             <input type="text"
+                                                className={theme}
+                                                style={styles.text}
                                                 placeholder="UI display-name"
                                                 title="name displayed in the UI for this item"
                                                 value={md.display}
@@ -429,6 +460,8 @@ export class CrawlerMetadataMapper extends Component {
                                     self.needs_metadata_field(md) &&
                                     <div style={styles.mdFieldWidth}>
                                         <input type="text"
+                                            className={theme}
+                                            style={styles.text}
                                             placeholder="metadata name"
                                             value={md.field1}
                                             title="metadata names should only contain 0..9, a..z, and A..Z"
@@ -439,6 +472,8 @@ export class CrawlerMetadataMapper extends Component {
                                     { md.sort === "true" &&
                                     <div>
                                         <input type="text"
+                                               className={theme}
+                                               style={styles.text}
                                                placeholder="sort descending UI text"
                                                value={md.sort_desc}
                                                title="The text to display for this field if a descending sort is selected of this type"
@@ -448,6 +483,8 @@ export class CrawlerMetadataMapper extends Component {
                                     { md.sort === "true" &&
                                      <div>
                                          <input type="text"
+                                                className={theme}
+                                                style={styles.text}
                                                 placeholder="sort ascending UI text"
                                                 value={md.sort_asc}
                                                 title="The text to display for this field if an ascending sort is selected of this type"
@@ -472,7 +509,6 @@ export class CrawlerMetadataMapper extends Component {
                                                 'aria-label': 'primary checkbox',
                                             }}
                                         />
-                                        <span style={styles.sortLabel}>sort</span>
                                     </div>
                                     }
                                     {md.sort === "true" &&
@@ -487,7 +523,6 @@ export class CrawlerMetadataMapper extends Component {
                                                 'aria-label': 'primary checkbox',
                                             }}
                                         />
-                                        <span style={styles.sortLabel}>default</span>
                                     </div>
                                     }
 
@@ -503,14 +538,13 @@ export class CrawlerMetadataMapper extends Component {
                                                 'aria-label': 'primary checkbox',
                                             }}
                                         />
-                                        <span style={styles.sortLabel}>default</span>
                                     </div>
                                     }
                                 </td>
 
                                 <td style={styles.tdAction}>
                                     <span style={styles.deleteBox} onClick={() => self.deleteMetadataItem(index)} title="remove this metadata item">
-                                        <img src="../images/delete.svg" style={styles.deleteImage} title="remove this metadata mapping" alt="remove this metadata mapping"/>
+                                        <img src={theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} style={styles.deleteImage} title="remove this metadata mapping" alt="remove this metadata mapping"/>
                                     </span>
                                     {index > 0 &&
                                     <span style={styles.upDownArrow} title="move row up (change UI ordering)"
@@ -538,7 +572,7 @@ export class CrawlerMetadataMapper extends Component {
                         <td colSpan={5} />
                         <td>
                             <div style={styles.imageButton} onClick={() => this.addNewMetadataMapping()}><img
-                                style={styles.addImage} src="../images/add.svg" title="add new metadata mapping"
+                                style={styles.addImage} src={theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add new metadata mapping"
                                 alt="add new metadata mapping"/></div>
                         </td>
                     </tr>

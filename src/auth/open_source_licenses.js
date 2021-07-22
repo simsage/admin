@@ -1,35 +1,23 @@
 import React, {Component} from 'react';
 
-import {ThemeProvider} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import uiTheme from "../theme-ui";
-import Grid from '@material-ui/core/Grid';
 
 import AppMenu from '../auth/app-menu';
 import ErrorDialog from '../common/error-dialog';
+import {MuiThemeProvider} from "@material-ui/core/styles";
+import {darkTheme, lightTheme} from "../theme-ui";
+import {CssBaseline} from "@material-ui/core";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import {appCreators} from "../actions/appActions";
 
 
 const styles = {
-    page: {
-        fontSize: '1.0em',
-        fontFamily: 'Tahoma',
-    },
-
-    content: {
-        marginTop: '20px',
-        marginLeft: '20%',
-    },
-
-    link: {
-        texcolor: '#c0c0c0'
-    },
-
     bottomLink: {
         textAlign: 'center',
         marginTop: '50px',
     },
 };
-
 
 export class OpenSourceLicenses extends Component {
     constructor(props){
@@ -54,189 +42,278 @@ export class OpenSourceLicenses extends Component {
         if (this.state.has_error) {
             return <h1>license: Something went wrong.</h1>;
         }
+        const theme = this.props.theme;
         return (
-            <div style={styles.page}>
-                <ThemeProvider theme={uiTheme}>
+            <MuiThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+                <CssBaseline />
 
-                    <AppMenu title="open source licenses" loggedIn={false} />
+                <AppMenu title="Open Source Licenses" loggedIn={false} />
 
-                    <ErrorDialog title={this.state.error_title}
-                                 message={this.state.error_msg}
-                                 callback={this.closeError.bind(this)} />
+                <ErrorDialog title={this.state.error_title}
+                             theme={this.props.theme}
+                             message={this.state.error_msg}
+                             callback={this.closeError.bind(this)} />
 
-                    <br />
-                    <br />
+                 <div className="license-container no-select">
 
-                    <Grid container spacing={2}>
+                     <div className="license-section">
+                         <div className="title">Apache ActiveMQ</div>
+                         <div className="copyright">Copyright © 2005-2019 The Apache Software Foundation </div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://github.com/JetBrains/kotlin-web-site/blob/master/LICENSE" rel="noopener noreferrer" target="_blank">Kotlin license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://github.com/JetBrains/kotlin-web-site/blob/master/LICENSE" rel="noopener noreferrer" target="_blank">Kotlinx Coroutines Core license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Apache Avro</div>
+                         <div className="copyright">Copyright © 2010-2019 The Apache Software Foundation </div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Spring license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Jackson license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Apache Cassandra</div>
+                         <div className="copyright">Copyright © 2009-2021 The Apache Software Foundation </div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://github.com/JodaOrg/joda-time/blob/master/LICENSE.txt" rel="noopener noreferrer" target="_blank">Joda-time license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">commons-io license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Apache Hadoop</div>
+                         <div className="copyright">Copyright © 2019 The Apache Software Foundation </div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">commons-fileupload license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Apache http-client license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Apache http-client</div>
+                         <div className="copyright">Copyright © 1999-2007 The Apache Software Foundation</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
+                     <div className="license-section">
+                         <div className="title">Apache http-mime</div>
+                         <div className="copyright">Copyright © 1999-2020 The Apache Software Foundation</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Apache http-mime license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://github.com/explosion/spaCy/blob/master/LICENSE" rel="noopener noreferrer" target="_blank">spaCy license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Apache Parquet</div>
+                         <div className="copyright">Copyright © 2020 The Apache Software Foundation </div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Apache Tika license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Google API license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Apache PDFBox</div>
+                         <div className="copyright">Copyright © 2020 The Apache Software Foundation </div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Google Cloud license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Google OAuth license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Apache Spark</div>
+                         <div className="copyright">Copyright © 2014- The Apache Software Foundation </div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.isc.org/licenses/" rel="noopener noreferrer" target="_blank">jBcrypt license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.datastax.com/terms/datastax-dse-driver-license-terms" rel="noopener noreferrer" target="_blank">DataStax Driver license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Apache Tika</div>
+                         <div className="copyright">Copyright © 2020 The Apache Software Foundation</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Apache Cassandra license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Apache ActiveMQ license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">commons-io</div>
+                         <div className="copyright">Copyright © 2002-2020 The Apache Software Foundation</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://oss.oracle.com/licenses/CDDL+GPL-1.1" rel="noopener noreferrer" target="_blank">javax-mail license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://junit.org/junit4/license.html" rel="noopener noreferrer" target="_blank">junit license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">commons-fileupload</div>
+                         <div className="copyright">Copyright © 2002-2020 The Apache Software Foundation</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://jsoup.org/license" rel="noopener noreferrer" target="_blank">jSoup license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">snakeyaml license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">DataStax Driver</div>
+                         <div className="copyright">Copyright © DataStax, Inc.</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html" rel="noopener noreferrer" target="_blank">javax WebSocket Client license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.eclipse.org/legal/epl-2.0/" rel="noopener noreferrer" target="_blank">Tyrus WebSocket Client license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Google API</div>
+                         <div className="copyright">Copyright © 2012 Google Inc.</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">snappy java license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Apache Spark license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Google Drive</div>
+                         <div className="copyright">Copyright © 2018, Google Inc.</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Apache Avro license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Apache Parquet license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Google OAuth</div>
+                         <div className="copyright">Copyright © 2018, Google Inc.</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Apache Hadoop license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="noopener noreferrer" target="_blank">Java Native Access license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">Jackson</div>
+                         <div className="copyright">Copyright © 2007- Tatu Saloranta, tatu.saloranta@iki.fi</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://opensource.org/licenses/lgpl-license" rel="noopener noreferrer" target="_blank">JCIFS-ng license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://mit-license.org/" rel="noopener noreferrer" target="_blank">Microsoft SQL JDBC license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">javax-mail</div>
+                         <div className="copyright">Copyright © 1997-2011 Oracle and/or its affiliates.</div>
+                         <div className="license">CDDL 1.1</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://opensource.org/licenses/BSD-2-Clause" rel="noopener noreferrer" target="_blank">Postgres SQL JDBC license</a></div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={styles.link}><a href="https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html" rel="noopener noreferrer" target="_blank">MySQL JDBC license</a></div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">javax WebSocket Client</div>
+                         <div className="copyright">Copyright © 2012-2014 Oracle and/or its affiliates. </div>
+                         <div className="license">CDDL 1.1, GPL 2.0</div>
+                     </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={10}>
-                            <div style={styles.bottomLink}>
-                                <Button variant="contained" onClick={() => window.location = "/"} className="button-style">Return to Sign-in</Button>
-                            </div>
-                        </Grid>
-                        <Grid item xs={1} />
+                     <div className="license-section">
+                         <div className="title">jBcrypt</div>
+                         <div className="copyright">Copyright © 2006 Damien Miller &lt;djm@mindrot.org&gt;</div>
+                         <div className="license">Mozilla public license 2.0</div>
+                     </div>
 
-                    </Grid>
+                     <div className="license-section">
+                         <div className="title">JCIFS-ng</div>
+                         <div className="copyright">Copyright © 2016 AgNO3 Gmbh & Co. KG</div>
+                         <div className="license">GNU Lesser General public license 2.1</div>
+                     </div>
 
-                </ThemeProvider>
-            </div>
+                     <div className="license-section">
+                         <div className="title">JEP</div>
+                         <div className="copyright">Copyright (c) 2004 - 2020 JEP AUTHORS</div>
+                         <div className="license">zlib/libpng License</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">JNA</div>
+                         <div className="copyright">Copyright © 2011 Timothy Wall</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">JEP</div>
+                         <div className="copyright">Copyright © 2004 - 2020 JEP AUTHORS</div>
+                         <div className="license">zlib/libpng License</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">Joda-time</div>
+                         <div className="copyright">Copyright © 2001-2005 Stephen Colebourne</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">jSoup</div>
+                         <div className="copyright">Copyright © 2009 - 2021 Jonathan Hedley (https://jsoup.org/)</div>
+                         <div className="license">MIT License</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">junit</div>
+                         <div className="copyright">Copyright © 2002-2020 JUnit</div>
+                         <div className="license">Eclipse Public License 1.0</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">Kotlin</div>
+                         <div className="copyright">Copyright © 2016-2020 JetBrains s.r.o.</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
+
+                     <div className="license-section">
+                        <div className="title">Kotlin Coroutines Core</div>
+                        <div className="copyright">Copyright © 2016-2020 JetBrains s.r.o.</div>
+                        <div className="license">Apache 2.0 license</div>
+                    </div>
+
+                     <div className="license-section">
+                         <div className="title">Microsoft SQL JDBC</div>
+                         <div className="copyright">Copyright © 2020 Microsoft Corporation</div>
+                         <div className="license">MIT license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">Microsoft msal4j</div>
+                         <div className="copyright">Copyright © 2020 Microsoft Corporation</div>
+                         <div className="license">MIT license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">MariaDB JDBC</div>
+                         <div className="copyright">Copyright © 2021, MariaDB</div>
+                         <div className="license">LGPL 2.1</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">OpenJDK 11.0.9.1</div>
+                         <div className="copyright">Copyright © 1995, 2021, Oracle and/or its affiliates.</div>
+                         <div className="license">GPLv2 with linking exception</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">Postgres SQL JDBC</div>
+                         <div className="copyright">Copyright © 1997, PostgreSQL Global Development Group</div>
+                         <div className="license">BSD-2 Clause</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">snakeyaml</div>
+                         <div className="copyright">Copyright © 2008-2013 Andrey Somov</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">snappy java</div>
+                         <div className="copyright">Copyright © 2011 Taro L. Saito</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">spaCy</div>
+                         <div className="copyright">Copyright © 2016-2020 ExplosionAI GmbH, 2016 spaCy GmbH, 2015 Matthew Honnibal</div>
+                         <div className="license">MIT license</div>
+                     </div>
+
+                     <div className="license-section">
+                        <div className="title">Spring</div>
+                        <div className="copyright">Copyright © 2002-2021 Pivotal, Inc.</div>
+                        <div className="license">Apache 2.0 license</div>
+                    </div>
+
+                    <div className="license-section">
+                        <div className="title">Tyrus WebSocket Client</div>
+                        <div className="copyright">Copyright © 2014-2015 Oracle and/or its affiliates. </div>
+                        <div className="license">Eclipse Public License 2.0</div>
+                    </div>
+
+                </div>
+
+                <br clear="both" />
+
+                <div style={styles.bottomLink}>
+                    <Button variant="contained" onClick={() => window.location = "/#/"} className="button-style">Return to Sign-in</Button>
+                </div>
+
+                <br/>
+                <br/>
+
+            </MuiThemeProvider>
         );
     }
 }
 
-export default OpenSourceLicenses;
+const mapStateToProps = function(state) {
+    return {
+        theme: state.appReducer.theme,
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    dispatch => bindActionCreators(appCreators, dispatch)
+)(OpenSourceLicenses);
+

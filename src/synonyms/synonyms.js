@@ -21,6 +21,11 @@ const styles = {
         minWidth: '800px',
         width: '900px',
     },
+    tableLight: {
+    },
+    tableDark: {
+        background: '#d0d0d0',
+    },
     smallTableHeaderStyle: {
         background: '#555',
         fontSize: '0.95em',
@@ -106,6 +111,8 @@ const styles = {
         float: 'left',
     },
     text: {
+        border: '1px solid #808080',
+        borderRadius: '4px',
         padding: '4px',
         width: '280px',
     },
@@ -205,9 +212,11 @@ export class Synonyms extends React.Component {
             this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
     }
     render() {
+        const theme = this.props.theme;
         return (
             <div>
                 <SynonymEdit open={this.state.synonym_edit}
+                             theme={theme}
                              synonym={this.state.synonym}
                              onSave={(item) => this.save(item)}
                              onError={(err) => this.props.setError("Error", err)} />
@@ -218,7 +227,7 @@ export class Synonyms extends React.Component {
                     <div style={styles.findBox}>
                         <div style={styles.floatLeftLabel}>find synonyms</div>
                         <div style={styles.searchFloatLeft}>
-                            <input type="text" value={this.props.synonym_filter} autoFocus={true} style={styles.text}
+                            <input type="text" value={this.props.synonym_filter} autoFocus={true} style={styles.text} className={theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setSynonymFilter(event.target.value)
@@ -240,12 +249,12 @@ export class Synonyms extends React.Component {
                         <Table style={styles.tableStyle}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell style={styles.smallTableHeaderStyle}>id</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>synonyms</TableCell>
-                                    <TableCell style={styles.actionTableHeaderStyle}>actions</TableCell>
+                                    <TableCell className='table-header'>id</TableCell>
+                                    <TableCell className='table-header'>synonyms</TableCell>
+                                    <TableCell className='table-header'>actions</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                                 {
                                     this.getSynonymList().map((synonym) => {
                                         return (
@@ -285,6 +294,7 @@ export class Synonyms extends React.Component {
                         </Table>
 
                         <TablePagination
+                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
                             count={this.props.num_synonyms}
@@ -312,6 +322,7 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
 
         synonym_list: state.appReducer.synonym_list,
         synonym_filter: state.appReducer.synonym_filter,

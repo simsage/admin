@@ -29,13 +29,23 @@ const styles = {
     pageWidth: {
         width: '900px'
     },
+    text: {
+        border: '1px solid #808080',
+        borderRadius: '4px',
+        padding: '4px',
+    },
     label: {
         color: '#555',
     },
     tableHeaderStyle: {
-        background: '#555',
+        background: '#51B274',
         fontSize: '0.95em',
         color: '#fff',
+    },
+    tableLight: {
+    },
+    tableDark: {
+        background: '#d0d0d0',
     },
     linkButton: {
         float: 'left',
@@ -137,7 +147,7 @@ export class Organisations extends React.Component {
             edit_organisation: false,
 
             edit_organisation_id: "",
-            edit_name: "",
+            name: "",
             max_tpm: 0,
             analytics_window_size_in_months: 12,
             enabled: true,
@@ -164,15 +174,9 @@ export class Organisations extends React.Component {
     addNewOrganisation() {
         this.setState({edit_organisation: true,
                              organisation: null,
-                             edit_organisation_id: "",
-                             edit_name: "",
-                             max_tpm: 0,
-                             analytics_window_size_in_months: 12,
+                             id: "",
+                             name: "",
                              enabled: true,
-                             bot_enabled: true,
-                             analytics_enabled: true,
-                             operator_enabled: true,
-                             language_enabled: true,
         })
     }
     refreshSecurityId() {
@@ -184,13 +188,7 @@ export class Organisations extends React.Component {
                                  organisation: organisation,
                                  id: organisation.id,
                                  name: organisation.name,
-                                 max_tpm: Api.defined(organisation.maxTransactionsPerMonth) ? organisation.maxTransactionsPerMonth : 0,
-                                 analytics_window_size_in_months: Api.defined(organisation.analyticsWindowInMonths) ? organisation.analyticsWindowInMonths : 12,
                                  enabled: Api.defined(organisation.enabled) ? organisation.enabled : true,
-                                 bot_enabled: Api.defined(organisation.botEnabled) ? organisation.botEnabled : true,
-                                 analytics_enabled: Api.defined(organisation.analyticsEnabled) ? organisation.analyticsEnabled : true,
-                                 operator_enabled: Api.defined(organisation.operatorEnabled) ? organisation.operatorEnabled : true,
-                                 language_enabled: Api.defined(organisation.languageEnabled) ? organisation.languageEnabled : true,
             })
         }
     }
@@ -236,11 +234,9 @@ export class Organisations extends React.Component {
         if (organisation) {
             if (organisation.name.length > 0) {
                 this.props.updateOrganisation({
-                    id: Api.defined(organisation.id) ? organisation.id : '', name: organisation.name,
-                    maxTransactionsPerMonth: organisation.max_tpm,
-                    analyticsWindowInMonths: organisation.analytics_window_size_in_months, enabled: organisation.enabled,
-                    botEnabled: organisation.bot_enabled, analyticsEnabled: organisation.analytics_enabled,
-                    operatorEnabled: organisation.operator_enabled, languageEnabled: organisation.language_enabled,
+                    id: Api.defined(organisation.id) ? organisation.id : '',
+                    name: organisation.name,
+                    enabled: organisation.enabled,
                 });
                 this.setState({edit_organisation: false, organisation: null});
             } else {
@@ -272,22 +268,24 @@ export class Organisations extends React.Component {
         window.setTimeout(() => { this.setState({copied_visible: ""})}, 1000);
     }
     render() {
+        const theme = this.props.theme;
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         return (
             <div>
                 <OrganisationEdit open={this.state.edit_organisation}
-                                    id={this.state.id}
-                                    name={this.state.name}
-                                    enabled={this.state.enabled}
-                                    onError={(title, err) => this.props.showError(title, err)}
-                                    onSave={(data) => this.save(data)} />
+                                  id={this.state.id}
+                                  theme={theme}
+                                  name={this.state.name}
+                                  enabled={this.state.enabled}
+                                  onError={(title, err) => this.props.showError(title, err)}
+                                  onSave={(data) => this.save(data)} />
 
                 <div style={styles.searchBox}>
                     <Grid item xs={12}>
                         <div style={styles.findBox}>
                             <div style={styles.floatLeftLabel}>filter</div>
                             <div style={styles.searchFloatLeft}>
-                                <input type="text" value={this.props.user_filter} autoFocus={true} style={styles.text}
+                                <input type="text" value={this.props.user_filter} autoFocus={true} style={styles.text} className={theme}
                                        onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                        onChange={(event) => {
                                            this.props.setOrganisationFilter(event.target.value)
@@ -307,12 +305,12 @@ export class Organisations extends React.Component {
                 <Paper style={styles.pageWidth}>
                     <Table>
                         <TableHead>
-                            <TableRow style={styles.tableHeaderStyle}>
-                                <TableCell style={styles.tableHeaderStyle}>organisation</TableCell>
-                                <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
+                            <TableRow className='table-header'>
+                                <TableCell className='table-header table-width-70'>organisation</TableCell>
+                                <TableCell className='table-header'>actions</TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
+                        <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                             {
                                 this.getOrganisations().map((organisation) => {
                                     return (
@@ -331,9 +329,6 @@ export class Organisations extends React.Component {
                                                 </div>
                                                 <div style={styles.linkButton} onClick={() => this.deleteOrganisationAsk(organisation)}>
                                                     <img src="../images/delete.svg" style={styles.dlImageSize} title="remove organisation" alt="remove"/>
-                                                </div>
-                                                <div style={styles.linkButton} onClick={() => this.downloadHtml("search", organisation)}>
-                                                    <img src="../images/search.svg" style={styles.dlImageSize} title="download this organisation's search interface (html)" alt="download search interface"/>
                                                 </div>
                                                 {isAdmin &&
                                                 <div style={styles.linkButton} onClick={() => this.backup(organisation.id)}>
@@ -374,6 +369,7 @@ export class Organisations extends React.Component {
                         count={this.props.organisation_list.length}
                         rowsPerPage={this.state.page_size}
                         page={this.state.page}
+                        style={theme === 'light' ? styles.tableLight : styles.tableDark}
                         backIconButtonProps={{
                             'aria-label': 'Previous Page',
                         }}
@@ -395,17 +391,17 @@ export class Organisations extends React.Component {
                         fullWidth={true}
                         maxWidth="md"
                         onClose={() => this.setState({view_details: false})} >
-                    <DialogTitle>{this.state.organisation != null ? this.state.organisation.name : ""} organisation-id</DialogTitle>
-                    <DialogContent>
+                    <DialogTitle className={theme}>{this.state.organisation != null ? this.state.organisation.name : ""} organisation-id</DialogTitle>
+                    <DialogContent className={theme}>
                         <div>
                             <div style={styles.organisationIdLabel}>
                                 organisation id
                             </div>
                             <div style={styles.floatLeft}>{this.state.organisation ? this.state.organisation.id : ""}</div>
                             <span style={styles.copyImageSpan} title={'copy organisation id'}>
-                                <img src='../images/clipboard-copy.svg' style={styles.clipboardImage} alt={'copy'}
-                                     onClick={() => { navigator.clipboard.writeText(this.state.organisation ? this.state.organisation.id : "");
-                                                      this.startCopiedVisible(this.state.organisation.id);
+                                <img src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'} style={styles.clipboardImage} alt={'copy'}
+                                     onClick={() => { if (Api.writeToClipboard(this.state.organisation ? this.state.organisation.id : ""))
+                                                        this.startCopiedVisible(this.state.organisation.id);
                                      }}/>
                                 {this.state.organisation != null && this.state.copied_visible === this.state.organisation.id &&
                                     <div style={styles.copiedStyle}>copied</div>
@@ -414,8 +410,8 @@ export class Organisations extends React.Component {
                             <br clear='both' />
                         </div>
                     </DialogContent>
-                    <DialogActions>
-                        <Button variant="outlined" color="secondary" onClick={() => this.setState({view_organisation_id: false})}>Close</Button>
+                    <DialogActions className={theme}>
+                        <Button variant="contained" color="secondary" onClick={() => this.setState({view_organisation_id: false})}>Close</Button>
                     </DialogActions>
                 </Dialog>
 
@@ -430,6 +426,7 @@ const mapStateToProps = function(state) {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
         user: state.appReducer.user,
+        theme: state.appReducer.theme,
 
         organisation_list: state.appReducer.organisation_list,
     };

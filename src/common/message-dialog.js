@@ -59,15 +59,15 @@ export class MessageDialog extends Component {
                     maxWidth="md"
                     onClose={() => this.cancel()} >
 
-                <DialogTitle id="alert-dialog-title">{this.state.title}</DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title" className={this.props.theme}>{this.state.title}</DialogTitle>
+                <DialogContent className={this.props.theme}>
                     <div>
                         <div dangerouslySetInnerHTML={{__html: this.state.message}} />
                     </div>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={this.props.theme}>
                     <Button color="primary" onClick={() => this.cancel()}>Cancel</Button>
-                    <Button variant="outlined" color="secondary" onClick={() => this.ok()}>OK</Button>
+                    <Button variant="contained" color="secondary" onClick={() => this.ok()}>OK</Button>
                 </DialogActions>
             </Dialog>
         );

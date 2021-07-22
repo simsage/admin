@@ -20,6 +20,11 @@ const styles = {
     pageWidth: {
         width: '900px',
     },
+    tableLight: {
+    },
+    tableDark: {
+        background: '#d0d0d0',
+    },
     tab: {
         backgroundColor: '#f8f8f8',
         color: '#000',
@@ -164,13 +169,16 @@ export class Domains extends Component {
             this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
     }
     render() {
+        const theme = this.props.theme;
         return (
             <div>
                 <DomainDialog
                     open={this.state.open}
                     title={this.state.title}
+                    theme={theme}
                     organisation_id={this.props.selected_organisation_id}
                     kb_id={this.props.selected_knowledgebase_id}
+                    edge_device_list={this.props.edge_device_list}
                     onSave={(domain) => this.saveDomain(domain)}
                     onTest={(domain) => this.testDomain(domain)}
                     onUpdate={(domain) => this.onUpdate(domain)}
@@ -186,14 +194,14 @@ export class Domains extends Component {
                     <Paper style={styles.pageWidth}>
                         <Table>
                             <TableHead>
-                                <TableRow style={styles.tableHeaderStyle}>
-                                    <TableCell style={styles.tableHeaderStyle}>name</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>path</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>objects</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
+                                <TableRow className='table-header'>
+                                    <TableCell className='table-header'>name</TableCell>
+                                    <TableCell className='table-header'>path</TableCell>
+                                    <TableCell className='table-header'>objects</TableCell>
+                                    <TableCell className='table-header'>actions</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                                 {
                                     this.getDomains().map((domain) => {
                                         return (
@@ -235,6 +243,7 @@ export class Domains extends Component {
                         </Table>
 
                         <TablePagination
+                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
                             count={this.props.domain_list.length}
@@ -266,7 +275,9 @@ const mapStateToProps = function(state) {
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_organisation: state.appReducer.selected_organisation,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+        edge_device_list: state.appReducer.edge_device_list,
         domain_list: state.appReducer.domain_list,
+        theme: state.appReducer.theme,
     };
 };
 

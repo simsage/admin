@@ -14,8 +14,12 @@ import ResetPasswordRequest from './auth/reset_password_request'
 import ResetPasswordResponse from './auth/reset_password_response'
 import OpenSourceLicenses from './auth/open_source_licenses'
 import LicenseAgreement from "./auth/license_agreement";
+import SearchPage from "./search/search-page";
 
 import Home from './home'
+
+require('typeface-roboto')
+
 
 const store = configureStore();
 store.subscribe(() => {
@@ -30,9 +34,10 @@ ReactDOM.render(
             <div>
                 <Route exact path="/" component={SignIn} />
                 <Route exact path="/home" component={Home} />
+                <Route exact path="/search" component={SearchPage} />
                 <Route path="/reset-password-request" component={ResetPasswordRequest} />
                 <Route path="/reset-password-response" component={ResetPasswordResponse} />
-                <Route exact path="/os-license" component={OpenSourceLicenses} />
+                <Route exact path="/foss-license" component={OpenSourceLicenses} />
                 <Route exact path="/license-agreement" component={LicenseAgreement} />
             </div>
         </HashRouter>

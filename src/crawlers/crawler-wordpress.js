@@ -85,7 +85,7 @@ export class CrawlerWordpress extends Component {
                 {this.state.source_id > 0 &&
                     <div style={styles.exportWP}>
                         <div>export the contents of this source as a WordPress GZip Archive</div>
-                        <Button color="secondary" variant="outlined" style={styles.exportButton}
+                        <Button variant="contained" color="secondary" style={styles.exportButton}
                                 onClick={() => this.exportArchive()}>Export WordPress Archive</Button>
                     </div>
                 }

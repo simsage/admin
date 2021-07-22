@@ -11,6 +11,7 @@ const styles = {
     formContent: {
         marginTop: '20px',
         marginLeft: '20px',
+        width: '90%',
     },
     textField: {
         width: '100%',
@@ -54,9 +55,10 @@ export class CrawlerNFS extends Component {
             onSave: props.onSave,
             onError: props.onError,
 
-            // Google-drive properties
+            // nfs drive properties
             nfs_local_folder: props.nfs_local_folder ? props.nfs_local_folder : '',
             nfs_userList: Api.defined(props.nfs_userList) ? props.nfs_userList : '',
+            specific_json: props.specific_json,
         };
 
     }
@@ -69,16 +71,18 @@ export class CrawlerNFS extends Component {
     UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
-            this.setState(this.construct_data({tenantId: nextProps.tenantId,
+            this.setState({
                 nfs_local_folder: Api.defined(nextProps.nfs_local_folder) ? nextProps.nfs_local_folder : '',
                 nfs_userList: Api.defined(nextProps.nfs_userList) ? nextProps.nfs_userList : '',
+                specific_json: nextProps.specific_json,
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
-            }));
+            });
         }
     }
     construct_data(data) {
         return {
+            ...this.state.specific_json,
             nfs_local_folder: Api.defined(data.nfs_local_folder) ? data.nfs_local_folder : this.state.nfs_local_folder,
             nfs_userList: Api.defined(data.nfs_userList) ? data.nfs_userList : this.state.nfs_userList,
         };

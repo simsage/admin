@@ -15,7 +15,6 @@ const styles = {
         borderRadius: '15px',
         padding: '12px',
         marginLeft: '10px',
-        background: 'white',
         fontWeight: 700,
         fontSize: '10pt',
         cursor: 'pointer',

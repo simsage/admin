@@ -3,6 +3,7 @@ import Api from '../common/api'
 import {
     ADD_CONVERSATION,
     BUSY,
+    SET_THEME,
     RESET_SELECTED_KB,
     CLEAR_PREVIOUS_ANSWER,
     CLOSE_ERROR,
@@ -15,7 +16,7 @@ import {
     GET_INVENTORIZE_LIST,
     GET_INVENTORIZE_BUSY,
     GET_LICENSE,
-    GET_ORGANISATION_LIST,
+    SET_ORGANISATION_LIST,
     SET_ORGANISATION_FILTER,
     SET_USER_LIST,
     SET_USER_FILTER,
@@ -33,6 +34,7 @@ import {
     PROCESS_OPERATOR_MESSAGE,
     RESET_DOCUMENT_PAGINATION,
     SELECT_KNOWLEDGE_BASE,
+    SELECT_EDGE_DEVICE,
     SELECT_ORGANISATION,
     UPDATE_ORGANISATION,
     SELECT_TAB,
@@ -77,7 +79,17 @@ import {
     UPLOADING_PROGRAM_FINISHED,
     UPLOADING_WP_ARCHIVE,
     UPLOADING_WP_ARCHIVE_FINISHED,
+
     SET_LOG_LIST,
+    SET_LOG_DATE,
+    SET_LOG_HOURS,
+    SET_LOG_TYPE,
+    SET_LOG_SERVICE,
+    SET_LOG_REFRESH,
+
+    GET_EDGE_DEVICES,
+    GET_EDGE_DEVICE_COMMANDS,
+
 } from "../actions/actions";
 import {initializeState} from './stateLoader'
 
@@ -118,6 +130,11 @@ export const reducer = (state, action) => {
         console.log("ERROR: (" + JSON.stringify(action) + ")");
     }
 
+    if (action.type === SIGN_OUT) {
+        state = initializeState();
+        return state;
+    }
+
     switch (action.type) {
 
         default: {
@@ -127,15 +144,15 @@ export const reducer = (state, action) => {
         // set an error
         case ERROR: {
             // is this an "invalid session id"
-            if (action.error.indexOf("invalid session id") >= 0) {
+            if (action && action.error && action.error.length > 0 && action.error.indexOf("invalid session id") >= 0) {
                 // wipe session and user objects - this is now a logout event
                 window.location = "/#/";
                 return {
                     ...state,
                     session: null,
                     user: null,
-                    error_title: action.title,
-                    error: action.error,
+                    error_title: '',
+                    error: '',
                     busy: false,
                     uploading: false,
                 };
@@ -177,15 +194,21 @@ export const reducer = (state, action) => {
             };
         }
 
+        case SET_THEME: {
+            return {
+                ...state,
+                theme: action.theme,
+            };
+        }
+
         // sign-in a user
         case SIGN_IN: {
             // if we're an operator - we need to change tabs
-            let is_admin_or_manager = false;
+            let selected_tab = 'operator';
             if (action.user && action.user.roles) {
-                const admin_manager = ['admin', 'manager'];
                 for (const role of action.user.roles) {
-                    if (admin_manager.indexOf(role.role) >= 0) {
-                        is_admin_or_manager = true;
+                    if (role.role === 'admin' || role.role === 'manager') {
+                        selected_tab = 'organisations';
                     }
                 }
             }
@@ -204,7 +227,7 @@ export const reducer = (state, action) => {
                 ...state,
                 session: action.session,
                 user: action.user,
-                selected_tab: is_admin_or_manager ? 'organisations' : 'operator',
+                selected_tab: selected_tab,
                 selected_organisation_id: selected_organisation_id,
                 selected_organisation: selected_organisation,
                 busy: false,
@@ -219,7 +242,7 @@ export const reducer = (state, action) => {
             };
         }
 
-        case GET_ORGANISATION_LIST: {
+        case SET_ORGANISATION_LIST: {
             return {
                 ...state,
                 organisation_list: action.organisation_list,
@@ -265,6 +288,8 @@ export const reducer = (state, action) => {
                 selected_organisation: action.name,
                 selected_knowledgebase_id: "",
                 selected_knowledgebase: "",
+                selected_edge_device_id: "",
+                selected_edge_device: "",
                 busy: false,
             }
         }
@@ -300,6 +325,15 @@ export const reducer = (state, action) => {
             }
         }
 
+        case SELECT_EDGE_DEVICE: {
+            return {
+                ...state,
+                selected_edge_device_id: action.id,
+                selected_edge_device: action.name,
+                busy: false,
+            }
+        }
+
         // sign-out a user
         case SIGN_OUT: {
             return {
@@ -314,6 +348,7 @@ export const reducer = (state, action) => {
             return {
                 ...state,
                 selected_tab: action.selected_tab,
+                log_refresh: 0, // stop refreshing logs
                 busy: false,
             }
         }
@@ -421,6 +456,7 @@ export const reducer = (state, action) => {
         case SET_DOCUMENT_FILTER: {
             return {
                 ...state,
+                document_page: 0,
                 document_filter: action.filter,
             };
         }
@@ -480,6 +516,7 @@ export const reducer = (state, action) => {
         case SET_MIND_ITEM_FILTER: {
             return {
                 ...state,
+                mind_item_page: 0,
                 mind_item_filter: action.filter,
             };
         }
@@ -580,6 +617,7 @@ export const reducer = (state, action) => {
         case SET_SYNONYM_FILTER: {
             return {
                 ...state,
+                synonym_page: 0,
                 synonym_filter: action.synonym_filter,
             };
         }
@@ -642,6 +680,7 @@ export const reducer = (state, action) => {
         case SET_SEMANTIC_FILTER: {
             return {
                 ...state,
+                semantic_page: 0,
                 semantic_filter: action.semantic_filter,
             };
         }
@@ -658,6 +697,7 @@ export const reducer = (state, action) => {
         case SET_SYNSET_FILTER: {
             return {
                 ...state,
+                synset_page: 0,
                 synset_filter: action.synset_filter,
             };
         }
@@ -830,7 +870,7 @@ export const reducer = (state, action) => {
             // log certain messages
             if (data.messageType !== mt_ActiveConnections) {
                 // log any message for debugging (except active connection counts)
-                console.debug('operator received data:' + JSON.stringify(data));
+                // console.debug('operator received data:' + JSON.stringify(data));
             }
             // an error has occurred - show it
             if (data.messageType === mt_Error && data.error.length > 0) {
@@ -942,7 +982,7 @@ export const reducer = (state, action) => {
                                     let ci = data.conversationList[index];
                                     const is_simsage = ci.origin !== "user";
                                     conversation_list.push({
-                                        id: count, primary: ci.conversationText,
+                                        id: count, primary: ci.conversationText, created: ci.created,
                                         secondary: is_simsage ? "You" : "user", used: false, is_simsage: is_simsage
                                     });
                                     count += 1;
@@ -1101,10 +1141,59 @@ export const reducer = (state, action) => {
             return {
                 ...state,
                 log_list: action.log_list,
-                selected_log: action.selected_log,
-                active_components: action.active_components,
                 busy: false,
             }
+        }
+
+        case SET_LOG_DATE: {
+            return {
+                ...state,
+                log_date: Api.toIsoDateTime(action.log_date),
+            };
+        }
+
+        case SET_LOG_HOURS: {
+            return {
+                ...state,
+                log_hours: action.log_hours,
+            };
+        }
+
+        case SET_LOG_TYPE: {
+            return {
+                ...state,
+                log_type: action.log_type,
+            };
+        }
+
+        case SET_LOG_SERVICE: {
+            return {
+                ...state,
+                log_service: action.log_service,
+            };
+        }
+
+        case SET_LOG_REFRESH: {
+            return {
+                ...state,
+                log_refresh: action.log_refresh,
+            };
+        }
+
+        case GET_EDGE_DEVICES: {
+            return {
+                ...state,
+                edge_device_list: action.edge_device_list,
+                busy: false,
+            };
+        }
+
+        case GET_EDGE_DEVICE_COMMANDS: {
+            return {
+                ...state,
+                edge_device_command_list: action.edge_device_command_list,
+                busy: false,
+            };
         }
 
 

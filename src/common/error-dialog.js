@@ -49,16 +49,16 @@ export class ErrorDialog extends React.Component {
                     open={this.state.open}
                     fullWidth={true}
                     maxWidth="md"
-                    onClose={this.handleOk.bind(this)} >
+                    onClose={() => this.handleOk()} >
 
-                <DialogTitle id="alert-dialog-title"><InputLabel error={true}>{this.state.title}</InputLabel></DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title" className={this.props.theme}><InputLabel error={true}>{this.state.title}</InputLabel></DialogTitle>
+                <DialogContent className={this.props.theme}>
                     <div>
                         {this.state.message}
                     </div>
                 </DialogContent>
-                <DialogActions>
-                    <Button variant="outlined" type="submit" color="primary" onClick={() => this.handleOk()}>Ok</Button>
+                <DialogActions className={this.props.theme}>
+                    <Button variant="contained" type="submit" color="primary" onClick={() => this.handleOk()}>Ok</Button>
                 </DialogActions>
             </Dialog>
         );

@@ -29,16 +29,26 @@ export class Api {
         }
     };
 
+    static formatSizeUnits(bytes) {
+        if      (bytes >= 1073741824) { bytes = (bytes / 1073741824).toFixed(2) + " GB"; }
+        else if (bytes >= 1048576)    { bytes = (bytes / 1048576).toFixed(2) + " MB"; }
+        else if (bytes >= 1024)       { bytes = (bytes / 1024).toFixed(2) + " KB"; }
+        else if (bytes > 1)           { bytes = bytes + " bytes"; }
+        else if (bytes === 1)          { bytes = bytes + " byte"; }
+        else                          { bytes = "0 bytes"; }
+        return bytes;
+    };
+
     // convert unix timestamp to string if it's for a reasonable time in the future
     static unixTimeConvert(timestamp){
         if (timestamp > 1000) {
             const a = new Date(timestamp);
-            const year = a.getFullYear();
-            const month = a.getMonth() + 1;
-            const date = a.getDate();
-            const hour = a.getHours();
-            const min = a.getMinutes();
-            const sec = a.getSeconds();
+            const year = a.getUTCFullYear();
+            const month = a.getUTCMonth() + 1;
+            const date = a.getUTCDate();
+            const hour = a.getUTCHours();
+            const min = a.getUTCMinutes();
+            const sec = a.getUTCSeconds();
             return year + '/' + Api.pad2(month) + '/' + Api.pad2(date) + ' ' + Api.pad2(hour) + ':' + Api.pad2(min) + ':' + Api.pad2(sec);
         }
         return "";
@@ -50,11 +60,29 @@ export class Api {
     }
 
     // convert a date object to an iso date string
-    static toIsoDate(date){
+    static toIsoDate(date) {
+        if (!date || !date.getFullYear) {
+            date = new Date()
+        }
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return year + '-' + Api.pad2(month) + '-' + Api.pad2(day) + 'T00:00:00.000';
+    }
+
+    // convert a date object to an iso date string
+    static toIsoDateTime(date) {
+        if (!date || !date.getFullYear) {
+            date = new Date()
+        }
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        let offset_hours = 0; // date.getTimezoneOffset() / 60;
+        let hour = date.getHours() + offset_hours;
+        if (hour < 0) hour += 24;
+        if (hour >= 24) hour -= 24;
+        return year + '-' + Api.pad2(month) + '-' + Api.pad2(day) + 'T' + Api.pad2(hour) + ':00:00.000';
     }
 
     static pad2(item) {
@@ -85,6 +113,22 @@ export class Api {
             }
         }
         return new_list;
+    }
+
+    // get color component (fg) of the global theme
+    static getThemeColour(theme) {
+        if (theme === 'light')
+            return "#2a2a2e";
+        else
+            return "#e0e0e0";
+    }
+
+    // get background component (bg) of the global theme
+    static getThemeBackground(theme) {
+        if (theme === 'light')
+            return "#ffffff";
+        else
+            return "#2a2a2e";
     }
 
     // start a password reset request
@@ -131,16 +175,6 @@ export class Api {
         )
     };
 
-    // delete a crawler's document
-    static deleteCrawlerDocuments(organisationId, kb_id, id, success, fail) {
-        Comms.http_delete('/crawler/crawler/document/' + encodeURIComponent(organisationId) + '/' +
-            encodeURIComponent(kb_id) + '/' + encodeURIComponent(id),
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
-
     // test a specific crawler's connectivity
     static testCrawler(organisationId, kb_id, id, success, fail) {
         Comms.http_get('/crawler/crawler/test/' + encodeURIComponent(organisationId) + '/' +
@@ -171,6 +205,16 @@ export class Api {
             (errStr) => { fail(errStr) }
         )
     }
+
+    // write text to the clipboard, if we can
+    static writeToClipboard(text) {
+        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text);
+            return true;
+        }
+        return false;
+    }
+
 
 }
 

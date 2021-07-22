@@ -98,17 +98,18 @@ export class Reports extends React.Component {
     }
     render() {
         const date = new Date(this.props.report_date);
+        const theme = this.props.theme;
         return (
             <div style={styles.pageWidth}>
                 { this.isVisible() &&
                 <div>
                 <br clear="both" />
                 <div style={styles.downloadButton}>
-                    <Button variant="outlined" onClick={() => this.downloadReport()}>download report</Button>
+                    <Button variant="contained" color={"primary"} onClick={() => this.downloadReport()}>download report</Button>
                 </div>
                 <div style={styles.dateSelect}>
                     <DatePicker
-                        className="date-picker-input"
+                        className={theme === "light" ? "date-picker-input" : "date-picker-input-dark"}
                         selected={date}
                         dateFormat="yyyy/MM"
                         todayButton="today"
@@ -159,14 +160,15 @@ export class Reports extends React.Component {
                 </div>
 
             </div>
-        )
+        );
     }
-}
+};
 
 const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
 
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
         selected_organisation_id: state.appReducer.selected_organisation_id,

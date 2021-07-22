@@ -74,8 +74,6 @@ export class CrawlerGeneral extends Component {
 
             onSave: props.onSave,  // save data
             onError: props.onError,
-            error_title: props.error_title,
-            error_msg: props.error_msg,
 
             // messages
             message_callback: null,
@@ -91,11 +89,18 @@ export class CrawlerGeneral extends Component {
 
             name: Api.defined(props.name) ? props.name : '',
             filesPerSecond: Api.defined(props.filesPerSecond) ? props.filesPerSecond : '0',
-            crawlerType: Api.defined(props.crawlerType) ? props.crawlerType : 'none',
+            crawlerType: Api.defined(props.crawlerType) && props.crawlerType.length > 0 ? props.crawlerType : 'none',
             deleteFiles: props.deleteFiles,
             allowAnonymous: props.allowAnonymous,
             enablePreview: props.enablePreview,
             processingLevel: props.processingLevel,
+            customRender: props.customRender,
+            edge_device_list: this.props.edge_device_list,
+
+            edgeDeviceId: Api.defined(props.edgeDeviceId) && props.edgeDeviceId.length > 0 ? props.edgeDeviceId : 'none',
+            qaMatchStrength: Api.defined(props.qaMatchStrength) && props.qaMatchStrength ? props.qaMatchStrength : 0.8125,
+            numResults: Api.defined(props.numResults) && props.numResults ? props.numResults : 5,
+            numFragments: Api.defined(props.numFragments) && props.numFragments ? props.numFragments : 3,
         };
 
     }
@@ -116,26 +121,34 @@ export class CrawlerGeneral extends Component {
                             deleteFiles: nextProps.deleteFiles,
                             allowAnonymous: nextProps.allowAnonymous,
                             enablePreview: nextProps.enablePreview,
-                            processingLevel: nextProps.processingLevel,
                             organisation_id: nextProps.organisation_id,
                             kb_id: nextProps.kb_id,
                             sourceId: nextProps.sourceId,
                             nodeId: nextProps.nodeId,
                             maxItems: nextProps.maxItems,
                             maxBotItems: nextProps.maxBotItems,
+                            processingLevel: nextProps.processingLevel,
+                            customRender: nextProps.customRender,
+                            edgeDeviceId: Api.defined(nextProps.edgeDeviceId) ? nextProps.edgeDeviceId : 'none',
+                            qaMatchStrength: Api.defined(nextProps.qaMatchStrength) ? nextProps.qaMatchStrength : 0.8125,
+                            numResults: Api.defined(nextProps.numResults) ? nextProps.numResults : 5,
+                            numFragments: Api.defined(nextProps.numFragments) ? nextProps.numFragments : 3,
+
                             name: nextProps.name,
                             onSave: nextProps.onSave,
+                            edge_device_list: nextProps.edge_device_list,
 
                             onError: nextProps.onError,
-                            error_title: nextProps.error_title,
-                            error_msg: nextProps.error_msg,
                         }));
         }
     }
     construct_data(data) {
         const crawlerType = Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType;
         const allowAnonymous = (Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous) || (crawlerType === 'web');
+        let edgeDeviceId = Api.defined(data.edgeDeviceId) ? data.edgeDeviceId : this.state.edgeDeviceId;
+        if (edgeDeviceId === 'none' || !this.canHaveEdgeDevice()) edgeDeviceId = '';
         return {filesPerSecond: Api.defined(data.filesPerSecond) ? data.filesPerSecond : this.state.filesPerSecond,
+                organisationId: Api.defined(data.organisationId) ? data.organisationId : this.state.organisationId,
                 crawlerType: crawlerType,
                 deleteFiles: Api.defined(data.deleteFiles) ? data.deleteFiles : this.state.deleteFiles,
                 allowAnonymous: allowAnonymous,
@@ -146,6 +159,11 @@ export class CrawlerGeneral extends Component {
                 nodeId: Api.defined(data.nodeId) ? data.nodeId : this.state.nodeId,
                 maxItems: Api.defined(data.maxItems) ? data.maxItems : this.state.maxItems,
                 maxBotItems: Api.defined(data.maxBotItems) ? data.maxBotItems : this.state.maxBotItems,
+                customRender: Api.defined(data.customRender) ? data.customRender : this.state.customRender,
+                edgeDeviceId: edgeDeviceId,
+                qaMatchStrength: Api.defined(data.qaMatchStrength) ? data.qaMatchStrength : this.state.qaMatchStrength,
+                numResults: Api.defined(data.numResults) ? data.numResults : this.state.numResults,
+                numFragments: Api.defined(data.numFragments) ? data.numFragments : this.state.numFragments,
             };
     }
     setError(title, error_msg) {
@@ -162,18 +180,21 @@ export class CrawlerGeneral extends Component {
     testCrawler() {
         const name = this.state.name;
         Api.testCrawler(this.state.organisation_id, this.state.kb_id, this.state.sourceId,
-            (response) => {
+            () => {
                 this.setState({
-                    message_callback: (action) => { this.setState({message_title: '', message: ''})},
+                    message_callback: () => { this.setState({message_title: '', message: ''})},
                     message_title: 'Crawler Test',
                     message: 'Success!  crawler "' + name + '" can communicate with its intended end-point.'
                 });
             },
             (err) => {
-                console.log("crawler-test error:");
                 console.log(err);
                 this.setError("Error Testing Crawler", err);
             });
+    }
+    canHaveEdgeDevice() {
+        const crawlerType = this.state.crawlerType;
+        return crawlerType !== 'office365' && crawlerType !== 'wordpress' && crawlerType !== 'gdrive';
     }
     processingLevelToMark() {
         if (this.state.processingLevel === "FILES") return 0;
@@ -190,6 +211,17 @@ export class CrawlerGeneral extends Component {
             this.state.onSave(this.construct_data({"processingLevel": processingLevel}));
         }
     }
+    filteredEdgeDevices() {
+        let list = [{"key": "none", "value": "n/a"}];
+        if (this.props.edge_device_list) {
+            for (let edge_device of this.props.edge_device_list) {
+                if (edge_device.organisationId === this.state.organisation_id && edge_device.edgeId) {
+                    list.push({"key": edge_device.edgeId, "value": edge_device.name});
+                }
+            }
+        }
+        return list;
+    }
     render() {
         if (this.state.has_error) {
             return <h1>crawler-general.js: Something went wrong.</h1>;
@@ -199,6 +231,7 @@ export class CrawlerGeneral extends Component {
 
                 <MessageDialog callback={(action) => this.state.message_callback(action)}
                                open={this.state.message.length > 0}
+                               theme={this.props.theme}
                                message={this.state.message}
                                title={this.state.message_title} />
 
@@ -207,6 +240,7 @@ export class CrawlerGeneral extends Component {
                     <Grid item xs={1} />
                     <Grid item xs={10}>
                         <Select
+                            disableUnderline
                             value={this.state.crawlerType}
                             disabled={("" + this.state.sourceId) !== "0"}
                             style={styles.customWidth}
@@ -276,12 +310,32 @@ export class CrawlerGeneral extends Component {
                             onChange={(event) => {this.change_callback({nodeId: event.target.value})}}
                         />
                     </Grid>
-                    <Grid item xs={6} />
-
+                    {(this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull') &&
+                    <Grid item xs={5}>
+                        <div style={{float: 'left'}}
+                             title="Restful and DB crawlers have optional custom-rendering flags.">
+                            <Checkbox
+                                checked={this.state.customRender && (this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull')}
+                                onChange={(event) => {
+                                    this.change_callback({customRender: event.target.checked && (this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull')});
+                                }}
+                                value="custom render?"
+                                inputProps={{
+                                    'aria-label': 'primary checkbox',
+                                }}
+                            />
+                            custom render?
+                        </div>
+                    </Grid>
+                    }
+                    {(this.state.crawlerType !== 'database' && this.state.crawlerType !== 'restfull') &&
+                    <Grid item xs={5} />
+                    }
+                    <Grid item xs={1} />
 
                     <Grid item xs={1} />
                     <Grid item xs={5}>
-                        <div style={{float: 'left'}} title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automtically from SimSage.">
+                        <div style={{float: 'left'}} title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
                             <Checkbox
                                 checked={this.state.deleteFiles}
                                 onChange={(event) => { this.change_callback({deleteFiles: event.target.checked}); }}
@@ -292,22 +346,22 @@ export class CrawlerGeneral extends Component {
                             />
                             remove un-seen files?
                         </div>
-                        </Grid>
-                        <Grid item xs={5}>
-                            <div style={{float: 'left'}} title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
-                                <Checkbox
-                                    checked={this.state.allowAnonymous || this.state.crawlerType === 'web'}
-                                    disabled={this.state.crawlerType === 'web'}
-                                    onChange={(event) => { this.change_callback({allowAnonymous: event.target.checked}); }}
-                                    value="allow anonymous access to these files?"
-                                    inputProps={{
-                                        'aria-label': 'primary checkbox',
-                                    }}
-                                />
-                                allow anonymous access to these files?
-                            </div>
-                        </Grid>
-                        <Grid item xs={1} />
+                    </Grid>
+                    <Grid item xs={5}>
+                        <div style={{float: 'left'}} title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
+                            <Checkbox
+                                checked={this.state.allowAnonymous || this.state.crawlerType === 'web'}
+                                disabled={this.state.crawlerType === 'web'}
+                                onChange={(event) => { this.change_callback({allowAnonymous: event.target.checked}); }}
+                                value="allow anonymous access to these files?"
+                                inputProps={{
+                                    'aria-label': 'primary checkbox',
+                                }}
+                            />
+                            allow anonymous access to these files?
+                        </div>
+                    </Grid>
+                    <Grid item xs={1} />
 
 
                         <Grid item xs={1} />
@@ -341,17 +395,86 @@ export class CrawlerGeneral extends Component {
                         </ Grid>
                         <Grid item xs={1} />
 
+                    <Grid item xs={12} />
+                    <Grid item xs={12}/>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            {this.state.sourceId && this.state.sourceId > 0 &&
-                            <div>
-                                <Button color="secondary" variant="outlined" style={styles.exportButton}
-                                        onClick={() => this.testCrawler()}>Test Connection</Button>
-                            </div>
+                    <Grid item xs={1} />
+                    <Grid item xs={5}>
+                        <TextField
+                            placeholder="number of search results"
+                            label="number of search results"
+                            value={this.state.numResults}
+                            style={styles.textField}
+                            onChange={(event) => {this.change_callback({numResults: event.target.value})}}
+                        />
+                    </Grid>
+                    <Grid item xs={5}>
+                        <TextField
+                            placeholder="number of fragments per search result"
+                            label="number of fragments per search result"
+                            value={this.state.numFragments}
+                            style={styles.textField}
+                            onChange={(event) => {this.change_callback({numFragments: event.target.value})}}
+                        />
+                    </Grid>
+                    <Grid item xs={1} />
+
+                    <Grid item xs={1} />
+                    <Grid item xs={5}>
+                        <TextField
+                            placeholder="Q&A threshold (0.8125 default)"
+                            label="Q&A threshold (0.8125 default)"
+                            value={this.state.qaMatchStrength}
+                            style={styles.textField}
+                            onChange={(event) => {this.change_callback({qaMatchStrength: event.target.value})}}
+                        />
+                    </Grid>
+                    {this.canHaveEdgeDevice() &&
+                    <Grid item xs={1}>
+                        <div style={{cursor: 'default', marginTop: '14px'}}
+                             title="you can connect this source to a SimSage Edge device if you have one.  Select it here.">
+                            Edge device
+                        </div>
+                    </Grid>
+                    }
+                    {this.canHaveEdgeDevice() &&
+                    <Grid item xs={4}>
+                        <div style={{marginTop: '10px'}}>
+                        <Select
+                            disableUnderline
+                            value={this.state.edgeDeviceId !== '' ? this.state.edgeDeviceId : 'none'}
+                            onChange={(event) => {
+                                this.change_callback({edgeDeviceId: event.target.value})
+                            }}>
+                            {
+                                this.filteredEdgeDevices().map((value) => {
+                                    return (<MenuItem key={value.key} value={value.key}>{value.value}</MenuItem>)
+                                })
                             }
-                        </Grid>
-                        <Grid item xs={6} />
+                        </Select>
+                        </div>
+                    </Grid>
+                    }
+                    {!this.canHaveEdgeDevice() &&
+                        <Grid item xs={5} />
+                    }
+                    <Grid item xs={1} />
+
+
+                    <Grid item xs={1} />
+                    <Grid item xs={5}>
+                        {this.state.sourceId && this.state.sourceId > 0 && this.state.crawlerType !== 'nfs' &&
+                            this.state.crawlerType !== 'database' && this.state.crawlerType !== 'restfull' &&
+                            this.state.crawlerType !== 'gdrive' &&
+                        <div>
+                            <Button variant="contained" color="secondary" style={styles.exportButton}
+                                    onClick={() => this.testCrawler()}>Test Connection</Button>
+                        </div>
+                        }
+                    </Grid>
+                    <Grid item xs={6} />
+
+
 
                     </Grid>
             </div>

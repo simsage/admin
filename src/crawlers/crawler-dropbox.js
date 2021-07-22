@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import TextField from '@material-ui/core/TextField';
 
 import Api from '../common/api';
-import Chip from "@material-ui/core/Chip";
 
 
 const styles = {
@@ -28,25 +27,6 @@ const styles = {
         float: 'left',
         width: '40px',
     },
-    roleBlock: {
-        padding: '5px',
-        marginTop: '20px',
-        float: 'left',
-        width: '400px',
-        border: '1px solid #888',
-        borderRadius: '4px',
-        marginLeft: '10px',
-    },
-    roleLabel: {
-        fontSize: '0.8em',
-        color: '#aaa',
-    },
-    roleArea: {
-        padding: '20px',
-    },
-    roleChip: {
-        margin: '2px',
-    },
 };
 
 
@@ -62,7 +42,7 @@ export class CrawlerDropbox extends Component {
             // dropbox properties
             clientToken: props.clientToken ? props.clientToken : '',
             folderList: props.folderList ? props.folderList : '',
-            userList: Api.defined(props.userList) ? props.userList : '',
+            specific_json: props.specific_json,
         };
 
     }
@@ -78,7 +58,7 @@ export class CrawlerDropbox extends Component {
             this.setState(this.construct_data({tenantId: nextProps.tenantId,
                 clientToken: Api.defined(nextProps.clientToken) ? nextProps.clientToken : '',
                 folderList: Api.defined(nextProps.folderList) ? nextProps.folderList : '',
-                userList: Api.defined(nextProps.userList) ? nextProps.userList : '',
+                specific_json: nextProps.specific_json,
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
             }));
@@ -86,9 +66,9 @@ export class CrawlerDropbox extends Component {
     }
     construct_data(data) {
         return {
+            ...this.state.specific_json,
             clientToken: Api.defined(data.clientToken) ? data.clientToken : this.state.clientToken,
             folderList: Api.defined(data.folderList) ? data.folderList : this.state.folderList,
-            userList: Api.defined(data.userList) ? data.userList : this.state.userList,
         };
     }
     change_callback(data) {
@@ -97,54 +77,6 @@ export class CrawlerDropbox extends Component {
             const c_data = this.construct_data(data);
             this.state.onSave(c_data);
         }
-    }
-    getSelectedUsers() {
-        const selectedUsers = {};
-        for (const user_id of this.state.userList.split(",")) {
-            if (user_id) {
-                selectedUsers[user_id] = true;
-            }
-        }
-        const user_list = [];
-        for (const user of this.props.availableUserList) {
-            if (user.id && selectedUsers[user.id]) {
-                user_list.push(user);
-            }
-        }
-        return user_list;
-    }
-    getAvailableUsers() {
-        const selectedUsers = {};
-        for (const user_id of this.state.userList.split(",")) {
-            if (user_id) {
-                selectedUsers[user_id] = true;
-            }
-        }
-        const user_list = [];
-        for (const user of this.props.availableUserList) {
-            if (user.id && !selectedUsers[user.id]) {
-                user_list.push(user);
-            }
-        }
-        return user_list;
-    }
-    removeUser(removeUser) {
-        const new_list = [];
-        for (const user_id of this.state.userList.split(",")) {
-            if (user_id && user_id !== removeUser.id) {
-                new_list.push(user_id);
-            }
-        }
-        this.change_callback({userList: new_list.join()});
-    }
-    addUser(user) {
-        let new_list = this.state.userList;
-        if (new_list.length > 0) {
-            new_list = new_list + ',' + user.id
-        } else {
-            new_list = user.id
-        }
-        this.change_callback({userList: new_list});
     }
     render() {
         if (this.state.has_error) {
@@ -179,35 +111,6 @@ export class CrawlerDropbox extends Component {
                     style={styles.textField}
                 />
                 <br />
-
-                <div>
-                    <div style={styles.roleBlock}>
-                        <div style={styles.roleLabel}>users with access</div>
-                        <div style={styles.roleArea}>
-                            {
-                                this.getSelectedUsers().map((user) => {
-                                    return (<Chip key={user.id} color="secondary"
-                                                  style={styles.roleChip}
-                                                  onClick={() => this.removeUser(user)}
-                                                  label={user.firstName + ' ' + user.surname} variant="outlined" />)
-                                })
-                            }
-                        </div>
-                    </div>
-                    <div style={styles.roleBlock}>
-                        <div style={styles.roleLabel}>available users</div>
-                        <div style={styles.roleArea}>
-                            {
-                                this.getAvailableUsers().map((user) => {
-                                    return (<Chip key={user.id} color="primary"
-                                                  style={styles.roleChip}
-                                                  onClick={() => this.addUser(user)}
-                                                  label={user.firstName + ' ' + user.surname} variant="outlined" />)
-                                })
-                            }
-                        </div>
-                    </div>
-                </div>
 
             </div>
         );

@@ -29,6 +29,16 @@ const styles = {
     label: {
         color: '#555',
     },
+    tableLight: {
+    },
+    tableDark: {
+        background: '#d0d0d0',
+    },
+    text: {
+        border: '1px solid #808080',
+        borderRadius: '4px',
+        padding: '4px',
+    },
     tableHeaderStyle: {
         background: '#555',
         fontSize: '0.95em',
@@ -388,6 +398,7 @@ export class UserManager extends React.Component {
             this.props.selected_organisation && this.props.selected_organisation.length > 0;
     }
     render() {
+        const theme = this.props.theme;
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         const isManager = Home.hasRole(this.props.user, ['manager']);
         return (
@@ -399,7 +410,7 @@ export class UserManager extends React.Component {
                         <div style={styles.findBox}>
                             <div style={styles.floatLeftLabel}>filter</div>
                             <div style={styles.searchFloatLeft}>
-                                <input type="text" value={this.props.user_filter} autoFocus={true} style={styles.text}
+                                <input type="text" value={this.props.user_filter} autoFocus={true} style={styles.text} className={theme}
                                        onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                        onChange={(event) => {
                                            this.props.setUserFilter(event.target.value)
@@ -419,15 +430,15 @@ export class UserManager extends React.Component {
                 <Paper style={styles.pageWidth}>
                     <Table>
                         <TableHead>
-                            <TableRow style={styles.tableHeaderStyle}>
-                                <TableCell style={styles.tableHeaderStyle}>user name</TableCell>
-                                <TableCell style={styles.tableHeaderStyle}>first name</TableCell>
-                                <TableCell style={styles.tableHeaderStyle}>surname</TableCell>
-                                <TableCell style={styles.tableHeaderStyle}>roles</TableCell>
-                                <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
+                            <TableRow className='table-header'>
+                                <TableCell className='table-header'>user name</TableCell>
+                                <TableCell className='table-header'>first name</TableCell>
+                                <TableCell className='table-header'>surname</TableCell>
+                                <TableCell className='table-header'>roles</TableCell>
+                                <TableCell className='table-header'>actions</TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
+                        <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                             {
                                 this.getUsers(isAdmin).map((user) => {
                                     const canEdit = Home.canEdit(user, isAdmin, isManager);
@@ -526,8 +537,8 @@ export class UserManager extends React.Component {
                         fullWidth={true}
                         maxWidth="md"
                         onClose={() => this.setState({edit_user: false, user: null})} >
-                    <DialogTitle>{this.state.edit_user_id ? "Edit User" : "Add New User"}</DialogTitle>
-                    <DialogContent>
+                    <DialogTitle className={this.props.theme}>{this.state.edit_user_id ? "Edit User" : "Add New User"}</DialogTitle>
+                    <DialogContent className={this.props.theme}>
                         <TextField
                             autoFocus={true}
                             style={styles.editBox}
@@ -618,9 +629,9 @@ export class UserManager extends React.Component {
                             </div>
                         }
                     </DialogContent>
-                    <DialogActions>
+                    <DialogActions className={this.props.theme}>
                         <Button color="primary" onClick={() => this.editCancel()}>Cancel</Button>
-                        <Button variant="outlined" color="secondary" onClick={() => this.editOk()}>Save</Button>
+                        <Button variant="contained" color="secondary" onClick={() => this.editOk()}>Save</Button>
                     </DialogActions>
                 </Dialog>
 
@@ -635,6 +646,7 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
 
         user_list: state.appReducer.user_list,
         user_filter: state.appReducer.user_filter,

@@ -102,7 +102,7 @@ export class MindSearchComponent extends Component {
                     />
                 </div>
                 <div style={styles.searchButtonBox}>
-                    <Button variant="outlined"
+                    <Button variant="contained"
                         color="secondary"
                         onClick={() => this.doClickSearch()}>
                         Ask

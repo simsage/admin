@@ -25,6 +25,12 @@ export function initializeState() {
         selected_knowledgebase_id: "",
         knowledge_base_list: [],
 
+        // edge devices
+        edge_device_list: [],
+        selected_edge_device: null,
+        selected_edge_device_id: "",
+        edge_device_command_list: [],
+
         // inventory items for a given kb
         inventorize_list: [],
         inventorize_busy: false,
@@ -35,6 +41,7 @@ export function initializeState() {
 
         // crawlers
         crawler_list: [],
+        theme: window.ENV.theme,
 
         // system busy
         busy: false,
@@ -104,7 +111,7 @@ export function initializeState() {
         synset_total_size: 0,
 
         // reports
-        report_date: Api.toIsoDate(new Date()),
+        report_date: Api.toIsoDate(new Date().getUTCDate()),
         report_num_items: 20,
         access_frequency: {labels: []},
         general_statistics: [],
@@ -119,11 +126,13 @@ export function initializeState() {
         // html5 notification permissions asked already?
         html5_notifications: '',
 
-        // list of log files
-        log_size: 100,
+        // system logs
         log_list: [],
-        selected_log: 'web',
-        active_components: {}, // what processes are active
+        log_date: Api.toIsoDateTime(new Date()),
+        log_hours: 2,
+        log_type: 'All',
+        log_service: 'All',
+        log_refresh: 0,
 
         // ad domain manager
         domain_list: [],
@@ -142,13 +151,12 @@ export function initializeState() {
 
 export function loadState() {
     try {
-        let serializedState = localStorage.getItem("https://simsage.nz:state");
+        let serializedState = localStorage.getItem("https://simsage.ai/state");
         if (serializedState === null || window.location.href.endsWith("/#/")) {
             return {"appReducer": initializeState()};
         }
         return JSON.parse(serializedState);
-    }
-    catch (err) {
+    } catch (err) {
         return {"appReducer": initializeState()};
     }
 }
@@ -157,18 +165,16 @@ export function loadState() {
 export function saveState(state) {
     try {
         let serializedState = JSON.stringify(state);
-        localStorage.setItem("https://simsage.nz:state", serializedState);
-    }
-    catch (err) {
+        localStorage.setItem("https://simsage.ai/state", serializedState);
+    } catch (err) {
     }
 }
 
 
-export function clearState(state) {
+export function clearState() {
     try {
-        localStorage.removeItem("https://simsage.nz:state");
-    }
-    catch (err) {
+        saveState(initializeState());
+    } catch (err) {
     }
 }
 

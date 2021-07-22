@@ -4,6 +4,7 @@ import Downshift from 'downshift';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
+import Api from "./api";
 
 // how many characters before we start calling back
 const controlWidth = '500px';
@@ -239,6 +240,8 @@ export class AutoComplete extends Component {
                                         marginTop: 8,
                                         paddingBottom: "20px",
                                         width: '500px',
+                                        color: Api.getThemeColour(this.props.theme),
+                                        background: Api.getThemeBackground(this.props.theme),
                                         minHeight: '30px',
                                         maxHeight: '300px',
                                         overflowX: 'auto',

@@ -13,13 +13,12 @@ import {CrawlerDialog} from '../crawlers/crawler-dialog'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-import {Api} from "../common/api";
 import MessageDialog from "../common/message-dialog";
 import CrawlerImportExport from "./crawler-import-export";
 
-const empty_crawler= {id: '', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: true,
-                      enablePreview: true, enableIndexing: true, description: '', schedule: '',
-                      filesPerSecond: '0', specificJson: ''};
+const empty_crawler= {id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: true,
+                      enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: '{}',
+                      processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxBotItems: '0', customRender: false};
 
 const styles = {
     pageWidth: {
@@ -28,6 +27,11 @@ const styles = {
     tab: {
         backgroundColor: '#f8f8f8',
         color: '#000',
+    },
+    tableLight: {
+    },
+    tableDark: {
+        background: '#d0d0d0',
     },
     addImage: {
         width: '25px',
@@ -176,14 +180,9 @@ export class DocumentSources extends Component {
         });
     }
     confirmDocumentsDelete(action, crawler) {
-        const self = this;
         this.setState({message: '', message_title: ''});
         if (action && crawler) {
-            Api.deleteCrawlerDocuments(crawler.organisationId, crawler.kbId, crawler.sourceId,
-                (response) => {},
-                (err) => {
-                    self.props.setError("Error removing all documents", err);
-                });
+            this.props.deleteCrawlerDocuments(crawler.sourceId);
         }
     }
     canDeleteDocuments(crawler) {
@@ -204,11 +203,13 @@ export class DocumentSources extends Component {
         this.setState({export_open: false, selected_crawler: {}});
     }
     render() {
+        const theme = this.props.theme;
         return (
             <div>
                 <CrawlerDialog
                     open={this.state.open}
                     title={this.state.title}
+                    theme={theme}
                     organisation_id={this.props.selected_organisation_id}
                     kb_id={this.props.selected_knowledgebase_id}
                     user_list={this.props.user_list}
@@ -219,10 +220,12 @@ export class DocumentSources extends Component {
                     error_msg={this.props.error}
                     wpUploadArchive={(data) => this.props.wpUploadArchive(data) }
                     crawler={this.state.selected_crawler}
+                    edge_device_list={this.props.edge_device_list}
                 />
 
                 <CrawlerImportExport
                     open={this.state.export_open}
+                    theme={theme}
                     upload={this.state.export_upload}
                     crawler={this.state.selected_crawler}
                     export_upload={this.state.export_upload}
@@ -232,6 +235,7 @@ export class DocumentSources extends Component {
 
                 <MessageDialog callback={(action) => this.state.message_callback(action)}
                                open={this.state.message.length > 0}
+                               theme={this.props.theme}
                                message={this.state.message}
                                title={this.state.message_title} />
 
@@ -240,13 +244,15 @@ export class DocumentSources extends Component {
                     <Paper style={styles.pageWidth}>
                         <Table>
                             <TableHead>
-                                <TableRow style={styles.tableHeaderStyle}>
-                                    <TableCell style={styles.tableHeaderStyle}>name</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>type</TableCell>
-                                    <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
+                                <TableRow className='table-header'>
+                                    <TableCell className='table-header'>name</TableCell>
+                                    <TableCell className='table-header'>type</TableCell>
+                                    <TableCell className='table-header'>status</TableCell>
+                                    <TableCell className='table-header'>crawled / indexed</TableCell>
+                                    <TableCell className='table-header'>actions</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                                 {
                                     this.getCrawlers().map((crawler) => {
                                         return (
@@ -256,6 +262,12 @@ export class DocumentSources extends Component {
                                                 </TableCell>
                                                 <TableCell>
                                                     <div style={styles.label}>{crawler.crawlerType}</div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div style={styles.label}>{crawler.isCrawling ? "busy" : "idle"}</div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div style={styles.label}>{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div style={styles.linkButton} onClick={() => this.editCrawler(crawler)}>
@@ -282,6 +294,8 @@ export class DocumentSources extends Component {
                                 <TableRow>
                                     <TableCell/>
                                     <TableCell/>
+                                    <TableCell/>
+                                    <TableCell/>
                                     <TableCell>
                                         {this.props.selected_organisation_id.length > 0 &&
                                             <div style={styles.imageButton} onClick={() => this.addNewCrawler()}><img
@@ -300,6 +314,7 @@ export class DocumentSources extends Component {
 
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25]}
+                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
                             component="div"
                             count={this.props.crawler_list.length}
                             rowsPerPage={this.state.page_size}
@@ -326,12 +341,14 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
         user_list: state.appReducer.user_list,
         user_filter: state.appReducer.user_filter,
         crawler_list: state.appReducer.crawler_list,
+        edge_device_list: state.appReducer.edge_device_list,
     };
 };
 

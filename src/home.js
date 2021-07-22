@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
+import CssBaseline from "@material-ui/core/CssBaseline";
 
-import {ThemeProvider} from '@material-ui/core/styles';
-import uiTheme from "./theme-ui";
+import {MuiThemeProvider} from '@material-ui/core/styles';
+import {darkTheme, lightTheme} from "./theme-ui";
 
 import AppMenu from './auth/app-menu'
 import ErrorDialog from './common/error-dialog'
@@ -14,6 +15,8 @@ import Comms from './common/comms'
 import Organisations from "./organisations/organisations";
 import UserManager from "./users/user-manager";
 import KnowledgeBases from "./kb/knowledge-bases";
+import EdgeDevices from "./edge/edge-devices";
+import EdgeDeviceCommands from "./edge/edge-device-commands";
 import Inventory from './inventory/inventory'
 import DocumentSources from "./documents/document-sources";
 import Documents from "./documents/documents";
@@ -26,7 +29,6 @@ import Logs from "./reports/logs";
 import Reports from "./reports/reports";
 import OperatorTabs from "./operator/operator_tabs";
 import Domains from "./ad/domains";
-import SynonymCategories from "./semantics/semantic-categories";
 
 import SockJsClient from 'react-stomp';
 
@@ -37,6 +39,7 @@ import {appCreators} from "./actions/appActions";
 // if not defined, use this one
 const default_operator_wait_timeout_in_ms = 10000;
 
+
 const styles = {
     page: {
         float: 'left',
@@ -44,8 +47,8 @@ const styles = {
     },
     pageNav: {
         float: 'left',
+        marginTop: '56px',
         marginRight: '50px',
-        background: '#fdfdfd',
         borderRadius: '10px',
         padding: '5px',
     },
@@ -60,7 +63,7 @@ const styles = {
         width: '180px',
         padding: '10px',
         cursor: 'pointer',
-        background: '#a0a0a0',
+        background: '#62C2D6',
         color: '#fff',
         border: '1px solid #666',
         borderRadius: '2px',
@@ -78,6 +81,18 @@ const styles = {
         borderRadius: '2px',
         marginBottom: '5px',
     },
+    navItemDark: {
+        marginLeft: '10px',
+        textAlign: 'center',
+        width: '180px',
+        padding: '10px',
+        border: '1px solid #bbb',
+        cursor: 'pointer',
+        background: '#666',
+        color: '#f8f8f8',
+        borderRadius: '2px',
+        marginBottom: '5px',
+    },
     navItemDisabled: {
         marginLeft: '10px',
         textAlign: 'center',
@@ -86,6 +101,18 @@ const styles = {
         border: '1px solid #bbb',
         background: '#f8f8f8',
         color: '#e0e0e0',
+        borderRadius: '2px',
+        marginBottom: '5px',
+        cursor: 'not-allowed',
+    },
+    navItemDisabledDark: {
+        marginLeft: '10px',
+        textAlign: 'center',
+        width: '180px',
+        padding: '10px',
+        border: '1px solid #555',
+        background: '#444',
+        color: '#888',
         borderRadius: '2px',
         marginBottom: '5px',
         cursor: 'not-allowed',
@@ -179,8 +206,20 @@ const styles = {
         backgroundSize: '100px',
         background: "url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255)"
     },
+    busyDark: {
+        display: 'block',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        borderRadius: '10px',
+        opacity: '0.3',
+        backgroundSize: '100px',
+        background: "url('../images/busy.gif') 50% 50% no-repeat rgb(1.0,1.0,1.0,0.10)"
+    },
 };
-
 
 export class Home extends Component {
     constructor(props) {
@@ -198,13 +237,14 @@ export class Home extends Component {
     componentDidMount() {
         // do we still have a session?
         if (!Api.defined(Comms.getSession())) {
-            window.location = "/";
+            // clearState();
+            window.location = "/#/";
         } else {
             this.props.getOrganisationList();
 
             // switch tabs for non admin users to knowledge base default
             if (!Home.hasRole(this.props.user, ['admin']) && this.props.selected_tab === "organisations") {
-                this.props.selectTab('knowledge bases');
+                this.props.setupManager();
             }
 
             // /ops/refresh every operator_wait_timeout_in_ms interval
@@ -248,10 +288,11 @@ export class Home extends Component {
         }
     }
     getStyle(tab, disabled) {
+        const theme = this.props.theme;
         if (disabled) {
-            return styles.navItemDisabled;
+            return theme === 'light' ? styles.navItemDisabled : styles.navItemDisabledDark;
         }
-        return this.props.selected_tab === tab ? styles.selectedNavItem : styles.navItem;
+        return this.props.selected_tab === tab ? styles.selectedNavItem : (theme === 'light' ? styles.navItem : styles.navItemDark);
     }
     static getTab(user) {
         if (Home.hasRole(user, ['admin'])) {
@@ -357,6 +398,26 @@ export class Home extends Component {
             callback(filtered_list);
         }
     }
+    getEdgeDeviceList(filtered_text, callback) {
+        if (this.props.edge_device_list) {
+            if (filtered_text && filtered_text.length > 0) {
+                const ft_lower = filtered_text.toLowerCase();
+                const filtered_list = [];
+                for (const item of this.props.edge_device_list) {
+                    if (item.name.toLowerCase().indexOf(ft_lower) >= 0) {
+                        filtered_list.push({'label': item.name, 'data': item.edgeId});
+                    }
+                }
+                callback(filtered_list);
+            } else {
+                const filtered_list = [];
+                for (const item of this.props.edge_device_list) {
+                    filtered_list.push({'label': item.name, 'data': item.edgeId});
+                }
+                callback(filtered_list);
+            }
+        }
+    }
     openDialog(message, message_title, message_callback) {
         this.setState({dialog_open: true, message: message, message_title: message_title, message_callback: message_callback});
     }
@@ -378,22 +439,26 @@ export class Home extends Component {
                 }
             }
         }
+        const theme = this.props.theme;
         return (
-            <ThemeProvider theme={uiTheme}>
+            <MuiThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+                <CssBaseline />
 
                 {
                     this.props.busy &&
-                    <div style={styles.busy} />
+                    <div style={theme === 'light' ? styles.busy : styles.busyDark} />
                 }
 
                 <AppMenu title="" signed_in={true} />
 
                 <ErrorDialog title={this.props.error_title}
+                             theme={theme}
                              message={this.props.error}
                              callback={() => this.props.closeError()} />
 
                 <MessageDialog callback={(action) => {if (this.state.message_callback) this.state.message_callback(action)}}
                                open={this.state.message.length > 0}
+                               theme={this.props.theme}
                                message={this.state.message}
                                title={this.state.message_title} />
 
@@ -409,84 +474,90 @@ export class Home extends Component {
                      <div style={styles.pageNav}>
                          {
                              Home.hasRole(this.props.user, ['admin']) &&
-                             <div style={this.getStyle('organisations', false)} onClick={() => this.props.selectTab('organisations')}>organisations</div>
+                             <div style={this.getStyle('organisations', false)} className="no-select"
+                                  onClick={() => this.props.selectTab('organisations')}>organisations</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('knowledge bases', false)}
+                             <div style={this.getStyle('knowledge bases', false)} className="no-select"
                                   onClick={() => this.props.selectTab('knowledge bases')}>knowledge bases</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('users', false)}
+                             <div style={this.getStyle('edge devices', false)} className="no-select"
+                                  onClick={() => this.props.selectTab('edge devices')}>Edge devices</div>
+                         }
+                         {
+                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
+                             this.props.edge_device_list && this.props.edge_device_list.length > 0 &&
+                             <div style={this.getStyle('edge commands', false)} className="no-select"
+                                  onClick={() => this.props.selectTab('edge commands')}>Edge commands</div>
+                         }
+                         {
+                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
+                             <div style={this.getStyle('users', false)} className="no-select"
                                   onClick={() => this.props.selectTab('users')}>user manager</div>
                          }
                          {
                              <div style={this.getStyle('operator', !this.props.operator_connected || !isOperator)}
-                                  onClick={() => { if (isOperator) this.props.selectTab('operator')}}>operator</div>
+                                  onClick={() => { if (isOperator) this.props.selectTab('operator')}} className="no-select">operator</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('inventory', false)}
+                             <div style={this.getStyle('inventory', false)} className="no-select"
                                   onClick={() => this.props.selectTab('inventory')}>inventory</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('document sources', false)}
+                             <div style={this.getStyle('document sources', false)} className="no-select"
                                   onClick={() => this.props.selectTab('document sources')}>document
                                  sources</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('documents', false)}
+                             <div style={this.getStyle('documents', false)} className="no-select"
                                   onClick={() => this.props.selectTab('documents')}>documents</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('active directory', false)}
+                             <div style={this.getStyle('active directory', false)} className="no-select"
                                   onClick={() => this.props.selectTab('active directory')}>active directory</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('mind', false)}
+                             <div style={this.getStyle('mind', false)} className="no-select"
                                   onClick={() => this.props.selectTab('mind')}>the mind</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('mind-test', false)}
+                             <div style={this.getStyle('mind-test', false)} className="no-select"
                                   onClick={() => this.props.selectTab('mind-test')}>test the mind</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('synonyms', false)}
+                             <div style={this.getStyle('synonyms', false)} className="no-select"
                                   onClick={() => this.props.selectTab('synonyms')}>synonyms</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('semantics')}
+                             <div style={this.getStyle('semantics')} className="no-select"
                                   onClick={() => this.props.selectTab('semantics')}>semantics</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('semantic categories', false)}
-                                  onClick={() => this.props.selectTab('semantic categories')}>semantic categories</div>
-                         }
-                         {
-                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('syn-sets')}
+                             <div style={this.getStyle('syn-sets')} className="no-select"
                                   onClick={() => this.props.selectTab('syn-sets')}>syn-sets</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div style={this.getStyle('reports', false)}
+                             <div style={this.getStyle('reports', false)} className="no-select"
                                   onClick={() => this.props.selectTab('reports')}>reports</div>
                          }
-                         {/* this doesn't work for k8s clusters */}
-                         {/*{*/}
-                         {/*    Home.hasRole(this.props.user, ['admin']) &&*/}
-                         {/*    <div style={this.getStyle('logs', false)}*/}
-                         {/*         onClick={() => this.props.selectTab('logs')}>logs</div>*/}
-                         {/*}*/}
+                         {
+                             Home.hasRole(this.props.user, ['admin']) &&
+                             <div style={this.getStyle('logs', false)}
+                                  onClick={() => this.props.selectTab('logs')}>logs</div>
+                         }
                      </div>
 
                      <div style={styles.pageContent}>
@@ -498,6 +569,7 @@ export class Home extends Component {
                                  <div style={styles.lhs}>organisation</div>
                                  <div style={styles.rhs}>
                                      <AutoComplete
+                                         theme={theme}
                                          label='organisation'
                                          value={this.props.selected_organisation}
                                          onFilter={(text, callback) => this.getOrganisationListFiltered(text, callback)}
@@ -521,12 +593,13 @@ export class Home extends Component {
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' && this.props.selected_tab !== 'users' &&
                           this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'license' && this.props.selected_tab !== 'knowledge bases' &&
-                          this.props.selected_tab !== 'logs' &&
+                          this.props.selected_tab !== 'logs' && this.props.selected_tab !== 'edge devices' && this.props.selected_tab !== 'edge commands' &&
                              <div style={styles.knowledgeSelect}>
                                  <div style={styles.lhs}>knowledge base</div>
                                  <div style={styles.rhs}>
                                      <AutoComplete
                                          label='knowledge base'
+                                         theme={theme}
                                          value={this.props.selected_knowledgebase}
                                          onFilter={(text, callback) => this.getKnowledgeBaseListFiltered(text, callback)}
                                          minTextSize={1}
@@ -536,6 +609,24 @@ export class Home extends Component {
                                      />
                                  </div>
                              </div>
+                         }
+
+                         { this.props.selected_tab === 'edge commands' &&
+                         <div style={styles.knowledgeSelect}>
+                             <div style={styles.lhs}>edge device</div>
+                             <div style={styles.rhs}>
+                                 <AutoComplete
+                                     label='edge device'
+                                     theme={theme}
+                                     value={this.props.selected_edge_device}
+                                     onFilter={(text, callback) => this.getEdgeDeviceList(text, callback)}
+                                     minTextSize={1}
+                                     onSelect={(label, data) => {
+                                         this.props.selectEdgeDevice(label, data);
+                                     }}
+                                 />
+                             </div>
+                         </div>
                          }
 
                          { this.props.selected_tab === 'organisations' &&
@@ -548,6 +639,18 @@ export class Home extends Component {
                             <KnowledgeBases
                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                 closeDialog={() => this.closeDialog()} />
+                         }
+
+                         { this.props.selected_tab === 'edge devices' &&
+                             <EdgeDevices
+                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                                 closeDialog={() => this.closeDialog()} />
+                         }
+
+                         { this.props.selected_tab === 'edge commands' &&
+                            <EdgeDeviceCommands
+                             openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                             closeDialog={() => this.closeDialog()} />
                          }
 
                          { this.props.selected_tab === 'users' &&
@@ -604,12 +707,6 @@ export class Home extends Component {
                                  closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'semantic categories' &&
-                             <SynonymCategories
-                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                 closeDialog={() => this.closeDialog()} />
-                         }
-
                          { this.props.selected_tab === 'semantics' &&
                              <Semantics
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
@@ -652,7 +749,6 @@ export class Home extends Component {
                         <div style={styles.notifications}>
                             {
                                 this.getNotifications().map((notification) => {
-                                    console.log(notification);
                                     return (
                                         <div key={notification.id} style={styles.info}>
                                             <div style={styles.infoDate}>{notification.year}/{Home.pad(notification.month)}/{Home.pad(notification.day)}&nbsp;
@@ -670,7 +766,7 @@ export class Home extends Component {
                     </div>
                 }
 
-            </ThemeProvider>
+            </MuiThemeProvider>
         )
     }
 }
@@ -686,6 +782,7 @@ const mapStateToProps = function(state) {
         notification_list_display_size: state.appReducer.notification_list_display_size,
 
         busy: state.appReducer.busy,
+        theme: state.appReducer.theme,
 
         user: state.appReducer.user,
         selected_tab: state.appReducer.selected_tab,
@@ -701,6 +798,11 @@ const mapStateToProps = function(state) {
         selected_organisation: state.appReducer.selected_organisation,
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase: state.appReducer.selected_knowledgebase,
+
+        // list of edge devices
+        edge_device_list: state.appReducer.edge_device_list,
+        selected_edge_device: state.appReducer.selected_edge_device,
+        selected_edge_device_id: state.appReducer.selected_edge_device_id,
     };
 };
 

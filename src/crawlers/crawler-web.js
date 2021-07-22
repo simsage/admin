@@ -26,13 +26,14 @@ export class CrawlerWeb extends Component {
             onSave: props.onSave,
 
             // web specific
-            web_base_url: Api.defined(props.web_base_url) ? props.web_base_url : '',
-            web_css: Api.defined(props.web_css) ? props.web_css : '',
-            web_css_ignore: Api.defined(props.web_css_ignore) ? props.web_css_ignore : '',
-            web_extension_filter: Api.defined(props.web_extension_filter) ? props.web_extension_filter : '',
-            web_extension_filter_ignore: Api.defined(props.web_extension_filter_ignore) ? props.web_extension_filter_ignore : '',
-            web_article_filter_incl_csv: Api.defined(props.web_article_filter_incl_csv) ? props.web_article_filter_incl_csv : '',
-            web_article_filter_excl_csv: Api.defined(props.web_article_filter_excl_csv) ? props.web_article_filter_excl_csv : '',
+            baseUrlList: Api.defined(props.baseUrlList) ? props.baseUrlList : '',
+            webCss: Api.defined(props.webCss) ? props.webCss : '',
+            webCssIgnore: Api.defined(props.webCssIgnore) ? props.webCssIgnore : '',
+            validExtensions: Api.defined(props.validExtensions) ? props.validExtensions : '',
+            validExtensionsIgnore: Api.defined(props.validExtensionsIgnore) ? props.validExtensionsIgnore : '',
+            articleIncludeWordsCsv: Api.defined(props.articleIncludeWordsCsv) ? props.articleIncludeWordsCsv : '',
+            articleExcludeWordsCsv: Api.defined(props.articleExcludeWordsCsv) ? props.articleExcludeWordsCsv : '',
+            specific_json: props.specific_json,
         };
 
     }
@@ -47,26 +48,29 @@ export class CrawlerWeb extends Component {
     UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
-            this.setState(this.construct_data({web_base_url: nextProps.web_base_url,
-                web_css: Api.defined(nextProps.web_css) ? nextProps.web_css : '',
-                web_extension_filter: Api.defined(nextProps.web_extension_filter) ? nextProps.web_extension_filter : '',
-                web_css_ignore: Api.defined(nextProps.web_css_ignore) ? nextProps.web_css_ignore : '',
-                web_extension_filter_ignore: Api.defined(nextProps.web_extension_filter_ignore) ? nextProps.web_extension_filter_ignore : '',
-                web_article_filter_incl_csv: Api.defined(nextProps.web_article_filter_incl_csv) ? nextProps.web_article_filter_incl_csv : '',
-                web_article_filter_excl_csv: Api.defined(nextProps.web_article_filter_excl_csv) ? nextProps.web_article_filter_excl_csv : '',
+            this.setState(this.construct_data({baseUrlList: nextProps.baseUrlList,
+                webCss: Api.defined(nextProps.webCss) ? nextProps.webCss : '',
+                validExtensions: Api.defined(nextProps.validExtensions) ? nextProps.validExtensions : '',
+                webCssIgnore: Api.defined(nextProps.webCssIgnore) ? nextProps.webCssIgnore : '',
+                validExtensionsIgnore: Api.defined(nextProps.validExtensionsIgnore) ? nextProps.validExtensionsIgnore : '',
+                articleIncludeWordsCsv: Api.defined(nextProps.articleIncludeWordsCsv) ? nextProps.articleIncludeWordsCsv : '',
+                articleExcludeWordsCsv: Api.defined(nextProps.articleExcludeWordsCsv) ? nextProps.articleExcludeWordsCsv : '',
+                specific_json: nextProps.specific_json,
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
             }));
         }
     }
     construct_data(data) {
-        return {web_base_url: Api.defined(data.web_base_url) ? data.web_base_url : this.state.web_base_url,
-            web_css: Api.defined(data.web_css) ? data.web_css : this.state.web_css,
-            web_css_ignore: Api.defined(data.web_css_ignore) ? data.web_css_ignore : this.state.web_css_ignore,
-            web_extension_filter: Api.defined(data.web_extension_filter) ? data.web_extension_filter : this.state.web_extension_filter,
-            web_extension_filter_ignore: Api.defined(data.web_extension_filter_ignore) ? data.web_extension_filter_ignore : this.state.web_extension_filter_ignore ,
-            web_article_filter_incl_csv: Api.defined(data.web_article_filter_incl_csv) ? data.web_article_filter_incl_csv : this.state.web_article_filter_incl_csv ,
-            web_article_filter_excl_csv: Api.defined(data.web_article_filter_excl_csv) ? data.web_article_filter_excl_csv : this.state.web_article_filter_excl_csv ,
+        return {
+            ...this.state.specific_json,
+            baseUrlList: Api.defined(data.baseUrlList) ? data.baseUrlList : this.state.baseUrlList,
+            webCss: Api.defined(data.webCss) ? data.webCss : this.state.webCss,
+            webCssIgnore: Api.defined(data.webCssIgnore) ? data.webCssIgnore : this.state.webCssIgnore,
+            validExtensions: Api.defined(data.validExtensions) ? data.validExtensions : this.state.validExtensions,
+            validExtensionsIgnore: Api.defined(data.validExtensionsIgnore) ? data.validExtensionsIgnore : this.state.validExtensionsIgnore ,
+            articleIncludeWordsCsv: Api.defined(data.articleIncludeWordsCsv) ? data.articleIncludeWordsCsv : this.state.articleIncludeWordsCsv ,
+            articleExcludeWordsCsv: Api.defined(data.articleExcludeWordsCsv) ? data.articleExcludeWordsCsv : this.state.articleExcludeWordsCsv ,
         };
     }
     change_callback(data) {
@@ -93,8 +97,8 @@ export class CrawlerWeb extends Component {
                             variant="outlined"
                             rows="3"
                             label="http/s base name list (preferably https), one per line"
-                            value={this.state.web_base_url}
-                            onChange={(event) => {this.change_callback({web_base_url: event.target.value})}}
+                            value={this.state.baseUrlList}
+                            onChange={(event) => {this.change_callback({baseUrlList: event.target.value})}}
                             style={styles.textField}
                         />
                     </Grid>
@@ -105,8 +109,8 @@ export class CrawlerWeb extends Component {
                         <TextField
                             label="file extensions to include (csv list)"
                             variant="outlined"
-                            value={this.state.web_extension_filter}
-                            onChange={(event) => {this.change_callback({web_extension_filter: event.target.value})}}
+                            value={this.state.validExtensions}
+                            onChange={(event) => {this.change_callback({validExtensions: event.target.value})}}
                             style={styles.textField}
                         />
                     </Grid>
@@ -114,8 +118,8 @@ export class CrawlerWeb extends Component {
                         <TextField
                             label="file extensions to exclude (csv list)"
                             variant="outlined"
-                            value={this.state.web_extension_filter_ignore}
-                            onChange={(event) => {this.change_callback({web_extension_filter_ignore: event.target.value})}}
+                            value={this.state.validExtensionsIgnore}
+                            onChange={(event) => {this.change_callback({validExtensionsIgnore: event.target.value})}}
                             style={styles.textField}
                         />
                     </Grid>
@@ -129,8 +133,8 @@ export class CrawlerWeb extends Component {
                             variant="outlined"
                             rows="3"
                             label="css/html root fragments to include csv (e.g. div.class or id)"
-                            value={this.state.web_css}
-                            onChange={(event) => {this.change_callback({web_css: event.target.value})}}
+                            value={this.state.webCss}
+                            onChange={(event) => {this.change_callback({webCss: event.target.value})}}
                             style={styles.textField}
                         />
                     </Grid>
@@ -141,8 +145,8 @@ export class CrawlerWeb extends Component {
                             variant="outlined"
                             rows="3"
                             label="css/html root fragments to exclude csv (e.g. div.class or id)"
-                            value={this.state.web_css_ignore}
-                            onChange={(event) => {this.change_callback({web_css_ignore: event.target.value})}}
+                            value={this.state.webCssIgnore}
+                            onChange={(event) => {this.change_callback({webCssIgnore: event.target.value})}}
                             style={styles.textField}
                         />
                     </Grid>
@@ -156,8 +160,8 @@ export class CrawlerWeb extends Component {
                             variant="outlined"
                             rows="3"
                             label="csv words, include articles by words [optional]"
-                            value={this.state.web_article_filter_incl_csv}
-                            onChange={(event) => {this.change_callback({web_article_filter_incl_csv: event.target.value})}}
+                            value={this.state.articleIncludeWordsCsv}
+                            onChange={(event) => {this.change_callback({articleIncludeWordsCsv: event.target.value})}}
                             style={styles.textField}
                         />
                     </Grid>
@@ -168,8 +172,8 @@ export class CrawlerWeb extends Component {
                             variant="outlined"
                             rows="3"
                             label="csv words, exclude articles by words [optional]"
-                            value={this.state.web_article_filter_excl_csv}
-                            onChange={(event) => {this.change_callback({web_article_filter_excl_csv: event.target.value})}}
+                            value={this.state.articleExcludeWordsCsv}
+                            onChange={(event) => {this.change_callback({articleExcludeWordsCsv: event.target.value})}}
                             style={styles.textField}
                         />
                     </Grid>

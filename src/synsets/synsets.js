@@ -20,6 +20,11 @@ const styles = {
         minWidth: '800px',
         width: '900px',
     },
+    tableLight: {
+    },
+    tableDark: {
+        background: '#d0d0d0',
+    },
     smallTableHeaderStyle: {
         background: '#555',
         fontSize: '0.95em',
@@ -105,6 +110,8 @@ const styles = {
         float: 'left',
     },
     text: {
+        border: '1px solid #808080',
+        borderRadius: '4px',
         padding: '4px',
         width: '280px',
     },
@@ -203,9 +210,11 @@ export class SynSets extends React.Component {
             this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
     }
     render() {
+        const theme = this.props.theme;
         return (
             <div>
                 <SynSetEdit open={this.state.synSet_edit}
+                            theme={theme}
                             synSet={this.state.synSet}
                             onSave={(item) => this.save(item)}
                             onError={(err) => this.props.setError("Error", err)} />
@@ -216,7 +225,7 @@ export class SynSets extends React.Component {
                     <div style={styles.findBox}>
                         <div style={styles.floatLeftLabel}>filter syn-sets</div>
                         <div style={styles.searchFloatLeft}>
-                            <input type="text" value={this.props.synset_filter} autoFocus={true} style={styles.text}
+                            <input type="text" value={this.props.synset_filter} autoFocus={true} style={styles.text} className={theme}
                                    onKeyPress={(event) => this.handleSynSetFilterKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setSynSetFilter(event.target.value)
@@ -238,11 +247,11 @@ export class SynSets extends React.Component {
                         <Table style={styles.tableStyle}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell style={styles.smallTableHeaderStyle}>syn-set</TableCell>
-                                    <TableCell style={styles.actionTableHeaderStyle}>actions</TableCell>
+                                    <TableCell className='table-header'>syn-set</TableCell>
+                                    <TableCell className='table-header'>actions</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                                 {
                                     this.props.synset_list.map((synSet) => {
                                         return (
@@ -273,30 +282,26 @@ export class SynSets extends React.Component {
                                     </TableCell>
                                 </TableRow>
 
-                                <TableRow>
-                                    <TableCell colSpan={2}>
-                                        <TablePagination
-                                            rowsPerPageOptions={[5, 10, 25]}
-                                            component="div"
-                                            count={this.props.synset_total_size}
-                                            rowsPerPage={this.props.synset_page_size}
-                                            page={this.props.synset_page}
-                                            backIconButtonProps={{
-                                                'aria-label': 'Previous Page',
-                                            }}
-                                            nextIconButtonProps={{
-                                                'aria-label': 'Next Page',
-                                            }}
-                                            onChangePage={(event, page) => this.props.setSynSetPage(page)}
-                                            onChangeRowsPerPage={(event) => this.props.setSynSetPageSize(event.target.value)}
-                                        />
-                                    </TableCell>
-                                </TableRow>
-
                             </TableBody>
 
                         </Table>
 
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
+                            component="div"
+                            count={this.props.synset_total_size}
+                            rowsPerPage={this.props.synset_page_size}
+                            page={this.props.synset_page}
+                            backIconButtonProps={{
+                                'aria-label': 'Previous Page',
+                            }}
+                            nextIconButtonProps={{
+                                'aria-label': 'Next Page',
+                            }}
+                            onChangePage={(event, page) => this.props.setSynSetPage(page)}
+                            onChangeRowsPerPage={(event) => this.props.setSynSetPageSize(event.target.value)}
+                        />
 
                     </Paper>
                 }
@@ -310,6 +315,7 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
 
         synset_list: state.appReducer.synset_list,
         synset_filter: state.appReducer.synset_filter,

@@ -84,7 +84,6 @@ const styles = {
     urlStyle: {
         float: 'left',
         fontSize: '0.8em',
-        color: '#009',
         marginRight: '10px',
         marginLeft: '70px',
         cursor: 'pointer',
@@ -277,7 +276,7 @@ export class BotSingleSearchResult extends React.Component {
                 <Grid item xs={12}>
                     {
                         item.urlList.map((url) => {
-                            return (<div style={styles.urlStyle} key={url}><a href={url} rel="noopener noreferrer" target={"_blank"}>{url}</a></div>);
+                            return (<div style={styles.urlStyle} key={url}><a href={url} style={{color: Api.getThemeColour()}} rel="noopener noreferrer" target={"_blank"}>{url}</a></div>);
                         })
                     }
                 </Grid>
@@ -285,7 +284,7 @@ export class BotSingleSearchResult extends React.Component {
                     <div style={styles.spacer}>&nbsp;</div>
                 </Grid>
             </Grid>
-        )
+        );
     }
 
 }

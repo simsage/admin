@@ -14,12 +14,10 @@ const styles = {
     tHeader: {
         height: '22px',
         marginBottom: '5px',
-        backgroundColor: '#f0f0f0',
     },
     tCol: {
         height: '22px',
         marginBottom: '5px',
-        backgroundColor: '#f0f0f0',
     },
     tCell: {
         backgroundColor: '#c0c0c0'
@@ -30,6 +28,7 @@ const styles = {
     },
     activeText: {
         backgroundColor: active_colour,
+        color: '#444',
         float: 'left',
         width: '100px',
         fontFamily: 'Open Sans, sans-serif',
@@ -41,6 +40,7 @@ const styles = {
     },
     inactiveText: {
         backgroundColor: inactive_colour,
+        color: '#444',
         float: 'left',
         width: '100px',
         fontFamily: 'Open Sans, sans-serif',
@@ -271,14 +271,14 @@ export class TimeSelect extends Component {
                     <div style={styles.activeText}>active</div>
                     <div style={styles.inactiveText}>inactive</div>
                     <div style={styles.button1}>
-                        <Button variant="outlined"
+                        <Button variant="contained"
                                 color="secondary"
                                 onClick={() => this.clearAll()}>
                             clear all
                         </Button>
                     </div>
                     <div style={styles.button2}>
-                        <Button variant="outlined"
+                        <Button variant="contained"
                                 color="secondary"
                                 onClick={() => this.selectAll()}>
                             select all

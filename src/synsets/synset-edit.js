@@ -119,7 +119,6 @@ export class SynSetEdit extends Component {
         if (this.state.has_error) {
             return <h1>synset-edit.js: Something went wrong.</h1>;
         }
-        console.log(this.state.cloud_list);
         return (
             <Dialog aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
@@ -130,8 +129,8 @@ export class SynSetEdit extends Component {
                     maxWidth="lg"
                     onClose={() => this.handleCancel()} >
 
-                <DialogTitle id="alert-dialog-title">Edit syn-set "{this.state.word}"</DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title" className={this.props.theme}>Edit syn-set "{this.state.word}"</DialogTitle>
+                <DialogContent className={this.props.theme}>
                     <Grid container spacing={1}>
 
                         <Grid item xs={1} />
@@ -172,7 +171,7 @@ export class SynSetEdit extends Component {
                                             index > 1 &&
                                             <div style={styles.deleteButton}
                                                  onClick={() => this.deleteSyn(index)}>
-                                                <img src="../images/delete.svg" style={styles.deleteImageSize}
+                                                <img src={this.props.theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} style={styles.deleteImageSize}
                                                      title="remove syn" alt="remove syn"/>
                                             </div>
                                         }
@@ -186,7 +185,7 @@ export class SynSetEdit extends Component {
                         <Grid item xs={9} />
                         <Grid item xs={1}>
                             <div style={styles.imageButton} onClick={() => this.newSyn()}><img
-                                style={styles.addImage} src="../images/add.svg" title="add a new syn item"
+                                style={styles.addImage} src={this.props.theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add a new syn item"
                                 alt="add a new syn"/></div>
                         </Grid>
                         <Grid item xs={1} />
@@ -194,9 +193,9 @@ export class SynSetEdit extends Component {
                     </Grid>
 
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={this.props.theme}>
                     <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="outlined" color="secondary" onClick={() => this.handleSave()}>Save</Button>
+                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
                 </DialogActions>
             </Dialog>
         );

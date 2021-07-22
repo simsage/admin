@@ -13,6 +13,8 @@ import TimeSelect from '../common/time-select'
 import TextField from "@material-ui/core/TextField";
 import Api from "../common/api";
 import Checkbox from "@material-ui/core/Checkbox";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 
 const styles = {
@@ -23,6 +25,10 @@ const styles = {
     tab: {
         backgroundColor: '#f8f8f8',
         color: '#000',
+    },
+    tab_dark: {
+        backgroundColor: '#808080',
+        color: '#f8f8f8',
     },
     domainPage: {
         padding: '10px',
@@ -40,6 +46,10 @@ const styles = {
         marginTop: '20px',
         marginRight: '20px',
     },
+    edgeText: {
+        marginLeft: '20px',
+        marginRight: '10px',
+    }
 };
 
 export class DomainDialog extends Component {
@@ -61,6 +71,7 @@ export class DomainDialog extends Component {
             // organisational details
             organisation_id: props.organisation_id,
             kb_id: props.kb_id,
+            edge_device_list: this.props.edge_device_list,
 
             ...this.construct_data(props.domain),
 
@@ -90,6 +101,7 @@ export class DomainDialog extends Component {
 
                     organisation_id: nextProps.organisation_id,
                     kb_id: nextProps.kb_id,
+                    edge_device_list: nextProps.edge_device_list,
 
                     ...this.construct_data(nextProps.domain)
                 });
@@ -123,6 +135,7 @@ export class DomainDialog extends Component {
                 portNumber: Api.defined(domain.portNumber) ? domain.portNumber : 389,
                 sslOn: Api.defined(domain.sslOn) ? domain.sslOn : false,
                 schedule: Api.defined(domain.schedule) ? domain.schedule : '',
+                edgeDeviceId: Api.defined(domain.edgeDeviceId) ? domain.edgeDeviceId : '',
             }
         } else {
             return {
@@ -131,7 +144,7 @@ export class DomainDialog extends Component {
                 userName: '', password: '',
                 serverIp: '', basePath: '',
                 portNumber: 389, sslOn: false,
-                schedule: '',
+                schedule: '', edgeDeviceId: '',
             }
         }
     }
@@ -148,6 +161,7 @@ export class DomainDialog extends Component {
             portNumber: this.state.portNumber,
             sslOn: this.state.sslOn,
             schedule: this.state.schedule,
+            edgeDeviceId: this.state.edgeDeviceId,
         }
     }
 
@@ -207,10 +221,24 @@ export class DomainDialog extends Component {
         }
     }
 
+    filteredEdgeDevices() {
+        let list = [{"key": "none", "value": "n/a"}];
+        if (this.props.edge_device_list) {
+            for (let edge_device of this.props.edge_device_list) {
+                if (edge_device.organisationId === this.state.organisation_id && edge_device.edgeId) {
+                    list.push({"key": edge_device.edgeId, "value": edge_device.name});
+                }
+            }
+        }
+        return list;
+    }
+
     render() {
         if (this.state.has_error) {
             return <h1>domain-dialog.js: Something went wrong.</h1>;
         }
+        const theme = this.props.theme;
+        const tabStyle = (theme === 'light' ? styles.tab : styles.tab_dark);
         const t_value = this.state.selectedTab;
         return (
             <div>
@@ -222,12 +250,12 @@ export class DomainDialog extends Component {
                         fullWidth={true}
                         maxWidth="lg"
                         onClose={this.handleCancel.bind(this)} >
-                    <DialogTitle id="alert-dialog-title">{this.state.title}</DialogTitle>
-                    <div>
+                    <DialogTitle id="alert-dialog-title" className={theme}>{this.state.title}</DialogTitle>
+                    <div className={theme}>
                         <div>
                             <Tabs value={this.state.selectedTab} onChange={(event, value)=> this.setState({selectedTab: value})}>
-                                <Tab label="domain settings" value="general" style={styles.tab} />
-                                <Tab label="schedule" value="schedule" style={styles.tab} />
+                                <Tab label="domain settings" value="general" style={tabStyle} />
+                                <Tab label="schedule" value="schedule" style={tabStyle} />
                             </Tabs>
 
                             <div style={styles.formContent}>
@@ -296,6 +324,26 @@ export class DomainDialog extends Component {
                                         <br />
                                         <br />
 
+                                        <div>
+                                            <span style={styles.edgeText}>Edge device</span>
+                                            <span>
+                                                <Select
+                                                disableUnderline
+                                                value={this.state.edgeDeviceId !== '' ? this.state.edgeDeviceId : 'none'}
+                                                onChange={(event) => {
+                                                    this.change_callback({edgeDeviceId: event.target.value})
+                                                }}>
+                                                {
+                                                    this.filteredEdgeDevices().map((value) => {
+                                                        return (<MenuItem key={value.key} value={value.key}>{value.value}</MenuItem>)
+                                                    })
+                                                }
+                                                </Select>
+                                            </span>
+                                        </div>
+                                        <br />
+                                        <br />
+
                                         <div style={{float: 'left'}} title="Check this box if you want the enable SSL communications with the Active Directory server.">
                                             <Checkbox
                                                 checked={this.state.sslOn}
@@ -315,7 +363,7 @@ export class DomainDialog extends Component {
                                         </div>
                                         <br clear="both" />
 
-                                        <Button color="primary" variant="outlined" style={styles.testButton}
+                                        <Button variant="contained" color="primary" style={styles.testButton}
                                                 onClick={() => this.testConnection()}>Test Connection</Button>
 
 
@@ -332,9 +380,9 @@ export class DomainDialog extends Component {
 
                         </div>
                     </div>
-                    <DialogActions>
-                        <Button onClick={() => this.handleCancel()}>cancel</Button>
-                        <Button onClick={() => this.handleSave()}>save</Button>
+                    <DialogActions className={theme}>
+                        <Button color={"primary"} onClick={() => this.handleCancel()}>cancel</Button>
+                        <Button color={"secondary"} onClick={() => this.handleSave()}>save</Button>
                     </DialogActions>
 
                 </Dialog>

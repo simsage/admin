@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
 
-import {ThemeProvider} from '@material-ui/core/styles';
+import {MuiThemeProvider, ThemeProvider} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import uiTheme from "../theme-ui";
+import {darkTheme, lightTheme, theme} from "../theme-ui";
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 
 import AppMenu from './app-menu'
 import ErrorDialog from '../common/error-dialog';
+import {CssBaseline} from "@material-ui/core";
+import Api from "../common/api";
 
 
 const styles = {
@@ -99,7 +101,6 @@ export class Register extends Component {
             );
         }
         else {
-            console.log('doh!');
             this.showError('Error', 'please complete and check all fields');
         }
     }
@@ -120,117 +121,115 @@ export class Register extends Component {
         if (this.state.has_error) {
             return <h1>Register: Something went wrong.</h1>;
         }
+        const theme = this.props.theme;
         return (
-            <div style={styles.page}>
-                <ThemeProvider theme={uiTheme}>
-                    <AppMenu title="administration" />
+            <MuiThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+                <CssBaseline />
+                <AppMenu title="administration" />
 
-                    <ErrorDialog title={this.state.error_title}
-                                 message={this.state.error_msg}
-                                 callback={this.closeError.bind(this)} />
-                    <ErrorDialog title={this.state.info_title}
-                                 message={this.state.info_msg}
-                                 callback={this.gotoLogin.bind(this)} />
+                <ErrorDialog title={this.state.info_title}
+                             theme={this.props.theme}
+                             message={this.state.info_msg}
+                             callback={this.gotoLogin.bind(this)} />
 
-                    <Grid container spacing={1}>
+                <Grid container spacing={1}>
 
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <p>Create your SimSage account</p>
-                        </Grid>
-                        <Grid item xs={3} />
-
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <TextField
-                                autoFocus
-                                placeholder="First Name"
-                                label="First Name"
-                                onChange = {(event) => this.setState({firstname: event.target.value})}
-                            />
-                        </Grid>
-                        <Grid item xs={3} />
-
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <TextField
-                                placeholder="Surname"
-                                label="Surname"
-                                onChange = {(event) => this.setState({surname: event.target.value})}
-                            />
-                        </Grid>
-                        <Grid item xs={3} />
-
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <TextField
-                                placeholder="Organisation Name"
-                                label="Organisation Name"
-                                onChange = {(event) => this.setState({organisationName: event.target.value})}
-                            />
-                        </Grid>
-                        <Grid item xs={3} />
-
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <TextField
-                                placeholder="Email Address"
-                                label="Email Address"
-                                onChange = {(event) => this.setState({email: event.target.value})}
-                            />
-                        </Grid>
-                        <Grid item xs={3} />
-
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <TextField
-                                type = "password"
-                                placeholder="Password"
-                                label="Password"
-                                onChange = {(event) => this.setState({password: event.target.value})}
-                            />
-                        </Grid>
-                        <Grid item xs={3} />
-
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <div style={styles.licenseAgreementTitle}>
-                                <Checkbox
-                                    checked={this.state.agree}
-                                    onChange={(event) => {this.setState({agree: event.target.checked})}}
-                                    value="I agree to the terms of service"
-                                />
-                                <div style={styles.licenseAgreementIAgree}>I agree to the&nbsp;</div>
-                                <div style={styles.licenseAgreementLink} onClick={() => window.open("/#/license-agreement", "_blank")}>terms of service</div>
-                            </div>
-                        </Grid>
-                        <Grid item xs={3} />
-
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <Button variant="contained" color="primary" className="button-style"
-                                    onClick={(event) => this.handleClick(event)}>Submit</Button>
-                        </Grid>
-                        <Grid item xs={3} />
-
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <div className="sign-in-help-text">already have an account?</div>
-                        </Grid>
-                        <Grid item xs={3} />
-
-                        <Grid item xs={3} />
-                        <Grid item xs={6}>
-                            <div>
-                                <Button variant="contained" onClick={() => window.location = "/"} className="button-style">Return to Sign-in</Button>
-                            </div>
-                        </Grid>
-                        <Grid item xs={3} />
-
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <p>Create your SimSage account</p>
                     </Grid>
+                    <Grid item xs={3} />
 
-                </ThemeProvider>
-            </div>
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <TextField
+                            autoFocus
+                            placeholder="First Name"
+                            label="First Name"
+                            onChange = {(event) => this.setState({firstname: event.target.value})}
+                        />
+                    </Grid>
+                    <Grid item xs={3} />
+
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <TextField
+                            placeholder="Surname"
+                            label="Surname"
+                            onChange = {(event) => this.setState({surname: event.target.value})}
+                        />
+                    </Grid>
+                    <Grid item xs={3} />
+
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <TextField
+                            placeholder="Organisation Name"
+                            label="Organisation Name"
+                            onChange = {(event) => this.setState({organisationName: event.target.value})}
+                        />
+                    </Grid>
+                    <Grid item xs={3} />
+
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <TextField
+                            placeholder="Email Address"
+                            label="Email Address"
+                            onChange = {(event) => this.setState({email: event.target.value})}
+                        />
+                    </Grid>
+                    <Grid item xs={3} />
+
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <TextField
+                            type = "password"
+                            placeholder="Password"
+                            label="Password"
+                            onChange = {(event) => this.setState({password: event.target.value})}
+                        />
+                    </Grid>
+                    <Grid item xs={3} />
+
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <div style={styles.licenseAgreementTitle}>
+                            <Checkbox
+                                checked={this.state.agree}
+                                onChange={(event) => {this.setState({agree: event.target.checked})}}
+                                value="I agree to the terms of service"
+                            />
+                            <div style={styles.licenseAgreementIAgree}>I agree to the&nbsp;</div>
+                            <div style={styles.licenseAgreementLink} onClick={() => window.open("/#/license-agreement", "_blank")}>terms of service</div>
+                        </div>
+                    </Grid>
+                    <Grid item xs={3} />
+
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <Button variant="contained" color="primary" className="button-style"
+                                onClick={(event) => this.handleClick(event)}>Submit</Button>
+                    </Grid>
+                    <Grid item xs={3} />
+
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <div className="sign-in-help-text">already have an account?</div>
+                    </Grid>
+                    <Grid item xs={3} />
+
+                    <Grid item xs={3} />
+                    <Grid item xs={6}>
+                        <div>
+                            <Button variant="contained" onClick={() => window.location = "/#/"} className="button-style">Return to Sign-in</Button>
+                        </div>
+                    </Grid>
+                    <Grid item xs={3} />
+
+                </Grid>
+
+            </MuiThemeProvider>
         );
     }
 }

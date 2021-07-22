@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 
+
 const styles = {
     labelAdjustment: {
         marginTop: '17px',
@@ -55,6 +56,7 @@ export class SemanticEdit extends Component {
         if (this.state.has_error) {
             return <h1>semantic-edit.js: Something went wrong.</h1>;
         }
+        const theme = this.props.theme;
         return (
             <Dialog aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
@@ -65,8 +67,8 @@ export class SemanticEdit extends Component {
                     maxWidth="lg"
                     onClose={() => this.handleCancel()} >
 
-                <DialogTitle id="alert-dialog-title">Edit Semantic</DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title" className={theme}>Edit Semantic</DialogTitle>
+                <DialogContent className={theme}>
                     <Grid container spacing={1}>
 
                         <Grid item xs={1} />
@@ -102,9 +104,9 @@ export class SemanticEdit extends Component {
 
                     </Grid>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={theme}>
                     <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="outlined" color="secondary" onClick={() => this.handleSave()}>Save</Button>
+                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
                 </DialogActions>
             </Dialog>
         );

@@ -64,8 +64,8 @@ export class CrawlerImportExport extends Component {
                     maxWidth="lg"
                     onClose={() => this.handleCancel()} >
 
-                <DialogTitle id="alert-dialog-title">{this.props.export_upload ? "Import Crawler" : "Export Crawler"}</DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title" className={this.props.theme}>{this.props.export_upload ? "Import Crawler" : "Export Crawler"}</DialogTitle>
+                <DialogContent className={this.props.theme}>
                     <Grid container spacing={1}>
 
                         <Grid item xs={1} />
@@ -89,11 +89,11 @@ export class CrawlerImportExport extends Component {
 
                     </Grid>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={this.props.theme}>
                     {this.props.export_upload &&
                     <div>
                         <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                        <Button variant="outlined" color="secondary" onClick={() => this.handleSave()}>Import</Button>
+                        <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Import</Button>
                     </div>
                     }
                     {!this.props.export_upload &&

@@ -14,6 +14,7 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 import Grid from "@material-ui/core/Grid";
+import {Home} from "../home";
 
 // display length of a url
 const maxUrlDisplayLength = 50;
@@ -22,8 +23,18 @@ const styles = {
     tableStyle: {
         width: '900px',
     },
+    tableLight: {
+    },
+    tableDark: {
+        background: '#d0d0d0',
+    },
     gridWidth: {
         width: '900px',
+    },
+    text: {
+        border: '1px solid #808080',
+        borderRadius: '4px',
+        padding: '4px',
     },
     tableHeaderStyle: {
         background: '#555',
@@ -116,10 +127,6 @@ const styles = {
         padding: '10px',
         marginBottom: '5px',
         float: 'right',
-    },
-    text: {
-        padding: '4px',
-        width: '280px',
     },
 };
 
@@ -221,7 +228,7 @@ export class Documents extends React.Component {
         if (status === 1)
             return "document " + stage;
         else if (status === 0)
-            return "document not yet " + stage;
+            return "document not " + stage;
         else
             return staging + " disabled for this document-source";
     }
@@ -234,6 +241,8 @@ export class Documents extends React.Component {
         return this.state.crawler_map[document.sourceId] !== 'wordpress';
     }
     render() {
+        const theme = this.props.theme;
+        const isAdmin = Home.hasRole(this.props.user, ['admin']);
         return (
             <Grid container spacing={1} style={styles.gridWidth}>
 
@@ -243,7 +252,7 @@ export class Documents extends React.Component {
                         <div style={styles.findBox}>
                             <div style={styles.floatLeftLabel}>filter</div>
                             <div style={styles.searchFloatLeft}>
-                                <input type="text" value={this.props.document_filter} autoFocus={true} style={styles.text}
+                                <input type="text" value={this.props.document_filter} autoFocus={true} style={styles.text} className={theme}
                                        onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                        onChange={(event) => {
                                            this.props.setDocumentFilter(event.target.value)
@@ -265,16 +274,18 @@ export class Documents extends React.Component {
                         <Table>
 
                             <TableHead>
-                                <TableRow style={styles.tableHeaderStyle}>
-                                    <TableCell style={styles.tableColumnStyle}>url</TableCell>
-                                    <TableCell style={styles.tableColumnStyle}>source</TableCell>
-                                    <TableCell style={styles.tableColumnStyle}>last modified</TableCell>
-                                    <TableCell style={styles.tableColumnStyle}>status</TableCell>
-                                    <TableCell style={styles.tableColumnStyle}>actions</TableCell>
+                                <TableRow className='table-header'>
+                                    <TableCell className='table-header'>url</TableCell>
+                                    <TableCell className='table-header'>source</TableCell>
+                                    <TableCell className='table-header'>last modified</TableCell>
+                                    <TableCell className='table-header'>status</TableCell>
+                                    {isAdmin &&
+                                        <TableCell className='table-header'>actions</TableCell>
+                                    }
                                 </TableRow>
                             </TableHead>
 
-                            <TableBody>
+                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                                 {
                                     this.getDocuments().map((document) => {
                                         return (
@@ -306,17 +317,19 @@ export class Documents extends React.Component {
                                                             <img src={this.getStatus(document, "previewed")} style={styles.statusImage} alt="previewed" title={this.getStatusText(document, "previewed", "preview generation")} />
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.linkButton}
-                                                             onClick={() => this.deleteDocumentAsk(document)}>
-                                                            <img src="../images/delete.svg"
-                                                                 style={styles.dlImageSize} title="remove document"
-                                                                 alt="remove"/>
-                                                        </div>
-                                                        {/*<div style={styles.linkButton} onClick={() => this.props.reprocessDocument(document)}>*/}
-                                                        {/*    <img src="../images/refresh.svg" style={styles.dlImageSize} title="reprocess document (remove it, re-parse and re-index the document." alt="reprocess"/>*/}
-                                                        {/*</div>*/}
-                                                    </TableCell>
+                                                    {isAdmin &&
+                                                        <TableCell>
+                                                            <div style={styles.linkButton}
+                                                                 onClick={() => this.deleteDocumentAsk(document)}>
+                                                                <img src="../images/delete.svg"
+                                                                     style={styles.dlImageSize} title="remove document"
+                                                                     alt="remove"/>
+                                                            </div>
+                                                            {/*<div style={styles.linkButton} onClick={() => this.props.reprocessDocument(document)}>*/}
+                                                            {/*    <img src="../images/refresh.svg" style={styles.dlImageSize} title="reprocess document (remove it, re-parse and re-index the document." alt="reprocess"/>*/}
+                                                            {/*</div>*/}
+                                                        </TableCell>
+                                                    }
                                                 </TableRow>
                                         )
                                     })
@@ -325,6 +338,7 @@ export class Documents extends React.Component {
                         </Table>
 
                         <TablePagination
+                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
                             count={this.props.num_documents}
@@ -363,12 +377,15 @@ export class Documents extends React.Component {
             </Grid>
         )
     }
-}
+};
+
 
 const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
+        user: state.appReducer.user,
 
         document_list: state.appReducer.document_list,
         document_filter: state.appReducer.document_filter,

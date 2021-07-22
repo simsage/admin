@@ -21,13 +21,21 @@ const styles = {
     label: {
         marginTop: '20px',
         marginBottom: '20px',
-        color: '#555',
+    },
+    tableLight: {
+    },
+    tableDark: {
+        background: '#d0d0d0',
     },
     gridWidth: {
         width: '900px',
     },
     hr: {
         border: '0.5px solid #f0f0f0',
+        width: '100%',
+    },
+    hr_dark: {
+        border: '0.5px solid #444',
         width: '100%',
     },
     snapshotItem: {
@@ -145,12 +153,13 @@ export class Inventory extends React.Component {
             this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
     }
     render() {
+        const theme = this.props.theme;
         return (
             <div>
                 <Grid container spacing={1} style={styles.gridWidth}>
 
                     {this.isVisible() &&
-                    <Grid item xs={12}><div style={styles.hr} /></Grid>
+                    <Grid item xs={12}><div style={theme === 'light' ? styles.hr : styles.hr_dark} /></Grid>
                     }
 
                     {this.isVisible() &&
@@ -158,6 +167,15 @@ export class Inventory extends React.Component {
                         <div style={styles.label}>Manage snapshots of your document inventory.
                             {this.props.inventorize_busy &&
                                 <span>  SimSage is busy creating a new snapshot.</span>
+                            }
+                            {this.props.selected_organisation_id.length > 0 &&
+                            <img src="../images/refresh.svg" alt="refresh"
+                                 title="refresh the inventory list"
+                                 onClick={() => {
+                                     this.props.getInventoryList();
+                                     this.props.getInventoryBusy();
+                                 }}
+                                 style={styles.refreshImage}/>
                             }
                         </div>
                     </Grid>
@@ -169,12 +187,12 @@ export class Inventory extends React.Component {
                                 <Paper>
                                     <Table style={styles.tableWidth}>
                                         <TableHead>
-                                            <TableRow style={styles.tableHeaderStyle}>
-                                                <TableCell style={styles.tableHeaderStyle}>created</TableCell>
-                                                <TableCell style={styles.tableHeaderStyle}>action</TableCell>
+                                            <TableRow className='table-header'>
+                                                <TableCell className='table-header table-width-70'>created</TableCell>
+                                                <TableCell className='table-header'>action</TableCell>
                                             </TableRow>
                                         </TableHead>
-                                        <TableBody>
+                                        <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
                                             { this.props.inventorize_list && this.props.inventorize_list.timeList && this.props.inventorize_list.timeList.map((item) => {
                                                 return (
                                                     <TableRow key={item}>
@@ -212,15 +230,6 @@ export class Inventory extends React.Component {
                                                             <img style={styles.addImageDisabled} src="../images/add.svg" title="SimSage is currently busy processing an inventory.  Please try again later." alt="create new snapshot"/>
                                                         </div>
                                                     }
-                                                    {this.props.selected_organisation_id.length > 0 &&
-                                                    <img src="../images/refresh.svg" alt="refresh"
-                                                         title="refresh the inventory list"
-                                                         onClick={() => {
-                                                             this.props.getInventoryList();
-                                                             this.props.getInventoryBusy();
-                                                         }}
-                                                         style={styles.refreshImage}/>
-                                                    }
                                                 </TableCell>
                                             </TableRow>
                                         </TableBody>
@@ -243,6 +252,7 @@ const mapStateToProps = function(state) {
     return {
         error: state.appReducer.error,
         error_title: state.appReducer.error_title,
+        theme: state.appReducer.theme,
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_organisation: state.appReducer.selected_organisation,
