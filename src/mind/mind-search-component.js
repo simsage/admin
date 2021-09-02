@@ -1,36 +1,9 @@
 import React, {Component} from 'react';
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-
 import Comms from '../common/comms'
 import BotSingleSearchResult from '../common/bot-single-search-result'
 
-// styles of form
-const styles = {
-    busyBox: {
-        float: 'left',
-        marginLeft: '10px',
-        marginRight: '5px',
-        marginTop: '15px',
-        width: '32px',
-    },
-    searchTextBox: {
-        marginBottom: 16,
-        width: '400px',
-        float: 'left',
-    },
-    searchButtonBox: {
-        marginTop: '20px',
-        marginLeft: '20px',
-        float: 'left',
-    },
-    searchResultsBox: {
-        padding: '10px',
-        borderRadius: '4px',
-        border: '0.5px solid #ccc'
-    }
-};
+import '../css/mind.css';
 
 
 export class MindSearchComponent extends Component {
@@ -39,7 +12,6 @@ export class MindSearchComponent extends Component {
         this.state = {
             onError: props.onError,
 
-            botQuery: props.botQuery, // callback functions
             setBotQueryString: props.setBotQueryString,
 
             // search system
@@ -60,7 +32,6 @@ export class MindSearchComponent extends Component {
             botQueryString: nextProps.botQueryString,
             queryResultList: nextProps.queryResultList,
             setBotQueryString: nextProps.setBotQueryString,
-            botQuery: nextProps.botQuery,
             onError: nextProps.onError,
         })
     }
@@ -70,15 +41,13 @@ export class MindSearchComponent extends Component {
         }
     }
     doClickSearch() {
-        if (this.props.botQuery) {
+        if (this.props.mindQuery) {
             this.setState({hasSearched: true});
-            this.props.botQuery();
+            this.props.mindQuery();
         }
     }
     getResultList() {
-        const copy = JSON.parse(JSON.stringify(this.props.queryResultList));
-        BotSingleSearchResult.updateResults(copy);
-        return copy;
+        return JSON.parse(JSON.stringify(this.props.queryResultList));
     }
     openDocument(url) {
         const session_id = Comms.getSession();
@@ -87,34 +56,36 @@ export class MindSearchComponent extends Component {
     }
     render() {
         return (
-            <div>
-                <div style={styles.busyBox}>
-                    <img alt="busy" src="../images/busy2.gif"
-                         style={{'display': this.state.busy ? '' : 'none', width: '32px'}}/>
-                </div>
-                <div style={styles.searchTextBox}>
-                    <TextField
-                        onChange={(event) => this.props.setBotQueryString(event.target.value)}
-                        onKeyPress={(event) => this.handleSearchTextKeydown(event)}
-                        label="test the mind by asking it something"
-                        fullWidth={true}
-                        value={this.props.botQueryString}
-                    />
-                </div>
-                <div style={styles.searchButtonBox}>
-                    <Button variant="contained"
-                        color="secondary"
-                        onClick={() => this.doClickSearch()}>
-                        Ask
-                    </Button>
+            <div className="mind-page">
+
+                <div className="form-group">
+                    <div className="busy-body">
+                        <img alt="busy" src="../images/busy2.gif"
+                             style={{'display': this.state.busy ? '' : 'none', width: '32px'}}/>
+                    </div>
                 </div>
 
-                <div style={{clear: 'both'}}/>
-                <br/>
+                <div className="form-group">
+                    <div className="full-column">
+                        <span className="left-1">
+                            <input type="text" className="form-control text-width"
+                                onChange={(event) => this.props.setBotQueryString(event.target.value)}
+                                onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                            />
+                        </span>
+                        <span className="left">
+                            <button className="btn btn-primary btn-block" onClick={() => this.doClickSearch()}>Ask</button>
+                        </span>
+                    </div>
+                </div>
+
+
+                <br clear="both" />
+
 
                 {this.state.queryResultList && this.state.queryResultList.length > 0 &&
                 <div>
-                    <div style={styles.searchResultsBox}>
+                    <div className="search-results-box">
                         {
                             this.getResultList().map((item) => {
                                 return (<BotSingleSearchResult key={item.key} item={item} openDocument={(url) => this.openDocument(url)} />)
@@ -126,8 +97,8 @@ export class MindSearchComponent extends Component {
                 }
 
                 {
-                    this.state.queryResultList && this.state.queryResultList.length === 0 && this.state.hasSearched &&
-                    <div>no results</div>
+                    this.state.queryResultList && this.state.queryResultList.length === 0 && this.state.hasSearched && !this.state.busy &&
+                    <div className="no-results">no results</div>
                 }
 
             </div>

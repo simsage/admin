@@ -1,14 +1,5 @@
 import React from 'react';
 
-import Grid from '@material-ui/core/Grid';
-
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from "@material-ui/core/Paper";
-
 import Comms from '../common/comms';
 import Api from '../common/api';
 
@@ -16,74 +7,8 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
+import '../css/inventory.css';
 
-const styles = {
-    label: {
-        marginTop: '20px',
-        marginBottom: '20px',
-    },
-    tableLight: {
-    },
-    tableDark: {
-        background: '#d0d0d0',
-    },
-    gridWidth: {
-        width: '900px',
-    },
-    hr: {
-        border: '0.5px solid #f0f0f0',
-        width: '100%',
-    },
-    hr_dark: {
-        border: '0.5px solid #444',
-        width: '100%',
-    },
-    snapshotItem: {
-        marginBottom: '5px',
-    },
-    refreshImage: {
-        float: 'right',
-        width: '24px',
-        cursor: 'pointer',
-    },
-    addImage: {
-        float: 'right',
-        marginTop: '-8px',
-        width: '24px',
-        cursor: 'pointer',
-    },
-    addImageDisabled: {
-        float: 'right',
-        marginTop: '-8px',
-        width: '24px',
-        backgroundColor: '#aaaaaa',
-        borderRadius: '12px',
-        cursor: 'pointer',
-    },
-    tableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-    },
-    linkButton: {
-        float: 'left',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    imageButton: {
-        float: 'right',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    downloadImage: {
-        width: '24px',
-    },
-    tableWidth: {
-        width: '100%',
-    }
-};
 
 
 export class Inventory extends React.Component {
@@ -99,18 +24,16 @@ export class Inventory extends React.Component {
     }
     componentDidMount() {
     }
-    programUploaded() {
-    }
     programConverted(program) {
         if (program) {
             window.open().document.body.innerHTML += program.replace(/\n/g, "<br />");
         }
     }
     inventorizeDump(dateTime) {
-        window.open(Comms.get_inventorize_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime), '_blank');
+        Comms.download_inventorize_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime);
     }
     inventorizeDumpSpreadsheet(dateTime) {
-        window.open(Comms.get_inventorize_dump_spreadhseet_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime), '_blank');
+        Comms.download_inventorize_dump_spreadhseet(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime);
     }
     deleteInventorizeAsk(dateTime) {
         this.setState({date_time: dateTime});
@@ -126,10 +49,10 @@ export class Inventory extends React.Component {
         }
     }
     mindDump() {
-        window.open(Comms.get_mind_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
+        Comms.download_mind_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
     }
     queryLogDump() {
-        window.open(Comms.get_query_log_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
+        Comms.download_query_log(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
     }
     restore(data) {
         if (data) {
@@ -155,93 +78,83 @@ export class Inventory extends React.Component {
     render() {
         const theme = this.props.theme;
         return (
-            <div>
-                <Grid container spacing={1} style={styles.gridWidth}>
+            <div className="inventory-page">
 
-                    {this.isVisible() &&
-                    <Grid item xs={12}><div style={theme === 'light' ? styles.hr : styles.hr_dark} /></Grid>
-                    }
+                {this.isVisible() &&
+                    <div className={theme === 'light' ? "hr" : "hr_dark"} />
+                }
 
-                    {this.isVisible() &&
-                    <Grid item xs={12}>
-                        <div style={styles.label}>Manage snapshots of your document inventory.
-                            {this.props.inventorize_busy &&
-                                <span>  SimSage is busy creating a new snapshot.</span>
-                            }
-                            {this.props.selected_organisation_id.length > 0 &&
-                            <img src="../images/refresh.svg" alt="refresh"
-                                 title="refresh the inventory list"
-                                 onClick={() => {
-                                     this.props.getInventoryList();
-                                     this.props.getInventoryBusy();
-                                 }}
-                                 style={styles.refreshImage}/>
-                            }
-                        </div>
-                    </Grid>
-                    }
+                {this.isVisible() &&
 
-                    {this.isVisible() &&
-                        <Grid item xs={12}>
+                    <div className="inventory-label">Manage snapshots of your document inventory.
+                        {this.props.inventorize_busy &&
+                            <span>  SimSage is busy creating a new snapshot.</span>
+                        }
+                        {this.props.selected_organisation_id.length > 0 &&
+                        <img src="../images/refresh.svg" alt="refresh"
+                             title="refresh the inventory list"
+                             onClick={() => {
+                                 this.props.getInventoryList();
+                                 this.props.getInventoryBusy();
+                             }}
+                             className="refresh-image" />
+                        }
+                    </div>
+                }
 
-                                <Paper>
-                                    <Table style={styles.tableWidth}>
-                                        <TableHead>
-                                            <TableRow className='table-header'>
-                                                <TableCell className='table-header table-width-70'>created</TableCell>
-                                                <TableCell className='table-header'>action</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
-                                            { this.props.inventorize_list && this.props.inventorize_list.timeList && this.props.inventorize_list.timeList.map((item) => {
-                                                return (
-                                                    <TableRow key={item}>
-                                                        <TableCell>
-                                                            <div style={styles.snapshotItem}>
-                                                                content snapshot {Api.unixTimeConvert(item)}
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <div style={styles.linkButton} onClick={() => this.inventorizeDump(item)}>
-                                                                <img src="../images/parquet.png" style={styles.downloadImage} title="download as parquet-file" alt="download parquet"/>
-                                                            </div>
-                                                            <div style={styles.linkButton} onClick={() => this.inventorizeDumpSpreadsheet(item)}>
-                                                                <img src="../images/xlsx.svg" style={styles.downloadImage} title="download as spreadsheet-xlsx" alt="download spreadsheet"/>
-                                                            </div>
-                                                            <div style={styles.linkButton} onClick={() => this.deleteInventorizeAsk(item)}>
-                                                                <img src="../images/delete.svg" style={styles.downloadImage} title="remove report" alt="remove"/>
-                                                            </div>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )
-                                            })}
-                                            <TableRow>
-                                                <TableCell/>
-                                                <TableCell>
-                                                    {this.props.selected_organisation_id.length > 0 && !this.props.inventorize_busy &&
-                                                    <div style={styles.imageButton} onClick={() => {
-                                                        this.props.createInventory();
-                                                        this.props.forceInventoryBusy();
-                                                    }}><img
-                                                        style={styles.addImage} src="../images/add.svg" title="create a new snapshot" alt="create new snapshot"/></div>
-                                                    }
-                                                    {this.props.selected_organisation_id.length > 0 && this.props.inventorize_busy &&
-                                                        <div style={styles.imageButton}>
-                                                            <img style={styles.addImageDisabled} src="../images/add.svg" title="SimSage is currently busy processing an inventory.  Please try again later." alt="create new snapshot"/>
-                                                        </div>
-                                                    }
-                                                </TableCell>
-                                            </TableRow>
-                                        </TableBody>
-                                    </Table>
+                {this.isVisible() &&
+                    <div>
+                        <table className="table">
+                            <thead>
+                                <tr className='table-header'>
+                                    <th className='table-header table-width-70'>created</th>
+                                    <th className='table-header'>action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                { this.props.inventorize_list && this.props.inventorize_list.timeList && this.props.inventorize_list.timeList.map((item) => {
+                                    return (
+                                        <tr key={item}>
+                                            <td>
+                                                <div className="snapshot-item">
+                                                    content snapshot {Api.unixTimeConvert(item)}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="link-button" onClick={() => this.inventorizeDump(item)}>
+                                                    <img src="../images/parquet.png" className="image-size" title="download as parquet-file" alt="download parquet"/>
+                                                </div>
+                                                <div className="link-button" onClick={() => this.inventorizeDumpSpreadsheet(item)}>
+                                                    <img src="../images/xlsx.svg" className="image-size" title="download as spreadsheet-xlsx" alt="download spreadsheet"/>
+                                                </div>
+                                                <div className="link-button" onClick={() => this.deleteInventorizeAsk(item)}>
+                                                    <img src="../images/delete.svg" className="image-size" title="remove report" alt="remove"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                                <tr>
+                                    <td/>
+                                    <td>
+                                        {this.props.selected_organisation_id.length > 0 && !this.props.inventorize_busy &&
+                                        <div className="image-button" onClick={() => {
+                                            this.props.createInventory();
+                                            this.props.forceInventoryBusy();
+                                        }}><img className="image-size" src="../images/add.svg" title="create a new snapshot" alt="create new snapshot"/></div>
+                                        }
+                                        {this.props.selected_organisation_id.length > 0 && this.props.inventorize_busy &&
+                                            <div className="image-button">
+                                                <img className="image-size add-image-disabled" src="../images/add.svg" title="SimSage is currently busy processing an inventory.  Please try again later." alt="create new snapshot"/>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                                </Paper>
-                        </Grid>
-                    }
-
-
-                </Grid>
-
+                    </div>
+                }
 
             </div>
         )

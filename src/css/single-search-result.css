@@ -1,0 +1,72 @@
+
+
+.single-search-result-page .title {
+    font-size: 16px;
+}
+
+.single-search-result-page .text {
+    font-size: 12px;
+}
+
+.single-search-result-page .prev-fragment {
+    display:inline-block;
+    width:20px;
+    background:black;
+    color:white;
+    border-radius:5px;
+    text-align:center;
+    margin-right:5px;
+    cursor:pointer;
+}
+
+.single-search-result-page .next-fragment {
+    display:inline-block;
+    width:20px;
+    background:black;
+    color:white;
+    border-radius:5px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.single-search-result-page .prev-fragment-disabled {
+    display:inline-block;
+    width:20px;
+    background:grey;
+    color:white;
+    border-radius:5px;
+    text-align:center;
+    margin-right:5px;
+    cursor:default;
+}
+
+.single-search-result-page .next-fragment-disabled {
+    display:inline-block;
+    width:20px;
+    background:grey;
+    color:white;
+    border-radius:5px;
+    text-align:center;
+    cursor:default;
+}
+
+.single-search-result-page .preview-image {
+    max-height: 100px;
+}
+
+.single-search-result-page .author {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.single-search-result-page .url {
+    margin-left: 10px;
+    font-size: 10px;
+    color: blue;
+    cursor: pointer;
+}
+
+.single-search-result-page .spacer {
+    height: 20px;
+}
+

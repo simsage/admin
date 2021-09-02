@@ -1,56 +1,9 @@
 import React, {Component} from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
-import Button from '@material-ui/core/Button';
-
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-
 import TimeSelect from '../common/time-select'
-import TextField from "@material-ui/core/TextField";
 import Api from "../common/api";
-import Checkbox from "@material-ui/core/Checkbox";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 
-
-const styles = {
-    formContent: {
-        overflowY: 'scroll',
-        height: '550px',
-    },
-    tab: {
-        backgroundColor: '#f8f8f8',
-        color: '#000',
-    },
-    tab_dark: {
-        backgroundColor: '#808080',
-        color: '#f8f8f8',
-    },
-    domainPage: {
-        padding: '10px',
-    },
-    textField: {
-        marginLeft: '10px',
-        marginRight: '10px',
-        width: '500px',
-    },
-    timeTabContent: {
-        marginLeft: '20px',
-    },
-    testButton: {
-        marginLeft: '20px',
-        marginTop: '20px',
-        marginRight: '20px',
-    },
-    edgeText: {
-        marginLeft: '20px',
-        marginRight: '10px',
-    }
-};
+import '../css/domain-dialog.css';
 
 export class DomainDialog extends Component {
     constructor(props) {
@@ -238,154 +191,185 @@ export class DomainDialog extends Component {
             return <h1>domain-dialog.js: Something went wrong.</h1>;
         }
         const theme = this.props.theme;
-        const tabStyle = (theme === 'light' ? styles.tab : styles.tab_dark);
+        const tabStyle = (theme === 'light' ? '.tab' : 'tab_dark');
         const t_value = this.state.selectedTab;
+        if (!this.state.open) {
+            return (<div />);
+        }
         return (
-            <div>
-                <Dialog aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                        open={this.state.open}
-                        disableBackdropClick={true}
-                        disableEscapeKeyDown={true}
-                        fullWidth={true}
-                        maxWidth="lg"
-                        onClose={this.handleCancel.bind(this)} >
-                    <DialogTitle id="alert-dialog-title" className={theme}>{this.state.title}</DialogTitle>
-                    <div className={theme}>
-                        <div>
-                            <Tabs value={this.state.selectedTab} onChange={(event, value)=> this.setState({selectedTab: value})}>
-                                <Tab label="domain settings" value="general" style={tabStyle} />
-                                <Tab label="schedule" value="schedule" style={tabStyle} />
-                            </Tabs>
+            <div className="domain-dialog">
+                <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                    <div className={"modal-dialog modal-dialog-centered modal-xl " + tabStyle} role="document">
+                        <div className="modal-content shadow p-3 mb-5 bg-white rounded domain-dialog-height">
+                            <div className="modal-header">
+                                <h5 className={"modal-title " + theme}>{this.props.title}</h5>
+                                <button type="button" className="btn btn-primary btn-block close"  onClick={() => this.handleCancel()}
+                                        data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
 
-                            <div style={styles.formContent}>
+                                <ul className="nav nav-tabs">
+                                    <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'general' ? 'active' : '')}
+                                            onClick={() => this.setState({selectedTab: 'general'})}>general</div>
+                                    </li>
+                                    <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'schedule' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'schedule'})}>schedule</div>
+                                    </li>
+                                </ul>
+
                                 {t_value === 'general' &&
-                                    <div style={styles.domainPage}>
+                                <div className="domain-page">
 
-                                        <TextField
-                                            autoFocus={true}
-                                            placeholder="domain name"
-                                            label="domain name"
-                                            value={this.state.domainName}
-                                            onChange={(event) => {this.change_callback({domainName: event.target.value})}}
-                                            style={styles.textField}
-                                        />
-                                        <br />
-                                        <br />
+                                    <div className="control-row">
+                                        <span className="label-2">domain name</span>
+                                        <span className="text">
+                                            <form>
+                                                <input type="text"
+                                                    autoFocus={true}
+                                                    aria-placeholder="domain name"
+                                                    value={this.state.domainName}
+                                                    onChange={(event) => {this.change_callback({domainName: event.target.value})}}
+                                                    className="form-control"
+                                                    />
+                                            </form>
+                                        </span>
+                                    </div>
 
-                                        <TextField
-                                            placeholder="user-name"
-                                            label="user-name"
-                                            value={this.state.userName}
-                                            onChange={(event) => {this.change_callback({userName: event.target.value})}}
-                                            style={styles.textField}
-                                        />
-                                        <br />
-                                        <br />
+                                    <div className="control-row">
+                                        <span className="label-2">user name</span>
+                                        <span className="text">
+                                            <form>
+                                                <input type="text"
+                                                       aria-placeholder="user name"
+                                                       value={this.state.userName}
+                                                       onChange={(event) => {this.change_callback({userName: event.target.value})}}
+                                                       className="form-control"
+                                                    />
+                                            </form>
+                                        </span>
+                                    </div>
 
-                                        <TextField
-                                            placeholder="password (leave blank not to change)"
-                                            label="password (leave blank not to change)"
-                                            type="password"
-                                            value={this.state.password}
-                                            onChange={(event) => {this.change_callback({password: event.target.value})}}
-                                            style={styles.textField}
-                                        />
-                                        <br />
-                                        <br />
+                                    <div className="control-row">
+                                        <span className="label-2">password</span>
+                                        <span className="text">
+                                            <form>
+                                                <input type="password"
+                                                   aria-placeholder="password (leave blank not to change)"
+                                                   value={this.state.password}
+                                                   onChange={(event) => {this.change_callback({password: event.target.value})}}
+                                                   className="form-control"
+                                                />
+                                            </form>
+                                        </span>
+                                    </div>
 
-                                        <TextField
-                                            placeholder="domain ip-address"
-                                            label="domain ip-address"
-                                            value={this.state.serverIp}
-                                            onChange={(event) => {this.change_callback({serverIp: event.target.value})}}
-                                            style={styles.textField}
-                                        />
-                                        <br />
-                                        <br />
+                                    <div className="control-row">
+                                        <span className="label-2">domain ip</span>
+                                        <span className="text">
+                                            <form>
+                                                <input type="text"
+                                                   aria-placeholder="domain ip-address"
+                                                   value={this.state.serverIp}
+                                                   onChange={(event) => {this.change_callback({serverIp: event.target.value})}}
+                                                   className="form-control"
+                                                />
+                                            </form>
+                                        </span>
+                                    </div>
 
-                                        <TextField
-                                            placeholder="domain base-path (e.g. dc=my-domain,dc=co,dc=uk)"
-                                            label="domain base-path (e.g. dc=my-domain,dc=co,dc=uk)"
-                                            value={this.state.basePath}
-                                            onChange={(event) => {this.change_callback({basePath: event.target.value})}}
-                                            style={styles.textField}
-                                        />
-                                        <br />
-                                        <br />
+                                    <div className="control-row">
+                                        <span className="label-2">domain base path</span>
+                                        <span className="text">
+                                            <form>
+                                                <input type="text"
+                                                   aria-placeholder="domain base-path (e.g. dc=my-domain,dc=co,dc=uk)"
+                                                   value={this.state.basePath}
+                                                   onChange={(event) => {this.change_callback({basePath: event.target.value})}}
+                                                   className="form-control"
+                                                />
+                                            </form>
+                                        </span>
+                                    </div>
 
-                                        <TextField
-                                            placeholder="Active Directory port-number"
-                                            label="Active Directory port-number"
-                                            value={this.state.portNumber}
-                                            onChange={(event) => {this.change_callback({portNumber: event.target.value})}}
-                                            style={styles.textField}
-                                        />
-                                        <br />
-                                        <br />
+                                    <div className="control-row">
+                                        <span className="label-2">port number</span>
+                                        <span className="text">
+                                            <form>
+                                                <input type="text"
+                                                   aria-placeholder="Active Directory port-number"
+                                                   value={this.state.portNumber}
+                                                   onChange={(event) => {this.change_callback({portNumber: event.target.value})}}
+                                                   className="form-control"
+                                                />
+                                            </form>
+                                        </span>
+                                    </div>
 
-                                        <div>
-                                            <span style={styles.edgeText}>Edge device</span>
-                                            <span>
-                                                <Select
-                                                disableUnderline
-                                                value={this.state.edgeDeviceId !== '' ? this.state.edgeDeviceId : 'none'}
-                                                onChange={(event) => {
-                                                    this.change_callback({edgeDeviceId: event.target.value})
-                                                }}>
+                                    <div className="control-row">
+                                        <span className="label-2">edge device</span>
+                                        <span className="text">
+                                            <form>
+                                                <select
+                                                    value={this.state.edgeDeviceId !== '' ? this.state.edgeDeviceId : 'none'}
+                                                    onChange={(event) => {
+                                                        this.change_callback({edgeDeviceId: event.target.value})
+                                                    }}>
                                                 {
                                                     this.filteredEdgeDevices().map((value) => {
-                                                        return (<MenuItem key={value.key} value={value.key}>{value.value}</MenuItem>)
+                                                        return (<option key={value.key} value={value.key}>{value.value}</option>)
                                                     })
                                                 }
-                                                </Select>
-                                            </span>
-                                        </div>
-                                        <br />
-                                        <br />
-
-                                        <div style={{float: 'left'}} title="Check this box if you want the enable SSL communications with the Active Directory server.">
-                                            <Checkbox
-                                                checked={this.state.sslOn}
-                                                onChange={(event) => {
-                                                    if (!event.target.checked) {
-                                                        this.change_callback({sslOn: false});
-                                                    } else {
-                                                        this.change_callback({sslOn: event.target.checked});
-                                                    }
-                                                }}
-                                                value="enable Active Directory SSL?"
-                                                inputProps={{
-                                                    'aria-label': 'primary checkbox',
-                                                }}
-                                            />
-                                            enable Active Directory SSL?
-                                        </div>
-                                        <br clear="both" />
-
-                                        <Button variant="contained" color="primary" style={styles.testButton}
-                                                onClick={() => this.testConnection()}>Test Connection</Button>
-
-
+                                                </select>
+                                            </form>
+                                        </span>
                                     </div>
-                                }
-                                {t_value === 'schedule' &&
-                                <div style={styles.timeTabContent}>
-                                    <TimeSelect time={this.state.schedule}
-                                                onSave={(time) => this.updateSchedule(time)}/>
+
+
+                                    <div className="control-row">
+                                        <span className="label-2">SSL?</span>
+                                        <span className="short-checkbox">
+                                            <input type="checkbox"
+                                                   checked={this.state.sslOn}
+                                                   onChange={(event) => {
+                                                       if (!event.target.checked) {
+                                                           this.change_callback({sslOn: false});
+                                                       } else {
+                                                           this.change_callback({sslOn: event.target.checked});
+                                                       }
+                                                   }}
+                                                   value="enable Active Directory SSL?"
+                                            />
+                                        </span>
+                                        <span className="explanation-label">Check this box if you want the enable SSL communications with the Active Directory server.</span>
+                                    </div>
+
+                                    <div className="control-box">
+                                        <button className="btn btn-primary btn-block" onClick={() => this.testConnection()}>Test Connection</button>
+                                    </div>
+
                                 </div>
                                 }
+
+
+                                {t_value === 'schedule' &&
+                                    <div className="time-tab-content">
+                                        <TimeSelect time={this.state.schedule}
+                                                    onSave={(time) => this.updateSchedule(time)}/>
+                                    </div>
+                                }
+
                             </div>
-
-
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary btn-block" onClick={() => this.handleCancel()} data-dismiss="modal">cancel</button>
+                                <button type="button" className="btn btn-primary btn-block" onClick={() => this.handleSave()}>save</button>
+                            </div>
                         </div>
                     </div>
-                    <DialogActions className={theme}>
-                        <Button color={"primary"} onClick={() => this.handleCancel()}>cancel</Button>
-                        <Button color={"secondary"} onClick={() => this.handleSave()}>save</Button>
-                    </DialogActions>
-
-                </Dialog>
+                </div>
             </div>
         );
     }

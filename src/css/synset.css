@@ -1,0 +1,29 @@
+
+
+.synset-page {
+
+}
+
+.new-syn-button {
+    float: right;
+}
+
+.synset-area-width {
+    display: inline-block;
+    width: 700px !important;
+}
+
+.synset-text-area-width {
+    display: inline-block;
+    width: 670px !important;
+}
+
+.synset-trashcan {
+    float: right;
+}
+
+.synset-page .synset-label {
+    padding: 10px;
+    color: #555;
+}
+

@@ -1,21 +1,7 @@
 import React, {Component} from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import Grid from "@material-ui/core/Grid";
+import '../css/operator.css';
 
-const styles = {
-    questionStyle: {
-        display: 'inline-block',
-        fontWeight: '600',
-    },
-    answerStyle: {
-        fontSize: '0.95em',
-    }
-};
 
 export class OperatorPreviousAnswer extends Component {
     constructor(props) {
@@ -50,44 +36,27 @@ export class OperatorPreviousAnswer extends Component {
         if (this.state.has_error) {
             return <h1>operator-previous-answer.js: Something went wrong.</h1>;
         }
-        const theme = this.props.theme;
+        if (!this.state.open)
+            return (<div />);
         return (
-            <Dialog aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    disableBackdropClick={true}
-                    disableEscapeKeyDown={true}
-                    open={this.state.open}
-                    fullWidth={true}
-                    maxWidth="lg"
-                    onClose={() => this.handleCancel()} >
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded operator-display">
 
-                <DialogTitle id="alert-dialog-title" className={theme}>Use Previous Answer?</DialogTitle>
-                <DialogContent className={theme}>
-                    <Grid container spacing={1}>
-
-                        <Grid item xs={1} />
-                        <Grid item xs={10}>
-                            <div>SimSage has a previous answer to the question: <div style={styles.questionStyle}>{this.props.question}</div></div>
-                        </Grid>
-                        <Grid item xs={1} />
-
-
-                        <Grid item xs={1} />
-                        <Grid item xs={2}>
+                        <div className="modal-header">Use Previous Answer?</div>
+                        <div className="modal-body">
+                            <div>SimSage has a previous answer to the question: <div className="questionStyle">{this.props.question}</div></div>
                             <div>SimSage's answer was:</div>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <div style={styles.answerStyle}>{this.props.answer}</div>
-                        </Grid>
-                        <Grid item xs={1} />
+                            <div className="answerStyle">{this.props.answer}</div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary btn-block"  onClick={() => this.handleCancel()}>Cancel</button>
+                            <button className="btn btn-primary btn-block"  onClick={() => this.handleSave()}>Use this Answer</button>
+                        </div>
 
-                    </Grid>
-                </DialogContent>
-                <DialogActions className={theme}>
-                    <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Use this Answer</Button>
-                </DialogActions>
-            </Dialog>
+                    </div>
+                </div>
+            </div>
         );
     }
 }

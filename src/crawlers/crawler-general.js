@@ -1,14 +1,9 @@
 import React, {Component} from 'react';
 
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-import Button from "@material-ui/core/Button";
-import Checkbox from '@material-ui/core/Checkbox';
 import MessageDialog from "../common/message-dialog";
 import {Api} from "../common/api";
-import Grid from "@material-ui/core/Grid";
-import Slider from "@material-ui/core/Slider";
+
+import '../css/crawler.css';
 
 const crawler_list = [
     {"key": "none", "value": "please select crawler type"},
@@ -23,48 +18,6 @@ const crawler_list = [
     {"key": "restfull", "value": "REST-full crawler"},
 ];
 
-// slider display
-const marks = [
-    {
-        value: 0,
-        label: 'File list',
-    },
-    {
-        value: 33,
-        label: 'GDPR compliance',
-    },
-    {
-        value: 66,
-        label: 'Semantic Search',
-    },
-    {
-        value: 100,
-        label: 'Language NLU',
-    },
-];
-
-function markText(value) {
-    if (value < 10) return "file";
-    if (value < 50) return "gdpr";
-    if (value < 80) return "search";
-    return "lang"
-}
-
-
-const styles = {
-    customWidth: {
-        width: '48%',
-    },
-    textField: {
-        width: '98%',
-    },
-    formContent: {
-        marginTop: '20px',
-        width: '98%',
-    },
-    exportButton: {
-    },
-};
 
 export class CrawlerGeneral extends Component {
     constructor(props) {
@@ -85,7 +38,7 @@ export class CrawlerGeneral extends Component {
             sourceId: Api.defined(props.sourceId) ? props.sourceId : '0',
             nodeId: Api.defined(props.nodeId) ? props.nodeId : '0',
             maxItems: Api.defined(props.maxItems) ? props.maxItems : '0',
-            maxBotItems: Api.defined(props.maxBotItems) ? props.maxBotItems : '0',
+            maxQNAItems: Api.defined(props.maxQNAItems) ? props.maxQNAItems : '0',
 
             name: Api.defined(props.name) ? props.name : '',
             filesPerSecond: Api.defined(props.filesPerSecond) ? props.filesPerSecond : '0',
@@ -126,7 +79,7 @@ export class CrawlerGeneral extends Component {
                             sourceId: nextProps.sourceId,
                             nodeId: nextProps.nodeId,
                             maxItems: nextProps.maxItems,
-                            maxBotItems: nextProps.maxBotItems,
+                            maxQNAItems: nextProps.maxQNAItems,
                             processingLevel: nextProps.processingLevel,
                             customRender: nextProps.customRender,
                             edgeDeviceId: Api.defined(nextProps.edgeDeviceId) ? nextProps.edgeDeviceId : 'none',
@@ -158,7 +111,7 @@ export class CrawlerGeneral extends Component {
                 sourceId: Api.defined(data.sourceId) ? data.sourceId : this.state.sourceId,
                 nodeId: Api.defined(data.nodeId) ? data.nodeId : this.state.nodeId,
                 maxItems: Api.defined(data.maxItems) ? data.maxItems : this.state.maxItems,
-                maxBotItems: Api.defined(data.maxBotItems) ? data.maxBotItems : this.state.maxBotItems,
+                maxQNAItems: Api.defined(data.maxQNAItems) ? data.maxQNAItems : this.state.maxQNAItems,
                 customRender: Api.defined(data.customRender) ? data.customRender : this.state.customRender,
                 edgeDeviceId: edgeDeviceId,
                 qaMatchStrength: Api.defined(data.qaMatchStrength) ? data.qaMatchStrength : this.state.qaMatchStrength,
@@ -196,19 +149,9 @@ export class CrawlerGeneral extends Component {
         const crawlerType = this.state.crawlerType;
         return crawlerType !== 'office365' && crawlerType !== 'wordpress' && crawlerType !== 'gdrive';
     }
-    processingLevelToMark() {
-        if (this.state.processingLevel === "FILES") return 0;
-        if (this.state.processingLevel === "GDPR") return 33;
-        if (this.state.processingLevel === "SEARCH") return 66;
-        return 100;
-    }
     setProcessingLevelFromMark(value) {
-        let processingLevel = "NLU";
-        if (value === 0) processingLevel = "FILES";
-        else if (value === 33) processingLevel = "GDPR";
-        else if (value === 66) processingLevel = "SEARCH";
         if (this.state.onSave) {
-            this.state.onSave(this.construct_data({"processingLevel": processingLevel}));
+            this.state.onSave(this.construct_data({"processingLevel": value}));
         }
     }
     filteredEdgeDevices() {
@@ -227,7 +170,7 @@ export class CrawlerGeneral extends Component {
             return <h1>crawler-general.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.formContent}>
+            <div className="crawler-page-form">
 
                 <MessageDialog callback={(action) => this.state.message_callback(action)}
                                open={this.state.message.length > 0}
@@ -235,248 +178,244 @@ export class CrawlerGeneral extends Component {
                                message={this.state.message}
                                title={this.state.message_title} />
 
-                <Grid container spacing={2}>
+                <div className="crawler-page">
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <Select
-                            disableUnderline
-                            value={this.state.crawlerType}
-                            disabled={("" + this.state.sourceId) !== "0"}
-                            style={styles.customWidth}
-                            onChange={(event) => {this.change_callback({crawlerType: event.target.value})}}>
+                    <div className="type-select-box">
+                        <select className="form-select customWidth" onChange={(event) => {this.change_callback({crawlerType: event.target.value})}}
+                                disabled={("" + this.state.sourceId) !== "0"}
+                                defaultValue={this.state.crawlerType}>
                             {
                                 crawler_list.map((value) => {
-                                    return (<MenuItem key={value.key} value={value.key}>{value.value}</MenuItem>)
+                                    return (<option key={value.key} value={value.key}>{value.value}</option>)
                                 })
                             }
-                        </Select>
-                    </Grid>
-                    <Grid item xs={1} />
+                        </select>
+                    </div>
 
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="Crawler Name"
-                            autoFocus
-                            label="Crawler Name"
-                            value={this.state.name}
-                            style={styles.textField}
-                            onChange={(event) => {this.change_callback({name: event.target.value})}}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="files per second throttle"
-                            label="files per second throttle"
-                            value={this.state.filesPerSecond}
-                            style={styles.textField}
-                            onChange={(event) => {this.change_callback({filesPerSecond: event.target.value})}}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
-
-
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="Maximum number of files (0 for no limits)"
-                            label="Maximum number of files (0 for no limits)"
-                            value={this.state.maxItems}
-                            style={styles.textField}
-                            onChange={(event) => {this.change_callback({maxItems: event.target.value})}}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="Maximum number of QA (Bot) entries (0 for no limits)"
-                            label="Maximum number of QA (Bot) entries (0 for no limits)"
-                            value={this.state.maxBotItems}
-                            style={styles.textField}
-                            onChange={(event) => {this.change_callback({maxBotItems: event.target.value})}}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
-
-
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="node-id (0 for single node systems)"
-                            label="node-id (0 for single node systems)"
-                            value={this.state.nodeId}
-                            style={styles.textField}
-                            onChange={(event) => {this.change_callback({nodeId: event.target.value})}}
-                        />
-                    </Grid>
-                    {(this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull') &&
-                    <Grid item xs={5}>
-                        <div style={{float: 'left'}}
-                             title="Restful and DB crawlers have optional custom-rendering flags.">
-                            <Checkbox
-                                checked={this.state.customRender && (this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull')}
-                                onChange={(event) => {
-                                    this.change_callback({customRender: event.target.checked && (this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull')});
-                                }}
-                                value="custom render?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
-                            />
-                            custom render?
-                        </div>
-                    </Grid>
-                    }
-                    {(this.state.crawlerType !== 'database' && this.state.crawlerType !== 'restfull') &&
-                    <Grid item xs={5} />
-                    }
-                    <Grid item xs={1} />
-
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <div style={{float: 'left'}} title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
-                            <Checkbox
-                                checked={this.state.deleteFiles}
-                                onChange={(event) => { this.change_callback({deleteFiles: event.target.checked}); }}
-                                value="delete files?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
-                            />
-                            remove un-seen files?
-                        </div>
-                    </Grid>
-                    <Grid item xs={5}>
-                        <div style={{float: 'left'}} title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
-                            <Checkbox
-                                checked={this.state.allowAnonymous || this.state.crawlerType === 'web'}
-                                disabled={this.state.crawlerType === 'web'}
-                                onChange={(event) => { this.change_callback({allowAnonymous: event.target.checked}); }}
-                                value="allow anonymous access to these files?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
-                            />
-                            allow anonymous access to these files?
-                        </div>
-                    </Grid>
-                    <Grid item xs={1} />
-
-
-                        <Grid item xs={1} />
-                        <Grid item xs={5}>
-                            <div style={{float: 'left', width: '80%'}} title="Select what kind of processing you want done to these files">
-                                <Slider
-                                    defaultValue={this.processingLevelToMark()}
-                                    valueLabelFormat={markText}
-                                    getAriaValueText={markText}
-                                    aria-labelledby="crawler-level"
-                                    onChange={(event, newValue) => this.setProcessingLevelFromMark(newValue)}
-                                    step={null}
-                                    valueLabelDisplay="auto"
-                                    marks={marks}
-                                />
+                    <div className="processing-selector">
+                        <span className="label-processing">processing level:</span>
+                        <span title="Select what kind of processing you want done to these files" className="processing-list">
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input" type="radio" name="inlineRadioOptions"
+                                       onChange={() => this.setProcessingLevelFromMark("FILES")}
+                                       id="inlineRadio1" value="FILES" checked={this.state.processingLevel === "FILES"} />
+                                <label className="form-check-label" htmlFor="inlineRadio1">discovery</label>
                             </div>
-                        </Grid>
-                        <Grid item xs={5}>
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input" type="radio" name="inlineRadioOptions"
+                                       onChange={() => this.setProcessingLevelFromMark("GDPR")}
+                                       id="inlineRadio2" value="GDPR" checked={this.state.processingLevel === "GDPR"} />
+                                <label className="form-check-label" htmlFor="inlineRadio2">GDPR</label>
+                            </div>
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input" type="radio" name="inlineRadioOptions"
+                                       onChange={() => this.setProcessingLevelFromMark("SEARCH")}
+                                       id="inlineRadio3" value="SEARCH" checked={this.state.processingLevel === "SEARCH"} />
+                                <label className="form-check-label" htmlFor="inlineRadio3">search</label>
+                            </div>
+                            <div className="form-check form-check-inline">
+                                <input className="form-check-input" type="radio" name="inlineRadioOptions"
+                                       onChange={() => this.setProcessingLevelFromMark("NLU")}
+                                       id="inlineRadio4" value="lang" disabled />
+                                <label className="form-check-label" htmlFor="inlineRadio3">NLU</label>
+                            </div>
+
+                        </span>
+                    </div>
+
+
+                    <div className="form-group">
+                        <span className="left-column">
+                            <input type="text" className="form-control"
+                                placeholder="Crawler Name"
+                                autoFocus
+                                value={this.state.name}
+                                onChange={(event) => {this.change_callback({name: event.target.value})}}
+                            />
+                        </span>
+                        <span className="right-column">
+                            <span className="label-right">files per second throttle</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                    placeholder="files per second throttle"
+                                    value={this.state.filesPerSecond}
+                                    onChange={(event) => {this.change_callback({filesPerSecond: event.target.value})}}
+                                />
+                            </span>
+                        </span>
+                    </div>
+
+
+                    <div className="form-group">
+                        <span className="left-column">
+                            <span className="label-right">maximum number of files</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                placeholder="Maximum number of files (0 for no limits)"
+                                value={this.state.maxItems}
+                                onChange={(event) => {this.change_callback({maxItems: event.target.value})}}
+                                />
+                            </span>
+                        </span>
+                        <span className="right-column">
+                            <span className="label-right">maximum number of QA</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                    placeholder="Maximum number of QA entries (0 for no limits)"
+                                    value={this.state.maxQNAItems}
+                                    onChange={(event) => {this.change_callback({maxQNAItems: event.target.value})}}
+                                />
+                            </span>
+                        </span>
+                    </div>
+
+
+                    <div className="form-group">
+                        <span className="left-column">
+                            <span className="label-right">node id</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                    placeholder="node-id (0 for single node systems)"
+                                    value={this.state.nodeId}
+                                    onChange={(event) => {this.change_callback({nodeId: event.target.value})}}
+                                />
+                            </span>
+                        </span>
+                        <span className="right-column">
+                            {(this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull') &&
+                            <div>
+                                <div
+                                     title="Restful and DB crawlers have optional custom-rendering flags.">
+                                    <input type="checkbox"
+                                        checked={this.state.customRender && (this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull')}
+                                        onChange={(event) => {
+                                            this.change_callback({customRender: event.target.checked && (this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull')});
+                                        }}
+                                        value="custom render?"
+                                    />
+                                    <span className="label-left">custom render?</span>
+                                </div>
+                            </div>
+                            }
+                            {(this.state.crawlerType !== 'database' && this.state.crawlerType !== 'restfull') &&
+                            <div />
+                            }
+                        </span>
+                    </div>
+
+                    <div className="form-group">
+                        <span className="left-column">
+                            <div style={{float: 'left'}} title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
+                                <input type="checkbox"
+                                    checked={this.state.deleteFiles}
+                                    onChange={(event) => { this.change_callback({deleteFiles: event.target.checked}); }}
+                                    value="delete files?"
+                                />
+                                <span className="label-left">remove un-seen files?</span>
+                            </div>
+                        </span>
+                        <span className="right-column">
+                            <div style={{float: 'left'}} title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
+                                <input type="checkbox"
+                                    checked={this.state.allowAnonymous || this.state.crawlerType === 'web'}
+                                    disabled={this.state.crawlerType === 'web'}
+                                    onChange={(event) => { this.change_callback({allowAnonymous: event.target.checked}); }}
+                                    value="allow anonymous access to these files?"
+                                />
+                                <span className="label-left">allow anonymous access to these files?</span>
+                            </div>
+                        </span>
+                    </div>
+
+
+                    <div className="form-group">
+                        <span className="left-column">
                             <div style={{float: 'left'}} title="Check this box if you preview images generated for each document.  Document search must be enabled for this to work.">
-                                <Checkbox
+                                <input type="checkbox"
                                     checked={this.state.enablePreview && (this.state.processingLevel === "SEARCH" || this.state.processingLevel === "NLU")}
                                     disabled={this.state.processingLevel !== "SEARCH" && this.state.processingLevel !== "NLU"}
                                     onChange={(event) => { this.change_callback({enablePreview: event.target.checked}); }}
                                     value="enable document image previews?"
-                                    inputProps={{
-                                        'aria-label': 'primary checkbox',
-                                    }}
                                 />
-                                enable document image previews?
+                                <span className="label-left">enable document image previews?</span>
                             </div>
-                        </ Grid>
-                        <Grid item xs={1} />
+                        </span>
+                        <span className="right-column">
+                            <span className="label-right">number of search results</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                    placeholder="number of search results"
+                                    value={this.state.numResults}
+                                    onChange={(event) => {this.change_callback({numResults: event.target.value})}}
+                                />
+                            </span>
+                        </span>
+                    </div>
 
-                    <Grid item xs={12} />
-                    <Grid item xs={12}/>
+                    <div className="form-group">
+                        <span className="left-column">
+                            <span className="label-right">number of fragments</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                    placeholder="number of fragments per search result"
+                                    value={this.state.numFragments}
+                                    onChange={(event) => {this.change_callback({numFragments: event.target.value})}}
+                                />
+                            </span>
+                        </span>
+                        <span className="right-column">
+                            <span className="label-right">Q&A threshold</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                    placeholder="Q&A threshold (0.8125 default)"
+                                    value={this.state.qaMatchStrength}
+                                    onChange={(event) => {this.change_callback({qaMatchStrength: event.target.value})}}
+                                />
+                            </span>
+                        </span>
+                    </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="number of search results"
-                            label="number of search results"
-                            value={this.state.numResults}
-                            style={styles.textField}
-                            onChange={(event) => {this.change_callback({numResults: event.target.value})}}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="number of fragments per search result"
-                            label="number of fragments per search result"
-                            value={this.state.numFragments}
-                            style={styles.textField}
-                            onChange={(event) => {this.change_callback({numFragments: event.target.value})}}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="Q&A threshold (0.8125 default)"
-                            label="Q&A threshold (0.8125 default)"
-                            value={this.state.qaMatchStrength}
-                            style={styles.textField}
-                            onChange={(event) => {this.change_callback({qaMatchStrength: event.target.value})}}
-                        />
-                    </Grid>
                     {this.canHaveEdgeDevice() &&
-                    <Grid item xs={1}>
-                        <div style={{cursor: 'default', marginTop: '14px'}}
-                             title="you can connect this source to a SimSage Edge device if you have one.  Select it here.">
-                            Edge device
-                        </div>
-                    </Grid>
+                    <div className="form-group">
+                        <span className="left-column">
+                            <span className="label-right"
+                                 title="you can connect this source to a SimSage Edge device if you have one.  Select it here.">
+                                Edge device
+                            </span>
+                            <span className="select-box-after-label">
+                                <select className="form-select" onChange={(event) => this.change_callback({edgeDeviceId: event.target.value})}
+                                        disabled={("" + this.state.sourceId) !== "0"}
+                                        defaultValue={this.state.edgeDeviceId !== '' ? this.state.edgeDeviceId : 'none'}>
+                                    {
+                                        this.filteredEdgeDevices().map((value) => {
+                                            return (<option key={value.key} value={value.key}>{value.value}</option>)
+                                        })
+                                    }
+                                </select>
+                            </span>
+                        </span>
+                        <span className="right-column">
+                        </span>
+                    </div>
                     }
-                    {this.canHaveEdgeDevice() &&
-                    <Grid item xs={4}>
-                        <div style={{marginTop: '10px'}}>
-                        <Select
-                            disableUnderline
-                            value={this.state.edgeDeviceId !== '' ? this.state.edgeDeviceId : 'none'}
-                            onChange={(event) => {
-                                this.change_callback({edgeDeviceId: event.target.value})
-                            }}>
-                            {
-                                this.filteredEdgeDevices().map((value) => {
-                                    return (<MenuItem key={value.key} value={value.key}>{value.value}</MenuItem>)
-                                })
-                            }
-                        </Select>
-                        </div>
-                    </Grid>
-                    }
-                    {!this.canHaveEdgeDevice() &&
-                        <Grid item xs={5} />
-                    }
-                    <Grid item xs={1} />
 
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
+                    <div>
                         {this.state.sourceId && this.state.sourceId > 0 && this.state.crawlerType !== 'nfs' &&
                             this.state.crawlerType !== 'database' && this.state.crawlerType !== 'restfull' &&
                             this.state.crawlerType !== 'gdrive' &&
                         <div>
-                            <Button variant="contained" color="secondary" style={styles.exportButton}
-                                    onClick={() => this.testCrawler()}>Test Connection</Button>
+                            <button className="btn btn-primary btn-block"
+                                    onClick={() => this.testCrawler()}>Test Connection</button>
                         </div>
                         }
-                    </Grid>
-                    <Grid item xs={6} />
+                    </div>
 
 
 
-                    </Grid>
+                </div>
             </div>
         );
     }

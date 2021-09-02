@@ -8,38 +8,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Api from "../common/api";
 
-
-const styles = {
-    page: {
-        float: 'left'
-    },
-    pageWidth: {
-        width: '900px',
-    },
-    logFiles: {
-        marginTop: '20px',
-        maxHeight: '80vh',
-        minWidth: '900px',
-        width: '110%',
-        overflowX: 'auto',
-        overflowY: 'auto',
-        display: 'inline-block',
-        whiteSpace: 'nowrap',
-        resize: 'both',
-    },
-    logLine: {
-        fontSize: '0.65em',
-        marginBottom: '4px',
-    },
-    item: {
-    },
-    selectedItem: {
-        color: '#000',
-    },
-    dateSelect: {
-        width: '200px',
-    }
-};
+import '../css/logs.css';
 
 
 export class Logs extends React.Component {
@@ -83,7 +52,9 @@ export class Logs extends React.Component {
         }
     }
     scrollToBottom() {
-        this.messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+        if (this.isVisible()) {
+            this.messagesEndRef.current.scrollIntoView({behavior: 'smooth'})
+        }
     }
     getClassForType(type) {
         if (type === 'Debug') return "log-type-debug";
@@ -145,6 +116,9 @@ export class Logs extends React.Component {
         }
         return [];
     }
+    isVisible() {
+        return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0;
+    }
     render() {
         let date = new Date();
         if (this.props.log_date) {
@@ -155,75 +129,127 @@ export class Logs extends React.Component {
         const log_type = this.props.log_type;
         const log_service = this.props.log_service;
         const log_refresh = this.props.log_refresh;
-        return (
-            <div style={styles.page}>
+        if (this.isVisible()) {
+            return (
+                <div className="log-page">
 
-                <div style={styles.dateSelect}>
-                    <DatePicker
-                        className={theme === "light" ? "wide-date-picker-input" : "wide-date-picker-input-dark"}
-                        selected={date}
-                        dateFormat="yyyy/MM/dd HH:mm"
-                        timeFormat="HH:mm"
-                        showTimeSelect
-                        timeIntervals={60}
-                        todayButton="today"
-                        onChange={date => {
-                            this.props.setLogDate(date);
-                            this.props.getLogs();
-                        }} />
+                    <div className="date-select">
+                        <DatePicker
+                            className={theme === "light" ? "wide-date-picker-input" : "wide-date-picker-input-dark"}
+                            selected={date}
+                            dateFormat="yyyy/MM/dd HH:mm"
+                            timeFormat="HH:mm"
+                            showTimeSelect
+                            timeIntervals={60}
+                            todayButton="today"
+                            onChange={date => {
+                                this.props.setLogDate(date);
+                                this.props.getLogs();
+                            }}/>
+                    </div>
+
+                    <div className="log-selectors">
+                        <span title={this.getHourTitle(1)} className={this.getSelectedHourStyle(hours === 1)}
+                              onClick={() => this.setLogHours(1)}>1 hour</span>
+                        <span title={this.getHourTitle(2)} className={this.getSelectedHourStyle(hours === 2)}
+                              onClick={() => this.setLogHours(2)}>2 hours</span>
+                        <span title={this.getHourTitle(4)} className={this.getSelectedHourStyle(hours === 4)}
+                              onClick={() => this.setLogHours(4)}>4 hours</span>
+                        <span title={this.getHourTitle(12)} className={this.getSelectedHourStyle(hours === 12)}
+                              onClick={() => this.setLogHours(12)}>12 hours</span>
+                        <span title={this.getHourTitle(24)} className={this.getSelectedHourStyle(hours === 24)}
+                              onClick={() => this.setLogHours(24)}>24 hours</span>
+                        <span title={this.getHourTitle(48)} className={this.getSelectedHourStyle(hours === 48)}
+                              onClick={() => this.setLogHours(48)}>48 hours</span>
+                        <span className="log-spacer">&nbsp;</span>
+                        <span title="display all log-types" className={this.getSelectedLogStyle(log_type === "All")}
+                              onClick={() => this.setLogType("All")}>all</span>
+                        <span title="display only 'info' log-types"
+                              className={this.getSelectedLogStyle(log_type === "Info")}
+                              onClick={() => this.setLogType("Info")}>info</span>
+                        <span title="display only 'debug' log-types"
+                              className={this.getSelectedLogStyle(log_type === "Debug")}
+                              onClick={() => this.setLogType("Debug")}>debug</span>
+                        <span title="display only 'error' log-types"
+                              className={this.getSelectedLogStyle(log_type === "Error")}
+                              onClick={() => this.setLogType("Error")}>error</span>
+                        <span title="display only 'warning' log-types"
+                              className={this.getSelectedLogStyle(log_type === "Warn")}
+                              onClick={() => this.setLogType("Warn")}>warn</span>
+                    </div>
+
+                    <div className="log-selectors">
+                        <span title="do not automatically refresh the logs"
+                              className={this.getLogRefreshStyle(log_refresh === 0)}
+                              onClick={() => this.setLogRefresh(0)}>off</span>
+                        <span title="automatically refresh this log every five seconds"
+                              className={this.getLogRefreshStyle(log_refresh === 5)}
+                              onClick={() => this.setLogRefresh(5)}>5 seconds</span>
+                        <span title="automatically refresh this log every 10 seconds"
+                              className={this.getLogRefreshStyle(log_refresh === 10)}
+                              onClick={() => this.setLogRefresh(10)}>10 seconds</span>
+                        <span className="log-spacer">&nbsp;</span>
+                        <span title="display logs from all services"
+                              className={this.getSelectedServiceStyle(log_service === 'All')}
+                              onClick={() => this.setLogService('All')}>all</span>
+                        <span title="only display logs from the Auth service"
+                              className={this.getSelectedServiceStyle(log_service === 'Auth')}
+                              onClick={() => this.setLogService('Auth')}>auth</span>
+                        <span title="only display logs from the Conversion service"
+                              className={this.getSelectedServiceStyle(log_service === 'Conversion')}
+                              onClick={() => this.setLogService('Conversion')}>conv</span>
+                        <span title="only display logs from the Crawler service"
+                              className={this.getSelectedServiceStyle(log_service === 'Crawler')}
+                              onClick={() => this.setLogService('Crawler')}>crawl</span>
+                        <span title="only display logs from the Document service"
+                              className={this.getSelectedServiceStyle(log_service === 'Document')}
+                              onClick={() => this.setLogService('Document')}>doc</span>
+                        <span title="only display logs from the Index service"
+                              className={this.getSelectedServiceStyle(log_service === 'Index')}
+                              onClick={() => this.setLogService('Index')}>index</span>
+                        <span title="only display logs from the Knowledgebase service"
+                              className={this.getSelectedServiceStyle(log_service === 'KB')}
+                              onClick={() => this.setLogService('KB')}>kb</span>
+                        <span title="only display logs from the Language service"
+                              className={this.getSelectedServiceStyle(log_service === 'Language')}
+                              onClick={() => this.setLogService('Language')}>lang</span>
+                        <span title="only display logs from the Mind service"
+                              className={this.getSelectedServiceStyle(log_service === 'Mind')}
+                              onClick={() => this.setLogService('Mind')}>mind</span>
+                        <span title="only display logs from the Operator service"
+                              className={this.getSelectedServiceStyle(log_service === 'Operator')}
+                              onClick={() => this.setLogService('Operator')}>operator</span>
+                        <span title="only display logs from the Search service"
+                              className={this.getSelectedServiceStyle(log_service === 'Search')}
+                              onClick={() => this.setLogService('Search')}>search</span>
+                        <span title="only display logs from the Statistics service"
+                              className={this.getSelectedServiceStyle(log_service === 'Stats')}
+                              onClick={() => this.setLogService('Stats')}>stats</span>
+                        <span title="only display logs from the Web service"
+                              className={this.getSelectedServiceStyle(log_service === 'Web')}
+                              onClick={() => this.setLogService('Web')}>web</span>
+                    </div>
+
+                    <div className="log-files">
+                        {
+                            this.getLogs().map((line) => {
+                                return (<div className="log-line" id={line.created}>
+                                    <span
+                                        className={'log-type-width ' + this.getClassForType(line.type)}>{line.type}</span>
+                                    <span className='log-service-width'>{line.service}</span>
+                                    <span className='log-time-width'>{Api.unixTimeConvert(line.created)}</span>
+                                    <span>{line.message}</span>
+                                </div>)
+                            })
+                        }
+                        <div ref={this.messagesEndRef}/>
+                    </div>
+
                 </div>
-
-                <div className="log-selectors">
-                    <span title={this.getHourTitle(1)} className={this.getSelectedHourStyle(hours===1)} onClick={() => this.setLogHours(1)}>1 hour</span>
-                    <span title={this.getHourTitle(2)} className={this.getSelectedHourStyle(hours===2)} onClick={() => this.setLogHours(2)}>2 hours</span>
-                    <span title={this.getHourTitle(4)} className={this.getSelectedHourStyle(hours===4)} onClick={() => this.setLogHours(4)}>4 hours</span>
-                    <span title={this.getHourTitle(12)} className={this.getSelectedHourStyle(hours===12)} onClick={() => this.setLogHours(12)}>12 hours</span>
-                    <span title={this.getHourTitle(24)} className={this.getSelectedHourStyle(hours===24)} onClick={() => this.setLogHours(24)}>24 hours</span>
-                    <span title={this.getHourTitle(48)} className={this.getSelectedHourStyle(hours===48)} onClick={() => this.setLogHours(48)}>48 hours</span>
-                    <span className="log-spacer">&nbsp;</span>
-                    <span title="display all log-types" className={this.getSelectedLogStyle(log_type==="All")} onClick={() => this.setLogType("All")}>all</span>
-                    <span title="display only 'info' log-types" className={this.getSelectedLogStyle(log_type==="Info")} onClick={() => this.setLogType("Info")}>info</span>
-                    <span title="display only 'debug' log-types" className={this.getSelectedLogStyle(log_type==="Debug")} onClick={() => this.setLogType("Debug")}>debug</span>
-                    <span title="display only 'error' log-types" className={this.getSelectedLogStyle(log_type==="Error")} onClick={() => this.setLogType("Error")}>error</span>
-                    <span title="display only 'warning' log-types" className={this.getSelectedLogStyle(log_type==="Warn")} onClick={() => this.setLogType("Warn")}>warn</span>
-                    <span className="log-spacer">&nbsp;</span>
-                    <span title="do not automatically refresh the logs" className={this.getLogRefreshStyle(log_refresh===0)} onClick={() => this.setLogRefresh(0)}>off</span>
-                    <span title="automatically refresh this log every five seconds" className={this.getLogRefreshStyle(log_refresh===5)} onClick={() => this.setLogRefresh(5)}>5 seconds</span>
-                    <span title="automatically refresh this log every 10 seconds" className={this.getLogRefreshStyle(log_refresh===10)} onClick={() => this.setLogRefresh(10)}>10 seconds</span>
-                </div>
-
-                <div className="log-selectors">
-                    <span title="display logs from all services" className={this.getSelectedServiceStyle(log_service==='All')} onClick={() => this.setLogService('All')}>all</span>
-                    <span title="only display logs from the Auth service" className={this.getSelectedServiceStyle(log_service==='Auth')} onClick={() => this.setLogService('Auth')}>auth</span>
-                    <span title="only display logs from the Conversion service" className={this.getSelectedServiceStyle(log_service==='Conversion')} onClick={() => this.setLogService('Conversion')}>conv</span>
-                    <span title="only display logs from the Crawler service" className={this.getSelectedServiceStyle(log_service==='Crawler')} onClick={() => this.setLogService('Crawler')}>crawl</span>
-                    <span title="only display logs from the Document service" className={this.getSelectedServiceStyle(log_service==='Document')} onClick={() => this.setLogService('Document')}>doc</span>
-                    <span title="only display logs from the Index service" className={this.getSelectedServiceStyle(log_service==='Index')} onClick={() => this.setLogService('Index')}>index</span>
-                    <span title="only display logs from the Knowledgebase service" className={this.getSelectedServiceStyle(log_service==='KB')} onClick={() => this.setLogService('KB')}>kb</span>
-                    <span title="only display logs from the Language service" className={this.getSelectedServiceStyle(log_service==='Language')} onClick={() => this.setLogService('Language')}>lang</span>
-                    <span title="only display logs from the Mind service" className={this.getSelectedServiceStyle(log_service==='Mind')} onClick={() => this.setLogService('Mind')}>mind</span>
-                    <span title="only display logs from the Operator service" className={this.getSelectedServiceStyle(log_service==='Operator')} onClick={() => this.setLogService('Operator')}>operator</span>
-                    <span title="only display logs from the Search service" className={this.getSelectedServiceStyle(log_service==='Search')} onClick={() => this.setLogService('Search')}>search</span>
-                    <span title="only display logs from the Statistics service" className={this.getSelectedServiceStyle(log_service==='Stats')} onClick={() => this.setLogService('Stats')}>stats</span>
-                    <span title="only display logs from the Web service" className={this.getSelectedServiceStyle(log_service==='Web')} onClick={() => this.setLogService('Web')}>web</span>
-                </div>
-
-                <div style={styles.logFiles}>
-                    {
-                        this.getLogs().map((line) => {
-                            return (<div style={styles.logLine} id={line.created}>
-                                <span className={'log-type-width ' + this.getClassForType(line.type)}>{line.type}</span>
-                                <span className='log-service-width'>{line.service}</span>
-                                <span className='log-time-width'>{Api.unixTimeConvert(line.created)}</span>
-                                <span>{line.message}</span>
-                            </div>)
-                        })
-                    }
-                    <div ref={this.messagesEndRef} />
-                </div>
-
-            </div>
-        )
+            )
+        } else {
+            return (<div />)
+        }
     }
 }
 

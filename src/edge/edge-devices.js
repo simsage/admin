@@ -1,83 +1,14 @@
 import React, {Component} from 'react';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import TextField from '@material-ui/core/TextField';
-import TablePagination from '@material-ui/core/TablePagination';
-
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-import Grid from "@material-ui/core/Grid";
 
 import Api from '../common/api'
+import {Pagination} from "../common/pagination";
 
+import '../css/edge.css';
 
-
-const styles = {
-    pageWidth: {
-        width: '900px',
-    },
-    tableLight: {
-    },
-    tableDark: {
-        background: '#d0d0d0',
-    },
-    label: {
-        color: '#555',
-    },
-    tableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-    },
-    linkButton: {
-        float: 'left',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    imageButton: {
-        float: 'right',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    editBox: {
-        width: '500px',
-        marginBottom: '15px',
-    },
-    addImage: {
-        width: '25px',
-    },
-    dlImageSize: {
-        width: '24px',
-    },
-    floatLeft: {
-        float: 'left',
-    },
-    copiedStyle: {
-        fontSize: '10px',
-        marginLeft: '25px',
-        marginTop: '-22px',
-        position: 'absolute',
-        float: 'left',
-        zIndex: '99',
-    },
-    lineHeight: {height: '30px'},
-    organisationIdLabel: {width: '170px', float: 'left', height: '24px'},
-    copyImageSpan: {float: 'left', marginTop: '-5px', marginLeft: '10px'},
-    clipboardImage: {width: '24px', height: '24px;'},
-};
 
 
 export class EdgeDevices extends Component {
@@ -234,67 +165,67 @@ export class EdgeDevices extends Component {
                 <div>
                     { this.isVisible() &&
 
-                    <div>
+                    <div className="edge-display">
 
-                        <Paper style={styles.pageWidth}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow style={styles.tableHeaderStyle}>
-                                        <TableCell style={styles.tableHeaderStyle}>Edge device</TableCell>
-                                        <TableCell style={styles.tableHeaderStyle}>remote details</TableCell>
-                                        <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
+                        <div>
+                            <table className="table">
+                                <thead>
+                                    <tr className='table-header'>
+                                        <th className='table-header'>Edge device</th>
+                                        <th className='table-header'>remote details</th>
+                                        <th className='table-header'>actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     {
                                         this.getEdgeDevices().map((edge_device) => {
                                             return (
-                                                <TableRow key={edge_device.edgeId}>
-                                                    <TableCell>
-                                                        <div style={styles.label}>{edge_device.name}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.label}>{this.get_edge_details(edge_device)}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.linkButton}
+                                                <tr key={edge_device.edgeId}>
+                                                    <td>
+                                                        <div>{edge_device.name}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div>{this.get_edge_details(edge_device)}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="link-button"
                                                              onClick={() => this.viewIds(edge_device)}>
-                                                            <img src="../images/id.svg" style={styles.dlImageSize}
-                                                                 title="view Edge device ids and details" alt="ids"/>
+                                                            <img src="../images/id.svg" className="dl-image-size"
+                                                                 title="view edge device ids and details" alt="ids"/>
                                                         </div>
-                                                        <div style={styles.linkButton}
+                                                        <div className="link-button"
                                                              onClick={() => this.editEdgeDevice(edge_device)}>
-                                                            <img src="../images/edit.svg" style={styles.dlImageSize}
-                                                                 title="edit Edge device" alt="edit"/>
+                                                            <img src="../images/edit.svg" className="dl-image-size"
+                                                                 title="edit edge device" alt="edit"/>
                                                         </div>
-                                                        <div style={styles.linkButton}
+                                                        <div className="link-button"
                                                              onClick={() => this.deleteEdgeDeviceAsk(edge_device)}>
-                                                            <img src="../images/delete.svg" style={styles.dlImageSize}
-                                                                 title="remove Edge device" alt="remove"/>
+                                                            <img src="../images/delete.svg" className="dl-image-size"
+                                                                 title="remove edge device" alt="remove"/>
                                                         </div>
-                                                    </TableCell>
-                                                </TableRow>
+                                                    </td>
+                                                </tr>
                                             )
                                         })
                                     }
-                                    <TableRow>
-                                        <TableCell/>
-                                        <TableCell/>
-                                        <TableCell>
+                                    <tr>
+                                        <td/>
+                                        <td/>
+                                        <td>
                                             {this.props.selected_organisation_id.length > 0 &&
-                                            <div style={styles.imageButton} onClick={() => this.addEdgeDevice()}>
+                                            <div className="image-button" onClick={() => this.addEdgeDevice()}>
                                                 <img
-                                                    style={styles.addImage} src="../images/add.svg" title="add new Edge device"
+                                                    className="dl-image-size" src="../images/add.svg" title="add new Edge device"
                                                     alt="add new Edge device"/></div>
                                             }
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                            <TablePagination
+                            <Pagination
                                 rowsPerPageOptions={[5, 10, 25]}
-                                style={theme === 'light' ? styles.tableLight : styles.tableDark}
+                                theme={theme}
                                 component="div"
                                 count={this.props.edge_device_list ? this.props.edge_device_list.length : 0}
                                 rowsPerPage={this.state.page_size}
@@ -305,112 +236,106 @@ export class EdgeDevices extends Component {
                                 nextIconButtonProps={{
                                     'aria-label': 'Next Page',
                                 }}
-                                onChangePage={(event, page) => this.changePage(page)}
-                                onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
+                                onChangePage={(page) => this.changePage(page)}
+                                onChangeRowsPerPage={(rows) => this.changePageSize(rows)}
                             />
 
-                        </Paper>
+                        </div>
 
+                        {
+                            this.state.edit_edge_device &&
+                            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                                <div className={"modal-dialog modal-dialog-centered modal-md"} role="document">
+                                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                                        <div
+                                            className="modal-header">{this.state.edit_edge_id ? "Edit Edge device" : "Add New Edge device"}</div>
+                                        <div className="modal-body">
 
-                        <Dialog aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description"
-                                open={this.state.edit_edge_device}
-                                disableBackdropClick={true}
-                                disableEscapeKeyDown={true}
-                                fullWidth={true}
-                                maxWidth="lg"
-                                onClose={() => this.setState({edit_edge_device: false, edgeDevice: null})}>
-                            <DialogTitle className={this.props.theme}>{this.state.edit_edge_id ? "Edit Edge device" : "Add New Edge device"}</DialogTitle>
-                            <DialogContent className={this.props.theme}>
+                                            <div>name</div>
 
-                                <Grid container spacing={2}>
+                                            <input type="text"
+                                                   autoFocus={true}
+                                                   className="edit-box"
+                                                   placeholder="Edge device name"
+                                                   value={this.state.edit_name}
+                                                   onChange={(event) => this.setState({edit_name: event.target.value})}
+                                            />
 
-                                    <Grid item xs={1}/>
-                                    <Grid item xs={3}>
-                                        <div>name</div>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            autoFocus={true}
-                                            style={styles.editBox}
-                                            placeholder="Edge device name"
-                                            value={this.state.edit_name}
-                                            onChange={(event) => this.setState({edit_name: event.target.value})}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}/>
-
-                                </Grid>
-
-                            </DialogContent>
-                            <DialogActions className={this.props.theme}>
-                                <Button color="primary" onClick={() => this.editCancel()}>Cancel</Button>
-                                <Button variant="outlined" color="secondary" onClick={() => this.editOk()}>Save</Button>
-                            </DialogActions>
-                        </Dialog>
-
-
-                        <Dialog aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description"
-                                open={this.state.view_ids}
-                                disableBackdropClick={true}
-                                disableEscapeKeyDown={true}
-                                fullWidth={true}
-                                maxWidth="md"
-                                onClose={() => this.setState({view_ids: false})} >
-                            <DialogTitle className={this.props.theme}>{this.state.view_ids_edge_device != null ? this.state.view_ids_edge_device.name : ""} details</DialogTitle>
-                            <DialogContent className={this.props.theme}>
-                                <div>
-                                    <div style={styles.lineHeight}>
-                                        <div style={styles.organisationIdLabel}>
-                                            organisation id
                                         </div>
-                                        <div style={styles.floatLeft}>{this.props.selected_organisation_id ? this.props.selected_organisation_id : ""}</div>
-                                        <span style={styles.copyImageSpan} title={'copy organisation id'}>
-                                        <img src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'} style={styles.clipboardImage} alt={'copy'}
-                                                 onClick={() => { if (Api.writeToClipboard(this.props.selected_organisation_id ? this.props.selected_organisation_id : ""))
-                                                     this.startCopiedVisible(this.props.selected_organisation_id);
-                                                 }}/>
-                                                    {this.props.selected_organisation_id && this.state.copied_visible === this.props.selected_organisation_id &&
-                                                    <div style={styles.copiedStyle}>copied</div>
-                                                    }
-                                        </span>
-                                        <br clear='both' />
-                                    </div>
-
-                                    <div style={styles.lineHeight}>
-                                        <div style={styles.organisationIdLabel}>
-                                            Edge device id
+                                        <div className="modal-footer">
+                                            <button className="btn btn-primary btn-block" onClick={() => this.editCancel()}>Cancel</button>
+                                            <button className="btn btn-primary btn-block" onClick={() => this.editOk()}>Save</button>
                                         </div>
-                                        <div style={styles.floatLeft}>{this.state.view_ids_edge_device ? this.state.view_ids_edge_device.edgeId : ""}</div>
-                                        <span style={styles.copyImageSpan} title={'copy Edge device id'}>
-                                            <img src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'} style={styles.clipboardImage} alt={'copy'}
-                                                 onClick={() => { if (Api.writeToClipboard(this.state.view_ids_edge_device ? this.state.view_ids_edge_device.edgeId : ""))
-                                                     this.startCopiedVisible(this.state.view_ids_edge_device.edgeId);
-                                                 }}/>
-                                                    {this.state.view_ids_edge_device && this.state.copied_visible === this.state.view_ids_edge_device.edgeId &&
-                                                    <div style={styles.copiedStyle}>copied</div>
-                                                    }
-                                        </span>
-                                        <br clear='both' />
+
                                     </div>
-
-                                    {
-                                        Object.keys(this.state.view_ids_edge_map).map((key) => {
-                                            return (<div style={styles.lineHeight} key={key}>
-                                                        <div style={styles.organisationIdLabel}>{this.pretty_key(key)}</div>
-                                                        <div style={styles.floatLeft}>{this.pretty_value(key, this.state.view_ids_edge_map[key])}</div>
-                                                    </div>);
-                                        })
-                                    }
-
                                 </div>
-                            </DialogContent>
-                            <DialogActions className={this.props.theme}>
-                                <Button variant="outlined" color="secondary" onClick={() => this.setState({view_ids: false})}>Close</Button>
-                            </DialogActions>
-                        </Dialog>
+                            </div>
+                        }
 
+                        {
+                            this.state.view_ids &&
+                            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                                <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
+                                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                                        <div
+                                            className="modal-header">{this.state.view_ids_edge_device != null ? this.state.view_ids_edge_device.name : ""} details
+                                        </div>
+                                        <div className="modal-body">
+                                            <div>
+                                                <div className="line-height">
+                                                    <span className="label-1">organisation id</span>
+                                                    <span className="guid">{this.props.selected_organisation_id ? this.props.selected_organisation_id : ""}</span>
+                                                    <span className="clipboard" title={'copy organisation id'}>
+                                                        <img
+                                                            src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'}
+                                                            className="dl-image-size" alt={'copy'}
+                                                            onClick={() => {
+                                                                if (Api.writeToClipboard(this.props.selected_organisation_id ? this.props.selected_organisation_id : ""))
+                                                                    this.startCopiedVisible(this.props.selected_organisation_id);
+                                                            }}/>
+                                                        {this.props.selected_organisation_id && this.state.copied_visible === this.props.selected_organisation_id &&
+                                                        <span className="copied">copied</span>
+                                                        }
+                                                    </span>
+                                                </div>
+
+                                                <div className="line-height">
+                                                    <span className="label-1">edge device id</span>
+                                                    <span className="guid">{this.state.view_ids_edge_device ? this.state.view_ids_edge_device.edgeId : ""}</span>
+                                                    <span className="clipboard" title={'copy Edge device id'}>
+                                                        <img
+                                                            src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'}
+                                                            className="dl-image-size" alt={'copy'}
+                                                            onClick={() => {
+                                                                if (Api.writeToClipboard(this.state.view_ids_edge_device ? this.state.view_ids_edge_device.edgeId : ""))
+                                                                    this.startCopiedVisible(this.state.view_ids_edge_device.edgeId);
+                                                            }}/>
+                                                        {this.state.view_ids_edge_device && this.state.copied_visible === this.state.view_ids_edge_device.edgeId &&
+                                                            <span className="copied">copied</span>
+                                                        }
+                                                    </span>
+                                                </div>
+
+                                                {
+                                                    Object.keys(this.state.view_ids_edge_map).map((key) => {
+                                                        return (<div className="line-height" key={key}>
+                                                                    <span className="label-1">{this.pretty_key(key)}</span>
+                                                                    <span className="guid">{this.pretty_value(key, this.state.view_ids_edge_map[key])}</span>
+                                                                </div>);
+                                                    })
+                                                }
+
+                                            </div>
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button className="btn btn-primary btn-block" onClick={() => this.setState({view_ids: false})}>Close
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
 
                     </div>
                 }
@@ -418,7 +343,7 @@ export class EdgeDevices extends Component {
             </div>
         )
     }
-}
+};
 
 
 const mapStateToProps = function(state) {

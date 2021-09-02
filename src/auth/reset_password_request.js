@@ -1,25 +1,13 @@
 import React, {Component} from 'react';
 
-import {MuiThemeProvider} from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import {darkTheme, lightTheme} from "../theme-ui";
-import Grid from '@material-ui/core/Grid';
-
 import Api from '../common/api'
 import AppMenu from './app-menu';
 import ErrorDialog from '../common/error-dialog';
-import {CssBaseline} from "@material-ui/core";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
-
-const styles = {
-    center: {
-        textAlign: 'center',
-    },
-};
+import '../css/sign-in.css';
 
 
 export class ResetPasswordRequest extends Component {
@@ -65,10 +53,8 @@ export class ResetPasswordRequest extends Component {
         if (this.state.has_error) {
             return <h1>ResetPasswordRequest: Something went wrong.</h1>;
         }
-        const theme = this.props.theme;
         return (
-            <MuiThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-                <CssBaseline />
+            <div>
 
                 <AppMenu title="administration" loggedIn={false} />
 
@@ -77,55 +63,40 @@ export class ResetPasswordRequest extends Component {
                              message={this.state.error_msg}
                              callback={this.closeError.bind(this)} />
 
-                <Grid container spacing={3}>
+                <div>
 
-                    <Grid item xs={12} />
-                    <Grid item xs={12} />
+                    <div className="auth-wrapper">
+                        <div className="auth-inner">
+                            <div>
+                                <h3>Reset Password</h3>
 
-                    <Grid item xs={3} />
-                    <Grid item xs={6} style={styles.center}>
-                        <div className="sign-in-help-text no-select">Please enter your email address and we'll email you a link to reset your password.</div>
-                    </Grid>
-                    <Grid item xs={3} />
+                                <div>Please enter your email address and we'll email you a link to reset your password.</div>
+                                <br />
 
-                    <Grid item xs={3} />
-                    <Grid item xs={6} style={styles.center}>
-                        <TextField
-                            autoFocus
-                            placeholder="Enter your email Address"
-                            label="Email Address"
-                            onChange = {(event) => this.setState({email: event.target.value})} />
-                    </Grid>
-                    <Grid item xs={3} />
+                                <div className="form-group">
+                                    <input type="text" className="form-control"
+                                        autoFocus
+                                        placeholder="Enter your email Address"
+                                        onChange = {(event) => this.setState({email: event.target.value})} />
+                                </div>
 
-                    <Grid item xs={3} />
-                    <Grid item xs={6} style={styles.center}>
-                        <Button variant="contained" color="primary" className="button-style" onClick={(event) => this.handleClick(event)}>
-                            Submit
-                        </Button>
-                    </Grid>
-                    <Grid item xs={3} />
+                                <div className="form-group submit-adjust">
+                                    <button className="btn btn-primary btn-block" onClick={(event) => this.handleClick(event)}>
+                                        Submit
+                                    </button>
+                                </div>
 
-                    <Grid item xs={12} />
-                    <Grid item xs={12} />
+                                <p className="forgot-password text-right">
+                                    Click here to return to <span className="forgot-password-link" onClick={() => window.location = '/#/'}>sign-in</span>
+                                </p>
 
-                    <Grid item xs={3} />
-                    <Grid item xs={6} style={styles.center}>
-                        <div className="sign-in-help-text no-select">Click here to return to sign-in</div>
-                    </Grid>
-                    <Grid item xs={3} />
-
-                    <Grid item xs={3} />
-                    <Grid item xs={6} style={styles.center}>
-                        <div>
-                            <Button variant="contained" onClick={() => window.location = '/#/'} className="button-style">Return to Sign-in</Button>
+                            </div>
                         </div>
-                    </Grid>
-                    <Grid item xs={3} />
+                    </div>
 
-                </Grid>
+                </div>
 
-            </MuiThemeProvider>
+            </div>
         );
     }
 }

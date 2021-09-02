@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import {Api} from "../common/api";
-import Checkbox from "@material-ui/core/Checkbox";
+
+import '../css/crawler.css';
 
 // valid metadata drop-down values
 const metadata_list = [
@@ -17,129 +16,6 @@ const metadata_list = [
     {"key": "money range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "number range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
 ];
-
-
-const styles = {
-    formContent: {
-        marginTop: '20px',
-        width: '98%',
-    },
-    text: {
-        border: '1px solid #808080',
-        borderRadius: '4px',
-        height: '32px',
-        padding: '4px',
-    },
-    instructionLabel: {
-        fontSize: '10px',
-        marginLeft: '20px',
-    },
-    table: {
-        marginTop: '10px',
-        marginLeft: '20px',
-        borderSpacing: '0',
-        border: '1px solid #aaaaaa',
-        borderRadius: '5px',
-    },
-    tableHead: {
-        backgroundColor: '#aaaaaa',
-        color: '#ffffff',
-    },
-    db_field: {
-        verticalAlign: 'top',
-        width: '250px',
-    },
-    display: {
-        width: '250px',
-    },
-    displayFieldWidth: {
-    },
-    tdDisplayFieldWidth: {
-        verticalAlign: 'top',
-        width: '200px',
-    },
-    tdSort: {
-        verticalAlign: 'top',
-    },
-    sortLabel: {
-        fontSize: '10px',
-    },
-    tdSort2: {
-        float: 'left',
-        height: '32px',
-        marginLeft: '15px',
-    },
-    metadata_dropdown_box: {
-        marginLeft: '10px',
-        width: '220px',
-        padding: '5px',
-        verticalAlign: 'top',
-        marginTop: '8px',
-    },
-    mdDropbox: {
-        float: 'left',
-        marginLeft: '10px',
-        width: '220px',
-        padding: '5px',
-        verticalAlign: 'top',
-    },
-    metadata_field: {
-        width: '200px',
-        padding: '5px',
-    },
-    sort_field: {
-        width: '100px',
-        padding: '5px',
-    },
-    action_field: {
-        width: '100px',
-        padding: '5px',
-    },
-    metadata_dropdown: {
-        marginLeft: '5px',
-        width: '200px',
-    },
-    imageButton: {
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    addImage: {
-        width: '25px',
-        cursor: 'pointer',
-        color: "green",
-    },
-    deleteBox: {
-        marginTop: '-14px',
-        color: '#888',
-        float: 'left',
-        cursor: 'pointer',
-    },
-    upDownArrow: {
-        float: 'left',
-        marginTop: '-16px',
-        padding: '2px',
-        fontSize: '26px',
-        cursor: 'pointer',
-    },
-    deleteImage: {
-        width: '24px',
-    },
-    dbFieldWidth: {
-        width: '250px',
-    },
-    tdMetadataFieldName: {
-        verticalAlign: 'top',
-    },
-    mdFieldWidth: {
-        width: '200px',
-    },
-    tdAction: {
-        float: 'left',
-        marginTop: '8px',
-        verticalAlign: 'top',
-    }
-};
 
 
 export class CrawlerMetadata extends Component {
@@ -275,7 +151,8 @@ export class CrawlerMetadata extends Component {
         const existing_md_list = this.get_md_list();
         for (let i in existing_md_list) {
             if (i !== i_index) {
-                md_list.push(existing_md_list[i]);
+                if (existing_md_list.hasOwnProperty(i))
+                    md_list.push(existing_md_list[i]);
             }
         }
         this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
@@ -342,23 +219,23 @@ export class CrawlerMetadata extends Component {
         const theme = this.props.theme;
         const num_rows = this.get_md_list().length;
         return (
-            <div style={styles.formContent}>
+            <div className="crawler-page">
 
-                <div style={styles.instructionLabel}>All rows in order of UI.  Use 'actions' arrows to re-arrange existing rows.</div>
+                <div className="instructions-label">All rows in order of UI.  Use 'actions' arrows to re-arrange existing rows.</div>
 
-                <table style={styles.table}>
+                <table className="table">
 
                     <thead>
-                    <tr style={styles.tableHead}>
-                        <td style={styles.metadata_dropdown_box}>data-type</td>
-                        <td style={styles.display}>UI display-name</td>
-                        <td style={styles.metadata_field}>metadata name</td>
-                        <td style={styles.sort_field}>sortable</td>
-                        <td style={styles.action_field}>actions</td>
-                    </tr>
+                        <tr className='table-header'>
+                            <th className="table-header metadata-column">data-type</th>
+                            <th className="table-header display-column">UI display-name</th>
+                            <th className="table-header metadata-field-column">metadata name</th>
+                            <th className="table-header sort-field-column">sortable</th>
+                            <th className="table-header action-field-column">actions</th>
+                        </tr>
                     </thead>
 
-                    <tbody className={this.state.theme}>
+                    <tbody>
                     <tr>
                         <td colSpan={3}>&nbsp;</td>
                     </tr>
@@ -367,28 +244,23 @@ export class CrawlerMetadata extends Component {
                         this.get_md_list().map(function(md, index) {
                             return (<tr key={index}>
 
-                                <td style={styles.mdDropbox}>
-                                    <Select
-                                        disableUnderline
-                                        value={md.key}
-                                        style={styles.metadata_dropdown}
-                                        title="select what kind of metadata field to use"
-                                        onChange={(event) => { self.set_md_type(md, index, event.target.value) }}>
+                                <td className="selector-column">
+                                    <select className="form-select" onChange={(event) => { self.set_md_type(md, index, event.target.value) }}
+                                            defaultValue={md.key} aria-label="select what kind of metadata field to use">
                                         {
                                             metadata_list.map((value, j) => {
-                                                return (<MenuItem key={j} value={value.key}>{value.key}</MenuItem>)
+                                                return (<option key={j} value={value.key}>{value.key}</option>)
                                             })
                                         }
-                                    </Select>
+                                    </select>
                                 </td>
 
-                                <td style={styles.tdDisplayFieldWidth}>
+                                <td className="td-display-column">
                                     {
                                         md.display !== null &&
                                         <span>
                                             <input type="text"
-                                                   className={theme}
-                                                   style={styles.text}
+                                                   className="theme metadata-text"
                                                    placeholder="UI display-name"
                                                    title="name displayed in the UI for this item"
                                                    value={md.display}
@@ -398,13 +270,12 @@ export class CrawlerMetadata extends Component {
                                 </td>
 
 
-                                <td style={styles.tdMetadataFieldName}>
+                                <td className="td-align-top">
                                     {
                                         self.needs_metadata_field(md) &&
-                                        <div style={styles.mdFieldWidth}>
+                                        <div className="td-md-field-width">
                                             <input type="text"
-                                                   className={theme}
-                                                   style={styles.text}
+                                                   className="theme metadata-text"
                                                    placeholder="metadata name"
                                                    value={md.field1}
                                                    title="metadata names should only contain 0..9, a..z, and A..Z"
@@ -416,8 +287,7 @@ export class CrawlerMetadata extends Component {
                                     <div>
                                         <input type="text"
                                                placeholder="sort descending UI text"
-                                               className={theme}
-                                               style={styles.text}
+                                               className="theme metadata-text"
                                                value={md.sort_desc}
                                                title="The text to display for this field if a descending sort is selected of this type"
                                                onChange={(event) => {self.setValue(md, index, "sort_desc", event.target.value)}}  />
@@ -426,8 +296,7 @@ export class CrawlerMetadata extends Component {
                                     { md.sort === "true" &&
                                     <div>
                                         <input type="text"
-                                               className={theme}
-                                               style={styles.text}
+                                               className="theme metadata-text"
                                                placeholder="sort ascending UI text"
                                                value={md.sort_asc}
                                                title="The text to display for this field if an ascending sort is selected of this type"
@@ -435,69 +304,60 @@ export class CrawlerMetadata extends Component {
                                     </div>
                                     }
                                     {md.sort === "true" &&
-                                    <br></br>
+                                    <br />
                                     }
                                 </td>
 
-                                <td style={styles.tdSort}>
+                                <td className="td-align-top">
                                     {md.sort !== "" &&
-                                    <div style={styles.tdSort2} title="enable this category as an item used for sorting in the UI">
-                                        <Checkbox
+                                    <div className="td-sort-2" title="enable this category as an item used for sorting in the UI">
+                                        <input type="checkbox"
                                             checked={md.sort === "true"}
                                             onChange={(event) => {
                                                 self.setSort(md, index, event.target.checked);
                                             }}
                                             value="enable result sorting over this field?"
-                                            inputProps={{
-                                                'aria-label': 'primary checkbox',
-                                            }}
                                         />
-                                        <span style={styles.sortLabel}>sort</span>
+                                        <span className="sort-label">sort</span>
                                     </div>
                                     }
                                     {md.sort === "true" &&
-                                    <div style={styles.tdSort2} title="set this descending field as the default sort field for the UI">
+                                    <div className="td-sort-2" title="set this descending field as the default sort field for the UI">
                                         {'\u2190'}
-                                        <Checkbox
+                                        <input type="checkbox"
                                             checked={md.sort_default === "desc"}
                                             onChange={(event) => {
                                                 self.setDefaultSort(md, index, "desc", event.target.checked);
-                                            }}
-                                            inputProps={{
-                                                'aria-label': 'primary checkbox',
                                             }}
                                         />
                                     </div>
                                     }
 
                                     {md.sort === "true" &&
-                                    <div style={styles.tdSort2} title="set this ascending field as the default sort field for the UI">
+                                    <div className="td-sort-2" title="set this ascending field as the default sort field for the UI">
                                         {'\u2190'}
-                                        <Checkbox
+                                        <input type="checkbox"
                                             checked={md.sort_default === "asc"}
                                             onChange={(event) => {
                                                 self.setDefaultSort(md, index, "asc", event.target.checked);
-                                            }}
-                                            inputProps={{
-                                                'aria-label': 'primary checkbox',
                                             }}
                                         />
                                     </div>
                                     }
                                 </td>
 
-                                <td style={styles.tdAction}>
-                                    <span style={styles.deleteBox} onClick={() => self.deleteMetadataItem(index)} title="remove this metadata item">
-                                        <img src={theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} style={styles.deleteImage} title="remove this metadata mapping" alt="remove this metadata mapping"/>
+                                <td className="td-action">
+                                    <span className="delete-box" onClick={() => self.deleteMetadataItem(index)} title="remove this metadata item">
+                                        <img src={theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>
                                     </span>
                                     {index > 0 &&
-                                    <span style={styles.upDownArrow} title="move row up (change UI ordering)"
+                                    <span className="up-arrow" title="move row up (change UI ordering)"
                                           onClick={() => {
                                               self.move_row_up(md, index)
                                           }}>&#8679;</span>
                                     }
                                     {index + 1 < num_rows &&
-                                    <span style={styles.upDownArrow} title="move row down (change UI ordering)"
+                                    <span className="up-arrow" title="move row down (change UI ordering)"
                                           onClick={() => {
                                               self.move_row_down(md, index)
                                           }}>&#8681;</span>
@@ -515,8 +375,8 @@ export class CrawlerMetadata extends Component {
                     <tr>
                         <td colSpan={4} />
                         <td>
-                            <div style={styles.imageButton} onClick={() => this.addNewMetadataMapping()}><img
-                                style={styles.addImage} src={theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add new metadata mapping"
+                            <div className="image-button" onClick={() => this.addNewMetadataMapping()}><img
+                                className="image-size" src={theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add new metadata mapping"
                                 alt="add new metadata mapping"/></div>
                         </td>
                     </tr>
@@ -529,7 +389,7 @@ export class CrawlerMetadata extends Component {
 
                 </table>
             </div>
-        );
+        )
     }
 }
 

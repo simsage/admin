@@ -1,11 +1,5 @@
 import React from 'react';
 
-import KeyboardVoiceIcon from '@material-ui/icons/KeyboardVoice';
-import FreeBreakfastIcon from '@material-ui/icons/FreeBreakfast';
-import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
-import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
-
-import TextField from "@material-ui/core/TextField";
 import OperatorTeach from "./operator-teach";
 import OperatorPreviousAnswer from './operator-previous-answer'
 import Home from '../home'
@@ -14,45 +8,12 @@ import Api from '../common/api'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
+import {MicrophoneIcon} from "../icons/microphone-icon";
+import {CupIcon} from "../icons/cup-icon";
+import {PersonCrossIcon} from "../icons/person-cross";
+import {PersonIcon} from "../icons/person-icon";
 
-const styles = {
-    topButton: {
-        marginLeft: '10px',
-    },
-    conversations: {
-        marginTop: '10px',
-        backgroundColor: '#fafafa',
-        width: '75vw',
-        height: '500px',
-        borderRadius: '10px',
-        overflowY: 'auto',
-    },
-    avatarBackground: {
-        backgroundColor: '#ccc',
-    },
-    simSageIcon: {
-        color: '#66aa66',
-    },
-    simSageIconSelected: {
-        color: '#dd6666',
-    },
-    personIcon: {
-        color: '#666cc6',
-    },
-    personIconSelected: {
-        color: '#dd6666',
-    },
-    kbName: {
-        float: 'right',
-        marginLeft: '5px',
-        marginTop: '4px',
-        marginRight: '100px',
-        fontSize: '0.9em'
-    },
-    typingDots: {
-        width: '60px',
-    }
-};
+import '../css/operator.css';
 
 
 export class Operator extends React.Component {
@@ -246,7 +207,7 @@ export class Operator extends React.Component {
         const has_user = this.props.operator.client_id && this.props.operator.client_id.length > 0;
         const operatorButtonStyle = this.props.theme === 'light' ? "operator-buttons-top" : "operator-buttons-top-dark";
         return (
-            <div>
+            <div className="operator-display">
                 <OperatorTeach
                     open={this.props.operator.question_id !== '' && this.props.operator.answer_id !== ''}
                     theme={this.props.theme}
@@ -267,34 +228,34 @@ export class Operator extends React.Component {
                     <button className="operator-button" disabled={isReady}
                             title={isReady ? "Disabled, click 'Break' top stop any conversations." : "Signal that you are ready to go and converse with customers."}
                             onClick={() => this.readyForChat()}>
-                        <KeyboardVoiceIcon className="operator-button-icon" />
+                        <MicrophoneIcon />
                         <span className="operator-button-text">Ready</span>
                     </button>
 
                     <button className="operator-button" disabled={!active}
                             title={!active ? "Disabled, click Ready before you take a break." : "take a break, stop participating in conversations while you have a break."}
                             onClick={() => this.takeBreak()}>
-                        <FreeBreakfastIcon className="operator-button-icon" />
+                        <CupIcon />
                         <span className="operator-button-text">Break</span>
                     </button>
 
                     <button className="operator-button operator-button-margin-left" disabled={!has_user}
                             title={!has_user ? "Disabled, you aren't currently connected to any user." : "The current conversation is abusive or bad spirited, ban this user from the system."}
                             onClick={() => this.banUserConfirm()}>
-                        <PersonAddDisabledIcon className="operator-button-icon" />
+                        <PersonCrossIcon />
                         <span className="operator-button-text">Ban User</span>
                     </button>
 
                     <button className="operator-button operator-button-margin-left" disabled={!has_user}
                             title={!has_user ? "Disabled, you aren't currently connected to any users." : "We have finished the current conversation and are ready for a next one."}
                             onClick={() => this.nextUser()}>
-                        <SupervisedUserCircleIcon className="operator-button-icon" />
+                        <PersonIcon />
                         <span className="operator-button-text">End Chat</span>
                     </button>
 
                     {
                         this.props.operator.client_kb_name && this.props.operator.client_kb_name.length > 0 &&
-                        <div style={styles.kbName}>{this.props.operator.client_kb_name}</div>
+                        <div className="kb-name">{this.props.operator.client_kb_name}</div>
                     }
 
 
@@ -315,7 +276,7 @@ export class Operator extends React.Component {
                     })}
                     {this.props.operator.is_typing &&
                         <div>
-                        <img src="../images/dots.gif" style={styles.typingDots} alt="typing" />
+                        <img src="../images/dots.gif" className="typing-dots" alt="typing" />
                         </div>
                     }
                     <div ref={this.messagesEndRef} />
@@ -323,7 +284,7 @@ export class Operator extends React.Component {
 
                 <div className="operator-reply-area">
                     <span className="operator-reply-text-box">
-                        <TextField
+                        <input type="text"
                             title={!has_user ? "Disabled, you aren't in a chat with a user." : "Type your reply and press enter, or click the 'Reply' button."}
                             className="operator-reply-text"
                             onChange={(event) => this.setState({operator_reply: event.target.value})}
@@ -334,7 +295,6 @@ export class Operator extends React.Component {
                                 }
                                 this.isTyping();
                             }}
-                            label="your reply"
                             value={this.state.operator_reply}
                         />
                     </span>

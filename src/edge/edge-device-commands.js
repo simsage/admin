@@ -1,75 +1,14 @@
 import React, {Component} from 'react';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import TextField from '@material-ui/core/TextField';
-import TablePagination from '@material-ui/core/TablePagination';
-
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-import Grid from "@material-ui/core/Grid";
 
 import Api from '../common/api'
+import {Pagination} from "../common/pagination";
 
+import '../css/edge.css';
 
-
-const styles = {
-    pageWidth: {
-        width: '900px',
-    },
-    tableLight: {
-    },
-    tableDark: {
-        background: '#d0d0d0',
-    },
-    label: {
-        color: '#555',
-    },
-    tableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-    },
-    linkButton: {
-        float: 'left',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    imageButton: {
-        float: 'right',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    editBox: {
-        width: '100%',
-        marginBottom: '15px',
-    },
-    addImage: {
-        width: '25px',
-    },
-    dlImageSize: {
-        width: '24px',
-    },
-    commandItem: {
-        fontWeight: '600',
-        marginBottom: '20px',
-    },
-    resultItem: {
-        fontSize: '10px',
-    }
-};
 
 
 export class EdgeDeviceCommands extends Component {
@@ -178,184 +117,172 @@ export class EdgeDeviceCommands extends Component {
     render() {
         const theme = this.props.theme;
         return (
-                <div>
+                <div className="edge-display">
                     { this.isVisible() &&
 
                     <div>
 
-                        <Paper style={styles.pageWidth}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow style={styles.tableHeaderStyle}>
-                                        <TableCell style={styles.tableHeaderStyle}>Edge command</TableCell>
-                                        <TableCell style={styles.tableHeaderStyle}>created</TableCell>
-                                        <TableCell style={styles.tableHeaderStyle}>executed</TableCell>
-                                        <TableCell style={styles.tableHeaderStyle}>actions</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
+                        <div>
+                            <table className="table">
+                                <thead>
+                                    <tr className='table-header'>
+                                        <th className='table-header'>Edge command</th>
+                                        <th className='table-header'>created</th>
+                                        <th className='table-header'>executed</th>
+                                        <th className='table-header'>actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     {
                                         this.getEdgeDeviceCommands().map((edc) => {
                                             return (
-                                                <TableRow key={edc.created}>
-                                                    <TableCell>
-                                                        <div style={styles.label}>{edc.command}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.label}>{Api.unixTimeConvert(edc.created)}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.label}>{this.getExecutedStatus(edc.executed)}</div>
-                                                    </TableCell>
-                                                    <TableCell>
+                                                <tr key={edc.created}>
+                                                    <td>
+                                                        <div>{edc.command}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div>{Api.unixTimeConvert(edc.created)}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div>{this.getExecutedStatus(edc.executed)}</div>
+                                                    </td>
+                                                    <td>
                                                         { edc.executed === 0 &&
-                                                            <div style={styles.linkButton}
+                                                            <div className="link-button"
                                                                  onClick={() => this.editEdgeDeviceCommand(edc)}>
-                                                                <img src="../images/edit.svg" style={styles.dlImageSize}
+                                                                <img src="../images/edit.svg" className="dl-image-size"
                                                                      title="edit Edge device" alt="edit"/>
                                                             </div>
                                                         }
                                                         { edc.executed === 0 &&
-                                                            <div style={styles.linkButton}
+                                                            <div className="link-button"
                                                                  onClick={() => this.deleteEdgeDeviceCommandAsk(edc)}>
-                                                                <img src="../images/delete.svg" style={styles.dlImageSize}
+                                                                <img src="../images/delete.svg" className="dl-image-size"
                                                                      title="remove Edge device" alt="remove"/>
                                                             </div>
                                                         }
                                                         { edc.executed > 0 &&
-                                                            <div style={styles.linkButton}
+                                                            <div className="link-button"
                                                                  onClick={() => this.viewResult(edc)}>
-                                                                <img src="../images/edit.svg" style={styles.dlImageSize}
+                                                                <img src="../images/edit.svg" className="dl-image-size"
                                                                      title="view command result" alt="view"/>
                                                             </div>
                                                         }
-                                                    </TableCell>
-                                                </TableRow>
+                                                    </td>
+                                                </tr>
                                             )
                                         })
                                     }
-                                    <TableRow>
-                                        <TableCell/>
-                                        <TableCell/>
-                                        <TableCell/>
-                                        <TableCell>
+                                    <tr>
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td>
                                             {this.props.selected_edge_device_id.length > 0 &&
-                                            <div style={styles.imageButton} onClick={() => this.addEdgeDeviceCommand()}>
+                                            <div className="edge-float-right" onClick={() => this.addEdgeDeviceCommand()}>
                                                 <img
-                                                    style={styles.addImage} src="../images/add.svg" title="add new Edge device command"
+                                                    className="dl-image-size" src="../images/add.svg" title="add new Edge device command"
                                                     alt="add new Edge device command"/></div>
                                             }
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                            <TablePagination
+                            <Pagination
                                 rowsPerPageOptions={[5, 10, 25]}
-                                style={theme === 'light' ? styles.tableLight : styles.tableDark}
+                                theme={theme}
                                 component="div"
                                 count={this.props.edge_device_command_list ? this.props.edge_device_command_list.length : 0}
                                 rowsPerPage={this.state.page_size}
                                 page={this.state.page}
-                                backIconButtonProps={{
-                                    'aria-label': 'Previous Page',
-                                }}
-                                nextIconButtonProps={{
-                                    'aria-label': 'Next Page',
-                                }}
-                                onChangePage={(event, page) => this.changePage(page)}
-                                onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
+                                onChangePage={(page) => this.changePage(page)}
+                                onChangeRowsPerPage={(rows) => this.changePageSize(rows)}
                             />
 
-                        </Paper>
+                        </div>
 
 
-                        <Dialog aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description"
-                                open={this.state.edit_edge_device_cmd}
-                                disableBackdropClick={true}
-                                disableEscapeKeyDown={true}
-                                fullWidth={true}
-                                maxWidth="lg"
-                                onClose={() => this.setState({edit_edge_device_cmd: false})}>
-                            <DialogTitle className={this.props.theme}>{this.state.created ? "Edit Edge device command" : "Add New Edge device command"}</DialogTitle>
-                            <DialogContent className={this.props.theme}>
+                        {this.state.edit_edge_device_cmd &&
+                        <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                            <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                                <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-                                <Grid container spacing={2}>
+                                    <div
+                                        className="modal-header">{this.state.created ? "Edit Edge device command" : "Add New Edge device command"}</div>
+                                    <div className="modal-body">
 
-                                    <Grid item xs={1}/>
-                                    <Grid item xs={1}>
-                                        <div>command</div>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <TextField
-                                            autoFocus={true}
-                                            style={styles.editBox}
-                                            placeholder="command"
-                                            value={this.state.edit_command}
-                                            onChange={(event) => this.setState({edit_command: event.target.value})}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}/>
+                                        <div>
 
-                                    <Grid item xs={1}/>
-                                    <Grid item xs={1}>
-                                        <div>parameters</div>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <TextField
-                                            style={styles.editBox}
-                                            placeholder="command parameters"
-                                            value={this.state.edit_parameters}
-                                            onChange={(event) => this.setState({edit_parameters: event.target.value})}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}/>
+                                            <div className="control-row">
+                                                <span className="label-2">command</span>
+                                                <span className="text">
+                                                    <input type="text" className="form-control"
+                                                           autoFocus={true}
+                                                           placeholder="command"
+                                                           value={this.state.edit_command}
+                                                           onChange={(event) => this.setState({edit_command: event.target.value})}
+                                                    />
+                                                </span>
+                                            </div>
 
-                                </Grid>
+                                            <div className="control-row">
+                                                <span className="label-2">parameters</span>
+                                                <span className="text">
+                                                    <input type="text" className="form-control"
+                                                       placeholder="command parameters"
+                                                       value={this.state.edit_parameters}
+                                                       onChange={(event) => this.setState({edit_parameters: event.target.value})}
+                                                    />
+                                                </span>
+                                            </div>
 
-                            </DialogContent>
-                            <DialogActions className={this.props.theme}>
-                                <Button color="primary" onClick={() => this.editCancel()}>Cancel</Button>
-                                <Button variant="outlined" color="secondary" onClick={() => this.editOk()}>Save</Button>
-                            </DialogActions>
-                        </Dialog>
+                                        </div>
 
-
-
-                        <Dialog aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description"
-                                open={this.state.view_results}
-                                disableBackdropClick={true}
-                                disableEscapeKeyDown={true}
-                                fullWidth={true}
-                                maxWidth="md"
-                                onClose={() => this.setState({view_results: false})} >
-                            <DialogTitle className={this.props.theme}>results</DialogTitle>
-                            <DialogContent className={this.props.theme}>
-                                <div>
-                                    <div style={styles.commandItem}>{this.state.command}</div>
-                                    {
-                                        this.state.results.map((result, index) => {
-                                            return (
-                                                <div key={index} style={styles.resultItem}>
-                                                    {result}
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                    <div style={styles.lineHeight}>
-                                        <br clear='both' />
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button className="btn btn-primary btn-block" onClick={() => this.editCancel()}>Cancel</button>
+                                        <button className="btn btn-primary btn-block" onClick={() => this.editOk()}>Save</button>
                                     </div>
 
                                 </div>
-                            </DialogContent>
-                            <DialogActions className={this.props.theme}>
-                                <Button variant="outlined" color="secondary" onClick={() => this.setState({view_results: false})}>Close</Button>
-                            </DialogActions>
-                        </Dialog>
+                            </div>
+                        </div>
+                        }
 
 
+                        {this.state.view_results &&
+                        <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                            <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                                <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+
+                                    <div className="modal-header">results</div>
+                                    <div className="modal-body">
+                                        <div>
+                                            <div className="command-item">{this.state.command}</div>
+                                            {
+                                                this.state.results.map((result, index) => {
+                                                    return (
+                                                        <div key={index} className="result-item">
+                                                            {result}
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                            <br clear='both'/>
+
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button className="btn btn-primary btn-block"
+                                                onClick={() => this.setState({view_results: false})}>Close
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        }
 
                     </div>
                 }

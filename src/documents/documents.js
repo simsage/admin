@@ -1,134 +1,17 @@
 import React from 'react';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
-
 import {Api} from '../common/api'
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-import Grid from "@material-ui/core/Grid";
 import {Home} from "../home";
+import {Pagination} from "../common/pagination";
+
+import '../css/documents.css';
 
 // display length of a url
 const maxUrlDisplayLength = 50;
-
-const styles = {
-    tableStyle: {
-        width: '900px',
-    },
-    tableLight: {
-    },
-    tableDark: {
-        background: '#d0d0d0',
-    },
-    gridWidth: {
-        width: '900px',
-    },
-    text: {
-        border: '1px solid #808080',
-        borderRadius: '4px',
-        padding: '4px',
-    },
-    tableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        width: '900px',
-        color: '#fff',
-        minWidth: '100px',
-    },
-    tableColumnStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-        minWidth: '100px',
-    },
-    knowledgeSelect: {
-        padding: '5px',
-        marginBottom: '40px',
-    },
-    lhs: {
-        float: 'left',
-        width: '150px',
-        marginTop: '-10px',
-        color: '#aaa',
-    },
-    rhs: {
-        float: 'left',
-    },
-    urlLabel: {
-        padding: '10px',
-        color: '#555',
-        maxWidth: '200px',
-    },
-    label: {
-        padding: '10px',
-        color: '#555',
-    },
-    statusImage: {
-        width: '16px',
-    },
-    hr: {
-        border: '0.1px solid #f0f0f0',
-        width: '100%',
-    },
-    imageButton: {
-        float: 'right',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    addImage: {
-        width: '25px',
-    },
-    linkButton: {
-        float: 'left',
-        padding: '10px',
-        cursor: 'pointer',
-    },
-    linkButtonDisabled: {
-        float: 'left',
-        padding: '10px',
-        cursor: 'not-allowed',
-    },
-    dlImageSize: {
-        width: '24px',
-        marginRight: '10px',
-    },
-    search: {
-        marginTop: '2px',
-        marginLeft: '15px',
-        width: '18px',
-        color: '#000',
-    },
-    floatLeftLabel: {
-        float: 'left',
-        marginRight: '6px',
-        marginTop: '4px',
-        fontSize: '0.9em',
-        fontWeight: '500',
-    },
-    floatLeft: {
-        float: 'left',
-    },
-    searchFloatLeft: {
-        float: 'left',
-    },
-    manualUploadSection: {
-        marginTop: '50px',
-    },
-    findBox: {
-        padding: '10px',
-        marginBottom: '5px',
-        float: 'right',
-    },
-};
 
 
 export class Documents extends React.Component {
@@ -158,6 +41,7 @@ export class Documents extends React.Component {
     }
     deleteDocument(action) {
         if (action && Api.defined(this.state.document)) {
+            console.log(this.state.document);
             this.props.deleteDocument(this.state.document.url, this.state.document.sourceId);
         }
         if (this.props.closeDialog) {
@@ -244,101 +128,96 @@ export class Documents extends React.Component {
         const theme = this.props.theme;
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         return (
-            <Grid container spacing={1} style={styles.gridWidth}>
+            <div className="document-display">
 
                 {
                     this.isVisible() &&
-                    <Grid item xs={12}>
-                        <div style={styles.findBox}>
-                            <div style={styles.floatLeftLabel}>filter</div>
-                            <div style={styles.searchFloatLeft}>
-                                <input type="text" value={this.props.document_filter} autoFocus={true} style={styles.text} className={theme}
-                                       onKeyPress={(event) => this.handleSearchTextKeydown(event)}
-                                       onChange={(event) => {
-                                           this.props.setDocumentFilter(event.target.value)
-                                       }}/>
-                            </div>
-                            <div style={styles.floatLeft}>
-                                <img style={styles.search}
-                                     onClick={() => this.props.getDocuments()}
-                                     src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
-                            </div>
-                        </div>
-                    </Grid>
+                    <div className="filter-find-box">
+                        <span className="filter-label">filter</span>
+                        <span className="filter-find-text">
+                            <input type="text" value={this.props.document_filter} autoFocus={true} className={theme}
+                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                   onChange={(event) => {
+                                       this.props.setDocumentFilter(event.target.value)
+                                   }}/>
+                        </span>
+                        <span className="filter-find-image">
+                            <img className="image-size"
+                                 onClick={() => this.props.getDocuments()}
+                                 src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
+                        </span>
+                    </div>
                 }
 
 
                 {
                     this.isVisible() &&
-                    <Paper style={styles.tableStyle}>
-                        <Table>
+                    <div className="table-style">
+                        <table className="table">
 
-                            <TableHead>
-                                <TableRow className='table-header'>
-                                    <TableCell className='table-header'>url</TableCell>
-                                    <TableCell className='table-header'>source</TableCell>
-                                    <TableCell className='table-header'>last modified</TableCell>
-                                    <TableCell className='table-header'>status</TableCell>
+                            <thead>
+                                <tr className='table-header'>
+                                    <th className='table-header'>url</th>
+                                    <th className='table-header'>source</th>
+                                    <th className='table-header'>last modified</th>
+                                    <th className='table-header'>status</th>
                                     {isAdmin &&
-                                        <TableCell className='table-header'>actions</TableCell>
+                                        <th className='table-header'>actions</th>
                                     }
-                                </TableRow>
-                            </TableHead>
+                                </tr>
+                            </thead>
 
-                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
+                            <tbody>
                                 {
                                     this.getDocuments().map((document) => {
                                         return (
-                                                <TableRow key={document.url}>
-                                                    <TableCell>
+                                                <tr key={document.url}>
+                                                    <td className="urlLabel">
                                                         {
                                                             Documents.isWeb(document.url) &&
-                                                            <div style={styles.urlLabel}>
+                                                            <div className="urlLabel">
                                                                 <a href={document.url} title={document.url} rel="noopener noreferrer" target="_blank">{Documents.adjustUrl(document.url)}</a>
                                                             </div>
                                                         }
                                                         {
                                                             !Documents.isWeb(document.url) &&
-                                                            <div style={styles.label}>{Documents.adjustUrl(document.url)}</div>
+                                                            <div className="urlLabel">{Documents.adjustUrl(document.url)}</div>
                                                         }
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.label}>{document.origin}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.label}>{Api.unixTimeConvert(document.lastModified)}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.label}>
-                                                            <img src={this.getStatus(document, "crawled")} style={styles.statusImage} alt="crawler" title={this.getStatusText(document, "crawled", "crawling")} />
-                                                            <img src={this.getStatus(document, "converted")} style={styles.statusImage} alt="converted" title={this.getStatusText(document, "converted", "converting")} />
-                                                            <img src={this.getStatus(document, "parsed")} style={styles.statusImage} alt="parsed" title={this.getStatusText(document, "parsed", "parsing")} />
-                                                            <img src={this.getStatus(document, "indexed")} style={styles.statusImage} alt="indexed" title={this.getStatusText(document, "indexed", "indexing")} />
-                                                            <img src={this.getStatus(document, "previewed")} style={styles.statusImage} alt="previewed" title={this.getStatusText(document, "previewed", "preview generation")} />
+                                                    </td>
+                                                    <td className="sourceLabel">
+                                                        {document.origin}
+                                                    </td>
+                                                    <td>
+                                                        <div className="timeLabel">{Api.unixTimeConvert(document.lastModified)}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="label">
+                                                            <img src={this.getStatus(document, "crawled")} className="statusImage" alt="crawler" title={this.getStatusText(document, "crawled", "crawling")} />
+                                                            <img src={this.getStatus(document, "converted")} className="statusImage" alt="converted" title={this.getStatusText(document, "converted", "converting")} />
+                                                            <img src={this.getStatus(document, "parsed")} className="statusImage" alt="parsed" title={this.getStatusText(document, "parsed", "parsing")} />
+                                                            <img src={this.getStatus(document, "indexed")} className="statusImage" alt="indexed" title={this.getStatusText(document, "indexed", "indexing")} />
+                                                            <img src={this.getStatus(document, "previewed")} className="statusImage" alt="previewed" title={this.getStatusText(document, "previewed", "preview generation")} />
                                                         </div>
-                                                    </TableCell>
+                                                    </td>
                                                     {isAdmin &&
-                                                        <TableCell>
-                                                            <div style={styles.linkButton}
+                                                        <td>
+                                                            <div className="linkButton"
                                                                  onClick={() => this.deleteDocumentAsk(document)}>
                                                                 <img src="../images/delete.svg"
-                                                                     style={styles.dlImageSize} title="remove document"
+                                                                     className="image-size" title="remove document"
                                                                      alt="remove"/>
                                                             </div>
-                                                            {/*<div style={styles.linkButton} onClick={() => this.props.reprocessDocument(document)}>*/}
-                                                            {/*    <img src="../images/refresh.svg" style={styles.dlImageSize} title="reprocess document (remove it, re-parse and re-index the document." alt="reprocess"/>*/}
-                                                            {/*</div>*/}
-                                                        </TableCell>
+                                                        </td>
                                                     }
-                                                </TableRow>
+                                                </tr>
                                         )
                                     })
                                 }
-                            </TableBody>
-                        </Table>
+                            </tbody>
+                        </table>
 
-                        <TablePagination
-                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
+                        <Pagination
+                            theme={theme}
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
                             count={this.props.num_documents}
@@ -350,34 +229,17 @@ export class Documents extends React.Component {
                             nextIconButtonProps={{
                                 'aria-label': 'Next Page',
                             }}
-                            onChangePage={(event, page) => this.props.setDocumentPage(page)}
-                            onChangeRowsPerPage={(event) => this.props.setDocumentPageSize(event.target.value)}
+                            onChangePage={(page) => this.props.setDocumentPage(page)}
+                            onChangeRowsPerPage={(rows) => this.props.setDocumentPageSize(rows)}
                         />
 
-                    </Paper>
+                    </div>
                 }
 
-                <br />
-                <br />
-                <br />
-                <br />
-
-                {/*{this.props.selected_knowledgebase_id &&*/}
-                {/*    <div style={styles.manualUploadSection}>*/}
-                {/*        <div>manually upload a document</div>*/}
-                {/*        <div>*/}
-                {/*            <DocumentUpload kbId={this.props.selected_knowledgebase_id}*/}
-                {/*                            organisationId={this.props.selected_organisation_id}*/}
-                {/*                            onUploadDone={() => this.documentUploaded()}*/}
-                {/*                            onError={(errStr) => this.props.setError("Error", errStr)}/>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*}*/}
-
-            </Grid>
+            </div>
         )
     }
-};
+}
 
 
 const mapStateToProps = function(state) {

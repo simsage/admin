@@ -1,12 +1,6 @@
 import React, {Component} from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+import '../css/synonyms.css';
 
 
 export class SynonymEdit extends Component {
@@ -50,46 +44,41 @@ export class SynonymEdit extends Component {
         if (this.state.has_error) {
             return <h1>synonym-edit.js: Something went wrong.</h1>;
         }
+        if (!this.state.open)
+            return (<div />);
         return (
-            <Dialog aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    open={this.state.open}
-                    fullWidth={true}
-                    disableBackdropClick={true}
-                    disableEscapeKeyDown={true}
-                    maxWidth="lg"
-                    onClose={() => this.handleCancel()} >
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded synonym-page">
 
-                <DialogTitle id="alert-dialog-title" className={this.props.theme}>Edit Synonym</DialogTitle>
-                <DialogContent className={this.props.theme}>
-                    <Grid container spacing={1}>
+                        <div className="modal-header">Edit Synonym</div>
+                        <div className="modal-body">
+                            <div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={1}>
-                            <div>synonyms</div>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <TextField
-                                autoFocus={true}
-                                onChange={(event) => this.setState({words: event.target.value})}
-                                placeholder="words"
-                                spellCheck={false}
-                                multiline={true}
-                                rows={5}
-                                variant="outlined"
-                                fullWidth={true}
-                                value={this.state.words}
-                            />
-                        </Grid>
-                        <Grid item xs={1} />
+                                <div className="edit-row">
+                                    <span className="label-area">synonyms</span>
+                                    <span className="input-area">
+                                        <textarea className="input-area"
+                                                  autoFocus={true}
+                                                  onChange={(event) => this.setState({words: event.target.value})}
+                                                  placeholder="words"
+                                                  spellCheck={false}
+                                                  rows={5}
+                                                  value={this.state.words}
+                                        />
+                                    </span>
+                                </div>
 
-                    </Grid>
-                </DialogContent>
-                <DialogActions className={this.props.theme}>
-                    <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
-                </DialogActions>
-            </Dialog>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary btn-block"  onClick={() => this.handleCancel()}>Cancel</button>
+                            <button className="btn btn-primary btn-block"  onClick={() => this.handleSave()}>Save</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         );
     }
 }

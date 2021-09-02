@@ -1,7 +1,5 @@
 import React from 'react';
 
-import Button from '@material-ui/core/Button';
-
 import {Bar, Line} from 'react-chartjs-2'
 
 import {GraphHelper} from "../common/graph-helper";
@@ -14,51 +12,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Comms from "../common/comms";
 
+import '../css/reports.css';
+
+
 const graphHeight = 350;
 const graphWidth = 400;
-
-const styles = {
-    pageWidth: {
-        width: '900px',
-    },
-    knowledgeSelect: {
-        padding: '5px',
-        marginBottom: '50px',
-    },
-    lhs: {
-        float: 'left',
-        width: '150px',
-        marginTop: '-10px',
-        color: '#aaa',
-    },
-    rhs: {
-        float: 'left',
-    },
-    label: {
-        marginTop: '20px',
-        color: '#555',
-    },
-    barGraphs: {
-        float: 'left',
-        margin: '20px',
-        minWidth: '440px',
-        width: '900px',
-    },
-    barGraph: {
-        float: 'left',
-        width: '410px',
-        height: '450px',
-        margin: '10px',
-    },
-    downloadButton: {
-        float: 'right',
-    },
-    dateSelect: {
-        float: 'right',
-        marginTop: '3px',
-        marginRight: '5px',
-    },
-};
 
 
 export class Reports extends React.Component {
@@ -88,8 +46,7 @@ export class Reports extends React.Component {
         const date = new Date(this.props.report_date);
         const year = date.getFullYear();
         const month1 = date.getMonth() + 1;
-        const url = Comms.get_query_log_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, year, month1);
-        window.open(url, '_blank');
+        Comms.download_query_log(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, year, month1);
     }
     isVisible() {
         return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0 &&
@@ -100,14 +57,14 @@ export class Reports extends React.Component {
         const date = new Date(this.props.report_date);
         const theme = this.props.theme;
         return (
-            <div style={styles.pageWidth}>
+            <div className="report-page">
                 { this.isVisible() &&
                 <div>
                 <br clear="both" />
-                <div style={styles.downloadButton}>
-                    <Button variant="contained" color={"primary"} onClick={() => this.downloadReport()}>download report</Button>
+                <div className="download-button">
+                    <button className="btn btn-primary btn-block"  onClick={() => this.downloadReport()}>download report</button>
                 </div>
-                <div style={styles.dateSelect}>
+                <div className="date-select">
                     <DatePicker
                         className={theme === "light" ? "date-picker-input" : "date-picker-input-dark"}
                         selected={date}
@@ -123,10 +80,10 @@ export class Reports extends React.Component {
                 </div>
                 }
 
-                <div style={styles.barGraphs}>
+                <div className="bar-graphs">
                     {
                         this.isVisible() && this.props.general_statistics.map( (stats) => {
-                            return (<div key={stats.id} style={styles.barGraph}>
+                            return (<div key={stats.id} className="bar-graph">
                                 <Bar data={stats} options={GraphHelper.getGraphOptions('')} width={graphWidth} height={graphHeight}/>
                             </div>)
                         })
@@ -134,7 +91,7 @@ export class Reports extends React.Component {
 
                     {
                         this.isVisible() && this.props.file_type_statistics.map( (stats) => {
-                            return (<div key={stats.id} style={styles.barGraph}>
+                            return (<div key={stats.id} className="bar-graph">
                                 <Bar data={stats} options={GraphHelper.getGraphOptions('')} width={graphWidth} height={graphHeight}/>
                             </div>)
                         })
@@ -142,7 +99,7 @@ export class Reports extends React.Component {
 
                     {
                         this.isVisible() && this.props.query_word_frequency.map( (stats) => {
-                            return (<div key={stats.id} style={styles.barGraph}>
+                            return (<div key={stats.id} className="bar-graph">
                                 <Bar data={stats} options={GraphHelper.getGraphOptions('queries')} width={graphWidth} height={graphHeight}/>
                             </div>)
                         })
@@ -150,7 +107,7 @@ export class Reports extends React.Component {
 
                     {
                         this.isVisible() && this.props.access_frequency.labels.length > 0 &&
-                        <div style={styles.barGraph}>
+                        <div className="bar-graph">
                             <Line data={this.props.access_frequency}
                                   options={GraphHelper.getGraphOptions('access count')} width={graphWidth}
                                   height={graphHeight}/>

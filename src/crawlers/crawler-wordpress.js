@@ -1,31 +1,9 @@
 import React, {Component} from 'react';
-import Button from "@material-ui/core/Button";
+
 import Comms from "../common/comms";
 import RestoreWPArchive from "../common/restore-wp-archive";
 
-const styles = {
-    formContent: {
-        marginTop: '50px',
-        marginLeft: '50px',
-        fontSize: '0.9em',
-    },
-    exportWP: {
-        marginTop: '50px',
-    },
-    exportButton: {
-        marginTop: '10px',
-    },
-    importWP: {
-        marginTop: '50px',
-        float: 'left',
-    },
-    importText: {
-        marginBottom: '20px',
-    },
-    restoreWP: {
-        marginTop: '50px',
-    }
-};
+import '../css/crawler.css';
 
 
 export class CrawlerWordpress extends Component {
@@ -64,7 +42,7 @@ export class CrawlerWordpress extends Component {
         }
     }
     exportArchive() {
-        window.open(Comms.get_export_archive_url(this.state.organisation_id, this.state.kb_id, this.state.source_id), '_blank');
+        Comms.download_export_archive(this.state.organisation_id, this.state.kb_id, this.state.source_id);
     }
     restore(data) {
         if (data && data.data && data.data.length > 0) {
@@ -78,29 +56,31 @@ export class CrawlerWordpress extends Component {
             return <h1>crawler-wordpress.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.formContent}>
-                The WordPress crawler is an external entity controlled by the SimSage WordPress plugin.<br/>
-                As such there are no properties to configure here, nor is there a schedule for SimSage to work to.<br/><br/>
+            <div className="crawler-page">
+                <div className="wp-form">
+                    The WordPress crawler is an external entity controlled by the SimSage WordPress plugin.<br/>
+                    As such there are no properties to configure here, nor is there a schedule for SimSage to work to.<br/><br/>
 
-                {this.state.source_id > 0 &&
-                    <div style={styles.exportWP}>
-                        <div>export the contents of this source as a WordPress GZip Archive</div>
-                        <Button variant="contained" color="secondary" style={styles.exportButton}
-                                onClick={() => this.exportArchive()}>Export WordPress Archive</Button>
-                    </div>
-                }
+                    {this.state.source_id > 0 &&
+                        <div className="export-wp">
+                            <div>export the contents of this source as a WordPress GZip Archive</div>
+                            <button className="btn btn-primary btn-block"
+                                    onClick={() => this.exportArchive()}>Export WordPress Archive</button>
+                        </div>
+                    }
 
-                {this.state.source_id > 0 &&
-                    <div style={styles.importWP}>
-                        <div style={styles.importText}>import the contents of  WordPress GZip Archive into this source</div>
-                        <RestoreWPArchive doUpload={(data) => this.restore(data)}
-                                          organisationId={this.state.organisation_id}
-                                          kbId={this.state.kb_id}
-                                          sourceId={this.state.source_id}
-                                          onError={(err) => this.props.setError("Error", err)} />
-                    </div>
-                }
+                    {this.state.source_id > 0 &&
+                        <div className="import-wp">
+                            <div className="import-text">import the contents of  WordPress GZip Archive into this source</div>
+                            <RestoreWPArchive doUpload={(data) => this.restore(data)}
+                                              organisationId={this.state.organisation_id}
+                                              kbId={this.state.kb_id}
+                                              sourceId={this.state.source_id}
+                                              onError={(err) => this.props.setError("Error", err)} />
+                        </div>
+                    }
 
+                </div>
             </div>
         );
     }

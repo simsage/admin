@@ -1,132 +1,18 @@
 import React, {Component} from 'react';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import TextField from '@material-ui/core/TextField';
-import TablePagination from '@material-ui/core/TablePagination';
-
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-
 import {Api} from '../common/api'
-import {Comms} from "../common/comms";
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-import Grid from "@material-ui/core/Grid";
-import Checkbox from "@material-ui/core/Checkbox";
 import TimeSelect from "../common/time-select";
 import {Home} from "../home";
+import {Pagination} from "../common/pagination";
 
+import '../css/kb.css';
 
-const defaultIndexSchedule = 'mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3';
-
-
-const styles = {
-    pageWidth: {
-        width: '900px',
-    },
-    tableLight: {
-    },
-    tableDark: {
-        background: '#d0d0d0',
-    },
-    label: {
-        color: '#555',
-    },
-    tableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-    },
-    linkButton: {
-        float: 'left',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    imageButton: {
-        float: 'right',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    editBox: {
-        width: '500px',
-        marginBottom: '15px',
-    },
-    sidBox: {
-        width: '350px',
-        marginBottom: '15px',
-    },
-    roleBlock: {
-        padding: '5px',
-        marginTop: '20px',
-        float: 'left',
-        width: '400px',
-        border: '1px solid #888',
-        borderRadius: '4px',
-        marginLeft: '10px',
-    },
-    roleLabel: {
-        fontSize: '0.8em',
-        color: '#aaa',
-    },
-    roleArea: {
-        padding: '20px',
-    },
-    roleChip: {
-        margin: '2px',
-    },
-    addImage: {
-        width: '25px',
-    },
-    textFieldBox: {
-        float: 'left',
-    },
-    imageBox: {
-        float: 'left',
-    },
-    imageSize: {
-        marginTop: '20px',
-        width: '20px',
-    },
-    dlImageSize: {
-        width: '24px',
-    },
-    timeTabContent: {
-        marginLeft: '40px',
-    },
-    paddingBottom: {
-        display: 'inline-block',
-        marginBottom: '130px',
-    },
-    floatLeft: {
-        float: 'left',
-    },
-    copiedStyle: {
-        fontSize: '10px',
-        marginLeft: '25px',
-        marginTop: '-22px',
-        position: 'absolute',
-        float: 'left',
-        zIndex: '99',
-    },
-    lineHeight: {height: '30px'},
-    organisationIdLabel: {width: '170px', float: 'left', height: '24px'},
-    copyImageSpan: {float: 'left', marginTop: '-5px', marginLeft: '10px'},
-    clipboardImage: {width: '24px', height: '24px;'},
-};
+const defaultOptimizationSchedule = 'mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3';
+const defaultDmsIndexSchedule = 'mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3';
 
 
 export class KnowledgeBases extends Component {
@@ -149,7 +35,8 @@ export class KnowledgeBases extends Component {
             edit_operator_enabled: true,
             edit_capacity_warnings: true,
             edit_created: 0,
-            edit_index_optimization_schedule: defaultIndexSchedule,
+            edit_index_optimization_schedule: defaultOptimizationSchedule,
+            edit_dms_index_schedule: defaultDmsIndexSchedule,
 
             // view ids
             view_ids: false,
@@ -183,7 +70,8 @@ export class KnowledgeBases extends Component {
             edit_capacity_warnings: true,
             edit_created: 0,
             edit_security_id: Api.createGuid(),
-            edit_index_optimization_schedule: defaultIndexSchedule,
+            edit_index_optimization_schedule: defaultOptimizationSchedule,
+            edit_dms_index_schedule: defaultDmsIndexSchedule,
         })
     }
     refreshSecurityId() {
@@ -202,6 +90,7 @@ export class KnowledgeBases extends Component {
                 edit_operator_enabled: knowledgeBase.operatorEnabled,
                 edit_capacity_warnings: knowledgeBase.capacityWarnings,
                 edit_index_optimization_schedule: knowledgeBase.indexOptimizationSchedule,
+                edit_dms_index_schedule: knowledgeBase.dmsIndexSchedule,
                 edit_created: knowledgeBase.created,
             })
         }
@@ -220,15 +109,29 @@ export class KnowledgeBases extends Component {
             this.props.closeDialog();
         }
     }
-    reIndexAsk(knowledgeBase) {
+    removeOptimizedIndexesAsk(knowledgeBase) {
         if (knowledgeBase) {
-            this.props.openDialog("are you sure you want to re-index \"" + knowledgeBase.name + "\" ?", "re-index Knowledge base", (action) => { this.reIndex(action) });
+            this.props.openDialog("are you sure you want to remove the optimized indexes for \"" + knowledgeBase.name + "\" ?", "Remove Optimized Indexes", (action) => { this.removeOptimizedIndexes(action) });
             this.setState({knowledgeBase: knowledgeBase});
         }
     }
-    reIndex(action) {
+    removeOptimizedIndexes(action) {
         if (action) {
-            this.props.reIndex(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
+            this.props.removeOptimizedIndexes(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
+        }
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
+        }
+    }
+    removeAllIndexesAsk(knowledgeBase) {
+        if (knowledgeBase) {
+            this.props.openDialog("are you sure you want to remove the <b>ALL indexes</b> (optimized and non-optimized) for \"" + knowledgeBase.name + "\" ?", "Remove ALL Indexes", (action) => { this.removeAllIndexes(action) });
+            this.setState({knowledgeBase: knowledgeBase});
+        }
+    }
+    removeAllIndexes(action) {
+        if (action) {
+            this.props.removeAllIndexes(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
@@ -258,7 +161,7 @@ export class KnowledgeBases extends Component {
                                            this.state.edit_enabled, this.state.edit_max_queries_per_day,
                                            this.state.edit_analytics_window_size_in_months, this.state.edit_operator_enabled,
                                            this.state.edit_capacity_warnings, this.state.edit_created,
-                                           this.state.edit_index_optimization_schedule);
+                                           this.state.edit_index_optimization_schedule, this.state.edit_dms_index_schedule);
             this.setState({edit_knowledgebase: false, knowledgeBase: null});
         } else {
             this.props.setError("Incomplete Data", "Please complete all fields.");
@@ -266,9 +169,6 @@ export class KnowledgeBases extends Component {
     }
     viewIds(knowledge_base) {
         this.setState({view_ids: true, kb: knowledge_base});
-    }
-    downloadHtml(html, kb) {
-        window.open(Comms.get_html_url(html, this.props.selected_organisation_id, kb.kbId), '_blank');
     }
     getKnowledgeBases() {
         const paginated_list = [];
@@ -281,9 +181,14 @@ export class KnowledgeBases extends Component {
         }
         return paginated_list;
     }
-    updateSchedule(time) {
+    updateIndexOptimizationSchedule(time) {
         if (time !== null) {
             this.setState({edit_index_optimization_schedule: time});
+        }
+    }
+    updateDMSIndexSchedule(time) {
+        if (time !== null) {
+            this.setState({edit_dms_index_schedule: time});
         }
     }
     isVisible() {
@@ -329,89 +234,96 @@ export class KnowledgeBases extends Component {
         const t_value = this.state.selectedTab;
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         return (
-                <div>
+                <div className="kb-page">
                     { this.isVisible() &&
 
                     <div>
 
-                        <Paper style={styles.pageWidth}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow className='table-header'>
-                                        <TableCell className='table-header table-width-20'>knowledge base</TableCell>
-                                        <TableCell className='table-header table-width-20'>email queries to</TableCell>
-                                        <TableCell className='table-header table-width-20'>last index optimization</TableCell>
-                                        <TableCell className='table-header'>actions</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
+                        <div>
+                            <table className="table">
+                                <thead>
+                                    <tr className='table-header'>
+                                        <th className='table-header table-width-20'>knowledge base</th>
+                                        <th className='table-header table-width-20'>email queries to</th>
+                                        <th className='table-header table-width-20'>last index optimization</th>
+                                        <th className='table-header'>actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     {
                                         this.getKnowledgeBases().map((knowledge_base) => {
                                             return (
-                                                <TableRow key={knowledge_base.kbId}>
-                                                    <TableCell>
-                                                        <div style={styles.label}>{knowledge_base.name}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.label}>{knowledge_base.email}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.label} className={this.indexOptimizationClass(knowledge_base)}
+                                                <tr key={knowledge_base.kbId}>
+                                                    <td>
+                                                        <div className="kb-label">{knowledge_base.name}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div className="kb-label">{knowledge_base.email}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={"kb-label" + this.indexOptimizationClass(knowledge_base)}
                                                                 title={this.indexOptimizationText(knowledge_base)}>
                                                             {this.indexOptimizationStatus(knowledge_base)}</div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div style={styles.linkButton}
+                                                    </td>
+                                                    <td>
+                                                        <div className="link-button"
                                                              onClick={() => this.viewIds(knowledge_base)}>
-                                                            <img src="../images/id.svg" style={styles.dlImageSize}
+                                                            <img src="../images/id.svg" className="image-size"
                                                                  title="view knowledge base ids" alt="ids"/>
                                                         </div>
-                                                        <div style={styles.linkButton}
+                                                        <div className="link-button"
                                                              onClick={() => this.editKnowledgeBase(knowledge_base)}>
-                                                            <img src="../images/edit.svg" style={styles.dlImageSize}
+                                                            <img src="../images/edit.svg" className="image-size"
                                                                  title="edit knowledge base" alt="edit"/>
                                                         </div>
-                                                        {isAdmin &&
-                                                        <div style={styles.linkButton}
-                                                             onClick={() => this.reIndexAsk(knowledge_base)}>
-                                                            <img src="../images/re-index.png" style={styles.dlImageSize}
-                                                                 title="re-index all documents" alt="re-index"/>
-                                                        </div>
-                                                        }
-                                                        <div style={styles.linkButton}
-                                                             onClick={() => this.optimizeIndexesAsk(knowledge_base)}>
-                                                            <img src="../images/optimize.svg" style={styles.dlImageSize}
-                                                                 title="optimize indexes now" alt="optimize"/>
-                                                        </div>
-                                                        <div style={styles.linkButton}
+                                                        <div className="link-button"
                                                              onClick={() => this.deleteKnowledgeBaseAsk(knowledge_base)}>
-                                                            <img src="../images/delete.svg" style={styles.dlImageSize}
+                                                            <img src="../images/delete.svg" className="image-size"
                                                                  title="remove knowledge base" alt="remove"/>
                                                         </div>
-                                                    </TableCell>
-                                                </TableRow>
+                                                        <br clear="both" />
+                                                        <button style={{marginBottom: '4px'}}
+                                                             onClick={() => this.optimizeIndexesAsk(knowledge_base)}>
+                                                            optimize indexes
+                                                        </button>
+                                                        {isAdmin &&
+                                                            <div style={{marginBottom: '4px'}}>
+                                                                <button onClick={() => this.removeOptimizedIndexesAsk(knowledge_base)}>
+                                                                    remove optimized indexes
+                                                                </button>
+                                                            </div>
+                                                        }
+                                                        {isAdmin &&
+                                                        <div>
+                                                            <button onClick={() => this.removeAllIndexesAsk(knowledge_base)}>
+                                                                remove all indexes
+                                                            </button>
+                                                        </div>
+                                                        }
+                                                    </td>
+                                                </tr>
                                             )
                                         })
                                     }
-                                    <TableRow>
-                                        <TableCell/>
-                                        <TableCell/>
-                                        <TableCell/>
-                                        <TableCell>
+                                    <tr>
+                                        <td/>
+                                        <td/>
+                                        <td/>
+                                        <td>
                                             {this.props.selected_organisation_id.length > 0 &&
-                                            <div style={styles.imageButton} onClick={() => this.addNewKnowledgeBase()}>
+                                            <div className="kb-image-button" onClick={() => this.addNewKnowledgeBase()}>
                                                 <img
-                                                    style={styles.addImage} src="../images/add.svg" title="add new user"
+                                                    className="image-size" src="../images/add.svg" title="add new user"
                                                     alt="add new user"/></div>
                                             }
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                            <TablePagination
+                            <Pagination
                                 rowsPerPageOptions={[5, 10, 25]}
-                                style={theme === 'light' ? styles.tableLight : styles.tableDark}
+                                theme={theme}
                                 component="div"
                                 count={this.props.knowledge_base_list.length}
                                 rowsPerPage={this.state.page_size}
@@ -422,261 +334,273 @@ export class KnowledgeBases extends Component {
                                 nextIconButtonProps={{
                                     'aria-label': 'Next Page',
                                 }}
-                                onChangePage={(event, page) => this.changePage(page)}
-                                onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
+                                onChangePage={(page) => this.changePage(page)}
+                                onChangeRowsPerPage={(rows) => this.changePageSize(rows)}
                             />
 
-                        </Paper>
+                        </div>
 
 
-                        <Dialog aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description"
-                                open={this.state.edit_knowledgebase}
-                                disableBackdropClick={true}
-                                disableEscapeKeyDown={true}
-                                fullWidth={true}
-                                maxWidth="lg"
-                                onClose={() => this.setState({edit_knowledgebase: false, knowledgeBase: null})}>
-                            <DialogTitle className={this.props.theme}>{this.state.edit_knowledgebase_id ? "Edit Knowledge Base" : "Add New Knowledge Base"}</DialogTitle>
-                            <DialogContent className={this.props.theme}>
-
-                                <Tabs value={this.state.selectedTab} onChange={(event, value)=> this.setState({selectedTab: value})}>
-                                    <Tab label="general" value="general" style={styles.tab} />
-                                    <Tab label="index optimization schedule" value="schedule" style={styles.tab} />
-                                </Tabs>
-
-                                <br />
-
-                                {t_value === 'general' &&
-                                <Grid container spacing={2}>
-
-                                    <Grid item xs={1}/>
-                                    <Grid item xs={3}>
-                                        <div>name</div>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            autoFocus={true}
-                                            style={styles.editBox}
-                                            placeholder="knowledge base name"
-                                            value={this.state.edit_name}
-                                            onChange={(event) => this.setState({edit_name: event.target.value})}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}/>
+                        {
+                            this.state.edit_knowledgebase &&
+                            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                                    <div className="modal-content shadow p-3 mb-5 bg-white rounded kb-height">
+                                        <div
+                                            className="modal-header">{this.state.edit_knowledgebase_id ? "Edit Knowledge Base" : "Add New Knowledge Base"}</div>
+                                        <div className="modal-body">
 
 
-                                    <Grid item xs={1}/>
-                                    <Grid item xs={3}>
-                                        <div>email questions to</div>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            style={styles.editBox}
-                                            placeholder="email questions to"
-                                            value={this.state.edit_email}
-                                            onChange={(event) => this.setState({edit_email: event.target.value})}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}/>
+                                            <ul className="nav nav-tabs">
+                                                <li className="nav-item nav-cursor">
+                                                    <div className={"nav-link " + (this.state.selectedTab === 'general' ? 'active' : '')}
+                                                         onClick={() => this.setState({selectedTab: 'general'})}>general</div>
+                                                </li>
+                                                <li className="nav-item nav-cursor">
+                                                    <div className={"nav-link " + (this.state.selectedTab === 'index schedule' ? 'active' : '')}
+                                                         onClick={() => this.setState({selectedTab: 'index schedule'})}>index schedule</div>
+                                                </li>
+                                                <li className="nav-item nav-cursor">
+                                                    <div className={"nav-link " + (this.state.selectedTab === 'DMS schedule' ? 'active' : '')}
+                                                         onClick={() => this.setState({selectedTab: 'DMS schedule'})}>DMS schedule</div>
+                                                </li>
+                                            </ul>
+
+                                            <br/>
+
+                                            {t_value === 'general' &&
+                                            <div>
+
+                                                <div className="control-row">
+                                                    <span className="label-2">name</span>
+                                                    <span className="text">
+                                                        <input type="text"
+                                                               autoFocus={true}
+                                                               className="edit-box"
+                                                               placeholder="knowledge base name"
+                                                               value={this.state.edit_name}
+                                                               onChange={(event) => this.setState({edit_name: event.target.value})}
+                                                        />
+                                                    </span>
+                                                </div>
+
+                                                <div className="control-row">
+                                                    <span className="label-2">email questions to</span>
+                                                    <span className="text">
+                                                        <input type="text"
+                                                               className="edit-box"
+                                                               placeholder="email questions to"
+                                                               value={this.state.edit_email}
+                                                               onChange={(event) => this.setState({edit_email: event.target.value})}
+                                                        />
+                                                    </span>
+                                                </div>
+
+                                                <div className="control-row">
+                                                    <span className="label-2">security id</span>
+                                                    <span className="text">
+                                                    <input type="text"
+                                                           className="sid-box"
+                                                           disabled={true}
+                                                           placeholder="security id"
+                                                           value={this.state.edit_security_id}
+                                                           onChange={(event) => this.setState({edit_security_id: event.target.value})}
+                                                    />
+                                                    </span>
+                                                    <img title="generate new security id" alt="refresh"
+                                                         src={theme === 'light' ? "../images/refresh.svg" : "../images/refresh-dark.svg"}
+                                                         onClick={() => this.refreshSecurityId()}
+                                                         className="image-size" />
+                                                </div>
+
+                                                <div className="control-row">
+                                                    <span className="checkbox-only">
+                                                        <input type="checkbox"
+                                                               checked={this.state.edit_enabled}
+                                                               onChange={(event) => {
+                                                                   this.setState({edit_enabled: event.target.checked});
+                                                               }}
+                                                               value="enable this knowledge-base?"
+                                                        />
+                                                    </span>
+                                                    <span>knowledge-base enabled?</span>
+                                                </div>
 
 
-                                    <Grid item xs={1}/>
-                                    <Grid item xs={3}>
-                                        <div>security id</div>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            style={styles.sidBox}
-                                            disabled={true}
-                                            placeholder="security id"
-                                            label="security id"
-                                            value={this.state.edit_security_id}
-                                            onChange={(event) => this.setState({edit_security_id: event.target.value})}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <div style={styles.imageBox}>
-                                            <img title="generate new security id" alt="refresh"
-                                                 src={theme === 'light' ? "../images/refresh.svg": "../images/refresh-dark.svg"}
-                                                 onClick={() => this.refreshSecurityId()}
-                                                 style={styles.imageSize}/>
+                                                <div className="control-row">
+                                                    <span className="checkbox-only">
+                                                        <input type="checkbox"
+                                                               checked={this.state.edit_operator_enabled}
+                                                               onChange={(event) => {
+                                                                   this.setState({edit_operator_enabled: event.target.checked});
+                                                               }}
+                                                               value="enable operator access?"
+                                                        />
+                                                    </span>
+                                                    <span>operator enabled?</span>
+                                                </div>
+
+
+                                                <div className="control-row">
+                                                    <span className="checkbox-only">
+                                                        <input type="checkbox"
+                                                               checked={this.state.edit_capacity_warnings}
+                                                               onChange={(event) => {
+                                                                   this.setState({edit_capacity_warnings: event.target.checked});
+                                                               }}
+                                                               value="enable capacity warnings?"
+                                                        />
+                                                    </span>
+                                                    <span>capacity-warnings on?</span>
+                                                </div>
+
+
+                                                <div className="control-row">
+                                                    <span className="label-wide">maximum number of queries per day (0 is no limits)</span>
+                                                    <span className="text">
+                                                        <input type="text"
+                                                               onChange={(event) => this.setState({edit_max_queries_per_day: event.target.value})}
+                                                               placeholder="max transactions per month"
+                                                               value={this.state.edit_max_queries_per_day}
+                                                        />
+                                                    </span>
+                                                </div>
+
+
+                                                <div className="control-row">
+                                                    <span className="label-wide">maximum analytics retention period in months (0 is no limits)</span>
+                                                    <span className="text">
+                                                        <input type="text"
+                                                               onChange={(event) => this.setState({edit_analytics_window_size_in_months: event.target.value})}
+                                                               placeholder="max analytics retention period in months"
+                                                               value={this.state.edit_analytics_window_size_in_months}
+                                                        />
+                                                    </span>
+                                                </div>
+
+
+                                            </div>
+                                            }
+
+                                            {t_value === 'index schedule' &&
+                                            <div className="time-tab-content">
+                                                <TimeSelect time={this.state.edit_index_optimization_schedule}
+                                                            onSave={(time) => this.updateIndexOptimizationSchedule(time)}/>
+                                            </div>
+                                            }
+                                            {t_value === 'index schedule' &&
+                                            <div className="padding-bottom">
+                                            </div>
+                                            }
+
+
+                                            {t_value === 'DMS schedule' &&
+                                            <div className="time-tab-content">
+                                                <TimeSelect time={this.state.edit_dms_index_schedule}
+                                                            onSave={(time) => this.updateDMSIndexSchedule(time)}/>
+                                            </div>
+                                            }
+                                            {t_value === 'DMS schedule' &&
+                                            <div className="padding-bottom">
+                                            </div>
+                                            }
+
+
                                         </div>
-                                    </Grid>
-
-
-                                    <Grid item xs={2}/>
-                                    <Grid item xs={5}>
-                                        <Checkbox
-                                            checked={this.state.edit_enabled}
-                                            onChange={(event) => {
-                                                this.setState({edit_enabled: event.target.checked});
-                                            }}
-                                            value="enable this knowledge-base?"
-                                            inputProps={{
-                                                'aria-label': 'primary checkbox',
-                                            }}
-                                        />
-                                        knowledge-base enabled?
-                                    </Grid>
-                                    <Grid item xs={5}>
-                                        <Checkbox
-                                            checked={this.state.edit_operator_enabled}
-                                            onChange={(event) => {
-                                                this.setState({edit_operator_enabled: event.target.checked});
-                                            }}
-                                            value="enable operator access?"
-                                            inputProps={{
-                                                'aria-label': 'primary checkbox',
-                                            }}
-                                        />
-                                        operator enabled?
-                                    </Grid>
-
-
-                                    <Grid item xs={2}/>
-                                    <Grid item xs={5}>
-                                        <Checkbox
-                                            checked={this.state.edit_capacity_warnings}
-                                            onChange={(event) => {
-                                                this.setState({edit_capacity_warnings: event.target.checked});
-                                            }}
-                                            value="enable capacity warnings?"
-                                            inputProps={{
-                                                'aria-label': 'primary checkbox',
-                                            }}
-                                        />
-                                        capacity-warnings on?
-                                    </Grid>
-                                    <Grid item xs={5}/>
-
-
-                                    <Grid item xs={2}/>
-                                    <Grid item xs={7}>
-                                        <div>maximum number of queries per day (0 is no limits)</div>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            onChange={(event) => this.setState({edit_max_queries_per_day: event.target.value})}
-                                            placeholder="max transactions per month"
-                                            variant="standard"
-                                            fullWidth={true}
-                                            value={this.state.edit_max_queries_per_day}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={1}/>
-
-
-                                    <Grid item xs={2}/>
-                                    <Grid item xs={7}>
-                                        <div>maximum analytics retention period in months (0 is no limits)</div>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            onChange={(event) => this.setState({edit_analytics_window_size_in_months: event.target.value})}
-                                            placeholder="max analytics retention period in months"
-                                            variant="standard"
-                                            fullWidth={true}
-                                            value={this.state.edit_analytics_window_size_in_months}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={1}/>
-
-
-                                </Grid>
-                                }
-
-                                {t_value === 'schedule' &&
-                                <div style={styles.timeTabContent}>
-                                    <TimeSelect time={this.state.edit_index_optimization_schedule}
-                                                onSave={(time) => this.updateSchedule(time)}/>
-                                    <div style={styles.paddingBottom}></div>
+                                        <div className="modal-footer">
+                                            <button className="btn btn-primary btn-block"  onClick={() => this.editCancel()}>Cancel</button>
+                                            <button className="btn btn-primary btn-block"  onClick={() => this.editOk()}>Save</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                }
-
-                            </DialogContent>
-                            <DialogActions className={this.props.theme}>
-                                <Button color="primary" onClick={() => this.editCancel()}>Cancel</Button>
-                                <Button variant="contained" color="secondary" onClick={() => this.editOk()}>Save</Button>
-                            </DialogActions>
-                        </Dialog>
+                            </div>
+                        }
 
                     </div>
                 }
 
+                {
+                    this.state.view_ids &&
+                    <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                        <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                            <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-                    <Dialog aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                            open={this.state.view_ids}
-                            disableBackdropClick={true}
-                            disableEscapeKeyDown={true}
-                            fullWidth={true}
-                            maxWidth="md"
-                            onClose={() => this.setState({view_ids: false})} >
-                        <DialogTitle className={this.props.theme}>{this.state.kb != null ? this.state.kb.name : ""} IDS</DialogTitle>
-                        <DialogContent className={this.props.theme}>
-                            <div>
-                                <div style={styles.lineHeight}>
-                                    <div style={styles.organisationIdLabel}>
-                                        organisation id
+                                <div className="modal-header">{this.state.kb != null ? this.state.kb.name : ""} IDS</div>
+                                <div className="modal-body">
+                                    <div>
+                                        <div className="dialog-line-height">
+                                            <div className="organisation-id-label">
+                                                organisation id
+                                            </div>
+                                            <div className="float-left">{this.props.selected_organisation_id ? this.props.selected_organisation_id : ""}</div>
+                                            <span className="copy-image-span" title={'copy organisation id'}>
+                                                <img
+                                                    src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'}
+                                                    className="clipboard-image" alt={'copy'}
+                                                    onClick={() => {
+                                                        if (Api.writeToClipboard(this.props.selected_organisation_id ? this.props.selected_organisation_id : ""))
+                                                            this.startCopiedVisible(this.props.selected_organisation_id);
+                                                    }}/>
+                                                            {this.props.selected_organisation_id && this.state.copied_visible === this.props.selected_organisation_id &&
+                                                            <div className="copied-style">copied</div>
+                                                            }
+                                            </span>
+                                            <br clear='both'/>
+                                        </div>
+
+                                        <div className="dialog-line-height">
+                                            <div className="organisation-id-label">
+                                                knowledge base id
+                                            </div>
+                                            <div className="float-left">{this.state.kb ? this.state.kb.kbId : ""}</div>
+                                            <span className="copy-image-span" title={'copy knowledge base id'}>
+                                                <img
+                                                    src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'}
+                                                    className="clipboard-image" alt={'copy'}
+                                                    onClick={() => {
+                                                        if (Api.writeToClipboard(this.state.kb ? this.state.kb.kbId : ""))
+                                                            this.startCopiedVisible(this.state.kb.kbId);
+                                                    }}/>
+                                                            {this.state.kb && this.state.copied_visible === this.state.kb.kbId &&
+                                                            <div className="copied-style">copied</div>
+                                                            }
+                                            </span>
+                                            <br clear='both'/>
+                                        </div>
+
+                                        <div className="dialog-line-height">
+                                            <div className="organisation-id-label">
+                                                security id
+                                            </div>
+                                            <div
+                                                className="float-left">{this.state.kb ? this.state.kb.securityId : ""}</div>
+                                            <span className="copy-image-span" title={'copy security id'}>
+                                                <img
+                                                    src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'}
+                                                    className="clipboard-image" alt={'copy'}
+                                                    onClick={() => {
+                                                        if (Api.writeToClipboard(this.state.kb ? this.state.kb.securityId : ""))
+                                                            this.startCopiedVisible(this.state.kb.securityId);
+                                                    }}/>
+                                                            {this.state.kb && this.state.copied_visible === this.state.kb.securityId &&
+                                                            <div className="copied-style">copied</div>
+                                                            }
+                                            </span>
+                                            <br clear='both'/>
+                                        </div>
+
                                     </div>
-                                    <div style={styles.floatLeft}>{this.props.selected_organisation_id ? this.props.selected_organisation_id : ""}</div>
-                                    <span style={styles.copyImageSpan} title={'copy organisation id'}>
-                                    <img src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'} style={styles.clipboardImage} alt={'copy'}
-                                         onClick={() => { if (Api.writeToClipboard(this.props.selected_organisation_id ? this.props.selected_organisation_id : ""))
-                                             this.startCopiedVisible(this.props.selected_organisation_id);
-                                         }}/>
-                                        {this.props.selected_organisation_id && this.state.copied_visible === this.props.selected_organisation_id &&
-                                        <div style={styles.copiedStyle}>copied</div>
-                                        }
-                                </span>
-                                    <br clear='both' />
                                 </div>
-
-                                <div style={styles.lineHeight}>
-                                    <div style={styles.organisationIdLabel}>
-                                        knowledge base id
-                                    </div>
-                                    <div style={styles.floatLeft}>{this.state.kb ? this.state.kb.kbId : ""}</div>
-                                    <span style={styles.copyImageSpan} title={'copy knowledge base id'}>
-                                    <img src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'} style={styles.clipboardImage} alt={'copy'}
-                                         onClick={() => { if (Api.writeToClipboard(this.state.kb ? this.state.kb.kbId : ""))
-                                             this.startCopiedVisible(this.state.kb.kbId);
-                                         }}/>
-                                        {this.state.kb && this.state.copied_visible === this.state.kb.kbId &&
-                                        <div style={styles.copiedStyle}>copied</div>
-                                        }
-                                </span>
-                                    <br clear='both' />
-                                </div>
-
-                                <div style={styles.lineHeight}>
-                                    <div style={styles.organisationIdLabel}>
-                                        security id
-                                    </div>
-                                    <div style={styles.floatLeft}>{this.state.kb ? this.state.kb.securityId : ""}</div>
-                                    <span style={styles.copyImageSpan} title={'copy security id'}>
-                                    <img src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'} style={styles.clipboardImage} alt={'copy'}
-                                         onClick={() => { if (Api.writeToClipboard(this.state.kb ? this.state.kb.securityId : ""))
-                                             this.startCopiedVisible(this.state.kb.securityId);
-                                         }}/>
-                                        {this.state.kb && this.state.copied_visible === this.state.kb.securityId &&
-                                        <div style={styles.copiedStyle}>copied</div>
-                                        }
-                                </span>
-                                    <br clear='both' />
+                                <div className="modal-footer">
+                                    <button className="btn btn-primary btn-block" onClick={() => this.setState({view_ids: false})}>Close</button>
                                 </div>
 
                             </div>
-                        </DialogContent>
-                        <DialogActions className={this.props.theme}>
-                            <Button variant="contained" color="secondary" onClick={() => this.setState({view_ids: false})}>Close</Button>
-                        </DialogActions>
-                    </Dialog>
+                        </div>
+                    </div>
+                }
 
-
-
-                </div>
+            </div>
         )
     }
 }

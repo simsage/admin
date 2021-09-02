@@ -1,24 +1,8 @@
 import React, {Component} from 'react';
 
-import TextField from '@material-ui/core/TextField';
-import Grid from "@material-ui/core/Grid";
 import {Api} from "../common/api";
 
-
-const styles = {
-    formContent: {
-        marginTop: '20px',
-        width: '98%',
-    },
-    fieldWidth: {
-        width: '100%',
-    },
-    dbType: {
-        float: 'right',
-        marginTop: '6px',
-        marginRight: '10px',
-    }
-};
+import '../css/crawler.css';
 
 
 export class CrawlerRestFull extends Component {
@@ -89,84 +73,80 @@ export class CrawlerRestFull extends Component {
             return <h1>crawler-restfull.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.formContent}>
+            <div className="crawler-page">
 
-                <Grid container spacing={1}>
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">API url</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control jdbc-field-width"
+                                    placeholder="url"
+                                    value={this.state.url}
+                                    onChange={(event) => {this.change_callback({url: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
-                            placeholder="url"
-                            label="url"
-                            variant="outlined"
-                            value={this.state.url}
-                            onChange={(event) => {this.change_callback({url: event.target.value})}}
-                            style={styles.fieldWidth}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">record primary key</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control jdbc-field-width"
+                                    placeholder="the name of the primary key in the record"
+                                    value={this.state.pk}
+                                    onChange={(event) => {this.change_callback({pk: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="the name of the primary key in the record"
-                            label="primary key name"
-                            variant="outlined"
-                            value={this.state.pk}
-                            onChange={(event) => {this.change_callback({pk: event.target.value})}}
-                            style={styles.fieldWidth}
-                        />
-                    </Grid>
-                    <Grid item xs={6} />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">JSON fields</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control jdbc-field-width"
+                                    placeholder="document http/https reference JSON fields in square brackets [FIELD-NAME]"
+                                    disabled={this.state.customRender}
+                                    value={this.state.content_url}
+                                    onChange={(event) => {this.change_callback({content_url: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
-                            placeholder="document http/https reference SQL fields in square brackets [FIELD-NAME]"
-                            label="document http/https reference (non custom-renders)"
-                            variant="outlined"
-                            multiline={false}
-                            disabled={this.state.customRender}
-                            value={this.state.content_url}
-                            onChange={(event) => {this.change_callback({content_url: event.target.value})}}
-                            style={styles.fieldWidth}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
-
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
+                <div className="form-group">
+                    <span className="label-right-top">text index template</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="REST text index template, an text template referencing REST fields in square brackets [FIELD-NAME]"
-                            label="REST text index template"
-                            variant="outlined"
                             disabled={!this.state.customRender}
-                            multiline={true}
                             rows={7}
                             value={this.state.text}
                             onChange={(event) => {this.change_callback({text: event.target.value})}}
-                            style={styles.fieldWidth}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
+                <div className="form-group">
+                    <span className="label-right-top">html render template</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="REST html render template, an html template referencing REST fields in square brackets [FIELD-NAME]"
-                            label="REST html render template"
-                            variant="outlined"
                             disabled={!this.state.customRender}
-                            multiline={true}
                             rows={7}
                             value={this.state.template}
                             onChange={(event) => {this.change_callback({template: event.target.value})}}
-                            style={styles.fieldWidth}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                </Grid>
             </div>
         );
     }

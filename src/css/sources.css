@@ -1,0 +1,17 @@
+
+.source-page {
+    width: 900px;
+}
+
+.source-page .source-label {
+    margin-top: 20px;
+    color: #555;
+}
+
+.source-page .image-button {
+    float: right;
+    padding: 10px;
+    color: #888;
+    cursor: pointer;
+}
+

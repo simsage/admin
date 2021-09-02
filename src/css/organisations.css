@@ -1,0 +1,56 @@
+
+.organisation-id-modal {
+    height: 200px;
+}
+
+.organisation-display .org-label {
+    color: #555;
+}
+
+.organisation-display .linkButton {
+    float: left;
+    padding: 10px;
+    color: #888;
+    cursor: pointer;
+}
+
+.organisation-display .linkButton {
+    float: left;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.organisation-display .dlImageSize {
+    width: 24px;
+    margin-right: 10px;
+}
+
+.organisation-display .imageButton {
+    float: right;
+    padding: 10px;
+    color: #888;
+    cursor: pointer;
+}
+
+.organisation-display .addImage {
+    width: 25px;
+}
+
+.organisation-display .organisationIdLabel {width: 170px; float: left; height: 24px;}
+.organisation-display .copyImageSpan {float: left; margin-top: -5px; margin-left: 10px;}
+.organisation-display .clipboardImage {width: 24px; height: 24px;}
+
+.organisation-display .floatLeft {
+    float: left;
+}
+
+
+.organisation-display .copiedStyle {
+    font-size: 10px;
+    margin-left: 25px;
+    margin-top: -22px;
+    position: absolute;
+    float: left;
+    z-index: 99;
+}
+

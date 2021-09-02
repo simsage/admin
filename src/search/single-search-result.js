@@ -1,69 +1,6 @@
 import React from 'react';
 
-import Grid from '@material-ui/core/Grid';
-
-const styles = {
-    title: {
-        fontSize: '16px',
-    },
-    text: {
-        fontSize: '12px',
-    },
-    previewImage: {
-        maxHeight: '100px',
-    },
-    prevFragment: {
-        display: 'inline-block',
-        width: '20px',
-        background: 'black',
-        color: 'white',
-        borderRadius: '5px',
-        textAlign: 'center',
-        marginRight: '5px',
-        cursor: 'pointer',
-    },
-    nextFragment: {
-        display: 'inline-block',
-        width: '20px',
-        background: 'black',
-        color: 'white',
-        borderRadius: '5px',
-        textAlign: 'center',
-        cursor: 'pointer',
-    },
-    prevFragmentDisabled: {
-        display: 'inline-block',
-        width: '20px',
-        background: 'grey',
-        color: 'white',
-        borderRadius: '5px',
-        textAlign: 'center',
-        marginRight: '5px',
-        cursor: 'default',
-    },
-    nextFragmentDisabled: {
-        display: 'inline-block',
-        width: '20px',
-        background: 'grey',
-        color: 'white',
-        borderRadius: '5px',
-        textAlign: 'center',
-        cursor: 'default',
-    },
-    author: {
-        fontSize: '10px',
-        fontWeight: '600',
-    },
-    url: {
-        marginLeft: '10px',
-        fontSize: '10px',
-        color: 'blue',
-        cursor: 'pointer',
-    },
-    spacer: {
-        height: '20px'
-    }
-};
+import '../css/single-search-result.css';
 
 
 export class SingleSearchResult extends React.Component {
@@ -125,42 +62,36 @@ export class SingleSearchResult extends React.Component {
         }
         const item = this.state.item;
         return (
-            <Grid container spacing={1} style={styles.gridWidth}>
-                <Grid item xs={12}>
-                    <div style={styles.title}><a href={this.getPreviewSource(item)} target="_blank">{item.title}</a></div>
-                </Grid>
-                <Grid item xs={1}>
-                    <div>
-                        {item.textIndex > 0 &&
-                        <span style={styles.prevFragment} onClick={() => this.prevFragment()}>&lt;</span>
-                        }
-                        {item.textIndex === 0 &&
-                        <span style={styles.prevFragmentDisabled}>&lt;</span>
-                        }
-                        {item.textIndex + 1 < item.textList.length &&
-                        <span style={styles.nextFragment} onClick={() => this.nextFragment()}>&gt;</span>
-                        }
-                        {item.textIndex + 1 >= item.textList.length &&
-                        <span style={styles.nextFragmentDisabled}>&gt;</span>
-                        }
-                    </div>
-                </Grid>
-                <Grid item xs={9}>
-                    <div style={styles.text} dangerouslySetInnerHTML={{__html: SingleSearchResult.highlight(item.textList[item.textIndex])}}/>
-                </Grid>
-                <Grid item xs={2}>
-                    <div style={styles.previewImage}>
-                        <img src={this.getPreviewSource(item)} alt={item.title} style={styles.previewImage} title={item.title} />
-                    </div>
-                </Grid>
-                <Grid item xs={12}>
-                    <span style={styles.author}>{item.author}</span>
-                    <span style={styles.url} onClick={() => { if (this.props.openDocument) this.props.openDocument(item.url)} }>{item.url}</span>
-                </Grid>
-                <Grid item xs={12}>
-                    <div style={styles.spacer} />
-                </Grid>
-            </Grid>
+            <div className="single-search-result-page">
+
+                <div className="title"><a href={this.getPreviewSource(item)} target="_blank" rel="noreferrer">{item.title}</a></div>
+                <div>
+                    {item.textIndex > 0 &&
+                    <span className="prev-fragment" onClick={() => this.prevFragment()}>&lt;</span>
+                    }
+                    {item.textIndex === 0 &&
+                    <span className="prev-fragment-disabled">&lt;</span>
+                    }
+                    {item.textIndex + 1 < item.textList.length &&
+                    <span className="next-fragment" onClick={() => this.nextFragment()}>&gt;</span>
+                    }
+                    {item.textIndex + 1 >= item.textList.length &&
+                    <span className="next-fragment-disabled">&gt;</span>
+                    }
+                </div>
+
+                <div className="text" dangerouslySetInnerHTML={{__html: SingleSearchResult.highlight(item.textList[item.textIndex])}}/>
+
+                <div className="preview-image">
+                    <img src={this.getPreviewSource(item)} alt={item.title} className="preview-image" title={item.title} />
+                </div>
+
+                <div>
+                    <span className="author">{item.author}</span>
+                    <span className="url'" onClick={() => { if (this.props.openDocument) this.props.openDocument(item.url)} }>{item.url}</span>
+                </div>
+                <div className="spacer" />
+            </div>
         )
     }
 

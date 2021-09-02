@@ -1,48 +1,6 @@
 import React from 'react';
 
-const styles = {
-    uploadContainer: {
-        float: 'left',
-        width: '400px',
-        minWidth: '400px',
-        // border: '1px solid lightgray',
-        padding: '1px',
-        marginLeft: '10px',
-        fontWeight: 700,
-        fontSize: '10pt',
-        cursor: 'pointer',
-    },
-    formWidth: {
-        marginTop: '-20px',
-    },
-    uploadControl: {
-        marginTop: '10px',
-    },
-    imageButton: {
-        float: 'left',
-        marginRight: '20px',
-        paddingTop: '10px',
-        cursor: 'pointer',
-    },
-    restoreImage: {
-        width: '25px',
-    },
-    busyImage: {
-        width: '28px',
-        height: '28px',
-        marginTop: '-10px',
-        float: 'left',
-    },
-    uploadInput: {
-        float: 'left',
-    },
-    uploadWheel: {
-        marginLeft: '5px',
-        marginTop: '14px',
-        height: '28px',
-        float: 'left',
-    },
-};
+import '../css/restore-upload.css';
 
 export class RestoreUpload extends React.Component {
     constructor(props) {
@@ -56,7 +14,7 @@ export class RestoreUpload extends React.Component {
         };
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps, futureProps) {
         this.setState({
             organisationId: nextProps.organisationId,
             onError: nextProps.onError,
@@ -96,17 +54,17 @@ export class RestoreUpload extends React.Component {
 
     render() {
         return (
-            <div>
-                <form onSubmit={(e) => this._handleSubmit(e)} style={styles.uploadContainer}>
-                    <div style={styles.formWidth}>
+            <div className="restore-upload">
+                <form onSubmit={(e) => this._handleSubmit(e)} className="upload-container">
+                    <div className="form-offset">
                         {
                             this.state.data && this.state.data.length > 0 && this.state.fileType === "text/plain" &&
-                            <div style={styles.imageButton} onClick={() => this.upload()}><img
-                                style={styles.restoreImage} src="../images/restore.svg"
+                            <div className="restore-image-button" onClick={() => this.upload()}><img
+                                className="image-size" src="../images/restore.svg"
                                 title={"Click here to restore data from \"" + this.state.filename + "\""}
                                 alt="restore data from file"/></div>
                         }
-                        <input style={styles.uploadControl}
+                        <input className="upload-margin"
                                type="file"
                                onChange={(e) => this._handleImageChange(e)}/>
                     </div>

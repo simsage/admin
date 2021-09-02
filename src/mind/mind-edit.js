@@ -1,268 +1,213 @@
 import React, {Component} from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+import '../css/mind-edit.css';
 
 const image_types = [".jpg", ".jpeg", ".png", ".gif", ".svg"];
 
 export class MindEdit extends Component {
     constructor(props) {
         super(props);
-        const expression = props.mindItem && props.mindItem.expression ? props.mindItem.expression : "";
-        let question1 = "";
-        let question2 = "";
-        if (expression.indexOf("||") >= 0) {
-            question1 = expression.split("||")[0];
-            question2 = expression.split("||")[1];
-        } else {
-            question1 = expression;
-        }
         this.state = {
             has_error: false,
             open: props.open,
-            mindItem: props.mindItem,
             onSave: props.onSave,
             onError: props.onError,
-            question1: question1,
-            question2: question2,
-            answer: MindEdit.getAnswerText(props.mindItem),
-            links: MindEdit.getLinks(props.mindItem),
+            memory: props.memory,
+            information: props.memory && props.memory.information ? props.memory.information : "",
+            questionList: MindEdit.getQuestions(props.memory),
+            links: this.linksToText(props.memory),
         };
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
         console.log(error, info);
     }
+    UNSAFE_componentWillReceiveProps(props) {
+        this.setState({
+            open: props.open,
+            onSave: props.onSave,
+            onError: props.onError,
+            memory: props.memory,
+            information: props.memory && props.memory.information ? props.memory.information : "",
+            questionList: MindEdit.getQuestions(props.memory),
+            links: this.linksToText(props.memory),
+        })
+    }
     handleSave() {
         if (this.state.onSave) {
-            const mi = this.state.mindItem;
-            mi.expression = this.state.question1;
-            if (this.state.question2.trim().length > 0) {
-                mi.expression = mi.expression + " || " + this.state.question2;
+            const memory = this.state.memory;
+            memory.information = this.state.information;
+            memory.questionList = [];
+            for (const question of this.state.questionList) {
+                if (question.trim().length > 0) {
+                    memory.questionList.push(question.trim());
+                }
             }
-            mi.actionList = MindEdit.createActions(this.state.answer, this.state.links);
-            this.state.onSave(mi);
+            memory.urlList = this.getLinks(this.state.links);
+            memory.imageList = this.getImageLinks(this.state.links);
+            this.state.onSave(memory);
         }
+    }
+    getLinks(links) {
+        const list = [];
+        for (const link of links.split('\n')) {
+            const l = link.trim();
+            if (l.length > 0 && !this.isImage(l)) {
+                list.push(l.trim());
+            }
+        }
+        return list;
+    }
+    linksToText(memory) {
+        let str = "";
+        if (memory) {
+            if (memory.urlList) {
+                for (const link of memory.urlList) {
+                    const l = link.trim();
+                    if (l.length > 0) {
+                        str += l.trim() + "\n";
+                    }
+                }
+            }
+            if (memory.imageList) {
+                for (const link of memory.imageList) {
+                    const l = link.trim();
+                    if (l.length > 0) {
+                        str += l.trim() + "\n";
+                    }
+                }
+            }
+        }
+        return str;
+    }
+    getImageLinks(links) {
+        const list = [];
+        for (const link of links.split('\n')) {
+            const l = link.trim();
+            if (l.length > 0 && this.isImage(l)) {
+                list.push(l.trim());
+            }
+        }
+        return list;
+    }
+    isImage(link) {
+        if (link) {
+            const l = link.toLowerCase();
+            const i = l.lastIndexOf('.');
+            if (i > 0) {
+                const extension = l.substring(i);
+                return image_types.includes(extension);
+            }
+        }
+        return false;
     }
     handleCancel() {
         if (this.state.onSave) {
             this.state.onSave(null);
         }
     }
-    UNSAFE_componentWillReceiveProps(props) {
-        const expression = props.mindItem && props.mindItem.expression ? props.mindItem.expression : "";
-        let question1 = "";
-        let question2 = "";
-        if (expression.indexOf("||") >= 0) {
-            question1 = expression.split("||")[0];
-            question2 = expression.split("||")[1];
-        } else {
-            question1 = expression;
-        }
-        this.setState({
-            open: props.open,
-            mindItem: props.mindItem,
-            onSave: props.onSave,
-            onError: props.onError,
-            question1: question1,
-            question2: question2,
-            answer: MindEdit.getAnswerText(props.mindItem),
-            links: MindEdit.getLinks(props.mindItem),
-        })
-    }
-    static createActions(answer, links_text) {
-        const actions = [];
-        if (answer.length > 0) {
-            // special user/custom commands?
-            if (answer.trim().indexOf("exec ") === 0) {
-                const commands = answer.split("\n");
-                for (let cmd of commands) {
-                    const parts = cmd.trim().split(" ");
-                    if (parts.length > 1 && parts[0] === "exec") {
-                        const parameters = [];
-                        for (let i = 2; i < parts.length; i += 1) {
-                            if (parts[i].trim().length > 0) {
-                                parameters.push(parts[i].trim());
-                            }
-                        }
-                        actions.push({"action": parts[1], parameters: parameters});
-                    }
-                }
-            } else {
-                actions.push({"action": "browser.write", parameters: [answer.replace(/\n/g, "<br />")]});
-            }
-        }
-        const links = links_text.split(",");
-        for (const link of links) {
-            const l = link.trim();
-            if (l.length > 0) {
-                const l_lwr = link.toLowerCase();
-                let is_image = false;
-                for (const extn of image_types) {
-                    if (l_lwr.indexOf(extn) > 0) {
-                        is_image = true;
-                    }
-                }
-                if (is_image) {
-                    actions.push({"action": "browser.image", parameters: [l]});
-                } else {
-                    actions.push({"action": "browser.url", parameters: [l]});
-                }
-            }
-        }
-        return actions;
-    }
-    static getAnswerText(mindItem) {
+    static getLinks(memory) {
         let str = "";
-        if (mindItem && mindItem.actionList) {
-            // val BROWSER_WRITE = "browser.write"
-            // val BROWSER_URL = "browser.url"
-            // val BROWSER_IMAGE = "browser.image"
-            // val BROWSER_SAY = "browser.say"
-            for (const action of mindItem.actionList) {
-                if (action) {
-                    if (action.action === "browser.write" && action.parameters) {
-                        for (const param of action.parameters) {
-                            str = str + param.replace(/<br \/>/g, "\n");
-                        }
-
-                        // user custom command?
-                    } else if (action.action !== "browser.image" && action.action !== "browser.url" && action.action !== "browser.say") {
-                        str = str + "exec " + action.action;
-                        for (const param of action.parameters) {
-                            str += " ";
-                            str += param;
-                        }
-                        str += "\n";
-                    }
+        if (memory && memory.urlList) {
+            for (const url of memory.urlList) {
+                if (str.length > 0) {
+                    str += "\n";
                 }
+                str += url;
+            }
+        }
+        if (memory && memory.imageList) {
+            for (const image of memory.imageList) {
+                if (str.length > 0) {
+                    str += "\n";
+                }
+                str += image;
             }
         }
         return str;
     }
-    static getLinks(mindItem) {
-        let str = "";
-        if (mindItem && mindItem.actionList) {
-            for (const action of mindItem.actionList) {
-                if (action && action.action === "browser.image" && action.parameters) {
-                    if (str.length > 0) {
-                        str += ",\n";
-                    }
-                    for (const param of action.parameters) {
-                        str = str + param.replace(/<br \/>/g, "\n");
-                    }
-                }
-                if (action && action.action === "browser.url" && action.parameters) {
-                    if (str.length > 0) {
-                        str += ",\n";
-                    }
-                    for (const param of action.parameters) {
-                        str = str + param.replace(/<br \/>/g, "\n");
-                    }
-                }
+    static getQuestions(memory) {
+        let list = [];
+        if (memory && memory.questionList) {
+            for (const question of memory.questionList) {
+                list.push(question.trim());
             }
         }
-        return str;
+        while (list.length < 5) {
+            list.push('')
+        }
+        return list;
+    }
+    setQuestion(index, text) {
+        const question_list = this.state.questionList;
+        question_list[index] = text;
+        this.setState({questionList: question_list});
     }
     render() {
         if (this.state.has_error) {
             return <h1>mind-edit.js: Something went wrong.</h1>;
         }
+        if (!this.state.open)
+            return (<div />);
         return (
-            <Dialog aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    disableBackdropClick={true}
-                    disableEscapeKeyDown={true}
-                    open={this.state.open}
-                    fullWidth={true}
-                    maxWidth="lg"
-                    onClose={() => this.handleCancel()} >
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-                <DialogTitle id="alert-dialog-title" className={this.props.theme}>Edit Mind Item</DialogTitle>
-                <DialogContent className={this.props.theme}>
-                    <Grid container spacing={1}>
+                        <div className="modal-header">Edit Memory</div>
+                        <div className="modal-body">
 
-                        <Grid item xs={1} />
-                        <Grid item xs={1}>
-                            <div>question</div>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <TextField
-                                autoFocus={true}
-                                onChange={(event) => this.setState({question1: event.target.value})}
-                                placeholder="question"
-                                variant="outlined"
-                                fullWidth={true}
-                                value={this.state.question1}
-                            />
-                        </Grid>
-                        <Grid item xs={1} />
+                                {
+                                    this.state.questionList.map((question, i) => {
+                                        return (
+                                            <div className="edit-row" key={i}>
+                                                <span className="label-area">{"question " + (i+1)}</span>
+                                                <span className="input-area">
+                                                    <input type="text" className="form-control"
+                                                        autoFocus={i === 0}
+                                                        onChange={(event) => this.setQuestion(i, event.target.value)}
+                                                        placeholder={"question " + (i+1)}
+                                                        value={question}
+                                                    />
+                                                </span>
+                                            </div>
+                                        )})
+                                }
 
-
-                        <Grid item xs={1} />
-                        <Grid item xs={1}>
-                            <div>alternative</div>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <TextField
-                                onChange={(event) => this.setState({question2: event.target.value})}
-                                placeholder="alternative question (optional)"
-                                variant="outlined"
-                                fullWidth={true}
-                                value={this.state.question2}
-                            />
-                        </Grid>
-                        <Grid item xs={1} />
+                                <div className="edit-row">
+                                    <span className="label-area">answer text</span>
+                                    <span className="input-area">
+                                    <textarea className="input-area"
+                                        onChange={(event) => this.setState({information: event.target.value})}
+                                        placeholder="answer, or function (e.g. 'exec show_help person1 person2 date1')"
+                                        rows={5}
+                                        value={this.state.information}
+                                    />
+                                    </span>
+                                </div>
 
 
-                        <Grid item xs={1} />
-                        <Grid item xs={1}>
-                            <div>answer text</div>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <TextField
-                                onChange={(event) => this.setState({answer: event.target.value})}
-                                placeholder="answer, or function (e.g. 'exec show_help person1 person2 date1')"
-                                multiline={true}
-                                rows={5}
-                                variant="outlined"
-                                fullWidth={true}
-                                value={this.state.answer}
-                            />
-                        </Grid>
-                        <Grid item xs={1} />
+                                <div className="edit-row">
+                                    <span className="label-area">links (one per line)</span>
+                                    <span className="input-area">
+                                        <textarea className="input-area"
+                                            onChange={(event) => this.setState({links: event.target.value})}
+                                            placeholder="links"
+                                            rows={5}
+                                            value={this.state.links}
+                                        />
+                                    </span>
+                                </div>
 
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary btn-block" onClick={() => this.handleCancel()}>Cancel</button>
+                            <button className="btn btn-primary btn-block" onClick={() => this.handleSave()}>Save</button>
+                        </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={1}>
-                            <div>links (csv)</div>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <TextField
-                                onChange={(event) => this.setState({links: event.target.value})}
-                                placeholder="links"
-                                multiline={true}
-                                rows={5}
-                                variant="outlined"
-                                fullWidth={true}
-                                value={this.state.links}
-                            />
-                        </Grid>
-                        <Grid item xs={1} />
-
-
-                    </Grid>
-                </DialogContent>
-                <DialogActions className={this.props.theme}>
-                    <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
-                </DialogActions>
-            </Dialog>
+                    </div>
+                </div>
+            </div>
         );
     }
 }

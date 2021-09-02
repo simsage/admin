@@ -1,33 +1,7 @@
 import React, {Component} from 'react';
 
-import TextField from '@material-ui/core/TextField';
-import Checkbox from "@material-ui/core/Checkbox";
-import Api from '../common/api'
-import Grid from "@material-ui/core/Grid";
-
-
-const styles = {
-    formContent: {
-        marginTop: '20px',
-        width: '98%',
-    },
-    textField: {
-        width: '95%',
-    },
-    dlText: {
-        marginTop: '-2px',
-        width: '150px',
-        float: 'left',
-    },
-    manualBox: {
-        float: 'right',
-        marginRight: '100px',
-    },
-    manualImage: {
-        float: 'left',
-        width: '40px',
-    }
-};
+import Api from '../common/api';
+import '../css/crawler.css';
 
 
 export class CrawlerOffice365 extends Component {
@@ -130,204 +104,188 @@ export class CrawlerOffice365 extends Component {
             return <h1>crawler-office365.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.formContent}>
+            <div className="crawler-page">
 
-                <Grid container spacing={1}>
-
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="tenant id"
-                            label="tenant id"
-                            autoFocus={true}
-                            value={this.state.tenantId}
-                            onChange={(event) => {this.change_callback({tenantId: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <div style={styles.manualBox}>
+                <div className="form-group">
+                    <div className="full-column-2">
+                        <span className="small-label-right">domain name</span>
+                        <span className="bigger-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="tenant id"
+                                    autoFocus={true}
+                                    value={this.state.tenantId}
+                                    onChange={(event) => {this.change_callback({tenantId: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                        <span className="office-manual-box">
                             <a href="../resources/simsage-office365-setup.pdf" id="dlOffice365" target="_blank" title="download the SimSage Office 365 setup guide">
-                                <div style={styles.dlText}>download Microsoft Azure configuration instructions</div>
-                                <img src="../images/pdf-icon.png" alt="offce 365 setup guide" style={styles.manualImage}/></a>
-                        </div>
-                    </Grid>
-                    <Grid item xs={1} />
-
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="client id"
-                            label="client id"
-                            value={this.state.clientId}
-                            onChange={(event) => {this.change_callback({clientId: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="client secret"
-                            label="client secret"
-                            value={this.state.clientSecret}
-                            onChange={(event) => {this.change_callback({clientSecret: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
-
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."
-                            label="redirect url"
-                            value={this.state.redirectUrl}
-                            onChange={(event) => {this.change_callback({redirectUrl: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={6} />
+                                <span className="instructions-label">instructions</span>
+                                <img src="../images/pdf-icon.png" alt="office 365 setup guide" className="image-size" />
+                            </a>
+                        </span>
+                    </div>
+                </div>
 
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">client id</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="client id"
+                                    value={this.state.clientId}
+                                    onChange={(event) => {this.change_callback({clientId: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                    <span className="right-column">
+                        <span className="small-label-right">client secret</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="client secret"
+                                    value={this.state.clientSecret}
+                                    onChange={(event) => {this.change_callback({clientSecret: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
+
+
+                <div className="form-group">
+                    <span className="full-column">
+                        <span className="small-label-right">redirect url</span>
+                        <span className="bigger-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."
+                                    value={this.state.redirectUrl}
+                                    onChange={(event) => {this.change_callback({redirectUrl: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
+
+
+                <div className="form-group">
+                    <span className="left-column">
                         <div style={{float: 'left'}} title="Check this box if you want OneDrive of your Office365 to be included">
-                            <Checkbox
+                            <input type="checkbox"
                                 checked={this.state.crawlOneDrive}
                                 onChange={(event) => { this.change_callback({crawlOneDrive: event.target.checked}); }}
                                 value="enable OneDrive?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
                             />
-                            enable OneDrive?
+                            <span className="label-left">enable OneDrive?</span>
                         </div>
-                    </Grid>
-                    <Grid item xs={5}>
+                    </span>
+                    <span className="right-column">
                         <div style={{float: 'left'}} title="Check this box if you want ALL of OneDrive to be included">
-                            <Checkbox
+                            <input type="checkbox"
                                 checked={this.state.crawlAllOfOneDrive}
                                 disabled={!this.state.crawlOneDrive}
                                 onChange={(event) => { this.change_callback({crawlAllOfOneDrive: event.target.checked}); }}
                                 value="crawl all of OneDrive?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
                             />
-                            crawl all of OneDrive?
+                            <span className="label-left">crawl all of OneDrive?</span>
                         </div>
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
+                <div className="form-group">
+                    <span className="label-right-top">one-drive accounts</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="specific one-drive accounts (comma separated email addresses)"
-                            label="specific one-drive accounts (comma separated email addresses)"
                             disabled={this.state.crawlAllOfOneDrive || !this.state.crawlOneDrive}
-                            variant="outlined"
-                            multiline={true}
                             rows={2}
                             value={this.state.oneDriveUsersToCrawl}
                             onChange={(event) => {this.change_callback({oneDriveUsersToCrawl: event.target.value})}}
-                            style={styles.textField}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
+
+                <div className="form-group">
+                    <span className="left-column">
                         <div style={{float: 'left'}} title="Check this box if you want SharePoint of your Office365 to be included">
-                            <Checkbox
+                            <input type="checkbox"
                                 checked={this.state.crawlSharePoint}
                                 onChange={(event) => { this.change_callback({crawlSharePoint: event.target.checked}); }}
                                 value="enable SharePoint indexing?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
                             />
-                            enable SharePoint indexing?
+                            <span className="label-left">enable SharePoint indexing?</span>
                         </div>
-                    </Grid>
-                    <Grid item xs={5}>
+                    </span>
+                    <span className="right-column">
                         <div style={{float: 'left'}} title="Check this box if you want the root SharePoint site to be indexed">
-                            <Checkbox
+                            <input type="checkbox"
                                 checked={this.state.crawlRootSite}
                                 disabled={!this.state.crawlSharePoint}
                                 onChange={(event) => { this.change_callback({crawlRootSite: event.target.checked}); }}
                                 value="crawl SharePoint root site?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
                             />
-                            crawl SharePoint root site?
+                            <span className="label-left">crawl SharePoint root site?</span>
                         </div>
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
+
+                <div className="form-group">
+                    <span className="label-right-top">sharepoint site ids</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="other SharePoint sites (comma separated ids)"
-                            label="other SharePoint sites (comma separated ids)"
                             disabled={!this.state.crawlSharePoint}
-                            variant="outlined"
-                            multiline={true}
                             rows={2}
                             value={this.state.sharePointSitesToCrawl}
                             onChange={(event) => {this.change_callback({sharePointSitesToCrawl: event.target.value})}}
-                            style={styles.textField}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <div style={{float: 'left'}} title="Check this box if you want Exchange of your Office365 to be included">
-                            <Checkbox
-                                checked={this.state.crawlExchange}
-                                onChange={(event) => { this.change_callback({crawlExchange: event.target.checked}); }}
-                                value="enable Exchange?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
-                            />
-                            enable Exchange?
-                        </div>
-                    </Grid>
-                    <Grid item xs={5}>
+                <div className="form-group">
+                        <span className="left-column">
+                            <div style={{float: 'left'}} title="Check this box if you want Exchange of your Office365 to be included">
+                                <input type="checkbox"
+                                    checked={this.state.crawlExchange}
+                                    onChange={(event) => { this.change_callback({crawlExchange: event.target.checked}); }}
+                                    value="enable Exchange?"
+                                />
+                                <span className="label-left">enable Exchange?</span>
+                            </div>
+                        </span>
+                    <span className="right-column">
                         <div style={{float: 'left'}} title="Check this box if you want ALL of Exchange to be included">
-                            <Checkbox
+                            <input type="checkbox"
                                 checked={this.state.crawlAllOfExchange}
                                 disabled={!this.state.crawlExchange}
                                 onChange={(event) => { this.change_callback({crawlAllOfExchange: event.target.checked}); }}
                                 value="crawl all of Exchange?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
                             />
-                            crawl all of Exchange?
+                            <span className="label-left">crawl all of Exchange?</span>
                         </div>
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
+                <div className="form-group">
+                    <span className="label-right-top">specific exchange accounts</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="specific exchange accounts (comma separated email addresses)"
-                            label="specific exchange accounts (comma separated email addresses)"
                             disabled={this.state.crawlAllOfExchange || !this.state.crawlExchange}
-                            variant="outlined"
-                            multiline={true}
                             rows={2}
                             value={this.state.exchangeUsersToCrawl}
                             onChange={(event) => {this.change_callback({exchangeUsersToCrawl: event.target.value})}}
-                            style={styles.textField}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
-
-                </Grid>
+                    </span>
+                </div>
 
             </div>
         );

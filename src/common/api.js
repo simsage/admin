@@ -216,6 +216,16 @@ export class Api {
     }
 
 
+    // pretty print a role
+    static getPrettyRole(role) {
+        // 'admin', 'operator', 'dms', 'manager'
+        if (role === 'admin') return "System Administrator";
+        else if (role === 'operator') return "Knowledgebase Operator";
+        else if (role === 'dms') return "DMS User";
+        else if (role === 'manager') return "Organisational Manager";
+        else return role;
+    }
+
 }
 
 export default Api;

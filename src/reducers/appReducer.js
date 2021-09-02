@@ -23,10 +23,10 @@ import {
     HIDE_NOTIFICATIONS,
     MARK_CONVERSATION_USED,
     MIND_FIND,
-    SET_MIND_ITEMS_PAGINATED,
-    SET_MIND_ITEM_PAGE_SIZE,
-    SET_MIND_ITEM_PAGE,
-    RESET_MIND_ITEM_PAGINATION,
+    SET_MEMORIES_PAGINATED,
+    SET_MEMORIES_PAGE_SIZE,
+    SET_MEMORIES_PAGE,
+    RESET_MEMORIES_PAGINATION,
     OPERATOR_CLEAR_USER,
     OPERATOR_READY,
     ADD_OPERATOR,
@@ -38,12 +38,12 @@ import {
     SELECT_ORGANISATION,
     UPDATE_ORGANISATION,
     SELECT_TAB,
-    SET_BOT_QUERY_LIST,
-    SET_BOT_QUERY_STRING,
+    SET_MIND_QUERY_LIST,
+    SET_MIND_QUERY_STRING,
     SET_DOCUMENT_FILTER,
     SET_DOCUMENT_PAGE,
     SET_DOCUMENT_PAGE_SIZE,
-    SET_MIND_ITEM_FILTER,
+    SET_MEMORY_FILTER,
     SET_NOTIFICATION_LIST,
     SET_OPERATOR_ANSWER,
     SET_OPERATOR_CONNECTED,
@@ -89,6 +89,12 @@ import {
 
     GET_EDGE_DEVICES,
     GET_EDGE_DEVICE_COMMANDS,
+
+    // groups
+    SET_GROUPS_PAGINATED,
+    SET_GROUP_PAGE_SIZE,
+    SET_GROUP_PAGE,
+    SET_GROUP_FILTER,
 
 } from "../actions/actions";
 import {initializeState} from './stateLoader'
@@ -503,17 +509,17 @@ export const reducer = (state, action) => {
             };
         }
 
-        case SET_MIND_ITEMS_PAGINATED: {
+        case SET_MEMORIES_PAGINATED: {
             return {
                 ...state,
-                mind_item_list: action.data.mindItemList,
-                num_mind_items: action.data.numMindItems,
+                mind_item_list: action.data.memoryList,
+                num_mind_items: action.data.numMemories,
                 prev_mind_item_filter: action.data.filter,
                 busy: false,
             };
         }
 
-        case SET_MIND_ITEM_FILTER: {
+        case SET_MEMORY_FILTER: {
             return {
                 ...state,
                 mind_item_page: 0,
@@ -521,7 +527,7 @@ export const reducer = (state, action) => {
             };
         }
 
-        case SET_MIND_ITEM_PAGE: {
+        case SET_MEMORIES_PAGE: {
             const mind_item_nav_list = state.mind_item_nav_list;
             if (action.page >= mind_item_nav_list.length) {
                 mind_item_nav_list.push(action.prev_id);
@@ -535,7 +541,7 @@ export const reducer = (state, action) => {
             }
         }
 
-        case SET_MIND_ITEM_PAGE_SIZE: {
+        case SET_MEMORIES_PAGE_SIZE: {
             return {
                 ...state,
                 mind_item_page: 0,
@@ -545,7 +551,7 @@ export const reducer = (state, action) => {
             }
         }
 
-        case RESET_MIND_ITEM_PAGINATION: {
+        case RESET_MEMORIES_PAGINATION: {
             return {
                 ...state,
                 mind_item_page: 0,
@@ -555,15 +561,15 @@ export const reducer = (state, action) => {
             }
         }
 
-        case SET_BOT_QUERY_LIST: {
+        case SET_MIND_QUERY_LIST: {
             return {
                 ...state,
-                bot_query_result_list: action.bot_query_result_list,
+                mind_result_list: action.mind_result_list,
                 busy: false,
             };
         }
 
-        case SET_BOT_QUERY_STRING: {
+        case SET_MIND_QUERY_STRING: {
             return {
                 ...state,
                 bot_query: action.bot_query,
@@ -1195,6 +1201,44 @@ export const reducer = (state, action) => {
                 busy: false,
             };
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        // GROUPS
+
+        case SET_GROUPS_PAGINATED: {
+            return {
+                ...state,
+                group_list: action.group_list,
+                group_count: action.num_groups,
+                busy: false,
+            };
+        }
+
+        case SET_GROUP_PAGE: {
+            return {
+                ...state,
+                group_page: action.page,
+                busy: false,
+            }
+        }
+
+        case SET_GROUP_PAGE_SIZE: {
+            return {
+                ...state,
+                group_page: 0,
+                group_page_size: action.page_size,
+                busy: false,
+            }
+        }
+
+        case SET_GROUP_FILTER: {
+            return {
+                ...state,
+                group_page: 0,
+                group_filter: action.group_filter,
+            };
+        }
+
 
 
     }

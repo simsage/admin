@@ -1,75 +1,6 @@
 import React, {Component} from 'react';
-import Button from "@material-ui/core/Button";
 
-const active_colour = '#eed000';
-const inactive_colour = '#c0c0c0';
-
-const styles = {
-    tableStyle: {
-        marginTop: '10px',
-        fontFamily: 'Open Sans, sans-serif',
-        fontSize: '12px',
-        width: '90%',
-    },
-    tHeader: {
-        height: '22px',
-        marginBottom: '5px',
-    },
-    tCol: {
-        height: '22px',
-        marginBottom: '5px',
-    },
-    tCell: {
-        backgroundColor: '#c0c0c0'
-    },
-    legenda: {
-        float: 'left',
-        marginTop: '20px',
-    },
-    activeText: {
-        backgroundColor: active_colour,
-        color: '#444',
-        float: 'left',
-        width: '100px',
-        fontFamily: 'Open Sans, sans-serif',
-        fontSize: '12px',
-        fontWeight: '900',
-        borderRadius: '2px',
-        textAlign: 'center',
-        padding: '5px',
-    },
-    inactiveText: {
-        backgroundColor: inactive_colour,
-        color: '#444',
-        float: 'left',
-        width: '100px',
-        fontFamily: 'Open Sans, sans-serif',
-        fontSize: '12px',
-        fontWeight: '900',
-        borderRadius: '2px',
-        textAlign: 'center',
-        padding: '5px',
-        marginLeft: '10px',
-    },
-    button1: {
-        float: 'left',
-        padding: '5px',
-        marginLeft: '100px',
-        marginTop: '-10px',
-    },
-    button2: {
-        float: 'left',
-        padding: '5px',
-        marginLeft: '10px',
-        marginTop: '-10px',
-    },
-    labelTop: {
-        marginTop: '10px',
-        fontSize: '0.9em',
-        fontWeight: '600',
-    }
-};
-
+import '../css/time-select.css';
 
 const time_list = ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00',
                    '12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
@@ -133,9 +64,9 @@ export class TimeSelect extends Component {
     }
     gs(cell) {
         if (this.state.time_map[cell] === 1) {
-            return {backgroundColor: active_colour}
+            return "active";
         } else {
-            return {backgroundColor: inactive_colour}
+            return "inactive";
         }
     }
     clearAll() {
@@ -211,78 +142,74 @@ export class TimeSelect extends Component {
             return <h1>time-select.js: Something went wrong.</h1>;
         }
         return (
-            <div>
-                <div style={styles.labelTop}>all times in GMT (now {this.timeStr()})</div>
-                <table style={styles.tableStyle}>
+            <div className="time-select">
+                <div className="labelTop">all times in GMT (now {this.timeStr()})</div>
+                <table className="tableStyle">
                     <tbody>
                     <tr>
                         <td onClick={() => this.select('all')}/>
                         { time_list.map((str, value) => {
-                            return (<td key={"time-"+value} onClick={() => this.select('' + value)} style={styles.tHeader}>{str}</td>)
+                            return (<td key={"time-"+value} onClick={() => this.select('' + value)} className="cell-spacing tHeader">{str}</td>)
                         })}
                     </tr>
                     <tr>
-                        <td onClick={() => this.select('mon')} style={styles.tCol}>Monday</td>
+                        <td onClick={() => this.select('mon')} className="tCol">Monday</td>
                         { time_list.map((str, value) => {
-                             return (<td key={"mon-"+value} onClick={() => this.select('mon-'+value)} style={this.gs('mon-'+value)} />)
+                             return (<td key={"mon-"+value} onClick={() => this.select('mon-'+value)} className={"cell-spacing " + this.gs('mon-'+value)} />)
                         })}
                     </tr>
                     <tr>
-                        <td onClick={() => this.select('tue')} style={styles.tCol}>Tuesday</td>
+                        <td onClick={() => this.select('tue')} className="tCol">Tuesday</td>
                         { time_list.map((str, value) => {
-                            return (<td key={"tue-"+value} onClick={() => this.select('tue-'+value)} style={this.gs('tue-'+value)} />)
+                            return (<td key={"tue-"+value} onClick={() => this.select('tue-'+value)} className={"cell-spacing " + this.gs('tue-'+value)} />)
                         })}
                     </tr>
                     <tr>
-                        <td onClick={() => this.select('wed')} style={styles.tCol}>Wednesday</td>
+                        <td onClick={() => this.select('wed')} className="tCol">Wednesday</td>
                         { time_list.map((str, value) => {
-                            return (<td key={"wed-"+value} onClick={() => this.select('wed-'+value)} style={this.gs('wed-'+value)}/>)
+                            return (<td key={"wed-"+value} onClick={() => this.select('wed-'+value)} className={"cell-spacing " +this.gs('wed-'+value)}/>)
                         })}
                     </tr>
                     <tr>
-                        <td onClick={() => this.select('thu')} style={styles.tCol}>Thursday</td>
+                        <td onClick={() => this.select('thu')} className="tCol">Thursday</td>
                         { time_list.map((str, value) => {
-                            return (<td key={"thu-"+value} onClick={() => this.select('thu-'+value)} style={this.gs('thu-'+value)}/>)
+                            return (<td key={"thu-"+value} onClick={() => this.select('thu-'+value)} className={"cell-spacing " + this.gs('thu-'+value)}/>)
                         })}
                     </tr>
                     <tr>
-                        <td onClick={() => this.select('fri')} style={styles.tCol}>Friday</td>
+                        <td onClick={() => this.select('fri')} className="tCol">Friday</td>
                         { time_list.map((str, value) => {
-                            return (<td key={"fri-"+value} onClick={() => this.select('fri-'+value)} style={this.gs('fri-'+value)}/>)
+                            return (<td key={"fri-"+value} onClick={() => this.select('fri-'+value)} className={"cell-spacing " + this.gs('fri-'+value)}/>)
                         })}
                     </tr>
                     <tr>
-                        <td onClick={() => this.select('sat')} style={styles.tCol}>Saturday</td>
+                        <td onClick={() => this.select('sat')} className="tCol">Saturday</td>
                         { time_list.map((str, value) => {
-                            return (<td key={"sat-"+value} onClick={() => this.select('sat-'+value)} style={this.gs('sat-'+value)}/>)
+                            return (<td key={"sat-"+value} onClick={() => this.select('sat-'+value)} className={"cell-spacing " + this.gs('sat-'+value)}/>)
                         })}
                     </tr>
                     <tr>
-                        <td onClick={() => this.select('sun')} style={styles.tCol}>Sunday</td>
+                        <td onClick={() => this.select('sun')} className="tCol">Sunday</td>
                         { time_list.map((str, value) => {
-                            return (<td key={"sun-"+value} onClick={() => this.select('sun-'+value)} style={this.gs('sun-'+value)}/>)
+                            return (<td key={"sun-"+value} onClick={() => this.select('sun-'+value)} className={"cell-spacing " + this.gs('sun-'+value)}/>)
                         })}
                     </tr>
                     </tbody>
                 </table>
 
                 <br />
-                <div style={styles.legenda}>
-                    <div style={styles.activeText}>active</div>
-                    <div style={styles.inactiveText}>inactive</div>
-                    <div style={styles.button1}>
-                        <Button variant="contained"
-                                color="secondary"
-                                onClick={() => this.clearAll()}>
+                <div className="legenda">
+                    <div className="activeText">active</div>
+                    <div className="inactiveText">inactive</div>
+                    <div className="button1">
+                        <button className="btn btn-primary btn-block" onClick={() => this.clearAll()}>
                             clear all
-                        </Button>
+                        </button>
                     </div>
-                    <div style={styles.button2}>
-                        <Button variant="contained"
-                                color="secondary"
-                                onClick={() => this.selectAll()}>
+                    <div className="button2">
+                        <button className="btn btn-primary btn-block" onClick={() => this.selectAll()}>
                             select all
-                        </Button>
+                        </button>
                     </div>
                 </div>
             </div>

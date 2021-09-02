@@ -1,11 +1,6 @@
 import React, {Component} from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-
+import '../css/common.css';
 
 export class MessageDialog extends Component {
     constructor(props) {
@@ -51,25 +46,28 @@ export class MessageDialog extends Component {
         if (this.state.has_error) {
             return <h1>message-dialog.js: Something went wrong.</h1>;
         }
+        if (!this.state.open) {
+            return (<div />)
+        }
         return (
-            <Dialog aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    open={this.state.open}
-                    fullWidth={true}
-                    maxWidth="md"
-                    onClose={() => this.cancel()} >
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded message-dialog-height">
 
-                <DialogTitle id="alert-dialog-title" className={this.props.theme}>{this.state.title}</DialogTitle>
-                <DialogContent className={this.props.theme}>
-                    <div>
-                        <div dangerouslySetInnerHTML={{__html: this.state.message}} />
+                        <div className="modal-header">{this.state.title}</div>
+                        <div className="modal-body">
+                            <div>
+                                <div dangerouslySetInnerHTML={{__html: this.state.message}} />
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary btn-block" onClick={() => this.cancel()}>Cancel</button>
+                            <button className="btn btn-primary btn-block" onClick={() => this.ok()}>OK</button>
+                        </div>
+
                     </div>
-                </DialogContent>
-                <DialogActions className={this.props.theme}>
-                    <Button color="primary" onClick={() => this.cancel()}>Cancel</Button>
-                    <Button variant="contained" color="secondary" onClick={() => this.ok()}>OK</Button>
-                </DialogActions>
-            </Dialog>
+                </div>
+            </div>
         );
     }
 }

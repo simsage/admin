@@ -1,0 +1,73 @@
+
+
+.message-dialog-height {
+    height: 300px;
+}
+
+.label {
+    width: 150px;
+    margin-right: 20px;
+    text-align: right;
+    margin-top: 4px;
+    float: left;
+}
+
+.label-2 {
+    width: 150px;
+    margin-right: 20px;
+    text-align: right;
+    float: left;
+}
+
+.label-wide {
+    width: 450px;
+    margin-right: 20px;
+    text-align: right;
+    margin-top: 4px;
+    float: left;
+}
+
+.text {
+    float: left;
+    width: 400px;
+}
+
+.text:after {
+    visibility: hidden;
+    display: block;
+    content: "";
+    clear: both;
+    height: 0;
+}
+
+.control-row {
+    display: inline-block;
+    height: 40px;
+    width: 100%;
+}
+
+.control-row:after {
+    visibility: hidden;
+    display: block;
+    content: "";
+    clear: both;
+    height: 0;
+}
+
+.control-only {
+    float: left;
+    margin-left: 150px;
+    width: 400px;
+}
+
+.checkbox-only {
+    display: inline-block;
+    margin-left: 150px;
+    width: 50px;
+}
+
+.cell-spacing {
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+}
+

@@ -15,7 +15,6 @@ export class SearchPage extends Component {
     componentDidMount() {
     }
     render() {
-        {/* clientId below is a random GUID that uniquely identifies a single client for keeping state inside SimSage */}
         return (
              <div>
                  <SimsageSearch

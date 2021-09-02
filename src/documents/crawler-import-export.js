@@ -1,13 +1,5 @@
 import React, {Component} from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-
 
 export class CrawlerImportExport extends Component {
     constructor(props) {
@@ -54,55 +46,50 @@ export class CrawlerImportExport extends Component {
         if (this.state.has_error) {
             return <h1>mind-edit.js: Something went wrong.</h1>;
         }
+        if (!this.state.open) {
+            return (<div />);
+        }
         return (
-            <Dialog aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    disableBackdropClick={true}
-                    disableEscapeKeyDown={true}
-                    open={this.state.open}
-                    fullWidth={true}
-                    maxWidth="lg"
-                    onClose={() => this.handleCancel()} >
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-                <DialogTitle id="alert-dialog-title" className={this.props.theme}>{this.props.export_upload ? "Import Crawler" : "Export Crawler"}</DialogTitle>
-                <DialogContent className={this.props.theme}>
-                    <Grid container spacing={1}>
+                        <div className="modal-header">{this.props.export_upload ? "Import Crawler" : "Export Crawler"}</div>
+                        <div className="modal-body">
+                            <div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={1}>
-                            <div>data</div>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <TextField
-                                autoFocus={true}
-                                onChange={(event) => this.setState({data: event.target.value})}
-                                placeholder="crawler data"
-                                variant="filled"
-                                spellCheck={false}
-                                fullWidth={true}
-                                multiline={true}
-                                rows={10}
-                                value={this.state.data}
-                            />
-                        </Grid>
-                        <Grid item xs={1} />
+                                <div>data</div>
+                                <div>
+                                    <textarea
+                                        autoFocus={true}
+                                        style={{width: "100%"}}
+                                        onChange={(event) => this.setState({data: event.target.value})}
+                                        placeholder="crawler data"
+                                        spellCheck={false}
+                                        rows={10}
+                                        value={this.state.data}
+                                    />
+                                </div>
 
-                    </Grid>
-                </DialogContent>
-                <DialogActions className={this.props.theme}>
-                    {this.props.export_upload &&
-                    <div>
-                        <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                        <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Import</Button>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            {this.props.export_upload &&
+                            <div>
+                                <button className="btn btn-primary btn-block" style={{marginRight: "8px"}} onClick={() => this.handleCancel()}>Cancel</button>
+                                <button className="btn btn-primary btn-block" onClick={() => this.handleSave()}>Import</button>
+                            </div>
+                            }
+                            {!this.props.export_upload &&
+                            <div>
+                                <button className="btn btn-primary btn-block" onClick={() => this.handleCancel()}>Close</button>
+                            </div>
+                            }
+                        </div>
+
                     </div>
-                    }
-                    {!this.props.export_upload &&
-                    <div>
-                        <Button color="primary" onClick={() => this.handleCancel()}>Close</Button>
-                    </div>
-                    }
-                </DialogActions>
-            </Dialog>
+                </div>
+            </div>
         );
     }
 }

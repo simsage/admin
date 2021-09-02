@@ -1,13 +1,7 @@
 import React, {Component} from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
-import Button from '@material-ui/core/Button';
-
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import '../css/acl-setup.css';
+import '../css/crawler.css';
 
 import TimeSelect from '../common/time-select'
 
@@ -24,25 +18,8 @@ import CrawlerNFS from "./crawler-nfs";
 import CrawlerRestFull from "./crawler-restfull";
 import CrawlerMetadata from "./crawler-metadata";
 import Api from "../common/api";
+import AclSetup from "../common/acl-setup";
 
-
-const styles = {
-    formContent: {
-        overflowY: 'scroll',
-        height: '550px',
-    },
-    tab: {
-        backgroundColor: '#f8f8f8',
-        color: '#000',
-    },
-    tab_dark: {
-        backgroundColor: '#808080',
-        color: '#f8f8f8',
-    },
-    timeTabContent: {
-        marginLeft: '20px',
-    }
-};
 
 export class CrawlerDialog extends Component {
     constructor(props) {
@@ -79,6 +56,8 @@ export class CrawlerDialog extends Component {
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps !== null) {
             this.setState({
+                selectedTab: (nextProps.open !== this.state.open) ? 'general' : this.state.selectedTab,
+
                 open: nextProps.open,
                 title: nextProps.title,
 
@@ -190,6 +169,7 @@ export class CrawlerDialog extends Component {
     }
     handleSave() {
         const crawler = this.state.crawler;
+        const validAcls = crawler.allowAnonymous || (crawler.acls && crawler.acls.length > 0);
         let sj = {};
         if (crawler && crawler.specificJson && (typeof crawler.specificJson === "string" || crawler.specificJson instanceof String)) {
             sj = JSON.parse(crawler.specificJson);
@@ -211,13 +191,17 @@ export class CrawlerDialog extends Component {
 
             this.setError('invalid parameters', 'crawler specific data not set');
 
+        } else if (!validAcls) {
+
+            this.setError('invalid parameters', 'This source does not have valid ACLs.\nThis source won\'t be usable.  Please add ACLs to this source.');
+
         } else if (crawler.crawlerType === 'file' && (
             (!sj.username || sj.username.length === 0) ||
             (!sj.server || sj.server.length === 0) ||
             !this.validFQDN(sj.fqdn) ||
             (!sj.shareName || sj.shareName.length === 0))) {
 
-            this.setError('invalid parameters', 'you must supply crawler-type, name, username, server and share path as a minimum.');
+            this.setError('invalid parameters', 'file crawler: you must supply a name, username, server, valid FQDN and share path as a minimum.');
 
         } else if (crawler.crawlerType === 'web' && (
             !sj.baseUrlList || sj.baseUrlList.length === 0 ||
@@ -268,9 +252,9 @@ export class CrawlerDialog extends Component {
 
             this.setError('invalid parameters', 'you must supply values for all fields, and select one user as a minimum.');
 
-        } else if (crawler.crawlerType === 'nfs' && (sj.nfs_local_folder.length === 0 || sj.nfs_userList.length === 0)) {
+        } else if (crawler.crawlerType === 'nfs' && (sj.nfs_local_folder.length === 0)) {
 
-            this.setError('invalid parameters', 'nfs: you must supply values for all fields, and select one user as a minimum.');
+            this.setError('invalid parameters', 'nfs: you must set a local folder.');
 
         } else if (crawler.crawlerType !== 'web' && crawler.crawlerType !== 'file' && crawler.crawlerType !== 'database' &&
                    crawler.crawlerType !== 'office365' && crawler.crawlerType !== 'dropbox' && crawler.crawlerType !== 'nfs' &&
@@ -305,11 +289,21 @@ export class CrawlerDialog extends Component {
         }
     }
     update_general_data(data) {
-        data.specificJson = this.state.crawler.specificJson;
-        data.schedule = this.state.crawler.schedule;
+        const crawler = this.state.crawler;
+        data.specificJson = crawler.specificJson;
+        data.schedule = crawler.schedule;
+        data.acls = crawler.acls;
         this.setState({crawler: data});
         if (this.state.onUpdate) {
             this.state.onUpdate(data);
+        }
+    }
+    update_acl_list(acl_list) {
+        const crawler = this.state.crawler;
+        crawler.acls = acl_list;
+        this.setState({crawler: crawler});
+        if (this.state.onUpdate) {
+            this.state.onUpdate(crawler);
         }
     }
     update_specific_json(specific_json) {
@@ -329,214 +323,265 @@ export class CrawlerDialog extends Component {
         const crawler = this.state.crawler;
         const c_type = crawler.crawlerType;
         const sj = JSON.parse(crawler.specificJson ? crawler.specificJson : "{}");
-        const tabStyle = (theme === 'light' ? styles.tab : styles.tab_dark);
+        console.log(crawler);
+
+        if (!this.state.open) {
+            return (<div />)
+        }
         return (
-            <div>
-                <Dialog aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                        open={this.state.open}
-                        disableBackdropClick={true}
-                        disableEscapeKeyDown={true}
-                        fullWidth={true}
-                        maxWidth="lg"
-                        onClose={this.handleCancel.bind(this)} >
-                    <DialogTitle id="alert-dialog-title" className={this.props.theme}>{this.state.title}</DialogTitle>
-                    <div className={this.props.theme}>
-                        <div>
-                            <Tabs value={this.state.selectedTab} onChange={(event, value)=> this.setState({selectedTab: value})}>
-                                <Tab label="general" value="general" style={tabStyle} />
-                                {c_type === "file" && <Tab label="file-crawler" value="file crawler" style={tabStyle} />}
-                                {c_type === "web" && <Tab label="web-crawler" value="web crawler" style={tabStyle} />}
-                                {c_type === "database" && <Tab label="database-crawler" value="database crawler" style={tabStyle} />}
-                                {c_type === "restfull" && <Tab label="restful-crawler" value="RESTful crawler" style={tabStyle} />}
-                                {c_type !== "wordpress" && <Tab label="metadata" value="metadata" style={tabStyle} />}
-                                {c_type === "office365" && <Tab label="office 365-crawler" value="office365 crawler" style={tabStyle} />}
-                                {c_type === "dropbox" && <Tab label="dropbox-crawler" value="dropbox crawler" style={tabStyle} />}
-                                {c_type === "wordpress" && <Tab label="wordpress-crawler" value="wordpress crawler" style={tabStyle} />}
-                                {c_type === "gdrive" && <Tab label="gdrive-crawler" value="google drive crawler" style={tabStyle} />}
-                                {c_type === "nfs" && <Tab label="nfs-crawler" value="nfs crawler" style={tabStyle} />}
-                                {c_type !== "wordpress" && <Tab label="schedule" value="schedule" style={tabStyle} />}
-                            </Tabs>
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded crawler-page">
 
-                            <div style={styles.formContent}>
-                                {t_value === 'general' &&
-                                    <CrawlerGeneral
-                                        theme={theme}
-                                        sourceId={crawler.sourceId}
-                                        nodeId={crawler.nodeId}
-                                        organisation_id={crawler.organisationId}
-                                        kb_id={crawler.kbId}
-                                        name={crawler.name}
-                                        filesPerSecond={crawler.filesPerSecond}
-                                        crawlerType={c_type}
-                                        deleteFiles={crawler.deleteFiles}
-                                        allowAnonymous={crawler.allowAnonymous}
-                                        enablePreview={crawler.enablePreview}
-                                        processingLevel={crawler.processingLevel}
-                                        maxItems={crawler.maxItems}
-                                        maxBotItems={crawler.maxBotItems}
-                                        schedule={crawler.schedule}
-                                        customRender={crawler.customRender}
-                                        edgeDeviceId={crawler.edgeDeviceId}
-                                        qaMatchStrength={crawler.qaMatchStrength}
-                                        numResults={crawler.numResults}
-                                        numFragments={crawler.numFragments}
-                                        edge_device_list={this.props.edge_device_list}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(crawler) => this.update_general_data(crawler)}/>
-                                }
-                                {t_value === 'file crawler' &&
-                                    <CrawlerFile
-                                        theme={theme}
-                                        username={sj.username}
-                                        password={sj.password}
-                                        server={sj.server}
-                                        domain={sj.domain}
-                                        fqdn={sj.fqdn}
-                                        shareName={sj.shareName}
-                                        sharePath={sj.sharePath}
-                                        specific_json={sj}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                                            }
-                                {t_value === 'web crawler' &&
-                                    <CrawlerWeb
-                                        theme={theme}
-                                        baseUrlList={sj.baseUrlList}
-                                        webCss={sj.webCss}
-                                        webCssIgnore={sj.webCssIgnore}
-                                        validExtensions={sj.validExtensions}
-                                        validExtensionsIgnore={sj.validExtensionsIgnore}
-                                        articleIncludeWordsCsv={sj.articleIncludeWordsCsv}
-                                        articleExcludeWordsCsv={sj.articleExcludeWordsCsv}
-                                        specific_json={sj}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'database crawler' &&
-                                    <CrawlerDatabase
-                                        theme={theme}
-                                        username={sj.username}
-                                        password={sj.password}
-                                        jdbc={sj.jdbc}
-                                        type={sj.type}
-                                        query={sj.query}
-                                        pk={sj.pk}
-                                        metadata_list={sj.metadata_list}
-                                        template={sj.template}
-                                        text={sj.text}
-                                        content_url={sj.content_url}
-                                        specific_json={sj}
-                                        customRender={crawler.customRender}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'RESTful crawler' &&
-                                    <CrawlerRestFull
-                                        theme={theme}
-                                        pk={sj.pk}
-                                        url={sj.url}
-                                        template={sj.template}
-                                        text={sj.text}
-                                        content_url={sj.content_url}
-                                        specific_json={sj}
-                                        customRender={crawler.customRender}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'metadata' && (c_type === "database" || c_type === "restfull") &&
-                                    <CrawlerMetadataMapper
-                                        theme={theme}
-                                        specificJson={sj}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'metadata' && c_type !== "restfull" && c_type !== "database" && c_type !== "wordpress" &&
-                                    <CrawlerMetadata
-                                        theme={theme}
-                                        specific_json={sj}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'office365 crawler' &&
-                                    <CrawlerOffice365
-                                        theme={theme}
-                                        tenantId={sj.tenantId}
-                                        clientId={sj.clientId}
-                                        clientSecret={sj.clientSecret}
-                                        redirectUrl={sj.redirectUrl}
-                                        crawlOneDrive={sj.crawlOneDrive}
-                                        crawlAllOfOneDrive={sj.crawlAllOfOneDrive}
-                                        oneDriveUsersToCrawl={sj.oneDriveUsersToCrawl}
-                                        crawlSharePoint={sj.crawlSharePoint}
-                                        crawlRootSite={sj.crawlRootSite}
-                                        sharePointSitesToCrawl={sj.sharePointSitesToCrawl}
-                                        crawlExchange={sj.crawlExchange}
-                                        crawlAllOfExchange={sj.crawlAllOfExchange}
-                                        exchangeUsersToCrawl={sj.exchangeUsersToCrawl}
-                                        specific_json={sj}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'dropbox crawler' &&
-                                    <CrawlerDropbox
-                                        theme={theme}
-                                        clientToken={sj.clientToken}
-                                        folderList={sj.folderList}
-                                        specific_json={sj}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'google drive crawler' &&
-                                    <CrawlerGDrive
-                                        theme={theme}
-                                        gdrive_projectId={sj.gdrive_projectId}
-                                        gdrive_clientId={sj.gdrive_clientId}
-                                        gdrive_clientSecret={sj.gdrive_clientSecret}
-                                        gdrive_clientName={sj.gdrive_clientName}
-                                        gdrive_clientPort={sj.gdrive_clientPort}
-                                        specific_json={sj}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'nfs crawler' &&
-                                    <CrawlerNFS
-                                        theme={theme}
-                                        nfs_local_folder={sj.nfs_local_folder}
-                                        nfs_userList={sj.nfs_userList}
-                                        specific_json={sj}
-                                        availableUserList={this.props.user_list}
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'wordpress crawler' &&
-                                    <CrawlerWordpress
-                                        theme={theme}
-                                        source_id={crawler.sourceId}
-                                        organisation_id={this.props.organisation_id}
-                                        kb_id={this.props.kb_id}
-                                        specific_json={sj}
-                                        wpUploadArchive={(data) => this.props.wpUploadArchive(data) }
-                                        onError={(title, errStr) => this.setError(title, errStr)}
-                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                }
-                                {t_value === 'schedule' && c_type !== "wordpress" &&
-                                    <div style={styles.timeTabContent}>
-                                        <TimeSelect time={crawler.schedule}
-                                                    onSave={(time) => this.updateSchedule(time)}/>
-                                    </div>
-                                }
-                            </div>
+                        <div className="modal-header">{this.state.title}</div>
+                        <div className={"modal-body " + this.props.theme}>
+                            <div>
+                                <ul className="nav nav-tabs">
+                                    <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'general' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'general'})}>general</div>
+                                    </li>
+                                    {c_type === "file" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'file crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'file crawler'})}>file crawler</div>
+                                    </li>}
+                                    {c_type === "web" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'web crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'web crawler'})}>web crawler</div>
+                                    </li>}
+                                    {c_type === "database" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'database crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'database crawler'})}>database crawler</div>
+                                    </li>}
+                                    {c_type === "restfull" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'RESTful crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'RESTful crawler'})}>RESTful crawler</div>
+                                    </li>}
+                                    {c_type === "office365" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'office365 crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'office365 crawler'})}>office365 crawler</div>
+                                    </li>}
+                                    {c_type === "dropbox" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'dropbox crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'dropbox crawler'})}>dropbox crawler</div>
+                                    </li>}
+                                    {c_type === "gdrive" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'google drive crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'google drive crawler'})}>google drive crawler</div>
+                                    </li>}
+                                    {c_type === "wordpress" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'wordpress crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'wordpress crawler'})}>wordpress crawler</div>
+                                    </li>}
+                                    {c_type === "nfs" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'nfs crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'nfs crawler'})}>nfs crawler</div>
+                                    </li>}
+                                    {c_type !== "wordpress" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'metadata' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'metadata'})}>metadata</div>
+                                    </li>}
+                                    <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'acls' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'acls'})}>ACLs</div>
+                                    </li>
+                                    {c_type !== "wordpress" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'schedule' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'schedule'})}>schedule</div>
+                                    </li>}
+                                </ul>
+
+                                <div className="form-content">
+                                    {t_value === 'general' &&
+                                        <CrawlerGeneral
+                                            theme={theme}
+                                            sourceId={crawler.sourceId}
+                                            nodeId={crawler.nodeId}
+                                            organisation_id={crawler.organisationId}
+                                            kb_id={crawler.kbId}
+                                            name={crawler.name}
+                                            filesPerSecond={crawler.filesPerSecond}
+                                            crawlerType={c_type}
+                                            deleteFiles={crawler.deleteFiles}
+                                            allowAnonymous={crawler.allowAnonymous}
+                                            enablePreview={crawler.enablePreview}
+                                            processingLevel={crawler.processingLevel}
+                                            maxItems={crawler.maxItems}
+                                            maxQNAItems={crawler.maxQNAItems}
+                                            schedule={crawler.schedule}
+                                            customRender={crawler.customRender}
+                                            edgeDeviceId={crawler.edgeDeviceId}
+                                            qaMatchStrength={crawler.qaMatchStrength}
+                                            numResults={crawler.numResults}
+                                            numFragments={crawler.numFragments}
+                                            edge_device_list={this.props.edge_device_list}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(crawler) => this.update_general_data(crawler)}/>
+                                    }
+                                    {t_value === 'file crawler' &&
+                                        <CrawlerFile
+                                            theme={theme}
+                                            username={sj.username}
+                                            password={sj.password}
+                                            server={sj.server}
+                                            domain={sj.domain}
+                                            fqdn={sj.fqdn}
+                                            shareName={sj.shareName}
+                                            sharePath={sj.sharePath}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                                                }
+                                    {t_value === 'web crawler' &&
+                                        <CrawlerWeb
+                                            theme={theme}
+                                            baseUrlList={sj.baseUrlList}
+                                            webCss={sj.webCss}
+                                            webCssIgnore={sj.webCssIgnore}
+                                            validExtensions={sj.validExtensions}
+                                            validExtensionsIgnore={sj.validExtensionsIgnore}
+                                            articleIncludeWordsCsv={sj.articleIncludeWordsCsv}
+                                            articleExcludeWordsCsv={sj.articleExcludeWordsCsv}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'database crawler' &&
+                                        <CrawlerDatabase
+                                            theme={theme}
+                                            username={sj.username}
+                                            password={sj.password}
+                                            jdbc={sj.jdbc}
+                                            type={sj.type}
+                                            query={sj.query}
+                                            pk={sj.pk}
+                                            metadata_list={sj.metadata_list}
+                                            template={sj.template}
+                                            text={sj.text}
+                                            content_url={sj.content_url}
+                                            specific_json={sj}
+                                            customRender={crawler.customRender}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'RESTful crawler' &&
+                                        <CrawlerRestFull
+                                            theme={theme}
+                                            pk={sj.pk}
+                                            url={sj.url}
+                                            template={sj.template}
+                                            text={sj.text}
+                                            content_url={sj.content_url}
+                                            specific_json={sj}
+                                            customRender={crawler.customRender}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'metadata' && (c_type === "database" || c_type === "restfull") &&
+                                        <CrawlerMetadataMapper
+                                            theme={theme}
+                                            specificJson={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'office365 crawler' &&
+                                        <CrawlerOffice365
+                                            theme={theme}
+                                            tenantId={sj.tenantId}
+                                            clientId={sj.clientId}
+                                            clientSecret={sj.clientSecret}
+                                            redirectUrl={sj.redirectUrl}
+                                            crawlOneDrive={sj.crawlOneDrive}
+                                            crawlAllOfOneDrive={sj.crawlAllOfOneDrive}
+                                            oneDriveUsersToCrawl={sj.oneDriveUsersToCrawl}
+                                            crawlSharePoint={sj.crawlSharePoint}
+                                            crawlRootSite={sj.crawlRootSite}
+                                            sharePointSitesToCrawl={sj.sharePointSitesToCrawl}
+                                            crawlExchange={sj.crawlExchange}
+                                            crawlAllOfExchange={sj.crawlAllOfExchange}
+                                            exchangeUsersToCrawl={sj.exchangeUsersToCrawl}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'dropbox crawler' &&
+                                        <CrawlerDropbox
+                                            theme={theme}
+                                            clientToken={sj.clientToken}
+                                            folderList={sj.folderList}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'google drive crawler' &&
+                                        <CrawlerGDrive
+                                            theme={theme}
+                                            gdrive_projectId={sj.gdrive_projectId}
+                                            gdrive_clientId={sj.gdrive_clientId}
+                                            gdrive_clientSecret={sj.gdrive_clientSecret}
+                                            gdrive_clientName={sj.gdrive_clientName}
+                                            gdrive_clientPort={sj.gdrive_clientPort}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'nfs crawler' &&
+                                        <CrawlerNFS
+                                            theme={theme}
+                                            nfs_local_folder={sj.nfs_local_folder}
+                                            specific_json={sj}
+                                            availableUserList={this.props.user_list}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'wordpress crawler' &&
+                                        <CrawlerWordpress
+                                            theme={theme}
+                                            source_id={crawler.sourceId}
+                                            organisation_id={this.props.organisation_id}
+                                            kb_id={this.props.kb_id}
+                                            specific_json={sj}
+                                            wpUploadArchive={(data) => this.props.wpUploadArchive(data) }
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'metadata' && c_type !== "restfull" && c_type !== "database" && c_type !== "wordpress" &&
+                                        <CrawlerMetadata
+                                            theme={theme}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'acls' &&
+                                        <div>
+                                            <div className="acl-text">this list sets a default set of Access Control for this source</div>
+                                            <AclSetup
+                                                organisation_id={this.props.organisation_id}
+                                                acl_list={crawler.acls}
+                                                onChange={(acl_list) => this.update_acl_list(acl_list)}
+                                                user_list={this.props.user_list}
+                                                group_list={this.props.group_list} />
+                                        </div>
+                                    }
+                                    {t_value === 'schedule' && c_type !== "wordpress" &&
+                                        <div className="time-tab-content">
+                                            <TimeSelect time={crawler.schedule}
+                                                        onSave={(time) => this.updateSchedule(time)}/>
+                                        </div>
+                                    }
+                                </div>
 
 
-                            </div>
+                                </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary btn-block" onClick={() => this.handleCancel()}>cancel</button>
+                            <button className="btn btn-primary btn-block" onClick={() => this.handleSave()}>save</button>
+                        </div>
+
                     </div>
-                    <DialogActions className={this.props.theme}>
-                        <Button color={"primary"} onClick={() => this.handleCancel()}>cancel</Button>
-                        <Button color={"secondary"} onClick={() => this.handleSave()}>save</Button>
-                    </DialogActions>
+                </div>
 
-                </Dialog>
             </div>
         );
     }

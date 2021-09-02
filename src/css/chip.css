@@ -1,0 +1,11 @@
+
+.role-chip {
+    text-align: center;
+    background: #0b5ed7;
+    width: 180px;
+    padding: 8px;
+    border-radius: 30px;
+    color: #ffffff;
+    font-size: 12px !important;
+}
+

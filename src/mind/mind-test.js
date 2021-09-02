@@ -1,26 +1,12 @@
 import React from 'react';
 
 import {Api} from '../common/api'
-import Grid from "@material-ui/core/Grid";
 import {MindSearchComponent} from "./mind-search-component";
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 import Comms from "../common/comms";
-
-
-const styles = {
-    gridWidth: {
-        width: '900px',
-    },
-    queryMindLabel: {
-        marginTop: '12px',
-        padding: '10px',
-        color: '#555',
-        float: 'right',
-    },
-};
 
 
 export class MindTest extends React.Component {
@@ -37,28 +23,28 @@ export class MindTest extends React.Component {
     }
     componentDidMount() {
     }
-    deleteMindItemAsk(mindItem) {
+    deleteMemoryAsk(mindItem) {
         if (mindItem) {
             this.props.openDialog("are you sure you want to remove id " + mindItem.id + "?<br/><br/>(" + mindItem.expression + ")",
-                                    "Remove Mind Entry", (action) => { this.deleteMindItem(action) });
+                                    "Remove Mind Entry", (action) => { this.deleteMemory(action) });
             this.setState({mind_item: mindItem});
         }
     }
-    deleteMindItem(action) {
+    deleteMemory(action) {
         if (action && Api.defined(this.state.mind_item)) {
-            this.props.deleteMindItem(this.state.mind_item.id);
+            this.props.deleteMemory(this.state.mind_item.id);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
         }
     }
-    deleteAllMindItemsAsk() {
+    deleteAllMemoriesAsk() {
         this.props.openDialog("are you sure you want to remove all mind-items of this knowledge-base?",
-            "Remove All Mind Items", (action) => { this.deleteAllMindItems(action) });
+            "Remove All Mind Items", (action) => { this.deleteAllMemories(action) });
     }
-    deleteAllMindItems(action) {
+    deleteAllMemories(action) {
         if (action) {
-            this.props.deleteAllMindItems();
+            this.props.deleteAllMemories();
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
@@ -97,7 +83,7 @@ export class MindTest extends React.Component {
             });
     }
     mindDump() {
-        window.open(Comms.get_mind_dump_url(this.props.selected_organisation_id, this.props.selected_knowledgebase_id), '_blank');
+        Comms.download_mind_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
     }
     save(mindItem) {
         if (mindItem) {
@@ -111,29 +97,17 @@ export class MindTest extends React.Component {
             this.setState({mind_edit: false});
         }
     }
-    getMindItemList() {
-        if (this.props.mind_item_list) {
-            return this.props.mind_item_list;
-        }
-        return [];
-    }
     render() {
         return (
             <div>
 
-                <Grid container spacing={1} style={styles.gridWidth}>
-
-                    {this.props.selected_knowledgebase_id &&
-                    <Grid item xs={12}>
-                        <MindSearchComponent onError={(title, err) => this.props.setError(title, err)}
-                                             botQuery={this.props.botQuery}
-                                             botQueryString={this.props.bot_query}
-                                             setBotQueryString={this.props.setBotQueryString}
-                                             queryResultList={this.props.bot_query_result_list} />
-                    </Grid>
-                    }
-
-                </Grid>
+                {this.props.selected_knowledgebase_id &&
+                    <MindSearchComponent onError={(title, err) => this.props.setError(title, err)}
+                                         mindQuery={this.props.mindQuery}
+                                         botQueryString={this.props.bot_query}
+                                         setBotQueryString={this.props.setBotQueryString}
+                                         queryResultList={this.props.mind_result_list} />
+                }
 
             </div>
         )
@@ -146,7 +120,7 @@ const mapStateToProps = function(state) {
         error_title: state.appReducer.error_title,
 
         bot_query: state.appReducer.bot_query,
-        bot_query_result_list: state.appReducer.bot_query_result_list,
+        mind_result_list: state.appReducer.mind_result_list,
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,

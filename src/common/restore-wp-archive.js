@@ -1,52 +1,7 @@
 import React from 'react';
 
-const styles = {
-    uploadContainer: {
-        float: 'left',
-        width: '90%',
-        minWidth: '90%',
-        padding: '1px',
-        marginLeft: '10px',
-        background: 'white',
-        display: 'inline-block',
-        fontWeight: 700,
-        fontSize: '10pt',
-        cursor: 'pointer',
-    },
-    formWidth: {
-        marginTop: '-20px',
-        float: 'left',
-    },
-    uploadControl: {
-        marginTop: '10px',
-        float: 'left',
-    },
-    imageButton: {
-        float: 'left',
-        marginLeft: '10px',
-        paddingTop: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    restoreImage: {
-        width: '25px',
-    },
-    busyImage: {
-        width: '28px',
-        height: '28px',
-        marginTop: '-10px',
-        float: 'left',
-    },
-    uploadInput: {
-        float: 'left',
-    },
-    uploadWheel: {
-        marginLeft: '5px',
-        marginTop: '14px',
-        height: '28px',
-        float: 'left',
-    },
-};
+import '../css/restore-wp-archive.css'
+
 
 export class RestoreWPArchive extends React.Component {
     constructor(props) {
@@ -107,16 +62,16 @@ export class RestoreWPArchive extends React.Component {
 
     render() {
         return (
-            <div>
-                <form onSubmit={(e) => this._handleSubmit(e)} style={styles.uploadContainer}>
-                    <div style={styles.formWidth}>
-                        <input style={styles.uploadControl}
+            <div className="restore-wp">
+                <form onSubmit={(e) => this._handleSubmit(e)} className="upload-container">
+                    <div className="form-width">
+                        <input className="upload-control"
                                type="file"
                                onChange={(e) => this._handleImageChange(e)}/>
                         {
                             this.state.data && this.state.data.length > 0 && this.state.fileType === "application/zip" &&
-                            <span style={styles.imageButton} onClick={() => this.upload()}><img
-                                style={styles.restoreImage} src="../images/restore.svg"
+                            <span className="image-button" onClick={() => this.upload()}><img
+                                className="image-size" src="../images/restore.svg"
                                 title={"Click here to upload WordPress Archive \"" + this.state.filename + "\""}
                                 alt="restore data from file"/></span>
                         }

@@ -1,33 +1,8 @@
 import React, {Component} from 'react';
 
-import TextField from '@material-ui/core/TextField';
-
 import Api from '../common/api';
-import Grid from "@material-ui/core/Grid";
 
-
-const styles = {
-    formContent: {
-        marginTop: '20px',
-        marginLeft: '20px',
-        width: '95%',
-    },
-    textField: {
-        width: '100%',
-    },
-    dlText: {
-        marginTop: '-2px',
-        width: '250px',
-        float: 'left',
-    },
-    manualBox: {
-        width: '100%',
-    },
-    manualImage: {
-        float: 'left',
-        width: '40px',
-    },
-};
+import '../css/crawler.css';
 
 
 export class CrawlerGDrive extends Component {
@@ -92,80 +67,90 @@ export class CrawlerGDrive extends Component {
             return <h1>crawler-gdrive.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.formContent}>
+            <div className="crawler-page">
 
-                <Grid container spacing={2}>
-
-                    <Grid item xs={1} />
-                    <Grid item xs={7}>
-                        <TextField
-                            placeholder="client Id"
-                            label="client Id"
-                            variant="outlined"
-                            value={this.state.gdrive_clientId}
-                            onChange={(event) => {this.change_callback({gdrive_clientId: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={3}>
-                        <div style={styles.manualBox}>
-                            <a href="../resources/simsage-google-drive-setup.pdf" id="dlGDrive" target="_blank" title="download the SimSage Google-drive setup guide">
-                                <div style={styles.dlText}>download Google-drive configuration instructions</div>
-                                <img src="../images/pdf-icon.png" alt="google-drive setup guide" style={styles.manualImage}/>
+                <div className="form-group">
+                    <div className="full-column-2">
+                        <span className="small-label-right">client id</span>
+                        <span className="bigger-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                       placeholder="client id"
+                                       value={this.state.gdrive_clientId}
+                                       onChange={(event) => {this.change_callback({gdrive_clientId: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                        <span className="office-manual-box">
+                        <a href="../resources/simsage-google-drive-setup.pdf" id="dlGDrive" target="_blank" title="download the SimSage Google-drive setup guide">
+                                <span className="instructions-label">instructions</span>
+                                <img src="../images/pdf-icon.png" alt="google-drive setup guide" className="image-size" />
                             </a>
-                        </div>
-                    </Grid>
-                    <Grid item xs={1} />
-
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="client Secret"
-                            label="client Secret"
-                            variant="outlined"
-                            value={this.state.gdrive_clientSecret}
-                            onChange={(event) => {this.change_callback({gdrive_clientSecret: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="project Id"
-                            label="project Id"
-                            variant="outlined"
-                            value={this.state.gdrive_projectId}
-                            onChange={(event) => {this.change_callback({gdrive_projectId: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
+                        </span>
+                    </div>
+                </div>
 
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="client Name"
-                            label="client Name"
-                            variant="outlined"
-                            value={this.state.gdrive_clientName}
-                            onChange={(event) => {this.change_callback({gdrive_clientName: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="local web port"
-                            label="local web port"
-                            variant="outlined"
-                            value={this.state.gdrive_clientPort}
-                            onChange={(event) => {this.change_callback({gdrive_clientPort: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">client secret</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="client Secret"
+                                    value={this.state.gdrive_clientSecret}
+                                    onChange={(event) => {this.change_callback({gdrive_clientSecret: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">project id</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="project id"
+                                    value={this.state.gdrive_projectId}
+                                    onChange={(event) => {this.change_callback({gdrive_projectId: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">client name</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="client name"
+                                    value={this.state.gdrive_clientName}
+                                    onChange={(event) => {this.change_callback({gdrive_clientName: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
 
-                </Grid>
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">local web port</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="local web port"
+                                    value={this.state.gdrive_clientPort}
+                                    onChange={(event) => {this.change_callback({gdrive_clientPort: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
             </div>
         );

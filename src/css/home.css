@@ -1,0 +1,113 @@
+
+.home-screen {
+    float: left;
+    min-width: 1200px;
+}
+
+.home-screen .home-nav-item-disabled {
+    margin-left: 10px;
+    text-align: center;
+    width: 180px;
+    padding: 10px;
+    border: 1px solid #bbb;
+    background: #f8f8f8;
+    color: #e0e0e0;
+    border-radius: 2px;
+    margin-bottom: 5px;
+    cursor: not-allowed;
+}
+
+.home-screen .home-nav-item-disabled-dark {
+    margin-left: 10px;
+    text-align: center;
+    width: 180px;
+    padding: 10px;
+    border: 1px solid #555;
+    background: #444;
+    color: #888;
+    border-radius: 2px;
+    margin-bottom: 5px;
+    cursor: not-allowed;
+}
+
+
+.home-screen .selected-home-nav-item {
+    margin-left: 10px;
+    text-align: center;
+    width: 180px;
+    padding: 10px;
+    cursor: pointer;
+    background: #62C2D6;
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 2px;
+    margin-bottom: 5px;
+}
+
+
+.home-screen .home-nav-item {
+    margin-left: 10px;
+    text-align: center;
+    width: 180px;
+    padding: 10px;
+    border: 1px solid #bbb;
+    cursor: pointer;
+    background: #f8f8f8;
+    color: #666;
+    border-radius: 2px;
+    margin-bottom: 5px;
+}
+
+
+.home-screen .home-nav-item-dark {
+    margin-left: 10px;
+    text-align: center;
+    width: 180px;
+    padding: 10px;
+    border: 1px solid #bbb;
+    cursor: pointer;
+    background: #666;
+    color: #f8f8f8;
+    border-radius: 2px;
+    margin-bottom: 5px;
+}
+
+.home-screen .page-nav {
+    float: left;
+    margin-top: 56px;
+    margin-right: 50px;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.home-screen .page-content {
+    float: left;
+    margin-top: 10px;
+    min-width: 700px;
+}
+
+.home-screen .organisation-select {
+    padding: 5px;
+    margin-bottom: 40px;
+}
+
+.home-screen .organisation-label {
+    margin-top: -10px;
+}
+
+.home-screen .knowledgebase-select {
+    padding: 5px;
+    margin-bottom: 50px;
+}
+
+.home-screen .lhs {
+    float: left;
+    width: 150px;
+    margin-top: -10px;
+    color: #aaa;
+}
+
+.home-screen .rhs {
+    float: left;
+}
+

@@ -1,13 +1,5 @@
 import React, {Component} from 'react';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
-
 import {CrawlerDialog} from '../crawlers/crawler-dialog'
 
 import {connect} from "react-redux";
@@ -15,88 +7,20 @@ import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 import MessageDialog from "../common/message-dialog";
 import CrawlerImportExport from "./crawler-import-export";
+import {Pagination} from "../common/pagination";
 
-const empty_crawler= {id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: true,
-                      enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: '{}',
-                      processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxBotItems: '0', customRender: false};
+import '../css/sources.css';
 
-const styles = {
-    pageWidth: {
-        width: '900px',
-    },
-    tab: {
-        backgroundColor: '#f8f8f8',
-        color: '#000',
-    },
-    tableLight: {
-    },
-    tableDark: {
-        background: '#d0d0d0',
-    },
-    addImage: {
-        width: '25px',
-        cursor: 'pointer',
-        color: "green",
-    },
-    knowledgeSelect: {
-        padding: '5px',
-        marginBottom: '40px',
-    },
-    lhs: {
-        float: 'left',
-        width: '150px',
-        marginTop: '-10px',
-        color: '#aaa',
-    },
-    rhs: {
-        float: 'left',
-    },
-    tableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-    },
-    label: {
-        marginTop: '20px',
-        color: '#555',
-    },
-    linkButton: {
-        float: 'left',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    linkButtonDisabled: {
-        float: 'left',
-        padding: '10px',
-        color: '#aaa',
-        cursor: 'not-allowed',
-    },
-    imageButton: {
-        float: 'right',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    download: {
-        cursor: 'pointer',
-        fontSize: '0.9em',
-        fontWeight: '600',
-        height: '24px',
-    },
-    downloadType: {
-        fontSize: '0.9em',
-        height: '24px',
-    },
-    downloadImage: {
-        width: '24px',
-    },
-    labelHeader: {
-        marginTop: '20px',
-        marginBottom: '5px',
-        fontSize: '0.8em',
-    },
-};
+const default_specific_json = '{"metadata_list":[' +
+    '{"key":"created date range","display":"created","field1":"created","db1":"","db2":"","sort":"true","sort_default":"desc","sort_asc":"oldest documents first","sort_desc":"newest documents first"},' +
+    '{"key":"last modified date ranges","display":"last modified","field1":"last-modified","db1":"","db2":"","sort":"true","sort_default":"","sort_asc":"least recently modified","sort_desc":"most recently modified"},' +
+    '{"key":"document type","display":"document type","field1":"document-type","db1":"","db2":"","sort":"","sort_default":"","sort_asc":"","sort_desc":""}' +
+    ']}';
+
+// default values for an empty / new crawler
+const empty_crawler= {id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: false,
+                      enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: default_specific_json,
+                      processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []};
 
 export class DocumentSources extends Component {
     constructor(props) {
@@ -172,19 +96,6 @@ export class DocumentSources extends Component {
         }
         this.setState({open: false});
     }
-    deleteDocuments(crawler) {
-        this.setState({
-            message_callback: (action) => this.confirmDocumentsDelete(action, crawler),
-            message_title: 'remove all documents for "' + crawler.name + '"?',
-            message: 'Are you sure you want to remove ALL DOCUMENTS for <b>' + crawler.name + '</b>?'
-        });
-    }
-    confirmDocumentsDelete(action, crawler) {
-        this.setState({message: '', message_title: ''});
-        if (action && crawler) {
-            this.props.deleteCrawlerDocuments(crawler.sourceId);
-        }
-    }
     canDeleteDocuments(crawler) {
         return crawler.crawlerType !== 'wordpress';
     }
@@ -219,6 +130,7 @@ export class DocumentSources extends Component {
                     error_title={this.props.error_title}
                     error_msg={this.props.error}
                     wpUploadArchive={(data) => this.props.wpUploadArchive(data) }
+                    group_list={this.props.group_list}
                     crawler={this.state.selected_crawler}
                     edge_device_list={this.props.edge_device_list}
                 />
@@ -241,80 +153,73 @@ export class DocumentSources extends Component {
 
                 {
                     this.props.selected_knowledgebase_id.length > 0 &&
-                    <Paper style={styles.pageWidth}>
-                        <Table>
-                            <TableHead>
-                                <TableRow className='table-header'>
-                                    <TableCell className='table-header'>name</TableCell>
-                                    <TableCell className='table-header'>type</TableCell>
-                                    <TableCell className='table-header'>status</TableCell>
-                                    <TableCell className='table-header'>crawled / indexed</TableCell>
-                                    <TableCell className='table-header'>actions</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
+                    <div className="source-page">
+                        <table className="table">
+                            <thead>
+                                <tr className='table-header'>
+                                    <th className='table-header'>name</th>
+                                    <th className='table-header'>type</th>
+                                    <th className='table-header'>status</th>
+                                    <th className='table-header'>crawled / indexed</th>
+                                    <th className='table-header'>actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 {
                                     this.getCrawlers().map((crawler) => {
                                         return (
-                                            <TableRow key={crawler.sourceId}>
-                                                <TableCell>
-                                                    <div style={styles.label}>{crawler.name}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.label}>{crawler.crawlerType}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.label}>{crawler.isCrawling ? "busy" : "idle"}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.label}>{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.linkButton} onClick={() => this.editCrawler(crawler)}>
-                                                        <img src="../images/edit.svg" style={styles.downloadImage} title="edit crawler" alt="edit"/>
+                                            <tr key={crawler.sourceId}>
+                                                <td>
+                                                    <div className="source-label">{crawler.name}</div>
+                                                </td>
+                                                <td>
+                                                    <div className="source-label">{crawler.crawlerType}</div>
+                                                </td>
+                                                <td>
+                                                    <div className="source-label">{crawler.isCrawling ? "busy" : "idle"}</div>
+                                                </td>
+                                                <td>
+                                                    <div className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>
+                                                </td>
+                                                <td>
+                                                    <div className="link-button" onClick={() => this.editCrawler(crawler)}>
+                                                        <img src="../images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>
                                                     </div>
-                                                    <div style={styles.linkButton}
-                                                         onClick={() => this.deleteDocuments(crawler)}>
-                                                        <img src="../images/delete-files.svg"
-                                                             style={styles.downloadImage}
-                                                             title="remove a crawler's documents"
-                                                             alt="remove documents"/>
+                                                    <div className="link-button" onClick={() => this.deleteCrawlerAsk(crawler)}>
+                                                        <img src="../images/delete.svg" className="image-size" title="remove crawler" alt="remove"/>
                                                     </div>
-                                                    <div style={styles.linkButton} onClick={() => this.deleteCrawlerAsk(crawler)}>
-                                                        <img src="../images/delete.svg" style={styles.downloadImage} title="remove crawler" alt="remove"/>
+                                                    <div className="link-button" onClick={() => this.exportCrawler(crawler)}>
+                                                        <img src="../images/download.svg" className="image-size" title="get crawler JSON for export" alt="export"/>
                                                     </div>
-                                                    <div style={styles.linkButton} onClick={() => this.exportCrawler(crawler)}>
-                                                        <img src="../images/download.svg" style={styles.downloadImage} title="get crawler JSON for export" alt="export"/>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
+                                                </td>
+                                            </tr>
                                         )
                                     })
                                 }
-                                <TableRow>
-                                    <TableCell/>
-                                    <TableCell/>
-                                    <TableCell/>
-                                    <TableCell/>
-                                    <TableCell>
+                                <tr>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td>
                                         {this.props.selected_organisation_id.length > 0 &&
-                                            <div style={styles.imageButton} onClick={() => this.addNewCrawler()}><img
-                                                style={styles.addImage} src="../images/add.svg" title="add new crawler"
+                                            <div className="image-button" onClick={() => this.addNewCrawler()}><img
+                                                className="image-size" src="../images/add.svg" title="add new crawler"
                                                 alt="add new crawler"/></div>
                                         }
                                         {this.props.selected_organisation_id.length > 0 &&
-                                            <div style={styles.imageButton} onClick={() => this.importCrawler()}><img
-                                                style={styles.addImage} src="../images/upload.svg" title="upload crawler JSON"
+                                            <div className="image-button" onClick={() => this.importCrawler()}><img
+                                                className="image-size" src="../images/upload.svg" title="upload crawler JSON"
                                                 alt="import"/></div>
                                         }
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                        <TablePagination
+                        <Pagination
                             rowsPerPageOptions={[5, 10, 25]}
-                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
+                            theme={theme}
                             component="div"
                             count={this.props.crawler_list.length}
                             rowsPerPage={this.state.page_size}
@@ -325,11 +230,11 @@ export class DocumentSources extends Component {
                             nextIconButtonProps={{
                                 'aria-label': 'Next Page',
                             }}
-                            onChangePage={(event, page) => this.changePage(page)}
-                            onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
+                            onChangePage={(page) => this.changePage(page)}
+                            onChangeRowsPerPage={(rows) => this.changePageSize(rows)}
                         />
 
-                    </Paper>
+                    </div>
                 }
 
             </div>
@@ -349,6 +254,8 @@ const mapStateToProps = function(state) {
         user_filter: state.appReducer.user_filter,
         crawler_list: state.appReducer.crawler_list,
         edge_device_list: state.appReducer.edge_device_list,
+
+        group_list: state.appReducer.group_list,
     };
 };
 

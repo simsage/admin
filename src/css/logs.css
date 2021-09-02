@@ -1,0 +1,29 @@
+
+.log-page {
+    float: left;
+    min-width: 950px;
+    width: 950px;
+}
+
+.log-page .date-select {
+    width: 200px;
+}
+
+
+.log-page .log-files {
+    margin-top: 20px;
+    max-height: 80vh;
+    min-width: 900px;
+    width: 110%;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: inline-block;
+    white-space: nowrap;
+    resize: both;
+}
+
+.log-page .log-line {
+    font-size: 0.65em;
+    margin-bottom: 4px;
+}
+

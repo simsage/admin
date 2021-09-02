@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import axios from "axios";
 
 import SingleSearchResult from './single-search-result'
+
+import '../css/search.css';
 
 // constants
 // const api_base = "http://localhost:8080/api";   // the remote SimSage server's location
@@ -13,60 +13,7 @@ const pageSize = 10;                            // number of search results per 
 const fragmentCount = 3;                        // number of fragments per search result
 const scoreThreshold = 0.8125;                  // bot score threshold (0.8125 is a good value)
 const maxWordDistance = 20;                     // distance between words in search results for scoring
-const numBotResults = 1;                        // number of bot replies, set to 1
-
-// styles of form
-const styles = {
-    searchPage: {
-        margin: '50px',
-    },
-    searchBar: {
-        display: 'inline-block',
-    },
-    busyBox: {
-        marginTop: '10px',
-        marginLeft: '10px',
-        marginRight: '5px',
-        width: '32px',
-        float: 'left',
-        display: 'inline-block',
-    },
-    searchTextBox: {
-        marginBottom: 16,
-        width: '400px',
-        float: 'left',
-    },
-    searchText: {
-        width: '400px',
-    },
-    searchButtonBox: {
-        float: 'left',
-        marginLeft: '20px',
-        marginTop: '14px',
-    },
-    botResponseBubble: {
-        marginLeft: '20px',
-        background: 'blue',
-        color: 'white',
-        borderRadius: '5px',
-        width: '600px',
-        padding: '10px',
-        marginBottom: '10px',
-    },
-    urlList: {
-        marginTop: '10px',
-    },
-    url: {
-        fontSize: '12px',
-        cursor: 'pointer',
-    },
-    searchResultsBox: {
-        padding: '10px',
-        borderRadius: '4px',
-        width: '700px',
-        border: '0.5px solid #ccc'
-    }
-};
+const numQNAResults = 1;                        // number of Q&A replies, set to 1
 
 
 export class SimsageSearch extends Component {
@@ -158,7 +105,7 @@ export class SimsageSearch extends Component {
                     semanticSearch: true,
                     query: "(" + this.state.searchText + ")",
                     queryText: this.state.searchText,
-                    numResults: numBotResults,
+                    numResults: numQNAResults,
                     page: this.state.page,
                     pageSize: pageSize,
                     shardSizeList: this.state.shard_list,
@@ -169,7 +116,7 @@ export class SimsageSearch extends Component {
                     contextMatchBoost: 0.01,
                     sourceId: '',
                 };
-                SimsageSearch.http_post('/ops/query', data,
+                SimsageSearch.http_post('/semantic/query', data,
                     (result) => {
                         if (result && result.data && result.data.messageType === 'message') {
                             const data = result.data;
@@ -204,45 +151,40 @@ export class SimsageSearch extends Component {
             return <h1>simsage-search.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.searchPage}>
+            <div className="search-page">
 
                 {/* search bar */}
-                <div style={styles.searchBar}>
-                    <div style={styles.busyBox}>
+                <div className="search-bar">
+                    <div className="busy-box">
                         <span style={{'display': this.state.busy ? '' : 'none', width: '32px'}}>&#8987;</span>
                     </div>
-                    <div style={styles.searchTextBox}>
-                        <TextField
+                    <div className="search-text-box">
+                        <input type="text" className="search-text"
                             autoFocus={true}
                             onChange={(event) => this.setState({searchText: event.target.value})}
                             onKeyPress={(event) => this.handleSearchTextKeydown(event)}
-                            label="search"
                             disabled={this.state.busy}
-                            style={styles.searchText}
                             value={this.state.searchText}
                         />
                     </div>
-                    <div style={styles.searchButtonBox}>
-                        <Button variant="contained"
-                            color="secondary"
-                            disabled={this.state.busy}
-                            onClick={() => this.doSearch()}>
+                    <div className="search-button-box">
+                        <button className="btn btn-primary btn-block" disabled={this.state.busy} onClick={() => this.doSearch()}>
                             Search
-                        </Button>
+                        </button>
                     </div>
                 </div>
 
 
                 {/* bot response display */}
                 {this.state.bot_response !== '' &&
-                    <div style={styles.botResponseBubble}>
+                    <div className="qna-response-bubble">
 
                         <div>{this.state.bot_response}</div>
 
-                        <div style={styles.urlList}>
+                        <div className="url-list">
                             {
                                 this.state.bot_links.map((url, index) => {
-                                    return (<div key={index} style={styles.url} onClick={() => this.openDocument(url)}>{url}</div>)
+                                    return (<div key={index} className="url" onClick={() => this.openDocument(url)}>{url}</div>)
                                 })
                             }
                         </div>
@@ -254,7 +196,7 @@ export class SimsageSearch extends Component {
 
                 {this.state.search_result_list && this.state.search_result_list.length > 0 &&
                 <div>
-                    <div style={styles.searchResultsBox}>
+                    <div className="search-results-box">
                         {
                             this.state.search_result_list.map((item, index) => {
                                 return (<SingleSearchResult key={index}

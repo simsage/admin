@@ -2,42 +2,8 @@ import React, {Component} from 'react';
 
 import {Api} from '../common/api'
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+import '../css/synset.css';
 
-const styles = {
-    container: {
-        float: "left",
-        marginBottom: "10px",
-    },
-    textFieldStyle: {
-        float: "left",
-        width: "700px",
-    },
-    imageButton: {
-        float: 'right',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    addImage: {
-        width: '25px',
-    },
-    deleteButton: {
-        float: 'left',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    deleteImageSize: {
-        width: '24px',
-    },
-};
 
 export class SynSetEdit extends Component {
     constructor(props) {
@@ -119,85 +85,69 @@ export class SynSetEdit extends Component {
         if (this.state.has_error) {
             return <h1>synset-edit.js: Something went wrong.</h1>;
         }
+        if (!this.state.open)
+            return (<div />);
         return (
-            <Dialog aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    open={this.state.open}
-                    fullWidth={true}
-                    disableBackdropClick={true}
-                    disableEscapeKeyDown={true}
-                    maxWidth="lg"
-                    onClose={() => this.handleCancel()} >
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-                <DialogTitle id="alert-dialog-title" className={this.props.theme}>Edit syn-set "{this.state.word}"</DialogTitle>
-                <DialogContent className={this.props.theme}>
-                    <Grid container spacing={1}>
+                        <div className="modal-header">Edit syn-set "{this.state.word}"</div>
+                        <div className="modal-body">
+                            <div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={2}>
-                            <div>syn-set</div>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <TextField
-                                style={styles.textFieldStyle}
-                                onChange={(event) => this.setState({word: event.target.value})}
-                                placeholder={"syn-set"}
-                                variant="outlined"
-                                fullWidth={true}
-                                value={this.state.word}
-                            />
-                        </Grid>
-                        <Grid item xs={1} />
+                                <div className="control-row">
+                                    <span className="label-2">syn-set</span>
+                                    <span className="text">
+                                        <input type="text" className="form-control"
+                                               autoFocus={true}
+                                               onChange={(event) => this.setState({word: event.target.value})}
+                                               placeholder={"syn-set"}
+                                               value={this.state.word} />
+                                    </span>
+                                </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={2}>
-                            <div>word-clouds</div>
-                        </Grid>
-                        <Grid item xs={8}>
-                            { this.state.cloud_list.map((item, index) => {
-                            return (<div id={index}>
-                                    <div style={styles.container}>
-                                        <TextField
-                                            style={styles.textFieldStyle}
-                                            onChange={(event) => this.updateWC(index, event.target.value)}
-                                            placeholder={"word-cloud for syn-set " + (index + 1)}
-                                            multiline={true}
-                                            rows={2}
-                                            variant="outlined"
-                                            fullWidth={true}
-                                            value={item}
-                                        />
-                                        {
-                                            index > 1 &&
-                                            <div style={styles.deleteButton}
-                                                 onClick={() => this.deleteSyn(index)}>
-                                                <img src={this.props.theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} style={styles.deleteImageSize}
-                                                     title="remove syn" alt="remove syn"/>
-                                            </div>
-                                        }
-                                    </div>
-                                    <div style={{clear:'both'}}/>
-                                    </div>)})}
-                        </Grid>
-                        <Grid item xs={1} />
 
-                        <Grid item xs={1} />
-                        <Grid item xs={9} />
-                        <Grid item xs={1}>
-                            <div style={styles.imageButton} onClick={() => this.newSyn()}><img
-                                style={styles.addImage} src={this.props.theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add a new syn item"
-                                alt="add a new syn"/></div>
-                        </Grid>
-                        <Grid item xs={1} />
 
-                    </Grid>
 
-                </DialogContent>
-                <DialogActions className={this.props.theme}>
-                    <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
-                </DialogActions>
-            </Dialog>
+                                { this.state.cloud_list.map((item, index) => {
+                                    return (
+                                        <div className="edit-row" key={index}>
+                                            <span className="label-area">{"word cloud " + (index+1)}</span>
+                                            <span className="input-area synset-area-width">
+                                                <textarea className="input-area synset-text-area-width"
+                                                          onChange={(event) => this.updateWC(index, event.target.value)}
+                                                          placeholder={"word-cloud for syn-set " + (index + 1)}
+                                                          rows={2}
+                                                          value={item}
+                                                />
+                                                {
+                                                    index > 1 &&
+                                                    <div className="synset-trashcan"
+                                                         onClick={() => this.deleteSyn(index)}>
+                                                        <img src={this.props.theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} className="image-size"
+                                                             title="remove syn" alt="remove syn"/>
+                                                    </div>
+                                                }
+                                            </span>
+                                        </div>)
+                                })}
+
+                                <div className="new-syn-button" onClick={() => this.newSyn()}>
+                                    <img src={this.props.theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add a new syn item"
+                                        className="image-size" alt="add a new syn"/>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary btn-block" onClick={() => this.handleCancel()}>Cancel</button>
+                            <button className="btn btn-primary btn-block" onClick={() => this.handleSave()}>Save</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         );
     }
 }

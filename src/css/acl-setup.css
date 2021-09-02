@@ -1,0 +1,123 @@
+
+.acl-setup-role-block {
+    padding: 10px;
+    margin-top: 20px;
+    float: left;
+    width: 600px;
+    height: 450px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    margin-left: 10px;
+    overflow: auto;
+}
+
+.acl-setup-role-block-2 {
+    padding: 10px;
+    margin-top: 20px;
+    float: left;
+    width: 400px;
+    height: 450px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    margin-left: 10px;
+    overflow: auto;
+}
+
+.acl-setup-role-block .role-label {
+    font-size: 0.8em;
+    color: #aaa;
+    cursor: default;
+    margin-bottom: 20px;
+}
+
+.acl-setup-role-block-2 .role-label {
+    font-size: 0.8em;
+    color: #aaa;
+    cursor: default;
+    margin-bottom: 20px;
+}
+
+.role-label .filter-label {
+    margin-left: 60px;
+    color: #808080;
+}
+
+.role-label .available-filter-label {
+    margin-left: 40px;
+    color: #808080;
+}
+
+.role-label .filter-text-box {
+    padding: 2px;
+}
+
+.role-label .filter-text {
+    border: 1px solid #a0a0a0;
+}
+
+.role-label .clear {
+    text-align: center;
+    background: #808080;
+    color: #fff;
+    padding: 2px 4px;
+    border-radius: 50px;
+    margin-top: 4px;
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+.role-block .role-area {
+    padding: 20px;
+    cursor: pointer;
+}
+
+.role-controls {
+    padding: 5px;
+    margin-top: 20px;
+    margin-left: 10px;
+    float: left;
+}
+
+.role-controls .button {
+    text-align: center;
+    background: #2a2a2a;
+    color: #fff;
+    padding: 4px 6px;
+    border-radius: 50px;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.role-area .acl-name {
+    width: 400px;
+    display: inline-block;
+}
+
+.role-area .acl-box {
+    height: 30px;
+    cursor: pointer;
+}
+
+.role-area .acl-access {
+    text-align: center;
+    width: 20px;
+    display: inline-block;
+    color: #000;
+    background: #f0f0f0;
+    margin-right: 10px;
+    padding: 2px;
+}
+
+.role-area .acl-no-access {
+    text-align: center;
+    width: 20px;
+    display: inline-block;
+    color: #a0a0a0;
+    background: #f0f0f0;
+    margin-right: 10px;
+    padding: 2px;
+}
+
+.role-area .user-name {
+    cursor: pointer;
+}

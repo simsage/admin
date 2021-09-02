@@ -1,0 +1,301 @@
+
+.crawler-page {
+    margin-top: 20px;
+    width: 98%;
+}
+
+.crawler-page .type-select-box {
+    margin-top: 4px;
+    margin-bottom: 10px;
+}
+
+.crawler-page .number-textbox {
+    display: inline-block;
+    width: 150px;
+}
+
+.crawler-page .left-column {
+    display: inline-block;
+    width: 45%;
+    padding: 2px;
+    margin-top: 5px;
+}
+
+.crawler-page .small-left-column {
+    display: inline-block;
+    width: 200px;
+    padding: 2px;
+    margin-top: 5px;
+}
+
+.crawler-page .right-column {
+    display: inline-block;
+    width: 45%;
+    padding: 2px;
+    margin-top: 5px;
+}
+
+.crawler-page .full-column {
+    display: inline-block;
+    width: 70%;
+    padding: 2px;
+    margin-top: 5px;
+}
+
+.crawler-page .full-column-2 {
+    display: inline-block;
+    width: 90%;
+    padding: 2px;
+    margin-top: 5px;
+}
+
+.crawler-page .textarea-width {
+    width: 700px;
+}
+
+.crawler-page .big-text {
+    display: inline-block;
+    width: 300px;
+    padding: 2px;
+}
+
+.crawler-page .bigger-text {
+    display: inline-block;
+    width: 600px;
+    padding: 2px;
+}
+
+.crawler-page .office-manual-box {
+    display: inline-block;
+    float: right;
+    width: 200px;
+}
+
+.crawler-page .dropbox-manual-box {
+    display: inline-block;
+    float: right;
+    width: 200px;
+    margin-top: 10px;
+}
+
+.crawler-page .instructions-label {
+    margin-right: 4px;
+    font-size: 10px;
+    margin-left: 20px;
+}
+
+.crawler-page .label-left {
+    margin-left: 10px;
+}
+
+.crawler-page .label-right {
+    width: 50%;
+    display: inline-block;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.crawler-page .label-right-top {
+    width: 180px;
+    margin-top: 10px;
+    vertical-align: top;
+    display: inline-block;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.crawler-page .small-label-right {
+    width: 150px;
+    display: inline-block;
+}
+
+.crawler-page .label-right {
+    width: 200px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.crawler-page .select-box-after-label {
+    width: 200px;
+    display: inline-block;
+}
+
+.crawler-page .processing-selector {
+    display: inline-block;
+    width: 80%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.crawler-page .label-processing {
+    width: 150px;
+    display: inline-block;
+    text-align: right;
+    margin-right: 20px;
+}
+
+.crawler-page .processing-list {
+    width: 400px;
+    display: inline-block;
+}
+
+.crawler-page .wp-form {
+    margin-top: 50px;
+    margin-left: 50px;
+    font-size: 0.9em;
+}
+
+.crawler-page .export-wp {
+    margin-top: 50px;
+}
+
+.crawler-page .import-wp {
+    margin-top: 50px;
+    float: left;
+}
+
+.crawler-page .import-text {
+    margin-bottom: 20px;
+}
+
+.crawler-page .nfs-width {
+    width: 500px;
+}
+
+.crawler-page .dropbox-text-width {
+    width: 660px;
+}
+
+.crawler-page .jdbc-field-width {
+    width: 800px !important;
+}
+
+.crawler-page-form {
+    margin-top: 20px;
+    width: 98%;
+}
+
+.crawler-page-form .customWidth {
+    width: 48%;
+}
+
+
+.crawler-page .metadata-column {
+    margin-left: 10px;
+    width: 220px;
+    padding: 5px;
+    vertical-align: top;
+    margin-top: 8px;
+}
+
+.crawler-page .display-column {
+    width: 250px;
+}
+
+.crawler-page .metadata-field-column {
+    width: 200px;
+    padding: 5px;
+}
+
+.crawler-page .sort-field-column {
+    width: 100px;
+    padding: 5px;
+}
+
+.crawler-page .action-field-column {
+    width: 100px;
+    padding: 5px;
+}
+
+.crawler-page .selector-column {
+    float: left;
+    margin-left: 10px;
+    width: 220px;
+    padding: 5px;
+    vertical-align: top;
+}
+
+.crawler-page .td-display-column {
+    vertical-align: top;
+    width: 200px;
+}
+
+.crawler-page .metadata-text {
+    border: 1px solid #808080;
+    border-radius: 4px;
+    height: 32px;
+    padding: 4px;
+}
+
+.crawler-page .td-align-top {
+    vertical-align: top;
+}
+
+.crawler-page .td-md-field-width {
+    width: 200px;
+}
+
+.crawler-page .image-button {
+    padding: 10px;
+    color: #888;
+    cursor: pointer;
+}
+
+.crawler-page .db-field-column {
+    vertical-align: top;
+    width: 250px;
+}
+
+.crawler-page .source-field-width {
+    border: 1px solid #808080;
+    border-radius: 4px;
+    height: 32px;
+    padding: 4px;
+    width: 250px;
+}
+
+.crawler-page .td-sort-2 {
+    float: left;
+    height: 32px;
+    margin-left: 15px;
+}
+
+.crawler-page .td-action {
+    float: left;
+    margin-top: 8px;
+    vertical-align: top;
+}
+
+.crawler-page .delete-box {
+    margin-top: -14px;
+    color: #888;
+    float: left;
+    cursor: pointer;
+}
+
+.crawler-page .up-arrow {
+    float: left;
+    margin-top: -16px;
+    padding: 2px;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+.crawler-page .sort-label {
+    font-size: 10px;
+}
+
+.crawler-page .form-content {
+    overflow-y: auto;
+    height: 550px;
+}
+
+.crawler-page .acl-text {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.crawler-page .time-tab-content {
+    margin-left: 20px;
+}

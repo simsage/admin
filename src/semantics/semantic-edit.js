@@ -1,19 +1,7 @@
 import React, {Component} from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
+import '../css/semantics.css';
 
-
-const styles = {
-    labelAdjustment: {
-        marginTop: '17px',
-    }
-};
 
 export class SemanticEdit extends Component {
     constructor(props) {
@@ -56,59 +44,50 @@ export class SemanticEdit extends Component {
         if (this.state.has_error) {
             return <h1>semantic-edit.js: Something went wrong.</h1>;
         }
-        const theme = this.props.theme;
+        if (!this.state.open)
+            return (<div />);
         return (
-            <Dialog aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    open={this.state.open}
-                    disableBackdropClick={true}
-                    disableEscapeKeyDown={true}
-                    fullWidth={true}
-                    maxWidth="lg"
-                    onClose={() => this.handleCancel()} >
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-                <DialogTitle id="alert-dialog-title" className={theme}>Edit Semantic</DialogTitle>
-                <DialogContent className={theme}>
-                    <Grid container spacing={1}>
+                        <div className="modal-header">Edit Semantic</div>
+                        <div className="modal-body">
+                            <div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={1}>
-                            <div style={styles.labelAdjustment}>word</div>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <TextField
-                                autoFocus={true}
-                                onChange={(event) => this.setState({word: event.target.value})}
-                                placeholder="word"
-                                variant="outlined"
-                                fullWidth={true}
-                                value={this.state.word}
-                            />
-                        </Grid>
-                        <Grid item xs={1} />
+                                <div className="control-row">
+                                    <span className="label-2">word</span>
+                                    <span className="text">
+                                        <input type="text" className="form-control"
+                                            autoFocus={true}
+                                            onChange={(event) => this.setState({word: event.target.value})}
+                                            placeholder="word"
+                                            value={this.state.word}
+                                        />
+                                    </span>
+                                </div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={1}>
-                            <div style={styles.labelAdjustment}>semantic</div>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <TextField
-                                onChange={(event) => this.setState({semantic_str: event.target.value})}
-                                placeholder="semantic"
-                                variant="outlined"
-                                fullWidth={true}
-                                value={this.state.semantic_str}
-                            />
-                        </Grid>
-                        <Grid item xs={1} />
+                                <div className="control-row">
+                                    <span className="label-2">semantic</span>
+                                    <span className="text">
+                                        <input type="text" className="form-control"
+                                            onChange={(event) => this.setState({semantic_str: event.target.value})}
+                                            placeholder="semantic"
+                                            value={this.state.semantic_str}
+                                        />
+                                    </span>
+                                </div>
 
-                    </Grid>
-                </DialogContent>
-                <DialogActions className={theme}>
-                    <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
-                </DialogActions>
-            </Dialog>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary btn-block"  onClick={() => this.handleCancel()}>Cancel</button>
+                            <button className="btn btn-primary btn-block"  onClick={() => this.handleSave()}>Save</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         );
     }
 }

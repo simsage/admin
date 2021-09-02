@@ -1,14 +1,5 @@
 import React, {Component} from 'react';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-
 
 export class OrganisationEdit extends Component {
     constructor(props) {
@@ -57,59 +48,51 @@ export class OrganisationEdit extends Component {
         if (this.state.has_error) {
             return <h1>organisation-edit.js: Something went wrong.</h1>;
         }
-        const theme = this.props.theme;
+        if (!this.state.open)
+            return (<div />);
         return (
-            <Dialog aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    disableBackdropClick={true}
-                    disableEscapeKeyDown={true}
-                    open={this.state.open}
-                    maxWidth="lg"
-                    onClose={() => this.handleCancel()} >
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-                <DialogTitle id="alert-dialog-title" className={theme}>Edit Organisation</DialogTitle>
-                <DialogContent className={theme}>
-                    <Grid container spacing={2}>
+                        <div className="modal-header">Edit Organisation</div>
+                        <div className="modal-body">
+                            <div>
 
-                        <Grid item xs={1} />
-                        <Grid item xs={2}>
-                            <div>name</div>
-                        </Grid>
-                        <Grid item xs={7}>
-                            <TextField
-                                autoFocus={true}
-                                onChange={(event) => this.setState({name: event.target.value})}
-                                placeholder="name"
-                                variant="standard"
-                                fullWidth={true}
-                                value={this.state.name}
-                            />
-                        </Grid>
-                        <Grid item xs={2} />
+                                <div className="control-row">
+                                    <span className="label-2">name</span>
+                                    <span className="text">
+                                        <input type="text" className="form-control"
+                                               autoFocus={true}
+                                               onChange={(event) => this.setState({name: event.target.value})}
+                                               placeholder="name"
+                                               value={this.state.name}
+                                        />
+                                    </span>
+                                </div>
 
 
-                        <Grid item xs={4} />
-                        <Grid item xs={6}>
-                            <Checkbox
-                                checked={this.state.enabled}
-                                onChange={(event) => { this.setState({enabled: event.target.checked}); }}
-                                value="enable this organisation?"
-                                inputProps={{
-                                    'aria-label': 'primary checkbox',
-                                }}
-                            />
-                            organisation enabled?
-                        </Grid>
-                        <Grid item xs={2} />
+                                <div className="control-row">
+                                    <span className="checkbox-only">
+                                        <input type="checkbox"
+                                            checked={this.state.enabled}
+                                            onChange={(event) => { this.setState({enabled: event.target.checked}); }}
+                                            value="enable this organisation?"
+                                        />
+                                    </span>
+                                    <span>organisation enabled?</span>
+                                </div>
 
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary btn-block" onClick={() => this.handleCancel()}>Cancel</button>
+                            <button className="btn btn-primary btn-block" onClick={() => this.handleSave()}>Save</button>
+                        </div>
 
-                    </Grid>
-                </DialogContent>
-                <DialogActions className={theme}>
-                    <Button color="primary" onClick={() => this.handleCancel()}>Cancel</Button>
-                    <Button variant="contained" color="secondary" onClick={() => this.handleSave()}>Save</Button>
-                </DialogActions>
-            </Dialog>
+                    </div>
+                </div>
+            </div>
         );
     }
 }

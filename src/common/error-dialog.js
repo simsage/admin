@@ -1,10 +1,4 @@
 import React from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import InputLabel from '@material-ui/core/InputLabel';
 
 // display error dialog
 export class ErrorDialog extends React.Component {
@@ -42,27 +36,31 @@ export class ErrorDialog extends React.Component {
         if (this.state.has_error) {
             return <h1>error-dialog.js: Something went wrong.</h1>;
         }
+        if (!this.state.open) {
+            return (<div />)
+        }
         return (
-            <Dialog className="error-dialog" ref="dialog"
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    open={this.state.open}
-                    fullWidth={true}
-                    maxWidth="md"
-                    onClose={() => this.handleOk()} >
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", zIndex: "9999"}}>
+                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-                <DialogTitle id="alert-dialog-title" className={this.props.theme}><InputLabel error={true}>{this.state.title}</InputLabel></DialogTitle>
-                <DialogContent className={this.props.theme}>
-                    <div>
-                        {this.state.message}
+                        <div className="modal-header">
+                            <div>{this.state.title}</div>
+                        </div>
+                        <div className="modal-body">
+                            <div>
+                                {this.state.message}
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="submit" className="btn btn-primary btn-block" onClick={() => this.handleOk()}>Ok</button>
+                        </div>
+
                     </div>
-                </DialogContent>
-                <DialogActions className={this.props.theme}>
-                    <Button variant="contained" type="submit" color="primary" onClick={() => this.handleOk()}>Ok</Button>
-                </DialogActions>
-            </Dialog>
+                </div>
+            </div>
         );
     }
-}
+};
 
 export default ErrorDialog;

@@ -40,17 +40,17 @@ import {
     SELECT_ORGANISATION,
     UPDATE_ORGANISATION,
     SELECT_TAB,
-    SET_BOT_QUERY_LIST,
-    SET_BOT_QUERY_STRING,
+    SET_MIND_QUERY_LIST,
+    SET_MIND_QUERY_STRING,
     SET_DOCUMENT_FILTER,
     SET_DOCUMENT_PAGE,
     SET_DOCUMENT_PAGE_SIZE,
 
-    SET_MIND_ITEM_FILTER,
-    SET_MIND_ITEMS_PAGINATED,
-    SET_MIND_ITEM_PAGE_SIZE,
-    SET_MIND_ITEM_PAGE,
-    RESET_MIND_ITEM_PAGINATION,
+    SET_MEMORY_FILTER,
+    SET_MEMORIES_PAGINATED,
+    SET_MEMORIES_PAGE_SIZE,
+    SET_MEMORIES_PAGE,
+    RESET_MEMORIES_PAGINATION,
 
     SET_NOTIFICATION_LIST,
     SET_OPERATOR_ANSWER,
@@ -100,6 +100,13 @@ import {
     // the edge
     GET_EDGE_DEVICES,
     GET_EDGE_DEVICE_COMMANDS,
+
+    // groups
+    SET_GROUPS_PAGINATED,
+    SET_GROUP_PAGE_SIZE,
+    SET_GROUP_PAGE,
+    SET_GROUP_FILTER,
+
 } from "./actions";
 
 import {Comms} from "../common/comms";
@@ -222,16 +229,16 @@ async function _getDocuments(organisation_id, kb_id, document_previous, document
     }
 }
 
-async function _getMindItems(organisation_id, kb_id, prev_id, mind_filter, mind_item_page_size, dispatch) {
+async function _getMemories(organisation_id, kb_id, prev_id, mind_filter, mind_item_page_size, dispatch) {
     if (organisation_id.length > 0 && kb_id.length > 0) {
         dispatch({type: BUSY, busy: true});
         const data = {
             "organisationId": organisation_id, "kbId": kb_id, "prevId": prev_id ? prev_id : "null",
             "filter": mind_filter, "pageSize": mind_item_page_size
         };
-        await Comms.http_put('/bot/mind-items', data,
+        await Comms.http_put('/mind/memories', data,
             (response) => {
-                dispatch({type: SET_MIND_ITEMS_PAGINATED, data: response.data});
+                dispatch({type: SET_MEMORIES_PAGINATED, data: response.data});
             },
             (errStr) => {
                 dispatch({type: ERROR, title: "Error", error: errStr})
@@ -342,11 +349,11 @@ async function _getReports(organisation_id, kb_id, year, month, top, dispatch) {
 }
 
 // get list of logs
-async function _getLogList(year, month, day, hour, hours, dispatch) {
+async function _getLogList(organisation_id, year, month, day, hour, hours, dispatch) {
     if (year && month && day && hour && hours) {
         dispatch({type: BUSY, busy: true});
-        await Comms.http_get('/stats/system-logs/' + encodeURIComponent(year) + '/' + encodeURIComponent(month) +
-            '/' + encodeURIComponent(day) + '/' + encodeURIComponent(hour) + '/' + encodeURIComponent(hours),
+        await Comms.http_get('/stats/system-logs/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(year) + '/' +
+            encodeURIComponent(month) + '/' + encodeURIComponent(day) + '/' + encodeURIComponent(hour) + '/' + encodeURIComponent(hours),
             (response) => {
                 const data = response.data;
                 dispatch({
@@ -396,6 +403,21 @@ async function _getEdgeDeviceCommands(organisation_id, edge_id, dispatch) {
 }
 
 
+async function _getGroups(organisation_id, dispatch) {
+    if (organisation_id.length > 0) {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_get('/auth/groups/' + encodeURIComponent(organisation_id),
+            (response) => {
+                dispatch({type: SET_GROUPS_PAGINATED, group_list: response.data.groupList});
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    }
+}
+
+
 
 // setup a page for different tabs
 async function _setupPage(selected_tab, dispatch, getState) {
@@ -409,9 +431,23 @@ async function _setupPage(selected_tab, dispatch, getState) {
         dispatch({type: RESET_SELECTED_KB});
     }
 
+    const user_list = getState().appReducer.user_list;
+    const group_list = getState().appReducer.group_list;
+
     if (selected_tab === 'users' && organisation_id !== '') {
         const filter = getState().appReducer.user_filter;
+
         await _getUsers(organisation_id, filter, dispatch);
+        if (!group_list || group_list.length === 0) {
+            await _getGroups(organisation_id, dispatch);
+        }
+
+    } else if (selected_tab === 'groups' && organisation_id !== '') {
+        if (!user_list || user_list.length === 0) {
+            const user_filter = getState().appReducer.user_filter;
+            await _getUsers(organisation_id, user_filter, dispatch);
+        }
+        await _getGroups(organisation_id, dispatch);
 
     } else if (selected_tab === 'organisations') {
         const name = getState().appReducer.selected_organisation;
@@ -435,7 +471,15 @@ async function _setupPage(selected_tab, dispatch, getState) {
         }
 
     } else if (selected_tab === 'document sources' && organisation_id !== '' && kb_id !== '') {
-        await _getUsers(organisation_id, '', dispatch);
+        if (!user_list || user_list.length === 0) {
+            const user_filter = getState().appReducer.user_filter;
+            await _getUsers(organisation_id, user_filter, dispatch);
+        }
+
+        if (!group_list || group_list.length === 0) {
+            await _getGroups(organisation_id, dispatch);
+        }
+
         await _getCrawlers(organisation_id, kb_id, dispatch);
 
     } else if (selected_tab === 'documents' && organisation_id !== '' && kb_id !== '') {
@@ -470,17 +514,17 @@ async function _setupPage(selected_tab, dispatch, getState) {
         const day = date.getDate();
         const hour = date.getHours();
         const hours = getState().appReducer.log_hours;
-        await _getLogList(year, month, day, hour, hours, dispatch);
+        await _getLogList(organisation_id, year, month, day, hour, hours, dispatch);
 
     } else if (selected_tab === 'mind') {
-        dispatch({type:RESET_MIND_ITEM_PAGINATION});
+        dispatch({type:RESET_MEMORIES_PAGINATION});
         dispatch({type: BUSY, busy: true});
         const mind_item_filter = getState().appReducer.mind_item_filter;
         const mind_item_page_size = getState().appReducer.mind_item_page_size;
         if (organisation_id && kb_id) {
-            await _getMindItems(organisation_id, kb_id, null, mind_item_filter, mind_item_page_size, dispatch);
+            await _getMemories(organisation_id, kb_id, null, mind_item_filter, mind_item_page_size, dispatch);
         } else {
-            dispatch({type: SET_MIND_ITEMS_PAGINATED, data: {mindItemList: [], numMindItems: 0, filter: ''} });
+            dispatch({type: SET_MEMORIES_PAGINATED, data: {mindItemList: [], numMindItems: 0, filter: ''} });
         }
 
     } else if (selected_tab === 'synonyms') {
@@ -637,14 +681,16 @@ export const appCreators = {
     },
 
     // select an organisation for operational stuff
-    selectOrganisation: (name, id) => async (dispatch, getState) => {
-        if (id && id.length > 0) {
+    selectOrganisation: (data) => async (dispatch, getState) => {
+        if (data && data.id && data.id.length > 0) {
             dispatch({type: BUSY, busy: true});
-            dispatch(({type: SELECT_ORGANISATION, name, id}));
-            await _getKnowledgeBases(id, dispatch);
+            dispatch(({type: SELECT_ORGANISATION, name: data.name, id: data.id}));
+            await _getKnowledgeBases(data.id, dispatch);
 
             const selected_tab = getState().appReducer.selected_tab;
             await _setupPage(selected_tab, dispatch, getState);
+        } else {
+            dispatch(({type: SELECT_ORGANISATION, name: "", id: ""}));
         }
     },
 
@@ -685,22 +731,26 @@ export const appCreators = {
     // Knowledge bases
 
     // selected a knowledge base for operational stuff
-    selectEdgeDevice: (name, id) => async (dispatch, getState) => {
-        if (id && id.length > 0) {
+    selectEdgeDevice: (data) => async (dispatch, getState) => {
+        if (data && data.id && data.id.length > 0) {
             dispatch({type: BUSY, busy: true});
             const selected_tab = getState().appReducer.selected_tab;
-            dispatch({type: SELECT_EDGE_DEVICE, name, id});
+            dispatch({type: SELECT_EDGE_DEVICE, name: data.name, id: data.id});
             await _setupPage(selected_tab, dispatch, getState);
+        } else {
+            dispatch({type: SELECT_EDGE_DEVICE, name: "", id: ""});
         }
     },
 
     // selected a knowledge base for operational stuff
-    selectKnowledgeBase: (name, id) => async (dispatch, getState) => {
-        if (id && id.length > 0) {
+    selectKnowledgeBase: (data) => async (dispatch, getState) => {
+        if (data && data.id && data.id.length > 0) {
             dispatch({type: BUSY, busy: true});
             const selected_tab = getState().appReducer.selected_tab;
-            dispatch({type: SELECT_KNOWLEDGE_BASE, name, id});
+            dispatch({type: SELECT_KNOWLEDGE_BASE, name: data.name, id: data.id});
             await _setupPage(selected_tab, dispatch, getState);
+        } else {
+            dispatch({type: SELECT_KNOWLEDGE_BASE, name: "", id: ""});
         }
     },
 
@@ -720,9 +770,19 @@ export const appCreators = {
         )
     },
 
-    reIndex: (organisation_id, kb_id) => async (dispatch, getState) => {
+    removeOptimizedIndexes: (organisation_id, kb_id) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
-        await Comms.http_get('/knowledgebase/re-index/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
+        await Comms.http_delete('/language/optimize-indexes/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
+            (response) => {
+                dispatch({type: BUSY, busy: false});
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    removeAllIndexes: (organisation_id, kb_id) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_delete('/language/indexes/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
             (response) => {
                 dispatch({type: BUSY, busy: false});
             },
@@ -743,12 +803,13 @@ export const appCreators = {
 
     updateKnowledgeBase: (organisation_id, kb_id, name, email, security_id, enabled, max_queries_per_day,
                           analytics_window_size_in_months, operator_enabled, capacity_warnings,
-                          created, index_optimization_schedule) => async (dispatch, getState) => {
+                          created, index_optimization_schedule, dms_index_schedule) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const payload = {"kbId": kb_id, "organisationId": organisation_id, "name": name, "email": email,
             "securityId": security_id, "maxQueriesPerDay": max_queries_per_day, "enabled": enabled,
             "analyticsWindowInMonths": analytics_window_size_in_months, "operatorEnabled": operator_enabled,
-            "capacityWarnings": capacity_warnings, "created": created, "indexOptimizationSchedule": index_optimization_schedule};
+            "capacityWarnings": capacity_warnings, "created": created, "indexOptimizationSchedule": index_optimization_schedule,
+            "dmsIndexSchedule": dms_index_schedule};
         await Comms.http_put('/knowledgebase/', payload,
             (response) => {
                 _getKnowledgeBases(organisation_id, dispatch);
@@ -823,7 +884,7 @@ export const appCreators = {
         await _getUsers(organisation_id, filter, dispatch)
     },
 
-    updateUser: (organisation_id, user_id, name, surname, email, password, role_list, kb_list) => async (dispatch, getState) => {
+    updateUser: (organisation_id, user_id, name, surname, email, password, role_list, kb_list, group_list) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const filter = getState().appReducer.user_filter;
         const signed_in_user = getState().appReducer.user;
@@ -836,8 +897,15 @@ export const appCreators = {
             actual_kb_list_data.push({"userId": user_id, "organisationId": organisation_id, "kbId": kb.kbId});
         }
         await Comms.http_put('/auth/user/' + encodeURIComponent(organisation_id),
-            {"id": user_id, "password": password, "firstName": name, "surname": surname, "email": email, "roles": actual_role_data,
-                "operatorKBList": actual_kb_list_data},
+            {"id": user_id,
+                "password": password,
+                "firstName": name,
+                "surname": surname,
+                "email": email,
+                "roles": actual_role_data,
+                "operatorKBList": actual_kb_list_data,
+                "groupList": group_list,
+            },
             (response) => {
                 const user = response.data;
                 let had_operator_role = false;
@@ -927,18 +995,6 @@ export const appCreators = {
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         await Comms.http_post('/crawler/crawler', crawler,
-            (response) => {
-                _getCrawlers(organisation_id, kb_id, dispatch)
-            },
-            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
-        )
-    },
-
-    deleteCrawlerDocuments: (crawler_id) => async (dispatch, getState) => {
-        dispatch({type: BUSY, busy: true});
-        const organisation_id = getState().appReducer.selected_organisation_id;
-        const kb_id = getState().appReducer.selected_knowledgebase_id;
-        await Comms.http_delete('/crawler/crawler/document/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(crawler_id),
             (response) => {
                 _getCrawlers(organisation_id, kb_id, dispatch)
             },
@@ -1125,7 +1181,7 @@ export const appCreators = {
             prev_id = null;
         }
         if (organisation_id && kb_id) {
-            await _getMindItems(organisation_id, kb_id, prev_id, mind_item_filter, mind_item_page_size, dispatch);
+            await _getMemories(organisation_id, kb_id, prev_id, mind_item_filter, mind_item_page_size, dispatch);
         }
     },
 
@@ -1143,13 +1199,13 @@ export const appCreators = {
             if (page > prevPage) {
                 if (mind_item_list.length > 0) {
                     const prev_id = mind_item_list[mind_item_list.length - 1].id;
-                    dispatch(({type: SET_MIND_ITEM_PAGE, page, prev_id}));
-                    await _getMindItems(organisation_id, kb_id, prev_id, mi_filter, mi_page_size, dispatch);
+                    dispatch(({type: SET_MEMORIES_PAGE, page, prev_id}));
+                    await _getMemories(organisation_id, kb_id, prev_id, mi_filter, mi_page_size, dispatch);
                 }
             } else if (page < mind_item_nav_list.length) {
                 const prev_id = mind_item_nav_list[page];
-                dispatch(({type: SET_MIND_ITEM_PAGE, page, prev_id}));
-                await _getMindItems(organisation_id, kb_id, prev_id, mi_filter, mi_page_size, dispatch);
+                dispatch(({type: SET_MEMORIES_PAGE, page, prev_id}));
+                await _getMemories(organisation_id, kb_id, prev_id, mi_filter, mi_page_size, dispatch);
             }
         }
     },
@@ -1157,98 +1213,97 @@ export const appCreators = {
     // update the mind-item paged set
     setMindItemPageSize: (page_size) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
-        dispatch(({type: SET_MIND_ITEM_PAGE_SIZE, page_size}));
+        dispatch(({type: SET_MEMORIES_PAGE_SIZE, page_size}));
 
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const mi_filter = getState().appReducer.mind_item_filter;
-        await _getMindItems(organisation_id, kb_id, null, mi_filter, page_size, dispatch);
+        await _getMemories(organisation_id, kb_id, null, mi_filter, page_size, dispatch);
     },
 
 
     // update the mind item search filter
-    setMindItemFilter: (filter) => ({type: SET_MIND_ITEM_FILTER, filter}),
+    setMindItemFilter: (filter) => ({type: SET_MEMORY_FILTER, filter}),
 
     // remove a mind item by id
-    deleteMindItem: (id) => async (dispatch, getState) => {
+    deleteMemory: (id) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const mind_item_filter = getState().appReducer.mind_item_filter;
         const mind_item_page_size = getState().appReducer.mind_item_page_size;
         const prev_id = getState().appReducer.mind_item_previous;
-        await Comms.http_delete('/bot/ui-delete/' + encodeURIComponent(organisation_id) + '/' +
+        await Comms.http_delete('/mind/memory/' + encodeURIComponent(organisation_id) + '/' +
             encodeURIComponent(kb_id) + '/' + encodeURIComponent(id),
             (response) => {
-                _getMindItems(organisation_id, kb_id, prev_id, mind_item_filter, mind_item_page_size, dispatch);
+                _getMemories(organisation_id, kb_id, prev_id, mind_item_filter, mind_item_page_size, dispatch);
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
     },
 
     // remove a mind item by id
-    deleteAllMindItems: () => async (dispatch, getState) => {
+    deleteAllMemories: () => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const mind_item_filter = getState().appReducer.mind_item_filter;
         const mind_item_page_size = getState().appReducer.mind_item_page_size;
         const prev_id = getState().appReducer.mind_item_previous;
-        await Comms.http_delete('/bot/ui-delete-all/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
+        await Comms.http_delete('/mind/delete-all/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
             (response) => {
-                _getMindItems(organisation_id, kb_id, prev_id, mind_item_filter, mind_item_page_size, dispatch);
+                _getMemories(organisation_id, kb_id, prev_id, mind_item_filter, mind_item_page_size, dispatch);
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
     },
 
     // save a mind item to simsage
-    saveMindItem: (mindItem) => async (dispatch, getState) => {
+    saveMemory: (memory) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const mind_item_filter = getState().appReducer.mind_item_filter;
         const mind_item_page_size = getState().appReducer.mind_item_page_size;
         const prev_id = getState().appReducer.mind_item_previous;
-        await Comms.http_put('/bot/ui-save/' + encodeURIComponent(organisation_id) + '/' +
-            encodeURIComponent(kb_id), mindItem,
+        await Comms.http_put('/mind/memory/' + encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(kb_id), memory,
             (response) => {
-                _getMindItems(organisation_id, kb_id, prev_id, mind_item_filter, mind_item_page_size, dispatch);
+                _getMemories(organisation_id, kb_id, prev_id, mind_item_filter, mind_item_page_size, dispatch);
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
     },
 
-    botQuery: () => async (dispatch, getState) => {
+    mindQuery: () => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const bot_query_page_size = getState().appReducer.bot_query_page_size;
-        const bot_query_threshold = getState().appReducer.bot_query_threshold;
         const bot_query = getState().appReducer.bot_query;
         if (bot_query.length > 0) {
             const data = {
                 organisationId: organisation_id,
-                kbId: kb_id,
+                kbList: [{'kbId': kb_id, 'sid': ''}],
                 query: bot_query,
                 numResults: bot_query_page_size,
-                scoreThreshold: bot_query_threshold,
+                scoreThreshold: 0.01,
             };
-            await Comms.http_put('/bot/query', data,
+            await Comms.http_put('/mind/query', data,
                 (response) => {
-                    dispatch({type: SET_BOT_QUERY_LIST, bot_query_result_list: response.data});
+                    dispatch({type: SET_MIND_QUERY_LIST, mind_result_list: response.data});
                 },
                 (errStr) => {
                     dispatch({type: ERROR, title: "Error", error: errStr})
                 }
             );
         } else {
-            dispatch({type: SET_BOT_QUERY_LIST, bot_query_result_list: []});
+            dispatch({type: SET_MIND_QUERY_LIST, mind_result_list: []});
         }
     },
 
     setBotQueryString: (query) => async (dispatch, getState) => {
-        dispatch({type: SET_BOT_QUERY_STRING, bot_query: query});
+        dispatch({type: SET_MIND_QUERY_STRING, bot_query: query});
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1619,13 +1674,14 @@ export const appCreators = {
     // log list
 
     getLogs: () => async (dispatch, getState) => {
+        const organisation_id = getState().appReducer.selected_organisation_id;
         const date = new Date(getState().appReducer.log_date);
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const day = date.getDate();
         const hour = date.getHours();
         const hours = getState().appReducer.log_hours;
-        await _getLogList(year, month, day, hour, hours, dispatch);
+        await _getLogList(organisation_id, year, month, day, hour, hours, dispatch);
     },
 
     setLogDate: (log_date) => ({type: SET_LOG_DATE, log_date}),
@@ -1714,13 +1770,72 @@ export const appCreators = {
 
     restore: (base64_text) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
-        await Comms.http_put('/backup/restore', {"data": base64_text},
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        await Comms.http_put('/backup/restore', {"organisationId": organisation_id,"data": base64_text},
             (response) => {
                 dispatch({type: BUSY, busy: false});
             },
             (errStr) => {
                 dispatch({type: ERROR, title: "Error", error: errStr})
             })
+    },
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // groups
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // semantics
+
+    getGroups: () => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        if (organisation_id) {
+            await _getGroups(organisation_id, dispatch);
+        }
+    },
+
+    // update the group page
+    setGroupPage: (page) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        dispatch(({type: SET_GROUP_PAGE, page}));
+    },
+
+    // update the semantic page-size
+    setGroupPageSize: (page_size) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        dispatch(({type: SET_GROUP_PAGE_SIZE, page_size}));
+    },
+
+    deleteGroup: (name) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        await Comms.http_delete('/auth/group/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(name),
+            (response) => {
+                _getGroups(organisation_id, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
+        )
+    },
+
+    saveGroup: (name, user_id_list) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const data = {
+            organisationId: organisation_id,
+            name: name,
+            userIdList: user_id_list
+        }
+        Comms.http_put('/auth/group',
+            data,
+            (response) => {
+                _getGroups(organisation_id, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
+        )
+    },
+
+    setGroupFilter: (filter) => async (dispatch, getState) => {
+        dispatch({type: SET_GROUP_FILTER, group_filter: filter});
     },
 
 

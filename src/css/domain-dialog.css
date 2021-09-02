@@ -1,0 +1,78 @@
+
+.modal-dialog,
+.modal-content {
+    /* 80% of window height */
+}
+
+.domain-dialog-height {
+    height: 700px;
+}
+
+.nav-cursor {
+    cursor: default;
+}
+
+.domain-dialog .form-content {
+    overflow-y: auto;
+    height: 550px;
+}
+
+.control-box {
+    margin-top: 10px;
+}
+
+.domain-dialog .tab {
+    background-color: #f8f8f8;
+    color: #000;
+}
+
+.domain-dialog .tab-dark {
+    background-color: #808080;
+    color: #f8f8f8;
+}
+
+.domain-dialog .domain-page {
+    padding: 10px;
+}
+
+.domain-dialog .text-field {
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 500px;
+}
+
+.domain-dialog .time-tab-content {
+    margin-left: 20px;
+}
+
+.test-button {
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-right: 20px;
+}
+
+.domain-dialog .edge-text {
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+.domain-page .label {
+    margin-left: 20px;
+    display: inline-block;
+    width: 100px;
+}
+
+.domain-page .checkbox-label {
+    margin-top: 20px;
+    display: inline-block;
+    width: 20px;
+}
+
+.domain-page .short-checkbox {
+    width: 50px;
+}
+
+.domain-page .explanation-label {
+    margin-left: 15px;
+    font-size: 13px;
+}

@@ -43,13 +43,13 @@ export const GET_STATS = "get stats";
 export const GET_OS_MESSAGES = "get os messages";
 
 export const MIND_FIND = "mind find";
-export const SET_MIND_ITEMS_PAGINATED = "set mind items paginated";
-export const SET_MIND_ITEM_PAGE_SIZE = "set mind item page size";
-export const SET_MIND_ITEM_PAGE = "set mind item page";
-export const RESET_MIND_ITEM_PAGINATION = "reset mind item pagination";
-export const SET_MIND_ITEM_FILTER = "set mind item filter";
-export const SET_BOT_QUERY_LIST = "set bot query list";
-export const SET_BOT_QUERY_STRING = "set bot query string";
+export const SET_MEMORIES_PAGINATED = "set mind items paginated";
+export const SET_MEMORIES_PAGE_SIZE = "set mind item page size";
+export const SET_MEMORIES_PAGE = "set mind item page";
+export const RESET_MEMORIES_PAGINATION = "reset mind item pagination";
+export const SET_MEMORY_FILTER = "set mind item filter";
+export const SET_MIND_QUERY_LIST = "set bot query list";
+export const SET_MIND_QUERY_STRING = "set bot query string";
 
 export const SEMANTIC_SEARCH = "semantic search";
 
@@ -116,3 +116,9 @@ export const SET_LOG_REFRESH = "set log refresh";
 // edge
 export const GET_EDGE_DEVICES = "get edge devices";
 export const GET_EDGE_DEVICE_COMMANDS = "get edge device commands";
+
+// groups
+export const SET_GROUPS_PAGINATED = "set groups paginated";
+export const SET_GROUP_PAGE_SIZE = "set group page size";
+export const SET_GROUP_PAGE = "set group page";
+export const SET_GROUP_FILTER = "set group filter";

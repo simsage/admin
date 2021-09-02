@@ -1,19 +1,8 @@
 import React, {Component} from 'react';
 
-import TextField from '@material-ui/core/TextField';
 import Api from '../common/api';
-import Grid from "@material-ui/core/Grid";
 
-
-const styles = {
-    formContent: {
-        marginTop: '20px',
-        width: '98%',
-    },
-    textField: {
-        width: '98%',
-    },
-};
+import '../css/crawler.css';
 
 
 export class CrawlerWeb extends Component {
@@ -84,102 +73,89 @@ export class CrawlerWeb extends Component {
             return <h1>crawler-web.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.formContent}>
+            <div className="crawler-page">
 
-                <Grid container spacing={2}>
-
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
-                            placeholder="http/s base name list (preferably https), one per line"
-                            multiline={true}
+                <div className="form-group">
+                    <span className="label-right-top">http/s base url</span>
+                    <span className="full-column">
+                        <input type="text"
+                            placeholder="single http/s base url path (e.g. https://simsage.ai)"
                             autoFocus={true}
-                            variant="outlined"
-                            rows="3"
-                            label="http/s base name list (preferably https), one per line"
+                            className="form-control"
                             value={this.state.baseUrlList}
                             onChange={(event) => {this.change_callback({baseUrlList: event.target.value})}}
-                            style={styles.textField}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            label="file extensions to include (csv list)"
-                            variant="outlined"
-                            value={this.state.validExtensions}
-                            onChange={(event) => {this.change_callback({validExtensions: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
-                            label="file extensions to exclude (csv list)"
-                            variant="outlined"
-                            value={this.state.validExtensionsIgnore}
-                            onChange={(event) => {this.change_callback({validExtensionsIgnore: event.target.value})}}
-                            style={styles.textField}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">valid extensions</span>
+                        <span className="big-text">
+                            <input type="text" className="form-control"
+                                   value={this.state.validExtensions}
+                                   onChange={(event) => {this.change_callback({validExtensions: event.target.value})}}
+                            />
+                        </span>
+                    </span>
+                    <span className="left-column">
+                            <span className="small-label-right">ignore extensions</span>
+                            <span className="big-text">
+                            <input type="text" className="form-control"
+                                    value={this.state.validExtensionsIgnore}
+                                    onChange={(event) => {this.change_callback({validExtensionsIgnore: event.target.value})}}
+                                />
+                            </span>
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
+                <div className="form-group">
+                    <span className="label-right-top">include css csv</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="css/html root fragments to include csv"
-                            multiline={true}
-                            variant="outlined"
                             rows="3"
-                            label="css/html root fragments to include csv (e.g. div.class or id)"
                             value={this.state.webCss}
                             onChange={(event) => {this.change_callback({webCss: event.target.value})}}
-                            style={styles.textField}
                         />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <span className="label-right-top">exclude css csv</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="css/html root fragments to exclude csv"
-                            multiline={true}
-                            variant="outlined"
                             rows="3"
-                            label="css/html root fragments to exclude csv (e.g. div.class or id)"
                             value={this.state.webCssIgnore}
                             onChange={(event) => {this.change_callback({webCssIgnore: event.target.value})}}
-                            style={styles.textField}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
+                <div className="form-group">
+                    <span className="label-right-top">csv include words</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="csv words, include articles by words [optional]"
-                            multiline={true}
-                            variant="outlined"
                             rows="3"
-                            label="csv words, include articles by words [optional]"
                             value={this.state.articleIncludeWordsCsv}
                             onChange={(event) => {this.change_callback({articleIncludeWordsCsv: event.target.value})}}
-                            style={styles.textField}
                         />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <span className="label-right-top">csv exclude words</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="csv words, exclude articles by words [optional]"
-                            multiline={true}
-                            variant="outlined"
                             rows="3"
-                            label="csv words, exclude articles by words [optional]"
                             value={this.state.articleExcludeWordsCsv}
                             onChange={(event) => {this.change_callback({articleExcludeWordsCsv: event.target.value})}}
-                            style={styles.textField}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
-
-                </Grid>
+                    </span>
+                </div>
 
             </div>
         );

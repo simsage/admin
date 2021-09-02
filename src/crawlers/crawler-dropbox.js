@@ -1,34 +1,8 @@
 import React, {Component} from 'react';
 
-import TextField from '@material-ui/core/TextField';
-
 import Api from '../common/api';
 
-
-const styles = {
-    formContent: {
-        marginTop: '20px',
-        marginLeft: '20px',
-    },
-    textField: {
-        marginRight: '10px',
-        width: '700px',
-    },
-    dlText: {
-        marginTop: '-2px',
-        width: '150px',
-        float: 'left',
-    },
-    manualBox: {
-        float: 'right',
-        marginRight: '100px',
-    },
-    manualImage: {
-        float: 'left',
-        width: '40px',
-    },
-};
-
+import '../css/crawler.css';
 
 export class CrawlerDropbox extends Component {
     constructor(props) {
@@ -83,34 +57,43 @@ export class CrawlerDropbox extends Component {
             return <h1>crawler-dropbox.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.formContent}>
-                <TextField
-                    placeholder="client token"
-                    label="client token"
-                    value={this.state.clientToken}
-                    onChange={(event) => {this.change_callback({clientToken: event.target.value})}}
-                    style={styles.textField}
-                />
+            <div className="crawler-page">
 
-                <div style={styles.manualBox}>
-                    <a href="../resources/simsage-dropbox-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Dropbox setup guide">
-                        <div style={styles.dlText}>download Dropbox configuration instructions</div>
-                        <img src="../images/pdf-icon.png" alt="dropbox setup guide" style={styles.manualImage}/></a>
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">client token</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control dropbox-text-width"
+                                    autoFocus={true}
+                                    spellCheck={false}
+                                    placeholder="client token"
+                                    value={this.state.clientToken}
+                                    onChange={(event) => {this.change_callback({clientToken: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                    <span className="dropbox-manual-box">
+                        <a href="../resources/simsage-dropbox-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Dropbox setup guide">
+                            <span className="instructions-label">instructions</span>
+                            <img src="../images/pdf-icon.png" alt="dropbox setup guide" className="image-size" />
+                        </a>
+                    </span>
                 </div>
 
-                <br />
-                <br />
-
-                <TextField
-                    placeholder="specific folders to crawl (separated by commas), leave empty to crawl all."
-                    label="specific folders to crawl (separated by commas), leave empty to crawl all."
-                    multiline={true}
-                    rows={5}
-                    value={this.state.folderList}
-                    onChange={(event) => {this.change_callback({folderList: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">start folder</span>
+                        <span className="big-text">
+                            <input type="text" className="form-control textarea-width"
+                                      placeholder="specific folder to crawl, leave empty to crawl all folders."
+                                      value={this.state.folderList}
+                                      onChange={(event) => {this.change_callback({folderList: event.target.value})}}
+                            />
+                        </span>
+                    </span>
+                </div>
 
             </div>
         );

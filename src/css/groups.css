@@ -1,0 +1,33 @@
+
+
+.group-display .label {
+    padding: 10px;
+    color: #555;
+}
+
+.group-display .link-button {
+    float: left;
+    padding: 10px;
+    color: #888;
+    cursor: pointer;
+}
+
+.group-display .image-button {
+    float: right;
+    padding: 10px;
+    color: #888;
+    cursor: pointer;
+}
+
+.user-group-image-box {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.user-group-image {
+    width: 24px;
+}
+
+.user-group-align-left {
+    text-align: left;
+}

@@ -7,51 +7,10 @@ import {MAX_OPERATORS} from '../actions/actions';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-import SupervisedUserCircleIcon from "@material-ui/icons/SupervisedUserCircle";
-import {AddBox} from "@material-ui/icons";
+import {PeopleIcon} from "../icons/people-icon";
+import {PlusIcon} from "../icons/plus-icon";
 
-
-const styles = {
-    tab: {
-        backgroundColor: '#ebebeb',
-        color: '#000',
-    },
-    add_button: {
-        float: 'right',
-        marginTop: '-40px',
-        marginRight: '200px',
-    },
-    add_button_size: {
-        width: '32px',
-        height: '32px',
-    },
-    add_text: {
-        fontSize: '14px',
-        marginTop: '4px',
-        float: 'right',
-    },
-    max_text: {
-        fontSize: '14px',
-        marginTop: '4px',
-        float: 'right',
-        color: 'darkgray',
-    },
-    kbName: {
-        float: 'right',
-        marginTop: '-36px',
-        right: '30px',
-    },
-    bot_image: {
-        width: '24px',
-        height: '24px',
-    },
-    bot_text: {
-        float: 'right',
-        fontSize: '12px',
-        marginTop: '4px',
-        marginLeft: '10px',
-    }
-};
+import '../css/operator.css';
 
 
 export class OperatorTabs extends React.Component {
@@ -80,7 +39,7 @@ export class OperatorTabs extends React.Component {
     render() {
         const dark = this.props.theme === 'light' ? "" : "-dark";
         return (
-            <div>
+            <div className="operator-display">
 
                 <div>
                     {
@@ -106,14 +65,14 @@ export class OperatorTabs extends React.Component {
                 </div>
                 {
                     this.props.operators && this.props.operators.length < MAX_OPERATORS &&
-                    <div style={styles.add_button} onClick={() => this.props.addOperator()} title="add Chat">
-                        <AddBox className="active-users-icon" />
-                        <span style={styles.max_text}>(Max {MAX_OPERATORS} chats)</span>
-                        <span style={styles.add_text}>Add Chat&nbsp;</span>
+                    <div className="add-button" onClick={() => this.props.addOperator()} title="add Chat">
+                        <PlusIcon />
+                        <span className="max-text">(Max {MAX_OPERATORS} chats)</span>
+                        <span className="add-text">Add Chat&nbsp;</span>
                     </div>
                 }
 
-                <div style={styles.kbName}><SupervisedUserCircleIcon className="active-users-icon" /> <span style={styles.bot_text}>{this.props.num_active_connections} active users</span></div>
+                <div className="kbName"><PeopleIcon /> <span className="bot_text">{this.props.num_active_connections} active users</span></div>
 
 
                 {

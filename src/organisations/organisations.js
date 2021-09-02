@@ -1,13 +1,5 @@
 import React from 'react';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
-
 import {Api} from '../common/api'
 
 import {connect} from "react-redux";
@@ -16,128 +8,10 @@ import {appCreators} from "../actions/appActions";
 import Comms from "../common/comms";
 import {Home} from "../home";
 import {OrganisationEdit} from "./organisation-edit"
-import Grid from "@material-ui/core/Grid";
 import RestoreUpload from "../common/restore-upload";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
+import {Pagination} from "../common/pagination";
 
-
-const styles = {
-    pageWidth: {
-        width: '900px'
-    },
-    text: {
-        border: '1px solid #808080',
-        borderRadius: '4px',
-        padding: '4px',
-    },
-    label: {
-        color: '#555',
-    },
-    tableHeaderStyle: {
-        background: '#51B274',
-        fontSize: '0.95em',
-        color: '#fff',
-    },
-    tableLight: {
-    },
-    tableDark: {
-        background: '#d0d0d0',
-    },
-    linkButton: {
-        float: 'left',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    imageButton: {
-        float: 'right',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    editBox: {
-        width: '500px',
-        marginBottom: '15px',
-    },
-    roleBlock: {
-        padding: '5px',
-        marginTop: '20px',
-        float: 'left',
-        width: '400px',
-        border: '1px solid #888',
-        borderRadius: '4px',
-        marginLeft: '10px',
-    },
-    roleLabel: {
-        fontSize: '0.8em',
-        color: '#aaa',
-    },
-    roleArea: {
-        padding: '20px',
-    },
-    roleChip: {
-        margin: '2px',
-    },
-    addImage: {
-        width: '25px',
-    },
-    textFieldBox: {
-        float: 'left',
-    },
-    imageBox: {
-        float: 'left',
-    },
-    imageSize: {
-        marginTop: '20px',
-        width: '20px',
-    },
-    dlImageSize: {
-        width: '24px',
-    },
-
-    searchBox: {
-        boxShadow: 'none',
-    },
-    floatLeftLabel: {
-        float: 'left',
-        marginRight: '6px',
-        marginTop: '4px',
-        fontSize: '0.9em',
-        fontWeight: '500',
-    },
-    floatLeft: {
-        float: 'left',
-    },
-    searchFloatLeft: {
-        float: 'left',
-    },
-    findBox: {
-        padding: '10px',
-        marginBottom: '5px',
-        float: 'right',
-    },
-    search: {
-        marginTop: '2px',
-        marginLeft: '15px',
-        width: '18px',
-        color: '#000',
-    },
-    copiedStyle: {
-        fontSize: '10px',
-        marginLeft: '25px',
-        marginTop: '-22px',
-        position: 'absolute',
-        float: 'left',
-        zIndex: '99',
-    },
-    organisationIdLabel: {width: '170px', float: 'left', height: '24px'},
-    copyImageSpan: {float: 'left', marginTop: '-5px', marginLeft: '10px'},
-    clipboardImage: {width: '24px', height: '24px;'},
-};
+import '../css/organisations.css';
 
 
 export class Organisations extends React.Component {
@@ -247,18 +121,15 @@ export class Organisations extends React.Component {
         }
     }
     backupAll() {
-        window.open(Comms.get_backup_url(this.props.selected_organisation_id, 'all'), '_blank');
+        Comms.download_backup(this.props.selected_organisation_id, 'all');
     }
     backup(organisationId) {
-        window.open(Comms.get_backup_url(organisationId, 'specific'), '_blank');
+        Comms.download_backup(organisationId, 'specific');
     }
     restore(data) {
         if (data && data.data && data.data.length > 0) {
             this.props.restore(data.data);
         }
-    }
-    downloadHtml(html, organisation) {
-        window.open(Comms.get_html_url(html, organisation.id), '_blank');
     }
     viewIds(organisation) {
         this.setState({view_organisation_id: true, organisation: organisation});
@@ -271,7 +142,7 @@ export class Organisations extends React.Component {
         const theme = this.props.theme;
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         return (
-            <div>
+            <div className="organisation-display">
                 <OrganisationEdit open={this.state.edit_organisation}
                                   id={this.state.id}
                                   theme={theme}
@@ -280,77 +151,73 @@ export class Organisations extends React.Component {
                                   onError={(title, err) => this.props.showError(title, err)}
                                   onSave={(data) => this.save(data)} />
 
-                <div style={styles.searchBox}>
-                    <Grid item xs={12}>
-                        <div style={styles.findBox}>
-                            <div style={styles.floatLeftLabel}>filter</div>
-                            <div style={styles.searchFloatLeft}>
-                                <input type="text" value={this.props.user_filter} autoFocus={true} style={styles.text} className={theme}
-                                       onKeyPress={(event) => this.handleSearchTextKeydown(event)}
-                                       onChange={(event) => {
-                                           this.props.setOrganisationFilter(event.target.value)
-                                       }}/>
-                            </div>
-                            <div style={styles.floatLeft}>
-                                <img style={styles.search}
-                                     onClick={() => this.props.getOrganisationList()}
-                                     src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
-                            </div>
-                        </div>
-                    </Grid>
+                <div className="filter-find-box">
+                    <span className="filter-label">filter</span>
+                    <span className="filter-find-text">
+                            <input type="text" value={this.props.user_filter} autoFocus={true} className={theme}
+                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                   onChange={(event) => {
+                                       this.props.setOrganisationFilter(event.target.value)
+                                   }}/>
+                        </span>
+                    <span className="filter-find-image">
+                            <img className="image-size"
+                                 onClick={() => this.props.getOrganisationList()}
+                                 src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
+                        </span>
                 </div>
 
                 <br clear="both" />
 
-                <Paper style={styles.pageWidth}>
-                    <Table>
-                        <TableHead>
-                            <TableRow className='table-header'>
-                                <TableCell className='table-header table-width-70'>organisation</TableCell>
-                                <TableCell className='table-header'>actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
+                <div>
+                    <table className="table">
+                        <thead>
+                            <tr className='table-header'>
+                                <th className='table-header table-width-70'>organisation</th>
+                                <th className='table-header'>actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {
                                 this.getOrganisations().map((organisation) => {
                                     return (
-                                        <TableRow key={organisation.id}>
-                                            <TableCell>
-                                                <div style={styles.label}>{organisation.name}</div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div style={styles.linkButton}
+                                        <tr key={organisation.id}>
+                                            <td>
+                                                <div className="org-label">{organisation.name}</div>
+                                            </td>
+                                            <td>
+                                                <div className="linkButton"
                                                      onClick={() => { this.viewIds(organisation); }}>
-                                                    <img src="../images/id.svg" style={styles.dlImageSize}
+                                                    <img src="../images/id.svg" className="image-size"
                                                          title="view knowledge base ids" alt="ids"/>
                                                 </div>
-                                                <div style={styles.linkButton} onClick={() => this.editOrganisation(organisation)}>
-                                                    <img src="../images/edit.svg" style={styles.dlImageSize} title="edit organisation" alt="edit"/>
+                                                <div className="linkButton" onClick={() => this.editOrganisation(organisation)}>
+                                                    <img src="../images/edit.svg" className="image-size" title="edit organisation" alt="edit"/>
                                                 </div>
-                                                <div style={styles.linkButton} onClick={() => this.deleteOrganisationAsk(organisation)}>
-                                                    <img src="../images/delete.svg" style={styles.dlImageSize} title="remove organisation" alt="remove"/>
+                                                <div className="linkButton" onClick={() => this.deleteOrganisationAsk(organisation)}>
+                                                    <img src="../images/delete.svg" className="image-size" title="remove organisation" alt="remove"/>
                                                 </div>
                                                 {isAdmin &&
-                                                <div style={styles.linkButton} onClick={() => this.backup(organisation.id)}>
-                                                    <img src="../images/backup.svg" style={styles.dlImageSize} title={"backup this organisation"}
+                                                <div className="linkButton" onClick={() => this.backup(organisation.id)}>
+                                                    <img src="../images/backup.svg" className="image-size" title={"backup this organisation"}
                                                          alt={"backup " + organisation.name} />
                                                 </div>
                                                 }
-                                            </TableCell>
-                                        </TableRow>
+                                            </td>
+                                        </tr>
                                     )
                                 })
                             }
-                            <TableRow>
-                                <TableCell colSpan={2}>
+                            <tr>
+                                <td colSpan={2}>
                                     {isAdmin &&
-                                    <div style={styles.imageButton} onClick={() => this.backupAll()}><img
-                                        style={styles.addImage} src="../images/backup.svg"
+                                    <div className="imageButton" onClick={() => this.backupAll()}><img
+                                        className="addImage" src="../images/backup.svg"
                                         title="backup all organisations"
                                         alt="backup all organisations"/></div>
                                     }
-                                    <div style={styles.imageButton} onClick={() => this.addNewOrganisation()}><img
-                                        style={styles.addImage} src="../images/add.svg" title="add new organisation"
+                                    <div className="imageButton" onClick={() => this.addNewOrganisation()}><img
+                                        className="addImage" src="../images/add.svg" title="add new organisation"
                                         alt="add new organisation"/></div>
                                     <br />
                                     {isAdmin &&
@@ -358,62 +225,64 @@ export class Organisations extends React.Component {
                                                    organisationId={this.props.selected_organisation_id}
                                                    onError={(err) => this.props.setError("Error", err)} />
                                     }
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                    <TablePagination
+                    <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
                         count={this.props.organisation_list.length}
                         rowsPerPage={this.state.page_size}
                         page={this.state.page}
-                        style={theme === 'light' ? styles.tableLight : styles.tableDark}
-                        backIconButtonProps={{
-                            'aria-label': 'Previous Page',
-                        }}
-                        nextIconButtonProps={{
-                            'aria-label': 'Next Page',
-                        }}
-                        onChangePage={(event, page) => this.changePage(page)}
-                        onChangeRowsPerPage={(event) => this.changePageSize(event.target.value)}
+                        onChangePage={(page) => this.changePage(page)}
+                        onChangeRowsPerPage={(rows) => this.changePageSize(rows)}
                     />
 
-                </Paper>
+                </div>
 
 
-                <Dialog aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                        open={this.state.view_organisation_id}
-                        disableBackdropClick={true}
-                        disableEscapeKeyDown={true}
-                        fullWidth={true}
-                        maxWidth="md"
-                        onClose={() => this.setState({view_details: false})} >
-                    <DialogTitle className={theme}>{this.state.organisation != null ? this.state.organisation.name : ""} organisation-id</DialogTitle>
-                    <DialogContent className={theme}>
-                        <div>
-                            <div style={styles.organisationIdLabel}>
-                                organisation id
-                            </div>
-                            <div style={styles.floatLeft}>{this.state.organisation ? this.state.organisation.id : ""}</div>
-                            <span style={styles.copyImageSpan} title={'copy organisation id'}>
-                                <img src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'} style={styles.clipboardImage} alt={'copy'}
-                                     onClick={() => { if (Api.writeToClipboard(this.state.organisation ? this.state.organisation.id : ""))
+                {
+                    this.state.view_organisation_id &&
+                    <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+                        <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
+                            <div className="modal-content organisation-id-modal shadow p-3 mb-5 bg-white rounded">
+                                <div
+                                    className="modal-header">{this.state.organisation != null ? this.state.organisation.name : ""} organisation-id
+                                </div>
+                                <div className="modal-body">
+                                    <div>
+                                        <div className="organisationIdLabel">
+                                            organisation id
+                                        </div>
+                                        <div
+                                            className="floatLeft">{this.state.organisation ? this.state.organisation.id : ""}</div>
+                                        <span className="copyImageSpan" title={'copy organisation id'}>
+                                            <img
+                                                src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'}
+                                                className="clipboardImage" alt={'copy'}
+                                                onClick={() => {
+                                                    if (Api.writeToClipboard(this.state.organisation ? this.state.organisation.id : ""))
                                                         this.startCopiedVisible(this.state.organisation.id);
-                                     }}/>
-                                {this.state.organisation != null && this.state.copied_visible === this.state.organisation.id &&
-                                    <div style={styles.copiedStyle}>copied</div>
-                                }
-                            </span>
-                            <br clear='both' />
+                                                }}/>
+                                            {this.state.organisation != null && this.state.copied_visible === this.state.organisation.id &&
+                                            <div className="copiedStyle">copied</div>
+                                            }
+                                        </span>
+                                        <br clear='both'/>
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button className="btn btn-primary btn-block"
+                                            onClick={() => this.setState({view_organisation_id: false})}>Close
+                                    </button>
+                                </div>
+
+                            </div>
                         </div>
-                    </DialogContent>
-                    <DialogActions className={theme}>
-                        <Button variant="contained" color="secondary" onClick={() => this.setState({view_organisation_id: false})}>Close</Button>
-                    </DialogActions>
-                </Dialog>
+                    </div>
+                }
 
 
             </div>
@@ -427,6 +296,8 @@ const mapStateToProps = function(state) {
         error_title: state.appReducer.error_title,
         user: state.appReducer.user,
         theme: state.appReducer.theme,
+
+        selected_organisation_id: state.appReducer.selected_organisation_id,
 
         organisation_list: state.appReducer.organisation_list,
     };

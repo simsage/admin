@@ -1,133 +1,11 @@
 import React from 'react';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-
-import {Api} from '../common/api'
 import {SynonymEdit} from "./synonym-edit";
-import TablePagination from "@material-ui/core/TablePagination";
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-
-
-const styles = {
-    tableStyle: {
-        minWidth: '800px',
-        width: '900px',
-    },
-    tableLight: {
-    },
-    tableDark: {
-        background: '#d0d0d0',
-    },
-    smallTableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-        minWidth: '20px',
-    },
-    actionTableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-        minWidth: '100px',
-    },
-    tableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-        minWidth: '400px',
-        width: '600px',
-    },
-    searchTableHeaderStyle: {
-        background: '#555',
-        fontSize: '0.95em',
-        color: '#fff',
-        minWidth: '200px',
-        width: '340px',
-    },
-    knowledgeSelect: {
-        padding: '5px',
-        marginBottom: '40px',
-    },
-    lhs: {
-        float: 'left',
-        width: '150px',
-        marginTop: '-10px',
-        color: '#aaa',
-    },
-    rhs: {
-        float: 'left',
-    },
-    label: {
-        padding: '10px',
-        color: '#555',
-    },
-    gridWidth: {
-        width: '900px',
-    },
-    hr: {
-        border: '0.1px solid #f0f0f0',
-        width: '100%',
-    },
-    imageButton: {
-        float: 'right',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    addImage: {
-        width: '25px',
-    },
-    linkButton: {
-        float: 'left',
-        padding: '10px',
-        color: '#888',
-        cursor: 'pointer',
-    },
-    dlImageSize: {
-        width: '24px',
-    },
-    search: {
-        marginTop: '2px',
-        marginLeft: '15px',
-        width: '18px',
-        color: '#000',
-    },
-    floatLeftLabel: {
-        float: 'left',
-        marginRight: '6px',
-        marginTop: '4px',
-        fontSize: '0.9em',
-        fontWeight: '500',
-    },
-    searchFloatLeft: {
-        float: 'left',
-    },
-    text: {
-        border: '1px solid #808080',
-        borderRadius: '4px',
-        padding: '4px',
-        width: '280px',
-    },
-    floatLeft: {
-        float: 'left',
-    },
-    manualUploadSection: {
-        marginTop: '50px',
-    },
-    findBox: {
-        padding: '10px',
-        marginBottom: '5px',
-        float: 'right',
-    },
-};
+import {Pagination} from "../common/pagination";
 
 
 export class Synonyms extends React.Component {
@@ -190,7 +68,7 @@ export class Synonyms extends React.Component {
     }
     newSynonym() {
         this.setState({synonym_edit: true, synonym: {
-                id: Api.createGuid(),
+                id: "",
                 words: "",
             }});
     }
@@ -224,20 +102,20 @@ export class Synonyms extends React.Component {
                 {
                     this.isVisible() &&
 
-                    <div style={styles.findBox}>
-                        <div style={styles.floatLeftLabel}>find synonyms</div>
-                        <div style={styles.searchFloatLeft}>
-                            <input type="text" value={this.props.synonym_filter} autoFocus={true} style={styles.text} className={theme}
+                    <div className="filter-find-box">
+                        <span className="filter-label">find synonyms</span>
+                        <span className="filter-find-text">
+                            <input type="text" value={this.props.synonym_filter} autoFocus={true} className={theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setSynonymFilter(event.target.value)
                                    }}/>
-                        </div>
-                        <div style={styles.floatLeft}>
-                            <img style={styles.search}
-                                 onClick={() => this.props.getSynonyms()}
+                        </span>
+                        <span className="filter-find-image">
+                            <img className="image-size"
+                                 onClick={() => this.props.getSemantics()}
                                  src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
-                        </div>
+                        </span>
                     </div>
                 }
 
@@ -245,56 +123,56 @@ export class Synonyms extends React.Component {
 
                 {
                     this.isVisible() &&
-                    <Paper>
-                        <Table style={styles.tableStyle}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell className='table-header'>id</TableCell>
-                                    <TableCell className='table-header'>synonyms</TableCell>
-                                    <TableCell className='table-header'>actions</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody style={theme === 'light' ? styles.tableLight : styles.tableDark}>
+                    <div>
+                        <table className="table">
+                            <thead>
+                                <tr className='table-header'>
+                                    <th className='table-header'>id</th>
+                                    <th className='table-header'>synonyms</th>
+                                    <th className='table-header'>actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 {
                                     this.getSynonymList().map((synonym) => {
                                         return (
-                                            <TableRow key={synonym.id}>
-                                                <TableCell>
-                                                    <div style={styles.label}>{synonym.id}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.label}>{synonym.words}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div style={styles.linkButton} onClick={() => this.editSynonym(synonym)}>
-                                                        <img src="../images/edit.svg" style={styles.dlImageSize} title="edit synonym" alt="edit"/>
+                                            <tr key={synonym.id}>
+                                                <td>
+                                                    <div>{synonym.id}</div>
+                                                </td>
+                                                <td>
+                                                    <div>{synonym.words}</div>
+                                                </td>
+                                                <td>
+                                                    <div className="link-button" onClick={() => this.editSynonym(synonym)}>
+                                                        <img src="../images/edit.svg" className="image-size" title="edit synonym" alt="edit"/>
                                                     </div>
-                                                    <div style={styles.linkButton} onClick={() => this.deleteSynonymAsk(synonym)}>
-                                                        <img src="../images/delete.svg" style={styles.dlImageSize} title="remove synonym" alt="remove"/>
+                                                    <div className="link-button" onClick={() => this.deleteSynonymAsk(synonym)}>
+                                                        <img src="../images/delete.svg" className="image-size" title="remove synonym" alt="remove"/>
                                                     </div>
-                                                </TableCell>
-                                            </TableRow>
+                                                </td>
+                                            </tr>
                                         )
                                     })
                                 }
-                                <TableRow>
-                                    <TableCell/>
-                                    <TableCell/>
-                                    <TableCell>
+                                <tr>
+                                    <td/>
+                                    <td/>
+                                    <td>
                                         {this.isVisible() &&
-                                        <div style={styles.imageButton} onClick={() => this.newSynonym()}><img
-                                            style={styles.addImage} src="../images/add.svg" title="new synonym"
+                                        <div onClick={() => this.newSynonym()}><img
+                                            className="image-size" src="../images/add.svg" title="new synonym"
                                             alt="new synonym"/></div>
                                         }
-                                    </TableCell>
-                                </TableRow>
+                                    </td>
+                                </tr>
 
-                            </TableBody>
+                            </tbody>
 
-                        </Table>
+                        </table>
 
-                        <TablePagination
-                            style={theme === 'light' ? styles.tableLight : styles.tableDark}
+                        <Pagination
+                            theme={theme}
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
                             count={this.props.num_synonyms}
@@ -306,11 +184,11 @@ export class Synonyms extends React.Component {
                             nextIconButtonProps={{
                                 'aria-label': 'Next Page',
                             }}
-                            onChangePage={(event, page) => this.props.setSynonymPage(page)}
-                            onChangeRowsPerPage={(event) => this.props.setSynonymPageSize(event.target.value)}
+                            onChangePage={(page) => this.props.setSynonymPage(page)}
+                            onChangeRowsPerPage={(rows) => this.props.setSynonymPageSize(rows)}
                         />
 
-                    </Paper>
+                    </div>
                 }
 
             </div>

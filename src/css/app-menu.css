@@ -1,0 +1,51 @@
+
+.app-menu {
+}
+
+
+.app-menu .logo-box {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.app-menu .logo {
+    float: left;
+    width: 200px;
+}
+
+.app-menu .home-image-container {
+    float: right;
+}
+
+.app-menu .home-image {
+    width: 32px;
+}
+
+.app-menu .version-text {
+    font-size: 0.8em;
+    margin-left: -20px;
+}
+
+.app-menu .sign-out-image-container {
+    float: right;
+    right: 20px;
+    top: 10px;
+}
+
+.app-menu .sign-out-image {
+    width: 22px;
+}
+
+.app-menu .theme-select {
+    margin-right: 20px;
+    margin-top: 4px;
+    float: right;
+}
+
+.app-menu .theme-select-logged-in {
+    float: right;
+    margin-right: 10px;
+}
+
+

@@ -79,7 +79,7 @@ export function initializeState() {
 
         // mind query (aka. bot query)
         bot_query: "",
-        bot_query_result_list: [],
+        mind_result_list: [],
         bot_query_page_size: 10,
         bot_query_threshold: 0.01,
 
@@ -125,6 +125,14 @@ export function initializeState() {
 
         // html5 notification permissions asked already?
         html5_notifications: '',
+
+        // groups
+        group_list: [],
+        group_filter: "",
+        prev_group_filter: "",
+        group_count: 0,
+        group_page: 0,
+        group_page_size: 5,
 
         // system logs
         log_list: [],

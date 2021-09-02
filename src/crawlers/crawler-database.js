@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 
-import TextField from '@material-ui/core/TextField';
-import Grid from "@material-ui/core/Grid";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import {Api} from "../common/api";
+
+import '../css/crawler.css';
 
 const type_list = [
     {"key": "none", "value": "please select database type"},
@@ -12,22 +10,6 @@ const type_list = [
     {"key": "postgresql", "value": "Postgresql"},
     {"key": "microsoftsql", "value": "Microsoft SQL"},
 ];
-
-
-const styles = {
-    formContent: {
-        marginTop: '20px',
-        width: '98%',
-    },
-    fieldWidth: {
-        width: '100%',
-    },
-    dbType: {
-        float: 'right',
-        marginTop: '6px',
-        marginRight: '10px',
-    }
-};
 
 
 export class CrawlerDatabase extends Component {
@@ -110,140 +92,136 @@ export class CrawlerDatabase extends Component {
             return <h1>crawler-database.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.formContent}>
+            <div className="crawler-page">
 
-                <Grid container spacing={1}>
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">user name</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="the user name for db access"
+                                    autoFocus={true}
+                                    value={this.state.username}
+                                    onChange={(event) => {this.change_callback({username: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                    <span className="right-column">
+                        <span className="small-label-right">password</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="password" className="form-control"
+                                    placeholder="password"
+                                    value={this.state.password}
+                                    onChange={(event) => {this.change_callback({password: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="the user name for accessing this database"
-                            label="user name"
-                            variant="outlined"
-                            value={this.state.username}
-                            onChange={(event) => {this.change_callback({username: event.target.value})}}
-                            style={styles.fieldWidth}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="password"
-                            label="password (enter a value to change it)"
-                            type="password"
-                            variant="outlined"
-                            value={this.state.password}
-                            onChange={(event) => {this.change_callback({password: event.target.value})}}
-                            style={styles.fieldWidth}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
-                            placeholder="jdbc connection string, e.g. jdbc:microsoft:sqlserver://HOST:1433;DatabaseName=DATABASE"
-                            label="jdbc connection string"
-                            variant="outlined"
-                            value={this.state.jdbc}
-                            onChange={(event) => {this.change_callback({jdbc: event.target.value})}}
-                            style={styles.fieldWidth}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">jdbc string</span>
+                        <span className="big-text">
+                            <input type="text" className="form-control jdbc-field-width"
+                                placeholder="jdbc connection string, e.g. jdbc:microsoft:sqlserver://HOST:1433;DatabaseName=DATABASE"
+                                value={this.state.jdbc}
+                                onChange={(event) => {this.change_callback({jdbc: event.target.value})}}
+                            />
+                        </span>
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={1}>
-                        <div style={styles.dbType}>Database</div>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Select
-                            disableUnderline
-                            value={this.state.type}
-                            style={styles.fieldWidth}
-                            onChange={(event) => {this.change_callback({type: event.target.value})}}>
-                            {
-                                type_list.map((value) => {
-                                    return (<MenuItem key={value.key} value={value.key}>{value.value}</MenuItem>)
-                                })
-                            }
-                        </Select>
-                    </Grid>
-                    <Grid item xs={1} />
-                    <Grid item xs={5}>
-                        <TextField
-                            placeholder="the name of the primary key field for this SELECT"
-                            label="primary key name"
-                            variant="outlined"
-                            value={this.state.pk}
-                            onChange={(event) => {this.change_callback({pk: event.target.value})}}
-                            style={styles.fieldWidth}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">database</span>
+                        <span className="big-text">
+                            <select className="form-select" onChange={(event) => {this.change_callback({type: event.target.value})}}
+                                    defaultValue={this.state.type}>
+                                {
+                                    type_list.map((value) => {
+                                        return (<option key={value.key} value={value.key}>{value.value}</option>)
+                                    })
+                                }
+                            </select>
+                        </span>
+                    </span>
+                    <span className="right-column">
+                        <span className="small-label-right">pk field</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="primary key field name"
+                                    value={this.state.pk}
+                                    onChange={(event) => {this.change_callback({pk: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
+
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">web fields</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control jdbc-field-width"
+                                       placeholder="document http/https reference SQL fields in square brackets [FIELD-NAME]"
+                                       disabled={this.state.customRender}
+                                       value={this.state.content_url}
+                                       onChange={(event) => {this.change_callback({content_url: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
+
+
+                <div className="form-group">
+                    <span className="label-right-top">select</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="SQL query, a valid SELECT statement, no other allowed"
-                            label="sql query"
-                            variant="outlined"
-                            multiline={true}
                             rows={3}
                             value={this.state.query}
                             onChange={(event) => {this.change_callback({query: event.target.value})}}
-                            style={styles.fieldWidth}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
-                            placeholder="document http/https reference SQL fields in square brackets [FIELD-NAME]"
-                            label="document http/https reference (non custom-renders)"
-                            variant="outlined"
-                            multiline={false}
-                            disabled={this.state.customRender}
-                            value={this.state.content_url}
-                            onChange={(event) => {this.change_callback({content_url: event.target.value})}}
-                            style={styles.fieldWidth}
-                        />
-                    </Grid>
-                    <Grid item xs={1} />
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
+                <div className="form-group">
+                    <span className="label-right-top">text index template</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="sql text index template, an text template referencing SQL fields in square brackets [FIELD-NAME]"
-                            label="sql text index template (custom-render only)"
-                            variant="outlined"
-                            multiline={true}
                             disabled={!this.state.customRender}
-                            rows={7}
+                            rows={4}
                             value={this.state.text}
                             onChange={(event) => {this.change_callback({text: event.target.value})}}
-                            style={styles.fieldWidth}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                    <Grid item xs={1} />
-                    <Grid item xs={10}>
-                        <TextField
+
+                <div className="form-group">
+                    <span className="label-right-top">html template</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
                             placeholder="sql html render template, an html template referencing SQL fields in square brackets [FIELD-NAME]"
-                            label="sql html render template (custom-render only)"
-                            variant="outlined"
-                            multiline={true}
                             disabled={!this.state.customRender}
-                            rows={7}
+                            rows={4}
                             value={this.state.template}
                             onChange={(event) => {this.change_callback({template: event.target.value})}}
-                            style={styles.fieldWidth}
                         />
-                    </Grid>
-                    <Grid item xs={1} />
+                    </span>
+                </div>
 
-                </Grid>
             </div>
         );
     }

@@ -89,66 +89,77 @@ export class Comms {
     };
 
     // get a url that can be used to backup the system, regime e {all (backup all orgs), specific (backup specified org)}
-    static get_backup_url(organisation_id, regime) {
-        let session = Comms.getSession();
-        return window.ENV.api_base + '/backup/backup/' + encodeURIComponent(session.id) + '/' +
-                encodeURIComponent(organisation_id) + '/' + encodeURIComponent(regime);
+    static download_backup(organisation_id, regime) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+            const url = window.ENV.api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(regime);
+            Comms.download_new_window_post(url, response.data);
+        });
     };
 
     // get a url that can be used to backup the system
-    static get_mind_dump_url(organisation_id, kb_id) {
-        let session = Comms.getSession();
-        return window.ENV.api_base + '/backup/mind-dump/' + encodeURIComponent(session.id) + '/' +
-            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+    static download_mind_dump(organisation_id, kb_id) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+            const url = window.ENV.api_base + '/backup/mind-dump/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+            Comms.download_new_window_post(url, response.data);
+        });
     };
 
     // get a url that can be used to summarize the system
-    static get_inventorize_dump_url(organisation_id, kb_id, dateTime) {
-        let session = Comms.getSession();
-        return window.ENV.api_base + '/document/parquet/' + encodeURIComponent(session.id) + '/' +
-            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' +
-            encodeURIComponent(dateTime);
+    static download_inventorize_dump(organisation_id, kb_id, dateTime) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+            const url = window.ENV.api_base + '/document/parquet/' + encodeURIComponent(organisation_id) + '/' +
+                encodeURIComponent(kb_id) + '/' + encodeURIComponent(dateTime);
+            Comms.download_new_window_post(url, response.data);
+        });
     };
 
     // get a url that can be used to summarize the system using a spreadsheet
-    static get_inventorize_dump_spreadhseet_url(organisation_id, kb_id, dateTime) {
-        let session = Comms.getSession();
-        return window.ENV.api_base + '/document/spreadsheet/' + encodeURIComponent(session.id) + '/' +
-            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' +
-            encodeURIComponent(dateTime);
-    };
-
-    // get a url that can be used to download a crawler
-    static get_crawler_url(organisation_id, kb_id, crawler_id) {
-        let session = Comms.getSession();
-        return window.ENV.api_base + '/crawler/download/' + encodeURIComponent(session.id) + '/' +
-            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(crawler_id);
-    };
-
-    // get a url that can be used to download the bot html
-    static get_html_url(html, organisation_id) {
-        let session = Comms.getSession();
-        return window.ENV.api_base + '/knowledgebase/download/' + html + '/' + encodeURIComponent(session.id) + '/' +
-                            encodeURIComponent(organisation_id);
+    static download_inventorize_dump_spreadhseet(organisation_id, kb_id, dateTime) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+            const url = window.ENV.api_base + '/document/spreadsheet/' + encodeURIComponent(organisation_id) + '/' +
+                encodeURIComponent(kb_id) + '/' + encodeURIComponent(dateTime);
+            Comms.download_new_window_post(url, response.data);
+        });
     };
 
     // get a url that can be used to get the query-logs
-    static get_query_log_url(organisation_id, kb_id, year, month) {
-        let session = Comms.getSession();
-        return window.ENV.api_base + '/stats/query-logs/' + encodeURIComponent(session.id) + '/' +
-            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' +
-            encodeURIComponent(year) + '/' + encodeURIComponent(month);
+    static download_query_log(organisation_id, kb_id, year, month) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+            const url = window.ENV.api_base + '/stats/query-logs/' + encodeURIComponent(organisation_id) + '/' +
+                encodeURIComponent(kb_id) + '/' + encodeURIComponent(year) + '/' + encodeURIComponent(month);
+            Comms.download_new_window_post(url, response.data);
+        });
     };
 
     // get a url that can be used to get a zip archive of a wp export
-    static get_export_archive_url(organisation_id, kb_id, source_id) {
-        let session = Comms.getSession();
-        return window.ENV.api_base + '/crawler/wp-archive/download/' + encodeURIComponent(session.id) + '/' +
-            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
+    static download_export_archive(organisation_id, kb_id, source_id) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+            const url = window.ENV.api_base + '/crawler/wp-archive/download/' + encodeURIComponent(organisation_id) + '/' +
+                encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
+            Comms.download_new_window_post(url, response.data);
+        });
     };
 
     static toUrl(str) {
         return window.ENV.api_base + str;
+    }
+
+    // download the url in a new window, passing SessionId as a query-string parameter (hidden in logs over ssh)
+    static download_new_window_post(url, one_time_token) {
+        // Create a form
+        const mapForm = document.createElement("form");
+        mapForm.style = "display: none;";
+        mapForm.target = "_blank";
+        mapForm.method = "POST";
+        mapForm.action = url + "?ott=" + encodeURIComponent(one_time_token);
+        // create a fake element so it posts
+        const mapInput = document.createElement("input");
+        mapInput.type = "text";
+        mapInput.name = "name";
+        mapInput.value = "value";
+        mapForm.appendChild(mapInput);
+        document.body.appendChild(mapForm);
+        mapForm.submit();
     }
 
     // convert js response to its error output equivalent

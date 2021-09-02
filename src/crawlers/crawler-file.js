@@ -1,18 +1,7 @@
 import React, {Component} from 'react';
 
-import TextField from '@material-ui/core/TextField';
-import Api from '../common/api'
-
-const styles = {
-    formContent: {
-        marginTop: '20px',
-        marginLeft: '20px',
-    },
-    textField: {
-        marginRight: '10px',
-        width: '670px',
-    },
-};
+import Api from '../common/api';
+import '../css/crawler.css';
 
 
 export class CrawlerFile extends Component {
@@ -83,76 +72,107 @@ export class CrawlerFile extends Component {
             return <h1>crawler-file.js: Something went wrong.</h1>;
         }
         return (
-            <div style={styles.formContent}>
-                <TextField
-                    placeholder="user name"
-                    label="user name"
-                    value={this.state.username}
-                    onChange={(event) => {this.change_callback({username: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
-                <br />
+            <div className="crawler-page">
 
-                <TextField
-                    placeholder="password"
-                    label="password"
-                    type="password"
-                    value={this.state.password}
-                    onChange={(event) => {this.change_callback({password: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
-                <br />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">user name</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    autoFocus={true}
+                                    placeholder="user name"
+                                    value={this.state.username}
+                                    onChange={(event) => {this.change_callback({username: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                    <span className="right-column">
+                        <span className="small-label-right">password</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="password" className="form-control"
+                                    placeholder="password"
+                                    value={this.state.password}
+                                    onChange={(event) => {this.change_callback({password: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
-                <TextField
-                    label="domain (leave blank for default or no domain)"
-                    placeholder="domain name"
-                    value={this.state.domain}
-                    onChange={(event) => {this.change_callback({domain: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
-                <br />
 
-                <TextField
-                    label="Fully Qualified Domain Name"
-                    placeholder="e.g.  simsage.ai  (this will form your user's email addresses, eg. account-name@simsage.ai)"
-                    value={this.state.fqdn}
-                    onChange={(event) => {this.change_callback({fqdn: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
-                <br />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">domain name</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="domain name"
+                                    value={this.state.domain}
+                                    onChange={(event) => {this.change_callback({domain: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                    <span className="right-column">
+                        <span className="small-label-right">fqdn</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="e.g.  simsage.ai  (this will form your user's email addresses, eg. account-name@simsage.ai)"
+                                    value={this.state.fqdn}
+                                    onChange={(event) => {this.change_callback({fqdn: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
-                <TextField
-                    placeholder="server (hostname or ip-address)"
-                    label="server"
-                    value={this.state.server}
-                    onChange={(event) => {this.change_callback({server: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
-                <br />
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">server</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="server (hostname or ip-address)"
+                                    value={this.state.server}
+                                    onChange={(event) => {this.change_callback({server: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                    <span className="right-column">
+                        <span className="small-label-right">share name</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="share name"
+                                    value={this.state.shareName}
+                                    onChange={(event) => {this.change_callback({shareName: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
-                <TextField
-                    placeholder="share name"
-                    label="share name"
-                    value={this.state.shareName}
-                    onChange={(event) => {this.change_callback({shareName: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
-                <br />
 
-                <TextField
-                    placeholder="path inside share (optional)"
-                    label="path inside share"
-                    value={this.state.sharePath}
-                    onChange={(event) => {this.change_callback({sharePath: event.target.value})}}
-                    style={styles.textField}
-                />
-                <br />
+
+                <div className="form-group">
+                    <span className="left-column">
+                        <span className="small-label-right">share path</span>
+                        <span className="big-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="path inside share (optional)"
+                                    value={this.state.sharePath}
+                                    onChange={(event) => {this.change_callback({sharePath: event.target.value})}}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
 
 
             </div>

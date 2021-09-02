@@ -1,23 +1,12 @@
 import React, {Component} from 'react';
 
-import Button from '@material-ui/core/Button';
 
 import AppMenu from '../auth/app-menu';
 import ErrorDialog from '../common/error-dialog';
-import {MuiThemeProvider} from "@material-ui/core/styles";
-import {darkTheme, lightTheme} from "../theme-ui";
-import {CssBaseline} from "@material-ui/core";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
-
-const styles = {
-    bottomLink: {
-        textAlign: 'center',
-        marginTop: '50px',
-    },
-};
 
 export class OpenSourceLicenses extends Component {
     constructor(props){
@@ -42,10 +31,8 @@ export class OpenSourceLicenses extends Component {
         if (this.state.has_error) {
             return <h1>license: Something went wrong.</h1>;
         }
-        const theme = this.props.theme;
         return (
-            <MuiThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-                <CssBaseline />
+            <div>
 
                 <AppMenu title="Open Source Licenses" loggedIn={false} />
 
@@ -290,18 +277,18 @@ export class OpenSourceLicenses extends Component {
                         <div className="license">Eclipse Public License 2.0</div>
                     </div>
 
-                </div>
+                     <br clear="both" />
 
-                <br clear="both" />
+                     <div className="button-bottom">
+                         <button onClick={() => window.location = "/#/"} className="btn btn-primary btn-block">Return to Sign-in</button>
+                     </div>
 
-                <div style={styles.bottomLink}>
-                    <Button variant="contained" onClick={() => window.location = "/#/"} className="button-style">Return to Sign-in</Button>
-                </div>
+                 </div>
 
                 <br/>
                 <br/>
 
-            </MuiThemeProvider>
+            </div>
         );
     }
 }
