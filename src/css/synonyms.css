@@ -5,3 +5,6 @@
     display: inline-block;
 }
 
+.synonym-column-width {
+    width: 600px;
+}

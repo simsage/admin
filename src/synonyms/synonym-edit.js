@@ -63,7 +63,7 @@ export class SynonymEdit extends Component {
                                                   onChange={(event) => this.setState({words: event.target.value})}
                                                   placeholder="words"
                                                   spellCheck={false}
-                                                  rows={5}
+                                                  rows={10}
                                                   value={this.state.words}
                                         />
                                     </span>

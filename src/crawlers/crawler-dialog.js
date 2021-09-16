@@ -16,9 +16,11 @@ import CrawlerWordpress from "./crawler-wordpress";
 import CrawlerGDrive from "./crawler-gdrive";
 import CrawlerNFS from "./crawler-nfs";
 import CrawlerRestFull from "./crawler-restfull";
+import CrawlerGLP from "./crawler-glp";
 import CrawlerMetadata from "./crawler-metadata";
 import Api from "../common/api";
 import AclSetup from "../common/acl-setup";
+import CrawlerExternal from "./crawler-external";
 
 
 export class CrawlerDialog extends Component {
@@ -258,7 +260,8 @@ export class CrawlerDialog extends Component {
 
         } else if (crawler.crawlerType !== 'web' && crawler.crawlerType !== 'file' && crawler.crawlerType !== 'database' &&
                    crawler.crawlerType !== 'office365' && crawler.crawlerType !== 'dropbox' && crawler.crawlerType !== 'nfs' &&
-                   crawler.crawlerType !== 'wordpress' && crawler.crawlerType !== 'gdrive' && crawler.crawlerType !== 'restfull') {
+                   crawler.crawlerType !== 'wordpress' && crawler.crawlerType !== 'gdrive' && crawler.crawlerType !== 'restfull' &&
+                   crawler.crawlerType !== 'glp' && crawler.crawlerType !== 'external') {
 
             this.setError('invalid parameters', 'you must select a crawler-type first.');
 
@@ -377,6 +380,15 @@ export class CrawlerDialog extends Component {
                                         <div className={"nav-link " + (this.state.selectedTab === 'nfs crawler' ? 'active' : '')}
                                              onClick={() => this.setState({selectedTab: 'nfs crawler'})}>nfs crawler</div>
                                     </li>}
+                                    {c_type === "glp" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'glp crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'glp crawler'})}>glp crawler</div>
+                                    </li>}
+                                    {c_type === "external" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'external crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'external crawler'})}>external crawler</div>
+                                    </li>}
+
                                     {c_type !== "wordpress" && <li className="nav-item nav-cursor">
                                         <div className={"nav-link " + (this.state.selectedTab === 'metadata' ? 'active' : '')}
                                              onClick={() => this.setState({selectedTab: 'metadata'})}>metadata</div>
@@ -544,6 +556,27 @@ export class CrawlerDialog extends Component {
                                             wpUploadArchive={(data) => this.props.wpUploadArchive(data) }
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'glp crawler' &&
+                                        <CrawlerGLP
+                                            theme={theme}
+                                            source_id={crawler.sourceId}
+                                            organisation_id={this.props.organisation_id}
+                                            kb_id={this.props.kb_id}
+                                            initial_feed={sj.initial_feed}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'external crawler' &&
+                                    <CrawlerExternal
+                                        theme={theme}
+                                        source_id={crawler.sourceId}
+                                        organisation_id={this.props.organisation_id}
+                                        kb_id={this.props.kb_id}
+                                        specific_json={sj}
+                                        onError={(title, errStr) => this.setError(title, errStr)}
+                                        onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                     }
                                     {t_value === 'metadata' && c_type !== "restfull" && c_type !== "database" && c_type !== "wordpress" &&
                                         <CrawlerMetadata

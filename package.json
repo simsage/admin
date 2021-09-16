@@ -1,6 +1,6 @@
 {
   "name": "simsage-admin",
-  "version": "7.0.5",
+  "version": "7.1.0",
   "private": true,
   "description": "SimSage: search less; find more",
   "repository": "git@gitlab.com:peter3125/simsage.git",

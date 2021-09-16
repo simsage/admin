@@ -57,6 +57,7 @@ export class DocumentSources extends Component {
         const paginated_list = [];
         const first = this.state.page * this.state.page_size;
         const last = first + this.state.page_size;
+        this.props.crawler_list.sort((a, b) => { return a.sourceId - b.sourceId });
         for (const i in this.props.crawler_list) {
             if (i >= first && i < last) {
                 paginated_list.push(this.props.crawler_list[i]);
@@ -157,6 +158,7 @@ export class DocumentSources extends Component {
                         <table className="table">
                             <thead>
                                 <tr className='table-header'>
+                                    <th className='table-header'>id</th>
                                     <th className='table-header'>name</th>
                                     <th className='table-header'>type</th>
                                     <th className='table-header'>status</th>
@@ -169,6 +171,9 @@ export class DocumentSources extends Component {
                                     this.getCrawlers().map((crawler) => {
                                         return (
                                             <tr key={crawler.sourceId}>
+                                                <td>
+                                                    <div className="source-label">{crawler.sourceId}</div>
+                                                </td>
                                                 <td>
                                                     <div className="source-label">{crawler.name}</div>
                                                 </td>
@@ -197,6 +202,7 @@ export class DocumentSources extends Component {
                                     })
                                 }
                                 <tr>
+                                    <td/>
                                     <td/>
                                     <td/>
                                     <td/>

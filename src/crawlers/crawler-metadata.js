@@ -12,6 +12,7 @@ const metadata_list = [
     {"key": "last modified date ranges", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "document type", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "people list", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
+    {"key": "hashtag list", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "location list", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "money range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
     {"key": "number range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},

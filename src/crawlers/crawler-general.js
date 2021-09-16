@@ -16,6 +16,8 @@ const crawler_list = [
     {"key": "nfs", "value": "nfs external crawler"},
     {"key": "database", "value": "database crawler"},
     {"key": "restfull", "value": "REST-full crawler"},
+    {"key": "glp", "value": "Global Legal Post crawler"},
+    {"key": "external", "value": "External crawler"},
 ];
 
 
@@ -97,7 +99,7 @@ export class CrawlerGeneral extends Component {
     }
     construct_data(data) {
         const crawlerType = Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType;
-        const allowAnonymous = (Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous) || (crawlerType === 'web');
+        const allowAnonymous = (Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous) || (crawlerType === 'web') || (crawlerType === 'glp');
         let edgeDeviceId = Api.defined(data.edgeDeviceId) ? data.edgeDeviceId : this.state.edgeDeviceId;
         if (edgeDeviceId === 'none' || !this.canHaveEdgeDevice()) edgeDeviceId = '';
         return {filesPerSecond: Api.defined(data.filesPerSecond) ? data.filesPerSecond : this.state.filesPerSecond,
@@ -318,8 +320,8 @@ export class CrawlerGeneral extends Component {
                         <span className="right-column">
                             <div style={{float: 'left'}} title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
                                 <input type="checkbox"
-                                    checked={this.state.allowAnonymous || this.state.crawlerType === 'web'}
-                                    disabled={this.state.crawlerType === 'web'}
+                                    checked={this.state.allowAnonymous || this.state.crawlerType === 'web' || this.state.crawlerType === 'glp'}
+                                    disabled={this.state.crawlerType === 'web' || this.state.crawlerType === 'glp'}
                                     onChange={(event) => { this.change_callback({allowAnonymous: event.target.checked}); }}
                                     value="allow anonymous access to these files?"
                                 />

@@ -152,7 +152,7 @@ export class AclSetup extends Component {
         return str;
     }
     getAclClassName(acl, attribute) {
-        if (acl && acl.access && acl.access.indexOf(attribute) >= 0) {
+        if (acl && ((acl.access && acl.access.indexOf(attribute) >= 0) || (acl.acl === 'R'))) {
             return "acl-access";
         } else {
             return "acl-no-access";
@@ -180,7 +180,7 @@ export class AclSetup extends Component {
                                     <span className="acl-name" onClick={() => this.removeAcl(acl)}>
                                         <span className="user-group-image-box"><img className="user-group-image" src={acl.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{acl.acl}</span>
                                     </span>
-                                    <span className={this.getAclClassName(acl, "R")} title={this.getTitle(acl, "R")} onClick={(event) => this.invertAccess(event, acl, "R")}>{this.getAccess(acl, "R")}</span>
+                                    <span className={this.getAclClassName(acl, "R")} title={this.getTitle(acl, "R")}>{this.getAccess(acl, "R")}</span>
                                     <span className={this.getAclClassName(acl, "W")} title={this.getTitle(acl, "W")} onClick={(event) => this.invertAccess(event, acl, "W")}>{this.getAccess(acl, "W")}</span>
                                     <span className={this.getAclClassName(acl, "D")} title={this.getTitle(acl, "D")} onClick={(event) => this.invertAccess(event, acl, "D")}>{this.getAccess(acl, "D")}</span>
                                     <span className={this.getAclClassName(acl, "M")} title={this.getTitle(acl, "M")} onClick={(event) => this.invertAccess(event, acl, "M")}>{this.getAccess(acl, "M")}</span>

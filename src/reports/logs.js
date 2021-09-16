@@ -232,8 +232,8 @@ export class Logs extends React.Component {
 
                     <div className="log-files">
                         {
-                            this.getLogs().map((line) => {
-                                return (<div className="log-line" id={line.created}>
+                            this.getLogs().map((line, j) => {
+                                return (<div key={j} className="log-line" id={line.created}>
                                     <span
                                         className={'log-type-width ' + this.getClassForType(line.type)}>{line.type}</span>
                                     <span className='log-service-width'>{line.service}</span>

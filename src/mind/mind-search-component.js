@@ -87,8 +87,8 @@ export class MindSearchComponent extends Component {
                 <div>
                     <div className="search-results-box">
                         {
-                            this.getResultList().map((item) => {
-                                return (<BotSingleSearchResult key={item.key} item={item} openDocument={(url) => this.openDocument(url)} />)
+                            this.getResultList().map((item, j) => {
+                                return (<BotSingleSearchResult key={j} item={item} openDocument={(url) => this.openDocument(url)} />)
                             })
                         }
                     </div>

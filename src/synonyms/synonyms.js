@@ -7,6 +7,8 @@ import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 import {Pagination} from "../common/pagination";
 
+import '../css/synonyms.css';
+
 
 export class Synonyms extends React.Component {
     constructor(props) {
@@ -128,7 +130,7 @@ export class Synonyms extends React.Component {
                             <thead>
                                 <tr className='table-header'>
                                     <th className='table-header'>id</th>
-                                    <th className='table-header'>synonyms</th>
+                                    <th className='table-header synonym-column-width'>synonyms</th>
                                     <th className='table-header'>actions</th>
                                 </tr>
                             </thead>
