@@ -10,6 +10,7 @@ export class Pagination extends Component {
             num_pages += 1;
         }
         num_pages = parseInt("" + num_pages);
+        let count = parseInt("" + this.props.count);
         return (
             <nav aria-label="Page navigation example">
                 <ul className="pagination">
@@ -22,7 +23,7 @@ export class Pagination extends Component {
                     </li>
                     <li className="page-item">
                         <span className="page-display">
-                            <label>{"page " + (this.props.page + 1) + " of " + num_pages}</label>
+                            <label>{"page " + (this.props.page + 1) + " of " + num_pages + ", for " + count + " items"}</label>
                         </span>
                     </li>
                     <li className="page-item">

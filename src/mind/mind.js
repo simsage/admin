@@ -128,11 +128,10 @@ export class Mind extends React.Component {
                     this.isVisible() &&
 
                     <div className="filter-find-box">
-                        <span className="filter-label">find items in the mind</span>
+                        <span className="filter-label">filter</span>
                         <span className="filter-find-text">
                             <input type="text" value={this.props.mind_item_filter}
-                                   autoFocus={true}
-                                   className="form-control"
+                                   autoFocus={true} className={"filter-text-width " + theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setMindItemFilter(event.target.value)

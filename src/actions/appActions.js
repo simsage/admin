@@ -14,15 +14,21 @@ import {
     GET_DOCUMENTS_PAGINATED,
     GET_HTML5_NOTIFICATIONS,
     GET_KNOWLEDGE_BASES,
+    SET_KB_PAGE,
+    SET_KB_PAGE_SIZE,
     GET_INVENTORIZE_LIST,
     GET_LICENSE,
     SET_ORGANISATION_LIST,
     SET_ORGANISATION_FILTER,
+    SET_ORGANISATION_PAGE,
+    SET_ORGANISATION_PAGE_SIZE,
     GET_INVENTORIZE_BUSY,
     GET_OS_MESSAGES,
     GET_STATS,
     SET_USER_LIST,
     SET_USER_FILTER,
+    SET_USER_PAGE,
+    SET_USER_PAGE_SIZE,
     HIDE_NOTIFICATIONS,
     MARK_CONVERSATION_USED,
 
@@ -508,7 +514,10 @@ async function _setupPage(selected_tab, dispatch, getState) {
         await _getReports(organisation_id, kb_id, year, month, top, dispatch);
 
     } else if (selected_tab === 'logs' && organisation_id !== '') {
-        const date = new Date(getState().appReducer.log_date);
+        let date = new Date();
+        if (getState().appReducer.log_date) {
+            date = new Date(getState().appReducer.log_date);
+        }
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const day = date.getDate();
@@ -582,9 +591,16 @@ export const appCreators = {
         }
     },
 
-    signOut: () => async (dispatch, getState) => {
+    signOut: (callback) => async (dispatch, getState) => {
         appCreators.setLogRefresh(0);   // stop log fetching
-        dispatch({type: SIGN_OUT});
+        await Comms.http_delete('/auth/sign-out',
+            (response) => {
+                dispatch({type: SIGN_OUT});
+                if (callback)
+                    callback();
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
     },
 
     notBusy: () => async (dispatch, getState) => {
@@ -695,6 +711,8 @@ export const appCreators = {
     },
 
     setOrganisationFilter: (filter) => ({type: SET_ORGANISATION_FILTER, filter}),
+    setOrganisationPage: (page) => ({type: SET_ORGANISATION_PAGE, page}),
+    setOrganisationPageSize: (page_size) => ({type: SET_ORGANISATION_PAGE_SIZE, page_size}),
 
     // organisation save
     updateOrganisation: (organisation) => async (dispatch, getState) => {
@@ -759,6 +777,9 @@ export const appCreators = {
         await _getKnowledgeBases(getState().appReducer.selected_organisation_id, dispatch);
     },
 
+    setKbPage: (page) => ({type: SET_KB_PAGE, page}),
+    setKbPageSize: (page_size) => ({type: SET_KB_PAGE_SIZE, page_size}),
+
     optimizeIndexes: (organisation_id, kb_id) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const data = {'organisationId': organisation_id, 'kbId': kb_id};
@@ -780,9 +801,9 @@ export const appCreators = {
         )
     },
 
-    removeAllIndexes: (organisation_id, kb_id) => async (dispatch, getState) => {
+    resetCrawlers: (organisation_id, kb_id) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
-        await Comms.http_delete('/language/indexes/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
+        await Comms.http_delete('/language/reset-crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
             (response) => {
                 dispatch({type: BUSY, busy: false});
             },
@@ -803,13 +824,13 @@ export const appCreators = {
 
     updateKnowledgeBase: (organisation_id, kb_id, name, email, security_id, enabled, max_queries_per_day,
                           analytics_window_size_in_months, operator_enabled, capacity_warnings,
-                          created, index_optimization_schedule, dms_index_schedule) => async (dispatch, getState) => {
+                          created, dms_index_schedule, enable_similarity, similarity_threshold) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const payload = {"kbId": kb_id, "organisationId": organisation_id, "name": name, "email": email,
             "securityId": security_id, "maxQueriesPerDay": max_queries_per_day, "enabled": enabled,
             "analyticsWindowInMonths": analytics_window_size_in_months, "operatorEnabled": operator_enabled,
-            "capacityWarnings": capacity_warnings, "created": created, "indexOptimizationSchedule": index_optimization_schedule,
-            "dmsIndexSchedule": dms_index_schedule};
+            "capacityWarnings": capacity_warnings, "created": created, "dmsIndexSchedule": dms_index_schedule,
+            "enableDocumentSimilarity": enable_similarity, "documentSimilarityThreshold": similarity_threshold};
         await Comms.http_put('/knowledgebase/', payload,
             (response) => {
                 _getKnowledgeBases(organisation_id, dispatch);
@@ -823,6 +844,21 @@ export const appCreators = {
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         await Comms.http_post('/document/inventorize',
+            {"kbId": kb_id, "organisationId": organisation_id},
+            (response) => {
+                _getInventorizeList(organisation_id, kb_id, dispatch);
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    },
+
+    createIndexInventory: () => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        await Comms.http_post('/document/inventorize/indexes',
             {"kbId": kb_id, "organisationId": organisation_id},
             (response) => {
                 _getInventorizeList(organisation_id, kb_id, dispatch);
@@ -947,6 +983,8 @@ export const appCreators = {
     },
 
     setUserFilter: (filter) => ({type: SET_USER_FILTER, filter}),
+    setUserPage: (page) => ({type: SET_USER_PAGE, page}),
+    setUserPageSize: (page_size) => ({type: SET_USER_PAGE_SIZE, page_size}),
 
     uploadProgram: (payload) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
@@ -1010,6 +1048,32 @@ export const appCreators = {
                                     encodeURIComponent(kb_id) + '/' + encodeURIComponent(crawler_id),
             (response) => {
                 _getCrawlers(organisation_id, kb_id, dispatch)
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    // zip up all files in a source and store them locally on their server
+    zipSource: (crawler) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_post('/document/zip/source/', {
+                "organisationId": crawler.organisationId, "kbId": crawler.kbId, "sourceId": crawler.sourceId
+            },
+            (response) => {
+                dispatch({type: BUSY, busy: false});
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    // start a crawler on the platform
+    startCrawler: (crawler) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        await Comms.http_post('/crawler/start/', {
+                "organisationId": crawler.organisationId, "kbId": crawler.kbId, "sourceId": crawler.sourceId
+            },
+            (response) => {
+                dispatch({type: BUSY, busy: false});
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
@@ -1608,6 +1672,21 @@ export const appCreators = {
         await _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch);
     },
 
+    addDefaultSynSets: () => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const page = getState().appReducer.synset_page;
+        const page_size = getState().appReducer.synset_page_size;
+        const filter = getState().appReducer.synset_filter;
+        Comms.http_put('/language/default-syn-sets/' + encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(kb_id), {},
+            (response) => {
+                _getSynSets(organisation_id, kb_id, page, page_size, filter, dispatch);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
+        )
+    },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // reports

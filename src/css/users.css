@@ -32,6 +32,10 @@
 .user-display .label {
     text-align: left;
     color: #555;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .user-display .role-label {

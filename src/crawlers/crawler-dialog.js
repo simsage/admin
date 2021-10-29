@@ -16,7 +16,7 @@ import CrawlerWordpress from "./crawler-wordpress";
 import CrawlerGDrive from "./crawler-gdrive";
 import CrawlerNFS from "./crawler-nfs";
 import CrawlerRestFull from "./crawler-restfull";
-import CrawlerGLP from "./crawler-glp";
+import CrawlerRss from "./crawler-rss";
 import CrawlerMetadata from "./crawler-metadata";
 import Api from "../common/api";
 import AclSetup from "../common/acl-setup";
@@ -169,6 +169,18 @@ export class CrawlerDialog extends Component {
         }
         return false;
     }
+    validDropBoxFolderList(folder_list) {
+        for (const i of folder_list.split(",")) {
+            const item = i.trim();
+            if (item.length > 0) {
+                if (!item.startsWith("/"))
+                    return false;
+                if (item.lastIndexOf("/") > 0)
+                    return false;
+            }
+        }
+        return true;
+    }
     handleSave() {
         const crawler = this.state.crawler;
         const validAcls = crawler.allowAnonymous || (crawler.acls && crawler.acls.length > 0);
@@ -245,7 +257,11 @@ export class CrawlerDialog extends Component {
 
         } else if (crawler.crawlerType === 'dropbox' && (!sj.clientToken || sj.clientToken.length === 0)) {
 
-            this.setError('invalid parameters', 'you must supply a client-token, and select a user as a minimum.');
+            this.setError('invalid parameters', 'dropbox crawler: you must supply a client-token, and select a user as a minimum.');
+
+        } else if (crawler.crawlerType === 'dropbox' && !this.validDropBoxFolderList(sj.folderList)) {
+
+            this.setError('invalid parameters', 'dropbox crawler: you have invalid values in your start folder.');
 
         } else if (crawler.crawlerType === 'gdrive' && (!sj.gdrive_clientId || sj.gdrive_clientId.length === 0 ||
                     !sj.gdrive_projectId || sj.gdrive_projectId.length === 0 ||
@@ -258,10 +274,14 @@ export class CrawlerDialog extends Component {
 
             this.setError('invalid parameters', 'nfs: you must set a local folder.');
 
+        } else if (crawler.crawlerType === 'rss' && (sj.endpoint.length < 5)) {
+
+            this.setError('invalid parameters', 'RSS: you must supply a value for endpoint.');
+
         } else if (crawler.crawlerType !== 'web' && crawler.crawlerType !== 'file' && crawler.crawlerType !== 'database' &&
                    crawler.crawlerType !== 'office365' && crawler.crawlerType !== 'dropbox' && crawler.crawlerType !== 'nfs' &&
                    crawler.crawlerType !== 'wordpress' && crawler.crawlerType !== 'gdrive' && crawler.crawlerType !== 'restfull' &&
-                   crawler.crawlerType !== 'glp' && crawler.crawlerType !== 'external') {
+                   crawler.crawlerType !== 'rss' && crawler.crawlerType !== 'external') {
 
             this.setError('invalid parameters', 'you must select a crawler-type first.');
 
@@ -380,9 +400,9 @@ export class CrawlerDialog extends Component {
                                         <div className={"nav-link " + (this.state.selectedTab === 'nfs crawler' ? 'active' : '')}
                                              onClick={() => this.setState({selectedTab: 'nfs crawler'})}>nfs crawler</div>
                                     </li>}
-                                    {c_type === "glp" && <li className="nav-item nav-cursor">
-                                        <div className={"nav-link " + (this.state.selectedTab === 'glp crawler' ? 'active' : '')}
-                                             onClick={() => this.setState({selectedTab: 'glp crawler'})}>glp crawler</div>
+                                    {c_type === "rss" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'rss crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'rss crawler'})}>rss crawler</div>
                                     </li>}
                                     {c_type === "external" && <li className="nav-item nav-cursor">
                                         <div className={"nav-link " + (this.state.selectedTab === 'external crawler' ? 'active' : '')}
@@ -426,6 +446,10 @@ export class CrawlerDialog extends Component {
                                             qaMatchStrength={crawler.qaMatchStrength}
                                             numResults={crawler.numResults}
                                             numFragments={crawler.numFragments}
+                                            numErrors={crawler.numErrors}
+                                            errorThreshold={crawler.errorThreshold}
+                                            startTime={crawler.startTime}
+                                            endTime={crawler.endTime}
                                             edge_device_list={this.props.edge_device_list}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(crawler) => this.update_general_data(crawler)}/>
@@ -557,12 +581,13 @@ export class CrawlerDialog extends Component {
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                     }
-                                    {t_value === 'glp crawler' &&
-                                        <CrawlerGLP
+                                    {t_value === 'rss crawler' &&
+                                        <CrawlerRss
                                             theme={theme}
                                             source_id={crawler.sourceId}
                                             organisation_id={this.props.organisation_id}
                                             kb_id={this.props.kb_id}
+                                            endpoint={sj.endpoint}
                                             initial_feed={sj.initial_feed}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}

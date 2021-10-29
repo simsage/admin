@@ -127,7 +127,7 @@ export class Semantics extends React.Component {
                     <div className="filter-find-box">
                         <span className="filter-label">find semantics</span>
                         <span className="filter-find-text">
-                            <input type="text" value={this.props.semantic_filter} autoFocus={true} className={theme}
+                            <input type="text" value={this.props.semantic_filter} autoFocus={true} className={"filter-text-width " + theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setSemanticFilter(event.target.value);

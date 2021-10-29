@@ -35,10 +35,6 @@ export class Organisations extends React.Component {
             view_organisation_id: false,
 
             organisation: null,
-
-            // pagination
-            page_size: 5,
-            page: 0,
         };
     }
     componentDidCatch(error, info) {
@@ -82,10 +78,10 @@ export class Organisations extends React.Component {
         }
     }
     changePage(page) {
-        this.setState({page: page});
+        this.props.setOrganisationPage(page);
     }
     changePageSize(page_size) {
-        this.setState({page_size: page_size});
+        this.props.setOrganisationPageSize(page_size);
     }
     handleSearchTextKeydown(event) {
         if (event.key === "Enter") {
@@ -94,8 +90,8 @@ export class Organisations extends React.Component {
     }
     getOrganisations() {
         const paginated_list = [];
-        const first = this.state.page * this.state.page_size;
-        const last = first + this.state.page_size;
+        const first = this.props.organisation_page * this.props.organisation_page_size;
+        const last = first + parseInt(this.props.organisation_page_size);
         for (const i in this.props.organisation_list) {
             if (i >= first && i < last) {
                 if (this.props.organisation_list.hasOwnProperty(i))
@@ -154,7 +150,7 @@ export class Organisations extends React.Component {
                 <div className="filter-find-box">
                     <span className="filter-label">filter</span>
                     <span className="filter-find-text">
-                            <input type="text" value={this.props.user_filter} autoFocus={true} className={theme}
+                            <input type="text" value={this.props.user_filter} autoFocus={true} className={"filter-text-width " + theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setOrganisationFilter(event.target.value)
@@ -234,8 +230,8 @@ export class Organisations extends React.Component {
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
                         count={this.props.organisation_list.length}
-                        rowsPerPage={this.state.page_size}
-                        page={this.state.page}
+                        rowsPerPage={this.props.organisation_page_size}
+                        page={this.props.organisation_page}
                         onChangePage={(page) => this.changePage(page)}
                         onChangeRowsPerPage={(rows) => this.changePageSize(rows)}
                     />
@@ -298,8 +294,9 @@ const mapStateToProps = function(state) {
         theme: state.appReducer.theme,
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
-
         organisation_list: state.appReducer.organisation_list,
+        organisation_page: state.appReducer.organisation_page,
+        organisation_page_size: state.appReducer.organisation_page_size,
     };
 };
 

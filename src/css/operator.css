@@ -326,3 +326,9 @@
 .operator-display .answerStyle {
     font-size: 0.95em;
 }
+
+.operator-teach .input-area {
+    width: 900px;
+    display: inline-block;
+}
+

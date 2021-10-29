@@ -27,8 +27,9 @@ export class AppMenu extends Component {
         window.location = window.ENV.web_base;
     }
     signOut() {
-        this.props.signOut();
-        window.location = "/#/";
+        this.props.signOut(() => {
+            window.location = "/#/";
+        });
     }
     // get the right logo file depending on the theme
     getLogo() {

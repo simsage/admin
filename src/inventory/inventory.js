@@ -107,7 +107,8 @@ export class Inventory extends React.Component {
                         <table className="table">
                             <thead>
                                 <tr className='table-header'>
-                                    <th className='table-header table-width-70'>created</th>
+                                    <th className='table-header table-width-25'>name / type</th>
+                                    <th className='table-header table-width-33'>created</th>
                                     <th className='table-header'>action</th>
                                 </tr>
                             </thead>
@@ -117,17 +118,22 @@ export class Inventory extends React.Component {
                                         <tr key={item}>
                                             <td>
                                                 <div className="snapshot-item">
-                                                    content snapshot {Api.unixTimeConvert(item)}
+                                                    {item.name}
                                                 </div>
                                             </td>
                                             <td>
-                                                <div className="link-button" onClick={() => this.inventorizeDump(item)}>
+                                                <div className="snapshot-item">
+                                                    {Api.unixTimeConvert(item.time)}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="link-button" onClick={() => this.inventorizeDump(item.time)}>
                                                     <img src="../images/parquet.png" className="image-size" title="download as parquet-file" alt="download parquet"/>
                                                 </div>
-                                                <div className="link-button" onClick={() => this.inventorizeDumpSpreadsheet(item)}>
+                                                <div className="link-button" onClick={() => this.inventorizeDumpSpreadsheet(item.time)}>
                                                     <img src="../images/xlsx.svg" className="image-size" title="download as spreadsheet-xlsx" alt="download spreadsheet"/>
                                                 </div>
-                                                <div className="link-button" onClick={() => this.deleteInventorizeAsk(item)}>
+                                                <div className="link-button" onClick={() => this.deleteInventorizeAsk(item.time)}>
                                                     <img src="../images/delete.svg" className="image-size" title="remove report" alt="remove"/>
                                                 </div>
                                             </td>
@@ -136,12 +142,19 @@ export class Inventory extends React.Component {
                                 })}
                                 <tr>
                                     <td/>
+                                    <td/>
                                     <td>
                                         {this.props.selected_organisation_id.length > 0 && !this.props.inventorize_busy &&
                                         <div className="image-button" onClick={() => {
                                             this.props.createInventory();
                                             this.props.forceInventoryBusy();
-                                        }}><img className="image-size" src="../images/add.svg" title="create a new snapshot" alt="create new snapshot"/></div>
+                                        }}><img className="image-size" src="../images/add.svg" title="create a new document snapshot" alt="create new document snapshot"/>&nbsp;documents</div>
+                                        }
+                                        {this.props.selected_organisation_id.length > 0 && !this.props.inventorize_busy &&
+                                        <div className="image-button" onClick={() => {
+                                            this.props.createIndexInventory();
+                                            this.props.forceInventoryBusy();
+                                        }}><img className="image-size" src="../images/add.svg" title="create a new index snapshot" alt="create new index snapshot"/>&nbsp;indexes</div>
                                         }
                                         {this.props.selected_organisation_id.length > 0 && this.props.inventorize_busy &&
                                             <div className="image-button">

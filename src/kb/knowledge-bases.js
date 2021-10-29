@@ -6,12 +6,10 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 import TimeSelect from "../common/time-select";
-import {Home} from "../home";
 import {Pagination} from "../common/pagination";
 
 import '../css/kb.css';
 
-const defaultOptimizationSchedule = 'mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3';
 const defaultDmsIndexSchedule = 'mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3';
 
 
@@ -34,18 +32,15 @@ export class KnowledgeBases extends Component {
             edit_analytics_window_size_in_months: "0",
             edit_operator_enabled: true,
             edit_capacity_warnings: true,
+            edit_enable_document_similarity: true,
+            edit_document_similarity_threshold: 0.9,
             edit_created: 0,
-            edit_index_optimization_schedule: defaultOptimizationSchedule,
             edit_dms_index_schedule: defaultDmsIndexSchedule,
 
             // view ids
             view_ids: false,
             copied_visible: '',
             kb: null,
-
-            // pagination
-            page_size: 5,
-            page: 0,
         };
     }
     componentDidCatch(error, info) {
@@ -53,10 +48,10 @@ export class KnowledgeBases extends Component {
         console.log(error, info);
     }
     changePage(page) {
-        this.setState({page: page});
+        this.props.setKbPage(page);
     }
     changePageSize(page_size) {
-        this.setState({page_size: page_size});
+        this.props.setKbPageSize(page_size);
     }
     addNewKnowledgeBase() {
         this.setState({edit_knowledgebase: true, knowledgeBase: null,
@@ -68,9 +63,10 @@ export class KnowledgeBases extends Component {
             edit_analytics_window_size_in_months: "0",
             edit_operator_enabled: true,
             edit_capacity_warnings: true,
+            edit_enable_document_similarity: true,
+            edit_document_similarity_threshold: 0.9,
             edit_created: 0,
             edit_security_id: Api.createGuid(),
-            edit_index_optimization_schedule: defaultOptimizationSchedule,
             edit_dms_index_schedule: defaultDmsIndexSchedule,
         })
     }
@@ -89,52 +85,11 @@ export class KnowledgeBases extends Component {
                 edit_analytics_window_size_in_months: knowledgeBase.analyticsWindowInMonths,
                 edit_operator_enabled: knowledgeBase.operatorEnabled,
                 edit_capacity_warnings: knowledgeBase.capacityWarnings,
-                edit_index_optimization_schedule: knowledgeBase.indexOptimizationSchedule,
                 edit_dms_index_schedule: knowledgeBase.dmsIndexSchedule,
+                edit_enable_document_similarity: knowledgeBase.enableDocumentSimilarity ? knowledgeBase.enableDocumentSimilarity : false,
+                edit_document_similarity_threshold: knowledgeBase.documentSimilarityThreshold ? knowledgeBase.documentSimilarityThreshold : 0.9,
                 edit_created: knowledgeBase.created,
             })
-        }
-    }
-    optimizeIndexesAsk(knowledgeBase) {
-        if (knowledgeBase) {
-            this.props.openDialog("are you sure you want to optimize the indexes for \"" + knowledgeBase.name + "\" ?", "Optimize Knowledge base", (action) => { this.optimizeIndexes(action) });
-            this.setState({knowledgeBase: knowledgeBase});
-        }
-    }
-    optimizeIndexes(action) {
-        if (action) {
-            this.props.optimizeIndexes(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-    }
-    removeOptimizedIndexesAsk(knowledgeBase) {
-        if (knowledgeBase) {
-            this.props.openDialog("are you sure you want to remove the optimized indexes for \"" + knowledgeBase.name + "\" ?", "Remove Optimized Indexes", (action) => { this.removeOptimizedIndexes(action) });
-            this.setState({knowledgeBase: knowledgeBase});
-        }
-    }
-    removeOptimizedIndexes(action) {
-        if (action) {
-            this.props.removeOptimizedIndexes(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-    }
-    removeAllIndexesAsk(knowledgeBase) {
-        if (knowledgeBase) {
-            this.props.openDialog("are you sure you want to remove the <b>ALL indexes</b> (optimized and non-optimized) for \"" + knowledgeBase.name + "\" ?", "Remove ALL Indexes", (action) => { this.removeAllIndexes(action) });
-            this.setState({knowledgeBase: knowledgeBase});
-        }
-    }
-    removeAllIndexes(action) {
-        if (action) {
-            this.props.removeAllIndexes(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
         }
     }
     deleteKnowledgeBaseAsk(knowledgeBase) {
@@ -161,7 +116,8 @@ export class KnowledgeBases extends Component {
                                            this.state.edit_enabled, this.state.edit_max_queries_per_day,
                                            this.state.edit_analytics_window_size_in_months, this.state.edit_operator_enabled,
                                            this.state.edit_capacity_warnings, this.state.edit_created,
-                                           this.state.edit_index_optimization_schedule, this.state.edit_dms_index_schedule);
+                                           this.state.edit_dms_index_schedule, this.state.edit_enable_document_similarity,
+                                           this.state.edit_document_similarity_threshold);
             this.setState({edit_knowledgebase: false, knowledgeBase: null});
         } else {
             this.props.setError("Incomplete Data", "Please complete all fields.");
@@ -172,19 +128,14 @@ export class KnowledgeBases extends Component {
     }
     getKnowledgeBases() {
         const paginated_list = [];
-        const first = this.state.page * this.state.page_size;
-        const last = first + this.state.page_size;
+        const first = this.props.kb_page * this.props.kb_page_size;
+        const last = first + parseInt(this.props.kb_page_size);
         for (const i in this.props.knowledge_base_list) {
             if (i >= first && i < last) {
                 paginated_list.push(this.props.knowledge_base_list[i]);
             }
         }
         return paginated_list;
-    }
-    updateIndexOptimizationSchedule(time) {
-        if (time !== null) {
-            this.setState({edit_index_optimization_schedule: time});
-        }
     }
     updateDMSIndexSchedule(time) {
         if (time !== null) {
@@ -199,40 +150,23 @@ export class KnowledgeBases extends Component {
         this.setState({copied_visible: org_id});
         window.setTimeout(() => { this.setState({copied_visible: ""})}, 1000);
     }
-    indexOptimizationClass(kb) {
-        if (kb) {
-            if (kb.needsIndexOptimization || kb.indexOptimizationTime === 0) {
-                return "indexes-out-of-date";
-            } else {
-                return "indexes-up-to-date";
-            }
+    optimizeIndexesAsk(knowledgeBase) {
+        if (knowledgeBase) {
+            this.props.openDialog("are you sure you want to optimize the indexes for \"" + knowledgeBase.name + "\" ?", "Optimize Knowledge base", (action) => { this.optimizeIndexes(action) });
+            this.setState({knowledgeBase: knowledgeBase});
         }
-        return "";
     }
-    indexOptimizationText(kb) {
-        if (kb) {
-            if (kb.needsIndexOptimization || kb.indexOptimizationTime === 0) {
-                return "the indexes for \"" + kb.name + "\" are out of date.";
-            } else {
-                return "the indexes for \"" + kb.name + "\" are up to date.";
-            }
+    optimizeIndexes(action) {
+        if (action) {
+            this.props.optimizeIndexes(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
         }
-        return "";
-    }
-    indexOptimizationStatus(kb) {
-        if (kb) {
-            var time = "not optimized";
-            if (kb.indexOptimizationTime > 0) {
-                time = Api.unixTimeConvert(kb.indexOptimizationTime);
-            }
-            return time;
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
         }
-        return "";
     }
     render() {
         const theme = this.props.theme;
         const t_value = this.state.selectedTab;
-        const isAdmin = Home.hasRole(this.props.user, ['admin']);
         return (
                 <div className="kb-page">
                     { this.isVisible() &&
@@ -245,7 +179,6 @@ export class KnowledgeBases extends Component {
                                     <tr className='table-header'>
                                         <th className='table-header table-width-20'>knowledge base</th>
                                         <th className='table-header table-width-20'>email queries to</th>
-                                        <th className='table-header table-width-20'>last index optimization</th>
                                         <th className='table-header'>actions</th>
                                     </tr>
                                 </thead>
@@ -259,11 +192,6 @@ export class KnowledgeBases extends Component {
                                                     </td>
                                                     <td>
                                                         <div className="kb-label">{knowledge_base.email}</div>
-                                                    </td>
-                                                    <td>
-                                                        <div className={"kb-label" + this.indexOptimizationClass(knowledge_base)}
-                                                                title={this.indexOptimizationText(knowledge_base)}>
-                                                            {this.indexOptimizationStatus(knowledge_base)}</div>
                                                     </td>
                                                     <td>
                                                         <div className="link-button"
@@ -281,32 +209,17 @@ export class KnowledgeBases extends Component {
                                                             <img src="../images/delete.svg" className="image-size"
                                                                  title="remove knowledge base" alt="remove"/>
                                                         </div>
-                                                        <br clear="both" />
-                                                        <button style={{marginBottom: '4px'}}
-                                                             onClick={() => this.optimizeIndexesAsk(knowledge_base)}>
-                                                            optimize indexes
-                                                        </button>
-                                                        {isAdmin &&
-                                                            <div style={{marginBottom: '4px'}}>
-                                                                <button onClick={() => this.removeOptimizedIndexesAsk(knowledge_base)}>
-                                                                    remove optimized indexes
-                                                                </button>
-                                                            </div>
-                                                        }
-                                                        {isAdmin &&
-                                                        <div>
-                                                            <button onClick={() => this.removeAllIndexesAsk(knowledge_base)}>
-                                                                remove all indexes
-                                                            </button>
+                                                        <div className="link-button"
+                                                                onClick={() => this.optimizeIndexesAsk(knowledge_base)}>
+                                                            <img src="../images/optimize-indexes.svg" className="image-size"
+                                                                 title="optimize indexes" alt="optimize"/>
                                                         </div>
-                                                        }
                                                     </td>
                                                 </tr>
                                             )
                                         })
                                     }
                                     <tr>
-                                        <td/>
                                         <td/>
                                         <td/>
                                         <td>
@@ -326,8 +239,8 @@ export class KnowledgeBases extends Component {
                                 theme={theme}
                                 component="div"
                                 count={this.props.knowledge_base_list.length}
-                                rowsPerPage={this.state.page_size}
-                                page={this.state.page}
+                                rowsPerPage={this.props.kb_page_size}
+                                page={this.props.kb_page}
                                 backIconButtonProps={{
                                     'aria-label': 'Previous Page',
                                 }}
@@ -355,10 +268,6 @@ export class KnowledgeBases extends Component {
                                                 <li className="nav-item nav-cursor">
                                                     <div className={"nav-link " + (this.state.selectedTab === 'general' ? 'active' : '')}
                                                          onClick={() => this.setState({selectedTab: 'general'})}>general</div>
-                                                </li>
-                                                <li className="nav-item nav-cursor">
-                                                    <div className={"nav-link " + (this.state.selectedTab === 'index schedule' ? 'active' : '')}
-                                                         onClick={() => this.setState({selectedTab: 'index schedule'})}>index schedule</div>
                                                 </li>
                                                 <li className="nav-item nav-cursor">
                                                     <div className={"nav-link " + (this.state.selectedTab === 'DMS schedule' ? 'active' : '')}
@@ -456,6 +365,20 @@ export class KnowledgeBases extends Component {
 
 
                                                 <div className="control-row">
+                                                    <span className="checkbox-only">
+                                                        <input type="checkbox"
+                                                               checked={this.state.edit_enable_document_similarity}
+                                                               onChange={(event) => {
+                                                                   this.setState({edit_enable_document_similarity: event.target.checked});
+                                                               }}
+                                                               value="enable document similarity?"
+                                                        />
+                                                    </span>
+                                                    <span>enable document similarity?</span>
+                                                </div>
+
+
+                                                <div className="control-row">
                                                     <span className="label-wide">maximum number of queries per day (0 is no limits)</span>
                                                     <span className="text">
                                                         <input type="text"
@@ -479,20 +402,20 @@ export class KnowledgeBases extends Component {
                                                 </div>
 
 
-                                            </div>
-                                            }
+                                                <div className="control-row">
+                                                    <span className="label-wide">document similarity (a number between 0.75 and 1.0)</span>
+                                                    <span className="text">
+                                                        <input type="text"
+                                                               onChange={(event) => this.setState({edit_document_similarity_threshold: event.target.value})}
+                                                               placeholder="document similarity threshold"
+                                                               value={this.state.edit_document_similarity_threshold}
+                                                        />
+                                                    </span>
+                                                </div>
 
-                                            {t_value === 'index schedule' &&
-                                            <div className="time-tab-content">
-                                                <TimeSelect time={this.state.edit_index_optimization_schedule}
-                                                            onSave={(time) => this.updateIndexOptimizationSchedule(time)}/>
-                                            </div>
-                                            }
-                                            {t_value === 'index schedule' &&
-                                            <div className="padding-bottom">
-                                            </div>
-                                            }
 
+                                            </div>
+                                            }
 
                                             {t_value === 'DMS schedule' &&
                                             <div className="time-tab-content">
@@ -615,6 +538,8 @@ const mapStateToProps = function(state) {
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_organisation: state.appReducer.selected_organisation,
         knowledge_base_list: state.appReducer.knowledge_base_list,
+        kb_page: state.appReducer.kb_page,
+        kb_page_size: state.appReducer.kb_page_size,
         user: state.appReducer.user,
     };
 };

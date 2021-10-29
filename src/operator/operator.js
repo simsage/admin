@@ -83,6 +83,7 @@ export class Operator extends React.Component {
             sessionId: this.props.session.id,
             operatorId: this.props.operator.id,
             organisationId: this.props.selected_organisation_id,
+            kbId: this.props.operator.client_kb_id,
             clientId: this.props.operator.client_id,
         };
         this.props.sendOperatorMessage('/ops/next-user', data);

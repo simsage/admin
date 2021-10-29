@@ -27,10 +27,6 @@ export class UserManager extends React.Component {
             edit_roles: [],
             edit_kb_list: [],
             edit_groups: [],
-
-            // pagination
-            page_size: 5,
-            page: 0,
         };
     }
     componentDidCatch(error, info) {
@@ -50,8 +46,8 @@ export class UserManager extends React.Component {
     }
     getUsers(isAdmin) {
         const paginated_list = [];
-        const first = this.state.page * this.state.page_size;
-        const last = first + this.state.page_size;
+        const first = this.props.user_page * this.props.user_page_size;
+        const last = first + parseInt(this.props.user_page_size);
         let index = 0;
         for (const i in this.props.user_list) {
             // paginate all users - but only those that have roles in this organisation
@@ -67,10 +63,10 @@ export class UserManager extends React.Component {
         return paginated_list;
     }
     changePage(page) {
-        this.setState({page: page});
+        this.props.setUserPage(page);
     }
     changePageSize(page_size) {
-        this.setState({page_size: page_size});
+        this.props.setUserPageSize(page_size);
     }
     static formatRoles(organisationId, roles) {
         let roles_str = "";
@@ -238,7 +234,7 @@ export class UserManager extends React.Component {
                     <div className="filter-find-box">
                         <span className="filter-label">filter</span>
                         <span className="filter-find-text">
-                            <input type="text" value={this.props.user_filter} autoFocus={true} className={theme}
+                            <input type="text" value={this.props.user_filter} autoFocus={true} className={"filter-text-width " + theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setUserFilter(event.target.value)
@@ -336,8 +332,8 @@ export class UserManager extends React.Component {
                                             rowsPerPageOptions={[5, 10, 25]}
                                             component="div"
                                             count={this.numUsers(this.props.selected_organisation_id, isAdmin)}
-                                            rowsPerPage={this.state.page_size}
-                                            page={this.state.page}
+                                            rowsPerPage={this.props.user_page_size}
+                                            page={this.props.user_page}
                                             onChangePage={(page) => this.changePage(page)}
                                             onChangeRowsPerPage={(rows) => this.changePageSize(rows)}
                                         />
@@ -388,6 +384,8 @@ const mapStateToProps = function(state) {
         knowledge_base_list: state.appReducer.knowledge_base_list,
         group_list: state.appReducer.group_list,
         user: state.appReducer.user,
+        user_page: state.appReducer.user_page,
+        user_page_size: state.appReducer.user_page_size,
     };
 };
 

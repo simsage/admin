@@ -19,11 +19,15 @@ export function initializeState() {
         selected_organisation: "",
         organisation_filter: "",
         organisation_list: [],
+        organisation_page: 0,
+        organisation_page_size: 10,
 
         // kb status
         selected_knowledgebase: null,
         selected_knowledgebase_id: "",
         knowledge_base_list: [],
+        kb_page: 0,
+        kb_page_size: 10,
 
         // edge devices
         edge_device_list: [],
@@ -38,6 +42,8 @@ export function initializeState() {
         // the users
         user_list: [],
         user_filter: '',
+        user_page: 0,
+        user_page_size: 5,
 
         // crawlers
         crawler_list: [],
@@ -62,7 +68,7 @@ export function initializeState() {
         document_filter: '',
         prev_document_filter: '',   // see what the last filter was (reset pagination if changed)
         document_page: 0,
-        document_page_size: 5,
+        document_page_size: 10,
         num_documents: 0,
         // nav-list with page 0 id
         document_nav_list: ["null"],
@@ -72,7 +78,7 @@ export function initializeState() {
         mind_item_previous: null,
         mind_item_filter: '',
         mind_item_page: 0,
-        mind_item_page_size: 5,
+        mind_item_page_size: 10,
         num_mind_items: 0,
         prev_mind_item_filter: '',
         mind_item_nav_list: ["null"],
@@ -88,7 +94,7 @@ export function initializeState() {
         synonym_prev_id: null,
         synonym_filter: "",
         synonym_page: 0,
-        synonym_page_size: 5,
+        synonym_page_size: 10,
         num_synonyms: 0,
         prev_synonym_filter: '',
         synonym_nav_list: ["null"],
@@ -98,7 +104,7 @@ export function initializeState() {
         semantic_prev_id: null,
         semantic_filter: "",
         semantic_page: 0,
-        semantic_page_size: 5,
+        semantic_page_size: 10,
         num_semantics: 0,
         prev_semantic_filter: '',
         semantic_nav_list: ["null"],
@@ -107,7 +113,7 @@ export function initializeState() {
         synset_filter: "",
         synset_list: [],
         synset_page: 0,
-        synset_page_size: 10,
+        synset_page_size: 5,
         synset_total_size: 0,
 
         // reports
@@ -136,7 +142,7 @@ export function initializeState() {
 
         // system logs
         log_list: [],
-        log_date: Api.toIsoDateTime(new Date()),
+        log_date: null,
         log_hours: 2,
         log_type: 'All',
         log_service: 'All',

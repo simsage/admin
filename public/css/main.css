@@ -4,6 +4,10 @@ body {
     width: 98%;
 }
 
+tr {
+    line-height: 16px;
+}
+
 /* no select class - no text selectable */
 .no-select {
     -webkit-user-select: none;
@@ -428,6 +432,8 @@ a:visited {
 .filter-label {
     width: 170px;
     display: inline-block;
+    text-align: right;
+    margin-right: 10px;
 }
 
 .filter-find-text {
@@ -437,6 +443,18 @@ a:visited {
 
 .filter-find-image {
     margin-left: 5px;
+}
+
+.filter-text-width {
+    width: 98%;
+    border: 1px solid #ced4da;
+    border-radius: 2px;
+    padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+}
+
+.filter-text-width:focus {
+    outline: none;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .hr {

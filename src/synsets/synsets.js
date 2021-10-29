@@ -90,6 +90,18 @@ export class SynSets extends React.Component {
             this.props.selected_organisation && this.props.selected_organisation.length > 0 &&
             this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
     }
+    defaultSynSetsAsk() {
+        this.props.openDialog("are you sure you want to add all DEFAULT SYNSETS?",
+            "Add Default SynSets", (action) => { this.addDefaultSynSets(action) });
+    }
+    addDefaultSynSets(action) {
+        if (action) {
+            this.props.addDefaultSynSets();
+        }
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
+        }
+    }
     render() {
         const theme = this.props.theme;
         return (
@@ -106,7 +118,7 @@ export class SynSets extends React.Component {
                     <div className="filter-find-box">
                         <span className="filter-label">find synsets</span>
                         <span className="filter-find-text">
-                            <input type="text" value={this.props.synset_filter} autoFocus={true}
+                            <input type="text" value={this.props.synset_filter} autoFocus={true} className={"filter-text-width " + theme}
                                    onKeyPress={(event) => this.handleSynSetFilterKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setSynSetFilter(event.target.value)
@@ -156,9 +168,14 @@ export class SynSets extends React.Component {
                                     <td/>
                                     <td>
                                         {this.isVisible() &&
-                                        <div className="image-button" onClick={() => this.newSynSet()}><img
-                                            className="image-size" src="../images/add.svg" title="new syn-set"
-                                            alt="new syn-set"/></div>
+                                        <div className="image-button" onClick={() => this.newSynSet()} title="add a new syn-set"><img
+                                            className="image-size" src="../images/add.svg"
+                                            alt="new"/>&nbsp;new</div>
+                                        }
+                                        {this.isVisible() &&
+                                        <div className="image-button" onClick={() => this.defaultSynSetsAsk()} title="add all default syn-sets"><img
+                                            className="image-size" src="../images/add.svg"
+                                            alt="defaults"/>&nbsp;defaults</div>
                                         }
                                     </td>
                                 </tr>

@@ -4,7 +4,9 @@
     padding: 10px;
     color: #555;
     width: 300px;
-    overflow-wrap: break-word;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .document-display .sourceLabel {
@@ -24,7 +26,11 @@
     width: 90px;
 }
 
+.document-display .status-label {
+}
+
 .document-display .statusImage {
     width: 16px;
+    float: left;
 }
 

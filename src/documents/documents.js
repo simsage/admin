@@ -135,7 +135,7 @@ export class Documents extends React.Component {
                     <div className="filter-find-box">
                         <span className="filter-label">filter</span>
                         <span className="filter-find-text">
-                            <input type="text" value={this.props.document_filter} autoFocus={true} className={theme}
+                            <input type="text" value={this.props.document_filter} autoFocus={true} className={"filter-text-width " + theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setDocumentFilter(event.target.value)
@@ -181,7 +181,7 @@ export class Documents extends React.Component {
                                                         }
                                                         {
                                                             !Documents.isWeb(document.url) &&
-                                                            <div className="urlLabel">{Documents.adjustUrl(document.url)}</div>
+                                                            <div className="urlLabel" title={document.url}>{Documents.adjustUrl(document.url)}</div>
                                                         }
                                                     </td>
                                                     <td className="sourceLabel">
@@ -191,7 +191,7 @@ export class Documents extends React.Component {
                                                         <div className="timeLabel">{Api.unixTimeConvert(document.lastModified)}</div>
                                                     </td>
                                                     <td>
-                                                        <div className="label">
+                                                        <div className="status-label">
                                                             <img src={this.getStatus(document, "crawled")} className="statusImage" alt="crawler" title={this.getStatusText(document, "crawled", "crawling")} />
                                                             <img src={this.getStatus(document, "converted")} className="statusImage" alt="converted" title={this.getStatusText(document, "converted", "converting")} />
                                                             <img src={this.getStatus(document, "parsed")} className="statusImage" alt="parsed" title={this.getStatusText(document, "parsed", "parsing")} />

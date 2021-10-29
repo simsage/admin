@@ -82,12 +82,16 @@ export class CrawlerDropbox extends Component {
                     </span>
                 </div>
 
+                <div className="form-group small-text-with-width">
+                    You can enter multiple folders separated by commas.  Each folder must be part of the root folder and not contain any sub-folders.
+                    You can leave this entry empty to crawl all folders.  Each folder name must start with '/'.
+                </div>
+
                 <div className="form-group">
                     <span className="left-column">
                         <span className="small-label-right">start folder</span>
                         <span className="big-text">
                             <input type="text" className="form-control textarea-width"
-                                      placeholder="specific folder to crawl, leave empty to crawl all folders."
                                       value={this.state.folderList}
                                       onChange={(event) => {this.change_callback({folderList: event.target.value})}}
                             />

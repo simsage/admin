@@ -13,13 +13,19 @@ import {
     GET_DOCUMENTS_PAGINATED,
     GET_HTML5_NOTIFICATIONS,
     GET_KNOWLEDGE_BASES,
+    SET_KB_PAGE,
+    SET_KB_PAGE_SIZE,
     GET_INVENTORIZE_LIST,
     GET_INVENTORIZE_BUSY,
     GET_LICENSE,
     SET_ORGANISATION_LIST,
     SET_ORGANISATION_FILTER,
+    SET_ORGANISATION_PAGE,
+    SET_ORGANISATION_PAGE_SIZE,
     SET_USER_LIST,
     SET_USER_FILTER,
+    SET_USER_PAGE,
+    SET_USER_PAGE_SIZE,
     HIDE_NOTIFICATIONS,
     MARK_CONVERSATION_USED,
     MIND_FIND,
@@ -259,7 +265,23 @@ export const reducer = (state, action) => {
         case SET_ORGANISATION_FILTER: {
             return {
                 ...state,
+                organisation_page: 0,
                 organisation_filter: action.filter,
+            };
+        }
+
+        case SET_ORGANISATION_PAGE: {
+            return {
+                ...state,
+                organisation_page: action.page,
+            };
+        }
+
+        case SET_ORGANISATION_PAGE_SIZE: {
+            return {
+                ...state,
+                organisation_page: 0,
+                organisation_page_size: action.page_size,
             };
         }
 
@@ -268,6 +290,21 @@ export const reducer = (state, action) => {
                 ...state,
                 knowledge_base_list: action.knowledge_base_list,
                 busy: false,
+            };
+        }
+
+        case SET_KB_PAGE: {
+            return {
+                ...state,
+                kb_page: action.page,
+            };
+        }
+
+        case SET_KB_PAGE_SIZE: {
+            return {
+                ...state,
+                kb_page: 0,
+                kb_page_size: action.page_size,
             };
         }
 
@@ -391,7 +428,23 @@ export const reducer = (state, action) => {
         case SET_USER_FILTER: {
             return {
                 ...state,
+                user_page: 0,
                 user_filter: action.filter,
+            };
+        }
+
+        case SET_USER_PAGE: {
+            return {
+                ...state,
+                user_page: action.page,
+            };
+        }
+
+        case SET_USER_PAGE_SIZE: {
+            return {
+                ...state,
+                user_page: 0,
+                user_page_size: action.page_size,
             };
         }
 
@@ -1027,8 +1080,8 @@ export const reducer = (state, action) => {
 
                         if (data.clientId.length > 5) {
                             operator.client_id = data.clientId;
-                            operator.client_kb_id = data.kbId;
                         }
+                        operator.client_kb_id = data.kbId;
 
                         // set the name of the knowledge base connected to
                         if (data.kbName && data.kbName.length > 0) {

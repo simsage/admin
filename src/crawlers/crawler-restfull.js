@@ -81,7 +81,7 @@ export class CrawlerRestFull extends Component {
                         <span className="big-text">
                             <form>
                                 <input type="text" className="form-control jdbc-field-width"
-                                    placeholder="url"
+                                    placeholder="JSON url (will grab the first list inside it can find as the source)"
                                     value={this.state.url}
                                     onChange={(event) => {this.change_callback({url: event.target.value})}}
                                 />
@@ -92,7 +92,7 @@ export class CrawlerRestFull extends Component {
 
                 <div className="form-group">
                     <span className="left-column">
-                        <span className="small-label-right">record primary key</span>
+                        <span className="small-label-right">record primary key (use [field-name])</span>
                         <span className="big-text">
                             <form>
                                 <input type="text" className="form-control jdbc-field-width"
@@ -122,7 +122,7 @@ export class CrawlerRestFull extends Component {
                 </div>
 
                 <div className="form-group">
-                    <span className="label-right-top">text index template</span>
+                    <span className="label-right-top">text index template (use [field-name])</span>
                     <span className="full-column">
                         <textarea className="textarea-width"
                             placeholder="REST text index template, an text template referencing REST fields in square brackets [FIELD-NAME]"
@@ -135,7 +135,7 @@ export class CrawlerRestFull extends Component {
                 </div>
 
                 <div className="form-group">
-                    <span className="label-right-top">html render template</span>
+                    <span className="label-right-top">html render template (use [field-name])</span>
                     <span className="full-column">
                         <textarea className="textarea-width"
                             placeholder="REST html render template, an html template referencing REST fields in square brackets [FIELD-NAME]"

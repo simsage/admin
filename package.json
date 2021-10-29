@@ -1,6 +1,6 @@
 {
   "name": "simsage-admin",
-  "version": "7.1.0",
+  "version": "7.2.6",
   "private": true,
   "description": "SimSage: search less; find more",
   "repository": "git@gitlab.com:peter3125/simsage.git",
@@ -28,6 +28,7 @@
     "luxon": "^2.0.1",
     "moment": "^2.29.1",
     "npm": "^7.19.1",
+    "chart.js": "^2.8.0",
     "@popperjs/core": "^2.9.2",
     "query-string": "^7.0.0",
     "react": "^17.0.2",

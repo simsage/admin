@@ -10,18 +10,24 @@ export const RESET_PASSWORD = "reset password";
 export const SET_USER_LIST = "set user list";
 export const UPDATE_USER = "update user";
 export const SET_USER_FILTER = "set user filter";
+export const SET_USER_PAGE = "set user page";
+export const SET_USER_PAGE_SIZE = "set user page size";
 
 export const SET_ORGANISATION_LIST = "get organisation list";
 export const SELECT_ORGANISATION = "select organisation";
 export const UPDATE_ORGANISATION = "update organisation";
 export const SET_ORGANISATION_FILTER = "set organisation filter";
 export const RESET_SELECTED_KB = "reset selected kb";
+export const SET_ORGANISATION_PAGE = "set organisation page";
+export const SET_ORGANISATION_PAGE_SIZE = "set organisation page size";
 
 export const GET_KNOWLEDGE_BASES = "get knowledge bases";
 export const SELECT_KNOWLEDGE_BASE = "selected knowledge base";
 export const SELECT_EDGE_DEVICE = "select edge device";
 export const GET_INVENTORIZE_LIST = "get inventorize list";
 export const GET_INVENTORIZE_BUSY = "get inventorize busy";
+export const SET_KB_PAGE = "set kb page";
+export const SET_KB_PAGE_SIZE = "set kb page size";
 
 export const UPLOADING_PROGRAM = "uploading program";
 export const UPLOADING_PROGRAM_FINISHED = "uploading program finished";

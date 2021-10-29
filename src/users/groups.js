@@ -122,9 +122,9 @@ export class Groups extends React.Component {
                 {
                     this.isVisible() &&
                     <div className="filter-find-box">
-                        <span className="filter-label">find synonyms</span>
+                        <span className="filter-label">filter</span>
                         <span className="filter-find-text">
-                            <input type="text" value={this.props.group_filter} autoFocus={true} className={theme}
+                            <input type="text" value={this.props.group_filter} autoFocus={true} className={"filter-text-width " + theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setGroupFilter(event.target.value);

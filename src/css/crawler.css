@@ -299,3 +299,11 @@
 .crawler-page .time-tab-content {
     margin-left: 20px;
 }
+
+.crawler-page .small-text-with-width {
+    margin-top: 20px;
+    margin-left: 50px;
+    font-size: 14px;
+    width: 800px;
+}
+

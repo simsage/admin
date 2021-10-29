@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+import '../css/operator.css';
 
 export class OperatorTeach extends Component {
     constructor(props) {
@@ -30,6 +31,8 @@ export class OperatorTeach extends Component {
         if (this.state.has_error) {
             return <h1>operator-teach.js: Something went wrong.</h1>;
         }
+        let q = this.props.question;
+        let a = this.props.answer;
         if (!this.props.open)
             return (<div />);
         return (
@@ -38,22 +41,22 @@ export class OperatorTeach extends Component {
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
                         <div className="modal-header">Teach SimSage?</div>
-                        <div className="modal-body">
+                        <div className="modal-body operator-teach">
                             <div>
 
-                                <div>question</div>
+                                <div><b>question</b></div>
                                 <div>
-                                    {this.props.question}
+                                    {q}
+                                </div>
+                                <div><b>answer</b></div>
+                                <div>
+                                    {a}
                                 </div>
 
-                                <div>answer</div>
+                                <br />
+                                <div><b>links</b></div>
                                 <div>
-                                    {this.props.answer}
-                                </div>
-
-                                <div>links</div>
-                                <div>
-                                    <textarea
+                                    <textarea className="input-area"
                                         onChange={(event) => this.setState({links: event.target.value})}
                                         placeholder="links (images and page-links, separated by commas or spaces)"
                                         rows={5}

@@ -5,6 +5,9 @@ import {Api} from "../common/api";
 
 import '../css/crawler.css';
 
+// marker for an external node
+const external_node_id = 1000000;
+
 const crawler_list = [
     {"key": "none", "value": "please select crawler type"},
     {"key": "file", "value": "file crawler"},
@@ -16,7 +19,7 @@ const crawler_list = [
     {"key": "nfs", "value": "nfs external crawler"},
     {"key": "database", "value": "database crawler"},
     {"key": "restfull", "value": "REST-full crawler"},
-    {"key": "glp", "value": "Global Legal Post crawler"},
+    {"key": "rss", "value": "RSS crawler"},
     {"key": "external", "value": "External crawler"},
 ];
 
@@ -56,6 +59,8 @@ export class CrawlerGeneral extends Component {
             qaMatchStrength: Api.defined(props.qaMatchStrength) && props.qaMatchStrength ? props.qaMatchStrength : 0.8125,
             numResults: Api.defined(props.numResults) && props.numResults ? props.numResults : 5,
             numFragments: Api.defined(props.numFragments) && props.numFragments ? props.numFragments : 3,
+            errorThreshold: Api.defined(props.errorThreshold) && props.errorThreshold ? props.errorThreshold : 0,
+            internalCrawler: Api.defined(props.nodeId) ? props.nodeId !== external_node_id : false,
         };
 
     }
@@ -88,6 +93,8 @@ export class CrawlerGeneral extends Component {
                             qaMatchStrength: Api.defined(nextProps.qaMatchStrength) ? nextProps.qaMatchStrength : 0.8125,
                             numResults: Api.defined(nextProps.numResults) ? nextProps.numResults : 5,
                             numFragments: Api.defined(nextProps.numFragments) ? nextProps.numFragments : 3,
+                            errorThreshold: Api.defined(nextProps.errorThreshold) ? nextProps.errorThreshold : 0,
+                            internalCrawler: Api.defined(nextProps.nodeId) ? nextProps.nodeId !== external_node_id : false,
 
                             name: nextProps.name,
                             onSave: nextProps.onSave,
@@ -99,19 +106,29 @@ export class CrawlerGeneral extends Component {
     }
     construct_data(data) {
         const crawlerType = Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType;
-        const allowAnonymous = (Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous) || (crawlerType === 'web') || (crawlerType === 'glp');
+        const allowAnonymous = (Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous) || (crawlerType === 'web') || (crawlerType === 'rss');
         let edgeDeviceId = Api.defined(data.edgeDeviceId) ? data.edgeDeviceId : this.state.edgeDeviceId;
         if (edgeDeviceId === 'none' || !this.canHaveEdgeDevice()) edgeDeviceId = '';
+        let deleteFiles = Api.defined(data.deleteFiles) ? data.deleteFiles : this.state.deleteFiles;
+        if (crawlerType === 'rss') deleteFiles = false;
+        let nodeId = Api.defined(data.nodeId) ? data.nodeId : this.state.nodeId;
+        if (Api.defined(data.internalCrawler)) {
+            if (data.internalCrawler && nodeId === external_node_id) {
+                nodeId = 0;
+            } else if (!data.internalCrawler) {
+                nodeId = external_node_id;
+            }
+        }
         return {filesPerSecond: Api.defined(data.filesPerSecond) ? data.filesPerSecond : this.state.filesPerSecond,
                 organisationId: Api.defined(data.organisationId) ? data.organisationId : this.state.organisationId,
                 crawlerType: crawlerType,
-                deleteFiles: Api.defined(data.deleteFiles) ? data.deleteFiles : this.state.deleteFiles,
+                deleteFiles: deleteFiles,
                 allowAnonymous: allowAnonymous,
                 enablePreview: Api.defined(data.enablePreview) ? data.enablePreview : this.state.enablePreview,
                 processingLevel: Api.defined(data.processingLevel) ? data.processingLevel : this.state.processingLevel,
                 name: Api.defined(data.name) ? data.name : this.state.name,
                 sourceId: Api.defined(data.sourceId) ? data.sourceId : this.state.sourceId,
-                nodeId: Api.defined(data.nodeId) ? data.nodeId : this.state.nodeId,
+                nodeId: nodeId,
                 maxItems: Api.defined(data.maxItems) ? data.maxItems : this.state.maxItems,
                 maxQNAItems: Api.defined(data.maxQNAItems) ? data.maxQNAItems : this.state.maxQNAItems,
                 customRender: Api.defined(data.customRender) ? data.customRender : this.state.customRender,
@@ -119,6 +136,7 @@ export class CrawlerGeneral extends Component {
                 qaMatchStrength: Api.defined(data.qaMatchStrength) ? data.qaMatchStrength : this.state.qaMatchStrength,
                 numResults: Api.defined(data.numResults) ? data.numResults : this.state.numResults,
                 numFragments: Api.defined(data.numFragments) ? data.numFragments : this.state.numFragments,
+                errorThreshold: Api.defined(data.errorThreshold) ? data.errorThreshold : this.state.errorThreshold,
             };
     }
     setError(title, error_msg) {
@@ -127,6 +145,13 @@ export class CrawlerGeneral extends Component {
         }
     }
     change_callback(data) {
+        if (Api.defined(data.internalCrawler)) {
+            if (data.internalCrawler && this.state.nodeId === external_node_id) {
+                data.nodeId = 0;
+            } else {
+                data.nodeId = this.state.nodeId;
+            }
+        }
         this.setState(data);
         if (this.state.onSave) {
             this.state.onSave(this.construct_data(data));
@@ -274,16 +299,20 @@ export class CrawlerGeneral extends Component {
 
 
                     <div className="form-group">
+                        {(this.state.internalCrawler || this.state.crawlerType !== 'restfull') &&
                         <span className="left-column">
                             <span className="label-right">node id</span>
                             <span className="number-textbox">
                                 <input type="text" className="form-control"
-                                    placeholder="node-id (0 for single node systems)"
-                                    value={this.state.nodeId}
-                                    onChange={(event) => {this.change_callback({nodeId: event.target.value})}}
+                                       placeholder="node-id (0 for single node systems)"
+                                       value={this.state.nodeId === external_node_id ? 0 : this.state.nodeId}
+                                       onChange={(event) => {
+                                           this.change_callback({nodeId: event.target.value})
+                                       }}
                                 />
                             </span>
                         </span>
+                        }
                         <span className="right-column">
                             {(this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull') &&
                             <div>
@@ -300,8 +329,17 @@ export class CrawlerGeneral extends Component {
                                 </div>
                             </div>
                             }
-                            {(this.state.crawlerType !== 'database' && this.state.crawlerType !== 'restfull') &&
-                            <div />
+                            {(this.state.crawlerType === 'restfull') &&
+                                <div title="Restful crawlers can be internal to the platform.">
+                                    <input type="checkbox"
+                                        checked={this.state.internalCrawler && this.state.crawlerType === 'restfull'}
+                                        onChange={(event) => {
+                                            this.change_callback({internalCrawler: event.target.checked && this.state.crawlerType === 'restfull'});
+                                        }}
+                                        value="internal crawler?"
+                                    />
+                                    <span className="label-left">internal crawler?</span>
+                                </div>
                             }
                         </span>
                     </div>
@@ -310,7 +348,8 @@ export class CrawlerGeneral extends Component {
                         <span className="left-column">
                             <div style={{float: 'left'}} title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
                                 <input type="checkbox"
-                                    checked={this.state.deleteFiles}
+                                    checked={this.state.deleteFiles && this.state.crawlerType !== 'rss'}
+                                    disabled={this.state.crawlerType === 'rss'}
                                     onChange={(event) => { this.change_callback({deleteFiles: event.target.checked}); }}
                                     value="delete files?"
                                 />
@@ -320,8 +359,8 @@ export class CrawlerGeneral extends Component {
                         <span className="right-column">
                             <div style={{float: 'left'}} title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
                                 <input type="checkbox"
-                                    checked={this.state.allowAnonymous || this.state.crawlerType === 'web' || this.state.crawlerType === 'glp'}
-                                    disabled={this.state.crawlerType === 'web' || this.state.crawlerType === 'glp'}
+                                    checked={this.state.allowAnonymous || this.state.crawlerType === 'web' || this.state.crawlerType === 'rss'}
+                                    disabled={this.state.crawlerType === 'web' || this.state.crawlerType === 'rss'}
                                     onChange={(event) => { this.change_callback({allowAnonymous: event.target.checked}); }}
                                     value="allow anonymous access to these files?"
                                 />
@@ -378,6 +417,18 @@ export class CrawlerGeneral extends Component {
                         </span>
                     </div>
 
+                    <div className="form-group">
+                        <span className="left-column">
+                            <span className="label-right">error threshold</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                       placeholder="the maximum number of errors allowed before failing"
+                                       value={this.state.errorThreshold}
+                                       onChange={(event) => {this.change_callback({errorThreshold: event.target.value})}}
+                                />
+                            </span>
+                        </span>
+                    </div>
 
                     {this.canHaveEdgeDevice() &&
                     <div className="form-group">
