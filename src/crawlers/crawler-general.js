@@ -8,11 +8,19 @@ import '../css/crawler.css';
 // marker for an external node
 const external_node_id = 1000000;
 
+// a few defaults
+const default_error_threshold = 10;
+const default_num_results = 5;
+const default_num_fragments = 3;
+const default_qna_threshold = 0.8125;
+
 const crawler_list = [
     {"key": "none", "value": "please select crawler type"},
     {"key": "file", "value": "file crawler"},
     {"key": "web", "value": "web crawler"},
-    {"key": "office365", "value": "office 365 crawler"},
+    {"key": "exchange365", "value": "exchange 365 crawler"},
+    {"key": "onedrive", "value": "one-drive crawler"},
+    {"key": "sharepoint365", "value": "sharepoint 365 crawler"},
     {"key": "dropbox", "value": "dropbox crawler"},
     {"key": "wordpress", "value": "WordPress external crawler"},
     {"key": "gdrive", "value": "Google-drive crawler"},
@@ -56,10 +64,10 @@ export class CrawlerGeneral extends Component {
             edge_device_list: this.props.edge_device_list,
 
             edgeDeviceId: Api.defined(props.edgeDeviceId) && props.edgeDeviceId.length > 0 ? props.edgeDeviceId : 'none',
-            qaMatchStrength: Api.defined(props.qaMatchStrength) && props.qaMatchStrength ? props.qaMatchStrength : 0.8125,
-            numResults: Api.defined(props.numResults) && props.numResults ? props.numResults : 5,
-            numFragments: Api.defined(props.numFragments) && props.numFragments ? props.numFragments : 3,
-            errorThreshold: Api.defined(props.errorThreshold) && props.errorThreshold ? props.errorThreshold : 0,
+            qaMatchStrength: Api.defined(props.qaMatchStrength) && props.qaMatchStrength ? props.qaMatchStrength : default_qna_threshold,
+            numResults: Api.defined(props.numResults) && props.numResults ? props.numResults : default_num_results,
+            numFragments: Api.defined(props.numFragments) && props.numFragments ? props.numFragments : default_num_fragments,
+            errorThreshold: Api.defined(props.errorThreshold) && props.errorThreshold ? props.errorThreshold : default_error_threshold,
             internalCrawler: Api.defined(props.nodeId) ? props.nodeId !== external_node_id : false,
         };
 
@@ -90,10 +98,10 @@ export class CrawlerGeneral extends Component {
                             processingLevel: nextProps.processingLevel,
                             customRender: nextProps.customRender,
                             edgeDeviceId: Api.defined(nextProps.edgeDeviceId) ? nextProps.edgeDeviceId : 'none',
-                            qaMatchStrength: Api.defined(nextProps.qaMatchStrength) ? nextProps.qaMatchStrength : 0.8125,
-                            numResults: Api.defined(nextProps.numResults) ? nextProps.numResults : 5,
-                            numFragments: Api.defined(nextProps.numFragments) ? nextProps.numFragments : 3,
-                            errorThreshold: Api.defined(nextProps.errorThreshold) ? nextProps.errorThreshold : 0,
+                            qaMatchStrength: Api.defined(nextProps.qaMatchStrength) ? nextProps.qaMatchStrength : default_qna_threshold,
+                            numResults: Api.defined(nextProps.numResults) ? nextProps.numResults : default_num_results,
+                            numFragments: Api.defined(nextProps.numFragments) ? nextProps.numFragments : default_num_fragments,
+                            errorThreshold: Api.defined(nextProps.errorThreshold) ? nextProps.errorThreshold : default_error_threshold,
                             internalCrawler: Api.defined(nextProps.nodeId) ? nextProps.nodeId !== external_node_id : false,
 
                             name: nextProps.name,
@@ -174,7 +182,8 @@ export class CrawlerGeneral extends Component {
     }
     canHaveEdgeDevice() {
         const crawlerType = this.state.crawlerType;
-        return crawlerType !== 'office365' && crawlerType !== 'wordpress' && crawlerType !== 'gdrive';
+        return crawlerType !== 'office365' && crawlerType !== 'exchange365' && crawlerType !== 'wordpress' &&
+            crawlerType !== 'gdrive' && crawlerType !== 'onedrive' && crawlerType !== 'sharepoint365';
     }
     setProcessingLevelFromMark(value) {
         if (this.state.onSave) {
@@ -409,7 +418,7 @@ export class CrawlerGeneral extends Component {
                             <span className="label-right">Q&A threshold</span>
                             <span className="number-textbox">
                                 <input type="text" className="form-control"
-                                    placeholder="Q&A threshold (0.8125 default)"
+                                    placeholder={"Q&A threshold (" + default_qna_threshold + " default)"}
                                     value={this.state.qaMatchStrength}
                                     onChange={(event) => {this.change_callback({qaMatchStrength: event.target.value})}}
                                 />

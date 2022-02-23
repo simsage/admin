@@ -14,9 +14,9 @@ import Api from "../common/api";
 
 
 const default_specific_json = '{"metadata_list":[' +
-    '{"key":"created date range","display":"created","field1":"created","db1":"","db2":"","sort":"true","sort_default":"desc","sort_asc":"oldest documents first","sort_desc":"newest documents first"},' +
-    '{"key":"last modified date ranges","display":"last modified","field1":"last-modified","db1":"","db2":"","sort":"true","sort_default":"","sort_asc":"least recently modified","sort_desc":"most recently modified"},' +
-    '{"key":"document type","display":"document type","field1":"document-type","db1":"","db2":"","sort":"","sort_default":"","sort_asc":"","sort_desc":""}' +
+    '{"key":"created date range","display":"created","metadata":"created","db1":"","db2":"","sort":"true","sortDefault":"desc","sortAscText":"oldest documents first","sortDescText":"newest documents first", "fieldOrder": "0"},' +
+    '{"key":"last modified date ranges","display":"last modified","metadata":"last-modified","db1":"","db2":"","sort":"true","sortDefault":"","sortAscText":"least recently modified","sortDescText":"most recently modified", "fieldOrder": "1"},' +
+    '{"key":"document type","display":"document type","metadata":"document-type","db1":"","db2":"","sort":"","sortDefault":"","sortAscText":"","sortDescText":"", "fieldOrder": "2"}' +
     ']}';
 
 // default values for an empty / new crawler
@@ -209,6 +209,7 @@ export class DocumentSources extends Component {
                     open={this.state.open}
                     title={this.state.title}
                     theme={theme}
+                    session={this.props.session}
                     organisation_id={this.props.selected_organisation_id}
                     kb_id={this.props.selected_knowledgebase_id}
                     user_list={this.props.user_list}
@@ -364,6 +365,7 @@ const mapStateToProps = function(state) {
         error_title: state.appReducer.error_title,
         theme: state.appReducer.theme,
 
+        session: state.appReducer.session,
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
         selected_knowledgebase: state.appReducer.selected_knowledgebase,            // the name

@@ -49,11 +49,11 @@ export class SingleSearchResult extends React.Component {
         }
     }
     getPreviewSource(item) {
-        return "http://localhost:8080/api/document/preview/" + this.props.organisationId + "/" +
+        return window.ENV.api_base + "/document/preview/" + this.props.organisationId + "/" +
                     this.props.kbId + "/" + this.props.clientId + "/" + item.urlId + "/-1"
     }
     getBinarySource(item) {
-        return "http://localhost:8080/api/document/binary/" + this.props.organisationId + "/" +
+        return window.ENV.api_base + "/document/binary/" + this.props.organisationId + "/" +
             this.props.kbId + "/" + this.props.clientId + "/" + item.urlId;
     }
     render() {

@@ -128,3 +128,9 @@ export const SET_GROUPS_PAGINATED = "set groups paginated";
 export const SET_GROUP_PAGE_SIZE = "set group page size";
 export const SET_GROUP_PAGE = "set group page";
 export const SET_GROUP_FILTER = "set group filter";
+
+// categories
+export const SET_CATEGORIES = "set categories";
+
+// SimSage status
+export const SIMSAGE_STATUS = "simsage status";

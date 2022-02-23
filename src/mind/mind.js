@@ -89,7 +89,8 @@ export class Mind extends React.Component {
         this.props.closeDialog();
     }
     mindDump() {
-        Comms.download_mind_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
+        if (this.props.session && this.props.session.id)
+            Comms.download_mind_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, this.props.session.id);
     }
     save(memory) {
         if (memory) {
@@ -253,6 +254,7 @@ const mapStateToProps = function(state) {
         bot_query: state.appReducer.bot_query,
         mind_result_list: state.appReducer.mind_result_list,
 
+        session: state.appReducer.session,
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_organisation: state.appReducer.selected_organisation,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,

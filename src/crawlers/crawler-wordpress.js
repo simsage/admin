@@ -42,7 +42,8 @@ export class CrawlerWordpress extends Component {
         }
     }
     exportArchive() {
-        Comms.download_export_archive(this.state.organisation_id, this.state.kb_id, this.state.source_id);
+        if (this.props.session && this.props.session.id)
+            Comms.download_export_archive(this.state.organisation_id, this.state.kb_id, this.state.source_id, this.props.session.id);
     }
     restore(data) {
         if (data && data.data && data.data.length > 0) {

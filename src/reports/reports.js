@@ -43,10 +43,12 @@ export class Reports extends React.Component {
     componentDidMount() {
     }
     downloadReport() {
-        const date = new Date(this.props.report_date);
-        const year = date.getFullYear();
-        const month1 = date.getMonth() + 1;
-        Comms.download_query_log(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, year, month1);
+        if (this.props.session && this.props.session.id) {
+            const date = new Date(this.props.report_date);
+            const year = date.getFullYear();
+            const month1 = date.getMonth() + 1;
+            Comms.download_query_log(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, year, month1, this.props.session.id);
+        }
     }
     isVisible() {
         return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0 &&
@@ -127,6 +129,7 @@ const mapStateToProps = function(state) {
         error_title: state.appReducer.error_title,
         theme: state.appReducer.theme,
 
+        session: state.appReducer.session,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_organisation: state.appReducer.selected_organisation,

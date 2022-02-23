@@ -43,7 +43,7 @@ export function initializeState() {
         user_list: [],
         user_filter: '',
         user_page: 0,
-        user_page_size: 5,
+        user_page_size: 10,
 
         // crawlers
         crawler_list: [],
@@ -113,8 +113,11 @@ export function initializeState() {
         synset_filter: "",
         synset_list: [],
         synset_page: 0,
-        synset_page_size: 5,
+        synset_page_size: 10,
         synset_total_size: 0,
+
+        // categories
+        category_list: [],
 
         // reports
         report_date: Api.toIsoDate(new Date().getUTCDate()),
@@ -138,7 +141,7 @@ export function initializeState() {
         prev_group_filter: "",
         group_count: 0,
         group_page: 0,
-        group_page_size: 5,
+        group_page_size: 10,
 
         // system logs
         log_list: [],
@@ -155,6 +158,9 @@ export function initializeState() {
         semantic_display_category_list: [],
         // list of semantics that are existing / defined for org:kb
         defined_semantic_list: [],
+
+        // SimSage status list for parser and indexer
+        status_list: [],
 
         // application error messages
         error_title: "Error",

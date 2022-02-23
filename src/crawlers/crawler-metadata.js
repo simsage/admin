@@ -6,16 +6,16 @@ import '../css/crawler.css';
 
 // valid metadata drop-down values
 const metadata_list = [
-    {"key": "none", "display": null, "field1": null, "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "author list", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "created date range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "last modified date ranges", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "document type", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "people list", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "hashtag list", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "location list", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "money range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "number range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
+    {"key": "none", "display": null, "metadata": null, "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "author list", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "created date range", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "last modified date ranges", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "document type", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "people list", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "hashtag list", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "location list", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "money range", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "number range", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
 ];
 
 
@@ -48,6 +48,14 @@ export class CrawlerMetadata extends Component {
         }
     }
     construct_data(md_list) {
+        // set the order field
+        if (Api.defined(md_list)) {
+            for (let i in md_list) {
+                if (md_list.hasOwnProperty(i)) {
+                    md_list[i].fieldOrder = "" + i;
+                }
+            }
+        }
         return {
             ...this.props.specific_json, metadata_list: Api.defined(md_list) ? md_list : this.get_md_list()
         };
@@ -104,7 +112,7 @@ export class CrawlerMetadata extends Component {
     setUserMetadataName1(record, index, value) {
         const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
-            md_list[index].field1 = value;
+            md_list[index].metadata = value;
             this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
             if (this.state.onSave) {
                 this.state.onSave(this.construct_data(md_list));
@@ -134,10 +142,10 @@ export class CrawlerMetadata extends Component {
     setDefaultSort(record, index, direction, value) {
         const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
-            md_list[index].sort_default = (value ? direction : "");
+            md_list[index].sortDefault = (value ? direction : "");
             for (const i in md_list) {
                 if (""+i !== ""+index && md_list.hasOwnProperty(i)) {
-                    md_list[i].sort_default = "";
+                    md_list[i].sortDefault = "";
                 }
             }
             this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
@@ -210,7 +218,7 @@ export class CrawlerMetadata extends Component {
                this.state.specific_json.metadata_list : [];
     }
     needs_metadata_field(md) {
-        return (md.field1 !== null);
+        return (md.metadata !== null);
     }
     render() {
         if (this.state.has_error) {
@@ -278,7 +286,7 @@ export class CrawlerMetadata extends Component {
                                             <input type="text"
                                                    className="theme metadata-text"
                                                    placeholder="metadata name"
-                                                   value={md.field1}
+                                                   value={md.metadata}
                                                    title="metadata names should only contain 0..9, a..z, and A..Z"
                                                    onKeyDown={(event) => {return self.checkMetadataName(event)}}
                                                    onChange={(event) => {self.setUserMetadataName1(md, index, event.target.value)}}  />
@@ -289,9 +297,9 @@ export class CrawlerMetadata extends Component {
                                         <input type="text"
                                                placeholder="sort descending UI text"
                                                className="theme metadata-text"
-                                               value={md.sort_desc}
+                                               value={md.sortDescText}
                                                title="The text to display for this field if a descending sort is selected of this type"
-                                               onChange={(event) => {self.setValue(md, index, "sort_desc", event.target.value)}}  />
+                                               onChange={(event) => {self.setValue(md, index, "sortDescText", event.target.value)}}  />
                                     </div>
                                     }
                                     { md.sort === "true" &&
@@ -299,9 +307,9 @@ export class CrawlerMetadata extends Component {
                                         <input type="text"
                                                className="theme metadata-text"
                                                placeholder="sort ascending UI text"
-                                               value={md.sort_asc}
+                                               value={md.sortAscText}
                                                title="The text to display for this field if an ascending sort is selected of this type"
-                                               onChange={(event) => {self.setValue(md, index, "sort_asc", event.target.value)}}  />
+                                               onChange={(event) => {self.setValue(md, index, "sortAscText", event.target.value)}}  />
                                     </div>
                                     }
                                     {md.sort === "true" &&
@@ -326,7 +334,7 @@ export class CrawlerMetadata extends Component {
                                     <div className="td-sort-2" title="set this descending field as the default sort field for the UI">
                                         {'\u2190'}
                                         <input type="checkbox"
-                                            checked={md.sort_default === "desc"}
+                                            checked={md.sortDefault === "desc"}
                                             onChange={(event) => {
                                                 self.setDefaultSort(md, index, "desc", event.target.checked);
                                             }}
@@ -338,7 +346,7 @@ export class CrawlerMetadata extends Component {
                                     <div className="td-sort-2" title="set this ascending field as the default sort field for the UI">
                                         {'\u2190'}
                                         <input type="checkbox"
-                                            checked={md.sort_default === "asc"}
+                                            checked={md.sortDefault === "asc"}
                                             onChange={(event) => {
                                                 self.setDefaultSort(md, index, "asc", event.target.checked);
                                             }}

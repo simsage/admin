@@ -6,10 +6,10 @@ import {loadState} from '../reducers/stateLoader'
 // communications common to all components
 export class Comms {
 
-    static http_post(url, payload, fn_success, fn_fail) {
+    static http_post(url, session_id, payload, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
         console.log('POST ' + api_base + url);
-        axios.post(api_base + url, payload, Comms.getHeaders())
+        axios.post(api_base + url, payload, Comms.getHeaders(session_id))
             .then(function (response) {
                 if (fn_success) {
                     fn_success(response);
@@ -26,10 +26,10 @@ export class Comms {
             });
     };
 
-    static http_put(url, payload, fn_success, fn_fail) {
+    static http_put(url, session_id, payload, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
         console.log('PUT ' + api_base + url);
-        axios.put(api_base + url, payload, Comms.getHeaders())
+        axios.put(api_base + url, payload, Comms.getHeaders(session_id))
             .then(function (result) {
                 if (fn_success) {
                     fn_success(result);
@@ -46,12 +46,12 @@ export class Comms {
             });
     };
 
-    static http_get(url, fn_success, fn_fail) {
+    static http_get(url, session_id, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
         if (url !== '/stats/stats/os') {
             console.log('GET ' + api_base + url);
         }
-        return axios.get(api_base + url, Comms.getHeaders())
+        return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then(function (response) {
                 if (fn_success) {
                     fn_success(response);
@@ -68,10 +68,34 @@ export class Comms {
             });
     };
 
-    static http_delete(url, fn_success, fn_fail) {
+    static http_get_jwt(url, jwt, fn_success, fn_fail) {
+        const api_base = window.ENV.api_base;
+        if (url !== '/stats/stats/os') {
+            console.log('GET ' + api_base + url);
+        }
+        return axios.get(api_base + url,{
+                headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": jwt,}
+            })
+            .then(function (response) {
+                if (fn_success) {
+                    fn_success(response);
+                }
+            })
+            .catch((error) => {
+                if (fn_fail) {
+                    if (error.response === undefined) {
+                        fn_fail('Servers not responding or cannot contact Servers');
+                    } else {
+                        fn_fail(Comms.get_error(error));
+                    }
+                }
+            });
+    };
+
+    static http_delete(url, session_id, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
         console.log('DELETE ' + api_base + url);
-        axios.delete(api_base + url, Comms.getHeaders())
+        axios.delete(api_base + url, Comms.getHeaders(session_id))
             .then(function (response) {
                 if (fn_success) {
                     fn_success(response);
@@ -89,7 +113,7 @@ export class Comms {
     };
 
     // get a url that can be used to backup the system, regime e {all (backup all orgs), specific (backup specified org)}
-    static download_backup(organisation_id, regime) {
+    static download_backup(organisation_id, regime, session_id) {
         Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
             const url = window.ENV.api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(regime);
             Comms.download_new_window_post(url, response.data);
@@ -97,16 +121,16 @@ export class Comms {
     };
 
     // get a url that can be used to backup the system
-    static download_mind_dump(organisation_id, kb_id) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+    static download_mind_dump(organisation_id, kb_id, session_id) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/backup/mind-dump/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
             Comms.download_new_window_post(url, response.data);
         });
     };
 
     // get a url that can be used to summarize the system
-    static download_inventorize_dump(organisation_id, kb_id, dateTime) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+    static download_inventorize_dump(organisation_id, kb_id, dateTime, session_id) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/document/parquet/' + encodeURIComponent(organisation_id) + '/' +
                 encodeURIComponent(kb_id) + '/' + encodeURIComponent(dateTime);
             Comms.download_new_window_post(url, response.data);
@@ -114,8 +138,8 @@ export class Comms {
     };
 
     // get a url that can be used to summarize the system using a spreadsheet
-    static download_inventorize_dump_spreadhseet(organisation_id, kb_id, dateTime) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+    static download_inventorize_dump_spreadhseet(organisation_id, kb_id, dateTime, session_id) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/document/spreadsheet/' + encodeURIComponent(organisation_id) + '/' +
                 encodeURIComponent(kb_id) + '/' + encodeURIComponent(dateTime);
             Comms.download_new_window_post(url, response.data);
@@ -123,8 +147,8 @@ export class Comms {
     };
 
     // get a url that can be used to get the query-logs
-    static download_query_log(organisation_id, kb_id, year, month) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+    static download_query_log(organisation_id, kb_id, year, month, session_id) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/stats/query-logs/' + encodeURIComponent(organisation_id) + '/' +
                 encodeURIComponent(kb_id) + '/' + encodeURIComponent(year) + '/' + encodeURIComponent(month);
             Comms.download_new_window_post(url, response.data);
@@ -132,8 +156,8 @@ export class Comms {
     };
 
     // get a url that can be used to get a zip archive of a wp export
-    static download_export_archive(organisation_id, kb_id, source_id) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
+    static download_export_archive(organisation_id, kb_id, source_id, session_id) {
+        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/crawler/wp-archive/download/' + encodeURIComponent(organisation_id) + '/' +
                 encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
             Comms.download_new_window_post(url, response.data);
@@ -197,14 +221,13 @@ export class Comms {
         return null;
     }
 
-    static getHeaders() {
-        let session = Comms.getSession();
-        if (session && session.id) {
+    static getHeaders(session_id) {
+        if (session_id) {
             return {
                 headers: {
                     "API-Version": window.ENV.api_version,
                     "Content-Type": "application/json",
-                    "Session-Id": session.id,
+                    "session-id": session_id,
                 }
             }
         }

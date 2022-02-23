@@ -7,24 +7,24 @@ import '../css/crawler.css';
 
 // valid metadata drop-down values
 const metadata_list = [
-    {"key": "none", "display": null, "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "author", "display": null, "field1": "{author}", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "created", "display": null, "field1": "{created}", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "last modified", "display": null, "field1": "{lastmod}", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "title", "display": null, "field1": "{title}", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "image from binary-blob", "display": null, "field1": "binary-blob-image", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "image from base64", "display": null, "field1": "base64-image", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "image from url", "display": null, "field1": "url-image", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "category", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "two level category", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "number range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "monetary x 100 range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "monetary range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "star rating", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "select if true", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "created date range", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "last modified date ranges", "display": "", "field1": "", "db1": "", "db2":"", "sort": "false", "sort_default": "", "sort_asc": "", "sort_desc": ""},
-    {"key": "csv string", "display": "", "field1": "", "db1": "", "db2":"", "sort": "", "sort_default": "", "sort_asc": "", "sort_desc": ""},
+    {"key": "none", "display": null, "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "author", "display": null, "metadata": "{author}", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "created", "display": null, "metadata": "{created}", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "last modified", "display": null, "metadata": "{lastmod}", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "title", "display": null, "metadata": "{title}", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "image from binary-blob", "display": null, "metadata": "binary-blob-image", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "image from base64", "display": null, "metadata": "base64-image", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "image from url", "display": null, "metadata": "url-image", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "category", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "two level category", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "number range", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "monetary x 100 range", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "monetary range", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "star rating", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "select if true", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "created date range", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "last modified date ranges", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
+    {"key": "csv string", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
 ];
 
 
@@ -63,6 +63,14 @@ export class CrawlerMetadataMapper extends Component {
             this.state.specificJson.metadata_list : [];
     }
     construct_data(md_list) {
+        // set the order field
+        if (Api.defined(md_list)) {
+            for (let i in md_list) {
+                if (md_list.hasOwnProperty(i)) {
+                    md_list[i].fieldOrder = "" + i;
+                }
+            }
+        }
         return {
             ...this.props.specificJson, metadata_list: Api.defined(md_list) ? md_list : this.get_md_list()
         };
@@ -120,7 +128,7 @@ export class CrawlerMetadataMapper extends Component {
     setUserMetadataName1(record, index, value) {
         const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
-            md_list[index].field1 = value;
+            md_list[index].metadata = value;
             this.setState({specificJson: this.construct_data(md_list)});
             if (this.state.onSave) {
                 this.state.onSave(this.construct_data(md_list));
@@ -150,10 +158,10 @@ export class CrawlerMetadataMapper extends Component {
     setDefaultSort(record, index, direction, value) {
         const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
-            md_list[index].sort_default = (value ? direction : "");
+            md_list[index].sortDefault = (value ? direction : "");
             for (const i in md_list) {
                 if (""+i !== ""+index && md_list.hasOwnProperty(i)) {
-                    md_list[i].sort_default = "";
+                    md_list[i].sortDefault = "";
                 }
             }
             this.setState({specificJson: this.construct_data(md_list)});
@@ -330,7 +338,7 @@ export class CrawlerMetadataMapper extends Component {
                                         <input type="text"
                                             className="theme metadata-text"
                                             placeholder="metadata name"
-                                            value={md.field1}
+                                            value={md.metadata}
                                             title="metadata names should only contain 0..9, a..z, and A..Z"
                                             onKeyDown={(event) => {return self.checkMetadataName(event)}}
                                             onChange={(event) => {self.setUserMetadataName1(md, index, event.target.value)}}  />
@@ -341,9 +349,9 @@ export class CrawlerMetadataMapper extends Component {
                                         <input type="text"
                                                className="theme metadata-text"
                                                placeholder="sort descending UI text"
-                                               value={md.sort_desc}
+                                               value={md.sortDescText}
                                                title="The text to display for this field if a descending sort is selected of this type"
-                                               onChange={(event) => {self.setValue(md, index, "sort_desc", event.target.value)}}  />
+                                               onChange={(event) => {self.setValue(md, index, "sortDescText", event.target.value)}}  />
                                     </div>
                                     }
                                     { md.sort === "true" &&
@@ -351,9 +359,9 @@ export class CrawlerMetadataMapper extends Component {
                                          <input type="text"
                                                 className="theme metadata-text"
                                                 placeholder="sort ascending UI text"
-                                                value={md.sort_asc}
+                                                value={md.sortAscText}
                                                 title="The text to display for this field if an ascending sort is selected of this type"
-                                                onChange={(event) => {self.setValue(md, index, "sort_asc", event.target.value)}}  />
+                                                onChange={(event) => {self.setValue(md, index, "sortAscText", event.target.value)}}  />
                                      </div>
                                     }
                                     {md.sort === "true" &&
@@ -377,7 +385,7 @@ export class CrawlerMetadataMapper extends Component {
                                     <div className="td-sort-2" title="set this descending field as the default sort field for the UI">
                                         {'\u2190'}
                                         <input type="checkbox"
-                                            checked={md.sort_default === "desc"}
+                                            checked={md.sortDefault === "desc"}
                                             onChange={(event) => {
                                                 self.setDefaultSort(md, index, "desc", event.target.checked);
                                             }}
@@ -389,7 +397,7 @@ export class CrawlerMetadataMapper extends Component {
                                     <div className="td-sort-2" title="set this ascending field as the default sort field for the UI">
                                         {'\u2190'}
                                         <input type="checkbox"
-                                            checked={md.sort_default === "asc"}
+                                            checked={md.sortDefault === "asc"}
                                             onChange={(event) => {
                                                 self.setDefaultSort(md, index, "asc", event.target.checked);
                                             }}

@@ -5,12 +5,12 @@ import {Api} from '../common/api'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-import TimeSelect from "../common/time-select";
 import {Pagination} from "../common/pagination";
 
 import '../css/kb.css';
 
-const defaultDmsIndexSchedule = 'mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3';
+// document management system indexer default schedule (none)
+const defaultDmsIndexSchedule = '';
 
 
 export class KnowledgeBases extends Component {
@@ -85,7 +85,7 @@ export class KnowledgeBases extends Component {
                 edit_analytics_window_size_in_months: knowledgeBase.analyticsWindowInMonths,
                 edit_operator_enabled: knowledgeBase.operatorEnabled,
                 edit_capacity_warnings: knowledgeBase.capacityWarnings,
-                edit_dms_index_schedule: knowledgeBase.dmsIndexSchedule,
+                edit_dms_index_schedule: '', // no longer used
                 edit_enable_document_similarity: knowledgeBase.enableDocumentSimilarity ? knowledgeBase.enableDocumentSimilarity : false,
                 edit_document_similarity_threshold: knowledgeBase.documentSimilarityThreshold ? knowledgeBase.documentSimilarityThreshold : 0.9,
                 edit_created: knowledgeBase.created,
@@ -116,7 +116,7 @@ export class KnowledgeBases extends Component {
                                            this.state.edit_enabled, this.state.edit_max_queries_per_day,
                                            this.state.edit_analytics_window_size_in_months, this.state.edit_operator_enabled,
                                            this.state.edit_capacity_warnings, this.state.edit_created,
-                                           this.state.edit_dms_index_schedule, this.state.edit_enable_document_similarity,
+                                           '', this.state.edit_enable_document_similarity,
                                            this.state.edit_document_similarity_threshold);
             this.setState({edit_knowledgebase: false, knowledgeBase: null});
         } else {
@@ -166,7 +166,6 @@ export class KnowledgeBases extends Component {
     }
     render() {
         const theme = this.props.theme;
-        const t_value = this.state.selectedTab;
         return (
                 <div className="kb-page">
                     { this.isVisible() &&
@@ -262,22 +261,6 @@ export class KnowledgeBases extends Component {
                                         <div
                                             className="modal-header">{this.state.edit_knowledgebase_id ? "Edit Knowledge Base" : "Add New Knowledge Base"}</div>
                                         <div className="modal-body">
-
-
-                                            <ul className="nav nav-tabs">
-                                                <li className="nav-item nav-cursor">
-                                                    <div className={"nav-link " + (this.state.selectedTab === 'general' ? 'active' : '')}
-                                                         onClick={() => this.setState({selectedTab: 'general'})}>general</div>
-                                                </li>
-                                                <li className="nav-item nav-cursor">
-                                                    <div className={"nav-link " + (this.state.selectedTab === 'DMS schedule' ? 'active' : '')}
-                                                         onClick={() => this.setState({selectedTab: 'DMS schedule'})}>DMS schedule</div>
-                                                </li>
-                                            </ul>
-
-                                            <br/>
-
-                                            {t_value === 'general' &&
                                             <div>
 
                                                 <div className="control-row">
@@ -402,32 +385,19 @@ export class KnowledgeBases extends Component {
                                                 </div>
 
 
-                                                <div className="control-row">
-                                                    <span className="label-wide">document similarity (a number between 0.75 and 1.0)</span>
-                                                    <span className="text">
-                                                        <input type="text"
-                                                               onChange={(event) => this.setState({edit_document_similarity_threshold: event.target.value})}
-                                                               placeholder="document similarity threshold"
-                                                               value={this.state.edit_document_similarity_threshold}
-                                                        />
-                                                    </span>
-                                                </div>
+                                                {/*<div className="control-row">*/}
+                                                {/*    <span className="label-wide">document similarity (a number between 0.75 and 1.0)</span>*/}
+                                                {/*    <span className="text">*/}
+                                                {/*        <input type="text"*/}
+                                                {/*               onChange={(event) => this.setState({edit_document_similarity_threshold: event.target.value})}*/}
+                                                {/*               placeholder="document similarity threshold"*/}
+                                                {/*               value={this.state.edit_document_similarity_threshold}*/}
+                                                {/*        />*/}
+                                                {/*    </span>*/}
+                                                {/*</div>*/}
 
 
                                             </div>
-                                            }
-
-                                            {t_value === 'DMS schedule' &&
-                                            <div className="time-tab-content">
-                                                <TimeSelect time={this.state.edit_dms_index_schedule}
-                                                            onSave={(time) => this.updateDMSIndexSchedule(time)}/>
-                                            </div>
-                                            }
-                                            {t_value === 'DMS schedule' &&
-                                            <div className="padding-bottom">
-                                            </div>
-                                            }
-
 
                                         </div>
                                         <div className="modal-footer">

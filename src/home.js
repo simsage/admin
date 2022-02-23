@@ -1,12 +1,8 @@
 import React, {Component} from 'react';
 
-import AppMenu from './auth/app-menu'
 import ErrorDialog from './common/error-dialog'
 import {MessageDialog} from './common/message-dialog'
 import AutoComplete from './common/autocomplete'
-
-import Api from './common/api'
-import Comms from './common/comms'
 
 import Organisations from "./organisations/organisations";
 import UserManager from "./users/user-manager";
@@ -21,31 +17,37 @@ import MindTest from "./mind/mind-test";
 import Synonyms from "./synonyms/synonyms";
 import Semantics from "./semantics/semantics";
 import SynSets from "./synsets/synsets";
+import Categories from "./categories/categories";
 import Logs from "./reports/logs";
 import Reports from "./reports/reports";
 import OperatorTabs from "./operator/operator_tabs";
 import Domains from "./ad/domains";
 import Groups from "./users/groups";
+import Status from "./reports/status";
 
 import SockJsClient from 'react-stomp';
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "./actions/appActions";
-
 import './css/home.css';
+import { MsalContext } from "@azure/msal-react";
 
 // if not defined, use this one
 const default_operator_wait_timeout_in_ms = 10000;
 
 
 export class Home extends Component {
+    static contextType = MsalContext;
+
     constructor(props) {
         super(props);
         this.state = {
             message_callback: null,
             message: '',
             message_title: '',
+            jwt: null,
+            response: null,
         }
     }
     componentDidCatch(error, info) {
@@ -53,36 +55,55 @@ export class Home extends Component {
         console.log(error, info);
     }
     componentDidMount() {
+        const instance = this.context.instance;
+        const request = {
+            account: this.context.accounts[0]
+        };
+        // do we have a session object locally? if not - sign-in
+        const session = this.props.session;
+        if (!session || !session.id) {
+            instance.acquireTokenSilent(request).then((response) => {
+                // this.setState({response: response});
+                this.setState({jwt: response.idToken});
+                this.props.signIn(response.idToken,
+                    (response) => {
+                        this.setupHome(response);
+                    },
+                    () => {
+                        this.props.history.push("/error");
+                    });
+            }).catch((e) => {
+                this.setState({jwt: null});
+                this.props.setError("acquire-token", e);
+                this.props.history.push("/error");
+            });
+        }
+    }
+    setupHome(response) {
         // do we still have a session?
-        if (!Api.defined(Comms.getSession())) {
-            // clearState();
-            window.location = "/#/";
-        } else {
-            this.props.getOrganisationList();
+        this.props.getOrganisationList(response.session.id);
 
-            // switch tabs for non admin users to knowledge base default
-            if (!Home.hasRole(this.props.user, ['admin']) && this.props.selected_tab === "organisations") {
-                this.props.setupManager();
+        // switch tabs for non admin users to knowledge base default
+        if (!Home.hasRole(this.props.user, ['admin']) && this.props.selected_tab === "organisations") {
+            this.props.setupManager();
+        }
+
+        // /ops/refresh every operator_wait_timeout_in_ms interval
+        const isAdminOrManager = Home.hasRole(this.props.user, ['admin', 'manager']);
+        const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
+        const self = this;
+        let timeout = (this.props.operator_wait_timeout_in_ms && this.props.operator_wait_timeout_in_ms >= 1000) ?
+            this.props.operator_wait_timeout_in_ms : default_operator_wait_timeout_in_ms;
+        if (isAdminOrManager || isOperator) {
+            // refresh notifications and operator at interval
+            setInterval(() => { self.refreshOperator(self); }, timeout);
+        }
+
+        if (isOperator) {
+            // if this user has an operator role at all - we need to ask for events
+            if (!this.props.html5_notifications || this.props.html5_notifications.length === 0) {
+                this.props.getHtml5Notifications();
             }
-
-            // /ops/refresh every operator_wait_timeout_in_ms interval
-            const isAdminOrManager = Home.hasRole(this.props.user, ['admin', 'manager']);
-            const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
-            const self = this;
-            let timeout = (this.props.operator_wait_timeout_in_ms && this.props.operator_wait_timeout_in_ms >= 1000) ?
-                this.props.operator_wait_timeout_in_ms : default_operator_wait_timeout_in_ms;
-            if (isAdminOrManager || isOperator) {
-                // refresh notifications and operator at interval
-                setInterval(() => { self.refreshOperator(self); }, timeout);
-            }
-
-            if (isOperator) {
-                // if this user has an operator role at all - we need to ask for events
-                if (!this.props.html5_notifications || this.props.html5_notifications.length === 0) {
-                    this.props.getHtml5Notifications();
-                }
-            }
-
         }
     }
     refreshOperator(self) {
@@ -265,6 +286,7 @@ export class Home extends Component {
         return new_list;
     }
     render() {
+        console.log(this.state.response);
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
         const operator_id_list = [];
@@ -278,13 +300,10 @@ export class Home extends Component {
         const theme = this.props.theme;
         return (
             <div className="home-screen">
-
                 {
                     this.props.busy &&
                     <div className={theme === 'light' ? "busy" : "busyDark"} />
                 }
-
-                <AppMenu title="" signed_in={true} />
 
                 <ErrorDialog title={this.props.error_title}
                              theme={theme}
@@ -317,11 +336,11 @@ export class Home extends Component {
                              <div className={this.getStyle('knowledge bases', false)}
                                   onClick={() => this.props.selectTab('knowledge bases')}>knowledge bases</div>
                          }
-                         {
-                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div className={this.getStyle('edge devices', false)}
-                                  onClick={() => this.props.selectTab('edge devices')}>Edge devices</div>
-                         }
+                         {/*{*/}
+                         {/*    Home.hasRole(this.props.user, ['admin', 'manager']) &&*/}
+                         {/*    <div className={this.getStyle('edge devices', false)}*/}
+                         {/*         onClick={() => this.props.selectTab('edge devices')}>Edge devices</div>*/}
+                         {/*}*/}
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              this.props.edge_device_list && this.props.edge_device_list.length > 0 &&
@@ -339,6 +358,7 @@ export class Home extends Component {
                                   onClick={() => this.props.selectTab('groups')}>group manager</div>
                          }
                          {
+                             Home.hasRole(this.props.user, ['operator']) &&
                              <div className={this.getStyle('operator', !this.props.operator_connected || !isOperator)}
                                   onClick={() => { if (isOperator) this.props.selectTab('operator')}} >operator</div>
                          }
@@ -359,10 +379,15 @@ export class Home extends Component {
                                   onClick={() => this.props.selectTab('documents')}>documents</div>
                          }
                          {
-                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div className={this.getStyle('active directory', false)} 
-                                  onClick={() => this.props.selectTab('active directory')}>active directory</div>
+                             Home.hasRole(this.props.user, ['admin']) &&
+                             <div className={this.getStyle('status', false)}
+                                  onClick={() => this.props.selectTab('status')}>status</div>
                          }
+                         {/*{*/}
+                         {/*    Home.hasRole(this.props.user, ['admin', 'manager']) &&*/}
+                         {/*    <div className={this.getStyle('active directory', false)} */}
+                         {/*         onClick={() => this.props.selectTab('active directory')}>active directory</div>*/}
+                         {/*}*/}
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              <div className={this.getStyle('mind', false)} 
@@ -387,6 +412,11 @@ export class Home extends Component {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              <div className={this.getStyle('syn-sets')} 
                                   onClick={() => this.props.selectTab('syn-sets')}>syn-sets</div>
+                         }
+                         {
+                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
+                             <div className={this.getStyle('categories')}
+                                  onClick={() => this.props.selectTab('categories')}>categorization</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
@@ -431,7 +461,7 @@ export class Home extends Component {
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' && this.props.selected_tab !== 'users' &&
                           this.props.selected_tab !== 'groups' && this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'license' &&
                           this.props.selected_tab !== 'knowledge bases' && this.props.selected_tab !== 'logs' && this.props.selected_tab !== 'edge devices' &&
-                          this.props.selected_tab !== 'edge commands' &&
+                          this.props.selected_tab !== 'edge commands' &&  this.props.selected_tab !== 'status' &&
                              <div className="knowledgebase-select">
                                  <div className="lhs">knowledge base</div>
                                  <div className="rhs">
@@ -555,6 +585,16 @@ export class Home extends Component {
                              <SynSets
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
+                         }
+
+                         { this.props.selected_tab === 'categories' &&
+                             <Categories
+                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                                 closeDialog={() => this.closeDialog()} />
+                         }
+
+                         { this.props.selected_tab === 'status' &&
+                             <Status />
                          }
 
                          { this.props.selected_tab === 'reports' &&

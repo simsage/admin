@@ -28,8 +28,9 @@
 }
 
 .app-menu .sign-out-image-container {
+    position: relative;
     float: right;
-    right: 20px;
+    right: 50px;
     top: 10px;
 }
 

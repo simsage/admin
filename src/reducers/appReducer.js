@@ -102,6 +102,10 @@ import {
     SET_GROUP_PAGE,
     SET_GROUP_FILTER,
 
+    // categories
+    SET_CATEGORIES,
+    SIMSAGE_STATUS,
+
 } from "../actions/actions";
 import {initializeState} from './stateLoader'
 
@@ -216,19 +220,30 @@ export const reducer = (state, action) => {
         // sign-in a user
         case SIGN_IN: {
             // if we're an operator - we need to change tabs
-            let selected_tab = 'operator';
-            if (action.user && action.user.roles) {
-                for (const role of action.user.roles) {
+            let selected_tab = '';
+            const user = action.data.user;
+            const session = action.data.session;
+            if (user && user.roles) {
+                for (const role of user.roles) {
                     if (role.role === 'admin' || role.role === 'manager') {
                         selected_tab = 'organisations';
+                    }
+                }
+            }
+            if (selected_tab === '') {
+                if (user && user.roles) {
+                    for (const role of user.roles) {
+                        if (role.role === 'operator') {
+                            selected_tab = 'operator';
+                        }
                     }
                 }
             }
             // set the selected organisation-id (used by operators
             let selected_organisation_id = '';
             let selected_organisation = '';
-            if (action.user && action.user.roles) {
-                for (const role of action.user.roles) {
+            if (user && user.roles) {
+                for (const role of user.roles) {
                     if (role && role.organisationId && selected_organisation_id === '') {
                         selected_organisation_id = role.organisationId;
                     }
@@ -237,8 +252,8 @@ export const reducer = (state, action) => {
             // redirect sign-in to either orgs or operator (depending on access)
             return {
                 ...state,
-                session: action.session,
-                user: action.user,
+                session: session,
+                user: user,
                 selected_tab: selected_tab,
                 selected_organisation_id: selected_organisation_id,
                 selected_organisation: selected_organisation,
@@ -379,10 +394,9 @@ export const reducer = (state, action) => {
 
         // sign-out a user
         case SIGN_OUT: {
+            const init = initializeState();
             return {
-                ...state,
-                session: null,
-                user: null,
+                ...init,
                 busy: false,
             }
         }
@@ -1292,6 +1306,24 @@ export const reducer = (state, action) => {
             };
         }
 
+
+
+        case SET_CATEGORIES: {
+            return {
+                ...state,
+                category_list: action.category_list,
+                busy: false,
+            };
+        }
+
+
+        case SIMSAGE_STATUS: {
+            return {
+                ...state,
+                status_list: action.status_list,
+                busy: false,
+            };
+        }
 
 
     }

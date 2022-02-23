@@ -71,19 +71,9 @@ export class MindTest extends React.Component {
     editMindItem(mindItem) {
         this.setState({mind_edit: true, mind_item: mindItem});
     }
-    newMindItem() {
-        this.setState({mind_edit: true, mind_item: {
-                id: Api.createGuid(),
-                preContext: "",
-                postContext: "",
-                expression: "",
-                actionList: [],
-                metadata: ""
-            }
-            });
-    }
     mindDump() {
-        Comms.download_mind_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
+        if (this.props.session && this.props.session.id)
+            Comms.download_mind_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, this.props.session.id);
     }
     save(mindItem) {
         if (mindItem) {
@@ -124,6 +114,7 @@ const mapStateToProps = function(state) {
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+        session: state.appReducer.session,
     };
 };
 

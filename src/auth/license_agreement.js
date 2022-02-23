@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-import AppMenu from '../auth/app-menu';
 import ErrorDialog from '../common/error-dialog';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -34,7 +33,6 @@ export class LicenseAgreement extends Component {
         }
         return (
             <div>
-                <AppMenu title="" loggedIn={false} />
                 <ErrorDialog title={this.state.error_title}
                              theme={this.props.theme}
                              message={this.state.error_msg}

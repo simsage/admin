@@ -49,9 +49,6 @@ export class Organisations extends React.Component {
                              enabled: true,
         })
     }
-    refreshSecurityId() {
-        this.setState({edit_security_id: Api.createGuid()})
-    }
     editOrganisation(organisation) {
         if (organisation) {
             this.setState({edit_organisation: true,
@@ -117,10 +114,12 @@ export class Organisations extends React.Component {
         }
     }
     backupAll() {
-        Comms.download_backup(this.props.selected_organisation_id, 'all');
+        if (this.props.session && this.props.session.id)
+            Comms.download_backup(this.props.selected_organisation_id, 'all', this.props.session.id);
     }
     backup(organisationId) {
-        Comms.download_backup(organisationId, 'specific');
+        if (this.props.session && this.props.session.id)
+            Comms.download_backup(organisationId, 'specific', this.props.session.id);
     }
     restore(data) {
         if (data && data.data && data.data.length > 0) {
@@ -297,6 +296,7 @@ const mapStateToProps = function(state) {
         organisation_list: state.appReducer.organisation_list,
         organisation_page: state.appReducer.organisation_page,
         organisation_page_size: state.appReducer.organisation_page_size,
+        session: state.appReducer.session,
     };
 };
 

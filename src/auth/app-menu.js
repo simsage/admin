@@ -24,11 +24,11 @@ export class AppMenu extends Component {
         }
     }
     goWeb() {
-        window.location = window.ENV.web_base;
+        this.props.history.push(window.ENV.web_base);
     }
     signOut() {
         this.props.signOut(() => {
-            window.location = "/#/";
+            this.props.history.push("/");
         });
     }
     // get the right logo file depending on the theme
@@ -69,16 +69,6 @@ export class AppMenu extends Component {
                         <div className="sign-out-image-container">
                             <img src={theme === 'light' ? "../images/sign-out.svg" : "../images/sign-out-light.svg"} alt="sign-out" title="sign-out"
                                  onClick={() => { this.signOut() }} className="sign-out-image" />
-                        </div>
-                    }
-
-                    {
-                        <div className={this.state.signed_in ? "theme-select-logged-in" : "theme-select"}>
-                            <div className="form-check form-switch">
-                                <input className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked={this.props.theme === 'light'}
-                                       title="change the SimSage theme from dark to light or vice versa"
-                                       onChange={() => this.flipTheme()} />
-                            </div>
                         </div>
                     }
 

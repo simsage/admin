@@ -10,7 +10,6 @@ import {appCreators} from "../actions/appActions";
 import '../css/inventory.css';
 
 
-
 export class Inventory extends React.Component {
     constructor(props) {
         super(props);
@@ -30,10 +29,12 @@ export class Inventory extends React.Component {
         }
     }
     inventorizeDump(dateTime) {
-        Comms.download_inventorize_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime);
+        if (this.props.session && this.props.session.id)
+            Comms.download_inventorize_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime, this.props.session.id);
     }
     inventorizeDumpSpreadsheet(dateTime) {
-        Comms.download_inventorize_dump_spreadhseet(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime);
+        if (this.props.session && this.props.session.id)
+            Comms.download_inventorize_dump_spreadhseet(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, dateTime, this.props.session.id);
     }
     deleteInventorizeAsk(dateTime) {
         this.setState({date_time: dateTime});
@@ -47,12 +48,6 @@ export class Inventory extends React.Component {
         if (this.props.closeDialog) {
             this.props.closeDialog();
         }
-    }
-    mindDump() {
-        Comms.download_mind_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
-    }
-    queryLogDump() {
-        Comms.download_query_log(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
     }
     restore(data) {
         if (data) {
@@ -74,6 +69,16 @@ export class Inventory extends React.Component {
         return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0 &&
             this.props.selected_organisation && this.props.selected_organisation.length > 0 &&
             this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
+    }
+    itemNameToDescription(name) {
+        if (name === "content spreadsheet")
+            return "Content analysis SpreadSheet";
+        else if (name === "content parquet")
+            return "Content analysis Parquet file";
+        else if (name === "indexes parquet")
+            return "Index analysis Parquet file";
+        else if (name === "indexes spreadsheet")
+            return "Index analysis SpreadSheet";
     }
     render() {
         const theme = this.props.theme;
@@ -107,18 +112,18 @@ export class Inventory extends React.Component {
                         <table className="table">
                             <thead>
                                 <tr className='table-header'>
-                                    <th className='table-header table-width-25'>name / type</th>
+                                    <th className='table-header table-width-25'>type</th>
                                     <th className='table-header table-width-33'>created</th>
                                     <th className='table-header'>action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                { this.props.inventorize_list && this.props.inventorize_list.timeList && this.props.inventorize_list.timeList.map((item) => {
+                                { this.props.inventorize_list && this.props.inventorize_list.timeList && this.props.inventorize_list.timeList.map((item, i) => {
                                     return (
-                                        <tr key={item}>
+                                        <tr key={i}>
                                             <td>
                                                 <div className="snapshot-item">
-                                                    {item.name}
+                                                    { this.itemNameToDescription(item.name) }
                                                 </div>
                                             </td>
                                             <td>
@@ -127,12 +132,21 @@ export class Inventory extends React.Component {
                                                 </div>
                                             </td>
                                             <td>
-                                                <div className="link-button" onClick={() => this.inventorizeDump(item.time)}>
-                                                    <img src="../images/parquet.png" className="image-size" title="download as parquet-file" alt="download parquet"/>
+                                                { (item.name === "content parquet" || item.name === "indexes parquet") &&
+                                                <div className="link-button"
+                                                     onClick={() => this.inventorizeDump(item.time)}>
+                                                    <img src="../images/parquet.png" className="image-size"
+                                                         title="download as parquet-file" alt="download parquet"/>
                                                 </div>
-                                                <div className="link-button" onClick={() => this.inventorizeDumpSpreadsheet(item.time)}>
-                                                    <img src="../images/xlsx.svg" className="image-size" title="download as spreadsheet-xlsx" alt="download spreadsheet"/>
+                                                }
+                                                { (item.name === "content spreadsheet" || item.name === "indexes spreadsheet") &&
+                                                <div className="link-button"
+                                                     onClick={() => this.inventorizeDumpSpreadsheet(item.time)}>
+                                                    <img src="../images/xlsx.svg" className="image-size"
+                                                         title="download as spreadsheet-xlsx"
+                                                         alt="download spreadsheet"/>
                                                 </div>
+                                                }
                                                 <div className="link-button" onClick={() => this.deleteInventorizeAsk(item.time)}>
                                                     <img src="../images/delete.svg" className="image-size" title="remove report" alt="remove"/>
                                                 </div>
@@ -186,6 +200,7 @@ const mapStateToProps = function(state) {
         inventorize_list: state.appReducer.inventorize_list,
         knowledge_base_list: state.appReducer.knowledge_base_list,
         inventorize_busy: state.appReducer.inventorize_busy,
+        session: state.appReducer.session,
     };
 };
 
