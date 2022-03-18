@@ -143,7 +143,7 @@ export const reducer = (state, action) => {
         console.debug("applicationReducer:" + action.type);
     }
     if (action.type === ERROR) {
-        console.log("ERROR: (" + JSON.stringify(action) + ")");
+        console.error("ERROR: (" + JSON.stringify(action) + ")");
     }
 
     if (action.type === SIGN_OUT) {
@@ -161,8 +161,11 @@ export const reducer = (state, action) => {
         case ERROR: {
             // is this an "invalid session id"
             if (action && action.error && action.error.length > 0 && action.error.indexOf("invalid session id") >= 0) {
+
+                // alert("invalid session id");
                 // wipe session and user objects - this is now a logout event
-                window.location = "/#/";
+                window.location.reload(true);
+                // window.location = "/#/";
                 return {
                     ...state,
                     session: null,
@@ -204,6 +207,7 @@ export const reducer = (state, action) => {
         }
 
         case BUSY: {
+            // alert("BUSY");
             return {
                 ...state,
                 busy: action.busy,
@@ -223,6 +227,8 @@ export const reducer = (state, action) => {
             let selected_tab = '';
             const user = action.data.user;
             const session = action.data.session;
+            const organisation_list = action.data.organisationList ? action.data.organisationList : [];
+
             if (user && user.roles) {
                 for (const role of user.roles) {
                     if (role.role === 'admin' || role.role === 'manager') {
@@ -249,6 +255,15 @@ export const reducer = (state, action) => {
                     }
                 }
             }
+
+            if (organisation_list) {
+                for (const organisation of organisation_list) {
+                    if (organisation && selected_organisation === '' && selected_organisation_id === organisation.id ) {
+                        selected_organisation = organisation.name;
+                    }
+                }
+            }
+
             // redirect sign-in to either orgs or operator (depending on access)
             return {
                 ...state,
@@ -257,6 +272,7 @@ export const reducer = (state, action) => {
                 selected_tab: selected_tab,
                 selected_organisation_id: selected_organisation_id,
                 selected_organisation: selected_organisation,
+                organisation_list: organisation_list,
                 busy: false,
             };
         }
@@ -1124,7 +1140,7 @@ export const reducer = (state, action) => {
 
                     } // organisation != null
                     else {
-                        console.log("organisation id not found:" + data.organisationId);
+                        console.error("organisation id not found:" + data.organisationId);
                     }
 
                 } // else

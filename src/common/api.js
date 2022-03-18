@@ -85,6 +85,23 @@ export class Api {
         return year + '-' + Api.pad2(month) + '-' + Api.pad2(day) + 'T' + Api.pad2(hour) + ':00:00.000';
     }
 
+    // convert a date object to an iso date string
+    static toPrettyDateTime(date) {
+        if (!date || !date.getFullYear) {
+            date = new Date()
+        }
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        let offset_hours = 0; // date.getTimezoneOffset() / 60;
+        let hour = date.getHours() + offset_hours;
+        if (hour < 0) hour += 24;
+        if (hour >= 24) hour -= 24;
+        let mins = date.getMinutes();
+        let secs = date.getSeconds();
+        return year + '/' + Api.pad2(month) + '/' + Api.pad2(day) + ' ' + Api.pad2(hour) + ":" + Api.pad2(mins) + ":" + Api.pad2(secs);
+    }
+
     static pad2(item) {
         return ("" + item).padStart(2, '0');
     }
@@ -174,22 +191,6 @@ export class Api {
             (errStr) => { fail(errStr) }
         )
     };
-
-    // test a specific crawler's connectivity
-    static testCrawler(organisationId, kb_id, id, success, fail) {
-        Comms.http_get('/crawler/crawler/test/' + encodeURIComponent(organisationId) + '/' +
-            encodeURIComponent(kb_id) + '/' + encodeURIComponent(id),
-            (response) => {
-                if (response.data && response.data.errorStr && response.data.errorStr.length > 0) {
-                    fail(response.data.errorStr);
-                } else {
-                    success(response.data)
-                }
-            },
-            (errStr) => { fail(errStr) }
-        )
-    }
-
 
     // perform a semantic search
     static semanticSearch(organisationId, kb_id, keywords, num_results=10, score_threshold=0.1, success, fail) {

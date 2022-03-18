@@ -19,7 +19,7 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const theme = "light";
     const image = "../images/simsage-logo-no-strapline.svg";
-    const { instance, accounts } = useMsal();
+    const { instance } = useMsal();
 
     return (
         <div className={"app-menu menu-padding no-select"}>
@@ -53,7 +53,7 @@ export const PageLayout = (props) => {
                                 <div className="form-group">
                                     <button type="submit" className="btn btn-primary btn-block" onClick={() => {
                                         instance.loginRedirect(loginRequest).catch(e => {
-                                            console.log(e);
+                                            console.error(e);
                                         });
                                     }}>Sign in using Azure</button>
                                 </div>

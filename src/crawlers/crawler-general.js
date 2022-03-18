@@ -21,6 +21,8 @@ const crawler_list = [
     {"key": "exchange365", "value": "exchange 365 crawler"},
     {"key": "onedrive", "value": "one-drive crawler"},
     {"key": "sharepoint365", "value": "sharepoint 365 crawler"},
+    {"key": "box", "value": "box crawler"},
+    {"key": "imanage", "value": "iManage crawler"},
     {"key": "dropbox", "value": "dropbox crawler"},
     {"key": "wordpress", "value": "WordPress external crawler"},
     {"key": "gdrive", "value": "Google-drive crawler"},
@@ -167,23 +169,25 @@ export class CrawlerGeneral extends Component {
     }
     testCrawler() {
         const name = this.state.name;
-        Api.testCrawler(this.state.organisation_id, this.state.kb_id, this.state.sourceId,
-            () => {
+        if (this.props.testCrawler) {
+            this.props.testCrawler(this.state.sourceId, () => {
                 this.setState({
-                    message_callback: () => { this.setState({message_title: '', message: ''})},
+                    message_callback: () => {
+                        this.setState({message_title: '', message: ''})
+                    },
                     message_title: 'Crawler Test',
                     message: 'Success!  crawler "' + name + '" can communicate with its intended end-point.'
                 });
-            },
-            (err) => {
-                console.log(err);
-                this.setError("Error Testing Crawler", err);
+            }, (errStr) => {
+                console.error(errStr);
+                this.setError("Error Testing Crawler", errStr);
             });
+        }
     }
     canHaveEdgeDevice() {
         const crawlerType = this.state.crawlerType;
-        return crawlerType !== 'office365' && crawlerType !== 'exchange365' && crawlerType !== 'wordpress' &&
-            crawlerType !== 'gdrive' && crawlerType !== 'onedrive' && crawlerType !== 'sharepoint365';
+        return crawlerType !== 'exchange365' && crawlerType !== 'wordpress' &&
+               crawlerType !== 'gdrive' && crawlerType !== 'onedrive' && crawlerType !== 'sharepoint365';
     }
     setProcessingLevelFromMark(value) {
         if (this.state.onSave) {

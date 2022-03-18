@@ -39,7 +39,6 @@ export class Groups extends React.Component {
         if (filter && filter.length > 0) {
             const new_list = [];
             for (const group of list) {
-                console.log(group);
                 if (group.name.toLowerCase().indexOf(filter) >= 0) {
                     new_list.push(group);
                 }

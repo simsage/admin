@@ -10,8 +10,8 @@ import '../css/synset.css';
 
 const empty_category = {
     metadata: "",
-    category: "",
-    wordCloud: ""
+    displayName: "",
+    categorizationList: [{category: "",wordCloud: ""}]
 }
 
 function create_empty_category() {
@@ -40,15 +40,15 @@ export class Categories extends React.Component {
         console.log(error, info);
     }
     deleteCategoryAsk(category) {
-        if (category && category.category && category.metadata) {
-            this.props.openDialog("are you sure you want to remove category: " + category.metadata + "=" + category.category + "?",
+        if (category && category.metadata) {
+            this.props.openDialog("are you sure you want to remove category: " + category.metadata + "?",
                                     "Remove SynSet", (action) => { this.deleteCategory(action) });
             this.setState({category: category});
         }
     }
     deleteCategory(action) {
         if (action && this.state.category) {
-            this.props.deleteCategory(this.state.category.category, this.state.category.metadata);
+            this.props.deleteCategory(this.state.category.metadata);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
@@ -63,7 +63,7 @@ export class Categories extends React.Component {
     }
     save(category) {
         if (category) {
-            if (category.metadata.trim().length > 0 && category.wordCloud.length > 1 && category.category.length > 0) {
+            if (category.metadata.trim().length > 0 && category.displayName.trim().length > 0 && category.categorizationList.length > 0) {
                 this.props.saveCategory(category);
                 this.setState({category_edit: false, category: create_empty_category()});
             } else {

@@ -80,8 +80,8 @@ export class Home extends Component {
         }
     }
     setupHome(response) {
-        // do we still have a session?
-        this.props.getOrganisationList(response.session.id);
+        // // do we still have a session?
+        // this.props.getOrganisationList(response.session.id);
 
         // switch tabs for non admin users to knowledge base default
         if (!Home.hasRole(this.props.user, ['admin']) && this.props.selected_tab === "organisations") {
@@ -286,7 +286,6 @@ export class Home extends Component {
         return new_list;
     }
     render() {
-        console.log(this.state.response);
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
         const operator_id_list = [];

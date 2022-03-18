@@ -222,6 +222,7 @@ export class DocumentSources extends Component {
                     group_list={this.props.group_list}
                     crawler={this.state.selected_crawler}
                     edge_device_list={this.props.edge_device_list}
+                    testCrawler={this.props.testCrawler}
                 />
 
                 <CrawlerImportExport

@@ -13,6 +13,8 @@ import CrawlerMetadataMapper from "./crawler-metadata-mapper";
 import CrawlerExchange365 from "./crawler-exchange365";
 import CrawlerOneDrive from "./crawler-onedrive";
 import CrawlerDropbox from "./crawler-dropbox";
+import CrawlerBox from "./crawler-box";
+import CrawlerIManage from "./crawler-imanage";
 import CrawlerWordpress from "./crawler-wordpress";
 import CrawlerGDrive from "./crawler-gdrive";
 import CrawlerNFS from "./crawler-nfs";
@@ -281,6 +283,27 @@ export class CrawlerDialog extends Component {
 
             this.setError('invalid parameters', 'dropbox crawler: you have invalid values in your start folder.');
 
+        } else if (crawler.crawlerType === 'box' && !this.validDropBoxFolderList(sj.folderList)) {
+
+            this.setError('invalid parameters', 'box crawler: you have invalid values in your start folder.');
+
+        } else if (crawler.crawlerType === 'imanage' && !this.validDropBoxFolderList(sj.folderList)) {
+
+            this.setError('invalid parameters', 'iManage crawler: you have invalid values in your start folder.');
+
+        } else if (crawler.crawlerType === 'box' && (!sj.clientId || sj.clientId.length === 0 ||
+                    !sj.clientSecret || sj.clientSecret.length === 0 || !sj.enterpriseId || sj.enterpriseId.length === 0 ||
+                     sj.timeToCheckFrom.length === 0)) {
+
+            this.setError('invalid parameters', 'box crawler: you have invalid values for clientId / clientSecret / enterpriseId / time-to-check-from.');
+
+        } else if (crawler.crawlerType === 'imanage' && (!sj.clientId || sj.clientId.length === 0 ||
+                   !sj.clientSecret || sj.clientSecret.length === 0 || !sj.libraryId || sj.libraryId.length === 0 ||
+                   !sj.server || sj.server.length === 0 || !sj.username || sj.username.length === 0 ||
+                   !sj.cursor || sj.cursor.length === 0)) {
+
+            this.setError('invalid parameters', 'iManage crawler: you have invalid values for server / username / clientId / clientSecret / libraryId / cursor.');
+
         } else if (crawler.crawlerType === 'gdrive' && (!sj.gdrive_clientId || sj.gdrive_clientId.length === 0 ||
                     !sj.gdrive_projectId || sj.gdrive_projectId.length === 0 ||
                     !sj.gdrive_clientSecret || sj.gdrive_clientSecret.length === 0 ||
@@ -297,10 +320,11 @@ export class CrawlerDialog extends Component {
             this.setError('invalid parameters', 'RSS: you must supply a value for endpoint.');
 
         } else if (crawler.crawlerType !== 'web' && crawler.crawlerType !== 'file' && crawler.crawlerType !== 'database' &&
-                   crawler.crawlerType !== 'office365' && crawler.crawlerType !== 'exchange365' && crawler.crawlerType !== 'dropbox' &&
+                   crawler.crawlerType !== 'exchange365' && crawler.crawlerType !== 'dropbox' &&
                    crawler.crawlerType !== 'nfs' && crawler.crawlerType !== 'wordpress' && crawler.crawlerType !== 'gdrive' &&
                    crawler.crawlerType !== 'onedrive' && crawler.crawlerType !== 'sharepoint365' &&
-                   crawler.crawlerType !== 'restfull' && crawler.crawlerType !== 'rss' && crawler.crawlerType !== 'external') {
+                   crawler.crawlerType !== 'restfull' && crawler.crawlerType !== 'rss' && crawler.crawlerType !== 'external' &&
+                   crawler.crawlerType !== 'box' && crawler.crawlerType !== 'imanage') {
 
             this.setError('invalid parameters', 'you must select a crawler-type first.');
 
@@ -414,6 +438,14 @@ export class CrawlerDialog extends Component {
                                         <div className={"nav-link " + (this.state.selectedTab === 'dropbox crawler' ? 'active' : '')}
                                              onClick={() => this.setState({selectedTab: 'dropbox crawler'})}>dropbox crawler</div>
                                     </li>}
+                                    {c_type === "box" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'box crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'box crawler'})}>box crawler</div>
+                                    </li>}
+                                    {c_type === "imanage" && <li className="nav-item nav-cursor">
+                                        <div className={"nav-link " + (this.state.selectedTab === 'iManage crawler' ? 'active' : '')}
+                                             onClick={() => this.setState({selectedTab: 'iManage crawler'})}>iManage crawler</div>
+                                    </li>}
                                     {c_type === "gdrive" && <li className="nav-item nav-cursor">
                                         <div className={"nav-link " + (this.state.selectedTab === 'google drive crawler' ? 'active' : '')}
                                              onClick={() => this.setState({selectedTab: 'google drive crawler'})}>google drive crawler</div>
@@ -477,6 +509,7 @@ export class CrawlerDialog extends Component {
                                             startTime={crawler.startTime}
                                             endTime={crawler.endTime}
                                             edge_device_list={this.props.edge_device_list}
+                                            testCrawler={this.props.testCrawler}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(crawler) => this.update_general_data(crawler)}/>
                                     }
@@ -590,6 +623,33 @@ export class CrawlerDialog extends Component {
                                             theme={theme}
                                             clientToken={sj.clientToken}
                                             folderList={sj.folderList}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'box crawler' &&
+                                        <CrawlerBox
+                                            theme={theme}
+                                            clientId={sj.clientId}
+                                            clientSecret={sj.clientSecret}
+                                            enterpriseId={sj.enterpriseId}
+                                            folderList={sj.folderList}
+                                            timeToCheckFrom={sj.timeToCheckFrom}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'iManage crawler' &&
+                                        <CrawlerIManage
+                                            theme={theme}
+                                            username={sj.username}
+                                            password={sj.password}
+                                            server={sj.server}
+                                            clientId={sj.clientId}
+                                            clientSecret={sj.clientSecret}
+                                            libraryId={sj.libraryId}
+                                            folderList={sj.folderList}
+                                            cursor={sj.cursor}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>

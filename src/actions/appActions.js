@@ -107,7 +107,8 @@ let notification_busy = false;
 export const appCreators = {
 
     signIn: (jwt, on_success, on_fail) => async (dispatch) => {
-        await Comms.http_get_jwt('/auth/authenticate/msal', jwt,
+
+        await Comms.http_get_jwt('/auth/admin/authenticate/msal', jwt,
             (response) => {
                 dispatch({type: SIGN_IN, data: response.data})
                 if (on_success)
@@ -192,7 +193,10 @@ export const appCreators = {
     setupManager: (session_id) => async (dispatch, getState) => {
         dispatch(({type: SELECT_TAB, selected_tab: 'knowledge bases'}));
         const filter = getState().appReducer.organisation_filter;
-        await _getOrganisationList( '', '', filter, true, dispatch, getState, session_id);
+
+        const org_name = getState().appReducer.selected_organisation;
+        const org_id = getState().appReducer.selected_organisation_id;
+        await _getOrganisationList( org_name, org_id, filter, true, dispatch, getState, session_id);
         await _setupPage('knowledge bases', dispatch, getState);
     },
 
@@ -217,7 +221,7 @@ export const appCreators = {
                     notification_busy = false;
                 },
                 (errStr) => {
-                    console.log("error getting os-messages:" + errStr);
+                    console.error("error getting os-messages:" + errStr);
                     notification_busy = false;
                 }
             )
@@ -635,6 +639,25 @@ export const appCreators = {
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
+    },
+
+    // test a specific crawler's connectivity
+    testCrawler: (source_id, success, fail) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const session_id = get_session_id(getState);
+        await Comms.http_get('/crawler/crawler/test/' + encodeURIComponent(organisation_id) + '/' +
+                                encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id), session_id,
+            (response) => {
+                dispatch({type: BUSY, busy: false});
+                success(response.data)
+            },
+            (errStr) => {
+                dispatch({type: BUSY, busy: false});
+                if (fail)
+                    fail(errStr);
+            })
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1517,9 +1540,9 @@ export const appCreators = {
         const data = {
             organisationId: organisation_id,
             kbId: kb_id,
-            category: category.category,
             metadata: category.metadata,
-            wordCloud: category.wordCloud,
+            displayName: category.displayName,
+            categorizationList: category.categorizationList,
         }
         const session_id = get_session_id(getState);
         Comms.http_put('/language/categorization', session_id,
@@ -1531,13 +1554,13 @@ export const appCreators = {
         )
     },
 
-    deleteCategory: (category, metadata) => async (dispatch, getState) => {
+    deleteCategory: (metadata) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const session_id = get_session_id(getState);
         Comms.http_delete('/language/categorization/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' +
-                            encodeURIComponent(category) + '/' + encodeURIComponent(metadata), session_id,
+                            encodeURIComponent(metadata), session_id,
             () => {
                 _getCategoryList(organisation_id, kb_id, dispatch, getState);
             },

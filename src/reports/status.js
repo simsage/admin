@@ -16,9 +16,6 @@ export class Status extends React.Component {
             onError : props.onError,
         };
     }
-    componentDidMount() {
-        this.props.getSimSageStatus();
-    }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
         console.log(error, info);

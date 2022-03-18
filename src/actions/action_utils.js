@@ -405,7 +405,7 @@ export async function _setupPage(selected_tab, dispatch, getState, session_id) {
     const organisation_id = getState().appReducer.selected_organisation_id;
     const organisation = getState().appReducer.selected_organisation;
     const kb_id = getState().appReducer.selected_knowledgebase_id;
-    session_id = session_id ? session_id : (getState().appReducer.session && getState().appReducer.session.id ? getState().appReducer.session.id : null);
+    const kb_list = getState().appReducer.knowledge_base_list;
 
     // don't reset when you're the operator
     if (selected_tab !== 'operator' &&
@@ -415,6 +415,11 @@ export async function _setupPage(selected_tab, dispatch, getState, session_id) {
 
     const user_list = getState().appReducer.user_list;
     const group_list = getState().appReducer.group_list;
+
+    // load knowledge-bases if we have none and there is a selected organisation
+    if (organisation_id !== '' && (!kb_list || kb_list.length === 0)) {
+        await _getKnowledgeBases(organisation_id, dispatch, getState);
+    }
 
     if (selected_tab === 'users' && organisation_id !== '') {
         const filter = getState().appReducer.user_filter;
@@ -444,12 +449,6 @@ export async function _setupPage(selected_tab, dispatch, getState, session_id) {
         const edge_id = getState().appReducer.selected_edge_device_id;
         if (edge_id && edge_id !== '') {
             await _getEdgeDeviceCommands(organisation_id, edge_id, dispatch, getState);
-        }
-
-    } else if (selected_tab === 'knowledge bases') {
-        const id = getState().appReducer.selected_organisation_id;
-        if (id !== '') {
-            await _getKnowledgeBases(id, dispatch, getState);
         }
 
     } else if (selected_tab === 'document sources' && organisation_id !== '' && kb_id !== '') {

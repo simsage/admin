@@ -41,7 +41,6 @@ export class Documents extends React.Component {
     }
     deleteDocument(action) {
         if (action && Api.defined(this.state.document)) {
-            console.log(this.state.document);
             this.props.deleteDocument(this.state.document.url, this.state.document.sourceId);
         }
         if (this.props.closeDialog) {

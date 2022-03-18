@@ -14,7 +14,6 @@ let wl = "" + window.location;
 if (wl.lastIndexOf('/') > 8) {
     wl = wl.substr(0, wl.lastIndexOf('/#'));
 }
-// console.log("redirectUri=", wl);
 export const msalConfig = {
     auth: {
         clientId: window.ENV.client_id,
