@@ -1,0 +1,76 @@
+
+.group-block {
+    padding: 5px;
+    margin-top: 20px;
+    float: left;
+    width: 400px;
+    height: 400px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    margin-left: 10px;
+    overflow: auto;
+}
+
+.group-block .group-label {
+    font-size: 0.8em;
+    color: #aaa;
+    cursor: default;
+}
+
+.group-label .filter-label {
+    margin-left: 60px;
+    color: #808080;
+}
+
+.group-label .filter-text-box {
+    padding: 2px;
+    width: 60px;
+    display: inline;
+}
+
+.group-label .filter-text {
+    border: 1px solid #a0a0a0;
+}
+
+.group-label .clear {
+    text-align: center;
+    background: #808080;
+    color: #fff;
+    padding: 2px 4px;
+    border-radius: 50px;
+    margin-top: 4px;
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+.group-block .group-area {
+    padding: 20px;
+    cursor: pointer;
+}
+
+.group-controls {
+    padding: 5px;
+    margin-top: 20px;
+    margin-left: 10px;
+    float: left;
+}
+
+.group-controls .button {
+    text-align: center;
+    background: #2a2a2a;
+    color: #fff;
+    padding: 4px 6px;
+    border-radius: 50px;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.user-group-image-box {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.user-group-image {
+    width: 24px;
+}
+

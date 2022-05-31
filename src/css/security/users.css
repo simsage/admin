@@ -1,0 +1,79 @@
+
+
+.user-display .tab-content {
+    margin-top: 10px;
+    height: 500px;
+}
+
+.user-display .role-block {
+    padding: 5px;
+    margin-top: 20px;
+    float: left;
+    width: 400px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.user-display .role-label {
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+.user-display .role-area {
+    padding: 20px;
+}
+
+.user-display .role-chip {
+    margin: 2px;
+    font-size: 10px;
+}
+
+.user-display .label {
+    text-align: left;
+    color: #555;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.user-display .role-label {
+    word-wrap: break-word;
+    color: #555;
+    width: 200px;
+}
+
+.user-display .link-button {
+    float: left;
+    padding: 10px;
+    color: #888;
+    cursor: pointer;
+}
+
+.user-display .disabled-link-button {
+    float: left;
+    padding: 10px;
+    color: #eee;
+}
+
+.user-display .dl-image-size {
+    width: 24px;
+}
+
+.user-display .dl-image-size-disabled {
+    width: 24px;
+    opacity: 0.2;
+}
+
+.user-display .image-button {
+    float: right;
+    padding: 10px;
+    color: #888;
+    cursor: pointer;
+}
+
+.user-display .add-image {
+    width: 25px;
+}
+
