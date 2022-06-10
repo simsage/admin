@@ -2,7 +2,12 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../utilities/comms";
 
 const initialState = {
-    users: [],
+    user_list: [],
+    user_filter: '',
+    user_page: 0,
+    user_page_size: 10,
+
+    //new states
     status: 'idle',
     error: null,
     show_user_edit: false,
@@ -31,16 +36,7 @@ const usersSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {
-        // saveUser: (state, action) => {
-        //     state.show_user_edit = false;
-        //     console.log(action.payload)
-        // },
 
-        showEditUser: (state, action) => {
-            console.log(action)
-            console.log(state)
-            // state.show_user_edit = !state.show_user_edit;
-        },
 
     }
 });
