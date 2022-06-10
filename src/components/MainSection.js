@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
-import {UserManager} from "../features/users/index";
+import {UserManager} from "../features/users/UserManager";
 
 function MainSection(){
     const {selected_tab} = useSelector((state)=>state.defaultApp)

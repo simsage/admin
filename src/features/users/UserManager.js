@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useSelector} from "react-redux";
-import {Users} from "./users";
+import {UsersList} from "./UsersList";
 
 export function UserManager(){
 
@@ -19,7 +19,7 @@ export function UserManager(){
 
             {/*<br clear="both" />*/}
             {selectedTab === 'users' &&
-                <Users />
+                <UsersList />
             }
             {selectedTab === 'groups' &&
             <h1>Groups</h1>

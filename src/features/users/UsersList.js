@@ -1,12 +1,11 @@
 import React, {useState} from "react";
-import {UserEdit} from "./user-edit";
+import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
 import {showEditUser} from "./usersSlice";
 
-export function Users(){
+export function UsersList(){
 
     // const showEditUser = useSelector((state) => state).usersReducer;
-    const [selectedUser, setSelectedUser] = useState(null)
 
     let users = [
         {
@@ -90,10 +89,14 @@ export function Users(){
             "groupList": []
         }
     ]
+
+    const [selectedUser, setSelectedUser] = useState(null)
     const [searchFilter,setSearchFilter] = useState('')
     const [orderFilter,setOrderFilter] = useState('')
     const [userFilter,setUserFilter] = useState('')
+
     const theme = null;
+    const dispatch = useDispatch();
 
     function handleSearchTextKeydown(event) {
         if (event.key === "Enter" && this.props.selected_organisation_id) {
@@ -101,21 +104,19 @@ export function Users(){
         }
     }
 
-    function addNewUser(){
+    function handleAddNewUser(){
         console.log("add new user")
     }
 
-    const dispatch = useDispatch();
-
-    function editUser(user) {
+    function handleEditUser(user) {
         if (user) {
-            dispatch(showEditUser(user))
+            console.log("handleEditUser")
+            //dispatch(showEditUser(user))
         }
     }
 
     return(
         <div className="section">
-
 
             {/*filter start*/}
             <div className="filter-find-box">
@@ -143,7 +144,7 @@ export function Users(){
                             </select>
                        </span>
                 <span className="filter-find-text">
-                    <div className="image-button" onClick={() => addNewUser()}>
+                    <div className="image-button" onClick={() => handleAddNewUser()}>
                      <img className="add-image" src="/images/add.svg" title="add new user" alt="add new user"/>
                     </div>
                 </span>
@@ -169,7 +170,7 @@ export function Users(){
                                         return <span key={key}>{role.role}<br/></span>
                                     })}
                                 </td>
-                                <td><button onClick={() => editUser(user)}>Edit icon</button></td>
+                                <td><button onClick={() => handleEditUser(user)}>Edit icon</button></td>
                                 <td><button>Delete icon</button></td>
                             </tr>
                         })
