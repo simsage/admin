@@ -16,11 +16,21 @@ import './css/admin-page.css';
 import './css/main.css';
 import './css/layout/navbar.css';
 import './css/layout/left-sidebar.css';
+import {saveState} from "./utilities/helpers";
+import Comms from "./utilities/comms";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
 const container = document.getElementById('root');
 const root = createRoot(container);
+
+store.subscribe(() => {
+    saveState(store.getState());
+});
+
+
+
+const session = Comms.getSession()
 
 root.render(
 

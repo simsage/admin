@@ -19,4 +19,7 @@ window.ENV = {
     // msal/jwt clientId and authority
     client_id: "1f65697f-7c2f-4faa-99c2-53253a4edd7a",
     authority: "https://login.microsoftonline.com/530fb855-94ec-4ff6-9801-60d86836c41f",
+
+    //local_storage_key to save state
+    local_storage_key:'http://localhost:4230/state',
 };

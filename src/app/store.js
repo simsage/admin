@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import defaultReducer from '../features/default/DefaultSlice'
 import authReducer from '../features/auth/authSlice'
 import usersReducer from "../features/users/usersSlice";
+import knowledgeBaseReducer from "../features/knowledge_bases/knowledgeBaseSlice";
 
 /**
  * Logs all actions and states after they are dispatched.
@@ -20,6 +21,7 @@ export const store = configureStore({
     defaultApp:defaultReducer,
     authReducer: authReducer,
     usersReducer: usersReducer,
+    knowledge: knowledgeBaseReducer
   },
   middleware:(getDefaultMiddleware => getDefaultMiddleware().concat(logger))
 });

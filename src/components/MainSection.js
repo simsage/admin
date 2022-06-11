@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {UserManager} from "../features/users/UserManager";
+import KnowlegdeBaseHome from "../features/knowledge_bases/KnowlegdeBaseHome";
 
 function MainSection(){
     const {selected_tab} = useSelector((state)=>state.defaultApp)
@@ -8,7 +9,7 @@ function MainSection(){
     return(
         <div>
             {selected_tab === 'overview' &&
-            <h1>overview</h1>
+            <KnowlegdeBaseHome/>
             }
 
             { selected_tab === 'user-management' &&

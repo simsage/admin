@@ -3,10 +3,11 @@ export function getFullname(user){
     return user.firstName + ' ' + user.surname
 }
 
+export const local_storage_key = window.ENV.local_storage_key;
 
 export function loadState() {
     try {
-        let serializedState = localStorage.getItem("https://simsage.ai/state");
+        let serializedState = localStorage.getItem(local_storage_key);
         if (serializedState === null || window.location.href.endsWith("/#/")) {
             // return {"appReducer": initializeState()};
             //TODO::Add initialize state here
@@ -22,7 +23,8 @@ export function loadState() {
 export function saveState(state) {
     try {
         let serializedState = JSON.stringify(state);
-        localStorage.setItem("https://simsage.ai/state", serializedState);
+        localStorage.setItem(local_storage_key, serializedState);
+        console.log("saveState")
     } catch (err) {
     }
 }
@@ -30,7 +32,8 @@ export function saveState(state) {
 
 export function clearState() {
     try {
-        saveState(initializeState());
+        // saveState(initializeState());
+        saveState({});
     } catch (err) {
     }
 }

@@ -18,13 +18,13 @@ export const PageLayout = (props) => {
 
     // do we have a session object locally? if not - sign-in
     const {session} = useSelector((state)=>state.authReducer)
-    // console.log("session: ",session);
+    console.log("session: ",session);
     const { instance, accounts } = useMsal();
     // console.log("Msal.instance: ",instance);
     // console.log("Msal.accounts: ",accounts);
 
     if (!session || !session.id){
-        console.log(!session || !session.id);
+        console.log("",!session || !session.id);
     }
 
     if ((!session || !session.id) && accounts && accounts.length > 0){
@@ -40,7 +40,7 @@ export const PageLayout = (props) => {
                             (response2) => {
                                 dispatch(login({type: 'SIGN_IN', data: response2.data}));
                                 // dispatch({type: SET_ORGANISATION_LIST, dashboard: response.data});
-                                console.log("auth response",response2);
+                                // console.log("auth response",response2);
                                 // console.log("auth session",response2.data.session);
                             },
                             (errStr) => {
@@ -59,10 +59,10 @@ export const PageLayout = (props) => {
 
     return (
         <>
-            <nav bg="primary" variant="dark">
-                <a className="navbar-brand" href="/">MSAL React Tutorial</a>
-                { isAuthenticated ? <span>Signed In</span> : <SignInButton /> }
-            </nav>
+            {/*<nav bg="primary" variant="dark">*/}
+            {/*    <a className="navbar-brand" href="/">MSAL React Tutorial</a>*/}
+            {/*    { isAuthenticated ? <span>Signed In</span> : <SignInButton /> }*/}
+            {/*</nav>*/}
             {props.children}
         </>
     );

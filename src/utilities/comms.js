@@ -1,4 +1,5 @@
 import axios from "axios/index";
+import {loadState} from "./helpers";
 
 // import {loadState} from '../state/stateLoader'
 
@@ -213,13 +214,15 @@ export class Comms {
         return year + '-' + month + '-' + date;
     };
 
-    // static getSession() {
-    //     const state = loadState();
-    //     if (state && state.appReducer && state.appReducer.session && state.appReducer.session.id) {
-    //         return state.appReducer.session;
-    //     }
-    //     return null;
-    // }
+    static getSession() {
+        const state = loadState();
+        console.log("loadstate",state)
+        return state;
+        if (state && state.appReducer && state.appReducer.session && state.appReducer.session.id) {
+            return state.appReducer.session;
+        }
+        return null;
+    }
 
     static getHeaders(session_id) {
         if (session_id) {

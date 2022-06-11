@@ -23,7 +23,6 @@ Undecided:
 
         //Default -- DefaultSlice
         session: null,
-        user: null,
         selected_tab: 'overview',
         selected_organisation: null,
         selected_knowledge_base: null,
@@ -34,6 +33,9 @@ Undecided:
         busy: false,            // system busy
         error_title: "Error",   // application error messages
         error: "",
+
+        //Auth
+        user: null,
 
 
         //Users

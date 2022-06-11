@@ -93,11 +93,9 @@ const authSlice = createSlice({
             state.user = null
             state.message = ''
             state.session = null
-
             state.isError = false
             state.isSuccess = false
             state.isLoading = false
-
         },
 
         login: (state, action) => {
