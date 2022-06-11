@@ -27,8 +27,8 @@ function App() {
     console.log(state)
 
     return (
-        // <PageLayout>
-        //     <AuthenticatedTemplate>
+        <PageLayout>
+            <AuthenticatedTemplate>
             <div className={busy ? "dms wait-cursor" : "dms"} onClick={() => localCloseAllMenus()}>
                 <LeftNavbar />
                 <div className="outer">
@@ -36,8 +36,8 @@ function App() {
                     <MainSection />
                 </div>
             </div>
-            // </AuthenticatedTemplate>
-    // </PageLayout>
+            </AuthenticatedTemplate>
+        </PageLayout>
   );
 }
 
