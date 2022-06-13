@@ -76,7 +76,7 @@ const AccountDropdown = (props) => {
                 {/*    })*/}
                 {/*}*/}
                 <li className="acc-item px-4 py-3" onClick={() => addOrganisation()}>
-                    <label>+</label>
+                    <label>+ Add New Organisation</label>
                 </li>
 <hr />
 

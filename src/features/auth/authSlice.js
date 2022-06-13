@@ -66,7 +66,8 @@ const initialState = {
     message: '',
 
     accounts_dropdown: false,
-    organisation_list: []
+
+
 }
 
 
@@ -104,7 +105,7 @@ const authSlice = createSlice({
             state.message = ''
             state.session = action.payload.data.session
             state.organisation_list = action.payload.data.organisation_list
-            console.log("organisation_list", state.organisation_list);
+            console.log("login", action.payload);
             // console.log("Auth: login action", action);
         },
 

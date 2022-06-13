@@ -34,6 +34,7 @@ export const PageLayout = (props) => {
 
             Comms.http_get_jwt('/auth/admin/authenticate/msal', response.idToken,
                             (response2) => {
+
                                 dispatch(login({type: 'SIGN_IN', data: response2.data}));
                             },
                             (errStr) => {
@@ -49,6 +50,9 @@ export const PageLayout = (props) => {
 
     return (
         <>
+            <nav bg="primary" variant="dark">
+                { isAuthenticated ? <></> : <SignInButton /> }
+            </nav>
             {props.children}
         </>
     );
