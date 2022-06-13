@@ -1,28 +1,33 @@
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
+import {showAddUserForm} from "./usersSlice";
 
 
 export function UserEdit(props){
 
-    console.log(props.open);
-
-    const [showDialog, setShowDialog] = useState(props.open)
+    const show_user_form = useSelector((state) => state.usersReducer.show_user_form)
     const [user,setUser] = useState(props.user)
     const edit_user_id = (user)?user.id:null;
+    const dispatch = useDispatch();
 
     // setShowDialog(props.open);
 
     //[details,roles, groups]
     const [selectedTab, setSelectedTab] = useState('details')
 
-    function cancelForm(e){
-        // setUser(null);
-        setShowDialog(false);
+    function handleClose(e){
+        dispatch(showAddUserForm(false))
     }
+
+    function handleSave(e){
+        dispatch(showAddUserForm(false))
+    }
+
+
 
     // console.log(showDialog);
 
-    if (showDialog === false)
+    if (show_user_form === false)
         return (<div />);
     return (
 
@@ -50,8 +55,8 @@ export function UserEdit(props){
 
 
         <div className="modal-footer">
-            <button className="btn btn-primary btn-block" onClick={() => cancelForm(this)}>Cancel</button>
-            <button className="btn btn-primary btn-block" onClick={() => cancelForm(this)}>Save</button>
+            <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
+            <button className="btn btn-primary btn-block" onClick={(e) => handleSave(e)}>Save</button>
         </div>
 
         </div>

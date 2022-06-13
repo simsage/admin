@@ -12,6 +12,7 @@ const AccountDropdown = (props) => {
 
     const dispatch = useDispatch();
     const state = useSelector((state) => state).authReducer;
+
     // const accounts_dropdown = state.accounts_dropdown;
     const accounts_dropdown = state.accounts_dropdown;
 

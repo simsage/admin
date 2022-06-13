@@ -10,7 +10,7 @@ const initialState = {
     //new states
     status: 'idle',
     error: null,
-    show_user_edit: false,
+    show_user_form: false,
 }
 
 // export async function _getUsers(organisation_id, filter, dispatch, getState) {
@@ -36,11 +36,13 @@ const usersSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {
-
+        showAddUserForm:(state,action) => {
+            state.show_user_form = action.payload
+        }
 
     }
 });
 
 
-export const { showEditUser } = usersSlice.actions
+export const { showAddUserForm } = usersSlice.actions
 export default usersSlice.reducer;

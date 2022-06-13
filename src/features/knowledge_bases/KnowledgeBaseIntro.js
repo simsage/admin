@@ -3,7 +3,7 @@ import {store} from "../../app/store";
 import {showAddKnowledgeBaseForm} from "./knowledgeBaseSlice";
 import {useDispatch} from "react-redux";
 
-export default function NoKnowledgeBase(){
+export default function KnowledgeBaseIntro(){
 
     const dispatch = useDispatch();
 
@@ -11,7 +11,6 @@ export default function NoKnowledgeBase(){
         console.log("handleAddNewKnowledgeBase")
         dispatch(showAddKnowledgeBaseForm(true))
     }
-
 
     return(
         <div className="col-6">

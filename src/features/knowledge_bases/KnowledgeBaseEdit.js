@@ -3,10 +3,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {store} from "../../app/store";
 import {showAddKnowledgeBaseForm} from "./knowledgeBaseSlice";
 
-export default function AddNewKnowledgeBase(){
+export default function KnowledgeBaseEdit(){
 
-    let form = {edit_knowledgebase: true, knowledgeBase: null,
-        edit_knowledgebase_id: "",
+    let form = {edit_knowledge_base: true, knowledgeBase: null,
+        edit_knowledge_base_id: "",
         edit_name: "",
         edit_email: "",
         edit_enabled: true,

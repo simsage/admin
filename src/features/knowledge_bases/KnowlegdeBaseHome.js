@@ -1,6 +1,6 @@
-import AddNewKnowledgeBase from "./AddNewKnowledgeBase";
+import KnowledgeBaseEdit from "./KnowledgeBaseEdit";
 import {useState} from "react";
-import NoKnowledgeBase from "./NoKnowledgeBase";
+import KnowledgeBaseIntro from "./KnowledgeBaseIntro";
 
 const knowledge_base_list = []
 
@@ -8,10 +8,10 @@ export default function (){
 
     return(
         <div className={""}>
-            {(knowledge_base_list.length == 0) &&
-                <NoKnowledgeBase />
+            {(true) && (knowledge_base_list.length === 0) &&
+                <KnowledgeBaseIntro />
             }
-            <AddNewKnowledgeBase />
+            <KnowledgeBaseEdit />
 
         </div>
     )

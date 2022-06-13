@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
-import {showEditUser} from "./usersSlice";
+import {showAddUserForm} from "./usersSlice";
+import {store} from "../../app/store";
 
 export function UsersList(){
 
@@ -105,51 +106,53 @@ export function UsersList(){
     }
 
     function handleAddNewUser(){
-        console.log("add new user")
+        dispatch(showAddUserForm(true))
     }
 
-    function handleEditUser(user) {
-        if (user) {
-            console.log("handleEditUser")
-            //dispatch(showEditUser(user))
-        }
+    function handleEditUser() {
+        dispatch(showAddUserForm(true))
     }
 
     return(
         <div className="section">
 
-            {/*filter start*/}
-            <div className="filter-find-box">
-                    <span className="filter-find-text">
-                            <input type="text" placeholder={"Filter"} value={searchFilter} autoFocus={true} className={"filter-text-width " + theme}
-                                   onKeyPress={(event) => handleSearchTextKeydown(event)}
-                                   onChange={(event) => {
-                                       setSearchFilter(event.target.value)
-                                   }}/>
-                    </span>
-                <span className="filter-find-text">
-                            <select  placeholder={"Filter"} autoFocus={true} className={"filter-text-width " + theme}
-                                     onChange={(event) => {
-                                         setOrderFilter(event.target.value)
-                                     }}>
-                                <option value="alphabetical">Alphabetical</option>
-                            </select>
-                       </span>
-                <span className="filter-find-text">
-                            <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"filter-text-width " + theme}
-                                    onChange={(event) => {
-                                        setUserFilter(event.target.value)
-                                    }}>
-                                <option value="all-users">All Users</option>
-                            </select>
-                       </span>
-                <span className="filter-find-text">
-                    <div className="image-button" onClick={() => handleAddNewUser()}>
-                     <img className="add-image" src="/images/add.svg" title="add new user" alt="add new user"/>
-                    </div>
-                </span>
+
+            <div className="form-row row">
+                <div className="form-group col-md-3">
+                    <input type="text" placeholder={"Filter"} value={searchFilter} autoFocus={true} className={"form-control " + theme}
+                           onKeyPress={(event) => handleSearchTextKeydown(event)}
+                           onChange={(event) => {
+                               setSearchFilter(event.target.value)
+                           }}/>
+                </div>
+                <div className="form-group col-md-3">
+                    <select  placeholder={"Filter"} autoFocus={true} className={"form-control filter-text-width " + theme}
+                             onChange={(event) => {
+                                 setOrderFilter(event.target.value)
+                             }}>
+                        <option value="">Choose...</option>
+                        <option value="alphabetical">Alphabetical</option>
+                        <option value="">...</option>
+                    </select>
+
+                </div>
+                <div className="form-group col-md-3">
+                    <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-control filter-text-width " + theme}
+                            onChange={(event) => {
+                                setUserFilter(event.target.value)
+                            }}>
+                        <option value="all-users">All Users</option>
+                    </select>
+                </div>
+                <div className="form-group col-md-2">
+                    <button className="btn btn-primary" onClick={() => handleAddNewUser()}>
+                        + Add
+                        {/*<img className="add-image" src="/images/add.svg" title="add new user" alt="add new user"/>*/}
+                    </button>
+                </div>
             </div>
-            {/*filter end*/}
+
+
 
             <br className="clear" />
 
@@ -158,6 +161,7 @@ export function UsersList(){
                     <tbody>
                     {
                         users.map((user) => {
+                            //Todo:: implement canEdit canDelete
                             const canEdit = true;
                             const canDelete = true;
 
@@ -170,8 +174,8 @@ export function UsersList(){
                                         return <span key={key}>{role.role}<br/></span>
                                     })}
                                 </td>
-                                <td><button onClick={() => handleEditUser(user)}>Edit icon</button></td>
-                                <td><button>Delete icon</button></td>
+                                <td><button className={"btn btn-primary"} onClick={() => handleEditUser(user)}>Edit icon</button></td>
+                                <td><button className={"btn btn-outline-danger"}>Delete icon</button></td>
                             </tr>
                         })
                     }
