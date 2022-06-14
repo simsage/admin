@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import '../css/navbar/account-dropdown.css';
 import {useDispatch, useSelector} from "react-redux";
+import {useMsal} from "@azure/msal-react";
 // import AccountDropdown from "../navbar/AccountDropdown";
 
 /**
@@ -10,18 +11,19 @@ import {useDispatch, useSelector} from "react-redux";
 
 const AccountDropdown = (props) => {
 
+    const { instance } = useMsal();
     const dispatch = useDispatch();
     const state = useSelector((state) => state).authReducer;
 
     // const accounts_dropdown = state.accounts_dropdown;
     const accounts_dropdown = state.accounts_dropdown;
 
-    console.log("AccountDropdown",accounts_dropdown )
+    // console.log("AccountDropdown",accounts_dropdown )
     const organisationList = state.organisation_list;
     // const selected_organisation = state.selected_organisation;
     // const selected_organisation_id = state.selected_organisation_id;
 
-    console.log("organisationList",organisationList)
+    // console.log("organisationList",organisationList)
 
     function selectOrganisation(selected_org){
         console.log(selected_org)
@@ -89,7 +91,11 @@ const AccountDropdown = (props) => {
                     <label>Help</label>
                 </li>
                 <li className="acc-item px-4 py-3"
-                    onClick={() => signOut()}>
+                    onClick={() => {
+                        instance.logoutRedirect({
+                            postLogoutRedirectUri: "/",
+                        });
+                    }}>
                     <label>Sign Out</label>
                 </li>
                 </ul>

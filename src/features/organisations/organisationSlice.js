@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../utilities/comms";
 
 const initialState = {
@@ -27,9 +27,11 @@ const organisationSlice = createSlice({
 
 
 
-export async function _getOrganisationList(current_org_name, current_org_id, _filter, change_organisation, dispatch, getState, session_id) {
+// export async function _getOrganisationList(current_org_name, current_org_id, _filter, change_organisation, dispatch, getState, session_id) {
+export async function getOrganisationList() {
+
     dispatch({type: BUSY, busy: true});
-    session_id = session_id ? session_id : get_session_id(getState)
+    session_id = session_id ? session_id : (getState)
     let filter = _filter;
     if (!_filter || _filter.trim() === "") {
         filter = "null";
@@ -37,13 +39,14 @@ export async function _getOrganisationList(current_org_name, current_org_id, _fi
     await Comms.http_get('/auth/user/organisations/' + encodeURIComponent(filter), session_id,
         (response) => {
             const organisation_list = response.data;
-            dispatch({type: SET_ORGANISATION_LIST, organisation_list: organisation_list});
-            // select an organisation if there is one to select and none yet has been selected
-            if (change_organisation && organisation_list && organisation_list.length > 0 && current_org_id.length === 0) {
-                dispatch({type: SELECT_ORGANISATION, name: organisation_list[0].name, id: organisation_list[0].id});
-                // and get the knowledge bases for this org
-                _getKnowledgeBases(organisation_list[0].id, dispatch, getState);
-            }
+            console.log(organisation_list)
+            // dispatch({type: SET_ORGANISATION_LIST, organisation_list: organisation_list});
+            // // select an organisation if there is one to select and none yet has been selected
+            // if (change_organisation && organisation_list && organisation_list.length > 0 && current_org_id.length === 0) {
+            //     dispatch({type: SELECT_ORGANISATION, name: organisation_list[0].name, id: organisation_list[0].id});
+            //     // and get the knowledge bases for this org
+            //     _getKnowledgeBases(organisation_list[0].id, dispatch, getState);
+            // }
         },
         (errStr) => {
             dispatch({type: ERROR, title: "Error", error: errStr})

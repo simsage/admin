@@ -3,7 +3,7 @@ import React from "react";
 import {useIsAuthenticated, useMsal} from "@azure/msal-react";
 import {SignInButton} from "./SignInButtion";
 import {useDispatch, useSelector} from "react-redux";
-import {login} from "./authSlice";
+import {acquireTokenSilent, login} from "./authSlice";
 import Comms from "../../utilities/comms";
 
 
@@ -14,35 +14,48 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const dispatch = useDispatch();
 
-    console.log("auth/PageLayout");
+    //console.log("auth/PageLayout");
 
     // do we have a session object locally? if not - sign-in
-    const {session} = useSelector((state)=>state.authReducer)
+    const {session, jwt} = useSelector((state)=>state.authReducer)
     const { instance, accounts } = useMsal();
 
-    if (!session || !session.id){
-        console.log("",!session || !session.id);
-    }
+    //console.log("login accounts",accounts);
+
+    // if (!session || !session.id){
+    //     console.log("login111 !session || !session.id",!session || !session.id);
+    // }else{
+    //     console.log("login session",session.id);
+    // }
+
 
     if ((!session || !session.id) && accounts && accounts.length > 0){
-        // console.log(" inside if");
+        // console.log("login inside if");
         const request = {
             account: accounts[0]
         };
 
-        instance.acquireTokenSilent(request).then((response) => {
 
-            Comms.http_get_jwt('/auth/admin/authenticate/msal', response.idToken,
-                            (response2) => {
-
-                                dispatch(login({type: 'SIGN_IN', data: response2.data}));
-                            },
-                            (errStr) => {
-                                console.error("Error:");
-                            });
+        if(jwt === null) {
+            dispatch(acquireTokenSilent(request))
+        }
 
 
-        });
+        // instance.acquireTokenSilent(request).then((response) => {
+        //     console.log("login acquireTokenSilent");
+        //     Comms.http_get_jwt('/auth/admin/authenticate/msal', response.idToken,
+        //                     (response2) => {
+        //                     // dispatch(login(response2.data))
+        //                     console.log("login success:",response2.data)
+        //                         dispatch({type: 'SIGN_IN', data: response2.data});
+        //                     },
+        //                     (errStr) => {
+        //                         console.error("login Error:");
+        //
+        //                     });
+        //
+        //
+        // });
     }
 
 

@@ -32,6 +32,7 @@ store.subscribe(() => {
 
 const session = Comms.getSession()
 
+
 root.render(
 
   <React.StrictMode>

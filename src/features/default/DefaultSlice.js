@@ -15,6 +15,8 @@ const initialState = {
     error: "",
 };
 
+
+
 export const defaultSlice = createSlice({
     name: 'defaultApp',
     initialState,
