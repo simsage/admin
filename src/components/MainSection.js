@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {UserManager} from "../features/users/UserManager";
 import KnowlegdeBaseHome from "../features/knowledge_bases/KnowlegdeBaseHome";
+import OrganisationEdit from "../features/organisations/OraganisationEdit";
 
 function MainSection(){
     const {selected_tab} = useSelector((state)=>state.defaultApp)
@@ -27,6 +28,10 @@ function MainSection(){
             { selected_tab === 'reports' &&
             <h1>reports</h1>
             }
+
+
+            {/* Account dropdown*/}
+            <OrganisationEdit />
         </div>
     )
 }

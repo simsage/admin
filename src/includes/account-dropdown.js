@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import '../css/navbar/account-dropdown.css';
 import {useDispatch, useSelector} from "react-redux";
 import {useMsal} from "@azure/msal-react";
+import {showAddOrganisationForm} from "../features/organisations/organisationSlice";
 // import AccountDropdown from "../navbar/AccountDropdown";
 
 /**
@@ -31,8 +32,9 @@ const AccountDropdown = (props) => {
     }
 
     function addOrganisation(){
-        console.log("addOrganisation")
+        // console.log("addOrganisation")
         // dispatch({type: "SELECT_TAB", data:selected_org})
+        dispatch(showAddOrganisationForm(true))
     }
 
     function editAccount(){

@@ -8,7 +8,7 @@ export default function (){
 
     return(
         <div className={""}>
-            {(true) && (knowledge_base_list.length === 0) &&
+            {(knowledge_base_list) && (knowledge_base_list.length === 0) &&
                 <KnowledgeBaseIntro />
             }
             <KnowledgeBaseEdit />
