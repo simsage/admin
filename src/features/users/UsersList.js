@@ -32,7 +32,7 @@ export function UsersList(){
     }
 
     return(
-        <div className="section">
+        <div className="section px-5 pt-4">
             <div className="form-row row">
                 <div className="form-group col-md-3">
                     <input type="text" placeholder={"Filter"} value={searchFilter} autoFocus={true} className={"form-control " + theme}

@@ -35,13 +35,13 @@ export default function LeftNavbar(){
                 })}
             {/* </ul> */}
 
-            <li className="px-3 py-2 border-top">
-                <select className="sb-select p-1">
-                    {kb_list.map((item,i) => {
-                    return <option key={i} value={item.id}>{item.name}</option>
-                    })}
-                </select>
-            </li>
+                <li className="px-3 py-2 border-top">
+                    <select className="sb-select p-1">
+                        {kb_list.map((item,i) => {
+                        return <option key={i} value={item.id}>{item.name}</option>
+                        })}
+                    </select>
+                </li>
 
             {/* <ul className="sb-nav ps-0"> */}
                 {nav2.map((item,i) => {
