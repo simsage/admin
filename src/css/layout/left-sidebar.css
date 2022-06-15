@@ -28,6 +28,9 @@
 .sb-nav {
     list-style-type: none;
 }
+.sb-select {
+    width: 100%;
+}
 .sb-item {
     width: 100%;
     font-size: 14px;

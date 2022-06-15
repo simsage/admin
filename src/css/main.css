@@ -1,5 +1,5 @@
 
-html, body, #content, .App, .dms {
+html, body, #root, .App, .dms {
     height: 100%;
     width: 100%;
     overflow: hidden;
