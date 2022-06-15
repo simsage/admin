@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../utilities/comms";
-import {acquireTokenSilent} from "../auth/authSlice";
 
 const initialState = {
     organisation_filter: "",
@@ -20,29 +19,18 @@ const reducers = {
     }
 }
 
-
-const extraReducers = (builder) => {
-    builder
-        .addCase(acquireTokenSilent.pending,(state) => {
-            state.status = 'loading...'
-        })
-        .addCase(acquireTokenSilent.fulfilled, (state, action) => {
-            state.status = 'fulfilled'
-            state.jwt = action.payload
-            console.log("fulfilled",action)
-        })
-        .addCase(acquireTokenSilent.rejected, (state) => {
-            state.status = 'rejected'
-        })
-
-}
+//
+// const extraReducers = (builder) => {
+//     builder
+//         .addCase()
+//
+// }
 
 
 const organisationSlice = createSlice({
     name: 'organisations',
     initialState,
     reducers,
-    extraReducers
 });
 
 

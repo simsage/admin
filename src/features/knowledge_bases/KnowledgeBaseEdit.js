@@ -31,8 +31,8 @@ export default function KnowledgeBaseEdit(){
         // store.dispatch(showAddKnowledgeBaseForm(false))
     }
 
-    const show_knowledge_base_form = useSelector((state) => state.knowledge.show_knowledge_base_form)
-    if (!show_knowledge_base_form)
+    const show_kb_form = useSelector((state) => state.kbReducer.show_kb_form)
+    if (!show_kb_form)
         return (<div />);
     return(
 
@@ -47,7 +47,7 @@ export default function KnowledgeBaseEdit(){
           {/*        <div className="modal-content">*/}
                       <div className="modal-header">
                           <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
-                          <button type="button" className="btn-close" data-bs-dismiss="modal"
+                          <button onClick={ handleClose } type="button" className="btn-close" data-bs-dismiss="modal"
                                   aria-label="Close"></button>
                       </div>
                       <div className="modal-body">

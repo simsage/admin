@@ -1,16 +1,17 @@
 import {createSlice} from "@reduxjs/toolkit";
 import Comms from "../../utilities/comms";
+import db_users from "../../notes/db.json";
 
 const initialState = {
-    list: [],
-    filter: '',
-    page: 0,
-    page_size: 10,
+    kb_list: [],
+    kb_filter: '',
+    kb_page: 0,
+    kb_page_size: 10,
 
     //new states
     status: 'idle',
     error: null,
-    show_knowledge_base_form: false,
+    show_kb_form: false,
 }
 
 
@@ -19,7 +20,7 @@ const knowledgeBaseSlice = createSlice({
     initialState,
     reducers: {
         showAddKnowledgeBaseForm:(state,action) => {
-            state.show_knowledge_base_form = action.payload
+            state.show_kb_form = action.payload
         }
     }
 });

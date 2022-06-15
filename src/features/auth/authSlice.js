@@ -10,53 +10,53 @@ let user = JSON.parse(localStorage.getItem('user'))
 
 //TODO:For testing purpose - delete before go live
 
-// user = {
-//     "id": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//     "email": "siva@simsage.co.uk",
-//     "firstName": "Siva",
-//     "surname": "Elan",
-//     "passwordHash": "",
-//     "confirmed": true,
-//     "roles": [
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "057df680-af6d-11ec-b559-a3a5ee669df3",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "5ffd40f0-9efd-11ec-8d58-0bc6a5e82008",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "639b4f40-9efd-11ec-8d58-0bc6a5e82008",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "67ef1900-9efd-11ec-8d58-0bc6a5e82008",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "c276f883-e0c8-43ae-9119-df8b7df9c574",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "c276f883-e0c8-43ae-9119-df8b7df9c574",
-//         "role": "dms"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "fe9e09c0-9efc-11ec-8d58-0bc6a5e82008",
-//         "role": "admin"
-//     }
-// ],
-//     "operatorKBList": [],
-//     "groupList": []
-// }
+user = {
+    "id": "90146b6f-4406-49ef-8780-efb47fcb563e",
+    "email": "siva@simsage.co.uk",
+    "firstName": "Siva",
+    "surname": "Elan",
+    "passwordHash": "",
+    "confirmed": true,
+    "roles": [
+    {
+        "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
+        "organisationId": "057df680-af6d-11ec-b559-a3a5ee669df3",
+        "role": "admin"
+    },
+    {
+        "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
+        "organisationId": "5ffd40f0-9efd-11ec-8d58-0bc6a5e82008",
+        "role": "admin"
+    },
+    {
+        "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
+        "organisationId": "639b4f40-9efd-11ec-8d58-0bc6a5e82008",
+        "role": "admin"
+    },
+    {
+        "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
+        "organisationId": "67ef1900-9efd-11ec-8d58-0bc6a5e82008",
+        "role": "admin"
+    },
+    {
+        "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
+        "organisationId": "c276f883-e0c8-43ae-9119-df8b7df9c574",
+        "role": "admin"
+    },
+    {
+        "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
+        "organisationId": "c276f883-e0c8-43ae-9119-df8b7df9c574",
+        "role": "dms"
+    },
+    {
+        "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
+        "organisationId": "fe9e09c0-9efc-11ec-8d58-0bc6a5e82008",
+        "role": "admin"
+    }
+],
+    "operatorKBList": [],
+    "groupList": []
+}
 
 const initialState = {
     user: user ? user : null,
@@ -72,8 +72,6 @@ const initialState = {
 
     accounts_dropdown: false,
     jwt:null,
-
-
 }
 
 
@@ -94,13 +92,12 @@ const authSlice = createSlice({
 
         login: (state, action) => {
 
-            console.log(action);
-            // state.user = action.payload.data.user
-            // state.message = ''
-            // state.session = action.payload.data.session
-            // state.organisation_list = action.payload.data.organisation_list
-            // console.log("login authReducer", action.payload);
-            // // console.log("Auth: login action", action);
+            state.user = action.payload.data.user
+            state.message = ''
+            state.session = action.payload.data.session
+            state.organisation_list = action.payload.data.organisation_list
+            console.log("organisation_list", state.organisation_list);
+            // console.log("Auth: login action", action);
         },
 
         logout: (state) => {
@@ -117,38 +114,59 @@ const authSlice = createSlice({
             state.accounts_dropdown = false
         },
 
-    },
-    extraReducers:(builder) => {
-        builder
-            .addCase(acquireTokenSilent.pending,(state) => {
-                state.status = 'loading...'
-            })
-            .addCase(acquireTokenSilent.fulfilled, (state, action) => {
-                state.status = 'fulfilled'
-                state.jwt = action.payload
-                console.log("fulfilled",action)
-                })
-            .addCase(acquireTokenSilent.rejected, (state) => {
-                state.status = 'rejected'
-            })
+        setJwt:(state, action) => {
+            state.jwt = action.payload
+        }
 
-    }
+    },
+    // extraReducers:(builder) => {
+    //     builder
+    //         .addCase(acquireTokenSilent.pending,(state) => {
+    //             state.status = 'loading...'
+    //         })
+    //         .addCase(acquireTokenSilent.fulfilled, (state, action) => {
+    //             state.status = 'fulfilled'
+    //             state.jwt = action.payload
+    //             console.log("fulfilled",action.data)
+    //             })
+    //         .addCase(acquireTokenSilent.rejected, (state) => {
+    //             state.status = 'rejected'
+    //         })
+    //         .addCase(simSageSignIn.pending, (state, action) => {
+    //         console.log("addCase simSageSignIn pending ",action)
+    //         })
+    //         .addCase(simSageSignIn.fulfilled, (state,action) => {
+    //             console.log("addCase simSageSignIn fulfilled ",action)
+    //         })
+    //         .addCase(simSageSignIn.rejected, (state,action) => {
+    //             console.log("addCase simSageSignIn rejected ",action)
+    //         })
+    // }
 });
 
+// export const simSageSignIn = createAsyncThunk(
+//     'authSlider/simSageSignIn',
+//     async (jwt) => {
+//         console.log("simSageSignIn jwt ",jwt);
+//
+//
+//         await Comms.http_get_jwt_v2('/auth/admin/authenticate/msal', jwt)
+//     }
+// );
+//
+// export const acquireTokenSilent =  createAsyncThunk(
+//     'authSlider/acquireTokenSilent',
+//     async (request) => {
+//         const {instance, accounts} = useMsal();
+//         const api_base = window.ENV.api_base;
+//         const url = api_base + '/auth/admin/authenticate/msal';
+//
+//         await instance.acquireTokenSilent(request).then((response) => {
+//             console.log(response)
+//             // return response.idToken;
+//         });
+//     });
 
-export const acquireTokenSilent =  createAsyncThunk(
-    'authSlider/acquireTokenSilent',
-    async (request) => {
-        const {instance, accounts} = useMsal();
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/admin/authenticate/msal';
 
-        await instance.acquireTokenSilent(request).then((response) => {
-            console.log(response.idToken)
-            return response.idToken;
-        });
-    });
-
-
-export const {reset, login, showAccount, closeAllMenus, logout } = authSlice.actions
+export const {reset, login, showAccount, closeAllMenus, logout, setJwt } = authSlice.actions
 export default authSlice.reducer;

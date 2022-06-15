@@ -24,7 +24,7 @@ export function saveState(state) {
     try {
         let serializedState = JSON.stringify(state);
         localStorage.setItem(local_storage_key, serializedState);
-        console.log("saveState")
+        // console.log("saveState")
     } catch (err) {
     }
 }
@@ -39,3 +39,13 @@ export function clearState() {
 }
 
 
+export function  hasRole(user, role_name_list) {
+    if (user && user.roles) {
+        for (const role of user.roles) {
+            if (role_name_list.indexOf(role.role) >= 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}

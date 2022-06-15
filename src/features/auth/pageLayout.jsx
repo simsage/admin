@@ -3,8 +3,9 @@ import React from "react";
 import {useIsAuthenticated, useMsal} from "@azure/msal-react";
 import {SignInButton} from "./SignInButtion";
 import {useDispatch, useSelector} from "react-redux";
-import {acquireTokenSilent, login} from "./authSlice";
+import {login, setJwt} from "./authSlice";
 import Comms from "../../utilities/comms";
+import axios from "axios";
 
 
 /**
@@ -14,48 +15,53 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const dispatch = useDispatch();
 
-    //console.log("auth/PageLayout");
+    // console.log("auth/PageLayout");
 
     // do we have a session object locally? if not - sign-in
     const {session, jwt} = useSelector((state)=>state.authReducer)
     const { instance, accounts } = useMsal();
 
-    //console.log("login accounts",accounts);
 
     // if (!session || !session.id){
-    //     console.log("login111 !session || !session.id",!session || !session.id);
-    // }else{
-    //     console.log("login session",session.id);
+    //     console.log("",!session || !session.id);
     // }
 
-
     if ((!session || !session.id) && accounts && accounts.length > 0){
-        // console.log("login inside if");
+        console.log(" page layout 1");
         const request = {
             account: accounts[0]
         };
 
+        instance.acquireTokenSilent(request).then((response) => {
+            console.log(" page layout 2");
+            // dispatch(setJwt(response.idToken));
+            const api_base = window.ENV.api_base;
+            const url = '/auth/admin/authenticate/msal';
 
-        if(jwt === null) {
-            dispatch(acquireTokenSilent(request))
-        }
+
+            axios.get(api_base + url,{
+                headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": response.idToken,}
+            })
+                .then(function (response2) {
+                   console.log("page layout response2",response2)
+                })
+                .catch((error) => {
+                    console.log("page layout error",error)
+                });
+
+            // Comms.http_get_jwt('/auth/admin/authenticate/msal', response.idToken,
+            //     (response2) => {
+            //
+            //         dispatch(login({type: 'SIGN_IN', data: response2.data}));
+            //     },
+            //     (errStr) => {
+            //         console.error("Error:");
+            //     }).then((res)=>{
+            //         console.log(" page layout 3", res)
+            //     }).catch((error) => {console.log("page layout error")});
 
 
-        // instance.acquireTokenSilent(request).then((response) => {
-        //     console.log("login acquireTokenSilent");
-        //     Comms.http_get_jwt('/auth/admin/authenticate/msal', response.idToken,
-        //                     (response2) => {
-        //                     // dispatch(login(response2.data))
-        //                     console.log("login success:",response2.data)
-        //                         dispatch({type: 'SIGN_IN', data: response2.data});
-        //                     },
-        //                     (errStr) => {
-        //                         console.error("login Error:");
-        //
-        //                     });
-        //
-        //
-        // });
+        });
     }
 
 

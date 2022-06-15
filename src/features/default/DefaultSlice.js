@@ -32,6 +32,6 @@ export const defaultSlice = createSlice({
     },
 });
 
-export const { selectTab } = defaultSlice.actions;
+export const { selectTab, closeAllMenus } = defaultSlice.actions;
 
 export default defaultSlice.reducer;

@@ -1,8 +1,10 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../utilities/comms";
+import db_users from "../../notes/db.json";
+
 
 const initialState = {
-    user_list: [],
+    users: db_users.db_users,
     user_filter: '',
     user_page: 0,
     user_page_size: 10,
@@ -11,6 +13,7 @@ const initialState = {
     status: 'idle',
     error: null,
     show_user_form: false,
+    roles: ['admin', 'operator', 'dms', 'manager']
 }
 
 // export async function _getUsers(organisation_id, filter, dispatch, getState) {

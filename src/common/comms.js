@@ -1,7 +1,6 @@
 import axios from "axios/index";
-import {loadState} from "./helpers";
 
-// import {loadState} from '../state/stateLoader'
+import {loadState} from '../reducers/stateLoader'
 
 
 // communications common to all components
@@ -71,9 +70,9 @@ export class Comms {
 
     static http_get_jwt(url, jwt, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
-        // if (url !== '/stats/stats/os') {
-        //     console.log('GET ' + api_base + url);
-        // }
+        if (url !== '/stats/stats/os') {
+            console.log('GET ' + api_base + url);
+        }
         return axios.get(api_base + url,{
                 headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": jwt,}
             })
@@ -216,8 +215,6 @@ export class Comms {
 
     static getSession() {
         const state = loadState();
-        console.log("loadstate",state)
-        return state;
         if (state && state.appReducer && state.appReducer.session && state.appReducer.session.id) {
             return state.appReducer.session;
         }
@@ -243,4 +240,5 @@ export class Comms {
     }
 
 }
+
 export default Comms;

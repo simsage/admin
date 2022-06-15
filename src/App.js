@@ -15,6 +15,7 @@ function App() {
     const dispatch = useDispatch();
 
     function localCloseAllMenus(){
+        // console.log("closeAllMenus");
         //console.log("closeAllMenus");
         dispatch(closeAllMenus())
     }
@@ -24,21 +25,22 @@ function App() {
     const {user, session } = useSelector((state) => state.defaultApp)
 
     const state = useSelector((state) => state )
+    // console.log(state)
     //console.log(state)
 
     return (
         // <PageLayout>
-        //   <AuthenticatedTemplate>
-            <div className={busy ? "dms wait-cursor" : "dms"} onClick={() => localCloseAllMenus()}>
-                <LeftNavbar />
-                <div className="outer">
-                    <Header />
-                    <MainSection />
+        //     <AuthenticatedTemplate>
+                <div className={busy ? "dms wait-cursor" : "dms"} onClick={() => localCloseAllMenus()}>
+                    <LeftNavbar />
+                    <div className="outer">
+                        <Header />
+                        <MainSection />
+                    </div>
                 </div>
-            </div>
-          // </AuthenticatedTemplate>
-        // </PageLayout>
-  );
+            // </AuthenticatedTemplate>
+            // </PageLayout>
+    );
 }
 
 export default App;

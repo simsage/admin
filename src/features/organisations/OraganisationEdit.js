@@ -21,7 +21,7 @@ export default function OrganisationEdit(){
         // store.dispatch(showAddKnowledgeBaseForm(false))
     }
 
-    const show_organisation_form = useSelector((state) => state.organisation.show_organisation_form)
+    const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form)
     if (!show_organisation_form)
         return (<div />);
     return(
