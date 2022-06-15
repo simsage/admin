@@ -5,13 +5,12 @@ import {Api} from '../common/api'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
-import Comms from "../common/comms";
 import {Home} from "../home";
 import {OrganisationEdit} from "./organisation-edit"
-import RestoreUpload from "../common/restore-upload";
 import {Pagination} from "../common/pagination";
 
 import '../css/organisations.css';
+import BackupDialog from "../common/backup-dialog";
 
 
 export class Organisations extends React.Component {
@@ -33,6 +32,11 @@ export class Organisations extends React.Component {
             // organisation id view dialog
             copied_visible: '',
             view_organisation_id: false,
+
+            backup_organisation_id: "",
+            callback: null,
+            title: "",
+            message: "",
 
             organisation: null,
         };
@@ -113,18 +117,24 @@ export class Organisations extends React.Component {
             this.setState({edit_organisation: false, organisation: null});
         }
     }
-    backupAll() {
-        if (this.props.session && this.props.session.id)
-            Comms.download_backup(this.props.selected_organisation_id, 'all', this.props.session.id);
-    }
-    backup(organisationId) {
-        if (this.props.session && this.props.session.id)
-            Comms.download_backup(organisationId, 'specific', this.props.session.id);
-    }
-    restore(data) {
-        if (data && data.data && data.data.length > 0) {
-            this.props.restore(data.data);
+    backupAsk(backup_organisation_id) {
+        if (backup_organisation_id) {
+            this.setState({message: "are you sure you want to back up organisation: " + backup_organisation_id + "?",
+                                 title: "Backup Organisation",
+                                 callback: (action, include) => this.backup(action, include),
+                                 backup_organisation_id: backup_organisation_id});
         }
+    }
+    backup(action, include) {
+        if (action && this.state.backup_organisation_id) {
+            this.props.binaryBackupToFile(this.state.backup_organisation_id, include);
+        }
+        this.setState({callback: null, backup_organisation_id: ""});
+    }
+    restore() {
+        const filename = window.prompt("Filename or organisationId on NFS node to restore");
+        if (filename && filename.trim().length > 0)
+            this.props.restoreBackupFromFile(filename.trim());
     }
     viewIds(organisation) {
         this.setState({view_organisation_id: true, organisation: organisation});
@@ -138,6 +148,14 @@ export class Organisations extends React.Component {
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         return (
             <div className="organisation-display">
+
+                <BackupDialog
+                    open={this.state.callback !== null}
+                    message={this.state.message}
+                    title={this.state.title}
+                    callback={(action, include_binaries) => this.state.callback(action, include_binaries)}
+                />
+
                 <OrganisationEdit open={this.state.edit_organisation}
                                   id={this.state.id}
                                   theme={theme}
@@ -193,8 +211,8 @@ export class Organisations extends React.Component {
                                                     <img src="../images/delete.svg" className="image-size" title="remove organisation" alt="remove"/>
                                                 </div>
                                                 {isAdmin &&
-                                                <div className="linkButton" onClick={() => this.backup(organisation.id)}>
-                                                    <img src="../images/backup.svg" className="image-size" title={"backup this organisation"}
+                                                <div className="linkButton" onClick={() => this.backupAsk(organisation.id)}>
+                                                    <img src="../images/backup.svg" className="image-size" title="backup this organisation"
                                                          alt={"backup " + organisation.name} />
                                                 </div>
                                                 }
@@ -205,20 +223,14 @@ export class Organisations extends React.Component {
                             }
                             <tr>
                                 <td colSpan={2}>
-                                    {isAdmin &&
-                                    <div className="imageButton" onClick={() => this.backupAll()}><img
-                                        className="addImage" src="../images/backup.svg"
-                                        title="backup all organisations"
-                                        alt="backup all organisations"/></div>
-                                    }
                                     <div className="imageButton" onClick={() => this.addNewOrganisation()}><img
                                         className="addImage" src="../images/add.svg" title="add new organisation"
                                         alt="add new organisation"/></div>
                                     <br />
                                     {isAdmin &&
-                                    <RestoreUpload doUpload={(data) => this.restore(data)}
-                                                   organisationId={this.props.selected_organisation_id}
-                                                   onError={(err) => this.props.setError("Error", err)} />
+                                        <div className="linkButton" onClick={() => this.restore()}>
+                                            <img src="../images/backup.svg" className="image-size" title="restore an organisation from file" alt="restore" />
+                                        </div>
                                     }
                                 </td>
                             </tr>

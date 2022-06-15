@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
-import '../css/reports.css';
+import '../css/status.css';
 import Api from "../common/api";
 
 
@@ -32,10 +32,13 @@ export class Status extends React.Component {
                         <table className="table">
                             <thead>
                             <tr className='table-header'>
-                                <th className='table-header'>node</th>
+                                <th className='table-header job-id-column-width'>job id</th>
+                                <th className='table-header'>hostname</th>
                                 <th className='table-header'>service</th>
-                                <th className='table-header'>description</th>
+                                <th className='table-header status-column-width'>status</th>
                                 <th className='table-header'>free memory</th>
+                                <th className='table-header'>created</th>
+                                <th className='table-header'>last modified</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -43,6 +46,9 @@ export class Status extends React.Component {
                                 status_list.map((item, i) => {
                                     return (
                                         <tr key={i}>
+                                            <td className='job-id-column-width'>
+                                                <div>{item.jobId}</div>
+                                            </td>
                                             <td>
                                                 <div>{item.hostname}</div>
                                             </td>
@@ -50,10 +56,16 @@ export class Status extends React.Component {
                                                 <div>{item.service}</div>
                                             </td>
                                             <td>
-                                                <div>{item.description}</div>
+                                                <div className="status-column-width-display">{item.status}</div>
                                             </td>
                                             <td>
                                                 <div>{Api.formatSizeUnits(item.memoryFreeInBytes ? item.memoryFreeInBytes : 0)}</div>
+                                            </td>
+                                            <td>
+                                                <div>{Api.unixTimeConvert(item.created)}</div>
+                                            </td>
+                                            <td>
+                                                <div>{Api.unixTimeConvert(item.lastModified)}</div>
                                             </td>
                                         </tr>)
                                 })

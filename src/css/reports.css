@@ -27,3 +27,12 @@
     margin: 10px;
 }
 
+.status-column-width {
+    width: 600px;
+}
+
+.status-column-width-display {
+    width: 600px;
+    inline-size: 600px;
+    overflow-wrap: break-word;
+}

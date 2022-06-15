@@ -54,9 +54,8 @@ export class SynonymEdit extends Component {
                         <div className="modal-header">Edit Synonym</div>
                         <div className="modal-body">
                             <div>
-
                                 <div className="edit-row">
-                                    <span className="label-area">synonyms</span>
+                                    <span className="label-area">related words</span>
                                     <span className="input-area">
                                         <textarea className="input-area"
                                                   autoFocus={true}

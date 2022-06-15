@@ -123,7 +123,7 @@ export class Comms {
     // get a url that can be used to backup the system
     static download_mind_dump(organisation_id, kb_id, session_id) {
         Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
-            const url = window.ENV.api_base + '/backup/mind-dump/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+            const url = window.ENV.api_base + '/backup/bot-dump/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
             Comms.download_new_window_post(url, response.data);
         });
     };

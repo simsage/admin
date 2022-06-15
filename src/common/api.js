@@ -59,6 +59,14 @@ export class Api {
         return new Date().getTime();
     }
 
+    // get current time in milliseconds
+    static sessionHasExpired(session_time) {
+        if (!session_time || session_time === 0)
+            return true;
+        const age = new Date().getTime() - session_time;
+        return !age || age.isNaN() || age < 0 || age > window.ENV.session_expiry_time;
+    }
+
     // convert a date object to an iso date string
     static toIsoDate(date) {
         if (!date || !date.getFullYear) {

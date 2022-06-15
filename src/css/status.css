@@ -1,4 +1,17 @@
 
 .status-page {
+    float: left;
     width: 900px;
+    max-width: 900px;
 }
+
+.job-id-column-width {
+    width: 300px;
+   min-width: 300px;
+}
+
+.status-column-width {
+    width: 600px;
+    min-width: 600px;
+}
+

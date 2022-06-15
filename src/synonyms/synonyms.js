@@ -80,10 +80,33 @@ export class Synonyms extends React.Component {
                 this.props.saveSynonym(synonym);
                 this.setState({synonym_edit: false, synonym: {}});
             } else {
-                this.props.setError("Error Saving Synonym", "synonym cannot be empty and need more than one item");
+                this.props.setError("Error Saving Relationship", "Relationship cannot be empty and need more than one item");
             }
         } else {
             this.setState({synonym_edit: false, synonym: {}});
+        }
+    }
+    deleteAllSynonymsAsk() {
+        this.props.openDialog("are you sure you want to delete ALL RELATIONSHIPS?", "Remove Relationships",
+                              (action) => { this.deleteAllSynonyms(action) });
+    }
+    deleteAllSynonyms(action) {
+        if (action) {
+            this.props.deleteAllSynonyms(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
+        }
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
+        }
+    }
+    tuneGraphAsk() {
+        this.props.openDialog("are you sure you want to tune the relationship graph?", "Tune Relationship Graph", (action) => { this.tuneGraph(action) });
+    }
+    tuneGraph(action) {
+        if (action) {
+            this.props.tuneGraph(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
+        }
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
         }
     }
     isVisible() {
@@ -105,7 +128,7 @@ export class Synonyms extends React.Component {
                     this.isVisible() &&
 
                     <div className="filter-find-box">
-                        <span className="filter-label">find synonyms</span>
+                        <span className="filter-label">find relationship</span>
                         <span className="filter-find-text">
                             <input type="text" value={this.props.synonym_filter} autoFocus={true} className={"filter-text-width " + theme}
                                    onKeyPress={(event) => this.handleSearchTextKeydown(event)}
@@ -131,7 +154,7 @@ export class Synonyms extends React.Component {
                                 <tr className='table-header'>
                                     <th className='table-header'>id</th>
                                     <th className='table-header synonym-column-width'>synonyms</th>
-                                    <th className='table-header'>actions</th>
+                                    <th className='table-header action-column-width'>actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -143,7 +166,7 @@ export class Synonyms extends React.Component {
                                                     <div>{synonym.id}</div>
                                                 </td>
                                                 <td>
-                                                    <div>{synonym.words}</div>
+                                                    <div className="synonym-column-width-display">{synonym.words}</div>
                                                 </td>
                                                 <td>
                                                     <div className="link-button" onClick={() => this.editSynonym(synonym)}>
@@ -160,11 +183,24 @@ export class Synonyms extends React.Component {
                                 <tr>
                                     <td/>
                                     <td/>
-                                    <td>
+                                    <td className="action-column-width">
                                         {this.isVisible() &&
-                                        <div onClick={() => this.newSynonym()}><img
-                                            className="image-size" src="../images/add.svg" title="new synonym"
-                                            alt="new synonym"/></div>
+                                        <span onClick={() => this.newSynonym()} className="icon-left">
+                                            <img className="image-size" src="../images/add.svg" title="new relationship" alt="new relationship"/>
+                                        </span>
+                                        }
+                                        {this.isVisible() &&
+                                            <span className="icon-left"
+                                                 onClick={() => this.tuneGraphAsk()}>
+                                                <img src="../images/tuning-fork.svg" className="image-size"
+                                                     title="tune relationship graph" alt="tune graph"/>
+                                            </span>
+                                        }
+                                        {this.isVisible() &&
+                                            <span onClick={() => this.deleteAllSynonymsAsk()}>
+                                                <img src="../images/delete.svg" className="image-size"
+                                                     title="delete all relationships" alt="delete all"/>
+                                            </span>
                                         }
                                     </td>
                                 </tr>

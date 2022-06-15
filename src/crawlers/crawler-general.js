@@ -71,6 +71,7 @@ export class CrawlerGeneral extends Component {
             numFragments: Api.defined(props.numFragments) && props.numFragments ? props.numFragments : default_num_fragments,
             errorThreshold: Api.defined(props.errorThreshold) && props.errorThreshold ? props.errorThreshold : default_error_threshold,
             internalCrawler: Api.defined(props.nodeId) ? props.nodeId !== external_node_id : false,
+            useDefaultRelationships: props.useDefaultRelationships,
         };
 
     }
@@ -105,6 +106,7 @@ export class CrawlerGeneral extends Component {
                             numFragments: Api.defined(nextProps.numFragments) ? nextProps.numFragments : default_num_fragments,
                             errorThreshold: Api.defined(nextProps.errorThreshold) ? nextProps.errorThreshold : default_error_threshold,
                             internalCrawler: Api.defined(nextProps.nodeId) ? nextProps.nodeId !== external_node_id : false,
+                            useDefaultRelationships: Api.defined(nextProps.useDefaultRelationships) ? nextProps.useDefaultRelationships : true,
 
                             name: nextProps.name,
                             onSave: nextProps.onSave,
@@ -147,6 +149,7 @@ export class CrawlerGeneral extends Component {
                 numResults: Api.defined(data.numResults) ? data.numResults : this.state.numResults,
                 numFragments: Api.defined(data.numFragments) ? data.numFragments : this.state.numFragments,
                 errorThreshold: Api.defined(data.errorThreshold) ? data.errorThreshold : this.state.errorThreshold,
+                useDefaultRelationships: Api.defined(data.useDefaultRelationships) ? data.useDefaultRelationships : this.state.useDefaultRelationships,
             };
     }
     setError(title, error_msg) {
@@ -257,8 +260,8 @@ export class CrawlerGeneral extends Component {
                             <div className="form-check form-check-inline">
                                 <input className="form-check-input" type="radio" name="inlineRadioOptions"
                                        onChange={() => this.setProcessingLevelFromMark("NLU")}
-                                       id="inlineRadio4" value="lang" disabled />
-                                <label className="form-check-label" htmlFor="inlineRadio3">NLU</label>
+                                       id="inlineRadio4" value="NLU"  checked={this.state.processingLevel === "NLU"} />
+                                <label className="form-check-label" htmlFor="inlineRadio3">QA</label>
                             </div>
 
                         </span>
@@ -314,10 +317,10 @@ export class CrawlerGeneral extends Component {
                     <div className="form-group">
                         {(this.state.internalCrawler || this.state.crawlerType !== 'restfull') &&
                         <span className="left-column">
-                            <span className="label-right">node id</span>
+                            <span className="label-right">k8s pod id (e.g. 0, 1, 2)</span>
                             <span className="number-textbox">
                                 <input type="text" className="form-control"
-                                       placeholder="node-id (0 for single node systems)"
+                                       placeholder="k8s pod id (0 for k8s clusters with only one pod)"
                                        value={this.state.nodeId === external_node_id ? 0 : this.state.nodeId}
                                        onChange={(event) => {
                                            this.change_callback({nodeId: event.target.value})
@@ -326,6 +329,7 @@ export class CrawlerGeneral extends Component {
                             </span>
                         </span>
                         }
+
                         <span className="right-column">
                             {(this.state.crawlerType === 'database' || this.state.crawlerType === 'restfull') &&
                             <div>
@@ -356,6 +360,8 @@ export class CrawlerGeneral extends Component {
                             }
                         </span>
                     </div>
+
+                    <br />
 
                     <div className="form-group">
                         <span className="left-column">
@@ -396,16 +402,18 @@ export class CrawlerGeneral extends Component {
                             </div>
                         </span>
                         <span className="right-column">
-                            <span className="label-right">number of search results</span>
-                            <span className="number-textbox">
-                                <input type="text" className="form-control"
-                                    placeholder="number of search results"
-                                    value={this.state.numResults}
-                                    onChange={(event) => {this.change_callback({numResults: event.target.value})}}
+                            <div style={{float: 'left'}} title="Use our default built-in relationships">
+                                <input type="checkbox"
+                                       checked={this.state.useDefaultRelationships}
+                                       onChange={(event) => { this.change_callback({useDefaultRelationships: event.target.checked}); }}
+                                       value="use default built-in relationships?"
                                 />
-                            </span>
+                                <span className="label-left">use default built-in relationships?</span>
+                            </div>
                         </span>
                     </div>
+
+                    <br />
 
                     <div className="form-group">
                         <span className="left-column">
@@ -438,6 +446,16 @@ export class CrawlerGeneral extends Component {
                                        placeholder="the maximum number of errors allowed before failing"
                                        value={this.state.errorThreshold}
                                        onChange={(event) => {this.change_callback({errorThreshold: event.target.value})}}
+                                />
+                            </span>
+                        </span>
+                        <span className="right-column">
+                            <span className="label-right">number of search results</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                       placeholder="number of search results"
+                                       value={this.state.numResults}
+                                       onChange={(event) => {this.change_callback({numResults: event.target.value})}}
                                 />
                             </span>
                         </span>

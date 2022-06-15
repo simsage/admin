@@ -22,7 +22,8 @@ const default_specific_json = '{"metadata_list":[' +
 // default values for an empty / new crawler
 const empty_crawler= {id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: false,
                       enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: default_specific_json,
-                      processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []};
+                      processingLevel: 'NLU', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false,
+                      "acls": [], useDefaultRelationships: true};
 
 export class DocumentSources extends Component {
     constructor(props) {
@@ -91,13 +92,18 @@ export class DocumentSources extends Component {
             this.props.closeDialog();
         }
     }
-    saveCrawler(crawler) {
+    saveCrawler(crawler, on_success) {
         if (crawler) {
             crawler.organisationId = this.props.selected_organisation_id;
             crawler.kbId = this.props.selected_knowledgebase_id;
-            this.props.updateCrawler(crawler);
+            this.props.updateCrawler(crawler, () => {
+                this.setState({open: false});
+                if (on_success)
+                    on_success();
+            });
+        } else {
+            this.setState({open: false});
         }
-        this.setState({open: false});
     }
     canDeleteDocuments(crawler) {
         return crawler.crawlerType !== 'wordpress';
@@ -110,11 +116,20 @@ export class DocumentSources extends Component {
     }
     saveExport(crawler_str) {
         if (crawler_str && this.state.export_upload) {
-            const crawler = JSON.parse(crawler_str);
-            delete crawler.sourceId;
-            this.saveCrawler(crawler);
+            try {
+                const crawler = JSON.parse(crawler_str);
+                delete crawler.sourceId;
+                this.saveCrawler(crawler, () => {
+                    this.setState({export_open: false, selected_crawler: {}});
+                });
+            } catch (e) {
+                alert(e);
+            }
+
+            // close dialog?
+        } else if (crawler_str === null) {
+            this.setState({export_open: false, selected_crawler: {}});
         }
-        this.setState({export_open: false, selected_crawler: {}});
     }
     getCrawlerStatus(crawler) {
         if (crawler) {
@@ -196,6 +211,20 @@ export class DocumentSources extends Component {
     resetCrawlers(action) {
         if (action) {
             this.props.resetCrawlers(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
+        }
+        if (this.props.closeDialog) {
+            this.props.closeDialog();
+        }
+    }
+    processAllFilesCrawlerAsk(crawler) {
+        this.setState({crawler_ask: crawler});
+        this.props.openDialog("are you sure you want to process all files for <b>" + crawler.name + "</b>?",
+            "Process all files for Crawler", (action) => { this.processAllFilesCrawler(action) });
+    }
+    processAllFilesCrawler(action) {
+        if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
+            const crawler = this.state.crawler_ask;
+            this.props.processAllFilesForCrawler(crawler);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
@@ -296,6 +325,9 @@ export class DocumentSources extends Component {
                                                     </div>
                                                     <div className="link-button" onClick={() => this.deleteCrawlerAsk(crawler)}>
                                                         <img src="../images/delete.svg" className="image-size" title="remove crawler" alt="remove"/>
+                                                    </div>
+                                                    <div className="link-button" onClick={() => this.processAllFilesCrawlerAsk(crawler)}>
+                                                        <img src="../images/file.svg" className="image-size" title="process all files for a source" alt="process files"/>
                                                     </div>
                                                     <div className="link-button" onClick={() => this.exportCrawler(crawler)}>
                                                         <img src="../images/download.svg" className="image-size" title="get crawler JSON for export" alt="export"/>

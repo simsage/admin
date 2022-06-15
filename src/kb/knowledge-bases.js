@@ -117,8 +117,10 @@ export class KnowledgeBases extends Component {
                                            this.state.edit_analytics_window_size_in_months, this.state.edit_operator_enabled,
                                            this.state.edit_capacity_warnings, this.state.edit_created,
                                            '', this.state.edit_enable_document_similarity,
-                                           this.state.edit_document_similarity_threshold);
-            this.setState({edit_knowledgebase: false, knowledgeBase: null});
+                                           this.state.edit_document_similarity_threshold,
+                () => {
+                    this.setState({edit_knowledgebase: false, knowledgeBase: null});
+                });
         } else {
             this.props.setError("Incomplete Data", "Please complete all fields.");
         }

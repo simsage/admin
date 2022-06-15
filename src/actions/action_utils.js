@@ -500,7 +500,7 @@ export async function _setupPage(selected_tab, dispatch, getState, session_id) {
         const hours = getState().appReducer.log_hours;
         await _getLogList(organisation_id, year, month, day, hour, hours, dispatch, getState);
 
-    } else if (selected_tab === 'mind') {
+    } else if (selected_tab === 'bot') {
         dispatch({type:RESET_MEMORIES_PAGINATION});
         dispatch({type: BUSY, busy: true});
         const mind_item_filter = getState().appReducer.mind_item_filter;

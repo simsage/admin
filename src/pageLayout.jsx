@@ -10,6 +10,7 @@ import {loginRequest} from "./authConfig";
 
 import './css/sign-in.css';
 import './css/app-menu.css';
+import {clearState} from "./reducers/stateLoader";
 
 /**
  * Renders the navbar component with a sign-in or sign-out button depending on whether or not a user is authenticated
@@ -52,6 +53,9 @@ export const PageLayout = (props) => {
 
                                 <div className="form-group">
                                     <button type="submit" className="btn btn-primary btn-block" onClick={() => {
+                                        // clear any existing state
+                                        clearState();
+                                        // sign in and re-direct
                                         instance.loginRedirect(loginRequest).catch(e => {
                                             console.error(e);
                                         });

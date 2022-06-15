@@ -510,6 +510,7 @@ export class CrawlerDialog extends Component {
                                             endTime={crawler.endTime}
                                             edge_device_list={this.props.edge_device_list}
                                             testCrawler={this.props.testCrawler}
+                                            useDefaultRelationships={crawler.useDefaultRelationships}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(crawler) => this.update_general_data(crawler)}/>
                                     }

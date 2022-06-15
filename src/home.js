@@ -12,8 +12,8 @@ import EdgeDeviceCommands from "./edge/edge-device-commands";
 import Inventory from './inventory/inventory'
 import DocumentSources from "./documents/document-sources";
 import Documents from "./documents/documents";
-import Mind from "./mind/mind";
-import MindTest from "./mind/mind-test";
+import Bot from "./bot/bot";
+import BotTest from "./bot/bot-test";
 import Synonyms from "./synonyms/synonyms";
 import Semantics from "./semantics/semantics";
 import SynSets from "./synsets/synsets";
@@ -335,6 +335,11 @@ export class Home extends Component {
                              <div className={this.getStyle('knowledge bases', false)}
                                   onClick={() => this.props.selectTab('knowledge bases')}>knowledge bases</div>
                          }
+                         {
+                             Home.hasRole(this.props.user, ['admin']) &&
+                             <div className={this.getStyle('status', false)}
+                                  onClick={() => this.props.selectTab('status')}>status</div>
+                         }
                          {/*{*/}
                          {/*    Home.hasRole(this.props.user, ['admin', 'manager']) &&*/}
                          {/*    <div className={this.getStyle('edge devices', false)}*/}
@@ -377,11 +382,6 @@ export class Home extends Component {
                              <div className={this.getStyle('documents', false)} 
                                   onClick={() => this.props.selectTab('documents')}>documents</div>
                          }
-                         {
-                             Home.hasRole(this.props.user, ['admin']) &&
-                             <div className={this.getStyle('status', false)}
-                                  onClick={() => this.props.selectTab('status')}>status</div>
-                         }
                          {/*{*/}
                          {/*    Home.hasRole(this.props.user, ['admin', 'manager']) &&*/}
                          {/*    <div className={this.getStyle('active directory', false)} */}
@@ -389,13 +389,13 @@ export class Home extends Component {
                          {/*}*/}
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div className={this.getStyle('mind', false)} 
-                                  onClick={() => this.props.selectTab('mind')}>the mind</div>
+                             <div className={this.getStyle('bot', false)}
+                                  onClick={() => this.props.selectTab('bot')}>bot</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div className={this.getStyle('mind-test', false)} 
-                                  onClick={() => this.props.selectTab('mind-test')}>test the mind</div>
+                             <div className={this.getStyle('bot-test', false)}
+                                  onClick={() => this.props.selectTab('bot-test')}>test bot</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
@@ -432,7 +432,8 @@ export class Home extends Component {
                      <div className="page-content">
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
-                          this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'license' && isAdmin &&
+                          this.props.selected_tab !== 'status' && this.props.selected_tab !== 'operator' &&
+                          this.props.selected_tab !== 'license' && isAdmin &&
                              <div className="organisation-select">
                                  <div className="lhs">organisation</div>
                                  <div className="rhs">
@@ -448,7 +449,8 @@ export class Home extends Component {
                          }
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
-                          this.props.selected_tab !== 'license' && this.props.selected_tab !== 'operator' && !isAdmin &&
+                             this.props.selected_tab !== 'status' && this.props.selected_tab !== 'license' &&
+                             this.props.selected_tab !== 'operator' && !isAdmin &&
                              <div className="organisation-select">
                                  <div className="lhs">organisation</div>
                                  <div className="rhs">
@@ -556,14 +558,14 @@ export class Home extends Component {
                                  closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'mind' &&
-                             <Mind
+                         { this.props.selected_tab === 'bot' &&
+                             <Bot
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'mind-test' &&
-                             <MindTest
+                         { this.props.selected_tab === 'bot-test' &&
+                             <BotTest
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
                          }
@@ -593,7 +595,10 @@ export class Home extends Component {
                          }
 
                          { this.props.selected_tab === 'status' &&
-                             <Status />
+                             <div>
+                                 <div className="organisation-select" />
+                                 <Status />
+                             </div>
                          }
 
                          { this.props.selected_tab === 'reports' &&

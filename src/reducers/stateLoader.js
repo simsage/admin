@@ -73,7 +73,7 @@ export function initializeState() {
         // nav-list with page 0 id
         document_nav_list: ["null"],
 
-        // mind items
+        // bot items
         mind_item_list: [],
         mind_item_previous: null,
         mind_item_filter: '',
@@ -83,7 +83,7 @@ export function initializeState() {
         prev_mind_item_filter: '',
         mind_item_nav_list: ["null"],
 
-        // mind query (aka. bot query)
+        // bot query (aka. bot query)
         bot_query: "",
         mind_result_list: [],
         bot_query_page_size: 10,
@@ -165,6 +165,9 @@ export function initializeState() {
         // application error messages
         error_title: "Error",
         error: "",
+
+        // how old is the session?
+        session_age: 0,
     }
 }
 

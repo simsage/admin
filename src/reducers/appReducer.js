@@ -57,6 +57,7 @@ import {
     STOP_CLIENT_TYPING,
     SET_REPORT_DATE,
     SET_REPORT_GRAPHS,
+    RESET_SESSION,
 
     SET_SEMANTIC_FILTER,
     SET_SEMANTICS_PAGINATED,
@@ -273,6 +274,7 @@ export const reducer = (state, action) => {
                 selected_organisation_id: selected_organisation_id,
                 selected_organisation: selected_organisation,
                 organisation_list: organisation_list,
+                session_age: Api.getSystemTime(),
                 busy: false,
             };
         }
@@ -414,6 +416,15 @@ export const reducer = (state, action) => {
             return {
                 ...init,
                 busy: false,
+            }
+        }
+
+        // reset a session - similar to sign-out - but different meaning
+        case RESET_SESSION: {
+            console.log("resetting session, expired");
+            return {
+                ...initializeState(),
+                busy: true,
             }
         }
 

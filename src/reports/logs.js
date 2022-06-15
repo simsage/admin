@@ -213,7 +213,7 @@ export class Logs extends React.Component {
                         <span title="only display logs from the Language service"
                               className={this.getSelectedServiceStyle(log_service === 'Language')}
                               onClick={() => this.setLogService('Language')}>lang</span>
-                        <span title="only display logs from the Mind service"
+                        <span title="only display logs from the Bot service"
                               className={this.getSelectedServiceStyle(log_service === 'Mind')}
                               onClick={() => this.setLogService('Mind')}>mind</span>
                         <span title="only display logs from the Operator service"

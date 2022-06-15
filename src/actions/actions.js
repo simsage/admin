@@ -6,6 +6,7 @@ export const SET_THEME = "set theme";
 
 export const PASSWORD_RESET_REQUEST = "password reset request";
 export const RESET_PASSWORD = "reset password";
+export const RESET_SESSION = "reset session";
 
 export const SET_USER_LIST = "set user list";
 export const UPDATE_USER = "update user";
@@ -48,12 +49,12 @@ export const RESET_DOCUMENT_PAGINATION = "reset document pagination";
 export const GET_STATS = "get stats";
 export const GET_OS_MESSAGES = "get os messages";
 
-export const MIND_FIND = "mind find";
-export const SET_MEMORIES_PAGINATED = "set mind items paginated";
-export const SET_MEMORIES_PAGE_SIZE = "set mind item page size";
-export const SET_MEMORIES_PAGE = "set mind item page";
-export const RESET_MEMORIES_PAGINATION = "reset mind item pagination";
-export const SET_MEMORY_FILTER = "set mind item filter";
+export const MIND_FIND = "bot find";
+export const SET_MEMORIES_PAGINATED = "set bot items paginated";
+export const SET_MEMORIES_PAGE_SIZE = "set bot item page size";
+export const SET_MEMORIES_PAGE = "set bot item page";
+export const RESET_MEMORIES_PAGINATION = "reset bot item pagination";
+export const SET_MEMORY_FILTER = "set bot item filter";
 export const SET_MIND_QUERY_LIST = "set bot query list";
 export const SET_MIND_QUERY_STRING = "set bot query string";
 

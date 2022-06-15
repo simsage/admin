@@ -22,6 +22,7 @@ import {
     SET_USER_PAGE_SIZE,
     HIDE_NOTIFICATIONS,
     MARK_CONVERSATION_USED,
+    RESET_SESSION,
 
     OPERATOR_CLEAR_USER,
     OPERATOR_READY,
@@ -106,7 +107,12 @@ let notification_busy = false;
 // application creators / actions
 export const appCreators = {
 
-    signIn: (jwt, on_success, on_fail) => async (dispatch) => {
+    signIn: (jwt, on_success, on_fail) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        if (Api.sessionHasExpired(getState().appReducer.session_age))
+            dispatch({type: RESET_SESSION});
+
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
         await Comms.http_get_jwt('/auth/admin/authenticate/msal', jwt,
             (response) => {
@@ -339,6 +345,18 @@ export const appCreators = {
         )
     },
 
+    tuneGraph: (organisation_id, kb_id) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const session_id = get_session_id(getState);
+        await Comms.http_get('/language/tune-graph/' + encodeURIComponent(organisation_id) + '/' +
+                encodeURIComponent(kb_id), session_id,
+            () => {
+                dispatch({type: BUSY, busy: false});
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
     removeOptimizedIndexes: (organisation_id, kb_id) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const session_id = get_session_id(getState);
@@ -374,7 +392,7 @@ export const appCreators = {
 
     updateKnowledgeBase: (organisation_id, kb_id, name, email, security_id, enabled, max_queries_per_day,
                           analytics_window_size_in_months, operator_enabled, capacity_warnings,
-                          created, dms_index_schedule, enable_similarity, similarity_threshold) => async (dispatch, getState) => {
+                          created, dms_index_schedule, enable_similarity, similarity_threshold, success) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const payload = {"kbId": kb_id, "organisationId": organisation_id, "name": name, "email": email,
             "securityId": security_id, "maxQueriesPerDay": max_queries_per_day, "enabled": enabled,
@@ -384,6 +402,8 @@ export const appCreators = {
         await Comms.http_put('/knowledgebase/', get_session_id(getState), payload,
             () => {
                 _getKnowledgeBases(organisation_id, dispatch, getState);
+                if (success)
+                    success();
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
@@ -586,14 +606,16 @@ export const appCreators = {
         await _getCrawlers(organisation_id, kb_id, dispatch, getState)
     },
 
-    updateCrawler: (crawler) => async (dispatch, getState) => {
+    updateCrawler: (crawler, on_success) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const session_id = get_session_id(getState);
         await Comms.http_post('/crawler/crawler', session_id, crawler,
             () => {
-                _getCrawlers(organisation_id, kb_id, dispatch, getState)
+                _getCrawlers(organisation_id, kb_id, dispatch, getState);
+                if (on_success)
+                    on_success();
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
@@ -632,6 +654,20 @@ export const appCreators = {
         dispatch({type: BUSY, busy: true});
         const session_id = get_session_id(getState);
         await Comms.http_post('/crawler/start/', session_id, {
+                "organisationId": crawler.organisationId, "kbId": crawler.kbId, "sourceId": crawler.sourceId
+            },
+            () => {
+                dispatch({type: BUSY, busy: false});
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
+    },
+
+    // process all files for a crawler on the platform
+    processAllFilesForCrawler: (crawler) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const session_id = get_session_id(getState);
+        await Comms.http_post('/crawler/process-all-files', session_id, {
                 "organisationId": crawler.organisationId, "kbId": crawler.kbId, "sourceId": crawler.sourceId
             },
             () => {
@@ -815,7 +851,7 @@ export const appCreators = {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // mind items
+    // bot items
 
     getMindItems: () => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
@@ -835,7 +871,7 @@ export const appCreators = {
         }
     },
 
-    // update the mind-item paged set
+    // update the bot-item paged set
     setMindItemPage: (page) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
@@ -860,7 +896,7 @@ export const appCreators = {
         }
     },
 
-    // update the mind-item paged set
+    // update the bot-item paged set
     setMindItemPageSize: (page_size) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         dispatch(({type: SET_MEMORIES_PAGE_SIZE, page_size}));
@@ -872,10 +908,10 @@ export const appCreators = {
     },
 
 
-    // update the mind item search filter
+    // update the bot item search filter
     setMindItemFilter: (filter) => ({type: SET_MEMORY_FILTER, filter}),
 
-    // remove a mind item by id
+    // remove a bot item by id
     deleteMemory: (id) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
@@ -893,7 +929,7 @@ export const appCreators = {
         )
     },
 
-    // remove a mind item by id
+    // remove a bot item by id
     deleteAllMemories: () => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
@@ -910,7 +946,7 @@ export const appCreators = {
         )
     },
 
-    // save a mind item to SimSage
+    // save a bot item to SimSage
     saveMemory: (memory) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
@@ -1031,6 +1067,21 @@ export const appCreators = {
                 _getSynonyms(organisation_id, kb_id, prev_id, filter, page_size, dispatch, getState);
             },
             (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr})}
+        )
+    },
+
+    deleteAllSynonyms: (organisation_id, kb_id) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const prev_id = getState().appReducer.synonym_prev_id;
+        const filter = getState().appReducer.synonym_filter;
+        const page_size = getState().appReducer.synonym_page_size;
+        const session_id = get_session_id(getState);
+        await Comms.http_delete('/language/delete-all-synonyms/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id),
+            session_id,
+            () => {
+                _getSynonyms(organisation_id, kb_id, prev_id, filter, page_size, dispatch, getState);
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
         )
     },
 
@@ -1465,6 +1516,39 @@ export const appCreators = {
         const organisation_id = getState().appReducer.selected_organisation_id;
         const session_id = get_session_id(getState);
         await Comms.http_put('/backup/restore', session_id, {"organisationId": organisation_id,"data": base64_text},
+            () => {
+                dispatch({type: BUSY, busy: false});
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            })
+    },
+
+    // back up a single organisation with all its kbs to file
+    binaryBackupToFile: (organisation_id, include_binaries) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const session_id = get_session_id(getState);
+        await Comms.http_post('/backup/binary-backup-to-file/' +
+            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(include_binaries),
+            session_id, {},
+            () => {
+                dispatch({type: BUSY, busy: false});
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            })
+    },
+
+    // restore a single organisation with all its kbs from a file
+    restoreBackupFromFile: (filename) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const session_id = get_session_id(getState);
+        await Comms.http_post('/backup/restore-backup-from-file', session_id,
+            {
+                "organisationId": organisation_id,
+                "filename": filename
+            },
             () => {
                 dispatch({type: BUSY, busy: false});
             },

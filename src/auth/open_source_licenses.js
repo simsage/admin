@@ -273,6 +273,48 @@ export class OpenSourceLicenses extends Component {
                         <div className="license">Eclipse Public License 2.0</div>
                     </div>
 
+                     <div className="license-section">
+                         <div className="title">DROID</div>
+                         <div className="copyright">Copyright © 2016, The National Archives &lt;pronom@nationalarchives.gov.uk&gt;</div>
+                         <div className="license">BSD License for DROID (Digital Record Object Identification)</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">BOX java sdk</div>
+                         <div className="copyright">Copyright Box</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">BOX java sdk</div>
+                         <div className="copyright">Copyright Box</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">msal4j</div>
+                         <div className="copyright">Copyright © Microsoft Corporation. All rights reserved.</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">jjwt</div>
+                         <div className="copyright">Copyright © 2004, Mikael Grev, MiG InfoCom AB. (base64@miginfocom.com)</div>
+                         <div className="license">Apache 2.0 license</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">Auth0 Java JWT</div>
+                         <div className="copyright">Copyright © 2015 Auth0, Inc. &lt;support@auth0.com&gt; (http://auth0.com)</div>
+                         <div className="license">MIT License</div>
+                     </div>
+
+                     <div className="license-section">
+                         <div className="title">jai image-io binary distribution</div>
+                         <div className="copyright">Copyright © 2005 Sun Microsystems , Copyright © 2010-2014 University of Manchester, Copyright © 2015-2018 jai-imageio contributors</div>
+                         <div className="license">Apache compatible</div>
+                     </div>
+
                      <br clear="both" />
 
                      <div className="button-bottom">
