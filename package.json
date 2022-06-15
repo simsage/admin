@@ -9,7 +9,7 @@
   "author": "Rock de Vocht",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "export PORT=4200 && react-scripts start",
+    "start": "export PORT=4230 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
