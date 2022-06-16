@@ -12,8 +12,8 @@ export function UserManager(){
             {/*breadcrumb start*/}
             <div className="border-bottom">
                 <ul className="nav px-5">
-                    <li onClick={() => setSelectedTab('users')} className="nav-item px-5 pt-3 pb-2 no-select border-bottom border-3 border-primary">Users</li>
-                     <li onClick={() => setSelectedTab('groups')} className="nav-item px-5 pt-3 pb-2 no-select">Groups</li>
+                    <li onClick={() => setSelectedTab('users')} className="nav-item px-5 pt-3 pb-2 small no-select border-bottom border-3 border-primary">Users</li>
+                     <li onClick={() => setSelectedTab('groups')} className="nav-item px-5 pt-3 pb-2 small no-select">Groups</li>
                 </ul>
             </div>
 

@@ -155,3 +155,6 @@ input, button {
     float: left;
     width: 200px;
 }
+.table > :not(:first-child) {
+    border-top: 1px solid #ddd;
+}

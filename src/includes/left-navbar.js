@@ -36,7 +36,7 @@ export default function LeftNavbar(){
             {/* </ul> */}
 
                 <li className="px-3 py-2 border-top">
-                    <select className="sb-select p-1">
+                    <select className="form-select sb-select px-3 py-2">
                         {kb_list.map((item,i) => {
                         return <option key={i} value={item.id}>{item.name}</option>
                         })}
