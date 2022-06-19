@@ -1,35 +1,60 @@
-
+/* General */
 html, body, #root, .App, .dms {
     height: 100%;
     width: 100%;
     overflow: hidden;
     color: #202731;
-    /* font-size: 14px; */
+    font-size: 14px;
 }
-/* no select class - no text selectable */
+.dms {
+    /* Rename this */
+    display: flex;
+    text-align: left;
+}
+.outer {
+    /* Rename this */
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.inner {
+    /* Figure what this does - likely to delete */
+    height: calc(100% - 70px);
+    position: relative;
+}
+.overlay {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #202731bb;
+    z-index: 1023;
+}
 .no-select {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
-/* Width/Height */
+
+
+
+/* Scrollbar */
 ::-webkit-scrollbar {
     width: 12px;
     height: 12px; 
 }
-/* Track */
 ::-webkit-scrollbar-track {
     background: transparent;
 }
-/* Handle */
 ::-webkit-scrollbar-thumb {
     background: #ccc;
     border: 4px solid #fff;
     border-radius: 6px;
     visibility: hidden;
 }
-/* Custom containers */
 .tog-preview::-webkit-scrollbar-thumb {
     background: #bbb;
     border-color: #f2f2f2;
@@ -43,13 +68,275 @@ html, body, #root, .App, .dms {
     visibility: visible;
 }
 
+
+
+/* Placeholder */
+::-webkit-input-placeholder {
+    font-weight: 300;
+    font-style: italic;
+    color: #20273180;
+}
+::-moz-placeholder {
+    font-weight: 300;
+    font-style: italic;
+    color: #20273180;
+}
+:-ms-input-placeholder {
+    font-weight: 300;
+    font-style: italic;
+    color: #20273180;
+}
+:-moz-placeholder {
+    font-weight: 300;
+    font-style: italic;
+    color: #20273180;
+}
+
+
+
+/* Account */
+.account-dropdown {
+    position: absolute;
+    top: 65px;
+    right: 1.5rem;
+    width: 250px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px 0 #00000022;
+    z-index: 1023;
+    border: 1px solid #ddd;
+    overflow: hidden;
+}
+.acc-nav {
+    list-style-type: none;
+    width: 100%;
+}
+.acc-item {
+    width: 100%;
+    font-size: 14px;
+    transition: all .3s ease;
+    color: #20273185;
+}
+.acc-item:hover {
+    background-color: #1c9bd220;
+    color: #1c9bd2;
+}
+
+
+
+/* Navbar */
+/* Clean this up */
+.navbar {
+    width: 100%;
+    height: 70px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    background-color: #fff;
+    z-index: 1022;
+}
+.nav-search-container {
+    min-width: 450px;
+    height: 45px;
+    background-color: #f2f2f2;
+    border: 1px solid #f2f2f2;
+    border-radius: 10px;
+    transition: all .3s ease;
+}
+.nav-search-icon {
+    width: 40px;
+    height: 40px;
+    transition: all .3s ease;
+}
+.nav-search-container:hover {
+    border-color: transparent;
+}
+.nav-search-container:focus-within {
+    background-color: #fff;
+    border-color: #1c9bd285;
+}
+.nav-search-container:hover .nav-search-icon,
+.nav-search-container:focus-within .nav-search-icon {
+    color: #1c9bd2;
+}
+.nav-search-container .nav-search-input {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+}
+.org-name {
+    color: #20273180;
+}
+.user-name {
+    font-weight: 500;
+}
+.nav-btn {
+    width: 45px;
+    height: 45px;
+    border: 1px solid #dfdfdf;
+    border-radius: 10px;
+    padding: .3rem;
+}
+.nav-btn:hover {
+    background-color: #f2f2f2;
+}
+.nav-btn.active {
+    border-color: #1c9bd260;
+    background-color: #1c9bd220;
+    color: #1c9bd2;
+}
+.notifications {
+    position: relative;
+}
+.indicator {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    height: 15px;
+    width: 15px;
+    background-color: #f04444;
+    border-radius: 100%;
+}
+.recents-menu {
+    top: calc(100% + 5px);
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px 0 #ddd;
+    border: 1px solid #ddd;
+    z-index: 1023;
+    min-width: 100%;
+    overflow: hidden;
+}
+.remove-recent {
+    width: 20px;
+    opacity: .5;
+}
+
+
+
+/* Sidebar */
+/* Clean this up */
+.sidebar {
+    height: 100%;
+    min-width: 250px;
+    background-color: #f2f2f2;
+}
+.sb-logo {
+    height: 70px;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff;
+}
+.sb-upload {
+    height: 70px;
+}
+.btn-upload {
+    background-color: #fff;
+    width: 100%;
+    height: 45px;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+.btn-upload:hover {
+    color: #1c9bd2;
+    border-color: #1c9bd285;
+}
+.sb-nav {
+    list-style-type: none;
+}
+.sb-select {
+    width: 100%;
+}
+.sb-item {
+    width: 100%;
+    font-size: 14px;
+    transition: all .3s ease;
+    color: #20273185;
+    margin-bottom: 1px;
+    font-weight: 400;
+}
+.sb-item:hover {
+    background-color: #20273109;
+    color: #202731;
+}
+.sb-item.active {
+    background-color: #20273115;
+    color: #202731;
+    font-weight: 500;
+}
+.sb-item .sb-icon {
+    opacity: .4;
+}
+.sb-item.active .sb-icon {
+    opacity: 1;
+}
+.sb-icon {
+    width: 10px;
+    height: 10px;
+}
+.sb-icon-dropdown, .sb-icon-dropdown-active {
+    width: 34px;
+    height: 34px;
+}
+.sb-icon-dropdown-active {
+    display: none;
+}
+.more-list-items:hover .sb-icon-dropdown {
+    display: none;
+}
+.more-list-items:hover .sb-icon-dropdown-active {
+    display: block;
+}
+.sb-branch {
+    position: absolute;
+    left: 1.5rem;
+    height: 37px;
+    opacity: .2;
+}
+.sb-item.active .sb-branch {
+    opacity: .3;
+}
+.menu-disabled-text {
+    color: #ddd;
+}
+
+
+
+/* Table */
+.table > :not(:first-child) {
+    border-top: 1px solid #ddd;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Go through the below */
 .confirm-delete {
     background: #f0444420 !important;
     color: #f04444 !important;
 }
 a {
     color: #1c9bd2 !important;
-    /* font-weight: 500; */
 }
 .wait-cursor {
     cursor: wait !important;
@@ -82,7 +369,6 @@ input, button {
 }
 .new-inline-menu {
     top: calc(100% - 5px);
-    /* top: 0; */
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 20px 0 #00000022;
@@ -130,31 +416,8 @@ input, button {
 .logoSize {
     width: 300px;
 }
-::-webkit-input-placeholder {
-    font-weight: 300;
-    font-style: italic;
-    color: #20273180;
-}
-::-moz-placeholder {
-    font-weight: 300;
-    font-style: italic;
-    color: #20273180;
-}
-:-ms-input-placeholder {
-    font-weight: 300;
-    font-style: italic;
-    color: #20273180;
-}
-:-moz-placeholder {
-    font-weight: 300;
-    font-style: italic;
-    color: #20273180;
-}
 
 .logo {
     float: left;
     width: 200px;
-}
-.table > :not(:first-child) {
-    border-top: 1px solid #ddd;
 }

@@ -66,8 +66,8 @@ export function UsersList(){
                 </div>
 
                 <div className="form-group col ms-auto">
-                    <button className="btn btn-primary" onClick={() => handleAddNewUser()}>
-                        +
+                    <button className="btn btn-primary text-nowrap" onClick={() => handleAddNewUser()}>
+                        + Add User
                         {/*<img className="add-image" src="/images/add.svg" title="add new user" alt="add new user"/>*/}
                     </button>
                 </div>
