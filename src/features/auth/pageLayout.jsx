@@ -46,7 +46,7 @@ export const PageLayout = (props) => {
                    console.log("page layout response2",response2)
                 })
                 .catch((error) => {
-                    console.log("page layout error",error)
+                    console.error("page layout error",error)
                 });
 
             // Comms.http_get_jwt('/auth/admin/authenticate/msal', response.idToken,

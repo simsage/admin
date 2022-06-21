@@ -17,11 +17,7 @@ export default function LeftNavbar(){
         {label: "Reports", slug:"reports", logo:"../images/icon/icon_reports.svg", separator:false, sub:[] }
     ]
 
-    const kb_list = [
-        {id:1, name:'knowledge base 1'},
-        {id:2, name:'knowledge base 2'},
-        {id:3, name:'knowledge base 3'}
-    ]
+    const kb_list = useSelector((state) => state.kbReducer.kb_list)
 
     return (
         <div className="sidebar no-select">
@@ -34,18 +30,22 @@ export default function LeftNavbar(){
                     return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />
                 })}
             </ul>
+            {(kb_list !== null && kb_list.length > 0) &&
+            <>
 
-            <select className="">
-                {kb_list.map((item,i) => {
-                   return <option key={i} value={item.id}>{item.name}</option>
-                })}
-            </select>
+                <select className="">
+            {kb_list.map((item,i) => {
+                return <option key={i} value={item.id}>{item.name}</option>
+            })}
+                </select>
 
-            <ul className="sb-nav ps-0">
-                {nav2.map((item,i) => {
-                    return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />
-                })}
-            </ul>
+                <ul className="sb-nav ps-0">
+            {nav2.map((item,i) => {
+                return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />
+            })}
+                </ul>
+            </>
+            }
         </div>
     )
 }

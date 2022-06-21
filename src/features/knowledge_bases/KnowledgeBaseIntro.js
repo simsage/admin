@@ -25,6 +25,12 @@ export default function KnowledgeBaseIntro(){
             <button onClick={() => {handleAddNewKnowledgeBase()} } type="button" className="btn btn-primary" >
                 + Add
             </button>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+
         </div>
     </div>);
 }
