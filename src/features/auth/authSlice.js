@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import Comms from "../../utilities/comms";
+import Comms from "../../common/comms";
 import {useMsal} from "@azure/msal-react";
 import axios from "axios";
 

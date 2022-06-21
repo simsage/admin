@@ -1,32 +1,35 @@
 import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {UserManager} from "../features/users/UserManager";
-import KnowlegdeBaseHome from "../features/knowledge_bases/KnowlegdeBaseHome";
 import OrganisationEdit from "../features/organisations/OraganisationEdit";
+import ReportsHome from "../features/reports/ReportsHome";
+import MindHome from "../features/the_mind/MindHome";
+import DocumentManagementHome from "../features/document_management/DocumentManagementHome";
+import Home from "../features/home/Home";
 
 function MainSection(){
     const {selected_tab} = useSelector((state)=>state.defaultApp)
 
     return(
         <div>
-            {selected_tab === 'overview' &&
-            <KnowlegdeBaseHome/>
+            {selected_tab === 'home' &&
+                <Home/>
             }
 
             { selected_tab === 'user-management' &&
-            <UserManager />
+                <UserManager />
             }
 
-            { selected_tab === 'document-sources' &&
-            <h1>document-sources</h1>
+            { selected_tab === 'document-management' &&
+                <DocumentManagementHome />
             }
 
             { selected_tab === 'the-mind' &&
-            <h1>the mind</h1>
+                <MindHome />
             }
 
             { selected_tab === 'reports' &&
-            <h1>reports</h1>
+                <ReportsHome />
             }
 
 

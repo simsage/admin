@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import '../css/navbar/account-dropdown.css';
+// import '../css/navbar/account-dropdown.css';
 import {useDispatch, useSelector} from "react-redux";
 import {useMsal} from "@azure/msal-react";
 import {showAddOrganisationForm} from "../features/organisations/organisationSlice";

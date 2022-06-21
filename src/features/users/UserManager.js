@@ -1,27 +1,32 @@
 import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import {UsersList} from "./UsersList";
+import SubNav from "../../includes/sub-nav";
 
 export function UserManager(){
 
-    const [selectedTab, setSelectedTab] = useState('users')
     const theme = null;
+    const [selected_sub_nav, setSelectedSubNav] = useState('users')
+
+    const sub_nav = [
+        {label: "Users", slug:"users" },
+        {label: "Groups", slug:"groups" },
+    ]
+
+    function changeNav(slug){
+        console.log(slug)
+        setSelectedSubNav(slug);
+    }
 
     return(
-        <div className="sec-toggled sec-not-toggled section">
-            {/*breadcrumb start*/}
-            <div className="sec-topbar py-2 px-12 d-flex justify-content-between align-items-center">
-                <div className="sec-breadcrumb d-flex align-items-center small no-select">
-                    <span onClick={() => setSelectedTab('users')} className={"px-2 py-1 mx-1 bc-link"}>Users</span>
-                     <span onClick={() => setSelectedTab('groups')} className="px-2 py-1 mx-1 bc-link">Groups</span>
-                </div>
+        <div className="">
+            <div className="border-bottom">
+                <SubNav sub_nav={sub_nav} active_item={selected_sub_nav} onClick={changeNav} />
             </div>
-
-            {/*<br clear="both" />*/}
-            {selectedTab === 'users' &&
+            {selected_sub_nav === 'users' &&
                 <UsersList />
             }
-            {selectedTab === 'groups' &&
+            {selected_sub_nav === 'groups' &&
             <h1>Groups</h1>
             }
 

@@ -13,14 +13,14 @@ import { msalConfig } from "./features/auth/authConfig";
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'typeface-roboto';
-import './css/admin-page.css';
+// import './css/admin-page.css';
 import './css/main.css';
-import './css/layout/navbar.css';
-import './css/layout/left-sidebar.css';
+// import './css/layout/navbar.css';
+// import './css/layout/left-sidebar.css';
 // import './css/sign-in.css';
 // import './css/app-menu.css';
-import {saveState} from "./utilities/helpers";
-import Comms from "./utilities/comms";
+import {saveState} from "./common/helpers";
+import Comms from "./common/comms";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 

@@ -1,9 +1,9 @@
 import {createSlice} from "@reduxjs/toolkit";
-import Comms from "../../utilities/comms";
+import Comms from "../../common/comms";
 import db_users from "../../notes/db.json";
 
 const initialState = {
-    kb_list: [],
+    kb_list: db_users.db_kb,
     kb_filter: '',
     kb_page: 0,
     kb_page_size: 10,

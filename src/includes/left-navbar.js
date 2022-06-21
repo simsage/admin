@@ -1,23 +1,23 @@
 import {useDispatch, useSelector} from "react-redux";
-import {selectTab} from "../features/default/DefaultSlice";
+import {selectTab} from "../features/home/DefaultSlice";
 import React from "react";
 
 export default function LeftNavbar(){
 
     // Todo:: add nav separator
     const nav1 = [
-        {label: "Overview", slug:"overview", logo:"../images/icon/icon_overview.svg", separator:true, sub:[] },
+        {label: "Overview", slug:"home", logo:"../images/icon/icon_overview.svg", separator:true, sub:[] },
         {label: "User Management", slug:"user-management", logo:"../images/icon/icon_user_management.svg", separator:false, sub:[] },
         // {label: "Organisations", slug:"organisation", logo:"../images/icon/icon_user_management.svg", separator:false, sub:[] },
     ]
 
     const nav2 = [
-        {label: "Document Sources", slug:"document-sources", logo:"../images/icon/icon_document_sources.svg", separator:false, sub:[] },
+        {label: "Document Management", slug:"document-management", logo:"../images/icon/icon_document_sources.svg", separator:false, sub:[] },
         {label: "The Mind", slug:"the-mind", logo:"../images/icon/icon_the_mind.svg", separator:false, sub:[] },
         {label: "Reports", slug:"reports", logo:"../images/icon/icon_reports.svg", separator:false, sub:[] }
     ]
 
-    const kb_list = useSelector((state) => state.kbReducer.kb_list)
+    const kb_list = useSelector((state) => state.kbReducer.kb_list);
 
     return (
         <div className="sidebar no-select">
@@ -25,27 +25,43 @@ export default function LeftNavbar(){
                 <img src="/images/brand/simsage-logo-no-strapline.svg" alt="" className="h-75" />
             </div>
 
-            <ul className="sb-nav ps-0">
+            <ul className="sb-nav ps-0 h-100 border-end">
                 {nav1.map((item,i) => {
                     return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />
                 })}
-            </ul>
+
+
+
             {(kb_list !== null && kb_list.length > 0) &&
             <>
-
-                <select className="">
-            {kb_list.map((item,i) => {
-                return <option key={i} value={item.id}>{item.name}</option>
-            })}
+                <li>
+                <select className="form-select sb-select px-3 py-2">
+                    {kb_list.map((item,i) => {
+                        return <option key={i} value={item.id}>{item.name}</option>
+                    })}
                 </select>
-
-                <ul className="sb-nav ps-0">
-            {nav2.map((item,i) => {
-                return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />
-            })}
-                </ul>
+                </li>
+                {nav2.map((item,i) => {
+                    return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />
+                })}
             </>
             }
+
+             </ul>
+
+            {/*    <li className="px-3 py-2 border-top">*/}
+            {/*        <select className="form-select sb-select px-3 py-2">*/}
+            {/*            {kb_list.map((item,i) => {*/}
+            {/*            return <option key={i} value={item.id}>{item.name}</option>*/}
+            {/*            })}*/}
+            {/*        </select>*/}
+            {/*    </li>*/}
+
+            {/* <ul className="sb-nav ps-0">*/}
+            {/*    {nav2.map((item,i) => {*/}
+            {/*        return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />*/}
+            {/*    })}*/}
+            {/*</ul>*/}
         </div>
     )
 }

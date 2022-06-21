@@ -2,8 +2,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
 import {showAddUserForm} from "./usersSlice";
 import {Chip} from "../../components/Chip";
-import Api from "../../utilities/api";
-import {hasRole} from "../../utilities/helpers";
+import Api from "../../common/api";
+import {hasRole} from "../../common/helpers";
 
 export function UserEdit(props){
 

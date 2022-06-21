@@ -32,45 +32,47 @@ export function UsersList(){
     }
 
     return(
-        <div className="section">
-            <div className="form-row row">
-                <div className="form-group col-md-3">
-                    <input type="text" placeholder={"Filter"} value={searchFilter} autoFocus={true} className={"form-control " + theme}
-                           onKeyPress={(event) => handleSearchTextKeydown(event)}
-                           onChange={(event) => {
-                               setSearchFilter(event.target.value)
-                           }}/>
-                </div>
-                <div className="form-group col-md-3">
-                    <select  placeholder={"Filter"} autoFocus={true} className={"form-control filter-text-width " + theme}
-                             onChange={(event) => {
-                                 setOrderFilter(event.target.value)
-                             }}>
-                        <option value="">Choose...</option>
-                        <option value="alphabetical">Alphabetical</option>
-                        <option value="">...</option>
-                    </select>
-
-                </div>
-                <div className="form-group col-md-3">
-                    <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-control filter-text-width " + theme}
+        <div className="section px-5 pt-4">
+            <div className="d-flex justify-content-beteween w-100 mb-4">
+                <div className="d-flex w-100">
+                    <div className="form-group me-2">
+                        <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control " + theme}
+                            onKeyPress={(event) => handleSearchTextKeydown(event)}
                             onChange={(event) => {
-                                setUserFilter(event.target.value)
-                            }}>
-                        <option value="all-users">All Users</option>
-                    </select>
+                                setSearchFilter(event.target.value)
+                            }}/>
+                    </div>
+                    <div className="form-group me-2">
+                        <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}
+                                onChange={(event) => {
+                                    setOrderFilter(event.target.value)
+                                }}>
+                            <option value="alphabetical">Alphabetical</option>
+                            <option value="">Join</option>
+                        </select>
+
+                    </div>
+                    <div className="form-group me-2">
+                        <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
+                                onChange={(event) => {
+                                    setUserFilter(event.target.value)
+                                }}>
+                            <option value="all-users">All Users</option>
+                            <option value="">Admin</option>
+                            <option value="">System Administrator</option>
+                            <option value="">DMS</option>
+                        </select>
+                    </div>
                 </div>
-                <div className="form-group col-md-2">
-                    <button className="btn btn-primary" onClick={() => handleAddNewUser()}>
-                        + Add
+
+                <div className="form-group col ms-auto">
+                    <button className="btn btn-primary text-nowrap" onClick={() => handleAddNewUser()}>
+                        + Add User
                         {/*<img className="add-image" src="/images/add.svg" title="add new user" alt="add new user"/>*/}
                     </button>
                 </div>
             </div>
 
-
-
-            <br className="clear" />
 
             <div className="section">
                 {!users &&
@@ -78,6 +80,13 @@ export function UsersList(){
                 }
 
                 <table className="table">
+                    <thead>
+                        <tr>
+                            <td className="small">Name</td>
+                            <td className="small">Email</td>
+                            <td className="small">Roles</td>
+                        </tr>
+                    </thead>
                     <tbody>
 
                     { users &&

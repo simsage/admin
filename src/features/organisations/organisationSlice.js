@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import Comms from "../../utilities/comms";
+import Comms from "../../common/comms";
 
 const initialState = {
     organisation_filter: "",

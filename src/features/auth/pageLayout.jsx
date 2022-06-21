@@ -4,7 +4,7 @@ import {useIsAuthenticated, useMsal} from "@azure/msal-react";
 import {SignInButton} from "./SignInButtion";
 import {useDispatch, useSelector} from "react-redux";
 import {login, setJwt} from "./authSlice";
-import Comms from "../../utilities/comms";
+import Comms from "../../common/comms";
 import axios from "axios";
 
 

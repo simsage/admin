@@ -83,10 +83,11 @@
 ],
   "groups" : [],
   "organisations": [],
+  "db_kb1": [  ],
   "db_kb": [
-    {"id": 1231, "name": "kb 1" },
-    {"id": 1232, "name": "kb 2" },
-    {"id": 1233, "name": "kb 3" }
+    {"kbId": 1231, "name": "kb 1" ,"email": "elansiva@hotmail.com"},
+    {"kbId": 1232, "name": "kb 2" ,"email": "elansiva@hotmail.com"},
+    {"kbId": 1233, "name": "kb 3" ,"email": "elansiva@hotmail.com"}
   ],
   "sources":[]
 }
