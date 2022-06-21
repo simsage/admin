@@ -2,6 +2,11 @@ import {useSelector} from "react-redux";
 import React, {useState} from "react";
 import {LeftSidebarNavItem} from "../../includes/left-navbar";
 import SubNav from "../../includes/sub-nav";
+import BotHome from "../bot/BotHome";
+import SynonymsHome from "../synonyms/SynonymsHome";
+import SemanticsHome from "../semantics/SemanticsHome";
+import SynsetsHome from "../synsets/SynsetsHome";
+import CategorizationHome from "../categorization/CategorizationHome";
 
 export default function MindHome(){
     const title = "The Mind";
@@ -15,6 +20,9 @@ export default function MindHome(){
         {label: "Categorization", slug:"categorization" },
     ]
 
+
+
+
     function changeNav(slug){
         console.log(slug)
         setSelectedSubNav(slug);
@@ -25,9 +33,21 @@ export default function MindHome(){
             <div className="border-bottom">
                 <SubNav sub_nav={sub_nav} active_item={selected_sub_nav} onClick={changeNav} />
             </div>
-            <div className="section px-5 pt-4">
-                <h1>{title}</h1>
-            </div>
+            {selected_sub_nav === 'bot' &&
+                <BotHome />
+            }
+            {selected_sub_nav === 'synonyms' &&
+                <SynonymsHome />
+            }
+            {selected_sub_nav === 'semantics' &&
+                <SemanticsHome />
+            }
+            {selected_sub_nav === 'synsets' &&
+                <SynsetsHome />
+            }
+            {selected_sub_nav === 'categorization' &&
+                <CategorizationHome />
+            }
         </div>
     )
 }
