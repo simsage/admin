@@ -16,8 +16,8 @@ export function UsersList(){
     const theme = null;
     const dispatch = useDispatch();
 
-    function handleSearchTextKeydown(event) {
-        if (event.key === "Enter" && this.props.selected_organisation_id) {
+    function handleSearchTextKeydown(e) {
+        if (e.key === "Enter" && this.props.selected_organisation_id) {
             this.props.getUsers(this.props.selected_organisation_id);
         }
     }
@@ -37,16 +37,12 @@ export function UsersList(){
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
                         <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control " + theme}
-                            onKeyPress={(event) => handleSearchTextKeydown(event)}
-                            onChange={(event) => {
-                                setSearchFilter(event.target.value)
-                            }}/>
+                            onKeyPress={(e) => handleSearchTextKeydown(e)}
+                            onChange={(e) => setSearchFilter(e.target.value)}/>
                     </div>
                     <div className="form-group me-2">
                         <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}
-                                onChange={(event) => {
-                                    setOrderFilter(event.target.value)
-                                }}>
+                                onChange={(e) => setOrderFilter(e.target.value)}>
                             <option value="alphabetical">Alphabetical</option>
                             <option value="">Join</option>
                         </select>
@@ -54,9 +50,7 @@ export function UsersList(){
                     </div>
                     <div className="form-group me-2">
                         <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
-                                onChange={(event) => {
-                                    setUserFilter(event.target.value)
-                                }}>
+                                onChange={(e) => setUserFilter(e.target.value)}>
                             <option value="all-users">All Users</option>
                             <option value="">Admin</option>
                             <option value="">System Administrator</option>

@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import SubNav from "../../includes/sub-nav";
 import {UsersList} from "../users/UsersList";
 import KnowledgeBaseHome from "../knowledge_bases/KnowledgeBaseHome";
+import StatusHome from "./StatusHome";
+import LogHome from "./LogHome";
 
 export default function Home() {
     const [selected_sub_nav, setSelectedSubNav] = useState('knowledge-bases')
@@ -28,10 +30,10 @@ export default function Home() {
                 <KnowledgeBaseHome />
                 }
                 {selected_sub_nav === 'status' &&
-                <h1>status</h1>
+                <StatusHome />
                 }
                 {selected_sub_nav === 'logs' &&
-                <h1>logs</h1>
+                <LogHome />
                 }
             </div>
     );

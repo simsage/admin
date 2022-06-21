@@ -21,8 +21,6 @@ export default function MindHome(){
     ]
 
 
-
-
     function changeNav(slug){
         console.log(slug)
         setSelectedSubNav(slug);
