@@ -20,7 +20,7 @@ const AccountDropdown = (props) => {
     const accounts_dropdown = state.accounts_dropdown;
 
     // console.log("AccountDropdown",accounts_dropdown )
-    const organisationList = state.organisation_list;
+    const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
     // const selected_organisation = state.selected_organisation;
     // const selected_organisation_id = state.selected_organisation_id;
 
@@ -32,8 +32,6 @@ const AccountDropdown = (props) => {
     }
 
     function addOrganisation(){
-        // console.log("addOrganisation")
-        // dispatch({type: "SELECT_TAB", data:selected_org})
         dispatch(showAddOrganisationForm(true))
     }
 
@@ -69,16 +67,16 @@ const AccountDropdown = (props) => {
     return (
         <div className={(accounts_dropdown ? "d-flex" : "d-none") + " account-dropdown"}>
             <ul className="acc-nav ps-0 mb-0">
-                {/*{organisationList.length > 0 &&*/}
-                {/*    organisationList.map((item ,i) => {*/}
-                {/*        return(*/}
-                {/*            // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>*/}
-                {/*            <li key={item.id} className="acc-item px-4 py-3 d-flex justify-content-between active" onClick={() => selectOrganisation(item.name)}>*/}
-                {/*            <label>{item.name}</label>*/}
-                {/*                <img src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>*/}
-                {/*            </li>)*/}
-                {/*    })*/}
-                {/*}*/}
+                {organisation_list.length > 0 &&
+                organisation_list.map((item ,i) => {
+                        return(
+                            // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
+                            <li key={item.id} className="acc-item px-4 py-3 d-flex justify-content-between active" onClick={() => selectOrganisation(item.name)}>
+                            <label>{item.name}</label>
+                                <img src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>
+                            </li>)
+                    })
+                }
                 <li className="acc-item px-4 py-3" onClick={() => addOrganisation()}>
                     <label>+ Add New Organisation</label>
                 </li>

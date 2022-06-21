@@ -1,7 +1,8 @@
-import {useSelector} from "react-redux";
 import React, {useState} from "react";
-import {LeftSidebarNavItem} from "../../includes/left-navbar";
 import SubNav from "../../includes/sub-nav";
+import SourceHome from "../sources/SourceHome";
+import InventoryHome from "../inventory/InventoryHome";
+import DocumentsHome from "./DocumentsHome";
 
 export default function DocumentManagementHome(){
     const title = "Document Management";
@@ -23,9 +24,16 @@ export default function DocumentManagementHome(){
             <div className="border-bottom">
                 <SubNav sub_nav={sub_nav} active_item={selected_sub_nav} onClick={changeNav} />
             </div>
-            <div className="section px-5 pt-4">
-                <h1>{title}</h1>
-            </div>
+
+            {selected_sub_nav === 'sources' &&
+            <SourceHome />
+            }
+            {selected_sub_nav === 'inventory' &&
+            <InventoryHome />
+            }
+            {selected_sub_nav === 'documents' &&
+            <DocumentsHome />
+            }
         </div>
     )
 }

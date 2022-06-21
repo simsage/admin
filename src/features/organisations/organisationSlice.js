@@ -1,9 +1,10 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
+import db from "../../notes/db.json"
 
 const initialState = {
     organisation_filter: "",
-    organisation_list: [],
+    organisation_list: db.organisations,
     organisation_page: 0,
     organisation_page_size: 10,
 

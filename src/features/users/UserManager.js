@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import {UsersList} from "./UsersList";
 import SubNav from "../../includes/sub-nav";
+import GroupHome from "../groups/GroupHome";
 
 export function UserManager(){
 
@@ -27,7 +28,7 @@ export function UserManager(){
                 <UsersList />
             }
             {selected_sub_nav === 'groups' &&
-            <h1>Groups</h1>
+                <GroupHome />
             }
 
         </div>
