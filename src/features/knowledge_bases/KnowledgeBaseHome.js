@@ -7,7 +7,6 @@ import KnowledgeBaseList from "./KnowledgeBaseList";
 export default function KnowledgeBaseHome(){
 
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
-    const title = "Knowledge Bases";
 
     return(
 

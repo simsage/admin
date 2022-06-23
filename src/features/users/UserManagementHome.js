@@ -1,10 +1,10 @@
 import React, {useState} from "react";
 import {useSelector} from "react-redux";
-import {UsersList} from "./UsersList";
+import {UsersHome} from "./UsersHome";
 import SubNav from "../../includes/sub-nav";
 import GroupHome from "../groups/GroupHome";
 
-export function UserManager(){
+export function UserManagementHome(){
 
     const theme = null;
     const [selected_sub_nav, setSelectedSubNav] = useState('users')
@@ -25,7 +25,7 @@ export function UserManager(){
                 <SubNav sub_nav={sub_nav} active_item={selected_sub_nav} onClick={changeNav} />
             </div>
             {selected_sub_nav === 'users' &&
-                <UsersList />
+                <UsersHome />
             }
             {selected_sub_nav === 'groups' &&
                 <GroupHome />

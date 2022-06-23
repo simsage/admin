@@ -3,7 +3,7 @@ import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
 import {showAddUserForm} from "./usersSlice";
 
-export function UsersList(){
+export function UsersHome(){
 
     const users = useSelector((state) => state.usersReducer.users)
     console.log("users  ",users)

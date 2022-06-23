@@ -98,25 +98,17 @@ export default function KnowledgeBaseList(){
                                         </td>
 
                                         <td>
-                                            <div className="link-button"
-                                                 onClick={() => viewIds(knowledge_base)}>
-                                                <img src="../images/id.svg" className="image-size"
-                                                     title="view knowledge base ids" alt="ids"/>
+                                            <div className="link-button" nClick={() => viewIds(knowledge_base)}>
+                                                <img src="../images/id.svg" className="image-size" title="view knowledge base ids" alt="ids"/>
                                             </div>
-                                            <div className="link-button"
-                                                 onClick={() => editKnowledgeBase(knowledge_base)}>
-                                                <img src="../images/edit.svg" className="image-size"
-                                                     title="edit knowledge base" alt="edit"/>
+                                            <div className="link-button" onClick={() => editKnowledgeBase(knowledge_base)}>
+                                                <img src="../images/edit.svg" className="image-size" title="edit knowledge base" alt="edit"/>
                                             </div>
-                                            <div className="link-button"
-                                                 onClick={() => deleteKnowledgeBaseAsk(knowledge_base)}>
-                                                <img src="../images/delete.svg" className="image-size"
-                                                     title="remove knowledge base" alt="remove"/>
+                                            <div className="link-button" onClick={() => deleteKnowledgeBaseAsk(knowledge_base)}>
+                                                <img src="../images/delete.svg" className="image-size" title="remove knowledge base" alt="remove"/>
                                             </div>
-                                            <div className="link-button"
-                                                 onClick={() => optimizeIndexesAsk(knowledge_base)}>
-                                                <img src="../images/optimize-indexes.svg" className="image-size"
-                                                     title="optimize indexes" alt="optimize"/>
+                                            <div className="link-button" onClick={() => optimizeIndexesAsk(knowledge_base)}>
+                                                <img src="../images/optimize-indexes.svg" className="image-size" title="optimize indexes" alt="optimize"/>
                                             </div>
                                         </td>
                                     </tr>

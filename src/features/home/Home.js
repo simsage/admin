@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import SubNav from "../../includes/sub-nav";
-import {UsersList} from "../users/UsersList";
 import KnowledgeBaseHome from "../knowledge_bases/KnowledgeBaseHome";
 import StatusHome from "./StatusHome";
 import LogHome from "./LogHome";

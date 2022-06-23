@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
-import {UserManager} from "../features/users/UserManager";
+import {UserManagementHome} from "../features/users/UserManagementHome";
 import OrganisationEdit from "../features/organisations/OraganisationEdit";
 import ReportsHome from "../features/reports/ReportsHome";
 import MindHome from "../features/the_mind/MindHome";
@@ -17,7 +17,7 @@ function MainSection(){
             }
 
             { selected_tab === 'user-management' &&
-                <UserManager />
+                <UserManagementHome />
             }
 
             { selected_tab === 'document-management' &&
