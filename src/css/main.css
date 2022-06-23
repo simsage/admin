@@ -303,13 +303,42 @@ html, body, #root, .App, .dms {
 
 
 
-/* Table */
-.table > :not(:first-child) {
-    border-top: 1px solid #ddd;
+/* Sub-nav */
+.nav-item {
+    color: #20273188;
+    transition: all .2s ease;
+    font-weight: 400;
+    border-bottom: 3px solid transparent;
+}
+.nav-item:hover {
+    color: #202731;
+}
+.nav-item.active {
+    color: #202731;
+    font-weight: 500;
+    border-color: #0d6efd !important;
 }
 
 
 
+/* Table */
+.table > :not(:first-child) {
+    border-top: 1px solid #ddd;
+}
+.table tbody tr {
+    transition: all .3s ease;
+}
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+
+
+/* Modal */
+.modal-content {
+    border: none;
+    border-radius: .5rem;
+}
 
 
 

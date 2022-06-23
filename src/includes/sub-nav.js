@@ -7,7 +7,7 @@ function SubNav(props){
             is_active = (props.active_item === item.slug)?true:false;
             //TODO:: show active menu
             return <li key={i} onClick={() => props.onClick(item.slug)}
-                       className={(is_active)?"nav-item px-5 pt-3 pb-2 small no-select border-bottom border-3 border-bottom border-primary":"nav-item px-5 pt-3 pb-2 small no-select border-bottom border-3"}>
+                       className={((is_active)?"active":"")+" nav-item px-5 pt-3 pb-2 no-select"}>
                 {item.label}
             </li>
         })}

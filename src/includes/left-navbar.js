@@ -32,20 +32,20 @@ export default function LeftNavbar(){
 
 
 
-            {(kb_list !== null && kb_list.length > 0) &&
-            <>
-                <li>
-                <select className="form-select sb-select px-3 py-2">
-                    {kb_list.map((item,i) => {
-                        return <option key={i} value={item.id}>{item.name}</option>
+                {(kb_list !== null && kb_list.length > 0) &&
+                <>
+                    <li className="px-3 py-2 border-top">
+                    <select className="form-select sb-select px-3 py-2">
+                        {kb_list.map((item,i) => {
+                            return <option key={i} value={item.id}>{item.name}</option>
+                        })}
+                    </select>
+                    </li>
+                    {nav2.map((item,i) => {
+                        return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />
                     })}
-                </select>
-                </li>
-                {nav2.map((item,i) => {
-                    return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />
-                })}
-            </>
-            }
+                </>
+                }
 
              </ul>
 

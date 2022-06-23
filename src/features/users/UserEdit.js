@@ -210,9 +210,9 @@ export function UserEdit(props){
         return (<div />);
     return (
 
-        <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline"}}>
-             <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
-                 <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+        <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
+             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
+                 <div className="modal-content">
                      <div className="modal-header">{edit_user_id ? "Edit User" : "Add New User"}</div>
                      <div className="modal-body">
 
