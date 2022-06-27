@@ -1,12 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    user: null,
-    session: null,
     selected_tab: 'home',
-    selected_organisation: null,
-    selected_knowledge_base: null,
-    selected_edge_device: null,
     theme: window.ENV.theme,
     license: null,          // system license
     uploading: false,       // program busy uploading

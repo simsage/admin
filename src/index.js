@@ -1,26 +1,21 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { store } from './app/store';
 import App from './App';
 
 import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./features/auth/authConfig";
 
+import {saveState} from "./common/helpers";
+import { store } from './app/store';
 
 // todo:: need to merge some style sheets
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'typeface-roboto';
-// import './css/admin-page.css';
 import './css/main.css';
-// import './css/layout/navbar.css';
-// import './css/layout/left-sidebar.css';
-// import './css/sign-in.css';
-// import './css/app-menu.css';
-import {saveState} from "./common/helpers";
-import Comms from "./common/comms";
+
 
 const msalInstance = new PublicClientApplication(msalConfig);
 

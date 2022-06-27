@@ -47,6 +47,8 @@ export class Comms {
             });
     };
 
+
+
     static http_get(url, session_id, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
         if (url !== '/stats/stats/os') {

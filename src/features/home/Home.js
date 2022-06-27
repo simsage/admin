@@ -3,9 +3,12 @@ import SubNav from "../../includes/sub-nav";
 import KnowledgeBaseHome from "../knowledge_bases/KnowledgeBaseHome";
 import StatusHome from "./StatusHome";
 import LogHome from "./LogHome";
+import {useDispatch} from "react-redux";
+import {getOrganisationList} from "../organisations/organisationSlice";
 
 export default function Home() {
     const [selected_sub_nav, setSelectedSubNav] = useState('knowledge-bases')
+    const dispatch = useDispatch();
 
     const sub_nav = [
         {label: "Knowledge Bases", slug:"knowledge-bases" },
@@ -14,10 +17,29 @@ export default function Home() {
     ]
 
     function changeNav(slug) {
-        console.log(slug)
-        setSelectedSubNav(slug);
+        // console.log(slug)
 
+        // switch(slug) {
+        //     case "knowledge-bases":
+        //         console.log("knowledge-bases");
+        //         break;
+        //
+        //     case "status":
+        //         console.log("status");
+        //         break;
+        //
+        //     case "logs":
+        //         console.log("logs");
+        //         break;
+        //
+        //     default:
+        //         console.log("knowledge-bases");
+        // }
+
+        setSelectedSubNav(slug);
     }
+
+
 
         return(
             <div className={""}>

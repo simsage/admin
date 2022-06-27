@@ -98,7 +98,7 @@ export default function KnowledgeBaseList(){
                                         </td>
 
                                         <td>
-                                            <div className="link-button" nClick={() => viewIds(knowledge_base)}>
+                                            <div className="link-button" onClick={() => viewIds(knowledge_base)}>
                                                 <img src="../images/id.svg" className="image-size" title="view knowledge base ids" alt="ids"/>
                                             </div>
                                             <div className="link-button" onClick={() => editKnowledgeBase(knowledge_base)}>

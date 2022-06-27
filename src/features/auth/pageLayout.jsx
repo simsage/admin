@@ -3,7 +3,7 @@ import React from "react";
 import {useIsAuthenticated, useMsal} from "@azure/msal-react";
 import {SignInButton} from "./SignInButtion";
 import {useDispatch, useSelector} from "react-redux";
-import {login, setJwt} from "./authSlice";
+import {login, setJwt, simSageSignIn} from "./authSlice";
 import Comms from "../../common/comms";
 import axios from "axios";
 
@@ -15,19 +15,16 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const dispatch = useDispatch();
 
-    // console.log("auth/PageLayout");
+    console.log("auth/PageLayout");
 
     // do we have a session object locally? if not - sign-in
     const {session, jwt} = useSelector((state)=>state.authReducer)
     const { instance, accounts } = useMsal();
+    // console.log(" session",session);
 
-
-    // if (!session || !session.id){
-    //     console.log("",!session || !session.id);
-    // }
 
     if ((!session || !session.id) && accounts && accounts.length > 0){
-        console.log(" page layout 1");
+        // console.log(" page layout 1");
         const request = {
             account: accounts[0]
         };
@@ -37,13 +34,16 @@ export const PageLayout = (props) => {
             // dispatch(setJwt(response.idToken));
             const api_base = window.ENV.api_base;
             const url = '/auth/admin/authenticate/msal';
+            const jwt = response.idToken;
 
+            // dispatch(simSageSignIn(jwt));
 
             axios.get(api_base + url,{
                 headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": response.idToken,}
             })
                 .then(function (response2) {
                    console.log("page layout response2",response2)
+                    dispatch(login(response2.data));
                 })
                 .catch((error) => {
                     console.error("page layout error",error)
@@ -59,8 +59,6 @@ export const PageLayout = (props) => {
             //     }).then((res)=>{
             //         console.log(" page layout 3", res)
             //     }).catch((error) => {console.log("page layout error")});
-
-
         });
     }
 

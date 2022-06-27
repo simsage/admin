@@ -117,10 +117,11 @@ html, body, #root, .App, .dms {
     transition: all .3s ease;
     color: #20273185;
 }
-.acc-item:hover {
+.acc-item:hover, .acc-item.active {
     background-color: #1c9bd220;
     color: #1c9bd2;
 }
+
 
 
 

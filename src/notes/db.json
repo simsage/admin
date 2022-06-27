@@ -92,27 +92,8 @@
       "id": "639b4f40-9efd-11ec-8d58-0bc6a5e82008",
       "name": "ABC 2",
       "enabled": true
-    },
-    {
-      "id": "67ef1900-9efd-11ec-8d58-0bc6a5e82008",
-      "name": "ABC 3",
-      "enabled": true
-    },
-    {
-      "id": "fe9e09c0-9efc-11ec-8d58-0bc6a5e82008",
-      "name": "ABC Company V22",
-      "enabled": true
-    },
-    {
-      "id": "c276f883-e0c8-43ae-9119-df8b7df9c574",
-      "name": "SimSage",
-      "enabled": true
-    },
-    {
-      "id": "057df680-af6d-11ec-b559-a3a5ee669df3",
-      "name": "XYZ",
-      "enabled": true
     }
+
   ],
   "db_kb": [
     {"kbId": 1231, "name": "kb 1" ,"email": "elansiva@hotmail.com"},

@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useMsal} from "@azure/msal-react";
 import {showAddOrganisationForm} from "../features/organisations/organisationSlice";
+import {setSelectedOrganisation} from "../features/auth/authSlice";
 // import AccountDropdown from "../navbar/AccountDropdown";
 
 /**
@@ -21,14 +22,12 @@ const AccountDropdown = (props) => {
 
     // console.log("AccountDropdown",accounts_dropdown )
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
-    // const selected_organisation = state.selected_organisation;
-    // const selected_organisation_id = state.selected_organisation_id;
+    const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
 
-    // console.log("organisationList",organisationList)
+    // console.log(selected_organisation);
 
-    function selectOrganisation(selected_org){
-        console.log(selected_org)
-        // dispatch({type: "SELECT_ORGANISATION", data:selected_org})
+    function selectOrganisation(org){
+        dispatch(setSelectedOrganisation(org));
     }
 
     function addOrganisation(){
@@ -71,7 +70,9 @@ const AccountDropdown = (props) => {
                 organisation_list.map((item ,i) => {
                         return(
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
-                            <li key={item.id} className="acc-item px-4 py-3 d-flex justify-content-between active" onClick={() => selectOrganisation(item.name)}>
+                            <li key={item.id}
+                                className={(item.id === selected_organisation.id)? "acc-item px-4 py-3 d-flex justify-content-between active":"acc-item px-4 py-3 d-flex justify-content-between"}
+                                onClick={() => selectOrganisation(item)}>
                             <label>{item.name}</label>
                                 <img src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>
                             </li>)
