@@ -70,6 +70,7 @@ export default function KnowledgeBaseList(){
         console.log("optimizeIndexesAsk")
     }
 
+
     return(
         <div className="kb-page">
             { isVisible() &&

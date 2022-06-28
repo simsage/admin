@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 
 // import '../css/navbar/account-dropdown.css';
 import {useDispatch, useSelector} from "react-redux";
 import {useMsal} from "@azure/msal-react";
-import {showAddOrganisationForm} from "../features/organisations/organisationSlice";
+import {getOrganisationList, showAddOrganisationForm} from "../features/organisations/organisationSlice";
 import {setSelectedOrganisation} from "../features/auth/authSlice";
+import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
 // import AccountDropdown from "../navbar/AccountDropdown";
 
 /**
@@ -17,17 +18,17 @@ const AccountDropdown = (props) => {
     const dispatch = useDispatch();
     const state = useSelector((state) => state).authReducer;
 
-    // const accounts_dropdown = state.accounts_dropdown;
     const accounts_dropdown = state.accounts_dropdown;
-
-    // console.log("AccountDropdown",accounts_dropdown )
+    const session = state.session;
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
+    const filter = null;
 
-    // console.log(selected_organisation);
 
-    function selectOrganisation(org){
+    console.log("session",session)
+    function selectOrganisation(session_id,org){
         dispatch(setSelectedOrganisation(org));
+        dispatch(getKBList(session_id, org));
     }
 
     function addOrganisation(){
@@ -66,18 +67,19 @@ const AccountDropdown = (props) => {
     return (
         <div className={(accounts_dropdown ? "d-flex" : "d-none") + " account-dropdown"}>
             <ul className="acc-nav ps-0 mb-0">
-                {organisation_list.length > 0 &&
+                {organisation_list.length > 0 && selected_organisation &&
                 organisation_list.map((item ,i) => {
                         return(
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
                             <li key={item.id}
                                 className={(item.id === selected_organisation.id)? "acc-item px-4 py-3 d-flex justify-content-between active":"acc-item px-4 py-3 d-flex justify-content-between"}
-                                onClick={() => selectOrganisation(item)}>
+                                onClick={() => selectOrganisation(session.id,item)}>
                             <label>{item.name}</label>
                                 <img src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>
                             </li>)
                     })
                 }
+
                 <li className="acc-item px-4 py-3" onClick={() => addOrganisation()}>
                     <label>+ Add New Organisation</label>
                 </li>

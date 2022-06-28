@@ -59,18 +59,18 @@ let user = JSON.parse(localStorage.getItem('user'))
 // }
 
 const initialState = {
-    user: user ? user : null,
-    session: null,
-    selected_organisation: null,
-    selected_knowledge_base: null,
+    user: user ? user : undefined,
+    session: undefined,
+    selected_organisation: undefined,
+    selected_knowledge_base: undefined,
 
-    isError: false,
-    isSuccess: false,
-    isLoading: false,
-    message: '',
+    isError: undefined,
+    isSuccess: undefined,
+    isLoading: undefined,
+    message: undefined,
 
-    accounts_dropdown: false,
-    jwt:null,
+    accounts_dropdown: undefined,
+    jwt: undefined,
 }
 
 
@@ -80,36 +80,28 @@ const authSlice = createSlice({
 
     //not async function : sync functions
     reducers: {
-        // reset: (state) => {
-        //     state.user = null
-        //     state.message = ''
-        //     state.session = null
-        //     state.isError = false
-        //     state.isSuccess = false
-        //     state.isLoading = false
-        // },
 
         setSelectedOrganisation: (state,action) => {
-            // const org_list = useSelector((state) => state.organisationReducer.organisation_list);
             state.selected_organisation = action.payload;
         },
 
         login: (state, action) => {
-            console.log("login action", action);
             state.user = action.payload.user
             state.message = ''
             state.session = action.payload.session
-            state.organisation_list = action.payload.organisation_list
-            // console.log("organisation_list", state.organisation_list);
-            // console.log("Auth: login action", action);
+            state.organisation_list = action.payload.organisationList
+            console.log("login action", action);
+
+            if(state.organisation_list){
+                for(let i=0; i < state.organisation_list.length; i++){
+                    if(state.organisation_list[i]['id'] == action.payload.organisationId){
+                        state.selected_organisation = state.organisation_list[i];
+                    }
+                }
+            }
+
         },
 
-        // logout: (state) => {
-        //     state.session = null
-        //     state.user = null
-        //     console.log("logged out", state)
-        // },
-        //
         showAccount: (state, action) => {
             state.accounts_dropdown = !state.accounts_dropdown;
         },
@@ -117,10 +109,6 @@ const authSlice = createSlice({
         closeAllMenus: (state) => {
             state.accounts_dropdown = false
         },
-        //
-        // setJwt:(state, action) => {
-        //     state.jwt = action.payload
-        // }
 
     },
     extraReducers:(builder) => {
@@ -142,6 +130,8 @@ const authSlice = createSlice({
             .addCase(simSageSignIn.fulfilled, (state,action) => {
                 console.log("addCase simSageSignIn fulfilled ",action)
                 login(state,action);
+                setSelectedOrganisation()
+
             })
             .addCase(simSageSignIn.rejected, (state,action) => {
                 console.log("addCase simSageSignIn rejected ",action)
@@ -170,8 +160,6 @@ export const simSageSignIn = createAsyncThunk(
     async (jwt) => {
         console.log("simSageSignIn jwt ",jwt);
         await Comms.http_get_jwt('/auth/admin/authenticate/msal', jwt)
-
-
     }
 );
 

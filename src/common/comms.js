@@ -7,6 +7,25 @@ import {loadState} from "./helpers";
 // communications common to all components
 export class Comms {
 
+    /**
+     * New set of Api functions
+     */
+
+    static http_get2(url, session_id) {
+        const api_base = window.ENV.api_base;
+        if (url !== '/stats/stats/os') {
+            console.log('GET ' + api_base + url);
+        }
+
+        return axios.get(api_base + url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    };
+
+
     static http_post(url, session_id, payload, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
         console.log('POST ' + api_base + url);

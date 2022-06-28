@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import SubNav from "../../includes/sub-nav";
 import KnowledgeBaseHome from "../knowledge_bases/KnowledgeBaseHome";
 import StatusHome from "./StatusHome";
 import LogHome from "./LogHome";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {getOrganisationList} from "../organisations/organisationSlice";
 
 export default function Home() {
@@ -15,6 +15,7 @@ export default function Home() {
         {label: "Status", slug:"status" },
         {label: "Logs", slug:"logs" },
     ]
+
 
     function changeNav(slug) {
         // console.log(slug)

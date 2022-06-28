@@ -4,8 +4,8 @@ import db from "../../notes/db.json"
 import axios from "axios";
 
 const initialState = {
-    organisation_filter: "",
-    organisation_list: db.organisations,
+    organisation_filter: null,
+    organisation_list: {},
     organisation_page: 0,
     organisation_page_size: 10,
 
@@ -57,11 +57,6 @@ export const getOrganisationList = createAsyncThunk(
             }).catch(
                 (error) => {return error}
             )
-
-        // await Comms.http_get('/auth/user/organisations/' + encodeURIComponent(filter), id,
-        //     (response) => {return response},
-        //     (response) => {return response}, ).then((response)=>{console.log(response)})
-
     }
         );
 
