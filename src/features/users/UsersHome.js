@@ -1,20 +1,29 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
 import {showAddUserForm} from "./usersSlice";
 
 export function UsersHome(){
 
-    const users = useSelector((state) => state.usersReducer.users)
-    console.log("users  ",users)
 
-    const [selectedUser, setSelectedUser] = useState(null)
-    const [searchFilter,setSearchFilter] = useState('')
-    const [orderFilter,setOrderFilter] = useState('')
-    const [userFilter,setUserFilter] = useState('')
+
+    const [selectedUser, setSelectedUser] = useState()
+    const [searchFilter,setSearchFilter] = useState()
+    const [orderFilter,setOrderFilter] = useState()
+    const [userFilter,setUserFilter] = useState()
 
     const theme = null;
     const dispatch = useDispatch();
+
+    const users = useSelector((state) => state.usersReducer.users)
+    const status = useSelector((state) => state.usersReducer.users)
+
+    useEffect(()=>{
+        if(status === undefined && users === undefined){
+
+        }
+    },[])
+    console.log("users  ",users)
 
     function handleSearchTextKeydown(e) {
         if (e.key === "Enter" && this.props.selected_organisation_id) {
@@ -30,6 +39,7 @@ export function UsersHome(){
         setSelectedUser(user)
         dispatch(showAddUserForm(true))
     }
+
 
     return(
         <div className="section px-5 pt-4">

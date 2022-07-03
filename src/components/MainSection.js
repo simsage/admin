@@ -15,7 +15,7 @@ function MainSection(){
     const filter = null;
 
     useEffect(() => {
-        if(organisation_list) {
+        if(organisation_list === undefined) {
             console.log("useEffect Main sesction organisation_list", organisation_list,"session",session)
         }
 

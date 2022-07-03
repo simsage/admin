@@ -5,13 +5,13 @@ import axios from "axios";
 import {getOrganisationList} from "../organisations/organisationSlice";
 
 const initialState = {
-    kb_list: db_users.db_kb,
+    kb_list: undefined,
     kb_filter: undefined,
     kb_page: 0,
     kb_page_size: 10,
 
     //new states
-    status: 'idle',
+    status: undefined,
     error: null,
     show_kb_form: false,
 }
@@ -20,16 +20,17 @@ export const getKBList = createAsyncThunk(
     'knowledgeBases/getKBList',
     async ({session,organization_id}) => {
         const api_base = window.ENV.api_base;
-        const url = '/knowledgebase/'+ encodeURIComponent(organization_id);
+        console.log("organization_id",organization_id)
+        const url = api_base + '/knowledgebase/'+ encodeURIComponent(organization_id);
 
         // return "Hello";
         if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
+            console.log('GET ' + url);
         }
 
-        return axios.get(api_base + url, Comms.getHeaders(session))
+        return axios.get(url, Comms.getHeaders(session))
             .then((response) => {
-                console.log(response.data)
+                console.log("knowledgeBases11",response.data)
                 return response.data
             }).catch(
                 (error) => {return error}
@@ -43,6 +44,7 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(getKBList.fulfilled, (state, action) => {
+            console.log("knowledgeBases/getKBList ",action)
             state.status = "fulfilled"
             state.kb_list = action.payload
         })

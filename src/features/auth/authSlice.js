@@ -62,7 +62,9 @@ const initialState = {
     user: user ? user : undefined,
     session: undefined,
     selected_organisation: undefined,
+    selected_organisation_id: undefined,
     selected_knowledge_base: undefined,
+    selected_knowledge_base_id: undefined,
 
     isError: undefined,
     isSuccess: undefined,
@@ -70,7 +72,7 @@ const initialState = {
     message: undefined,
 
     accounts_dropdown: undefined,
-    jwt: undefined,
+    // jwt: undefined,
 }
 
 
@@ -83,19 +85,24 @@ const authSlice = createSlice({
 
         setSelectedOrganisation: (state,action) => {
             state.selected_organisation = action.payload;
+            state.selected_organisation_id = action.payload.id;
         },
 
         login: (state, action) => {
             state.user = action.payload.user
             state.message = ''
             state.session = action.payload.session
-            state.organisation_list = action.payload.organisationList
-            // console.log("login action", action);
 
-            if(state.organisation_list){
-                for(let i=0; i < state.organisation_list.length; i++){
-                    if(state.organisation_list[i]['id'] == action.payload.organisationId){
-                        state.selected_organisation = state.organisation_list[i];
+            const org_list = action.payload.organisationList
+            console.log("AuthSlice: login 1", action);
+
+            if(org_list){
+                console.log("AuthSlice: login 2");
+                for(let i=0; i < org_list.length; i++){
+                    console.log("AuthSlice: login 3");
+                    if(org_list[i]['id'] == action.payload.organisationId){
+                        state.selected_organisation = org_list[i];
+                        state.selected_organisation_id = org_list[i].id;
                     }
                 }
             }

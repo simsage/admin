@@ -7,6 +7,7 @@ import {login, setJwt, simSageSignIn} from "./authSlice";
 import Comms from "../../common/comms";
 import axios from "axios";
 import {getOrganisationList} from "../organisations/organisationSlice";
+import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 
 
 /**
@@ -16,12 +17,10 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const dispatch = useDispatch();
 
-    console.log("auth/PageLayout");
+    console.log("PageLayout 1");
 
-    // do we have a session object locally? if not - sign-in
     const {session, jwt} = useSelector((state)=>state.authReducer)
     const { instance, accounts } = useMsal();
-    // console.log(" session",session);
 
 
     if ((!session || !session.id) && accounts && accounts.length > 0){
@@ -31,35 +30,29 @@ export const PageLayout = (props) => {
         };
 
         instance.acquireTokenSilent(request).then((response) => {
-            console.log(" page layout 2");
+            console.log("PageLayout 2");
             // dispatch(setJwt(response.idToken));
             const api_base = window.ENV.api_base;
             const url = '/auth/admin/authenticate/msal';
             const jwt = response.idToken;
 
-            // dispatch(simSageSignIn(jwt));
-
             axios.get(api_base + url,{
                 headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": response.idToken,}
             })
                 .then(function (response2) {
-                   console.log("dispatch login",response2)
                     dispatch(login(response2.data));
+                    console.log("response2.data", response2.data);
+                    const session = response2.data.session;
+                    const filter = null;
+                    console.log("response2.data.session", session.organisationId);
+                    dispatch(getOrganisationList({session:session,filter:filter}));
+                    dispatch(getKBList({session:session.id, organization_id:session.organisationId}));
+
                 })
                 .catch((error) => {
                     console.error("page layout error",error)
                 });
 
-            // Comms.http_get_jwt('/auth/admin/authenticate/msal', response.idToken,
-            //     (response2) => {
-            //
-            //         dispatch(login({type: 'SIGN_IN', data: response2.data}));
-            //     },
-            //     (errStr) => {
-            //         console.error("Error:");
-            //     }).then((res)=>{
-            //         console.log(" page layout 3", res)
-            //     }).catch((error) => {console.log("page layout error")});
         });
     }
 

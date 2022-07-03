@@ -21,14 +21,18 @@ const AccountDropdown = (props) => {
     const accounts_dropdown = state.accounts_dropdown;
     const session = state.session;
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
-    const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
-    const filter = null;
+    const organisation_list_status = useSelector((state) => state.organisationReducer.status);
 
+    const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
+
+    const filter = null;
 
     console.log("session",session)
     function selectOrganisation(session_id,org){
+        const org_id = org.id
         dispatch(setSelectedOrganisation(org));
-        // dispatch(getKBList(session_id, org));
+        console.log("org_id",org_id)
+        dispatch(getKBList({session:session.id, organization_id:org_id}));
     }
 
     function addOrganisation(){
@@ -36,15 +40,11 @@ const AccountDropdown = (props) => {
     }
 
     function editAccount(){
-        console.log("editAccount")
-        // alert(selected_tab);
-        // dispatch({type: "SELECT_TAB", data:selected_org})
+        console.log("edit Account")
     }
 
     function getHelp(){
         console.log("getHelp")
-        // alert(selected_tab);
-        // dispatch({type: "SELECT_TAB", data:selected_org})
     }
 
     function signOut(){
@@ -67,7 +67,13 @@ const AccountDropdown = (props) => {
     return (
         <div className={(accounts_dropdown ? "d-flex" : "d-none") + " account-dropdown"}>
             <ul className="acc-nav ps-0 mb-0">
-                {organisation_list.length > 0 && selected_organisation &&
+                {organisation_list_status  !== "fulfilled" &&
+                <li className="acc-item px-4 py-3 d-flex justify-content-between">
+                    <label>organisations loading...</label>
+                </li>
+                }
+
+                {organisation_list_status === "fulfilled" && organisation_list.length > 0 && selected_organisation &&
                 organisation_list.map((item ,i) => {
                         return(
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
@@ -79,6 +85,7 @@ const AccountDropdown = (props) => {
                             </li>)
                     })
                 }
+
 
                 <li className="acc-item px-4 py-3" onClick={() => addOrganisation()}>
                     <label>+ Add New Organisation</label>

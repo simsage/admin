@@ -4,14 +4,14 @@ import db from "../../notes/db.json"
 import axios from "axios";
 
 const initialState = {
-    organisation_filter: null,
-    organisation_list: {},
+    organisation_filter: undefined,
+    organisation_list: undefined,
     organisation_page: 0,
     organisation_page_size: 10,
 
     //new states
-    status: '',
-    error: null,
+    status: undefined,
+    error: undefined,
     show_organisation_form: false,
 }
 

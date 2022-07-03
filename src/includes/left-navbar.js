@@ -18,6 +18,7 @@ export default function LeftNavbar(){
     ]
 
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
+    const kb_list_status = useSelector((state) => state.kbReducer.status);
 
     return (
         <div className="sidebar no-select">
@@ -32,7 +33,7 @@ export default function LeftNavbar(){
 
 
 
-                {(kb_list !== null && kb_list.length > 0) &&
+                {(kb_list_status !== undefined && kb_list !== undefined && kb_list.length > 0) &&
                 <>
                     <li className="px-3 py-2 border-top">
                     <select className="form-select sb-select px-3 py-2">

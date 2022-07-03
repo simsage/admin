@@ -21,8 +21,6 @@ export default function Home() {
         setSelectedSubNav(slug);
     }
 
-
-
         return(
             <div className={""}>
                 <div className="border-bottom">

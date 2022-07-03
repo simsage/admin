@@ -4,8 +4,8 @@ import db_users from "../../notes/db.json";
 
 
 const initialState = {
-    users: db_users.db_users,
-    user_filter: '',
+    users: undefined,
+    user_filter: undefined,
     user_page: 0,
     user_page_size: 10,
 
