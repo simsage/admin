@@ -15,6 +15,7 @@ export default function KnowledgeBaseList(){
     const [kb_page_size, setKbPageSize] = useState(useSelector((state) => state.kbReducer.kb_page_size))
 
 
+
     function getKnowledgeBases() {
         const paginated_list = [];
         const first = kb_page * kb_page_size;

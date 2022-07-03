@@ -43,7 +43,7 @@ export const PageLayout = (props) => {
                 headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": response.idToken,}
             })
                 .then(function (response2) {
-                   console.log("page layout response2",response2)
+                   console.log("dispatch login",response2)
                     dispatch(login(response2.data));
                 })
                 .catch((error) => {

@@ -15,8 +15,8 @@ function MainSection(){
     const filter = null;
 
     useEffect(() => {
-        if(organisation_list && organisation_list.length==2) {
-            console.log("useEffect Main sesction organisation_list")
+        if(organisation_list) {
+            console.log("useEffect Main sesction organisation_list", organisation_list,"session",session)
         }
 
     }, [])

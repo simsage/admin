@@ -90,7 +90,7 @@ const authSlice = createSlice({
             state.message = ''
             state.session = action.payload.session
             state.organisation_list = action.payload.organisationList
-            console.log("login action", action);
+            // console.log("login action", action);
 
             if(state.organisation_list){
                 for(let i=0; i < state.organisation_list.length; i++){
@@ -130,7 +130,7 @@ const authSlice = createSlice({
             .addCase(simSageSignIn.fulfilled, (state,action) => {
                 console.log("addCase simSageSignIn fulfilled ",action)
                 login(state,action);
-                setSelectedOrganisation()
+                // setSelectedOrganisation()
 
             })
             .addCase(simSageSignIn.rejected, (state,action) => {

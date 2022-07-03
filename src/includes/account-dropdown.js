@@ -28,7 +28,7 @@ const AccountDropdown = (props) => {
     console.log("session",session)
     function selectOrganisation(session_id,org){
         dispatch(setSelectedOrganisation(org));
-        dispatch(getKBList(session_id, org));
+        // dispatch(getKBList(session_id, org));
     }
 
     function addOrganisation(){

@@ -22,10 +22,12 @@ function App() {
 
 
     const busy = false;
-    const {user, session } = useSelector((state) => state.defaultApp)
+    const {user, session } = useSelector((state) => state.authReducer)
+    const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
 
     const state = useSelector((state) => state )
 
+    console.log("App session",session)
     return (
         <PageLayout>
           <AuthenticatedTemplate>
@@ -37,7 +39,8 @@ function App() {
                     </div>
                 </div>
           </AuthenticatedTemplate>
-         </PageLayout>
+
+        </PageLayout>
     );
 }
 

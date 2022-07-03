@@ -42,7 +42,7 @@ const extraReducers = (builder) => {
 export const getOrganisationList = createAsyncThunk(
     'organisations/getOrganisationList',
     async ({session,filter}) => {
-        console.log("getOrganisationList");
+        console.log("organisations/getOrganisationList");
         const api_base = window.ENV.api_base;
         const url = '/auth/user/organisations/'+ encodeURIComponent(filter);
         const { id } = session

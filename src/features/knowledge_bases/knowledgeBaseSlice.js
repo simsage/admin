@@ -19,11 +19,9 @@ const initialState = {
 export const getKBList = createAsyncThunk(
     'knowledgeBases/getKBList',
     async ({session,organization_id}) => {
-        console.log("getKBList");
         const api_base = window.ENV.api_base;
-        const url = '/auth/user/organisations/'+ encodeURIComponent(organization_id);
+        const url = '/knowledgebase/'+ encodeURIComponent(organization_id);
 
-        console.log("session:",session," organization_id:",organization_id)
         // return "Hello";
         if (url !== '/stats/stats/os') {
             console.log('GET ' + api_base + url);

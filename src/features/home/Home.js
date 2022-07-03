@@ -18,25 +18,6 @@ export default function Home() {
 
 
     function changeNav(slug) {
-        // console.log(slug)
-
-        // switch(slug) {
-        //     case "knowledge-bases":
-        //         console.log("knowledge-bases");
-        //         break;
-        //
-        //     case "status":
-        //         console.log("status");
-        //         break;
-        //
-        //     case "logs":
-        //         console.log("logs");
-        //         break;
-        //
-        //     default:
-        //         console.log("knowledge-bases");
-        // }
-
         setSelectedSubNav(slug);
     }
 
