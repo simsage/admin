@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
-import {showAddUserForm} from "./usersSlice";
+import {getUserList, showAddUserForm} from "./usersSlice";
+import {Pagination} from "../../common/pagination";
 
 export function UsersHome(){
 
 
-
+    const [page, setPage] = useState(useSelector((state) => state.usersReducer.page))
+    const [page_size, setPageSize] = useState(useSelector((state) => state.usersReducer.page_size))
     const [selectedUser, setSelectedUser] = useState()
     const [searchFilter,setSearchFilter] = useState()
     const [orderFilter,setOrderFilter] = useState()
@@ -15,15 +17,21 @@ export function UsersHome(){
     const theme = null;
     const dispatch = useDispatch();
 
-    const users = useSelector((state) => state.usersReducer.users)
-    const status = useSelector((state) => state.usersReducer.users)
+    const user_list = useSelector((state) => state.usersReducer.user_list)
+    // const page_size = useSelector((state) => state.usersReducer.page_size)
+    // const page = useSelector((state) => state.usersReducer.page)
+    const status = useSelector((state) => state.usersReducer.status)
+    const session = useSelector((state)=>state.authReducer.session)
+    const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
 
     useEffect(()=>{
-        if(status === undefined && users === undefined){
-
+        if(status === undefined && user_list === undefined){
+            console.log("session useEffect",session)
+            console.log("selected_organisation",selected_organisation_id)
+            dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:null}))
         }
     },[])
-    console.log("users  ",users)
+    console.log("users  ",user_list)
 
     function handleSearchTextKeydown(e) {
         if (e.key === "Enter" && this.props.selected_organisation_id) {
@@ -38,6 +46,20 @@ export function UsersHome(){
     function handleEditUser(user) {
         setSelectedUser(user)
         dispatch(showAddUserForm(true))
+    }
+
+
+    function getUsers() {
+        const paginated_list = [];
+        const first = page * page_size;
+        const last = first + parseInt(page_size);
+
+        for (const i in user_list) {
+            if (i >= first && i < last) {
+                paginated_list.push(user_list[i]);
+            }
+        }
+        return paginated_list;
     }
 
 
@@ -79,7 +101,7 @@ export function UsersHome(){
 
 
             <div className="section">
-                {!users &&
+                {!user_list &&
                 <div>Error</div>
                 }
 
@@ -93,8 +115,8 @@ export function UsersHome(){
                     </thead>
                     <tbody>
 
-                    { users &&
-                        users.map((user) => {
+                    {
+                        getUsers().map((user) => {
                             //Todo:: implement canEdit canDelete
                             const canEdit = true;
                             const canDelete = true;
@@ -114,6 +136,21 @@ export function UsersHome(){
                         })
                     }
                     </tbody>
+
+                    <Pagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        theme={theme}
+                        component="div"
+                        count={user_list.length}
+                        rowsPerPage={page_size}
+                        page={page}
+                        backIconButtonProps={{'aria-label': 'Previous Page',}}
+                        nextIconButtonProps={{'aria-label': 'Next Page',}}
+                        onChangePage={(page) => setPage(page)}
+                        onChangeRowsPerPage={(rows) => setPageSize(rows)}
+                    />
+
+
                     {/*<tbody>*/}
                     {/*{*/}
                     {/*    this.getUsers(isAdmin).map((user) => {*/}
