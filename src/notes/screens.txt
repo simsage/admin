@@ -1,12 +1,13 @@
 List of Pages and Local function.
 Will add actions soon
 
+
 ------------------
 Organisations
-    Organisation Home
+    Organisation List on Account Dropdown
     Add Organisation
     Edit
-    Filter
+    Filter -- not there
 
 -------------------------
 KB
@@ -25,6 +26,7 @@ KB
 ------------------------
 Overview
     sub menu: KB, Status, Logs
+    KB Home
     LogsHome
     StatusHome
 

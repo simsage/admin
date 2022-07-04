@@ -1,18 +1,23 @@
-import {useState} from "react";
-import {useSelector} from "react-redux";
+import {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import SourceFilter from "./SourceFilter";
 import db from "../../notes/db.json";
+import {getSources} from "./sourceSlice";
 
 export default function SourceHome(){
 
+    const dispatch = useDispatch();
     const title = "Source";
     const theme = '';
-    const selected_knowledge_base_id = "1123122"; // useSelector((state) => state.kbReducer.selected_knowledgebase_id);
-    const selected_organisation_id = "1123122"; // useSelector((state) => state.kbReducer.selected_knowledgebase_id);
-    const source_list = db.sources
-    const [curr_page, setCurrPage] = useState(0)
+    const session = useSelector((state) => state.authReducer.session);
+    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
+    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+
+    const source_list = useSelector((state) => state.sourceReducer.source_list);
+    const source_list_status = useSelector((state) => state.sourceReducer.status);
+    const [page, setPage] = useState(0)
     const [page_size, setPageSize] = useState(10)
 
     const default_specific_json = '{"metadata_list":[' +
@@ -26,10 +31,15 @@ export default function SourceHome(){
         processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []};
 
 
+    useEffect(()=>{
+        if(source_list_status === undefined && source_list === undefined ){
+            dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
+        }
+    },[])
     function getCrawlers() {
         const paginated_list = [];
-        const first = curr_page * page_size;
-        const last = first + page_size;
+        const first = page * page_size;
+        const last = first + + parseInt(page_size);
 
         source_list.sort((a, b) => { return a.sourceId - b.sourceId });
         for (const i in source_list) {
@@ -85,13 +95,6 @@ export default function SourceHome(){
             }
         }
         return false;
-    }
-
-    function changePage(page) {
-        setCurrPage(page);
-    }
-    function changePageSize(page_size) {
-        setPageSize(page_size)
     }
 
     function addNewCrawler() {
@@ -189,7 +192,7 @@ export default function SourceHome(){
         <div className="section px-5 pt-4">
 
             <SourceFilter />
-            { selected_knowledge_base_id.length > 0 &&
+            { source_list_status !== undefined && source_list && source_list.length > 0 &&
                 <div className="source-page">
                     <table className="table">
                         <thead>
@@ -288,11 +291,11 @@ export default function SourceHome(){
                         component="div"
                         count={source_list.length}
                         rowsPerPage={page_size}
-                        page={curr_page}
+                        page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
                         nextIconButtonProps={{'aria-label': 'Next Page',}}
-                        onChangePage={(page) => changePage(page)}
-                        onChangeRowsPerPage={(rows) => changePageSize(rows)}
+                        onChangePage={(page) => setPage(page)}
+                        onChangeRowsPerPage={(rows) => setPageSize(rows)}
                     />
 
                 </div>

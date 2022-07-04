@@ -12,8 +12,8 @@ const initialState = {
 
 
 
-export const defaultSlice = createSlice({
-    name: 'defaultApp',
+export const homeSlice = createSlice({
+    name: 'homeReducer',
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
@@ -27,6 +27,6 @@ export const defaultSlice = createSlice({
     },
 });
 
-export const { selectTab, closeAllMenus } = defaultSlice.actions;
+export const { selectTab, closeAllMenus } = homeSlice.actions;
 
-export default defaultSlice.reducer;
+export default homeSlice.reducer;

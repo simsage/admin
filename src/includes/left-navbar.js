@@ -1,6 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
-import {selectTab} from "../features/home/DefaultSlice";
-import React from "react";
+import {selectTab} from "../features/home/homeSlice";
+import React, {useEffect} from "react";
+import {setSelectedKB} from "../features/auth/authSlice";
+import {getSources} from "../features/sources/sourceSlice";
 
 export default function LeftNavbar(){
 
@@ -17,8 +19,35 @@ export default function LeftNavbar(){
         {label: "Reports", slug:"reports", logo:"../images/icon/icon_reports.svg", separator:false, sub:[] }
     ]
 
+    const dispatch = useDispatch();
+
+
+
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
     const kb_list_status = useSelector((state) => state.kbReducer.status);
+    const selected_tab = useSelector((state) => state.homeReducer.selected_tab);
+    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
+    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    const session = useSelector((state) => state.authReducer.session);
+
+    function handleSelectKB(e){
+        let kb_id = e.target.value;
+        if(kb_id === '') {
+            kb_id = undefined;
+            dispatch(selectTab('home'))
+        }
+        dispatch(setSelectedKB(kb_id))
+
+        if(kb_id !== undefined){
+            switch (selected_tab) {
+                case "document-management" :
+                    dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:kb_id}))
+                    break;
+            }
+        }
+
+    }
+
 
     return (
         <div className="sidebar no-select">
@@ -35,16 +64,20 @@ export default function LeftNavbar(){
 
                 {(kb_list_status !== undefined && kb_list !== undefined && kb_list.length > 0) &&
                 <>
-                    <li className="px-3 py-2 border-top">
-                    <select className="form-select sb-select px-3 py-2">
+
+                    <select className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
+                        <option value="">Please select</option>
                         {kb_list.map((item,i) => {
-                            return <option key={i} value={item.id}>{item.name}</option>
+                            return <option key={i} value={item.kbId}>{item.name}</option>
                         })}
                     </select>
-                    </li>
-                    {nav2.map((item,i) => {
-                        return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />
-                    })}
+
+                    {selected_knowledge_base_id !== undefined &&
+                        nav2.map((item, i) => {
+                            return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo}/>
+                        })
+                    }
+
                 </>
                 }
 
@@ -73,7 +106,7 @@ export const LeftSidebarNavItem = (props) => {
     const label = props.label;
     const slug = props.slug;
 
-    const {selected_tab} = useSelector((state) => state.defaultApp)
+    const {selected_tab} = useSelector((state) => state.homeReducer)
     const is_active = (selected_tab === slug);
 
     const dispatch = useDispatch();

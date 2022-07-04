@@ -21,7 +21,7 @@ Undecided:
 
 **************************
 
-        //Default -- DefaultSlice
+        //Default -- homeSlice
         session: null,
         selected_tab: 'overview',
         selected_organisation: null,

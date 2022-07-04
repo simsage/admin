@@ -84,8 +84,17 @@ const authSlice = createSlice({
     reducers: {
 
         setSelectedOrganisation: (state,action) => {
-            state.selected_organisation = action.payload;
-            state.selected_organisation_id = action.payload.id;
+            if(state.selected_organisation_id !== action.payload.id){
+                state.selected_organisation = action.payload;
+                state.selected_organisation_id = action.payload.id;
+                state.selected_knowledge_base = undefined;
+                state.selected_knowledge_base_id = undefined
+            }
+;
+        },
+
+        setSelectedKB: (state,action) => {
+            state.selected_knowledge_base_id = action.payload;
         },
 
         login: (state, action) => {
@@ -170,5 +179,5 @@ export const simSageSignIn = createAsyncThunk(
     }
 );
 
-export const {reset, login, showAccount, closeAllMenus, setSelectedOrganisation, logout, setJwt } = authSlice.actions
+export const {reset, login, showAccount, closeAllMenus, setSelectedOrganisation, logout, setJwt, setSelectedKB } = authSlice.actions
 export default authSlice.reducer;

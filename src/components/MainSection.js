@@ -9,7 +9,7 @@ import Home from "../features/home/Home";
 import {getOrganisationList} from "../features/organisations/organisationSlice";
 
 function MainSection(){
-    const {selected_tab} = useSelector((state)=>state.defaultApp)
+    const {selected_tab} = useSelector((state)=>state.homeReducer)
     const session = useSelector((state)=>state.authReducer.session)
     const organisation_list = useSelector((state)=>state.organisationReducer.organisation_list)
     const filter = null;

@@ -6,7 +6,6 @@ import {Pagination} from "../../common/pagination";
 
 export function UsersHome(){
 
-
     const [page, setPage] = useState(useSelector((state) => state.usersReducer.page))
     const [page_size, setPageSize] = useState(useSelector((state) => state.usersReducer.page_size))
     const [selectedUser, setSelectedUser] = useState()
@@ -102,7 +101,7 @@ export function UsersHome(){
 
             <div className="section">
                 {!user_list &&
-                <div>Error</div>
+                <div>Loading...</div>
                 }
 
                 <table className="table">
@@ -124,7 +123,7 @@ export function UsersHome(){
                             return <tr key={user.id} >
 
                                 <td className="label">{user.firstName} {user.surname}</td>
-                                <td className="label">{user.email}</td>
+                                <td className="label">{user.email}--{user.organization_id}</td>
                                 <td className="label">
                                     { user.roles.map((role,key) => {
                                         return <span key={key}>{role.role}<br/></span>
@@ -136,7 +135,7 @@ export function UsersHome(){
                         })
                     }
                     </tbody>
-
+                    {user_list &&
                     <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
@@ -149,6 +148,7 @@ export function UsersHome(){
                         onChangePage={(page) => setPage(page)}
                         onChangeRowsPerPage={(rows) => setPageSize(rows)}
                     />
+                    }
 
 
                     {/*<tbody>*/}
