@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {selectTab} from "../features/home/homeSlice";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {setSelectedKB} from "../features/auth/authSlice";
 import {getSources} from "../features/sources/sourceSlice";
 
@@ -30,6 +30,8 @@ export default function LeftNavbar(){
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const session = useSelector((state) => state.authReducer.session);
 
+    const [kb_option,setKBOption] = useState(kb_list);
+
     function handleSelectKB(e){
         let kb_id = e.target.value;
         if(kb_id === '') {
@@ -48,6 +50,10 @@ export default function LeftNavbar(){
 
     }
 
+    useEffect(()=>{
+        console.log("Left Nav")
+        setKBOption(kb_list)
+    })
 
     return (
         <div className="sidebar no-select">

@@ -1,3 +1,4 @@
+import Api from "./api";
 
 export function getFullname(user){
     return user.firstName + ' ' + user.surname
@@ -49,3 +50,27 @@ export function  hasRole(user, role_name_list) {
     }
     return false;
 }
+
+
+export function formatRoles(organisationId, roles) {
+    let roles_str = "";
+    for (const role of roles) {
+        // admin always displays
+        if (role.organisationId === organisationId || role.role === "admin") {
+            // make sure we add the admin role only once
+            if (role.role === "admin" && roles_str.indexOf("admin") === -1) {
+                if (roles_str.length > 0) {
+                    roles_str += ", ";
+                }
+                roles_str += Api.getPrettyRole(role.role);
+            } else if (role.role !== "admin") {  // any other role just add
+                if (roles_str.length > 0) {
+                    roles_str += ", ";
+                }
+                roles_str += Api.getPrettyRole(role.role);
+            }
+        }
+    }
+    return roles_str;
+}
+

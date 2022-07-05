@@ -41,6 +41,7 @@ export const getSources = createAsyncThunk(
 
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
+                console.log("sources/getSources",response.data);
                 return response.data
             }).catch(
                 (error) => {return error}

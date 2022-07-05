@@ -12,7 +12,7 @@ export class Pagination extends Component {
         num_pages = parseInt("" + num_pages);
         let count = parseInt("" + this.props.count);
         return (
-            <nav aria-label="Page navigation example">
+            <div aria-label="Page navigation example">
                 <ul className="pagination">
                     <li className={"page-item" + (this.props.page === 0 ? " disabled" : "")}
                         onClick={() => { if (this.props.page > 0) this.props.onChangePage(this.props.page - 1)}}>
@@ -50,7 +50,7 @@ export class Pagination extends Component {
                         </div>
                     </li>
                 </ul>
-            </nav>
+            </div>
         )
     }
 }

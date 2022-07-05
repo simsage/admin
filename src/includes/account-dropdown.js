@@ -6,6 +6,7 @@ import {useMsal} from "@azure/msal-react";
 import {getOrganisationList, showAddOrganisationForm} from "../features/organisations/organisationSlice";
 import {setSelectedOrganisation} from "../features/auth/authSlice";
 import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
+import {selectTab} from "../features/home/homeSlice";
 // import AccountDropdown from "../navbar/AccountDropdown";
 
 /**
@@ -32,6 +33,7 @@ const AccountDropdown = (props) => {
         const org_id = org.id
         dispatch(setSelectedOrganisation(org));
         console.log("org_id",org_id)
+        dispatch(selectTab("home"))
         dispatch(getKBList({session:session.id, organization_id:org_id}));
     }
 

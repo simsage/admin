@@ -3,6 +3,8 @@ import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
 import {getUserList, showAddUserForm} from "./usersSlice";
 import {Pagination} from "../../common/pagination";
+import {formatRoles, hasRole} from "../../common/helpers";
+import Api from '../../common/api'
 
 export function UsersHome(){
 
@@ -16,15 +18,20 @@ export function UsersHome(){
     const theme = null;
     const dispatch = useDispatch();
 
+
+
     const user_list = useSelector((state) => state.usersReducer.user_list)
-    // const page_size = useSelector((state) => state.usersReducer.page_size)
-    // const page = useSelector((state) => state.usersReducer.page)
-    const status = useSelector((state) => state.usersReducer.status)
+    const user_list_status = useSelector((state) => state.usersReducer.status)
     const session = useSelector((state)=>state.authReducer.session)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
 
+
+    const isAdmin = hasRole(session.user, ['admin']);
+    const isManager = hasRole(session.user, ['manager']);
+
+
     useEffect(()=>{
-        if(status === undefined && user_list === undefined){
+        if(user_list_status === undefined && user_list === undefined){
             console.log("session useEffect",session)
             console.log("selected_organisation",selected_organisation_id)
             dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:null}))
@@ -48,19 +55,60 @@ export function UsersHome(){
     }
 
 
-    function getUsers() {
+    // is this user entitle to edit the user passed in?
+    function canEdit(user, isAdmin, isManager) {
+        // admin can edit anyone, always
+        if (isAdmin) return true;
+        // a non admin user can never edit an administrator
+        const userIsAdmin = hasRole(user, ['admin']);
+        if (userIsAdmin) return false;
+        // managers can edit everyone else
+        return isManager;
+    }
+    // is this user entitle to edit the user passed in?
+    function canDelete(user, signedInUser, isAdmin, isManager) {
+        console.log()
+        // one cannot delete the signed-in user
+        if (user.email === signedInUser.email) return false;
+        // admin can edit anyone, always
+        if (isAdmin) return true;
+        // a non admin user can never edit an administrator
+        const userIsAdmin = hasRole(user, ['admin']);
+        if (userIsAdmin) return false;
+        // managers can edit everyone else
+        return isManager;
+    }
+
+    // function getUsers() {
+    //     const paginated_list = [];
+    //     const first = page * page_size;
+    //     const last = first + parseInt(page_size);
+    //
+    //     for (const i in user_list) {
+    //         if (i >= first && i < last) {
+    //             paginated_list.push(user_list[i]);
+    //         }
+    //     }
+    //     return paginated_list;
+    // }
+    function getUsers(isAdmin) {
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
-
+        let index = 0;
         for (const i in user_list) {
-            if (i >= first && i < last) {
-                paginated_list.push(user_list[i]);
+            // paginate all users - but only those that have roles in this organisation
+            const user = user_list[i];
+            const roleStr = formatRoles(selected_organisation_id, user.roles);
+            if (isAdmin || roleStr.length > 0) { // has a role or is admin?
+                if (index >= first && index < last) {
+                    paginated_list.push(user);
+                }
+                index += 1; // one more user in this set of roles
             }
         }
         return paginated_list;
     }
-
 
     return(
         <div className="section px-5 pt-4">
@@ -117,24 +165,25 @@ export function UsersHome(){
                     {
                         getUsers().map((user) => {
                             //Todo:: implement canEdit canDelete
-                            const canEdit = true;
-                            const canDelete = true;
+                            const editYes = true; //canEdit(user, isAdmin, isManager);
+                            const deleteYes = false; //canDelete(user, session.user, isAdmin, isManager);
 
                             return <tr key={user.id} >
 
                                 <td className="label">{user.firstName} {user.surname}</td>
-                                <td className="label">{user.email}--{user.organization_id}</td>
+                                <td className="label">{user.email}</td>
                                 <td className="label">
                                     { user.roles.map((role,key) => {
                                         return <span key={key}>{role.role}<br/></span>
                                     })}
                                 </td>
-                                <td><button className={"btn btn-primary"} onClick={() => handleEditUser(user)}>Edit icon</button></td>
-                                <td><button className={"btn btn-outline-danger"}>Delete icon</button></td>
+                                <td><button className={"btn btn-primary"} onClick={() => handleEditUser(user)}>Edit icon {editYes}</button></td>
+                                <td><button className={"btn btn-outline-danger"}>Delete icon {deleteYes}</button></td>
                             </tr>
                         })
                     }
                     </tbody>
+                </table>
                     {user_list &&
                     <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
@@ -231,7 +280,6 @@ export function UsersHome(){
                     {/*    </td>*/}
                     {/*</tr>*/}
                     {/*</tbody>*/}
-                </table>
 
             </div>
 

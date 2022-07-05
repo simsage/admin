@@ -32,10 +32,14 @@ export default function SourceHome(){
 
 
     useEffect(()=>{
-        if(source_list_status === undefined && source_list === undefined ){
+        console.log("Source Home 1",source_list_status,"--", source_list)
+        // if(source_list_status === undefined || source_list === undefined ){
+            console.log("Source Home 2")
             dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
-        }
-    },[])
+        // }
+    },[dispatch])
+
+
     function getCrawlers() {
         const paginated_list = [];
         const first = page * page_size;
