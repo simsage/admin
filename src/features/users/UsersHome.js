@@ -139,11 +139,11 @@ export function UsersHome(){
                     </div>
                     <div className="form-group me-2">
                         <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
-                                onChange={(e) => setUserFilter(e.target.value)}>
+                                onChange={(e) => {setUserFilter(e.target.value);}}>
                             <option value="all-users">All Users</option>
-                            <option value="">Admin</option>
-                            <option value="">System Administrator</option>
-                            <option value="">DMS</option>
+                            <option value="Admin">Admin</option>
+                            <option value="System Administrator">System Administrator</option>
+                            <option value="DMS">DMS</option>
                         </select>
                     </div>
                 </div>
