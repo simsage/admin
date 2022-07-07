@@ -18,6 +18,11 @@ const initialState = {
     roles: ['admin', 'operator', 'dms', 'manager']
 }
 
+// admin - edit /delete not ow record
+// manager - admin for a specific org - edit
+// operator - // not to worry now
+// dms - // for dms access only
+
 // export async function _getUsers(organisation_id, filter, dispatch, getState) {
 //     const session_id = get_session_id(getState)
 //     dispatch({type: BUSY, busy: true});

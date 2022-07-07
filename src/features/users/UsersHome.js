@@ -19,16 +19,18 @@ export function UsersHome(){
     const dispatch = useDispatch();
 
 
-
+    const user = useSelector((state) => state.authReducer.user)
     const user_list = useSelector((state) => state.usersReducer.user_list)
     const user_list_status = useSelector((state) => state.usersReducer.status)
     const session = useSelector((state)=>state.authReducer.session)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
 
 
-    const isAdmin = hasRole(session.user, ['admin']);
-    const isManager = hasRole(session.user, ['manager']);
+    const isAdmin = hasRole(user, ['admin']);
+    const isManager = hasRole(user, ['manager']);
 
+    console.log("isAdmin:",(isAdmin)?" Yes":"No",session)
+    console.log("isManager:",(isManager)?" Yes":"No")
 
     useEffect(()=>{
         if(user_list_status === undefined && user_list === undefined){
@@ -58,6 +60,7 @@ export function UsersHome(){
     // is this user entitle to edit the user passed in?
     function canEdit(user, isAdmin, isManager) {
         // admin can edit anyone, always
+        console.log((isAdmin)?"Admin":"Not Admin")
         if (isAdmin) return true;
         // a non admin user can never edit an administrator
         const userIsAdmin = hasRole(user, ['admin']);
@@ -165,7 +168,8 @@ export function UsersHome(){
                     {
                         getUsers().map((user) => {
                             //Todo:: implement canEdit canDelete
-                            const editYes = true; //canEdit(user, isAdmin, isManager);
+                            const editYes = canEdit(user, isAdmin, isManager);
+                            // const editYes = true;
                             const deleteYes = false; //canDelete(user, session.user, isAdmin, isManager);
 
                             return <tr key={user.id} >
@@ -177,7 +181,7 @@ export function UsersHome(){
                                         return <span key={key}>{role.role}<br/></span>
                                     })}
                                 </td>
-                                <td><button className={"btn btn-primary"} onClick={() => handleEditUser(user)}>Edit icon {editYes}</button></td>
+                                <td><button className={"btn btn-primary"} onClick={() => handleEditUser(user)}>Edit icon {(editYes)?"Edit Yes":"Edit No"}</button></td>
                                 <td><button className={"btn btn-outline-danger"}>Delete icon {deleteYes}</button></td>
                             </tr>
                         })

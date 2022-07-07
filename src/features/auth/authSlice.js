@@ -4,9 +4,10 @@ import {useMsal} from "@azure/msal-react";
 import axios from "axios";
 import {getOrganisationList} from "../organisations/organisationSlice";
 import {useSelector} from "react-redux";
+import {useState} from "react";
 
-//Get user from localStorage
-let user = JSON.parse(localStorage.getItem('user'))
+//Get user from status
+
 
 //TODO:For testing purpose - delete before go live
 
@@ -59,7 +60,7 @@ let user = JSON.parse(localStorage.getItem('user'))
 // }
 
 const initialState = {
-    user: user ? user : undefined,
+    user: undefined,
     session: undefined,
     selected_organisation: undefined,
     selected_organisation_id: undefined,
