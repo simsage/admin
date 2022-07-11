@@ -1,27 +1,50 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {store} from "../../app/store";
-import {showAddOrganisationForm} from "./organisationSlice";
+import {closeOrganisationForm, showAddOrganisationForm, updateOrganisation} from "./organisationSlice";
 
 export default function OrganisationEdit(){
 
-    let form = {
-        edit_organisation: true,
-        id: '',
-        name: '',
-        enabled: '',
-
-    };
-
-    const title = "Add a new Organisation";
     const theme = null;
     const dispatch = useDispatch();
-    const handleClose = () => {
-        dispatch(showAddOrganisationForm(false));
-        // store.dispatch(showAddKnowledgeBaseForm(false))
-    }
+
+    let organisation = undefined;
+    let [name,setName] = useState();
+    let [enabled,setEnabled] = useState(false);
 
     const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form)
+    const organisation_id = useSelector((state) => state.organisationReducer.edit_organisation_id)
+    const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
+    const session = useSelector((state) => state).authReducer.session;
+
+    if(organisation_id && organisation_list) {
+        let temp_org = organisation_list.filter((org) => {return org.id === organisation_id})
+        if(temp_org.length > 0){
+            organisation = (temp_org[0])
+            console.log("enabled",organisation.enabled)
+        }
+    }
+
+    useEffect(()=>{
+        if(organisation_id !== undefined &&  name === undefined){
+            setName(organisation.name);
+            setEnabled(organisation.enable);
+        }
+    })
+
+    const title = (organisation_id===undefined)? "Add new Organisation":"Edit Organisation";
+
+    const handleClose = () => {
+        setName(undefined)
+        dispatch(closeOrganisationForm());
+    }
+
+    const handleSave = () => {
+        const session_id = session.id
+        const data = {name:name, enabled:enabled, id:organisation_id}
+        console.log(data)
+        dispatch(updateOrganisation({session_id,data}))
+    }
+
     if (!show_organisation_form)
         return (<div />);
     return(
@@ -32,7 +55,7 @@ export default function OrganisationEdit(){
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">{title} {organisation_id}</h5>
                             <button onClick={ handleClose } type="button" className="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
@@ -44,9 +67,9 @@ export default function OrganisationEdit(){
                                     <span className="text">
                                         <input type="text" className="form-control"
                                                autoFocus={true}
-                                               // onChange={(event) => this.setState({name: event.target.value})}
+                                               onChange={(e) => setName(e.target.value)}
                                                placeholder="name"
-                                               value={form.name}
+                                               value={name}
                                         />
                                     </span>
                                 </div>
@@ -55,8 +78,8 @@ export default function OrganisationEdit(){
                                 <div className="control-row">
                                     <span className="checkbox-only">
                                         <input type="checkbox"
-                                               checked={form.enabled}
-                                               // onChange={(event) => { this.setState({enabled: event.target.checked}); }}
+                                               checked={enabled?'checked':''}
+                                               onChange={(e) => { setEnabled(e.target.checked); }}
                                                value="enable this organisation?"
                                         />
                                     </span>
@@ -67,7 +90,7 @@ export default function OrganisationEdit(){
                         </div>
                         <div className="modal-footer">
                             <button onClick={ handleClose } type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Understood</button>
+                            <button onClick={ handleSave } type="button" className="btn btn-primary">Save</button>
                         </div>
                     </div>
                 </div>

@@ -1,13 +1,11 @@
 import React, {Component, useEffect} from 'react';
 
-// import '../css/navbar/account-dropdown.css';
 import {useDispatch, useSelector} from "react-redux";
 import {useMsal} from "@azure/msal-react";
-import {getOrganisationList, showAddOrganisationForm} from "../features/organisations/organisationSlice";
+import { showAddOrganisationForm, showEditOrganisationForm} from "../features/organisations/organisationSlice";
 import {setSelectedOrganisation} from "../features/auth/authSlice";
 import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
 import {selectTab} from "../features/home/homeSlice";
-// import AccountDropdown from "../navbar/AccountDropdown";
 
 /**
  * this is the main DMS page
@@ -37,9 +35,15 @@ const AccountDropdown = (props) => {
         dispatch(getKBList({session:session.id, organization_id:org_id}));
     }
 
-    function addOrganisation(){
-        dispatch(showAddOrganisationForm(true))
+
+    function handleAddOrganisation(){
+        dispatch(showAddOrganisationForm({show_form:true}))
     }
+
+    function handleEditOrganisation(org_id){
+        dispatch(showEditOrganisationForm({show_form:true,org_id:org_id}))
+    }
+
 
     function editAccount(){
         console.log("edit Account")
@@ -80,16 +84,15 @@ const AccountDropdown = (props) => {
                         return(
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
                             <li key={item.id}
-                                className={(item.id === selected_organisation.id)? "acc-item px-4 py-3 d-flex justify-content-between active":"acc-item px-4 py-3 d-flex justify-content-between"}
-                                onClick={() => selectOrganisation(session.id,item)}>
-                            <label>{item.name}</label>
-                                <img src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>
+                                className={(item.id === selected_organisation.id)? "acc-item px-4 py-3 d-flex justify-content-between active":"acc-item px-4 py-3 d-flex justify-content-between"}>
+                                <label onClick={() => selectOrganisation(session.id,item)}>{item.name}</label>
+                                <img onClick={()=>handleEditOrganisation(item.id)} src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>
                             </li>)
                     })
                 }
 
 
-                <li className="acc-item px-4 py-3" onClick={() => addOrganisation()}>
+                <li className="acc-item px-4 py-3" onClick={() => handleAddOrganisation()}>
                     <label>+ Add New Organisation</label>
                 </li>
 <hr />

@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import db from "../../notes/db.json"
 import axios from "axios";
+import {useSelector} from "react-redux";
 
 const initialState = {
     organisation_filter: undefined,
@@ -13,14 +14,26 @@ const initialState = {
     status: undefined,
     error: undefined,
     show_organisation_form: false,
+    edit_organisation_id: undefined,
 }
 
 const reducers = {
     showAddOrganisationForm:(state,action) => {
-        state.show_organisation_form = action.payload
-    }
-}
+        state.show_organisation_form = action.payload.show_form;
+    },
 
+    showEditOrganisationForm:(state,action) => {
+
+        state.show_organisation_form = action.payload.show_form;
+        state.edit_organisation_id = action.payload.org_id;
+    },
+
+    closeOrganisationForm:(state) => {
+    state.show_organisation_form = false;
+    state.edit_organisation_id = undefined;
+    },
+
+}
 
 const extraReducers = (builder) => {
     builder
@@ -33,8 +46,17 @@ const extraReducers = (builder) => {
             state.organisation_list = action.payload
         })
         .addCase(getOrganisationList.rejected, (state, action) => {
-        console.log("addCase simSageSignIn rejected ",action)
+            console.log("addCase simSageSignIn rejected ",action)
             state.status = "rejected"
+        })
+        .addCase(updateOrganisation.fulfilled, (state, action) => {
+            console.log("addCase updateOrganisation fulfilled ",action)
+            state.show_organisation_form = false;
+            state.edit_organisation_id = undefined;
+            // state.organisation_list = action.payload
+        })
+        .addCase(updateOrganisation.rejected, (state, action) => {
+        console.log("addCase updateOrganisation rejected ",action)
     })
 }
 
@@ -59,6 +81,27 @@ export const getOrganisationList = createAsyncThunk(
             )
     }
         );
+
+
+export const updateOrganisation = createAsyncThunk(
+    'organisations/updateOrganisation',
+    async ({session_id,data})=>{
+        console.log("organisations/updateOrganisation");
+
+        const api_base = window.ENV.api_base;
+        const url = '/auth/organisation/';
+        if (url !== '/stats/stats/os') {
+            console.log('PUT ' + api_base + url);
+        }
+        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("updateOrganisation data",response.data)
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    }
+)
 
 
 // function getOrganisationList(current_org_name, current_org_id, _filter, change_organisation, dispatch, getState, session_id) {
@@ -94,5 +137,5 @@ const organisationSlice = createSlice({
     extraReducers
 });
 
-export const { showAddOrganisationForm } = organisationSlice.actions
+export const {showAddOrganisationForm, showEditOrganisationForm, closeOrganisationForm } = organisationSlice.actions
 export default organisationSlice.reducer;

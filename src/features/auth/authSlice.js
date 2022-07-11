@@ -104,9 +104,11 @@ const authSlice = createSlice({
             state.session = action.payload.session
 
             const org_list = action.payload.organisationList
+            console.log("AuthSlice: login 1 payload", action.payload);
             console.log("AuthSlice: login 1", action);
+            console.log("AuthSlice: login 1 org_list", org_list);
 
-            if(org_list){
+            if(org_list.length){
                 console.log("AuthSlice: login 2");
                 for(let i=0; i < org_list.length; i++){
                     console.log("AuthSlice: login 3");
@@ -115,6 +117,8 @@ const authSlice = createSlice({
                         state.selected_organisation_id = org_list[i].id;
                     }
                 }
+            }else{
+                state.selected_organisation = action.payload.organisationId;
             }
 
         },
