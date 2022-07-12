@@ -9,9 +9,9 @@ window.ENV = {
     // dark or light theme?
     theme: 'light',
     // the service layer end-point, change "localhost:8080" to ...
-    api_base: 'http://uat-cloud.simsage.ai/api', //'http://localhost:8080/api', //'uat-cloud.simsage.ai/api',
+    api_base: 'https://uat-cloud.simsage.ai/api', //'http://localhost:8080/api', //'uat-cloud.simsage.ai/api',
     // web sockets platform endpoint for comms
-    ws_base: 'http://uat-cloud.simsage.ai/ws-api', //'http://localhost:8080/ws-api', //'uat-cloud.simsage.ai/ws-api',
+    ws_base: 'https://uat-cloud.simsage.ai/ws-api', //'http://localhost:8080/ws-api', //'uat-cloud.simsage.ai/ws-api',
     // the web-site to go to when SimSage logo is clicked on the login page
     web_base: 'https://simsage.ai/',
     // date picker display format
@@ -23,3 +23,6 @@ window.ENV = {
     //local_storage_key to save state
     local_storage_key:'http://localhost:4230/state',
 };
+
+
+//Access to XMLHttpRequest at 'http://uat-cloud.simsage.ai/api/auth/admin/authenticate/msal' from origin 'http://localhost:4230' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.

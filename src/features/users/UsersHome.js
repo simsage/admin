@@ -11,7 +11,7 @@ export function UsersHome(){
     const [page, setPage] = useState(useSelector((state) => state.usersReducer.page))
     const [page_size, setPageSize] = useState(useSelector((state) => state.usersReducer.page_size))
     const [selectedUser, setSelectedUser] = useState()
-    const [searchFilter,setSearchFilter] = useState()
+    const [searchFilter,setSearchFilter] = useState('')
     const [orderFilter,setOrderFilter] = useState()
     const [userFilter,setUserFilter] = useState()
 
@@ -39,12 +39,18 @@ export function UsersHome(){
             dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:null}))
         }
     },[])
-    console.log("users  ",user_list)
+    console.log("users ",user_list)
 
     function handleSearchTextKeydown(e) {
-        if (e.key === "Enter" && this.props.selected_organisation_id) {
-            this.props.getUsers(this.props.selected_organisation_id);
+        if (e.key === "Enter"  && selected_organisation_id) {
+            // console.log(session, selected_organisation_id, searchFilter);
+            dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:searchFilter=='' ? null : searchFilter}));
+            setSearchFilter('');
         }
+    }
+
+    function handleSearchTextChange(e) {
+        if (selected_organisation_id) {setSearchFilter(e.target.value);}
     }
 
     function handleAddNewUser(){
@@ -119,8 +125,9 @@ export function UsersHome(){
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
                         <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control " + theme}
-                            onKeyPress={(e) => handleSearchTextKeydown(e)}
-                            onChange={(e) => setSearchFilter(e.target.value)}/>
+                            onKeyDown={(e) => handleSearchTextKeydown(e)}
+                            onChange={(e) => handleSearchTextChange(e)}
+                        />
                     </div>
                     <div className="form-group me-2">
                         <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}
@@ -188,7 +195,7 @@ export function UsersHome(){
                     }
                     </tbody>
                 </table>
-                    {user_list &&
+                    { user_list &&
                     <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
