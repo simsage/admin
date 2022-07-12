@@ -66,7 +66,6 @@ const initialState = {
     selected_organisation_id: undefined,
     selected_knowledge_base: undefined,
     selected_knowledge_base_id: undefined,
-
     isError: undefined,
     isSuccess: undefined,
     isLoading: undefined,
@@ -120,7 +119,6 @@ const authSlice = createSlice({
             }else{
                 state.selected_organisation = action.payload.organisationId;
             }
-
         },
 
         showAccount: (state, action) => {

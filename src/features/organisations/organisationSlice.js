@@ -41,9 +41,10 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(getOrganisationList.fulfilled, (state, action) => {
-            console.log("addCase simSageSignIn fulfilled ",action)
-            state.status = "fulfilled"
-            state.organisation_list = action.payload
+            console.log("addCase simSageSignIn fulfilled ",action);
+            state.status = "fulfilled";
+            state.organisation_list = []; //action.payload;
+            console.log('action.payload', action.payload);
         })
         .addCase(getOrganisationList.rejected, (state, action) => {
             console.log("addCase simSageSignIn rejected ",action)
