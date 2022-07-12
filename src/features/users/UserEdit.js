@@ -7,7 +7,7 @@ import {hasRole} from "../../common/helpers";
 
 export function UserEdit(props){
 
-    console.log("Clicked user",props.user.email);
+   // console.log("Clicked user",props.user.email);
 
     const show_user_form = useSelector((state) => state.usersReducer.show_user_form);
     const [user,setUser] = useState(props.user);
