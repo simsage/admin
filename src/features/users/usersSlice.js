@@ -15,8 +15,9 @@ const initialState = {
     status: undefined,
     error: undefined,
     show_user_form: false,
-    roles: ['admin', 'operator', 'dms', 'manager']
+    roles: ['admin', 'operator', 'dms', 'manager'],
 }
+
 
 // admin - edit /delete not ow record
 // manager - admin for a specific org - edit
@@ -88,10 +89,10 @@ const usersSlice = createSlice({
         showAddUserForm:(state,action) => {
             state.show_user_form = action.payload
         }
-    },
+        },
     extraReducers
 });
 
 
-export const { showAddUserForm } = usersSlice.actions
+export const { showAddUserForm} = usersSlice.actions
 export default usersSlice.reducer;

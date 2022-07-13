@@ -7,15 +7,18 @@ import {hasRole} from "../../common/helpers";
 
 export function UserEdit(props){
 
-   // console.log("Clicked user",props.user.email);
+   console.log("Clicked user",props.user);
 
     const show_user_form = useSelector((state) => state.usersReducer.show_user_form);
-    const [user,setUser] = useState(props.user);
+
+    //const [user,setUser] = useState(props.user);
     const roles = useSelector((state) => state.usersReducer.roles);
     // const edit_user_id = (user)?user.id:null;
     const dispatch = useDispatch();
     const kb_list = useSelector((state)=> state.kbReducer.kb_list)
     // setShowDialog(props.open);
+
+
 
 
     // only allow roles that apply to this organisation that this user has
@@ -50,11 +53,14 @@ export function UserEdit(props){
 
 
 
+
     function handleClose(e){
+        props.setSelectedUser(null);
         dispatch(showAddUserForm(false))
     }
 
     function handleSave(e){
+        props.setSelectedUser(null);
         dispatch(showAddUserForm(false))
     }
 

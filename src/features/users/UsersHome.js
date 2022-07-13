@@ -13,7 +13,7 @@ export function UsersHome(){
     const [selectedUser, setSelectedUser] = useState()
     const [searchFilter,setSearchFilter] = useState('')
     const [orderFilter,setOrderFilter] = useState()
-    const [userFilter,setUserFilter] = useState()
+    const [userFilter,setUserFilter] = useState('all-users')
 
     const theme = null;
     const dispatch = useDispatch();
@@ -198,7 +198,8 @@ export function UsersHome(){
                                         return <span key={key}>{role.role}<br/></span>
                                     })}
                                 </td>
-                                <td><button className={"btn btn-primary"} onClick={() => handleEditUser(user)}>Edit icon {(editYes)?"Edit Yes":"Edit No"}</button></td>
+
+                                <td><button className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit icon</button></td>
                                 <td><button className={"btn btn-outline-danger"}>Delete icon {deleteYes}</button></td>
                             </tr>
                         })
@@ -304,7 +305,7 @@ export function UsersHome(){
 
             </div>
 
-            <UserEdit user={selectedUser}/>
+            {selectedUser && <UserEdit user={selectedUser} setSelectedUser={setSelectedUser}/>}
         </div>
     )
 }
