@@ -45,7 +45,6 @@ export function UsersHome(){
         if (e.key === "Enter"  && selected_organisation_id) {
             // console.log(session, selected_organisation_id, searchFilter);
             dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:searchFilter=='' ? null : searchFilter}));
-            setSearchFilter('');
         }
     }
 
@@ -119,6 +118,15 @@ export function UsersHome(){
         return paginated_list;
     }
 
+    //Filtering out users according to 'Role' drop down.
+    function filterRoles(userRoles, role) {
+        if(role === 'all-users'){return true}
+        const reducedRoleArray = userRoles.map( el => {
+            return el.role
+        })
+        return reducedRoleArray.includes(role);
+    }
+
     return(
         <div className="section px-5 pt-4">
             <div className="d-flex justify-content-beteween w-100 mb-4">
@@ -141,8 +149,8 @@ export function UsersHome(){
                         <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
                                 onChange={(e) => {setUserFilter(e.target.value);}}>
                             <option value="all-users">All Users</option>
-                            <option value="Admin">Admin</option>
-                            <option value="System Administrator">System Administrator</option>
+                            <option value="admin">Admin</option>
+                            <option value="system administrator">System Administrator</option>
                             <option value="DMS">DMS</option>
                         </select>
                     </div>
@@ -174,6 +182,8 @@ export function UsersHome(){
 
                     {
                         getUsers().map((user) => {
+                            //user does not have chosen role then skip.
+                            if(!filterRoles(user.roles, userFilter)){return null}
                             //Todo:: implement canEdit canDelete
                             const editYes = canEdit(user, isAdmin, isManager);
                             // const editYes = true;
