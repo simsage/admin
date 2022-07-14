@@ -6,6 +6,7 @@ import knowledgeBaseReducer from "../features/knowledge_bases/knowledgeBaseSlice
 import organisationReducer from "../features/organisations/organisationSlice";
 import {logger} from "redux-logger/src";
 import sourceReducer from "../features/sources/sourceSlice";
+import groupReducer from "../features/groups/groupSlice"
 
 /**
  * Logs all actions and states after they are dispatched.
@@ -20,6 +21,7 @@ export const store = configureStore({
     kbReducer: knowledgeBaseReducer,
     organisationReducer: organisationReducer,
     sourceReducer: sourceReducer,
+    groupReducer: groupReducer,
   },
   middleware:(getDefaultMiddleware => getDefaultMiddleware().concat(logger))
 });
