@@ -1,6 +1,6 @@
 # SimSage admin interface
 
-## installing node 16 on Ubuntu
+## installing node 16 on Ubuntu  
 
 ```
 sudo apt update
