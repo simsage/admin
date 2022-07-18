@@ -65,7 +65,7 @@ const extraReducers = (builder) => {
 export const getOrganisationList = createAsyncThunk(
     'organisations/getOrganisationList',
     async ({session,filter}) => {
-        console.log("organisations/getOrganisationList");
+        // console.log("organisations/getOrganisationList 67",session);
         const api_base = window.ENV.api_base;
         const url = '/auth/user/organisations/'+ encodeURIComponent(filter);
         const { id } = session
@@ -76,9 +76,12 @@ export const getOrganisationList = createAsyncThunk(
 
         return axios.get(api_base + url, Comms.getHeaders(id))
             .then((response) => {
+                console.log("organisations/getOrganisationList1 78",response.data);
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    // console.log("organisations/getOrganisationList1 82",error);
+                    return error}
             )
     }
         );

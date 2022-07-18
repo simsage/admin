@@ -1,6 +1,11 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {closeOrganisationForm, showAddOrganisationForm, updateOrganisation} from "./organisationSlice";
+import {
+    closeOrganisationForm,
+    getOrganisationList,
+    showAddOrganisationForm,
+    updateOrganisation
+} from "./organisationSlice";
 
 export default function OrganisationEdit(){
 
@@ -8,7 +13,7 @@ export default function OrganisationEdit(){
     const dispatch = useDispatch();
 
     let organisation = undefined;
-    let [name,setName] = useState();
+    let [name,setName] = useState(undefined);
     let [enabled,setEnabled] = useState(false);
 
     const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form)
@@ -41,8 +46,9 @@ export default function OrganisationEdit(){
     const handleSave = () => {
         const session_id = session.id
         const data = {name:name, enabled:enabled, id:organisation_id}
-        console.log(data)
         dispatch(updateOrganisation({session_id,data}))
+        dispatch(getOrganisationList({session:session,filter:null}))
+        setName('')
     }
 
     if (!show_organisation_form)
