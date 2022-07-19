@@ -23,7 +23,6 @@ const reducers = {
     },
 
     showEditOrganisationForm:(state,action) => {
-
         state.show_organisation_form = action.payload.show_form;
         state.edit_organisation_id = action.payload.org_id;
     },
@@ -43,7 +42,7 @@ const extraReducers = (builder) => {
         .addCase(getOrganisationList.fulfilled, (state, action) => {
             console.log("addCase simSageSignIn fulfilled ",action);
             state.status = "fulfilled";
-            state.organisation_list = []; //action.payload;
+            state.organisation_list = action.payload;
             console.log('action.payload', action.payload);
         })
         .addCase(getOrganisationList.rejected, (state, action) => {

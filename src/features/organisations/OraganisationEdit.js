@@ -45,7 +45,10 @@ export default function OrganisationEdit(){
 
     const handleSave = () => {
         const session_id = session.id
-        const data = {name:name, enabled:enabled, id:organisation_id}
+        let org_id = '';
+        if(organisation_id !== undefined) org_id = organisation_id;
+        console.log("organisation_id",org_id)
+        const data = {name:name, enabled:enabled, id:org_id}
         dispatch(updateOrganisation({session_id,data}))
         dispatch(getOrganisationList({session:session,filter:null}))
         setName('')

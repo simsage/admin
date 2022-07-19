@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {store} from "../../app/store";
-import {showAddKnowledgeBaseForm} from "./knowledgeBaseSlice";
+import {showAddForm} from "./knowledgeBaseSlice";
 import {useDispatch} from "react-redux";
 
 export default function KnowledgeBaseIntro(){
@@ -9,7 +9,7 @@ export default function KnowledgeBaseIntro(){
 
     function handleAddNewKnowledgeBase(){
         console.log("handleAddNewKnowledgeBase")
-        dispatch(showAddKnowledgeBaseForm(true))
+        dispatch(showAddForm(true))
     }
 
     return(

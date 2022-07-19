@@ -7,6 +7,7 @@ import MindHome from "../features/the_mind/MindHome";
 import DocumentManagementHome from "../features/document_management/DocumentManagementHome";
 import Home from "../features/home/Home";
 import {getOrganisationList} from "../features/organisations/organisationSlice";
+import KnowledgeBaseEdit from "../features/knowledge_bases/KnowledgeBaseEdit";
 
 function MainSection(){
     const {selected_tab} = useSelector((state)=>state.homeReducer)
@@ -46,6 +47,9 @@ function MainSection(){
 
             {/* Account dropdown*/}
             <OrganisationEdit />
+
+        {/*    KB Form*/}
+            <KnowledgeBaseEdit/>
         </div>
     )
 }

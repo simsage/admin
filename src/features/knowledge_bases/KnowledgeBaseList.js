@@ -1,7 +1,8 @@
 import {useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
+import {showAddForm, showEditForm} from "./knowledgeBaseSlice";
 
 export default function KnowledgeBaseList(){
 
@@ -14,6 +15,7 @@ export default function KnowledgeBaseList(){
     const [kb_page, setKbPage] = useState(0)
     const [kb_page_size, setKbPageSize] = useState(useSelector((state) => state.kbReducer.kb_page_size))
 
+    const dispatch = useDispatch()
 
 
     function getKnowledgeBases() {
@@ -54,6 +56,20 @@ export default function KnowledgeBaseList(){
         })
     }
 
+
+    const handleAddForm = () => {
+        dispatch(showAddForm(true));
+    }
+
+    const handleEditForm = (kb_id) => {
+        console.log("kb_id",kb_id)
+        dispatch(showEditForm({kb_id:kb_id}));
+    }
+
+
+
+
+
     function viewIds(knowledge_base){
         //TODO::add viewIds
         console.log("viewIds")
@@ -93,7 +109,7 @@ export default function KnowledgeBaseList(){
                                 return (
                                     <tr key={knowledge_base.kbId}>
                                         <td>
-                                            <div className="kb-label">{knowledge_base.name}</div>
+                                            <div className="kb-label" onClick={() => viewIds(knowledge_base)}>{knowledge_base.name}</div>
                                         </td>
                                         <td>
                                             <div className="kb-label">{knowledge_base.email}</div>
@@ -103,10 +119,10 @@ export default function KnowledgeBaseList(){
                                             <div className="link-button" onClick={() => viewIds(knowledge_base)}>
                                                 <img src="../images/id.svg" className="image-size" title="view knowledge base ids" alt="ids"/>
                                             </div>
-                                            <div className="link-button" onClick={() => editKnowledgeBase(knowledge_base)}>
+                                            <div className="link-button" onClick={() => handleEditForm(knowledge_base.kbId)}>
                                                 <img src="../images/edit.svg" className="image-size" title="edit knowledge base" alt="edit"/>
                                             </div>
-                                            <div className="link-button" onClick={() => deleteKnowledgeBaseAsk(knowledge_base)}>
+                                            <div className="link-button" onClick={() => handleEditForm(knowledge_base.kbId)}>
                                                 <img src="../images/delete.svg" className="image-size" title="remove knowledge base" alt="remove"/>
                                             </div>
                                             <div className="link-button" onClick={() => optimizeIndexesAsk(knowledge_base)}>
@@ -122,10 +138,10 @@ export default function KnowledgeBaseList(){
                             <td/>
                             <td>
                                 {selected_organisation_id > 0 &&
-                                <div className="kb-image-button" onClick={() => this.addNewKnowledgeBase()}>
+                                <div className="kb-image-button" onClick={() => handleAddForm()}>
                                     <img
                                         className="image-size" src="../images/add.svg" title="add new user"
-                                        alt="add new user"/></div>
+                                        alt="add new kb"/></div>
                                 }
                             </td>
                         </tr>

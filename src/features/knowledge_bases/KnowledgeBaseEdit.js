@@ -1,9 +1,34 @@
 import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {store} from "../../app/store";
-import {showAddKnowledgeBaseForm} from "./knowledgeBaseSlice";
+import {closeForm, showAddForm, showEditForm} from "./knowledgeBaseSlice";
 
 export default function KnowledgeBaseEdit(){
+
+    const theme = null;
+    const dispatch = useDispatch();
+
+    const show_kb_form = useSelector((state) => state.kbReducer.show_form)
+    const kb_id = useSelector((state) => state.kbReducer.edit_id)
+    const kb_list = useSelector((state) => state.kbReducer.kb_list)
+    let kb = undefined;
+
+
+    console.log(kb_id)
+
+    if(kb_id && kb_list) {
+        console.log("enabled 1",kb)
+        let temp_obj = kb_list.filter((obj) => {return obj.kbId === kb_id})
+        console.log("enabled 2",temp_obj)
+        if(temp_obj.length > 0){
+            kb = (temp_obj[0])
+            console.log("enabled 3",kb)
+        }
+    }
+
+
+
+
 
     let form = {edit_knowledge_base: true, knowledgeBase: null,
         edit_knowledge_base_id: "",
@@ -24,14 +49,14 @@ export default function KnowledgeBaseEdit(){
     };
 
     const title = "Add a new Knowledge Base";
-    const theme = null;
-    const dispatch = useDispatch();
+
+
+
+
     const handleClose = () => {
-        dispatch(showAddKnowledgeBaseForm(false));
-        // store.dispatch(showAddKnowledgeBaseForm(false))
+        dispatch(closeForm());
     }
 
-    const show_kb_form = useSelector((state) => state.kbReducer.show_kb_form)
     if (!show_kb_form)
         return (<div />);
     return(
@@ -191,7 +216,7 @@ export default function KnowledgeBaseEdit(){
                           </div>
                       <div className="modal-footer">
                           <button onClick={ handleClose } type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                          <button type="button" className="btn btn-primary">Understood</button>
+                          <button type="button" className="btn btn-primary">Save</button>
                       </div>
                   </div>
               </div>
