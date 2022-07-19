@@ -33,7 +33,8 @@ export default function GroupHome(){
     },[])
 
     function getGroups(access) {
-        const sublist = group_list.groupList ? group_list.groupList : group_list
+        console.log("HERE TO SEE ACCESS:", access);
+        const sublist = group_list ? group_list.groupList : group_list
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
