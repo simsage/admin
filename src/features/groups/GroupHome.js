@@ -33,13 +33,14 @@ export default function GroupHome(){
     },[])
 
     function getGroups(access) {
+        const sublist = group_list.groupList ? group_list.groupList : group_list
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
         let index = 0;
-        for (const i in group_list) {
+        for (const i in sublist) {
             // paginate all users - but only those that have roles in this organisation
-            const group = group_list[i];
+            const group = sublist[i];
             if (access ) { // Has access to view groups.
                 if (index >= first && index < last) {
                     paginated_list.push(group);
