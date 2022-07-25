@@ -27,7 +27,7 @@ export default function LeftNavbar(){
     const kb_list_status = useSelector((state) => state.kbReducer.status);
     const selected_tab = useSelector((state) => state.homeReducer.selected_tab);
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
-    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    const selected_kb_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const session = useSelector((state) => state.authReducer.session);
 
     const [kb_option,setKBOption] = useState(kb_list);
@@ -53,7 +53,7 @@ export default function LeftNavbar(){
     useEffect(()=>{
         console.log("Left Nav")
         setKBOption(kb_list)
-    })
+    },[selected_kb_id])
 
     return (
         <div className="sidebar no-select">
@@ -70,15 +70,14 @@ export default function LeftNavbar(){
 
                 {(kb_list_status !== undefined && kb_list !== undefined && kb_list.length > 0) &&
                 <>
-
-                    <select className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
+                    <select value={selected_kb_id} className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
                         <option value="">Please select</option>
                         {kb_list.map((item,i) => {
                             return <option key={i} value={item.kbId}>{item.name}</option>
                         })}
                     </select>
 
-                    {selected_knowledge_base_id !== undefined &&
+                    {selected_kb_id !== undefined &&
                         nav2.map((item, i) => {
                             return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo}/>
                         })

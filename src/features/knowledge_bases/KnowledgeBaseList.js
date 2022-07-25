@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import {showAddForm, showEditForm} from "./knowledgeBaseSlice";
+import {setSelectedKB} from "../auth/authSlice";
 
 export default function KnowledgeBaseList(){
 
@@ -109,10 +110,10 @@ export default function KnowledgeBaseList(){
                                 return (
                                     <tr key={knowledge_base.kbId}>
                                         <td>
-                                            <div className="kb-label" onClick={() => viewIds(knowledge_base)}>{knowledge_base.name}</div>
+                                            <div className="kb-label" onClick={() => dispatch(setSelectedKB(knowledge_base.kbId))}>{knowledge_base.name}</div>
                                         </td>
                                         <td>
-                                            <div className="kb-label">{knowledge_base.email}</div>
+                                            <div className="kb-label" onClick={() => dispatch(setSelectedKB(knowledge_base.kbId))}>{knowledge_base.email}</div>
                                         </td>
 
                                         <td>

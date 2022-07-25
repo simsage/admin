@@ -43,14 +43,14 @@ export default function SourceHome(){
     function getCrawlers() {
         const paginated_list = [];
         const first = page * page_size;
-        const last = first + + parseInt(page_size);
+        const last = first + parseInt(page_size);
 
-        source_list.sort((a, b) => { return a.sourceId - b.sourceId });
-        for (const i in source_list) {
-            if (i >= first && i < last) {
-                paginated_list.push(source_list[i]);
-            }
-        }
+        // source_list.sort((a, b) => { return a.sourceId - b.sourceId });
+        // for (const i in source_list) {
+        //     if (i >= first && i < last) {
+        //         paginated_list.push(source_list[i]);
+        //     }
+        // }
         return paginated_list;
     }
 

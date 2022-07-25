@@ -8,6 +8,9 @@ export default function KnowledgeBaseEdit(){
     const theme = null;
     const dispatch = useDispatch();
 
+    const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
+    const session = useSelector((state) => state).authReducer.session;
+
     const show_kb_form = useSelector((state) => state.kbReducer.show_form)
     const kb_id = useSelector((state) => state.kbReducer.edit_id)
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
@@ -15,7 +18,9 @@ export default function KnowledgeBaseEdit(){
 
 
     console.log(kb_id)
+    // alert("Heloo")
 
+    //Load KB
     if(kb_id && kb_list) {
         console.log("enabled 1",kb)
         let temp_obj = kb_list.filter((obj) => {return obj.kbId === kb_id})
@@ -26,29 +31,77 @@ export default function KnowledgeBaseEdit(){
         }
     }
 
+    if(kb){
+        console.log("name true",kb)
+    } else {
+        console.log("name----------------------")
+    }
+
+    let [name,setName] = useState((kb)?kb.name:'');
+    let [email,setEmail] = useState((kb)?kb.email:'');
+    let [enabled,setEnabled] = useState((kb)?kb.enabled:true);
+    let [security_id,setSecurityId] = useState((kb)?kb.securityId:'');
+    let [max_queries_per_day,setMaxQueriesPerDay] = useState((kb)?kb.maxQueriesPerDay:0);
+    let [analytics_window_size_in_months,setAnalyticsWindowInMonths] = useState((kb)?kb.analyticsWindowInMonths:'');
+    let [capacity_warnings,setCapacityWarnings] = useState((kb)?kb.capacityWarnings:true);
+    let [created,setCreated] = useState((kb)?kb.created:'');
+    let [dms_index_schedule,setDmsIndexSchedule] = useState((kb)?kb.dmsIndexSchedule:'');
+    let [operator_enabled,setOperatorEnabled] = useState((kb)?kb.operatorEnabled:true);
+    let [enable_document_similarity,setEnableDocumentSimilarity] = useState((kb)?kb.enableDocumentSimilarity:'');
+    let [document_similarity_threshold,setDocumentSimilarityThreshold] = useState((kb)?kb.documentSimilarityThreshold:'');
+    
+
+    // name: "demo knowledge-base"
+    // email: "info@simsage.nz"
+    // enabled: true
+    // securityId: "48f9a7f5-6d6b-9766-a232-6ef59eae7cae"
+    // maxQueriesPerDay: 0
+    // analyticsWindowInMonths: 12
+    // capacityWarnings: true
+    // created: 1578649263780
+    // dmsIndexSchedule: ""
+    // documentSimilarityThreshold: 0.9
+    // enableDocumentSimilarity: true
+    // kbId: "46ff0c75-7938-492c-ab50-442496f5de51"
+    // operatorEnabled: true
+    // organisationId: "c276f883-e0c8-43ae-9119-df8b7df9c574"
+    //
+    //
 
 
+//     const payload = {"kbId": kb_id,
+//     "organisationId": organisation_id,
+//     "name": name, "email": email,
+//         "securityId": security_id,
+//         "maxQueriesPerDay": max_queries_per_day,
+//         "enabled": enabled,
+//         "analyticsWindowInMonths": analytics_window_size_in_months,
+//         "operatorEnabled": operator_enabled,
+//         "capacityWarnings": capacity_warnings,
+//         "created": created,
+//         "dmsIndexSchedule": dms_index_schedule,
+//         "enableDocumentSimilarity": enable_similarity,
+//         "documentSimilarityThreshold": similarity_threshold};
 
+    // let form = {edit_knowledge_base: true, knowledgeBase: null,
+    //     edit_knowledge_base_id: "",
+    //     edit_name: "",
+    //     edit_email: "",
+    //     edit_enabled: true,
+    //     edit_max_queries_per_day: "0",
+    //     edit_analytics_window_size_in_months: "0",
+    //     edit_operator_enabled: true,
+    //     edit_capacity_warnings: true,
+    //     edit_enable_document_similarity: true,
+    //     edit_document_similarity_threshold: 0.9,
+    //     edit_created: 0,
+    //     edit_security_id:1,
+    //     edit_dms_index_schedule:true
+    //     // edit_security_id: Api.createGuid(),
+    //     // edit_dms_index_schedule: defaultDmsIndexSchedule,
+    // };
 
-    let form = {edit_knowledge_base: true, knowledgeBase: null,
-        edit_knowledge_base_id: "",
-        edit_name: "",
-        edit_email: "",
-        edit_enabled: true,
-        edit_max_queries_per_day: "0",
-        edit_analytics_window_size_in_months: "0",
-        edit_operator_enabled: true,
-        edit_capacity_warnings: true,
-        edit_enable_document_similarity: true,
-        edit_document_similarity_threshold: 0.9,
-        edit_created: 0,
-        edit_security_id:1,
-        edit_dms_index_schedule:true
-        // edit_security_id: Api.createGuid(),
-        // edit_dms_index_schedule: defaultDmsIndexSchedule,
-    };
-
-    const title = "Add a new Knowledge Base";
+    const title = (kb_id)?"Edit Knowledge Base":"Add new Knowledge Base";
 
 
 
@@ -84,8 +137,8 @@ export default function KnowledgeBaseEdit(){
                                                                autoFocus={true}
                                                                className="edit-box"
                                                                placeholder="knowledge base name"
-                                                               value={form.edit_name}
-                                                               onChange={(event) => this.setState({edit_name: event.target.value})}
+                                                               value={name}
+                                                               onChange={(event) => setName(event.target.value)}
                                                         />
                                                     </span>
                                   </div>
@@ -96,8 +149,8 @@ export default function KnowledgeBaseEdit(){
                                                         <input type="text"
                                                                className="edit-box"
                                                                placeholder="email questions to"
-                                                               value={form.edit_email}
-                                                               onChange={(event) => this.setState({edit_email: event.target.value})}
+                                                               value={email}
+                                                               onChange={(event) => setEmail(event.target.value)}
                                                         />
                                                     </span>
                                   </div>
@@ -109,8 +162,8 @@ export default function KnowledgeBaseEdit(){
                                                            className="sid-box"
                                                            disabled={true}
                                                            placeholder="security id"
-                                                           value={form.edit_security_id}
-                                                           onChange={(event) => this.setState({edit_security_id: event.target.value})}
+                                                           value={security_id}
+                                                           onChange={(event) => setSecurityId(event.target.value)}
                                                     />
                                                     </span>
                                       <img title="generate new security id" alt="refresh"
@@ -122,10 +175,8 @@ export default function KnowledgeBaseEdit(){
                                   <div className="control-row">
                                                     <span className="checkbox-only">
                                                         <input type="checkbox"
-                                                               checked={form.edit_enabled}
-                                                               onChange={(event) => {
-                                                                   this.setState({edit_enabled: event.target.checked});
-                                                               }}
+                                                               checked={enabled}
+                                                               onChange={(event) => {setEnabled(event.target.value)}}
                                                                value="enable this knowledge-base?"
                                                         />
                                                     </span>
@@ -136,9 +187,9 @@ export default function KnowledgeBaseEdit(){
                                   <div className="control-row">
                                                     <span className="checkbox-only">
                                                         <input type="checkbox"
-                                                               checked={form.edit_operator_enabled}
+                                                               checked={operator_enabled}
                                                                onChange={(event) => {
-                                                                   this.setState({edit_operator_enabled: event.target.checked});
+                                                                   setOperatorEnabled(event.target.checked);
                                                                }}
                                                                value="enable operator access?"
                                                         />
@@ -150,9 +201,9 @@ export default function KnowledgeBaseEdit(){
                                   <div className="control-row">
                                                     <span className="checkbox-only">
                                                         <input type="checkbox"
-                                                               checked={form.edit_capacity_warnings}
+                                                               checked={capacity_warnings}
                                                                onChange={(event) => {
-                                                                   this.setState({edit_capacity_warnings: event.target.checked});
+                                                                   setCapacityWarnings(event.target.checked);
                                                                }}
                                                                value="enable capacity warnings?"
                                                         />
@@ -164,9 +215,9 @@ export default function KnowledgeBaseEdit(){
                                   <div className="control-row">
                                                     <span className="checkbox-only">
                                                         <input type="checkbox"
-                                                               checked={form.edit_enable_document_similarity}
+                                                               checked={enable_document_similarity}
                                                                onChange={(event) => {
-                                                                   this.setState({edit_enable_document_similarity: event.target.checked});
+                                                                   setEnableDocumentSimilarity(event.target.checked);
                                                                }}
                                                                value="enable document similarity?"
                                                         />
@@ -179,9 +230,9 @@ export default function KnowledgeBaseEdit(){
                                       <span className="label-wide">maximum number of queries per day (0 is no limits)</span>
                                       <span className="text">
                                                         <input type="text"
-                                                               onChange={(event) => this.setState({edit_max_queries_per_day: event.target.value})}
+                                                               onChange={(event) => setMaxQueriesPerDay(event.target.value)}
                                                                placeholder="max transactions per month"
-                                                               value={form.edit_max_queries_per_day}
+                                                               value={max_queries_per_day}
                                                         />
                                                     </span>
                                   </div>
@@ -191,9 +242,9 @@ export default function KnowledgeBaseEdit(){
                                       <span className="label-wide">maximum analytics retention period in months (0 is no limits)</span>
                                       <span className="text">
                                                         <input type="text"
-                                                               onChange={(event) => this.setState({edit_analytics_window_size_in_months: event.target.value})}
+                                                               onChange={(event) => setAnalyticsWindowInMonths(event.target.value)}
                                                                placeholder="max analytics retention period in months"
-                                                               value={form.edit_analytics_window_size_in_months}
+                                                               value={analytics_window_size_in_months}
                                                         />
                                                     </span>
                                   </div>
@@ -205,7 +256,7 @@ export default function KnowledgeBaseEdit(){
                                   {/*        <input type="text"*/}
                                   {/*               onChange={(event) => this.setState({edit_document_similarity_threshold: event.target.value})}*/}
                                   {/*               placeholder="document similarity threshold"*/}
-                                  {/*               value={form.edit_document_similarity_threshold}*/}
+                                  {/*               value={document_similarity_threshold}*/}
                                   {/*        />*/}
                                   {/*    </span>*/}
                                   {/*</div>*/}
