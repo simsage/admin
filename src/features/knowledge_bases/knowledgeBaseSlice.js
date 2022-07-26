@@ -19,7 +19,7 @@ const initialState = {
 
 export const getKBList = createAsyncThunk(
     'knowledgeBases/getKBList',
-    async ({session,organization_id}) => {
+    async ({session_id,organization_id}) => {
         const api_base = window.ENV.api_base;
         console.log("organization_id",organization_id)
         const url = api_base + '/knowledgebase/'+ encodeURIComponent(organization_id);
@@ -29,7 +29,7 @@ export const getKBList = createAsyncThunk(
             console.log('GET ' + url);
         }
 
-        return axios.get(url, Comms.getHeaders(session))
+        return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("knowledgeBases11",response.data)
                 return response.data
@@ -77,26 +77,6 @@ export const addOrUpdate = createAsyncThunk(
             )
     }
 )
-
-
-
-
-//     updateKnowledgeBase: (organisation_id, kb_id, name, email, security_id, enabled, max_queries_per_day,
-//                           analytics_window_size_in_months, operator_enabled, capacity_warnings,
-//                           created, dms_index_schedule, enable_similarity, similarity_threshold) => async (dispatch, getState) => {
-//     dispatch({type: BUSY, busy: true});
-//     const payload = {"kbId": kb_id, "organisationId": organisation_id, "name": name, "email": email,
-//         "securityId": security_id, "maxQueriesPerDay": max_queries_per_day, "enabled": enabled,
-//         "analyticsWindowInMonths": analytics_window_size_in_months, "operatorEnabled": operator_enabled,
-//         "capacityWarnings": capacity_warnings, "created": created, "dmsIndexSchedule": dms_index_schedule,
-//         "enableDocumentSimilarity": enable_similarity, "documentSimilarityThreshold": similarity_threshold};
-//     await Comms.http_put('/knowledgebase/', get_session_id(getState), payload,
-//         () => {
-//             _getKnowledgeBases(organisation_id, dispatch, getState);
-//         },
-//         (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
-//     )
-// },
 
 
 const extraReducers = (builder) => {

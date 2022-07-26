@@ -1,7 +1,10 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {store} from "../../app/store";
-import {closeForm, showAddForm, showEditForm} from "./knowledgeBaseSlice";
+import {addOrUpdate, closeForm, getKBList, showAddForm, showEditForm} from "./knowledgeBaseSlice";
+import {getOrganisationList, updateOrganisation} from "../organisations/organisationSlice";
+import App from "../../App";
+import Api from "../../common/api";
 
 export default function KnowledgeBaseEdit(){
 
@@ -9,7 +12,7 @@ export default function KnowledgeBaseEdit(){
     const dispatch = useDispatch();
 
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-    const session = useSelector((state) => state).authReducer.session;
+    const session = useSelector((state) => state.authReducer.session);
 
     const show_kb_form = useSelector((state) => state.kbReducer.show_form)
     const kb_id = useSelector((state) => state.kbReducer.edit_id)
@@ -17,98 +20,164 @@ export default function KnowledgeBaseEdit(){
     let kb = undefined;
 
 
-    console.log(kb_id)
-    // alert("Heloo")
+    console.log("Load ID", kb_id)
 
-    //Load KB
-    if(kb_id && kb_list) {
-        console.log("enabled 1",kb)
-        let temp_obj = kb_list.filter((obj) => {return obj.kbId === kb_id})
-        console.log("enabled 2",temp_obj)
-        if(temp_obj.length > 0){
-            kb = (temp_obj[0])
-            console.log("enabled 3",kb)
-        }
-    }
+    const [refreshKey, setRefreshKey] = useState(0);
 
-    if(kb){
-        console.log("name true",kb)
-    } else {
-        console.log("name----------------------")
-    }
+    //form fields
 
-    let [name,setName] = useState((kb)?kb.name:'');
-    let [email,setEmail] = useState((kb)?kb.email:'');
-    let [enabled,setEnabled] = useState((kb)?kb.enabled:true);
-    let [security_id,setSecurityId] = useState((kb)?kb.securityId:'');
-    let [max_queries_per_day,setMaxQueriesPerDay] = useState((kb)?kb.maxQueriesPerDay:0);
-    let [analytics_window_size_in_months,setAnalyticsWindowInMonths] = useState((kb)?kb.analyticsWindowInMonths:'');
-    let [capacity_warnings,setCapacityWarnings] = useState((kb)?kb.capacityWarnings:true);
-    let [created,setCreated] = useState((kb)?kb.created:'');
-    let [dms_index_schedule,setDmsIndexSchedule] = useState((kb)?kb.dmsIndexSchedule:'');
-    let [operator_enabled,setOperatorEnabled] = useState((kb)?kb.operatorEnabled:true);
-    let [enable_document_similarity,setEnableDocumentSimilarity] = useState((kb)?kb.enableDocumentSimilarity:'');
-    let [document_similarity_threshold,setDocumentSimilarityThreshold] = useState((kb)?kb.documentSimilarityThreshold:'');
-    
+    const [name,setName] = useState('');
+    const [email,setEmail] = useState('');
+    const [enabled,setEnabled] = useState(true);
+    const [security_id,setSecurityId] = useState('');
+    const [max_queries_per_day,setMaxQueriesPerDay] = useState(0);
+    const [analytics_window_size_in_months,setAnalyticsWindowInMonths] = useState('');
+    const [capacity_warnings,setCapacityWarnings] = useState(true);
+    const [created,setCreated] = useState();
+    const [dms_index_schedule,setDmsIndexSchedule] = useState('');
+    const [operator_enabled,setOperatorEnabled] = useState(true);
 
-    // name: "demo knowledge-base"
-    // email: "info@simsage.nz"
-    // enabled: true
-    // securityId: "48f9a7f5-6d6b-9766-a232-6ef59eae7cae"
-    // maxQueriesPerDay: 0
-    // analyticsWindowInMonths: 12
-    // capacityWarnings: true
-    // created: 1578649263780
-    // dmsIndexSchedule: ""
-    // documentSimilarityThreshold: 0.9
-    // enableDocumentSimilarity: true
-    // kbId: "46ff0c75-7938-492c-ab50-442496f5de51"
-    // operatorEnabled: true
-    // organisationId: "c276f883-e0c8-43ae-9119-df8b7df9c574"
-    //
-    //
+    const [enable_document_similarity,setEnableDocumentSimilarity] = useState((kb)?kb.enableDocumentSimilarity:'');
+    const [document_similarity_threshold,setDocumentSimilarityThreshold] = useState(0.9);
 
-
-//     const payload = {"kbId": kb_id,
-//     "organisationId": organisation_id,
-//     "name": name, "email": email,
-//         "securityId": security_id,
-//         "maxQueriesPerDay": max_queries_per_day,
-//         "enabled": enabled,
-//         "analyticsWindowInMonths": analytics_window_size_in_months,
-//         "operatorEnabled": operator_enabled,
-//         "capacityWarnings": capacity_warnings,
-//         "created": created,
-//         "dmsIndexSchedule": dms_index_schedule,
-//         "enableDocumentSimilarity": enable_similarity,
-//         "documentSimilarityThreshold": similarity_threshold};
-
-    // let form = {edit_knowledge_base: true, knowledgeBase: null,
-    //     edit_knowledge_base_id: "",
-    //     edit_name: "",
-    //     edit_email: "",
-    //     edit_enabled: true,
-    //     edit_max_queries_per_day: "0",
-    //     edit_analytics_window_size_in_months: "0",
-    //     edit_operator_enabled: true,
-    //     edit_capacity_warnings: true,
-    //     edit_enable_document_similarity: true,
-    //     edit_document_similarity_threshold: 0.9,
-    //     edit_created: 0,
-    //     edit_security_id:1,
-    //     edit_dms_index_schedule:true
-    //     // edit_security_id: Api.createGuid(),
-    //     // edit_dms_index_schedule: defaultDmsIndexSchedule,
-    // };
-
+    //page title
     const title = (kb_id)?"Edit Knowledge Base":"Add new Knowledge Base";
 
 
+    useEffect(()=>{
+        //Load KB if available
+        if(kb_id && kb_list) {
+            console.log("enabled 1",kb)
+            let temp_obj = kb_list.filter((obj) => {return obj.kbId === kb_id})
+            console.log("enabled 2",temp_obj)
+            if(temp_obj.length > 0){
+                kb = (temp_obj[0])
+                console.log("enabled 3",kb)
+            }
+        }
+        //populate the form
+        if(kb){
+            setName(kb.name)
+            setEmail(kb.email)
+            setEnabled(kb.enabled)
+            setSecurityId(kb.securityId)
+            setMaxQueriesPerDay(kb.maxQueriesPerDay)
 
+            setAnalyticsWindowInMonths(kb.analyticsWindowInMonths)
+            setCapacityWarnings(kb.capacityWarnings)
+            setCreated(kb.created)
+            setDmsIndexSchedule(kb.dmsIndexSchedule)
+            setOperatorEnabled(kb.operatorEnabled)
 
+            setEnableDocumentSimilarity(kb.enableDocumentSimilarity)
+            setDocumentSimilarityThreshold(kb.documentSimilarityThreshold)
+
+        }else {
+            //load new form
+            refreshSecurityId();
+            setDocumentSimilarityThreshold(0.9)
+        }
+
+    },[kb_id])
+
+    useEffect(()=>{
+        if(kb_id === undefined){
+            refreshSecurityId();
+        }
+    },[])
+
+    const clearFormData = () => {
+        setName('')
+        setEmail('')
+        setEnabled(false)
+        setSecurityId('')
+        setMaxQueriesPerDay(0)
+        setAnalyticsWindowInMonths('')
+        setCapacityWarnings(false)
+        setCreated('')
+        setDmsIndexSchedule('')
+        setOperatorEnabled(false)
+        setEnableDocumentSimilarity(false)
+        setDocumentSimilarityThreshold(0.9)
+    }
+
+    //handle form close or cancel
     const handleClose = () => {
+        clearFormData();
         dispatch(closeForm());
     }
+
+
+    const refreshSecurityId = () => {
+        setSecurityId(Api.createGuid())
+    }
+    // refreshSecurityId()
+
+    const handleSave = () => {
+        if(email.length > 3 && name.length > 3) {
+
+            console.log("handleSave called")
+            const session_id = session.id
+            if (organisation_id !== undefined) {
+                const data = {
+                    kbId: kb_id,
+                    organisationId: organisation_id,
+                    name: name,
+                    email: email,
+                    securityId: security_id,
+                    maxQueriesPerDay: max_queries_per_day,
+                    enabled: enabled,
+                    analyticsWindowInMonths: analytics_window_size_in_months,
+                    operatorEnabled: operator_enabled,
+                    capacityWarnings: capacity_warnings,
+                    created: created===''?1578649263780:created,
+                    dmsIndexSchedule: dms_index_schedule,
+                    enableDocumentSimilarity: enable_document_similarity,
+                    documentSimilarityThreshold: document_similarity_threshold
+                };
+
+                // analyticsWindowInMonths: 12
+                // capacityWarnings: true
+                // created: 1578649263780
+                // dmsIndexSchedule: ""
+                // documentSimilarityThreshold: 0.9
+                // email: "info1@simsage.nz"
+                // enableDocumentSimilarity: true
+                // enabled: true
+                // kbId: "0182368c-2fbd-b67c-b35d-5f79c9eac7dd"
+                // maxQueriesPerDay: 0
+
+
+                // analyticsWindowInMonths: "0"
+                // capacityWarnings: true
+                // created: 1578649263780
+                // dmsIndexSchedule: ""
+                // documentSimilarityThreshold: false
+                // email: "info1@simsage.nz"
+                // enableDocumentSimilarity: false
+                // enabled: true
+                // kbId: undefined
+                // maxQueriesPerDay: 0
+                // name: "kb 2"
+                // operatorEnabled: true
+                // organisationId: "c276f883-e0c8-43ae-9119-df8b7df9c574"
+                // securityId: "4be8fd4d-f842-c92c-cacf-b691d91600f0"
+
+                console.log("data",data)
+                dispatch(addOrUpdate({session_id, data}))
+                clearFormData();
+                dispatch(closeForm());
+                //     // dispatch(getOrganisationList({session:session,filter:null}))
+                //     // setName('')
+            } else {
+                console.log("organisation_id is undefined")
+            }
+        }else{
+            console.log("Error")
+        }
+
+    }
+
 
     if (!show_kb_form)
         return (<div />);
@@ -124,7 +193,7 @@ export default function KnowledgeBaseEdit(){
           {/*    <div className="modal-dialog">*/}
           {/*        <div className="modal-content">*/}
                       <div className="modal-header">
-                          <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
+                          <h5 className="modal-title" id="staticBackdropLabel">{title}  {kb_id}</h5>
                           <button onClick={ handleClose } type="button" className="btn-close" data-bs-dismiss="modal"
                                   aria-label="Close"></button>
                       </div>
@@ -168,15 +237,15 @@ export default function KnowledgeBaseEdit(){
                                                     </span>
                                       <img title="generate new security id" alt="refresh"
                                            src={theme === 'light' ? "../images/refresh.svg" : "../images/refresh-dark.svg"}
-                                           onClick={() => this.refreshSecurityId()}
-                                           className="image-size" />
+                                           onClick={() => refreshSecurityId()}
+                                           className="image-size form-icon" />
                                   </div>
 
                                   <div className="control-row">
                                                     <span className="checkbox-only">
                                                         <input type="checkbox"
                                                                checked={enabled}
-                                                               onChange={(event) => {setEnabled(event.target.value)}}
+                                                               onChange={(event) => {setEnabled(event.target.checked)}}
                                                                value="enable this knowledge-base?"
                                                         />
                                                     </span>
@@ -267,7 +336,7 @@ export default function KnowledgeBaseEdit(){
                           </div>
                       <div className="modal-footer">
                           <button onClick={ handleClose } type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                          <button type="button" className="btn btn-primary">Save</button>
+                          <button onClick={ handleSave } type="button" className="btn btn-primary">Save</button>
                       </div>
                   </div>
               </div>

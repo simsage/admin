@@ -1,8 +1,7 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
-import {showAddForm, showEditForm} from "./knowledgeBaseSlice";
+import {getKBList, showAddForm, showEditForm} from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
 
 export default function KnowledgeBaseList(){
@@ -10,14 +9,25 @@ export default function KnowledgeBaseList(){
     const defaultDmsIndexSchedule = '';
     const theme = '';
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
+    const [refreshKb, setRefreshKb] = useState(false);
 
     //TODO::selected_organisation_id -- should obtain it from the store
-    const selected_organisation_id = '1'
+    const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
+
+    console.log("organisation_id kb list",organisation_id)
+    const session = useSelector((state) => state).authReducer.session;
+
     const [kb_page, setKbPage] = useState(0)
     const [kb_page_size, setKbPageSize] = useState(useSelector((state) => state.kbReducer.kb_page_size))
 
     const dispatch = useDispatch()
 
+
+    useEffect(()=>{
+        const session_id = session.id
+        // dispatch(getKBList({session_id:session_id, organisation_id:organisation_id}));
+        dispatch(getKBList({session_id:session.id, organization_id:organisation_id}));
+    },[dispatch])
 
     function getKnowledgeBases() {
         const paginated_list = [];
@@ -33,29 +43,29 @@ export default function KnowledgeBaseList(){
 
     function isVisible() {
         //Todo:: verify selected org before display
-        // return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0 &&
+        // return this.props.organisation_id && this.props.organisation_id.length > 0 &&
         //     this.props.selected_organisation && this.props.selected_organisation.length > 0;
         return true;
     }
 
-    function addNewKnowledgeBase() {
-        this.setState({edit_knowledgebase: true,
-            knowledgeBase: null,
-            edit_knowledgebase_id: "",
-            edit_name: "",
-            edit_email: "",
-            edit_enabled: true,
-            edit_max_queries_per_day: "0",
-            edit_analytics_window_size_in_months: "0",
-            edit_operator_enabled: true,
-            edit_capacity_warnings: true,
-            edit_enable_document_similarity: true,
-            edit_document_similarity_threshold: 0.9,
-            edit_created: 0,
-            edit_security_id: Api.createGuid(),
-            edit_dms_index_schedule: defaultDmsIndexSchedule,
-        })
-    }
+    // function addNewKnowledgeBase() {
+    //     this.setState({edit_knowledgebase: true,
+    //         knowledgeBase: null,
+    //         edit_knowledgebase_id: "",
+    //         edit_name: "",
+    //         edit_email: "",
+    //         edit_enabled: true,
+    //         edit_max_queries_per_day: "0",
+    //         edit_analytics_window_size_in_months: "0",
+    //         edit_operator_enabled: true,
+    //         edit_capacity_warnings: true,
+    //         edit_enable_document_similarity: true,
+    //         edit_document_similarity_threshold: 0.9,
+    //         edit_created: 0,
+    //         edit_security_id: Api.createGuid(),
+    //         edit_dms_index_schedule: defaultDmsIndexSchedule,
+    //     })
+    // }
 
 
     const handleAddForm = () => {
@@ -65,6 +75,11 @@ export default function KnowledgeBaseList(){
     const handleEditForm = (kb_id) => {
         console.log("kb_id",kb_id)
         dispatch(showEditForm({kb_id:kb_id}));
+    }
+
+    const handleDeleteForm = (kb_id) => {
+        console.log("kb_id",kb_id)
+        // dispatch(showEditForm({kb_id:kb_id}));
     }
 
 
@@ -117,17 +132,12 @@ export default function KnowledgeBaseList(){
                                         </td>
 
                                         <td>
-                                            <div className="link-button" onClick={() => viewIds(knowledge_base)}>
-                                                <img src="../images/id.svg" className="image-size" title="view knowledge base ids" alt="ids"/>
-                                            </div>
-                                            <div className="link-button" onClick={() => handleEditForm(knowledge_base.kbId)}>
-                                                <img src="../images/edit.svg" className="image-size" title="edit knowledge base" alt="edit"/>
-                                            </div>
-                                            <div className="link-button" onClick={() => handleEditForm(knowledge_base.kbId)}>
-                                                <img src="../images/delete.svg" className="image-size" title="remove knowledge base" alt="remove"/>
-                                            </div>
-                                            <div className="link-button" onClick={() => optimizeIndexesAsk(knowledge_base)}>
-                                                <img src="../images/optimize-indexes.svg" className="image-size" title="optimize indexes" alt="optimize"/>
+                                            <div className="link-button" >
+                                                <button title="edit knowledge base" onClick={() => handleEditForm(knowledge_base.kbId)}  className={"btn btn-primary"}>Edit</button>&nbsp; &nbsp;
+                                                <button title="remove knowledge base" onClick={() => handleDeleteForm(knowledge_base.kbId)}  className={"btn btn-outline-danger"}>Delete</button>&nbsp; &nbsp;
+                                                <button title="view knowledge base ids" onClick={() => viewIds(knowledge_base)}  className={"btn btn-outline-primary"}>View Ids</button>&nbsp; &nbsp;
+                                                <button title="optimize indexes" onClick={() => optimizeIndexesAsk(knowledge_base)}  className={"btn btn-outline-primary"}>Optimize indexes</button>&nbsp; &nbsp;
+
                                             </div>
                                         </td>
                                     </tr>
@@ -138,11 +148,13 @@ export default function KnowledgeBaseList(){
                             <td/>
                             <td/>
                             <td>
-                                {selected_organisation_id > 0 &&
-                                <div className="kb-image-button" onClick={() => handleAddForm()}>
-                                    <img
-                                        className="image-size" src="../images/add.svg" title="add new user"
-                                        alt="add new kb"/></div>
+                                {organisation_id.length > 0 &&
+                                    <button onClick={() => handleAddForm()} className={"btn btn-primary"}>Add New</button>
+                                // <div className="kb-image-button" >
+                                //
+                                //     <img
+                                //         className="image-size" src="../images/add.svg" title="add new user"
+                                //         alt="add new kb"/></div>
                                 }
                             </td>
                         </tr>

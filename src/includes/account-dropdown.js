@@ -32,7 +32,7 @@ const AccountDropdown = (props) => {
         dispatch(setSelectedOrganisation(org));
         console.log("org_id",org_id)
         dispatch(selectTab("home"))
-        dispatch(getKBList({session:session.id, organization_id:org_id}));
+        dispatch(getKBList({session_id:session.id, organization_id:org_id}));
     }
 
 

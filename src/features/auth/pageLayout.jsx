@@ -46,7 +46,7 @@ export const PageLayout = (props) => {
                     const filter = null;
                     console.log("response2.data.session", session.organisationId);
                     dispatch(getOrganisationList({session:session,filter:filter}));
-                    dispatch(getKBList({session:session.id, organization_id:session.organisationId}));
+                    dispatch(getKBList({session_id:session.id, organization_id:session.organisationId}));
 
                 })
                 .catch((error) => {

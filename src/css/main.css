@@ -276,6 +276,12 @@ html, body, #root, .App, .dms {
     width: 10px;
     height: 10px;
 }
+
+.form-icon {
+    width: 15px;
+    height: 15px;
+}
+
 .sb-icon-dropdown, .sb-icon-dropdown-active {
     width: 34px;
     height: 34px;
