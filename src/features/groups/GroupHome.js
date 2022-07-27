@@ -15,7 +15,8 @@ export default function GroupHome(){
 
 
     const user = useSelector((state) => state.authReducer.user)
-    const group_list = useSelector((state) => state.groupReducer.group_list)
+    const group_list_parent = useSelector((state) => state.groupReducer.group_list)
+    const group_list = group_list_parent ? group_list_parent.groupList : group_list_parent;
     const group_list_status = useSelector((state) => state.groupReducer.status)
     const session = useSelector((state)=>state.authReducer.session)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
@@ -34,14 +35,13 @@ export default function GroupHome(){
 
     function getGroups(access) {
         console.log("HERE TO SEE ACCESS:", access);
-        const sublist = group_list ? group_list.groupList : group_list
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
         let index = 0;
-        for (const i in sublist) {
+        for (const i in group_list) {
             // paginate all users - but only those that have roles in this organisation
-            const group = sublist[i];
+            const group = group_list[i];
             if (access ) { // Has access to view groups.
                 if (index >= first && index < last) {
                     paginated_list.push(group);

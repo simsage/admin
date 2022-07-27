@@ -11,6 +11,7 @@ export class Pagination extends Component {
         }
         num_pages = parseInt("" + num_pages);
         let count = parseInt("" + this.props.count);
+
         return (
             <div aria-label="Page navigation example">
                 <ul className="pagination">
