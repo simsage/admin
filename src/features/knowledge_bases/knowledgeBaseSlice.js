@@ -43,17 +43,20 @@ export const deleteRecord = createAsyncThunk(
     'knowledgeBases/deleteRecord',
     async ({session_id,organisation_id,kb_id})=>{
         const api_base = window.ENV.api_base;
+        const url = api_base + '/knowledgebase/'+ encodeURIComponent(organisation_id)+ '/' + encodeURIComponent(kb_id);
+
         if (url !== '/stats/stats/os') {
             console.log('DELETE ' + api_base + url);
         }
-        const url = api_base + '/knowledgebase/'+ encodeURIComponent(organisation_id)+ '/' + encodeURIComponent(kb_id);
 
         return axios.delete(url,Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("deleteRecord knowledgeBases data",response.data)
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    console.log("deleteRecord knowledgeBases errer",error)
+                    return error}
             )
     }
 )

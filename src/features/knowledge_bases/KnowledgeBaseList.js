@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Pagination} from "../../common/pagination";
-import {getKBList, showAddForm, showEditForm} from "./knowledgeBaseSlice";
+import {deleteRecord, getKBList, showAddForm, showEditForm} from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
 
 export default function KnowledgeBaseList(){
@@ -16,6 +16,7 @@ export default function KnowledgeBaseList(){
 
     console.log("organisation_id kb list",organisation_id)
     const session = useSelector((state) => state).authReducer.session;
+    const session_id = session.id;
 
     const [kb_page, setKbPage] = useState(0)
     const [kb_page_size, setKbPageSize] = useState(useSelector((state) => state.kbReducer.kb_page_size))
@@ -78,9 +79,31 @@ export default function KnowledgeBaseList(){
     }
 
     const handleDeleteForm = (kb_id) => {
-        console.log("kb_id",kb_id)
-        // dispatch(showEditForm({kb_id:kb_id}));
+        console.log("delete",kb_id);
+
+        // const data = {session_id:session_id,organisation_id:organisation_id,kb_id:kb_id}
+        const data = {session_id,organisation_id,kb_id}
+        console.log("delete data",data)
+        dispatch(deleteRecord(data));
+        // dispatch(getKBList({session_id:session.id, organization_id:organisation_id}));
+        // TODO:Delete warning
+        // TODO:Reload kb list
     }
+
+    // deleteKnowledgeBaseAsk(knowledgeBase) {
+    //     if (knowledgeBase) {
+    //         this.props.openDialog("are you sure you want to remove \"" + knowledgeBase.name + "\" ?", "Remove Knowledge base", (action) => { this.deleteKnowledgeBase(action) });
+    //         this.setState({knowledgeBase: knowledgeBase});
+    //     }
+    // }
+    // deleteKnowledgeBase(action) {
+    //     if (action) {
+    //         this.props.deleteKnowledgeBase(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
+    //     }
+    //     if (this.props.closeDialog) {
+    //         this.props.closeDialog();
+    //     }
+    // }
 
 
 
@@ -148,7 +171,7 @@ export default function KnowledgeBaseList(){
                             <td/>
                             <td/>
                             <td>
-                                {organisation_id.length > 0 &&
+                                {organisation_id && organisation_id.length > 0 &&
                                     <button onClick={() => handleAddForm()} className={"btn btn-primary"}>Add New</button>
                                 // <div className="kb-image-button" >
                                 //
