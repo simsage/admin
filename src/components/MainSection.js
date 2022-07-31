@@ -14,7 +14,7 @@ function MainSection(){
     const session = useSelector((state)=>state.authReducer.session)
     const organisation_list = useSelector((state)=>state.organisationReducer.organisation_list)
     const edit_organisation_id = useSelector((state)=>state.organisationReducer.edit_organisation_id)
-    const kb_show_form = useSelector((state)=>state.kbReducer.show_form)
+
     const filter = null;
 
     useEffect(() => {
@@ -51,9 +51,6 @@ function MainSection(){
             <OrganisationEdit />
 
         {/*    KB Form*/}
-            {   kb_show_form !== undefined &&
-                <KnowledgeBaseEdit/>
-            }
 
         </div>
     )

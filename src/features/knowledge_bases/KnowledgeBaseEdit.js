@@ -19,12 +19,9 @@ export default function KnowledgeBaseEdit(){
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
     let kb = undefined;
 
-
     console.log("Load ID", kb_id)
 
     const [refreshKey, setRefreshKey] = useState(0);
-
-    //form fields
 
     const [name,setName] = useState('');
     const [email,setEmail] = useState('');
@@ -33,12 +30,14 @@ export default function KnowledgeBaseEdit(){
     const [max_queries_per_day,setMaxQueriesPerDay] = useState(0);
     const [analytics_window_size_in_months,setAnalyticsWindowInMonths] = useState('');
     const [capacity_warnings,setCapacityWarnings] = useState(true);
-    const [created,setCreated] = useState();
+    const [created,setCreated] = useState('');
     const [dms_index_schedule,setDmsIndexSchedule] = useState('');
     const [operator_enabled,setOperatorEnabled] = useState(true);
 
     const [enable_document_similarity,setEnableDocumentSimilarity] = useState((kb)?kb.enableDocumentSimilarity:'');
     const [document_similarity_threshold,setDocumentSimilarityThreshold] = useState(0.9);
+
+    const kb_show_form = useSelector((state)=>state.kbReducer.show_form)
 
     //page title
     const title = (kb_id)?"Edit Knowledge Base":"Add new Knowledge Base";
@@ -78,13 +77,13 @@ export default function KnowledgeBaseEdit(){
             setDocumentSimilarityThreshold(0.9)
         }
 
-    },[kb_id])
+    },[kb_show_form])
 
     useEffect(()=>{
         if(kb_id === undefined){
             refreshSecurityId();
         }
-    },[])
+    },[kb_show_form])
 
     const clearFormData = () => {
         setName('')
@@ -109,12 +108,13 @@ export default function KnowledgeBaseEdit(){
 
 
     const refreshSecurityId = () => {
+        console.log("kb_show_form")
         setSecurityId(Api.createGuid())
     }
     // refreshSecurityId()
 
     const handleSave = () => {
-        if(email.length > 3 && name.length > 3) {
+        if(email.length > 3 && name.length > 3 && security_id.length > 0) {
 
             console.log("handleSave called")
             const session_id = session.id
@@ -130,38 +130,11 @@ export default function KnowledgeBaseEdit(){
                     analyticsWindowInMonths: analytics_window_size_in_months,
                     operatorEnabled: operator_enabled,
                     capacityWarnings: capacity_warnings,
-                    created: created===''?1578649263780:created,
+                    created: created,
                     dmsIndexSchedule: dms_index_schedule,
                     enableDocumentSimilarity: enable_document_similarity,
                     documentSimilarityThreshold: document_similarity_threshold
                 };
-
-                // analyticsWindowInMonths: 12
-                // capacityWarnings: true
-                // created: 1578649263780
-                // dmsIndexSchedule: ""
-                // documentSimilarityThreshold: 0.9
-                // email: "info1@simsage.nz"
-                // enableDocumentSimilarity: true
-                // enabled: true
-                // kbId: "0182368c-2fbd-b67c-b35d-5f79c9eac7dd"
-                // maxQueriesPerDay: 0
-
-
-                // analyticsWindowInMonths: "0"
-                // capacityWarnings: true
-                // created: 1578649263780
-                // dmsIndexSchedule: ""
-                // documentSimilarityThreshold: false
-                // email: "info1@simsage.nz"
-                // enableDocumentSimilarity: false
-                // enabled: true
-                // kbId: undefined
-                // maxQueriesPerDay: 0
-                // name: "kb 2"
-                // operatorEnabled: true
-                // organisationId: "c276f883-e0c8-43ae-9119-df8b7df9c574"
-                // securityId: "4be8fd4d-f842-c92c-cacf-b691d91600f0"
 
                 console.log("data",data)
                 dispatch(addOrUpdate({session_id, data}))
@@ -188,10 +161,6 @@ export default function KnowledgeBaseEdit(){
               <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                   <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-          {/*<div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"*/}
-          {/*     tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="false">*/}
-          {/*    <div className="modal-dialog">*/}
-          {/*        <div className="modal-content">*/}
                       <div className="modal-header">
                           <h5 className="modal-title" id="staticBackdropLabel">{title}  {kb_id}</h5>
                           <button onClick={ handleClose } type="button" className="btn-close" data-bs-dismiss="modal"

@@ -14,6 +14,7 @@ const initialState = {
     error: null,
     show_form: false,
     edit_id: undefined,
+    view_id: '',
 }
 
 
@@ -135,6 +136,10 @@ const knowledgeBaseSlice = createSlice({
             state.show_form = true
             state.edit_id = action.payload.kb_id
         },
+        setViewIds:(state,action) => {
+            console.log("setViewIds",action.payload)
+            state.view_id = action.payload
+        },
         closeForm:(state) => {
             state.show_form = false;
             state.edit_id = undefined;
@@ -145,5 +150,5 @@ const knowledgeBaseSlice = createSlice({
 
 
 
-export const { showAddForm, showEditForm, closeForm} = knowledgeBaseSlice.actions
+export const { showAddForm, showEditForm, closeForm, setViewIds} = knowledgeBaseSlice.actions
 export default knowledgeBaseSlice.reducer;
