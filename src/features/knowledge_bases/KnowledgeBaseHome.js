@@ -5,6 +5,7 @@ import KnowledgeBaseList from "./KnowledgeBaseList";
 import {getOrganisationList} from "../organisations/organisationSlice";
 import {getKBList, setViewIds} from "./knowledgeBaseSlice";
 import KnowledgeBaseEdit from "./KnowledgeBaseEdit";
+import Api from "../../common/api";
 
 
 export default function KnowledgeBaseHome() {
@@ -19,10 +20,11 @@ export default function KnowledgeBaseHome() {
     const kb_show_form = useSelector((state) => state.kbReducer.show_form)
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
 
-    console.log("kb_show_form",kb_show_form)
-    console.log("kb_view_ids 1",kb_view_id)
 
-    console.log("kb_view_ids",kb_view_id)
+    console.log("kb_show_form", kb_show_form)
+    console.log("kb_view_ids 1", kb_view_id)
+
+    console.log("kb_view_ids", kb_view_id)
     return (
 
         <div className="section px-5 pt-4">
@@ -55,13 +57,24 @@ export default function KnowledgeBaseHome() {
 
         const kb_id = useSelector((state) => state.kbReducer.view_id).kb_id
         const kb_list = useSelector((state) => state.kbReducer.kb_list)
+
+        const [copied_id, setCopiedId] = useState('')
         let kb = null;
 
-        if(kb_id && kb_list) {
-            let temp_obj = kb_list.filter((obj) => {return obj.kbId === kb_id})
-            if(temp_obj.length > 0){
+        if (kb_id && kb_list) {
+            let temp_obj = kb_list.filter((obj) => {
+                return obj.kbId === kb_id
+            })
+            if (temp_obj.length > 0) {
                 kb = (temp_obj[0])
             }
+        }
+
+        const handleCopyIds = (selected_id) => {
+            console.log("selected_id", selected_id)
+            let is_copied = Api.writeToClipboard(selected_id)
+            console.log("is_copied", is_copied)
+            if(is_copied) setCopiedId(selected_id)
         }
 
         const handleClose = () => {
@@ -86,17 +99,47 @@ export default function KnowledgeBaseHome() {
                                         <tr>
                                             <td>organisation id</td>
                                             <td>{kb.kbId}</td>
-                                            <td><button className={"btn btn-outline-primary"}>copy</button></td>
+                                            <td>
+                                                <button onClick={() => handleCopyIds(kb.kbId)}
+                                                        className={"btn btn-outline-primary"}>copy
+                                                </button>
+
+                                            </td>
+                                            <td>
+                                                {(copied_id === kb.kbId) &&
+                                                    <div className="copied-style">copied</div>
+                                                }
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>knowledge id</td>
                                             <td>{kb.organisationId}</td>
-                                            <td><button className={"btn btn-outline-primary"}>copy</button></td>
+                                            <td>
+                                                <button onClick={() => handleCopyIds(kb.organisationId)}
+                                                        className={"btn btn-outline-primary"}>copy
+                                                </button>
+
+                                            </td>
+                                            <td>
+                                                {(copied_id === kb.organisationId) &&
+                                                    <div className="copied-style">copied</div>
+                                                }
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>security id</td>
                                             <td>{kb.securityId}</td>
-                                            <td><button className={"btn btn-outline-primary"}>copy</button></td>
+                                            <td>
+                                                <button onClick={() => handleCopyIds(kb.securityId)}
+                                                        className={"btn btn-outline-primary"}>copy
+                                                </button>
+
+                                            </td>
+                                            <td>
+                                                {(copied_id === kb.securityId) &&
+                                                    <div className="copied-style">copied</div>
+                                                }
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>
