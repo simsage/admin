@@ -53,6 +53,12 @@ export default function KnowledgeBaseHome() {
     )
 
 
+    /**
+     * ViewIds
+     * @returns {JSX.Element}
+     * @constructor
+     */
+    //TODO:: Could be moved to its own file
     function ViewIds() {
 
         const kb_id = useSelector((state) => state.kbReducer.view_id).kb_id
@@ -156,5 +162,8 @@ export default function KnowledgeBaseHome() {
             </div>
         );
     }
+
+
+
 
 }

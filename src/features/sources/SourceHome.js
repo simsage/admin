@@ -3,8 +3,10 @@ import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import SourceFilter from "./SourceFilter";
-import db from "../../notes/db.json";
-import {getSources} from "./sourceSlice";
+import {closeForm, getSources} from "./sourceSlice";
+import CrawlerDialog from "./crawlers/crawler-dialog";
+import MessageDialog from "../../common/message-dialog";
+import CrawlerImportExport from "./crawler-import-export";
 
 export default function SourceHome(){
 
@@ -17,6 +19,9 @@ export default function SourceHome(){
 
     const source_list = useSelector((state) => state.sourceReducer.source_list);
     const source_list_status = useSelector((state) => state.sourceReducer.status);
+
+    const show_form_source = useSelector((state) => state.sourceReducer.show_form);
+
     const [page, setPage] = useState(0)
     const [page_size, setPageSize] = useState(10)
 
@@ -192,8 +197,78 @@ export default function SourceHome(){
         }
     }
 
+
+
+    //handle form close or cancel
+    const handleClose = () => {
+        // clearFormData();
+        console.log("handleClose Source Home")
+        dispatch(closeForm);
+    }
+
+
+    function setError(title,errStr) {}
+    function wpUploadArchive(data) {}
+    function message_callback(action) {}
+
+    const open = show_form_source;
+    const source_title = '';
+    const selected_kb_id = '';
+    const selected_crawler = '';
+    const user_list = [];
+    const group_list = [];
+    const edge_device_list = [];
+    const error_title = ''
+    const error_msg = ''
+    const testCrawler = null
+
+    const export_open = false;
+    const export_upload = false;
+
+
+    const message = ""
+    const message_title = "message_title"
+
     return(
         <div className="section px-5 pt-4">
+
+            <CrawlerDialog
+                open={open}
+                title={source_title}
+                theme={theme}
+                session={session}
+                organisation_id={selected_organisation_id}
+                kb_id={selected_kb_id}
+                user_list={user_list}
+                onSave={(crawler) => saveCrawler(crawler)}
+                onUpdate={(crawler) => onUpdate(crawler)}
+                onError={(title, errStr) => setError(title, errStr)}
+                error_title={error_title}
+                error_msg={error_msg}
+                wpUploadArchive={(data) => wpUploadArchive(data) }
+                group_list={group_list}
+                crawler={selected_crawler}
+                edge_device_list={edge_device_list}
+                testCrawler={testCrawler}
+                onClose={handleClose}
+            />
+
+
+            <CrawlerImportExport
+                open={export_open}
+                theme={theme}
+                upload={export_upload}
+                crawler={selected_crawler}
+                export_upload={export_upload}
+                onSave={(crawler) => saveExport(crawler) }
+                onError={(title, errStr) => setError(title, errStr)}
+            />
+
+            <MessageDialog callback={(action) => message_callback(action)}
+                           open={message.length > 0}
+                           theme={theme}
+                           message={message}
+                           title={message_title} />
 
             <SourceFilter />
             { source_list_status !== undefined && source_list && source_list.length > 0 &&
@@ -270,19 +345,19 @@ export default function SourceHome(){
                             <td/>
                             <td>
                                 {selected_organisation_id.length > 0 &&
-                                <div className="image-button" onClick={() => addNewCrawler()}><img
-                                    className="image-size" src="../images/add.svg" title="add new crawler"
-                                    alt="add new crawler"/></div>
+                                <div className="image-button" >
+                                    <button onClick={() => addNewCrawler()} className={"btn btn-primary p-1"}>Add New Source</button>
+                                </div>
                                 }
                                 {selected_knowledge_base_id.length > 0 &&
-                                <div className="image-button" onClick={() => resetCrawlersAsk()}><img
-                                    className="image-size" src="../images/refresh.svg" title="reset crawlers"
-                                    alt="reset crawlers"/></div>
+                                <div className="image-button" >
+                                    <button onClick={() => resetCrawlersAsk()} className={"btn btn-primary"}>reset crawlers</button>
+                                </div>
                                 }
                                 {selected_organisation_id.length > 0 &&
-                                <div className="image-button" onClick={() => importCrawler()}><img
-                                    className="image-size" src="../images/upload.svg" title="upload crawler JSON"
-                                    alt="import"/></div>
+                                <div className="image-button" >
+                                    <button onClick={() => importCrawler()} className={"btn btn-primary"}>upload crawler JSON</button>
+                                </div>
                                 }
                             </td>
                         </tr>
@@ -302,7 +377,14 @@ export default function SourceHome(){
                         onChangeRowsPerPage={(rows) => setPageSize(rows)}
                     />
 
+
+
                 </div>
+            }
+
+            {show_form_source &&
+                <h1>Show Form</h1>
+
             }
         </div>
     )

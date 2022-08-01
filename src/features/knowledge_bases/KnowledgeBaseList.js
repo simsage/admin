@@ -71,9 +71,9 @@ export default function KnowledgeBaseList(){
     }
 
 
-    function optimizeIndexesAsk(knowledge_base){
-        //TODO::add optimizeIndexesAsk
-        console.log("optimizeIndexesAsk")
+    function handleOptimizeIndexesAsk(knowledge_base){
+        //TODO::add handleOptimizeIndexesAsk
+        console.log("handleOptimizeIndexesAsk",knowledge_base)
     }
 
 
@@ -109,7 +109,7 @@ export default function KnowledgeBaseList(){
                                                 <button title="edit knowledge base" onClick={() => handleEditForm(knowledge_base.kbId)}  className={"btn btn-primary"}>Edit</button>&nbsp; &nbsp;
                                                 <button title="remove knowledge base" onClick={() => handleDeleteForm(knowledge_base.kbId)}  className={"btn btn-outline-danger"}>Delete</button>&nbsp; &nbsp;
                                                 <button title="view knowledge base ids" onClick={() => handleViewIds(knowledge_base.kbId)}  className={"btn btn-outline-primary"}>View Ids</button>&nbsp; &nbsp;
-                                                <button title="optimize indexes" onClick={() => optimizeIndexesAsk(knowledge_base)}  className={"btn btn-outline-primary"}>Optimize indexes</button>&nbsp; &nbsp;
+                                                <button title="optimize indexes" onClick={() => handleOptimizeIndexesAsk(knowledge_base)}  className={"btn btn-outline-primary"}>Optimize indexes</button>&nbsp; &nbsp;
 
                                             </div>
                                         </td>

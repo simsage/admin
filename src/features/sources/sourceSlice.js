@@ -5,11 +5,31 @@ import axios from "axios";
 
 const initialState = {
     source_list: undefined,
+    source_filter: undefined,
+    source_page: 0,
+    source_page_size: 10,
+
+
     status: undefined,
-    error: undefined,
+    error: null,
+    show_form: false,
+    edit_id: undefined,
 }
 
-const reducers = {}
+const reducers = {
+    showAddForm:(state) => {
+        state.show_form = true
+    },
+    showEditForm:(state,action) => {
+        state.show_form = true
+        state.edit_id = action.payload.source_id
+    },
+    closeForm:(state) => {
+        console.log("closeForm sourceSlice")
+        state.show_form = false;
+        state.edit_id = undefined;
+    },
+}
 
 const extraReducers = (builder) => {
     builder
@@ -57,5 +77,5 @@ const sourceSlice = createSlice({
     extraReducers
 });
 
-export const {  } = sourceSlice.actions
+export const { showAddForm, showEditForm, closeForm  } = sourceSlice.actions
 export default sourceSlice.reducer;

@@ -1,4 +1,6 @@
 import React, {useState} from "react";
+import {useDispatch} from "react-redux";
+import {showAddForm} from "./sourceSlice";
 
 export default function SourceFilter(props) {
 
@@ -9,6 +11,8 @@ export default function SourceFilter(props) {
     const [orderFilter,setOrderFilter] = useState('');
     const [sourceFilter,setSourceFilter] = useState('');
 
+    const dispatch = useDispatch();
+
     function handleSearchTextKeydown(e) {
         console.log("handleSearchTextKeydown")
         // if (e.key === "Enter" && this.props.selected_organisation_id) {
@@ -16,10 +20,10 @@ export default function SourceFilter(props) {
         // }
     }
 
-    function handleAddNew(){
+    function handleAddForm(){
         console.log("handleAddNew")
+        dispatch(showAddForm(true));
     }
-
 
     return(
         <div className="d-flex justify-content-beteween w-100 mb-4">
@@ -46,7 +50,7 @@ export default function SourceFilter(props) {
             </div>
 
             <div className="form-group col ms-auto">
-                <button className="btn btn-primary text-nowrap" onClick={() => handleAddNew()}>
+                <button className="btn btn-primary text-nowrap" onClick={() => handleAddForm()}>
                     + Add Source
                 </button>
             </div>
