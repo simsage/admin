@@ -92,7 +92,7 @@ export class CrawlerDialog extends Component {
         // if (this.state.onSave) {
         //     this.state.onSave(null);
         // }
-        this.props.closeForm();
+        this.props.hideForm();
         // this.setState({open: false});
     }
     // validate metadata
@@ -756,14 +756,15 @@ export class CrawlerDialog extends Component {
 
 const mapStateToProps = state => {
     return {
-        open: state.open
+        // open: state.open
     }
 }
 
 const mapDispatchToProps = dispatch => {
     console.log("mapDispatchToProps")
     return {
-        closeForm: dispatch(closeForm())
+        hideForm: () => dispatch(closeForm())
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(CrawlerDialog);
+// export default CrawlerDialog;

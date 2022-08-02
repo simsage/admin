@@ -20,6 +20,7 @@ export function UsersHome(){
 
 
     const user = useSelector((state) => state.authReducer.user)
+    const show_user_form = useSelector((state) => state.authReducer.show_user_form)
     const user_list = useSelector((state) => state.usersReducer.user_list)
     const user_list_status = useSelector((state) => state.usersReducer.status)
     const session = useSelector((state)=>state.authReducer.session)
@@ -305,7 +306,10 @@ export function UsersHome(){
 
             </div>
 
-            {selectedUser && <UserEdit user={selectedUser} setSelectedUser={setSelectedUser}/>}
+            {show_user_form &&
+
+                <UserEdit user={selectedUser} setSelectedUser={setSelectedUser}/>
+            }
         </div>
     )
 }

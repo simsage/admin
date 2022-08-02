@@ -17,7 +17,7 @@ export default function SourceHome(){
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
 
-    const source_list = useSelector((state) => state.sourceReducer.source_list);
+    let source_list = useSelector((state) => state.sourceReducer.source_list);
     const source_list_status = useSelector((state) => state.sourceReducer.status);
 
     const show_form_source = useSelector((state) => state.sourceReducer.show_form);
@@ -42,7 +42,7 @@ export default function SourceHome(){
             console.log("Source Home 2")
             dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
         // }
-    },[dispatch])
+    },[selected_knowledge_base_id,session])
 
 
     function getCrawlers() {
@@ -50,13 +50,14 @@ export default function SourceHome(){
         const first = page * page_size;
         const last = first + parseInt(page_size);
 
+        console.log("source_list",source_list);
         // source_list.sort((a, b) => { return a.sourceId - b.sourceId });
         // for (const i in source_list) {
         //     if (i >= first && i < last) {
         //         paginated_list.push(source_list[i]);
         //     }
         // }
-        return paginated_list;
+        return source_list;
     }
 
     function getCrawlerStatus(crawler) {
@@ -307,31 +308,40 @@ export default function SourceHome(){
                                             <div className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>
                                         </td>
                                         <td>
-                                            {!is_running &&
-                                            <div className="link-button"
-                                                 onClick={() => startCrawlerAsk(crawler)}>
-                                                <img src="../images/play.svg" className="image-size"
-                                                     title="start this crawler" alt="start"/>
+                                            {/*{!is_running &&*/}
+                                            {/*<div className="link-button"*/}
+                                            {/*     onClick={() => startCrawlerAsk(crawler)}>*/}
+                                            {/*    <img src="../images/play.svg" className="image-size"*/}
+                                            {/*         title="start this crawler" alt="start"/>*/}
+                                            {/*</div>*/}
+                                            {/*}*/}
+                                            {/*{is_running &&*/}
+                                            {/*<div className="link-button">*/}
+                                            {/*    <img src="../images/play-disabled.svg" className="image-size"*/}
+                                            {/*         title="crawler running" alt="start"/>*/}
+                                            {/*</div>*/}
+                                            {/*}*/}
+                                            <div>
+                                                {!is_running && <><button title="start crawler" onClick={() => startCrawlerAsk(crawler)}  className={"btn btn-primary"}>Start</button>&nbsp; &nbsp;</> }
+                                                {is_running && <><button title="start crawler" disabled className={"btn btn-primary"}>Start</button>&nbsp; &nbsp; </>}
+
+                                                <button title="edit crawler" onClick={() => editCrawler(crawler)}  className={"btn btn-primary"}>Edit</button>&nbsp; &nbsp;
+                                                <button title="remove crawler" onClick={() => deleteCrawlerAsk(crawler)}  className={"btn btn-primary"}>Remove</button>&nbsp; &nbsp;
+                                                <button title="get crawler JSON for export" onClick={() => exportCrawler(crawler)}  className={"btn btn-primary"}>Export</button>&nbsp; &nbsp;
+                                                <button title="zip all files in a source" onClick={() => zipSourceAsk(crawler)}  className={"btn btn-primary"}>Zip</button>&nbsp; &nbsp;
                                             </div>
-                                            }
-                                            {is_running &&
-                                            <div className="link-button">
-                                                <img src="../images/play-disabled.svg" className="image-size"
-                                                     title="crawler running" alt="start"/>
-                                            </div>
-                                            }
-                                            <div className="link-button" onClick={() => editCrawler(crawler)}>
-                                                <img src="../images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>
-                                            </div>
-                                            <div className="link-button" onClick={() => deleteCrawlerAsk(crawler)}>
-                                                <img src="../images/delete.svg" className="image-size" title="remove crawler" alt="remove"/>
-                                            </div>
-                                            <div className="link-button" onClick={() => exportCrawler(crawler)}>
-                                                <img src="../images/download.svg" className="image-size" title="get crawler JSON for export" alt="export"/>
-                                            </div>
-                                            <div className="link-button" onClick={() => zipSourceAsk(crawler)}>
-                                                <img src="../images/zip.svg" className="image-size" title="zip all files in a source" alt="zip files"/>
-                                            </div>
+                                            {/*<div className="link-button" onClick={() => editCrawler(crawler)}>*/}
+                                            {/*    <img src="../../images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>*/}
+                                            {/*</div>*/}
+                                            {/*<div className="link-button" onClick={() => deleteCrawlerAsk(crawler)}>*/}
+                                            {/*    <img src="../images/delete.svg" className="image-size" title="remove crawler" alt="remove"/>*/}
+                                            {/*</div>*/}
+                                            {/*<div className="link-button" onClick={() => exportCrawler(crawler)}>*/}
+                                            {/*    <img src="../images/download.svg" className="image-size" title="get crawler JSON for export" alt="export"/>*/}
+                                            {/*</div>*/}
+                                            {/*<div className="link-button" onClick={() => zipSourceAsk(crawler)}>*/}
+                                            {/*    <img src="../images/zip.svg" className="image-size" title="zip all files in a source" alt="zip files"/>*/}
+                                            {/*</div>*/}
                                         </td>
                                     </tr>
                                 )
