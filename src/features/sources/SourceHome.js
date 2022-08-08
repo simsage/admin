@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import SourceFilter from "./SourceFilter";
-import {closeForm, getSources} from "./sourceSlice";
+import {closeForm, getSources, showAddForm, showEditForm} from "./sourceSlice";
 import CrawlerDialog from "./crawlers/crawler-dialog";
 import MessageDialog from "../../common/message-dialog";
 import CrawlerImportExport from "./crawler-import-export";
@@ -108,6 +108,7 @@ export default function SourceHome(){
     }
 
     function addNewCrawler() {
+        dispatch(showAddForm());
         this.setState({open: true, selected_crawler: empty_crawler, title: 'Create New Crawler'});
     }
     function onUpdate(crawler) {
@@ -115,7 +116,8 @@ export default function SourceHome(){
     }
     function editCrawler(crawler) {
         if (crawler) {
-            this.setState({open: true, selected_crawler: { ...empty_crawler, ...crawler}, title: 'Edit Crawler'});
+            dispatch(showEditForm({source_id:crawler.id}));
+            // this.setState({open: true, selected_crawler: { ...empty_crawler, ...crawler}, title: 'Edit Crawler'});
         }
     }
     function deleteCrawlerAsk(crawler) {
@@ -392,10 +394,6 @@ export default function SourceHome(){
                 </div>
             }
 
-            {show_form_source &&
-                <h1>Show Form</h1>
-
-            }
         </div>
     )
 }

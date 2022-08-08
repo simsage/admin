@@ -22,7 +22,7 @@ export const getKBList = createAsyncThunk(
     'knowledgeBases/getKBList',
     async ({session_id,organization_id}) => {
         const api_base = window.ENV.api_base;
-        console.log("organization_id",organization_id)
+        console.log("organization_id getKBList",organization_id)
         const url = api_base + '/knowledgebase/'+ encodeURIComponent(organization_id);
 
         // return "Hello";
@@ -35,7 +35,11 @@ export const getKBList = createAsyncThunk(
                 console.log("knowledgeBases11",response.data)
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    console.log("knowledgeBases12",error)
+                    return error
+
+                }
             )
     }
 );

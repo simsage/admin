@@ -10,10 +10,10 @@ const initialState = {
     source_page_size: 10,
 
 
-    status: undefined,
-    error: null,
+    status: '',
+    error: '',
     show_form: false,
-    edit_id: undefined,
+    edit_id: '',
 }
 
 const reducers = {
