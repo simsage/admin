@@ -1,8 +1,9 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState, useEffect} from "react";
-import {getGroupList} from "./groupSlice";
+import {getGroupList, showEditGroupForm } from "./groupSlice";
 import {Pagination} from "../../common/pagination";
 import {hasRole} from "../../common/helpers";
+import GroupEdit from "./groupEdit";
 
 
 
@@ -52,6 +53,10 @@ export default function GroupHome(){
         return paginated_list;
     }
 
+    function handleEditGroup() {
+        dispatch(showEditGroupForm(true));
+    }
+
     return(
         <div className="section px-5 pt-4">
             <div className="d-flex justify-content-beteween w-100 mb-4">
@@ -90,7 +95,12 @@ export default function GroupHome(){
                             const deleteYes = false;
                             return <tr key={group.id} >
                                 <td className="label"> {group.name}</td>
-                                <td><button className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"} >Edit icon</button></td>
+                                <td>
+                                    <button
+                                    className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"}
+                                    onClick={() => handleEditGroup()}
+                                    >Edit icon</button>
+                                </td>
                                 <td><button className={(deleteYes)? "btn btn-outline-danger" :"btn btn-secondary disabled" }>Delete icon </button></td>
                             </tr>
                         })
@@ -115,7 +125,7 @@ export default function GroupHome(){
                 }
 
             </div>
-
+                <GroupEdit/>
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
-import {showAddUserForm} from "./usersSlice";
+import {closeUserForm} from "./usersSlice";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import {hasRole} from "../../common/helpers";
@@ -56,12 +56,13 @@ export function UserEdit(props){
 
     function handleClose(e){
         props.setSelectedUser(null);
-        dispatch(showAddUserForm(false))
+        dispatch(closeUserForm())
     }
 
     function handleSave(e){
-        props.setSelectedUser(null);
-        dispatch(showAddUserForm(false))
+        // props.setSelectedUser(null);
+        // dispatch(showAddUserForm(false))
+        console.log('Saving...');
     }
 
     /*

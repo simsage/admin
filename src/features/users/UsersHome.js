@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
-import {getUserList, showAddUserForm} from "./usersSlice";
+import {getUserList, showAddUserForm, showEditUserForm} from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import {formatRoles, hasRole} from "../../common/helpers";
 import Api from '../../common/api'
@@ -54,12 +54,14 @@ export function UsersHome(){
     }
 
     function handleAddNewUser(){
+        console.log(selectedUser);
         dispatch(showAddUserForm(true))
     }
 
     function handleEditUser(user) {
         setSelectedUser(user)
-        dispatch(showAddUserForm(true))
+        dispatch(showEditUserForm({show:true,
+        user_id: 1}));
     }
 
 
@@ -305,11 +307,7 @@ export function UsersHome(){
                     {/*</tbody>*/}
 
             </div>
-
-            {show_user_form &&
-
-                <UserEdit user={selectedUser} setSelectedUser={setSelectedUser}/>
-            }
+            <UserEdit user={selectedUser} setSelectedUser={setSelectedUser}/>
         </div>
     )
 }

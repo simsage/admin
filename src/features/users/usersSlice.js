@@ -15,6 +15,7 @@ const initialState = {
     status: undefined,
     error: undefined,
     show_user_form: false,
+    edit_id: undefined,
     roles: ['admin', 'operator', 'dms', 'manager'],
 }
 
@@ -65,9 +66,27 @@ export const getUserList = createAsyncThunk(
     }
 );
 
+export const updateUser = createAsyncThunk(
+    'users/update',
+    async ({session_id, data}) => {
 
+        const api_base = window.ENV.api_base;
+        const url = '/users/';
+        if (url !== '/stats/stats/os') {
+            console.log('PUT ' + api_base + url );
+        }
+        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("updateUser data", response.data);
+                return response.data;
+            }).catch(
+                (error) => {return error}
+            )
+    }
+)
 const extraReducers = (builder) => {
     builder
+        //Get Users
         .addCase(getUserList.pending, (state, action) => {
             state.status = "loading"
         })
@@ -79,6 +98,18 @@ const extraReducers = (builder) => {
         .addCase(getUserList.rejected, (state, action) => {
             state.status = "rejected"
         })
+
+        //Update Users
+        .addCase(updateUser.pending, (state, action) => {
+            state.status = "Loading"
+        })
+        .addCase(updateUser.fulfilled, (state, action) => {
+            console.log("users/update ", action);
+            state.status = "fulfilled";
+        })
+        .addCase(updateUser.rejected, (state, action) => {
+            state.status = "rejected";
+        })
 }
 
 
@@ -88,11 +119,19 @@ const usersSlice = createSlice({
     reducers: {
         showAddUserForm:(state,action) => {
             state.show_user_form = action.payload
-        }
+        },
+        showEditUserForm:(state,action) => {
+            state.show_user_form = action.payload.show
+            state.edit_id = action.payload.user_id
+        },
+        closeUserForm:(state) => {
+            state.show_user_form = false;
+            state.edit_id = undefined;
+        },
         },
     extraReducers
 });
 
 
-export const { showAddUserForm} = usersSlice.actions
+export const { showAddUserForm, showEditUserForm, closeUserForm} = usersSlice.actions
 export default usersSlice.reducer;

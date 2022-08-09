@@ -7,7 +7,8 @@ const initialState = {
     page: 0,
     page_size: 5,
     status: undefined,
-    error: undefined
+    error: undefined,
+    show_group_form: false
 }
 
 export const getGroupList = createAsyncThunk(
@@ -49,9 +50,14 @@ const extraReducers = (builder) => {
 const groupSlice = createSlice({
     name: 'groups',
     initialState,
-    reducers: {},
+    reducers: {
+        showEditGroupForm:(state,action) => {
+            state.show_group_form = action.payload
+        }
+    },
     extraReducers
 });
 
 
 export default groupSlice.reducer;
+export const { showEditGroupForm} = groupSlice.actions
