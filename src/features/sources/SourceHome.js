@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import SourceFilter from "./SourceFilter";
-import {closeForm, getSources, showAddForm, showEditForm} from "./sourceSlice";
+import {closeForm, getSources, showAddForm, showEditForm, updateSources} from "./sourceSlice";
 import CrawlerDialog from "./crawlers/crawler-dialog";
 import MessageDialog from "../../common/message-dialog";
 import CrawlerImportExport from "./crawler-import-export";
@@ -16,11 +16,13 @@ export default function SourceHome(){
     const session = useSelector((state) => state.authReducer.session);
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    const user_list = useSelector((state) => state.usersReducer.user_list);
 
     let source_list = useSelector((state) => state.sourceReducer.source_list);
     const source_list_status = useSelector((state) => state.sourceReducer.status);
 
     const show_form_source = useSelector((state) => state.sourceReducer.show_form);
+
 
     const [page, setPage] = useState(0)
     const [page_size, setPageSize] = useState(10)
@@ -35,6 +37,7 @@ export default function SourceHome(){
         enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: default_specific_json,
         processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []};
 
+    let [selected_source,setSelectedSource] = useState({})
 
     useEffect(()=>{
         console.log("Source Home 1",source_list_status,"--", source_list)
@@ -109,15 +112,19 @@ export default function SourceHome(){
 
     function addNewCrawler() {
         dispatch(showAddForm());
-        this.setState({open: true, selected_crawler: empty_crawler, title: 'Create New Crawler'});
+        this.setState({open: true, selected_source: empty_crawler, title: 'Create New Crawler'});
     }
     function onUpdate(crawler) {
-        this.setState({selected_crawler: crawler});
+        // this.setState({selected_source: crawler});
+        // setSelectedSource(crawler)
+        console.log(crawler)
+        console.log(crawler.url)
     }
-    function editCrawler(crawler) {
-        if (crawler) {
-            dispatch(showEditForm({source_id:crawler.id}));
-            // this.setState({open: true, selected_crawler: { ...empty_crawler, ...crawler}, title: 'Edit Crawler'});
+    function editCrawler(source) {
+        if (source) {
+            console.log("crawler",source)
+            dispatch(showEditForm({source_id:source.sourceId, source:source}));
+            // this.setState({open: true, selected_source: { ...empty_crawler, ...crawler}, title: 'Edit Crawler'});
         }
     }
     function deleteCrawlerAsk(crawler) {
@@ -125,6 +132,7 @@ export default function SourceHome(){
         this.props.openDialog("are you sure you want to remove the crawler named <b>" + crawler.name + "</b>?",
             "Remove Crawler", (action) => { this.deleteCrawler(action) });
     }
+
     function deleteCrawler(action) {
         if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
             this.props.deleteCrawler(this.state.crawler_ask.sourceId);
@@ -135,20 +143,26 @@ export default function SourceHome(){
     }
     function saveCrawler(crawler) {
         if (crawler) {
-            crawler.organisationId = selected_organisation_id;
-            crawler.kbId = selected_knowledge_base_id;
-            this.props.updateCrawler(crawler);
+            console.log("crawler.sourceID :",crawler )
+            console.log("crawler.sourceID :",crawler.sourceId )
+            console.log("crawler.organisationId :",crawler.organisationId )
+            console.log("crawler.kbId :",crawler.kbId )
+            dispatch(updateSources({session_id:session.id,data:crawler}))
+            // crawler.organisationId = selected_organisation_id;
+            // crawler.kbId = selected_knowledge_base_id;
+            // this.props.updateCrawler(crawler);
         }
-        this.setState({open: false});
+        dispatch(closeForm())
+        // this.setState({open: false});
     }
     function canDeleteDocuments(crawler) {
         return crawler.crawlerType !== 'wordpress';
     }
     function exportCrawler(crawler) {
-        this.setState({selected_crawler: crawler, export_upload: false, export_open: true})
+        this.setState({selected_source: crawler, export_upload: false, export_open: true})
     }
     function importCrawler() {
-        this.setState({selected_crawler: {}, export_upload: true, export_open: true})
+        this.setState({selected_source: {}, export_upload: true, export_open: true})
     }
     function saveExport(crawler_str) {
         if (crawler_str && this.state.export_upload) {
@@ -156,9 +170,8 @@ export default function SourceHome(){
             delete crawler.sourceId;
             this.saveCrawler(crawler);
         }
-        this.setState({export_open: false, selected_crawler: {}});
+        this.setState({export_open: false, selected_source: {}});
     }
-
     function zipSourceAsk(crawler) {
         this.setState({crawler_ask: crawler});
         this.props.openDialog("are you sure you want to zip the content of <b>" + crawler.name + "</b>?",
@@ -215,10 +228,7 @@ export default function SourceHome(){
     function message_callback(action) {}
 
     const open = show_form_source;
-    const source_title = '';
-    const selected_kb_id = '';
-    const selected_crawler = '';
-    const user_list = [];
+    const source_title = 'Add/Edit Source';
     const group_list = [];
     const edge_device_list = [];
     const error_title = ''
@@ -241,7 +251,7 @@ export default function SourceHome(){
                 theme={theme}
                 session={session}
                 organisation_id={selected_organisation_id}
-                kb_id={selected_kb_id}
+                kb_id={selected_knowledge_base_id}
                 user_list={user_list}
                 onSave={(crawler) => saveCrawler(crawler)}
                 onUpdate={(crawler) => onUpdate(crawler)}
@@ -250,7 +260,7 @@ export default function SourceHome(){
                 error_msg={error_msg}
                 wpUploadArchive={(data) => wpUploadArchive(data) }
                 group_list={group_list}
-                crawler={selected_crawler}
+                crawler={selected_source}
                 edge_device_list={edge_device_list}
                 testCrawler={testCrawler}
                 onClose={handleClose}
@@ -261,7 +271,7 @@ export default function SourceHome(){
                 open={export_open}
                 theme={theme}
                 upload={export_upload}
-                crawler={selected_crawler}
+                crawler={selected_source}
                 export_upload={export_upload}
                 onSave={(crawler) => saveExport(crawler) }
                 onError={(title, errStr) => setError(title, errStr)}

@@ -27,10 +27,11 @@ export default function LeftNavbar(){
     const kb_list_status = useSelector((state) => state.kbReducer.status);
     const selected_tab = useSelector((state) => state.homeReducer.selected_tab);
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
-    const selected_kb_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    let selected_kb_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const session = useSelector((state) => state.authReducer.session);
 
     const [kb_option,setKBOption] = useState(kb_list);
+
 
     function handleSelectKB(e){
         let kb_id = e.target.value;
@@ -51,9 +52,9 @@ export default function LeftNavbar(){
     }
 
     useEffect(()=>{
-        console.log("Left Nav")
-        setKBOption(kb_list)
-    },[selected_kb_id])
+        console.log("LeftSidebarNavItem Left Nav")
+        selected_kb_id = "";
+    },[selected_organisation_id])
 
     return (
         <div className="sidebar no-select">

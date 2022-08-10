@@ -26,12 +26,9 @@ const AccountDropdown = (props) => {
 
     const filter = null;
 
-    console.log("session",session)
-    function selectOrganisation(session_id,org){
+    function handleSelectOrganisation(session_id,org){
         const org_id = org.id
         dispatch(setSelectedOrganisation(org));
-        console.log("org_id",org_id)
-        dispatch(selectTab("home"))
         dispatch(getKBList({session_id:session.id, organization_id:org_id}));
     }
 
@@ -85,7 +82,7 @@ const AccountDropdown = (props) => {
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
                             <li key={item.id}
                                 className={(item.id === selected_organisation.id)? "acc-item px-4 py-3 d-flex justify-content-between active":"acc-item px-4 py-3 d-flex justify-content-between"}>
-                                <label onClick={() => selectOrganisation(session.id,item)}>{item.name}</label>
+                                <label onClick={() => handleSelectOrganisation(session.id,item)}>{item.name}</label>
                                 <img onClick={()=>handleEditOrganisation(item.id)} src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>
                             </li>)
                     })

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 import {connect} from "react-redux";
 
 import '../../../css/acl-setup.css';
@@ -29,6 +29,8 @@ import CrawlerSharepoint365 from "./crawler-sharepoint365";
 import {closeForm} from "../sourceSlice";
 
 
+
+
 export class CrawlerDialog extends Component {
     constructor(props) {
         super(props);
@@ -54,6 +56,14 @@ export class CrawlerDialog extends Component {
 
             has_error: false,
         }
+    }
+
+    componentWillMount() {
+        console.log("componentWillMount: crawler dialog organisation_id", this.state.organisation_id)
+    }
+
+    componentDidMount() {
+        console.log("componentDidMount: crawler dialog crawler" , this.state.crawler)
     }
 
     componentDidCatch(error, info) {
@@ -189,6 +199,8 @@ export class CrawlerDialog extends Component {
         return true;
     }
     handleSave() {
+
+        console.log("handleSave")
         const crawler = this.state.crawler;
         const validAcls = crawler.allowAnonymous || (crawler.acls && crawler.acls.length > 0);
         let sj = {};
@@ -349,7 +361,7 @@ export class CrawlerDialog extends Component {
     };
     updateSchedule(time) {
         if (time !== null) {
-            const crawler = this.state.crawler;
+            let crawler = this.state.crawler;
             crawler.schedule = time;
             this.setState({crawler: crawler});
             if (this.state.onUpdate) {
@@ -358,7 +370,7 @@ export class CrawlerDialog extends Component {
         }
     }
     update_general_data(data) {
-        const crawler = this.state.crawler;
+        let crawler = this.state.crawler;
         data.specificJson = crawler.specificJson;
         data.schedule = crawler.schedule;
         data.acls = crawler.acls;
@@ -368,7 +380,7 @@ export class CrawlerDialog extends Component {
         }
     }
     update_acl_list(acl_list) {
-        const crawler = this.state.crawler;
+        let crawler = this.state.crawler;
         crawler.acls = acl_list;
         this.setState({crawler: crawler});
         if (this.state.onUpdate) {
@@ -376,7 +388,7 @@ export class CrawlerDialog extends Component {
         }
     }
     update_specific_json(specific_json) {
-        const crawler = this.state.crawler;
+        let crawler = this.state.crawler;
         crawler.specificJson = JSON.stringify(specific_json);
         this.setState({crawler: crawler});
         if (this.state.onUpdate) {
@@ -756,7 +768,9 @@ export class CrawlerDialog extends Component {
 
 const mapStateToProps = state => {
     return {
-        // open: state.open
+        open: state.sourceReducer.show_form,
+        source_id: state.sourceReducer.edit_id,
+        crawler: state.sourceReducer.selected_source
     }
 }
 

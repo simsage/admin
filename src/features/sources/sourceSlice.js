@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import db from "../../notes/db.json"
 import axios from "axios";
+import {updateOrganisation} from "../organisations/organisationSlice";
 
 const initialState = {
     source_list: undefined,
@@ -12,22 +13,27 @@ const initialState = {
 
     status: '',
     error: '',
+
     show_form: false,
-    edit_id: '',
+    edit_id: null,
+    selected_source: {}
 }
 
 const reducers = {
     showAddForm:(state) => {
         state.show_form = true
+        state.edit_id = null
+        state.selected_source = {}
     },
     showEditForm:(state,action) => {
         state.show_form = true
         state.edit_id = action.payload.source_id
+        state.selected_source = action.payload.source
     },
     closeForm:(state) => {
         console.log("closeForm sourceSlice")
         state.show_form = false;
-        state.edit_id = undefined;
+        state.edit_id = null;
     },
 }
 
@@ -42,6 +48,15 @@ const extraReducers = (builder) => {
         })
         .addCase(getSources.rejected, (state, action) => {
             state.status = "rejected"
+        })
+        .addCase(updateSources.fulfilled, (state, action) => {
+            console.log("updateSources fulfilled ",action)
+            state.show_form = false;
+            state.edit_id = null;
+            state.selected_source = {};
+        })
+        .addCase(updateSources.rejected, (state, action) => {
+            console.log("updateSources rejected ", action)
         })
 }
 
@@ -68,6 +83,41 @@ export const getSources = createAsyncThunk(
             )
     }
 );
+
+export const updateSources = createAsyncThunk(
+    'sources/updateSources',
+    async ({session_id,data}) => {
+
+        console.log("sources/updateSources");
+
+        const api_base = window.ENV.api_base;
+        const url = '/crawler/crawler/';
+
+        if (url !== '/stats/stats/os') {
+            console.log('PUT ' + api_base + url);
+        }
+        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("updateSources data",response.data)
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+
+});
+
+// updateCrawler: (crawler) => async (dispatch, getState) => {
+//     dispatch({type: BUSY, busy: true});
+//     const organisation_id = getState().appReducer.selected_organisation_id;
+//     const kb_id = getState().appReducer.selected_knowledgebase_id;
+//     const session_id = get_session_id(getState);
+//     await Comms.http_post('/crawler/crawler', session_id, crawler,
+//         () => {
+//             _getCrawlers(organisation_id, kb_id, dispatch, getState)
+//         },
+//         (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+//     )
+// },
 
 
 const sourceSlice = createSlice({
