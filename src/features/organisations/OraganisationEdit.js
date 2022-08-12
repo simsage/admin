@@ -12,8 +12,8 @@ export default function OrganisationEdit(){
     const theme = null;
     const dispatch = useDispatch();
 
-    let organisation = undefined;
-    let [name,setName] = useState(undefined);
+    let organisation = null;
+    let [name,setName] = useState('');
     let [enabled,setEnabled] = useState(false);
 
     const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form)
@@ -21,32 +21,30 @@ export default function OrganisationEdit(){
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
     const session = useSelector((state) => state).authReducer.session;
 
-    if(organisation_id && organisation_list) {
-        let temp_org = organisation_list.filter((org) => {return org.id === organisation_id})
-        if(temp_org.length > 0){
-            organisation = (temp_org[0])
-            console.log("enabled",organisation.enabled)
-        }
-    }
+
 
     useEffect(()=>{
-        if(organisation_id !== undefined &&  name === undefined){
-            setName(organisation.name);
-            setEnabled(organisation.enable);
+        if(organisation_id && organisation_list) {
+            let temp_org = organisation_list.filter((org) => {return org.id === organisation_id})
+            if(temp_org.length > 0) {
+                organisation = (temp_org[0])
+                setName(organisation.name);
+                setEnabled(organisation.enabled);
+            }
         }
-    })
+    },[show_organisation_form])
 
-    const title = (organisation_id===undefined)? "Add new Organisation":"Edit Organisation";
+    const title = (organisation_id===null)? "Add new Organisation":"Edit Organisation";
 
     const handleClose = () => {
-        setName(undefined)
+        setName('')
         dispatch(closeOrganisationForm());
     }
 
     const handleSave = () => {
         const session_id = session.id
         let org_id = '';
-        if(organisation_id !== undefined) org_id = organisation_id;
+        if(organisation_id !== null) org_id = organisation_id;
         console.log("organisation_id",org_id)
         const data = {name:name, enabled:enabled, id:org_id}
         dispatch(updateOrganisation({session_id,data}))
@@ -92,7 +90,7 @@ export default function OrganisationEdit(){
                                                value="enable this organisation?"
                                         />
                                     </span>
-                                    <span>organisation enabled?</span>
+                                    <span>organisation enabled?{(enabled)?"true":"false"}</span>
                                 </div>
 
                             </div>

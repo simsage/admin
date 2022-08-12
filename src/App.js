@@ -30,7 +30,7 @@ function App() {
     const org_filter = null;
 
     useEffect(()=>{
-        if(organisation_list === undefined){
+        if(organisation_list === {}){
             dispatch(getOrganisationList({session,org_filter}))
         }
     },[])

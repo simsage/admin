@@ -6,58 +6,6 @@ import {getOrganisationList} from "../organisations/organisationSlice";
 import {useSelector} from "react-redux";
 import {useState} from "react";
 
-//Get user from status
-
-
-//TODO:For testing purpose - delete before go live
-
-// user = {
-//     "id": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//     "email": "siva@simsage.co.uk",
-//     "firstName": "Siva",
-//     "surname": "Elan",
-//     "passwordHash": "",
-//     "confirmed": true,
-//     "roles": [
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "057df680-af6d-11ec-b559-a3a5ee669df3",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "5ffd40f0-9efd-11ec-8d58-0bc6a5e82008",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "639b4f40-9efd-11ec-8d58-0bc6a5e82008",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "67ef1900-9efd-11ec-8d58-0bc6a5e82008",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "c276f883-e0c8-43ae-9119-df8b7df9c574",
-//         "role": "admin"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "c276f883-e0c8-43ae-9119-df8b7df9c574",
-//         "role": "dms"
-//     },
-//     {
-//         "userId": "90146b6f-4406-49ef-8780-efb47fcb563e",
-//         "organisationId": "fe9e09c0-9efc-11ec-8d58-0bc6a5e82008",
-//         "role": "admin"
-//     }
-// ],
-//     "operatorKBList": [],
-//     "groupList": []
-// }
 
 const initialState = {
     user: undefined,

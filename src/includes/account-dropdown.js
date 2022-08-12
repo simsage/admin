@@ -50,20 +50,10 @@ const AccountDropdown = (props) => {
         console.log("getHelp")
     }
 
-    function signOut(){
-        console.log("signOut")
-        // Comms.http_delete('/auth/sign-out',
-        //     () => {
-        //         dispatch({type: SIGN_OUT});
-        //         if (callback)
-        //             callback();
-        //     },
-        //     (errStr) => {
-        //         console.error(errStr);
-        //         if (callback)
-        //             callback();
-        //     }
-        // )
+    function handleSignOut(){
+        instance.logoutRedirect({
+            postLogoutRedirectUri: "/",
+        });
     }
 
 
@@ -104,9 +94,7 @@ const AccountDropdown = (props) => {
                 </li>
                 <li className="acc-item px-4 py-3"
                     onClick={() => {
-                        instance.logoutRedirect({
-                            postLogoutRedirectUri: "/",
-                        });
+                        handleSignOut()
                     }}>
                     <label>Sign Out</label>
                 </li>

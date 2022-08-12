@@ -5,16 +5,16 @@ import axios from "axios";
 import {useSelector} from "react-redux";
 
 const initialState = {
-    organisation_filter: undefined,
-    organisation_list: undefined,
+    organisation_filter: null,
+    organisation_list: {},
     organisation_page: 0,
     organisation_page_size: 10,
 
     //new states
-    status: undefined,
-    error: undefined,
+    status: false,
+    error: null,
     show_organisation_form: false,
-    edit_organisation_id: undefined,
+    edit_organisation_id: null,
 }
 
 const reducers = {
