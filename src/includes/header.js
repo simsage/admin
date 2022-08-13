@@ -8,8 +8,8 @@ const Header = (props) => {
 
     const {user, session, accounts_dropdown} = useSelector((state) => state.authReducer);
     let organisation = useSelector((state) => state.authReducer.selected_organisation);
-    organisation = (organisation)?organisation:{name:"not set",id:"10"}
 
+    organisation = (organisation)?organisation:{name:"not set",id:"10"}
     const {firstName, surname} = user? user : {firstName:'not set', surname:'not set'}
 
     function toggleAccountsMenu(e,accounts_dropdown) {

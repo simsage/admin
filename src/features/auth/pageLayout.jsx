@@ -45,6 +45,7 @@ export const PageLayout = (props) => {
                     const session = response2.data.session;
                     const filter = null;
                     console.log("response2.data.session", session.organisationId);
+                    console.log("getOrganisationList in pageLayout")
                     dispatch(getOrganisationList({session:session,filter:filter}));
                     dispatch(getKBList({session_id:session.id, organization_id:session.organisationId}));
 

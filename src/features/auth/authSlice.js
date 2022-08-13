@@ -8,18 +8,20 @@ import {useState} from "react";
 
 
 const initialState = {
-    user: undefined,
-    session: undefined,
-    selected_organisation: undefined,
-    selected_organisation_id: undefined,
-    selected_knowledge_base: undefined,
-    selected_knowledge_base_id: undefined,
-    isError: undefined,
-    isSuccess: undefined,
-    isLoading: undefined,
-    message: undefined,
+    user: {},
+    session: {},
 
-    accounts_dropdown: undefined,
+    selected_organisation: {},
+    selected_organisation_id: null,
+    selected_knowledge_base: {},
+    selected_knowledge_base_id: null,
+
+    isError: false,
+    isSuccess: false,
+    isLoading: false,
+    message: null,
+
+    accounts_dropdown: false,
     // jwt: undefined,
 }
 
@@ -35,8 +37,8 @@ const authSlice = createSlice({
             if(state.selected_organisation_id !== action.payload.id){
                 state.selected_organisation = action.payload;
                 state.selected_organisation_id = action.payload.id;
-                state.selected_knowledge_base = undefined;
-                state.selected_knowledge_base_id = undefined
+                state.selected_knowledge_base = {};
+                state.selected_knowledge_base_id = null
             }
 ;
         },

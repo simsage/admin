@@ -16,8 +16,6 @@ function App() {
     const dispatch = useDispatch();
 
     function localCloseAllMenus(){
-        // console.log("closeAllMenus");
-        //console.log("closeAllMenus");
         dispatch(closeAllMenus())
     }
 
@@ -25,17 +23,17 @@ function App() {
     const {user, session } = useSelector((state) => state.authReducer)
 
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
-    const organisation_list_status = useSelector((state) => state.organisationReducer.status);
 
     const org_filter = null;
 
     useEffect(()=>{
         if(organisation_list === {}){
+            console.log("getOrganisationList in App")
             dispatch(getOrganisationList({session,org_filter}))
         }
     },[])
 
-    console.log("App organisation_list",organisation_list)
+    // console.log("App organisation_list",organisation_list)
     return (
         <PageLayout>
           <AuthenticatedTemplate>

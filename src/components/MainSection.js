@@ -17,11 +17,11 @@ function MainSection(){
 
     const filter = null;
 
-    useEffect(() => {
-        if(organisation_list === {}) {
-            console.log("useEffect Main sesction organisation_list", organisation_list,"session",session)
-        }
+    if(organisation_list === {}) {
+        console.log("useEffect Main sesction organisation_list", organisation_list,"session",session)
+    }
 
+    useEffect(() => {
     }, [])
 
     return(
