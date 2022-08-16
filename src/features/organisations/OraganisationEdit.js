@@ -62,7 +62,7 @@ export default function OrganisationEdit(){
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">{title} {organisation_id}</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">{title} </h5>
                             <button onClick={ handleClose } type="button" className="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>

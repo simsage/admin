@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import db from "../../notes/db.json";
@@ -10,13 +10,15 @@ export default function InventoryHome(){
     const title = "Inventory";
     const theme = '';
     const selected_organisation = "ORg1"
-    const selected_organisation_id = "432432424"
-    const selected_knowledgebase_id = "432432424"
-    const session = {'id':"12w222"}
 
-    const inventorize_list = db.inventories;
+    const dispatch = useDispatch();
+    const session = useSelector((state) => state.authReducer.session);
+    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
+    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
 
+    const [inventory_list, setInventoryList]  = useState({});
     const [error, setError] = useState('')
+
 
     //TODO::inventorize_busy
     const inventorize_busy = false;
@@ -38,11 +40,11 @@ export default function InventoryHome(){
     }
     function inventorizeDump(dateTime) {
         if (session && session.id)
-            Comms.download_inventorize_dump(selected_organisation_id, selected_knowledgebase_id, dateTime, session.id);
+            Comms.download_inventorize_dump(selected_organisation_id, selected_knowledge_base_id, dateTime, session.id);
     }
     function inventorizeDumpSpreadsheet(dateTime) {
         if (session && session.id)
-            Comms.download_inventorize_dump_spreadhseet(selected_organisation_id, selected_knowledgebase_id, dateTime, session.id);
+            Comms.download_inventorize_dump_spreadhseet(selected_organisation_id, selected_knowledge_base_id, dateTime, session.id);
     }
     function deleteInventorizeAsk(dateTime) {
         this.setState({date_time: dateTime});
@@ -76,7 +78,7 @@ export default function InventoryHome(){
     function isVisible() {
         return selected_organisation_id && selected_organisation_id.length > 0 &&
             selected_organisation && selected_organisation.length > 0 &&
-            selected_knowledgebase_id && selected_knowledgebase_id.length > 0;
+            selected_knowledge_base_id && selected_knowledge_base_id.length > 0;
     }
     function itemNameToDescription(name) {
         if (name === "content spreadsheet")
@@ -152,8 +154,8 @@ export default function InventoryHome(){
                         </tr>
                         </thead>
                         <tbody>
-                        {inventorize_list.length}
-                        { inventorize_list && inventorize_list.timeList && inventorize_list.timeList.map((item, i) => {
+                        {inventory_list.length}
+                        { inventory_list && inventory_list.timeList && inventory_list.timeList.map((item, i) => {
                             return (
                                 <tr key={i}>
                                     <td>

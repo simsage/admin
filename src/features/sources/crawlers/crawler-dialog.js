@@ -91,6 +91,7 @@ export class CrawlerDialog extends Component {
 
                 crawler: nextProps.crawler,
             });
+            console.log("handleSave step 5", nextProps.crawler)
         }
     }
     setError(title, error_msg) {
@@ -199,9 +200,9 @@ export class CrawlerDialog extends Component {
         return true;
     }
     handleSave() {
-
-        console.log("handleSave")
+        console.log("handleSave step 1")
         const crawler = this.state.crawler;
+        console.log("handleSave step 2 ", crawler)
         const validAcls = crawler.allowAnonymous || (crawler.acls && crawler.acls.length > 0);
         let sj = {};
         if (crawler && crawler.specificJson && (typeof crawler.specificJson === "string" || crawler.specificJson instanceof String)) {
@@ -405,6 +406,7 @@ export class CrawlerDialog extends Component {
         const c_type = crawler.crawlerType;
         const sj = JSON.parse(crawler.specificJson ? crawler.specificJson : "{}");
 
+        console.log()
         if (!this.state.open) {
             return (<div />)
         }
@@ -497,7 +499,10 @@ export class CrawlerDialog extends Component {
                                 </ul>
 
                                 <div className="form-content">
+                                    {console.log("handleSave step 4 general", crawler)}
                                     {t_value === 'general' &&
+
+
                                         <CrawlerGeneral
                                             theme={theme}
                                             sourceId={crawler.sourceId}

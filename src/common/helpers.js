@@ -4,7 +4,7 @@ export function getFullname(user){
     return user.firstName + ' ' + user.surname
 }
 
-export const local_storage_key = window.ENV.local_storage_key;
+export const local_storage_key = (window.ENV)?window.ENV.local_storage_key:"";
 
 export function loadState() {
     try {

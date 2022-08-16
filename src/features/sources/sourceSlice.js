@@ -5,8 +5,8 @@ import axios from "axios";
 import {updateOrganisation} from "../organisations/organisationSlice";
 
 const initialState = {
-    source_list: undefined,
-    source_filter: undefined,
+    source_list: {},
+    source_filter: null,
     source_page: 0,
     source_page_size: 10,
 
@@ -96,12 +96,15 @@ export const updateSources = createAsyncThunk(
         if (url !== '/stats/stats/os') {
             console.log('PUT ' + api_base + url);
         }
-        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+        return axios.post(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("updateSources data",response.data)
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    console.log("error",error)
+                    return error
+                }
             )
 
 });

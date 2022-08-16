@@ -69,7 +69,7 @@ export default function LeftNavbar(){
 
 
 
-                {(kb_list_status !== undefined && kb_list !== undefined && kb_list.length > 0) &&
+                {(kb_list !== {} && kb_list.length > 0) &&
                 <>
                     <select value={selected_kb_id} className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
                         <option value="">Please select</option>
@@ -78,7 +78,8 @@ export default function LeftNavbar(){
                         })}
                     </select>
 
-                    {selected_kb_id !== undefined &&
+
+                    {selected_kb_id !== null &&
                         nav2.map((item, i) => {
                             return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo}/>
                         })
@@ -89,19 +90,6 @@ export default function LeftNavbar(){
 
              </ul>
 
-            {/*    <li className="px-3 py-2 border-top">*/}
-            {/*        <select className="form-select sb-select px-3 py-2">*/}
-            {/*            {kb_list.map((item,i) => {*/}
-            {/*            return <option key={i} value={item.id}>{item.name}</option>*/}
-            {/*            })}*/}
-            {/*        </select>*/}
-            {/*    </li>*/}
-
-            {/* <ul className="sb-nav ps-0">*/}
-            {/*    {nav2.map((item,i) => {*/}
-            {/*        return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo} />*/}
-            {/*    })}*/}
-            {/*</ul>*/}
         </div>
     )
 }

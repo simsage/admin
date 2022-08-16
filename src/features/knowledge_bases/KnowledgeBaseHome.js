@@ -29,15 +29,15 @@ export default function KnowledgeBaseHome() {
 
         <div className="section px-5 pt-4">
 
-            {status === undefined &&
+            {status === null &&
                 <KnowledgeBaseIntro/>
             }
             {/*Intro message when there is no kb list*/}
-            {status !== undefined && kb_list !== undefined && kb_list.length === 0 &&
+            {status !== null && kb_list !== {} && kb_list.length === 0 &&
                 <KnowledgeBaseIntro/>
             }
             {/*show kb list*/}
-            {status !== undefined && kb_list !== undefined && kb_list.length > 0 &&
+            {status !== null && kb_list !== {} && kb_list.length > 0 &&
                 <KnowledgeBaseList/>
             }
             {/*show kb add/edit form*/}

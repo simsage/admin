@@ -4,6 +4,11 @@ import MessageDialog from "../../../common/message-dialog";
 import Api from "../../../common/api";
 
 import '../../../css/crawler.css';
+import {closeForm} from "../sourceSlice";
+import {connect} from "react-redux";
+import {CrawlerDialog} from "./crawler-dialog";
+
+import {store} from "../../../app/store";
 
 // marker for an external node
 const external_node_id = 1000000;
@@ -71,12 +76,17 @@ export class CrawlerGeneral extends Component {
             numFragments: Api.defined(props.numFragments) && props.numFragments ? props.numFragments : default_num_fragments,
             errorThreshold: Api.defined(props.errorThreshold) && props.errorThreshold ? props.errorThreshold : default_error_threshold,
             internalCrawler: Api.defined(props.nodeId) ? props.nodeId !== external_node_id : false,
+
         };
+
 
     }
     componentDidMount() {
+        console.log("source crawler general componentDidMount", this.state)
+        console.log("source crawler general sourceReducer", store.getState().sourceReducer)
     }
     componentWillUnmount() {
+        console.log("source crawler general componentWillUnmount", this.state)
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
@@ -113,6 +123,7 @@ export class CrawlerGeneral extends Component {
                             onError: nextProps.onError,
                         }));
         }
+        {console.log("source crawler general UNSAFE_componentWillReceiveProps", nextProps)}
     }
     construct_data(data) {
         const crawlerType = Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType;
@@ -155,6 +166,7 @@ export class CrawlerGeneral extends Component {
         }
     }
     change_callback(data) {
+        console.log("source crawler general change_callback", data)
         if (Api.defined(data.internalCrawler)) {
             if (data.internalCrawler && this.state.nodeId === external_node_id) {
                 data.nodeId = 0;
@@ -163,6 +175,7 @@ export class CrawlerGeneral extends Component {
             }
         }
         this.setState(data);
+        console.log("source crawler general after setState", this.state)
         if (this.state.onSave) {
             this.state.onSave(this.construct_data(data));
         }
@@ -487,4 +500,20 @@ export class CrawlerGeneral extends Component {
     }
 }
 
-export default CrawlerGeneral;
+// export default CrawlerGeneral;
+const mapStateToProps = state => {
+    return {
+        open: state.sourceReducer.show_form,
+        source_id: state.sourceReducer.edit_id,
+        crawler: state.sourceReducer.selected_source
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    console.log("mapDispatchToProps")
+    return {
+        hideForm: () => dispatch(closeForm())
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(CrawlerGeneral);
+// export default CrawlerDialog;

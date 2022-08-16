@@ -6,7 +6,7 @@ import Comms from "../../common/comms";
 const initialState = {
     selected_tab: 'home',
     status_list:undefined,
-    theme: window.ENV.theme,
+    theme: null,
     license: undefined,          // system license
     uploading: undefined,       // program busy uploading
     busy: undefined,            // system busy

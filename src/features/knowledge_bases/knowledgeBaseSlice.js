@@ -5,15 +5,15 @@ import axios from "axios";
 import {getOrganisationList} from "../organisations/organisationSlice";
 
 const initialState = {
-    kb_list: undefined,
-    kb_filter: undefined,
+    kb_list: {},
+    kb_filter: null,
     kb_page: 0,
     kb_page_size: 10,
 
-    status: undefined,
+    status: null,
     error: null,
     show_form: false,
-    edit_id: undefined,
+    edit_id: null,
     view_id: '',
 }
 

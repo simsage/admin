@@ -14,14 +14,11 @@ import {getOrganisationList} from "./features/organisations/organisationSlice";
 function App() {
 
     const dispatch = useDispatch();
-
     function localCloseAllMenus(){
         dispatch(closeAllMenus())
     }
-
     const busy = false;
     const {user, session } = useSelector((state) => state.authReducer)
-
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
 
     const org_filter = null;
@@ -45,7 +42,6 @@ function App() {
                     </div>
                 </div>
           </AuthenticatedTemplate>
-
         </PageLayout>
     );
 }

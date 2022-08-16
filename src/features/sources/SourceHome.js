@@ -147,12 +147,14 @@ export default function SourceHome(){
             console.log("crawler.sourceID :",crawler.sourceId )
             console.log("crawler.organisationId :",crawler.organisationId )
             console.log("crawler.kbId :",crawler.kbId )
+
             dispatch(updateSources({session_id:session.id,data:crawler}))
             // crawler.organisationId = selected_organisation_id;
             // crawler.kbId = selected_knowledge_base_id;
             // this.props.updateCrawler(crawler);
         }
-        dispatch(closeForm())
+
+        //dispatch(closeForm())
         // this.setState({open: false});
     }
     function canDeleteDocuments(crawler) {
