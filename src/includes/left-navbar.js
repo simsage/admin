@@ -71,13 +71,14 @@ export default function LeftNavbar(){
 
                 {(kb_list !== {} && kb_list.length > 0) &&
                 <>
-                    <select value={selected_kb_id} className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
-                        <option value="">Please select</option>
-                        {kb_list.map((item,i) => {
-                            return <option key={i} value={item.kbId}>{item.name}</option>
-                        })}
-                    </select>
-
+                    <li className="px-3 pt-3 pb-2 border-top">
+                        <select value={selected_kb_id} className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
+                            <option value="">Please select</option>
+                            {kb_list.map((item,i) => {
+                                return <option key={i} value={item.kbId}>{item.name}</option>
+                            })}
+                        </select>
+                    </li>
 
                     {selected_kb_id !== null &&
                         nav2.map((item, i) => {

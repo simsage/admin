@@ -94,7 +94,7 @@ export default function GroupHome(){
                             //const deleteYes = canDelete(group, session.user, isAdmin, isManager);
                             const deleteYes = false;
                             return <tr key={group.id} >
-                                <td className="label"> {group.name}</td>
+                                <td className=""> {group.name}</td>
                                 <td>
                                     <button
                                     className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"}

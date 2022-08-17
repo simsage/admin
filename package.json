@@ -5,8 +5,8 @@
   "dependencies": {
     "@azure/msal-browser": "^2.26.0",
     "@azure/msal-react": "^1.4.2",
-    "@popperjs/core": "^2.11.5",
-    "@reduxjs/toolkit": "^1.8.1",
+    "@popperjs/core": "^2.11.6",
+    "@reduxjs/toolkit": "^1.8.4",
     "ajv": "^8.11.0",
     "axios": "^0.27.2",
     "bootstrap": "^5.1.3",

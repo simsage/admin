@@ -194,9 +194,9 @@ export function UsersHome(){
 
                             return <tr key={user.id} >
 
-                                <td className="label">{user.firstName} {user.surname}</td>
-                                <td className="label">{user.email}</td>
-                                <td className="label">
+                                <td className="">{user.firstName} {user.surname}</td>
+                                <td className="">{user.email}</td>
+                                <td className="">
                                     { user.roles.map((role,key) => {
                                         return <span key={key}>{role.role}<br/></span>
                                     })}
