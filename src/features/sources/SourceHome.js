@@ -290,13 +290,13 @@ export default function SourceHome(){
                 <div className="source-page">
                     <table className="table">
                         <thead>
-                        <tr className='table-header'>
-                            <th className='table-header'>id</th>
-                            <th className='table-header'>name</th>
-                            <th className='table-header'>type</th>
-                            <th className='table-header'>status</th>
-                            <th className='table-header'>crawled / indexed</th>
-                            <th className='table-header'>actions</th>
+                        <tr>
+                            <td className="small text-black-50 px-4">#</td>
+                            <td className="small text-black-50 px-4">Name</td>
+                            <td className="small text-black-50 px-4">Type</td>
+                            <td className="small text-black-50 px-4">Status</td>
+                            <td className="small text-black-50 px-4">Crawled/Indexed</td>
+                            <td className="small text-black-50 px-4"></td>
                         </tr>
                         </thead>
                         <tbody>
@@ -306,22 +306,22 @@ export default function SourceHome(){
                                 const is_running = isCrawlerRunning(crawler);
                                 return (
                                     <tr key={crawler.sourceId}>
-                                        <td>
+                                        <td className="pt-3 px-4 pb-3 fw-light">
                                             <div className="source-label">{crawler.sourceId}</div>
                                         </td>
-                                        <td>
+                                        <td className="pt-3 px-4 pb-3">
                                             <div className="source-label">{crawler.name}</div>
                                         </td>
-                                        <td>
+                                        <td className="pt-3 px-4 pb-3">
                                             <div className="source-label">{crawler.crawlerType}</div>
                                         </td>
-                                        <td>
+                                        <td className="pt-3 px-4 pb-3 fw-light small fst-italic">
                                             <div className="source-label small-label-size" title={description}>{description}</div>
                                         </td>
-                                        <td>
+                                        <td className="pt-3 px-4 pb-3 fw-light">
                                             <div className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>
                                         </td>
-                                        <td>
+                                        <td className="pt-3 px-4 pb-0">
                                             {/*{!is_running &&*/}
                                             {/*<div className="link-button"*/}
                                             {/*     onClick={() => startCrawlerAsk(crawler)}>*/}
@@ -335,14 +335,14 @@ export default function SourceHome(){
                                             {/*         title="crawler running" alt="start"/>*/}
                                             {/*</div>*/}
                                             {/*}*/}
-                                            <div>
-                                                {!is_running && <><button title="start crawler" onClick={() => startCrawlerAsk(crawler)}  className={"btn btn-primary"}>Start</button>&nbsp; &nbsp;</> }
-                                                {is_running && <><button title="start crawler" disabled className={"btn btn-primary"}>Start</button>&nbsp; &nbsp; </>}
+                                            <div className="d-flex">
+                                                {!is_running && <><button title="start crawler" onClick={() => startCrawlerAsk(crawler)}  className={"btn text-primary btn-sm"}>Start</button>&nbsp; &nbsp;</> }
+                                                {is_running && <><button title="start crawler" disabled className={"btn text-primary btn-sm"}>Start</button>&nbsp; &nbsp; </>}
 
-                                                <button title="edit crawler" onClick={() => editCrawler(crawler)}  className={"btn btn-primary"}>Edit</button>&nbsp; &nbsp;
-                                                <button title="remove crawler" onClick={() => deleteCrawlerAsk(crawler)}  className={"btn btn-primary"}>Remove</button>&nbsp; &nbsp;
-                                                <button title="get crawler JSON for export" onClick={() => exportCrawler(crawler)}  className={"btn btn-primary"}>Export</button>&nbsp; &nbsp;
-                                                <button title="zip all files in a source" onClick={() => zipSourceAsk(crawler)}  className={"btn btn-primary"}>Zip</button>&nbsp; &nbsp;
+                                                <button title="edit crawler" onClick={() => editCrawler(crawler)}  className={"btn text-primary btn-sm"}>Edit</button>&nbsp; &nbsp;
+                                                <button title="remove crawler" onClick={() => deleteCrawlerAsk(crawler)}  className={"btn text-danger btn-sm"}>Remove</button>&nbsp; &nbsp;
+                                                <button title="get crawler JSON for export" onClick={() => exportCrawler(crawler)}  className={"btn text-primary btn-sm"}>Export</button>&nbsp; &nbsp;
+                                                <button title="zip all files in a source" onClick={() => zipSourceAsk(crawler)}  className={"btn text-primary btn-sm"}>Zip</button>&nbsp; &nbsp;
                                             </div>
                                             {/*<div className="link-button" onClick={() => editCrawler(crawler)}>*/}
                                             {/*    <img src="../../images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>*/}
@@ -368,6 +368,7 @@ export default function SourceHome(){
                             <td/>
                             <td/>
                             <td>
+                                {/* Siva - Can we place this in SourceFilter.js please */}
                                 {selected_organisation_id.length > 0 &&
                                 <div className="image-button" >
                                     <button onClick={() => addNewCrawler()} className={"btn btn-primary p-1"}>Add New Source</button>

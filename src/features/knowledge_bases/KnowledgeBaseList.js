@@ -80,16 +80,34 @@ export default function KnowledgeBaseList(){
     return(
         <div className="kb-page">
             { isVisible() &&
-
             <div>
+                <div className="d-flex justify-content-beteween w-100 mb-4">
+                    <div className="d-flex w-100">
+                        <div className="form-group me-2">
+                            <input type="text" placeholder={"Filter..."} className="form-control"/>
+                        </div>
+                        <div className="form-group me-2">
+                            <select  placeholder={"Filter"} className="form-select filter-text-width">
+                                <option value="alphabetical">Alphabetical</option>
+                                <option value="">Recently added</option>
+                            </select>
+                        </div>
+                    </div>
 
+                    <div className="form-group col ms-auto">
+                        {organisation_id && organisation_id.length > 0 &&
+                            <button onClick={() => handleAddForm()} className={"btn btn-primary text-nowrap"}>+ Add Knowledge Base</button>
+                        }
+                    </div>
+                </div>
+                
                 <div>
                     <table className="table">
                         <thead>
-                        <tr className='table-header'>
-                            <th className='table-header table-width-20'>Knowledge Base</th>
-                            <th className='table-header table-width-20'>Email Queries</th>
-                            <th className='table-header'>actions</th>
+                        <tr>
+                            <td className="small text-black-50 px-4">Knowledge Base</td>
+                            <td className="small text-black-50 px-4">Email Queries</td>
+                            <td></td>
                         </tr>
                         </thead>
                         <tbody>
@@ -97,19 +115,19 @@ export default function KnowledgeBaseList(){
                             getKnowledgeBases().map((knowledge_base) => {
                                 return (
                                     <tr key={knowledge_base.kbId}>
-                                        <td>
+                                        <td className="pt-3 px-4 pb-3">
                                             <div className="kb-label" onClick={() => dispatch(setSelectedKB(knowledge_base.kbId))}>{knowledge_base.name}</div>
                                         </td>
-                                        <td>
+                                        <td className="pt-3 px-4 pb-3 fw-light">
                                             <div className="kb-label" onClick={() => dispatch(setSelectedKB(knowledge_base.kbId))}>{knowledge_base.email}</div>
                                         </td>
 
-                                        <td>
+                                        <td className="pt-3 px-4 pb-0">
                                             <div className="link-button" >
-                                                <button title="edit knowledge base" onClick={() => handleEditForm(knowledge_base.kbId)}  className={"btn btn-primary"}>Edit</button>&nbsp; &nbsp;
-                                                <button title="remove knowledge base" onClick={() => handleDeleteForm(knowledge_base.kbId)}  className={"btn btn-outline-danger"}>Delete</button>&nbsp; &nbsp;
-                                                <button title="view knowledge base ids" onClick={() => handleViewIds(knowledge_base.kbId)}  className={"btn btn-outline-primary"}>View Ids</button>&nbsp; &nbsp;
-                                                <button title="optimize indexes" onClick={() => handleOptimizeIndexesAsk(knowledge_base)}  className={"btn btn-outline-primary"}>Optimize indexes</button>&nbsp; &nbsp;
+                                                <button title="edit knowledge base" onClick={() => handleEditForm(knowledge_base.kbId)}  className={"btn text-primary btn-sm"}>Edit</button>
+                                                <button title="remove knowledge base" onClick={() => handleDeleteForm(knowledge_base.kbId)}  className={"btn text-danger btn-sm"}>Delete</button>
+                                                <button title="view knowledge base ids" onClick={() => handleViewIds(knowledge_base.kbId)}  className={"btn text-primary btn-sm"}>View Ids</button>
+                                                <button title="optimize indexes" onClick={() => handleOptimizeIndexesAsk(knowledge_base)}  className={"btn text-sprimary btn-sm"}>Optimize indexes</button>
 
                                             </div>
                                         </td>
@@ -117,20 +135,6 @@ export default function KnowledgeBaseList(){
                                 )
                             })
                         }
-                        <tr>
-                            <td/>
-                            <td/>
-                            <td>
-                                {organisation_id && organisation_id.length > 0 &&
-                                    <button onClick={() => handleAddForm()} className={"btn btn-primary"}>Add New</button>
-                                // <div className="kb-image-button" >
-                                //
-                                //     <img
-                                //         className="image-size" src="../images/add.svg" title="add new user"
-                                //         alt="add new kb"/></div>
-                                }
-                            </td>
-                        </tr>
                         </tbody>
                     </table>
 

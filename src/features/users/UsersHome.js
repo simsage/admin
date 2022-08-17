@@ -144,7 +144,7 @@ export function UsersHome(){
                         <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}
                                 onChange={(e) => setOrderFilter(e.target.value)}>
                             <option value="alphabetical">Alphabetical</option>
-                            <option value="">Join</option>
+                            <option value="">Recently Added</option>
                         </select>
 
                     </div>
@@ -176,9 +176,10 @@ export function UsersHome(){
                 <table className="table">
                     <thead>
                         <tr>
-                            <td className="small">Name</td>
-                            <td className="small">Email</td>
-                            <td className="small">Roles</td>
+                            <td className="small text-black-50 px-4">Name</td>
+                            <td className="small text-black-50 px-4">Email</td>
+                            <td className="small text-black-50 px-4">Roles</td>
+                            <td></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -194,16 +195,19 @@ export function UsersHome(){
 
                             return <tr key={user.id} >
 
-                                <td className="">{user.firstName} {user.surname}</td>
-                                <td className="">{user.email}</td>
-                                <td className="">
-                                    { user.roles.map((role,key) => {
-                                        return <span key={key}>{role.role}<br/></span>
-                                    })}
+                                <td className="pt-3 px-4 pb-3">{user.firstName} {user.surname}</td>
+                                <td className="pt-3 px-4 pb-3 fw-light">{user.email}</td>
+                                <td className="pt-3 px-4 pb-0" style={{width:"250px"}}>
+                                    <div className="d-flex flex-wrap">
+                                        { user.roles.map((role,key) => {
+                                            return <span key={key} className="small bg-light px-3 py-1 me-2 mb-2 rounded-pill">{role.role}</span>
+                                        })}
+                                    </div>
                                 </td>
-
-                                <td><button className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit icon</button></td>
-                                <td><button className={"btn btn-outline-danger"}>Delete icon {deleteYes}</button></td>
+                                <td className="pt-2 px-4 pb-0">
+                                    <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit</button>
+                                    <button className={"btn text-danger btn-sm"}>Delete {deleteYes}</button>
+                                </td>
                             </tr>
                         })
                     }
