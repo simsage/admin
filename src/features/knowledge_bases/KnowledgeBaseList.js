@@ -17,7 +17,7 @@ export default function KnowledgeBaseList(){
     const [kb_page_size, setKbPageSize] = useState(useSelector((state) => state.kbReducer.kb_page_size))
 
     const dispatch = useDispatch()
-
+    
 
     useEffect(()=>{
         dispatch(getKBList({session_id:session.id, organization_id:organisation_id}));

@@ -75,7 +75,7 @@ export default function GroupHome(){
             </div>
 
 
-            <div className="section">
+            <div className="">
                 {!group_list &&
                     <div>Loading...</div>
                 }

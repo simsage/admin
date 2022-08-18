@@ -168,7 +168,7 @@ export function UsersHome(){
             </div>
 
 
-            <div className="section">
+            <div className="">
                 {!user_list &&
                 <div>Loading...</div>
                 }

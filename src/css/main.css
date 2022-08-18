@@ -327,6 +327,12 @@ html, body, #root, .App, .dms {
 }
 
 
+/* Section */
+.section {
+    height: calc(100vh - 116px);
+    overflow: auto;
+}
+
 
 /* Table */
 .table > :not(:first-child) {
