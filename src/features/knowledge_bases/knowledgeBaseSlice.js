@@ -142,7 +142,7 @@ const knowledgeBaseSlice = createSlice({
         },
         setViewIds:(state,action) => {
             console.log("setViewIds",action.payload)
-            state.view_id = action.payload
+            state.view_id = action.payload?action.payload:null;
         },
         closeForm:(state) => {
             state.show_form = false;

@@ -20,11 +20,6 @@ export default function KnowledgeBaseHome() {
     const kb_show_form = useSelector((state) => state.kbReducer.show_form)
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
 
-
-    console.log("kb_show_form", kb_show_form)
-    console.log("kb_view_ids 1", kb_view_id)
-
-    console.log("kb_view_ids", kb_view_id)
     return (
 
         <div className="section px-5 pt-4">
@@ -45,8 +40,12 @@ export default function KnowledgeBaseHome() {
                 <KnowledgeBaseEdit/>
             }
             {/*show view list*/}
-            {kb_view_id !== null &&
-                <ViewIds/>
+            {(kb_view_id !== null)&&
+                <>
+                {console.log("kb_view_id",kb_view_id)}
+                    <ViewIds/>
+                </>
+
             }
 
         </div>
