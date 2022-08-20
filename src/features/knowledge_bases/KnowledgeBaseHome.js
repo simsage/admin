@@ -45,7 +45,7 @@ export default function KnowledgeBaseHome() {
                 <KnowledgeBaseEdit/>
             }
             {/*show view list*/}
-            {kb_view_id !== '' &&
+            {kb_view_id !== null &&
                 <ViewIds/>
             }
 

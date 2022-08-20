@@ -1,7 +1,15 @@
-import reducer, {getSources, updateSources, showAddForm, showEditForm, closeForm} from '../sourceSlice'
+import reducer, {showAddForm, showEditForm, closeForm} from '../sourceSlice'
 
-const previousState = {"edit_id": null, "error": "", "selected_source": {}, "show_form": false, "source_filter": null,
-    "source_list": {}, "source_page": 0, "source_page_size": 10, "status": ""}
+const previousState = {
+    "edit_id": null,
+    "error": "",
+    "selected_source": {},
+    "show_form": false,
+    "source_filter": null,
+    "source_list": {},
+    "source_page": 0,
+    "source_page_size": 10,
+    "status": ""}
 
 test('should return the initial state of source', () => {
     expect(reducer(undefined, { type: undefined })).toEqual(previousState)

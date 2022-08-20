@@ -5,7 +5,7 @@ import axios from "axios";
 import {getOrganisationList} from "../organisations/organisationSlice";
 
 const initialState = {
-    kb_list: {},
+    kb_list: [],
     kb_filter: null,
     kb_page: 0,
     kb_page_size: 10,
@@ -14,7 +14,7 @@ const initialState = {
     error: null,
     show_form: false,
     edit_id: null,
-    view_id: '',
+    view_id: null,
 }
 
 

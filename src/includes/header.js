@@ -25,7 +25,7 @@ const Header = (props) => {
             </div>
             <div className="d-flex align-items-center">
                 <div className="d-none d-lg-flex flex-column text-end me-3">
-                    <p className="user-name mb-0">{firstName + " " + surname}</p>
+                    <p className="user-name mb-0">{firstName + " " + surname} - org: {organisation.id} -sess: {session.id}</p>
                     <p className="org-name mb-0">{((organisation !== null && organisation.name !== null) ? organisation.name : "") }</p>
                 </div>
 
