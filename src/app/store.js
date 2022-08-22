@@ -9,6 +9,7 @@ import sourceReducer from "../features/sources/sourceSlice";
 import groupReducer from "../features/groups/groupSlice"
 import inventoryReducer from "../features/inventory/inventorySlice";
 import statusSlice from "../features/status/statusSlice";
+import documentSlice from "../features/document_management/documentSlice";
 
 /**
  * Logs all actions and states after they are dispatched.
@@ -25,7 +26,8 @@ export const store = configureStore({
     sourceReducer: sourceReducer,
     groupReducer: groupReducer,
     inventoryReducer:inventoryReducer,
-    statusReducer:statusSlice
+    statusReducer:statusSlice,
+    documentReducer:documentSlice,
   },
   middleware:(getDefaultMiddleware => getDefaultMiddleware().concat(logger))
 });
