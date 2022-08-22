@@ -247,9 +247,11 @@ export class Comms {
 
     static getHeaders(session_id) {
         if (session_id) {
+            // const api_version = 1;
+            const api_version = window.ENV.api_version
             return {
                 headers: {
-                    "API-Version": window.ENV.api_version,
+                    "API-Version": api_version,
                     "Content-Type": "application/json",
                     "session-id": session_id,
                 }

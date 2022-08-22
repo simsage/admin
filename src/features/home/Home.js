@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import SubNav from "../../includes/sub-nav";
 import KnowledgeBaseHome from "../knowledge_bases/KnowledgeBaseHome";
-import StatusHome from "./StatusHome";
+import StatusHome from "../status/StatusHome";
 import LogHome from "./LogHome";
 import {useDispatch, useSelector} from "react-redux";
 import {getOrganisationList} from "../organisations/organisationSlice";

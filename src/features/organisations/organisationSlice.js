@@ -18,18 +18,18 @@ const initialState = {
 }
 
 const reducers = {
-    showAddOrganisationForm:(state,action) => {
+    showAddOrganisationForm: (state, action) => {
         state.show_organisation_form = action.payload.show_form;
     },
 
-    showEditOrganisationForm:(state,action) => {
+    showEditOrganisationForm: (state, action) => {
         state.show_organisation_form = action.payload.show_form;
         state.edit_organisation_id = action.payload.org_id;
     },
 
-    closeOrganisationForm:(state) => {
-    state.show_organisation_form = false;
-    state.edit_organisation_id = undefined;
+    closeOrganisationForm: (state) => {
+        state.show_organisation_form = false;
+        state.edit_organisation_id = null;
     },
 
 }
@@ -39,35 +39,37 @@ const extraReducers = (builder) => {
         .addCase(getOrganisationList.pending, (state, action) => {
             state.status = "loading"
         })
+
         .addCase(getOrganisationList.fulfilled, (state, action) => {
-            console.log("addCase simSageSignIn fulfilled ",action);
+            console.log("addCase getOrganisationList fulfilled ", action);
             state.status = "fulfilled";
             state.organisation_list = action.payload;
-            console.log('action.payload', action.payload);
+            // console.log('action.payload', action.payload);
         })
         .addCase(getOrganisationList.rejected, (state, action) => {
-            console.log("addCase simSageSignIn rejected ",action)
+            console.log("addCase getOrganisationList rejected ", action)
             state.status = "rejected"
         })
         .addCase(updateOrganisation.fulfilled, (state, action) => {
-            console.log("addCase updateOrganisation fulfilled ",action)
+            console.log("addCase updateOrganisation fulfilled ", action)
             state.show_organisation_form = false;
             state.edit_organisation_id = undefined;
             // state.organisation_list = action.payload
         })
         .addCase(updateOrganisation.rejected, (state, action) => {
-        console.log("addCase updateOrganisation rejected ",action)
-    })
+            console.log("addCase updateOrganisation rejected ", action)
+        })
 }
 
 
 export const getOrganisationList = createAsyncThunk(
     'organisations/getOrganisationList',
-    async ({session,filter}) => {
+    async ({session, filter}) => {
         // console.log("organisations/getOrganisationList 67",session);
+        // const api_base = 'https://uat-cloud.simsage.ai/api';
         const api_base = window.ENV.api_base;
-        const url = '/auth/user/organisations/'+ encodeURIComponent(filter);
-        const { id } = session
+        const url = '/auth/user/organisations/' + encodeURIComponent(filter);
+        const {id} = session
 
         if (url !== '/stats/stats/os') {
             console.log('GET ' + api_base + url);
@@ -75,20 +77,21 @@ export const getOrganisationList = createAsyncThunk(
 
         return axios.get(api_base + url, Comms.getHeaders(id))
             .then((response) => {
-                console.log("organisations/getOrganisationList1 78",response.data);
+                console.log("organisations/getOrganisationList1 78", response.data);
                 return response.data
             }).catch(
                 (error) => {
-                    // console.log("organisations/getOrganisationList1 82",error);
-                    return error}
+                    console.log("organisations/getOrganisationList1 82", error);
+                    return error
+                }
             )
     }
-        );
+);
 
 
 export const updateOrganisation = createAsyncThunk(
     'organisations/updateOrganisation',
-    async ({session_id,data})=>{
+    async ({session_id, data}) => {
         console.log("organisations/updateOrganisation");
 
         const api_base = window.ENV.api_base;
@@ -98,13 +101,39 @@ export const updateOrganisation = createAsyncThunk(
         }
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("updateOrganisation data",response.data)
+                console.log("updateOrganisation data", response.data)
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error
+                }
             )
     }
 )
+
+
+
+
+//These functions are created for testing the equivalent function
+
+// export const getOrganisationListTest = createAsyncThunk(
+//     'organisations/getOrganisationListTest',
+//     async ({session, filter}) => {
+//         const api_base = 'https://uat-cloud.simsage.ai/api';
+//         // const api_version = 1;
+//         // // const url = '/auth/user/organisations/' + encodeURIComponent(filter);
+//         // const url = '/auth/user/organisations/';
+//         // const {id} = session
+//         //
+//         // return axios.get(api_base + url)
+//         //     .then((res)=>{ console.log("inside the reducer",res.data)})
+//
+//         return await axios.get(api_base+"/auth/user/organisations/").then((res) => {
+//             // console.log("res",res.data)
+//             return res.data
+//         })
+//     }
+// );
 
 
 // function getOrganisationList(current_org_name, current_org_id, _filter, change_organisation, dispatch, getState, session_id) {
@@ -132,7 +161,6 @@ export const updateOrganisation = createAsyncThunk(
 // }
 
 
-
 const organisationSlice = createSlice({
     name: 'organisations',
     initialState,
@@ -140,5 +168,5 @@ const organisationSlice = createSlice({
     extraReducers
 });
 
-export const {showAddOrganisationForm, showEditOrganisationForm, closeOrganisationForm } = organisationSlice.actions
+export const {showAddOrganisationForm, showEditOrganisationForm, closeOrganisationForm} = organisationSlice.actions
 export default organisationSlice.reducer;

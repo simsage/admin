@@ -8,6 +8,7 @@ import {logger} from "redux-logger/src";
 import sourceReducer from "../features/sources/sourceSlice";
 import groupReducer from "../features/groups/groupSlice"
 import inventoryReducer from "../features/inventory/inventorySlice";
+import statusSlice from "../features/status/statusSlice";
 
 /**
  * Logs all actions and states after they are dispatched.
@@ -23,7 +24,8 @@ export const store = configureStore({
     organisationReducer: organisationReducer,
     sourceReducer: sourceReducer,
     groupReducer: groupReducer,
-    inventoryReducer:inventoryReducer
+    inventoryReducer:inventoryReducer,
+    statusReducer:statusSlice
   },
   middleware:(getDefaultMiddleware => getDefaultMiddleware().concat(logger))
 });
