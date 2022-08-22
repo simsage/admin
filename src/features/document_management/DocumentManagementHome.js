@@ -26,13 +26,13 @@ export default function DocumentManagementHome(){
             </div>
 
             {selected_sub_nav === 'sources' &&
-            <SourceHome />
+            <SourceHome tab={selected_sub_nav}/>
             }
             {selected_sub_nav === 'inventory' &&
-            <InventoryHome />
+            <InventoryHome tab={selected_sub_nav}/>
             }
             {selected_sub_nav === 'documents' &&
-            <DocumentsHome />
+            <DocumentsHome tab={selected_sub_nav}/>
             }
         </div>
     )

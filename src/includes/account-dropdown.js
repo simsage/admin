@@ -2,7 +2,11 @@ import React, {Component, useEffect} from 'react';
 
 import {useDispatch, useSelector} from "react-redux";
 import {useMsal} from "@azure/msal-react";
-import { showAddOrganisationForm, showEditOrganisationForm} from "../features/organisations/organisationSlice";
+import {
+    getOrganisationList,
+    showAddOrganisationForm,
+    showEditOrganisationForm
+} from "../features/organisations/organisationSlice";
 import {setSelectedOrganisation} from "../features/auth/authSlice";
 import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
 import {selectTab} from "../features/home/homeSlice";
@@ -33,6 +37,9 @@ const AccountDropdown = (props) => {
         dispatch(selectTab('home'))
     }
 
+    // useEffect(()=>{
+    //     dispatch(getOrganisationList({session:session, filter:null}))
+    // },[organisation_list_status])
 
     function handleAddOrganisation(){
         dispatch(showAddOrganisationForm({show_form:true}))

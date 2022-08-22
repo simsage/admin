@@ -20,6 +20,7 @@ function App() {
     const busy = false;
     const {user, session } = useSelector((state) => state.authReducer)
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
+    const status = useSelector((state) => state.organisationReducer.status);
 
     const org_filter = null;
 
@@ -28,7 +29,7 @@ function App() {
             console.log("getOrganisationList in App")
             dispatch(getOrganisationList({session,org_filter}))
         }
-    },[])
+    },[status])
 
     // console.log("App organisation_list",organisation_list)
     return (

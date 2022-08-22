@@ -1,0 +1,8 @@
+
+22/08/2022
+I used the put instead of get for this. Is there any reason for this
+PUT https://cloud.simsage.ai/api/stats/status/7cc95aa3-e1e2-4596-9347-6bcd7b2234c2
+
+/api/document/documents
+Documents Paginated
+

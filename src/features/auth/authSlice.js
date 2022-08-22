@@ -40,7 +40,6 @@ const authSlice = createSlice({
                 state.selected_knowledge_base = {};
                 state.selected_knowledge_base_id = null
             }
-;
         },
 
         setSelectedKB: (state,action) => {

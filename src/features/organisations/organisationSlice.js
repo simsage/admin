@@ -3,6 +3,7 @@ import Comms from "../../common/comms";
 import db from "../../notes/db.json"
 import axios from "axios";
 import {useSelector} from "react-redux";
+import {deleteRecord} from "../knowledge_bases/knowledgeBaseSlice";
 
 const initialState = {
     organisation_filter: null,
@@ -50,6 +51,8 @@ const extraReducers = (builder) => {
             console.log("addCase getOrganisationList rejected ", action)
             state.status = "rejected"
         })
+
+        //update Organisation
         .addCase(updateOrganisation.fulfilled, (state, action) => {
             console.log("addCase updateOrganisation fulfilled ", action)
             state.show_organisation_form = false;
@@ -59,6 +62,13 @@ const extraReducers = (builder) => {
         .addCase(updateOrganisation.rejected, (state, action) => {
             console.log("addCase updateOrganisation rejected ", action)
         })
+
+        //delete Record
+        .addCase(deleteRecord.fulfilled, (state, action) => {
+            console.log("knowledgeBases/deleteRecord ",action)
+            state.status = "fulfilled"
+        })
+
 }
 
 
@@ -110,6 +120,31 @@ export const updateOrganisation = createAsyncThunk(
             )
     }
 )
+
+// /api/auth/organisation/{organisationId}
+export const deleteOrganisation = createAsyncThunk(
+    'organisations/deleteOrganisation',
+    async ({session_id,organisation_id})=>{
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/auth/organisation/'+ encodeURIComponent(organisation_id);
+
+        if (url !== '/stats/stats/os') {
+            console.log('DELETE ' + api_base + url);
+        }
+
+        return axios.delete(url,Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("deleteOrganisation",response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("deleteOrganisation error",error)
+                    return error}
+            )
+    }
+)
+
+
 
 
 

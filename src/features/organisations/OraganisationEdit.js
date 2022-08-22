@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    closeOrganisationForm,
+    closeOrganisationForm, deleteOrganisation,
     getOrganisationList,
     showAddOrganisationForm,
     updateOrganisation
@@ -38,6 +38,11 @@ export default function OrganisationEdit(){
 
     const handleClose = () => {
         setName('')
+        dispatch(closeOrganisationForm());
+    }
+
+    const handleDelete = () =>{
+        dispatch(deleteOrganisation ({session_id:session.id, organisation_id:organisation_id}))
         dispatch(closeOrganisationForm());
     }
 
@@ -97,7 +102,9 @@ export default function OrganisationEdit(){
                         </div>
                         <div className="modal-footer">
                             <button onClick={ handleClose } type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button onClick={ handleSave } type="button" className="btn btn-primary">Save</button>
+                            <button onClick={ handleSave } type="button" className="btn btn-secondary" data-bs-dismiss="modal">Save</button>
+                            <br />
+                            <button onClick={ handleDelete } type="button" className="btn btn-outline-secondary">Delete</button>
                         </div>
                     </div>
                 </div>
