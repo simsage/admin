@@ -344,6 +344,14 @@ html, body, #root, .App, .dms {
 .table tbody tr:hover {
     background-color: #f8f9fa;
 }
+.selected-kb {
+    background-color: #0d6efd12 !important;
+    /* color: #0d6efd; */
+    font-weight: 500;
+}
+.active-marker {
+    width: 12px;
+}
 
 
 

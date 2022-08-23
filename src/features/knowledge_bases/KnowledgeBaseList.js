@@ -105,16 +105,43 @@ export default function KnowledgeBaseList(){
                     <table className="table">
                         <thead>
                         <tr>
+                            <td></td>
                             <td className="small text-black-50 px-4">Knowledge Base</td>
                             <td className="small text-black-50 px-4">Email Queries</td>
                             <td></td>
                         </tr>
                         </thead>
                         <tbody>
+
+                        {/* SIVA: active row example - start */}
+                        <tr className="selected-kb">
+                            <td className="pt-3 ps-4 pe-0 pb-3 active-marker">
+                                <img src="../images/active-marker.svg"></img>
+                            </td>
+                            <td className="pt-3 px-4 pb-3">
+                                <div className="kb-label">Selected KB</div>
+                            </td>
+                            <td className="pt-3 px-4 pb-3 fw-light">
+                                <div className="kb-label">example@email.co.nz</div>
+                            </td>
+
+                            <td className="pt-3 px-4 pb-0">
+                                <div className="link-button" >
+                                    <button title="edit knowledge base" className={"btn text-primary btn-sm"}>Edit</button>
+                                    <button title="remove knowledge base" className={"btn text-danger btn-sm"}>Delete</button>
+                                    <button title="view knowledge base ids" className={"btn text-primary btn-sm"}>View Ids</button>
+                                    <button title="optimize indexes" className={"btn text-sprimary btn-sm"}>Optimize indexes</button>
+
+                                </div>
+                            </td>
+                        </tr>
+                        {/* end */}
+
                         {
                             getKnowledgeBases().map((knowledge_base) => {
                                 return (
                                     <tr key={knowledge_base.kbId}>
+                                        <td className="pt-3 ps-4 pe-0 pb-3"></td>
                                         <td className="pt-3 px-4 pb-3">
                                             <div className="kb-label" onClick={() => dispatch(setSelectedKB(knowledge_base.kbId))}>{knowledge_base.name}</div>
                                         </td>
