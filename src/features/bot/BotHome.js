@@ -5,7 +5,7 @@ import {Pagination} from "../../common/pagination";
 import Comms from "../../common/comms";
 import Api from "../../common/api";
 
-export default function BotHome(props){
+export default function BotHome(props) {
     const title = "Bot";
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
@@ -21,8 +21,8 @@ export default function BotHome(props){
     let [mind_item_filter, setMindItemFilter] = useState();
 
     const num_mind_items = useSelector((state) => state.botReducer.num_mind_items)
-    const [page_size,setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
-    const [mind_item_page,setMindItemPage] = useState(useSelector((state) => state.botReducer.mind_item_page))
+    const [page_size, setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
+    const [mind_item_page, setMindItemPage] = useState(useSelector((state) => state.botReducer.mind_item_page))
 
     const dispatch = useDispatch()
     const user = useSelector((state) => state.authReducer.user);
@@ -31,7 +31,9 @@ export default function BotHome(props){
     function deleteMemoryAsk(memory) {
         if (memory) {
             this.props.openDialog("are you sure you want to remove id " + memory.id + "?<br/><br/>(" + memory.questionList[0] + ")",
-                "Remove Memory", (action) => { this.deleteMemory(action) });
+                "Remove Memory", (action) => {
+                    this.deleteMemory(action)
+                });
             this.setState({mind_item: memory});
         }
     }
@@ -44,10 +46,14 @@ export default function BotHome(props){
             this.props.closeDialog();
         }
     }
+
     function deleteAllMemoriesAsk() {
         this.props.openDialog("are you sure you want to remove all memories of this knowledge-base?",
-            "Remove All Memories", (action) => { this.deleteAllMemories(action) });
+            "Remove All Memories", (action) => {
+                this.deleteAllMemories(action)
+            });
     }
+
     function deleteAllMemories(action) {
         if (action) {
             this.props.deleteAllMemories();
@@ -56,11 +62,13 @@ export default function BotHome(props){
             this.props.closeDialog();
         }
     }
+
     function handleSearchTextKeydown(event) {
         if (event.key === "Enter") {
             this.props.getMindItems();
         }
     }
+
     function getDisplayText(memory) {
         let str = "";
         for (const question of memory.questionList) {
@@ -80,7 +88,8 @@ export default function BotHome(props){
     }
 
     function newMemory() {
-        this.setState({mind_edit: true, mind_item: {
+        this.setState({
+            mind_edit: true, mind_item: {
                 id: "",
                 questionList: [],
                 urlList: [],
@@ -88,6 +97,7 @@ export default function BotHome(props){
             }
         });
     }
+
     function programUploaded() {
         this.props.openDialog("SimSage is now processing these new memories.  Check 'the mind' periodically for updates.", "Uploading Memories", () => this.programUploadedClose());
     }
@@ -127,10 +137,9 @@ export default function BotHome(props){
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
-    function getMindItems(){
+    function getMindItems() {
 
     }
-
 
 
     return (
@@ -156,15 +165,16 @@ export default function BotHome(props){
                                    onChange={(event) => {
                                        setMindItemFilter(event.target.value)
                                    }}/>
-                        </span>
+                        </span> &nbsp;
                         <span className="filter-find-image">
                             <button className="btn btn-secondary"
-                                 onClick={() => getMindItems()}
-                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
+                                    onClick={() => getMindItems()}
+                                    src="../images/dark-magnifying-glass.svg" title="search"
+                                    alt="search">search</button>
                         </span>
                     </div>
                 }
-                <br clear="both" />
+                <br clear="both"/>
 
                 {
                     isVisible() &&
@@ -187,15 +197,15 @@ export default function BotHome(props){
                                                 <div>{memory.id}</div>
                                             </td>
                                             <td>
-                                                <div className="mind-text-column" title={getDisplayText(memory)}>{getDisplayText(memory)}</div>
+                                                <div className="mind-text-column"
+                                                     title={getDisplayText(memory)}>{getDisplayText(memory)}</div>
                                             </td>
                                             <td>
-                                                    <span onClick={() => editMemory(memory)}>
-                                                        <img src="../images/edit.svg" className="image-size" title="edit memory" alt="edit"/>
-                                                    </span>
-                                                <span onClick={() => deleteMemoryAsk(memory)}>
-                                                        <img src="../images/delete.svg" className="image-size" title="remove memory" alt="remove"/>
-                                                    </span>
+                                                <button onClick={() => editMemory(memory)} className="btn btn-secondary" title="edit memory">edit
+                                                </button> &nbsp;
+                                                <button onClick={() => deleteMemoryAsk(memory)} className="btn btn-secondary"
+                                                        title="remove memory">remove
+                                                </button>
                                             </td>
                                         </tr>
                                     )
@@ -213,12 +223,18 @@ export default function BotHome(props){
                                     }
                                     {selected_knowledge_base_id.length > 0 &&
                                         <div className="export">
-                                            <button className="btn btn-primary btn-block"
-                                                    onClick={() => mindDump()}>Export</button> &nbsp;
-                                            <button className="btn btn-primary btn-block" title="new mind item"
-                                                    onClick={() => newMemory()}>new mind item</button> &nbsp;
-                                            <button className="btn btn-primary btn-block" title="remove all mind items of this knowledgebase"
-                                                    onClick={() => deleteAllMemoriesAsk()}>remove all mind items</button>
+                                            <button className="btn btn-outline-primary btn-block"
+                                                    onClick={() => mindDump()}>Export
+                                            </button>
+                                            &nbsp;
+                                            <button className="btn btn-outline-primary btn-block" title="new mind item"
+                                                    onClick={() => newMemory()}>new mind item
+                                            </button>
+                                            &nbsp;
+                                            <button className="btn btn-outline-primary btn-block"
+                                                    title="remove all mind items of this knowledgebase"
+                                                    onClick={() => deleteAllMemoriesAsk()}>remove all mind items
+                                            </button>
                                         </div>
 
                                     }

@@ -130,7 +130,7 @@ export default function SemanticsHome() {
                 {
                     isVisible() &&
                     <div className="filter-find-box">
-                        <span className="filter-label">find semantics</span>
+                        <span className="filter-label">find semantics </span>
                         <span className="filter-find-text">
                             <input type="text" value={semantic_filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
@@ -138,7 +138,7 @@ export default function SemanticsHome() {
                                    onChange={(event) => {
                                        setSemanticFilter(event.target.value);
                                    }}/>
-                        </span>
+                        </span> &nbsp;
                         <span className="filter-find-image">
                             <button className="btn btn-secondary"
                                  onClick={() => getSemantics()}
@@ -174,7 +174,7 @@ export default function SemanticsHome() {
                                             <td>
                                                 <button className="btn btn-secondary" title="edit semantic"
                                                      onClick={() => editSemantic(semantic)}>edit
-                                                </button>
+                                                </button> &nbsp;
                                                 <button className="btn btn-secondary"  title="remove semantic"
                                                      onClick={() => deleteSemanticAsk(semantic)}>remove
                                                 </button>
@@ -188,9 +188,7 @@ export default function SemanticsHome() {
                                 <td/>
                                 <td>
                                     {isVisible() &&
-                                        <div className="link-button" onClick={() => newSemantic()}><img
-                                            className="image-size" src="../images/add.svg" title="new semantic"
-                                            alt="new semantic"/></div>
+                                        <button className="btn btn-outline-primary" title="new semantic" onClick={() => newSemantic()}>new semantic</button>
                                     }
                                 </td>
                             </tr>

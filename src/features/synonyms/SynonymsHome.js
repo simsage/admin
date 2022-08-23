@@ -107,7 +107,7 @@ export default function SynonymsHome() {
                     isVisible() &&
 
                     <div className="filter-find-box">
-                        <span className="filter-label">find synonyms</span>
+                        <span className="filter-label">find synonyms </span>
                         <span className="filter-find-text">
                             <input type="text" value={synonym_filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
@@ -115,7 +115,7 @@ export default function SynonymsHome() {
                                    onChange={(event) => {
                                        setSynonymFilter(event.target.value)
                                    }}/>
-                        </span>
+                        </span> &nbsp;
                         <span className="filter-find-image">
                             <button className="btn btn-secondary"
                                  onClick={() => getSemantics()}

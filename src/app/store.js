@@ -13,6 +13,8 @@ import documentSlice from "../features/document_management/documentSlice";
 import botSlice from "../features/bot/botSlice";
 import synonymSlice from "../features/synonyms/synonymSlice";
 import semanticSlice from "../features/semantics/semanticSlice";
+import synsetSlice from "../features/synsets/synsetSlice";
+import categorizationSlice from "../features/categorization/categorizationSlice";
 
 /**
  * Logs all actions and states after they are dispatched.
@@ -34,6 +36,9 @@ export const store = configureStore({
     botReducer:botSlice,
     synonymReducer:synonymSlice,
     semanticReducer:semanticSlice,
+    synsetReducer:synsetSlice,
+    categorizationReducer:categorizationSlice,
+
   },
   middleware:(getDefaultMiddleware => getDefaultMiddleware().concat(logger))
 });
