@@ -1,13 +1,32 @@
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import React, {useState} from "react";
 import BotFilter from "./BotFilter";
 import {Pagination} from "../../common/pagination";
 import Comms from "../../common/comms";
-import {MindEdit} from "./MindEdit";
+import Api from "../../common/api";
 
 export default function BotHome(props){
     const title = "Bot";
     const theme = null;
+    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
+    const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
+    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
+    const session = useSelector((state) => state.authReducer.session);
+    const session_id = session.id;
+
+    const mind_item_list = useSelector((state) => state.botReducer.mind_item_list)
+
+    let [mind_item, setMindItem] = useState();
+    let [mind_edit, setMindEdit] = useState();
+    let [mind_item_filter, setMindItemFilter] = useState();
+
+    const num_mind_items = useSelector((state) => state.botReducer.num_mind_items)
+    const [page_size,setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
+    const [mind_item_page,setMindItemPage] = useState(useSelector((state) => state.botReducer.mind_item_page))
+
+    const dispatch = useDispatch()
+    const user = useSelector((state) => state.authReducer.user);
+
 
     function deleteMemoryAsk(memory) {
         if (memory) {
@@ -55,7 +74,9 @@ export default function BotHome(props){
     }
 
     function editMemory(memory) {
-        this.setState({mind_edit: true, mind_item: memory});
+        setMindEdit(true);
+        setMindItem(memory)
+        // this.setState({mind_edit: true, mind_item: memory});
     }
 
     function newMemory() {
@@ -76,8 +97,8 @@ export default function BotHome(props){
     }
 
     function mindDump() {
-        if (this.props.session && this.props.session.id)
-            Comms.download_mind_dump(this.props.selected_organisation_id, this.props.selected_knowledgebase_id, this.props.session.id);
+        if (this.props.session && session_id)
+            Comms.download_mind_dump(selected_organisation_id, selected_knowledge_base_id, session_id);
     }
 
     function save(memory) {
@@ -94,54 +115,59 @@ export default function BotHome(props){
     }
 
     function getMemoryList() {
-        if (this.props.mind_item_list) {
-            return this.props.mind_item_list;
+        if (mind_item_list) {
+            return mind_item_list;
         }
         return [];
     }
 
     function isVisible() {
-        return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0 &&
-            this.props.selected_organisation && this.props.selected_organisation.length > 0 &&
-            this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
+        return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
+            selected_organisation !== null && selected_organisation.id === selected_organisation_id &&
+            selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
+
+    function getMindItems(){
+
+    }
+
 
 
     return (
         <div className="section px-5 pt-4">
 
-            <BotFilter />
+            {/*<BotFilter />*/}
             <div className="mind-page">
-                <MindEdit open={this.state.mind_edit}
-                          theme={theme}
-                          memory={this.state.mind_item}
-                          onSave={(item) => this.save(item)}
-                          onError={(err) => this.props.setError("Error", err)} />
+                {/*<MindEdit open={mind_edit}*/}
+                {/*          theme={theme}*/}
+                {/*          memory={mind_item}*/}
+                {/*          onSave={(item) => save(item)}*/}
+                {/*          onError={(err) => this.props.setError("Error", err)} />*/}
 
                 {
-                    this.isVisible() &&
+                    isVisible() &&
 
                     <div className="filter-find-box">
                         <span className="filter-label">filter</span>
                         <span className="filter-find-text">
-                            <input type="text" value={this.props.mind_item_filter}
+                            <input type="text" value={mind_item_filter}
                                    autoFocus={true} className={"filter-text-width " + theme}
-                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                   onKeyPress={(event) => handleSearchTextKeydown(event)}
                                    onChange={(event) => {
-                                       this.props.setMindItemFilter(event.target.value)
+                                       setMindItemFilter(event.target.value)
                                    }}/>
                         </span>
                         <span className="filter-find-image">
-                            <img className="image-size"
-                                 onClick={() => this.props.getMindItems()}
-                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
+                            <button className="btn btn-secondary"
+                                 onClick={() => getMindItems()}
+                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
                         </span>
                     </div>
                 }
                 <br clear="both" />
 
                 {
-                    this.isVisible() &&
+                    isVisible() &&
 
                     <div>
                         <table className="table">
@@ -154,20 +180,20 @@ export default function BotHome(props){
                             </thead>
                             <tbody>
                             {
-                                this.getMemoryList().map((memory) => {
+                                getMemoryList().map((memory) => {
                                     return (
                                         <tr key={memory.id}>
                                             <td>
                                                 <div>{memory.id}</div>
                                             </td>
                                             <td>
-                                                <div className="mind-text-column" title={Mind.getDisplayText(memory)}>{Mind.getDisplayText(memory)}</div>
+                                                <div className="mind-text-column" title={getDisplayText(memory)}>{getDisplayText(memory)}</div>
                                             </td>
                                             <td>
-                                                    <span onClick={() => this.editMemory(memory)}>
+                                                    <span onClick={() => editMemory(memory)}>
                                                         <img src="../images/edit.svg" className="image-size" title="edit memory" alt="edit"/>
                                                     </span>
-                                                <span onClick={() => this.deleteMemoryAsk(memory)}>
+                                                <span onClick={() => deleteMemoryAsk(memory)}>
                                                         <img src="../images/delete.svg" className="image-size" title="remove memory" alt="remove"/>
                                                     </span>
                                             </td>
@@ -177,30 +203,24 @@ export default function BotHome(props){
                             }
                             <tr>
                                 <td colSpan={3} className="bottom-td-margin">
-                                    {this.props.selected_knowledgebase_id.length > 0 &&
+                                    {selected_knowledge_base_id.length > 0 &&
                                         <div className="uploader">
-                                            <SpreadsheetUpload kbId={this.props.selected_knowledgebase_id}
-                                                               organisationId={this.props.selected_organisation_id}
-                                                               onUploadDone={() => this.programUploaded()}
-                                                               onError={(errStr) => this.props.setError("Error", errStr)}/>
+                                            {/*<SpreadsheetUpload kbId={selected_knowledge_base_id}*/}
+                                            {/*                   organisationId={selected_organisation_id}*/}
+                                            {/*                   onUploadDone={() => programUploaded()}*/}
+                                            {/*                   onError={(errStr) => this.props.setError("Error", errStr)}/>*/}
                                         </div>
                                     }
-                                    {this.props.selected_knowledgebase_id.length > 0 &&
+                                    {selected_knowledge_base_id.length > 0 &&
                                         <div className="export">
                                             <button className="btn btn-primary btn-block"
-                                                    onClick={() => this.mindDump()}>Export</button>
-
+                                                    onClick={() => mindDump()}>Export</button> &nbsp;
+                                            <button className="btn btn-primary btn-block" title="new mind item"
+                                                    onClick={() => newMemory()}>new mind item</button> &nbsp;
+                                            <button className="btn btn-primary btn-block" title="remove all mind items of this knowledgebase"
+                                                    onClick={() => deleteAllMemoriesAsk()}>remove all mind items</button>
                                         </div>
-                                    }
-                                    {this.props.selected_knowledgebase_id.length > 0 &&
-                                        <div className="image-button" onClick={() => this.newMemory()}><img
-                                            className="image-size" src="../images/add.svg" title="new mind item"
-                                            alt="new mind item"/></div>
-                                    }
-                                    {this.props.selected_knowledgebase_id.length > 0 &&
-                                        <div className="image-button" onClick={() => this.deleteAllMemoriesAsk()}><img
-                                            className="image-size" src="../images/delete.svg" title="remove all mind items of this knowledgebase"
-                                            alt="remove all mind items"/></div>
+
                                     }
                                 </td>
                             </tr>
@@ -208,20 +228,16 @@ export default function BotHome(props){
                         </table>
 
                         <Pagination
-                            theme={theme}
                             rowsPerPageOptions={[5, 10, 25]}
+                            theme={theme}
                             component="div"
-                            count={this.props.num_mind_items}
-                            rowsPerPage={this.props.mind_item_page_size}
-                            page={this.props.mind_item_page}
-                            backIconButtonProps={{
-                                'aria-label': 'Previous Page',
-                            }}
-                            nextIconButtonProps={{
-                                'aria-label': 'Next Page',
-                            }}
-                            onChangePage={(page) => this.props.setMindItemPage(page)}
-                            onChangeRowsPerPage={(rows) => this.props.setMindItemPageSize(rows)}
+                            count={num_mind_items}
+                            rowsPerPage={page_size}
+                            page={mind_item_page}
+                            backIconButtonProps={{'aria-label': 'Previous Page',}}
+                            nextIconButtonProps={{'aria-label': 'Next Page',}}
+                            onChangePage={(page) => setMindItemPage(page)}
+                            onChangeRowsPerPage={(rows) => setPageSize(rows)}
                         />
 
                     </div>

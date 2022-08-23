@@ -10,6 +10,9 @@ import groupReducer from "../features/groups/groupSlice"
 import inventoryReducer from "../features/inventory/inventorySlice";
 import statusSlice from "../features/status/statusSlice";
 import documentSlice from "../features/document_management/documentSlice";
+import botSlice from "../features/bot/botSlice";
+import synonymSlice from "../features/synonyms/synonymSlice";
+import semanticSlice from "../features/semantics/semanticSlice";
 
 /**
  * Logs all actions and states after they are dispatched.
@@ -28,6 +31,9 @@ export const store = configureStore({
     inventoryReducer:inventoryReducer,
     statusReducer:statusSlice,
     documentReducer:documentSlice,
+    botReducer:botSlice,
+    synonymReducer:synonymSlice,
+    semanticReducer:semanticSlice,
   },
   middleware:(getDefaultMiddleware => getDefaultMiddleware().concat(logger))
 });

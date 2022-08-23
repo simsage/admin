@@ -26,7 +26,6 @@ export default function DocumentsHome(props) {
     let crawler_map = {};
 
     const dispatch = useDispatch()
-
     const user = useSelector((state) => state.authReducer.user);
 
     console.log("document_page_size",document_page_size);
