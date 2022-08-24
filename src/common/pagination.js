@@ -13,12 +13,12 @@ export class Pagination extends Component {
         let count = parseInt("" + this.props.count);
 
         return (
-            <div className="d-flex justify-content-between" aria-label="Page navigation example">
+            <div className="d-flex justify-content-between mb-5 pb-5 pt-3" aria-label="Page navigation example">
                 <ul className="pagination">
                     <li className="page-item">
                         <div>
-                            {/* <span className="page-size-label">page size</span> */}
-                            <span className="page-size-select me-1">
+                            <span className="page-size-label">Show</span>
+                            <span className="page-size-select mx-1">
                                 <select className="form-select"
                                         onChange={(event) => this.props.onChangeRowsPerPage(event.target.value)}
                                         defaultValue={this.props.rowsPerPage} aria-label="set page-size">
@@ -33,7 +33,8 @@ export class Pagination extends Component {
                     </li>
                     <li className="page-item">
                         <span className="page-display">
-                            <label>{"page " + (this.props.page + 1) + " of " + num_pages + ", for " + count + " items"}</label>
+                            <label>{"page " + (this.props.page + 1) + " of " + num_pages}</label>
+                            <label className="small fst-italic ms-1 opacity-50">{"(" + count + " items)"}</label>
                         </span>
                     </li>
                 </ul>
