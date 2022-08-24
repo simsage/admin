@@ -5,7 +5,7 @@ import Comms from "../../common/comms";
 
 const initialState = {
     status_list: [],
-    status: false,
+    status: null,
     error: null,
 }
 

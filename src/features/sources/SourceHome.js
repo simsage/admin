@@ -8,7 +8,7 @@ import CrawlerDialog from "./crawlers/crawler-dialog";
 import MessageDialog from "../../common/message-dialog";
 import CrawlerImportExport from "./crawler-import-export";
 
-export default function SourceHome(){
+export default function SourceHome(props){
 
     const dispatch = useDispatch();
     const title = "Source";
@@ -40,12 +40,8 @@ export default function SourceHome(){
     let [selected_source,setSelectedSource] = useState({})
 
     useEffect(()=>{
-        console.log("Source Home 1",source_list_status,"--", source_list)
-        // if(source_list_status === undefined || source_list === undefined ){
-            console.log("Source Home 2")
             dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
-        // }
-    },[selected_knowledge_base_id,session])
+    },[selected_knowledge_base_id,session,props.tab])
 
 
     function getCrawlers() {

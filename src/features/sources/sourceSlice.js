@@ -10,8 +10,7 @@ const initialState = {
     source_page: 0,
     source_page_size: 10,
 
-
-    status: '',
+    status: null,
     error: '',
 
     show_form: false,
@@ -49,6 +48,7 @@ const extraReducers = (builder) => {
         .addCase(getSources.rejected, (state, action) => {
             state.status = "rejected"
         })
+
         .addCase(updateSources.fulfilled, (state, action) => {
             console.log("updateSources fulfilled ",action)
             state.show_form = false;
@@ -64,16 +64,12 @@ const extraReducers = (builder) => {
 export const getSources = createAsyncThunk(
     'sources/getSources',
     async ({session_id, organisation_id, kb_id}) => {
-        console.log("sources/getSources");
         const api_base = window.ENV.api_base;
-        // http://localhost:8080/api/crawler/crawlers/c276f883-e0c8-43ae-9119-df8b7df9c574/46ff0c75-7938-492c-ab50-442496f5de51
-
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
 
         if (url !== '/stats/stats/os') {
             console.log('GET ' + api_base + url);
         }
-
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("sources/getSources",response.data);

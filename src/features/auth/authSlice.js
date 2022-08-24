@@ -26,6 +26,7 @@ const initialState = {
 }
 
 
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -102,21 +103,6 @@ const authSlice = createSlice({
             })
     }
 });
-
-
-// export const acquireTokenSilent =  createAsyncThunk(
-//     'authSlider/acquireTokenSilent',
-//     async (request) => {
-//         const {instance, accounts} = useMsal();
-//         const api_base = window.ENV.api_base;
-//         const url = api_base + '/auth/admin/authenticate/msal';
-//
-//         await instance.acquireTokenSilent(request).then((response) => {
-//             console.log(response)
-//             // return response.idToken;
-//         });
-//     });
-//
 
 
 export const simSageSignIn = createAsyncThunk(

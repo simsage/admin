@@ -20,7 +20,7 @@ const initialState = {
     organisation_page_size: 10,
 
     //new states
-    status: false,
+    status: null,
     error: null,
     show_organisation_form: false,
     edit_organisation_id: null,
