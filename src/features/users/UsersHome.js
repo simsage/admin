@@ -58,10 +58,11 @@ export function UsersHome(){
         dispatch(showAddUserForm(true))
     }
 
-    function handleEditUser(id) {
-        console.log('HERE', id);
+    function handleEditUser(u) {
+        console.log('HERE', u);
+        console.log('HERE', u.id);
         dispatch(showEditUserForm({show:true,
-        user_id: id}));
+        user_id: u.id}));
     }
 
 
@@ -193,7 +194,7 @@ export function UsersHome(){
                                     </div>
                                 </td>
                                 <td className="pt-2 px-4 pb-0">
-                                    <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditUser(user.id)}>Edit</button>
+                                    <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit</button>
                                     <button className={"btn text-danger btn-sm"}>Delete {deleteYes}</button>
                                 </td>
                             </tr>

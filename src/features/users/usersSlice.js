@@ -16,6 +16,7 @@ const initialState = {
     show_user_form: false,
     edit_id: undefined,
     roles: ['admin', 'operator', 'dms', 'manager'],
+    // roles: [],
 }
 
 
