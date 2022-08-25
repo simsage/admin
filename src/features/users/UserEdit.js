@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeUserForm} from "./usersSlice";
+import {closeUserForm, updateUser} from "./usersSlice";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import {hasRole} from "../../common/helpers";
@@ -8,6 +8,9 @@ import {hasRole} from "../../common/helpers";
 export function UserEdit(props){
 
     const dispatch = useDispatch();
+
+    const session = useSelector((state) => state.authReducer.session);
+    const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
 
     const show_user_form = useSelector((state) => state.usersReducer.show_user_form);
     const user_id = useSelector( (state) => state.usersReducer.edit_id)
@@ -17,6 +20,10 @@ export function UserEdit(props){
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [roles, setRoles] = useState([]);
+    const [groups, setGroups] = useState([]);
+    const [kbs, setKBs] = useState([]);
+
 
 
     // Grab user details if editing
@@ -36,6 +43,9 @@ export function UserEdit(props){
             setEmail(selectedUser.email)
             setFirstName(selectedUser.firstName)
             setLastName(selectedUser.surname)
+            setRoles(selectedUser.roles)
+            setGroups(selectedUser.groupList)
+            setKBs(selectedUser.operatorKBList)
         }
     }, [show_user_form])
 
@@ -56,18 +66,26 @@ export function UserEdit(props){
     }
 
     const handleSave = () => {
-        // props.setSelectedUser(null);
-        // dispatch(showAddUserForm(false))
-
+        //Check for valid updates
         if( !validEmail(email) ) { alert('Invalid Email') }
-        if( !firstName ) { alert('Invalid Email') }
-        if( !lastName ) { alert('Invalid Email') }
-            console.log('Saving...');
+        if( !firstName ) { alert('Invalid Name') }
+        if( !lastName ) { alert('Invalid Last Name') }
+        //begin updating user
+        const session_id = session.id;
+        const data = {
+           id: user_id,
+           email: email,
+           firstName: firstName,
+           surname: lastName,
+           roles: roles,
+           groupList: groups,
+           operatorKBList: kbs
+        }
+        console.log('Saving...', data);
+        dispatch(updateUser({session_id,organisation_id, data}));
+        dispatch(closeUserForm());
         }
 
-    /*
-     console.log(showDialog);
-    */
 
     function fillNames() {
         function capitalizeFirstLetter(string) {
@@ -98,120 +116,6 @@ export function UserEdit(props){
         }
     }
 
-    // function close(save) {
-    //     let do_save = true;
-    //     if (save) {
-    //         if (edit_password_2 !== edit_password) {
-    //             do_save = false;
-    //             if (this.props.onError) {
-    //                 this.props.onError("Error", "passwords do not match");
-    //             }
-    //         }
-    //     }
-    //     if (do_save) {
-    //         if (this.props.onClose) {
-    //             if (save) {
-    //                 this.props.onClose(save, {
-    //                     user_id: edit_user_id,
-    //                     email: edit_email,
-    //                     first_name: edit_first_name,
-    //                     surname: edit_surname,
-    //                     password: edit_password,
-    //                     roles: edit_roles,
-    //                     kb_list: edit_kb_list,
-    //                     groups: edit_groups,
-    //                 });
-    //             } else {
-    //                 this.props.onClose(save, {});
-    //             }
-    //         }
-    //     }
-    // }
-
-    // function removeRoleFromUser(role) {
-    //     const new_roles = [];
-    //     for (const e_role of edit_roles) {
-    //         if (role !== e_role) {
-    //             new_roles.push(e_role);
-    //         }
-    //     }
-    //     setRoles(new_roles)
-    // }
-    // function addRoleToUser(role) {
-    //     const roles = JSON.parse(JSON.stringify(edit_roles));
-    //     let found = false;
-    //     for (const e_role of edit_roles) {
-    //         if (role === e_role) {
-    //             found = true;
-    //         }
-    //     }
-    //     if (!found) {
-    //         roles.push(role);
-    //         this.setState({edit_roles: roles});
-    //     }
-    // }
-    // function getAvailableRoles() {
-    //     const list = [];
-    //     const isAdmin = hasRole(props.user, ['admin']);
-    //     for (const available_role of roles) {
-    //         let found = false;
-    //         for (const role of edit_roles) {
-    //             if (available_role === role) {
-    //                 found = true;
-    //             }
-    //         }
-    //         if (!found) {
-    //             if (available_role === 'admin' && isAdmin) {
-    //                 list.push(available_role);
-    //             } else if (available_role !== 'admin') {
-    //                 list.push(available_role);
-    //             }
-    //         }
-    //     }
-    //     return list;
-    // }
-
-    // function hasOperatorRole(edit_roles) {
-    //     if (edit_roles) {
-    //         for (const role of edit_roles) {
-    //             if (role === "operator") {
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // function removeKBFromUser(kb) {
-    //     const new_kbs = [];
-    //     for (const ekb of edit_kb_list) {
-    //         if (kb.kbId !== ekb.kbId) {
-    //             new_kbs.push(ekb);
-    //         }
-    //     }
-    //     setKbList(new_kbs)
-    // }
-    // function addKBToUser(kb) {
-    //     const kbs = JSON.parse(JSON.stringify(edit_kb_list));
-    //     kbs.push(kb);
-    //     setKbList(kbs);
-    // }
-    // function getAvailableKnowledgeBases() {
-    //     const list = [];
-    //
-    //     for (const available_kb of kb_list) {
-    //         let found = false;
-    //         for (const kb of edit_kb_list) {
-    //             if (available_kb.kbId === kb.kbId) {
-    //                 found = true;
-    //             }
-    //         }
-    //         if (!found) {
-    //             list.push(available_kb);
-    //         }
-    //     }
-    //     return list;
-    // }
 
     if (show_user_form === false)
         return (<div/>);
@@ -289,70 +193,70 @@ export function UserEdit(props){
                              </div>
                          }
 
-                         {/*{*/}
-                         {/*    selectedTab === 'roles' &&*/}
-                         {/*    <div className="tab-content">*/}
-                         {/*        <div>*/}
-                         {/*            <div className="role-block">*/}
-                         {/*                <div className="role-label">SimSage roles</div>*/}
-                         {/*                <div className="role-area">*/}
-                         {/*                    {*/}
-                         {/*                        edit_roles.map((role, i) => {*/}
+                         {
+                             selectedTab === 'roles' &&
+                             <div className="tab-content">
+                                 <div>
+                                     <div className="role-block">
+                                         <div className="role-label">SimSage roles</div>
+                                         <div className="role-area">
+                                             {/*{*/}
+                                             {/*    edit_roles.map((role, i) => {*/}
 
-                         {/*                            return (<Chip key={i} color="secondary"*/}
-                         {/*                                          onClick={() => removeRoleFromUser(role)}*/}
-                         {/*                                          label={Api.getPrettyRole(role)} variant="outlined"/>)*/}
-                         {/*                        })*/}
-                         {/*                    }*/}
-                         {/*                </div>*/}
-                         {/*            </div>*/}
-                         {/*            <div className="role-block">*/}
-                         {/*                <div className="role-label">available SimSage roles</div>*/}
-                         {/*                <div className="role-area">*/}
-                         {/*                    {*/}
-                         {/*                        getAvailableRoles().map((role, i) => {*/}
-                         {/*                            return (<Chip key={i} color="primary"*/}
-                         {/*                                          onClick={() => addRoleToUser(role)}*/}
-                         {/*                                          label={Api.getPrettyRole(role)} variant="outlined"/>)*/}
-                         {/*                        })*/}
-                         {/*                    }*/}
-                         {/*                </div>*/}
-                         {/*            </div>*/}
-                         {/*        </div>*/}
+                                             {/*        return (<Chip key={i} color="secondary"*/}
+                                             {/*                      onClick={() => removeRoleFromUser(role)}*/}
+                                             {/*                      label={Api.getPrettyRole(role)} variant="outlined"/>)*/}
+                                             {/*    })*/}
+                                             {/*}*/}
+                                         </div>
+                                     </div>
+                                     <div className="role-block">
+                                         <div className="role-label">available SimSage roles</div>
+                                         <div className="role-area">
+                                             {/*{*/}
+                                             {/*    getAvailableRoles().map((role, i) => {*/}
+                                             {/*        return (<Chip key={i} color="primary"*/}
+                                             {/*                      onClick={() => addRoleToUser(role)}*/}
+                                             {/*                      label={Api.getPrettyRole(role)} variant="outlined"/>)*/}
+                                             {/*    })*/}
+                                             {/*}*/}
+                                         </div>
+                                     </div>
+                                 </div>
 
-                         {/*        <br style={{clear: 'both'}} />*/}
+                                 <br style={{clear: 'both'}} />
 
-                         {/*        /!*{UserEdit.hasOperatorRole(edit_roles) &&*!/*/}
-                         {/*        {hasOperatorRole(edit_roles) &&*/}
-                         {/*        <div>*/}
-                         {/*            <div className="role-block">*/}
-                         {/*                <div className="role-label">operator's knowledge bases</div>*/}
-                         {/*                <div className="role-area">*/}
-                         {/*                    {*/}
-                         {/*                        edit_kb_list.map((kb, i) => {*/}
-                         {/*                            return (<Chip key={i} color="secondary"*/}
-                         {/*                                          onClick={() => removeKBFromUser(kb)}*/}
-                         {/*                                          label={kb.name} variant="outlined"/>)*/}
-                         {/*                        })*/}
-                         {/*                    }*/}
-                         {/*                </div>*/}
-                         {/*            </div>*/}
-                         {/*            <div className="role-block">*/}
-                         {/*                <div className="role-label">operator available knowledge bases</div>*/}
-                         {/*                <div className="role-area">*/}
-                         {/*                    {*/}
-                         {/*                        getAvailableKnowledgeBases().map((kb, i) => {*/}
-                         {/*                            return (<Chip key={i} color="primary"*/}
-                         {/*                                          onClick={() => addKBToUser(kb)}*/}
-                         {/*                                          label={kb.name} variant="outlined"/>)*/}
-                         {/*                        })*/}
-                         {/*                    }*/}
-                         {/*                </div>*/}
-                         {/*            </div>*/}
-                         {/*        </div>*/}
-                         {/*        }*/}
-                         {/*    </div>*/}
-                         {/*}*/}
+                                 {/*{UserEdit.hasOperatorRole(edit_roles) &&*/}
+                                 {/*{hasOperatorRole(edit_roles) &&*/}
+                                 <div>
+                                     <div className="role-block">
+                                         <div className="role-label">operator's knowledge bases</div>
+                                         <div className="role-area">
+                                             {/*{*/}
+                                             {/*    edit_kb_list.map((kb, i) => {*/}
+                                             {/*        return (<Chip key={i} color="secondary"*/}
+                                             {/*                      onClick={() => removeKBFromUser(kb)}*/}
+                                             {/*                      label={kb.name} variant="outlined"/>)*/}
+                                             {/*    })*/}
+                                             {/*}*/}
+                                         </div>
+                                     </div>
+                                     <div className="role-block">
+                                         <div className="role-label">operator available knowledge bases</div>
+                                         <div className="role-area">
+                                             {/*{*/}
+                                             {/*    getAvailableKnowledgeBases().map((kb, i) => {*/}
+                                             {/*        return (<Chip key={i} color="primary"*/}
+                                             {/*                      onClick={() => addKBToUser(kb)}*/}
+                                             {/*                      label={kb.name} variant="outlined"/>)*/}
+                                             {/*    })*/}
+                                             {/*}*/}
+                                         </div>
+                                     </div>
+                                 </div>
+                                 }
+                             </div>
+                         }
 
 
                          {/*{*/}

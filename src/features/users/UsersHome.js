@@ -90,18 +90,6 @@ export function UsersHome(){
         return isManager;
     }
 
-    // function getUsers() {
-    //     const paginated_list = [];
-    //     const first = page * page_size;
-    //     const last = first + parseInt(page_size);
-    //
-    //     for (const i in user_list) {
-    //         if (i >= first && i < last) {
-    //             paginated_list.push(user_list[i]);
-    //         }
-    //     }
-    //     return paginated_list;
-    // }
     function getUsers(isAdmin) {
         const paginated_list = [];
         const first = page * page_size;

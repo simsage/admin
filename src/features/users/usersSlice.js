@@ -2,7 +2,6 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import db_users from "../../notes/db.json";
 import axios from "axios";
-import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 
 
 const initialState = {
@@ -68,14 +67,14 @@ export const getUserList = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
     'users/update',
-    async ({session_id, data}) => {
+    async ({session_id, organisation_id, data}) => {
 
         const api_base = window.ENV.api_base;
-        const url = '/users/';
+        const url = '/auth/user/' ;
         if (url !== '/stats/stats/os') {
             console.log('PUT ' + api_base + url );
         }
-        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+        return axios.put(api_base + url + encodeURIComponent(organisation_id), data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("updateUser data", response.data);
                 return response.data;

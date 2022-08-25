@@ -53,8 +53,9 @@ export default function GroupHome(){
         return paginated_list;
     }
 
-    function handleEditGroup() {
-        dispatch(showEditGroupForm(true));
+    function handleEditGroup(group) {
+        console.log('Opening..', group.name)
+        dispatch(showEditGroupForm({show:true, name:group.name}));
     }
 
     return(
@@ -90,7 +91,7 @@ export default function GroupHome(){
                     {
                         getGroups((isAdmin || isManager)).map(group => {
                             //const editYes = canEdit(group, isAdmin, isManager);
-                            const editYes = false;
+                            const editYes = true;
                             //const deleteYes = canDelete(group, session.user, isAdmin, isManager);
                             const deleteYes = false;
                             return <tr key={group.id} >
@@ -98,7 +99,7 @@ export default function GroupHome(){
                                 <td>
                                     <button
                                     className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"}
-                                    onClick={() => handleEditGroup()}
+                                    onClick={() => handleEditGroup(group)}
                                     >Edit icon</button>
                                 </td>
                                 <td><button className={(deleteYes)? "btn btn-outline-danger" :"btn btn-secondary disabled" }>Delete icon </button></td>
