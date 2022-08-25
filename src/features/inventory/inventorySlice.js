@@ -35,18 +35,18 @@ const reducers = {
 
 const extraReducers = (builder) => {
     builder
-        .addCase(getInventorizeList.pending, (state, action) => {
+        .addCase(loadInventoryList.pending, (state, action) => {
             state.status = "loading"
         })
 
-        .addCase(getInventorizeList.fulfilled, (state, action) => {
-            // console.log("addCase getInventorizeList fulfilled ", action);
+        .addCase(loadInventoryList.fulfilled, (state, action) => {
+            // console.log("addCase getInventoryList fulfilled ", action);
             state.status = "fulfilled";
             state.inventory_list = action.payload;
             console.log('action.payload', action.payload);
         })
-        .addCase(getInventorizeList.rejected, (state, action) => {
-            console.log("addCase getInventorizeList rejected ", action)
+        .addCase(loadInventoryList.rejected, (state, action) => {
+            console.log("addCase getInventoryList rejected ", action)
             state.status = "rejected"
         })
 }
@@ -58,12 +58,11 @@ const inventorySlice = createSlice({
     extraReducers
 });
 
-export const getInventorizeList = createAsyncThunk(
-    'inventories/getInventorizeList',
+export const loadInventoryList = createAsyncThunk(
+    'inventories/getInventoryList',
     async ({session_id,organisation_id,kb_id}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/document/parquets/'+ encodeURIComponent(organisation_id)+ '/' + encodeURIComponent(kb_id) + '/0/10';
-
+        const url = api_base + '/document/parquets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/0/10';
         // return "Hello";
         if (url !== '/stats/stats/os') {
             console.log('GET ' + url);
@@ -71,11 +70,11 @@ export const getInventorizeList = createAsyncThunk(
 
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("inventoriesgetInventorizeList",response.data)
+                console.log("inventoriesgetInventoryList",response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("inventoriesgetInventorizeList error",error)
+                    console.log("inventoriesgetInventoryList error",error)
                     return error
 
                 }
@@ -91,7 +90,7 @@ export default inventorySlice.reducer;
 
 
 ///
-// export async function _getInventorizeList(organisation_id, kb_id, dispatch, getState) {
+// export async function _getInventoryList(organisation_id, kb_id, dispatch, getState) {
 //     const session_id = get_session_id(getState)
 //     if (session_id && organisation_id.length > 0 && kb_id.length > 0) {
 //         dispatch({type: BUSY, busy: true});

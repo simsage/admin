@@ -4,7 +4,7 @@ import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import db from "../../notes/db.json";
 import Comms from "../../common/comms";
-import {getInventorizeList} from "./inventorySlice";
+import {loadInventoryList} from "./inventorySlice";
 
 
 export default function InventoryHome(props) {
@@ -14,9 +14,13 @@ export default function InventoryHome(props) {
 
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session);
+    const session_id = session.id;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
 
+    console.log("session_id: ",session_id)
+    console.log("selected_organisation_id: ",selected_organisation_id)
+    console.log("selected_knowledge_base_id: ",selected_knowledge_base_id)
     const inventory_list = useSelector((state) => state.inventoryReducer.inventory_list);
     const [error, setError] = useState('')
 
@@ -24,26 +28,26 @@ export default function InventoryHome(props) {
     console.log("tab",props.tab)
 
     useEffect(()=>{
-        dispatch(getInventorizeList({session:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
-
         console.log("Inventory useEffect")
+        dispatch(loadInventoryList({session_id:session_id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
+
     },[props.tab])
 
     //TODO::inventorize_busy
     const inventorize_busy = false;
 
-    //TODO::
-    function isVisible() {
-        return true;
-    }
+    // //TODO::
+    // function isVisible() {
+    //     return true;
+    // }
 
-    function componentDidCatch(error, info) {
-        this.props.setError(error, info);
-        console.log(error, info);
-    }
-
-    function componentDidMount() {
-    }
+    // function componentDidCatch(error, info) {
+    //     this.props.setError(error, info);
+    //     console.log(error, info);
+    // }
+    //
+    // function componentDidMount() {
+    // }
 
     function programConverted(program) {
         if (program) {
