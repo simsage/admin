@@ -73,6 +73,7 @@ const botSlice = createSlice({
     extraReducers
 })
 
+//TODO:: to load bot data
 export const loadMindItems = createAsyncThunk(
     "bot/loadMindItems",
     async ({}) => {
