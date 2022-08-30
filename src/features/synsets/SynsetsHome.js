@@ -1,9 +1,11 @@
-import {useSelector} from "react-redux";
-import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect, useState} from "react";
 import SynsetFilter from "./SynsetFilter";
 import {Pagination} from "../../common/pagination";
+import {loadSynsets} from "./synsetSlice";
 
-export default function SynsetsHome() {
+
+export default function SynsetsHome(props) {
     const title = "Synsets";
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
@@ -17,6 +19,19 @@ export default function SynsetsHome() {
     const [synset_page_size, setSynSetPageSize] = useState(useSelector((state) => state.synsetReducer.synset_page_size));
     const [synset_page, setSynSetPage] = useState(useSelector((state) => state.synsetReducer.synset_page))
     let [synset_filter, setSynSetFilter] = useState();
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(loadSynsets({
+            session_id: session_id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id,
+            page:synset_page,
+            filter: synset_filter,
+            page_size: synset_page_size
+        }));
+    }, [props])
 
 
     function deleteSynSetAsk(synSet) {
@@ -113,6 +128,11 @@ export default function SynsetsHome() {
         console.log("findSynSets clicked");
     }
 
+    function getSynSets()
+    {
+        return synset_list?synset_list:[];
+    }
+
     return (
         <div className="section px-5 pt-4">
             {/*<SynsetFilter/>*/}
@@ -156,7 +176,7 @@ export default function SynsetsHome() {
                             </thead>
                             <tbody>
                             {
-                                synset_list.map((synSet) => {
+                                getSynSets().map((synSet) => {
                                     return (
                                         <tr key={synSet.word}>
                                             <td>

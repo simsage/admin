@@ -70,7 +70,6 @@ const synonymSlice = createSlice({
 export const loadSynonyms = createAsyncThunk("synonyms/getSynonym",
     async ({session_id, organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size}) => {
 
-        //curl -X PUT "https://uat.simsage.ai/api/language/synonyms" -H "accept: application/json;charset=UTF-8" -H "session-id: 0182ef30-9016-27d2-9359-3d0a41550ceb" -H "API-Version: 1" -H "Content-Type: application/json" -d "{ \"filter\": \"string\", \"kbId\": \"46ff0c75-7938-492c-ab50-442496f5de51\", \"organisationId\": \"c276f883-e0c8-43ae-9119-df8b7df9c574\", \"pageSize\": 10, \"prevId\": 1}"
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/synonyms';
         // return "Hello";language/synonyms
