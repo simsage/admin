@@ -9,16 +9,16 @@ window.ENV = {
     // dark or light theme?
     theme: 'light',
     // the service layer end-point, change "localhost:8080" to ...
-    api_base: 'https://uat-cloud.simsage.ai/api', //'http://localhost:8080/api', //'https://uat-cloud.simsage.ai/api',
+    api_base: 'https://uat.simsage.ai/api', //'http://localhost:8080/api', //'https://uat-cloud.simsage.ai/api',
     // web sockets platform endpoint for comms
-    ws_base: 'https://uat-cloud.simsage.ai/ws-api', //'http://localhost:8080/ws-api', //'https://uat-cloud.simsage.ai/ws-api',
+    ws_base: 'https://uat.simsage.ai/ws-api', //'http://localhost:8080/ws-api', //'https://uat-cloud.simsage.ai/ws-api',
     // the web-site to go to when SimSage logo is clicked on the login page
     web_base: 'https://simsage.ai/',
     // date picker display format
     date_format: 'yyyy/MM',
     // msal/jwt clientId and authority
-    client_id: "1f65697f-7c2f-4faa-99c2-53253a4edd7a",
-    authority: "https://login.microsoftonline.com/530fb855-94ec-4ff6-9801-60d86836c41f",
+    client_id: "a7c09973-7853-48f6-a067-5a14a5e7b210",
+    authority: "https://simsageapi.b2clogin.com/simsageapi.onmicrosoft.com/B2C_1_simsage",
 
     //local_storage_key to save state
     local_storage_key:'http://localhost:4230/state',

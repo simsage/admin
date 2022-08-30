@@ -58,6 +58,7 @@ const inventorySlice = createSlice({
     extraReducers
 });
 
+
 export const loadInventoryList = createAsyncThunk(
     'inventories/getInventoryList',
     async ({session_id,organisation_id,kb_id}) => {

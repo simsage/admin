@@ -1,9 +1,9 @@
-import {useSelector} from "react-redux";
-import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect, useState} from "react";
 import SynonymFilter from "./SynonymFilter";
 import {Pagination} from "../../common/pagination";
 
-export default function SynonymsHome() {
+export default function SynonymsHome(props) {
     const title = "Synonyms";
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
@@ -17,6 +17,24 @@ export default function SynonymsHome() {
     const [synonym_page_size,setSynonymPageSize] = useState(useSelector((state)=>state.synonymReducer.synonym_page_size))
     const [synonym_page,setSynonymPage] = useState(useSelector((state)=>state.synonymReducer.synonym_page))
     const [synonym_filter,setSynonymFilter] = useState()
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        let arg = {
+            session_id: session.id, organisation_id: selected_organisation_id
+        }
+        dispatch(getSynonyms({
+            session_id: session_id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id,
+            synonym_filter: synonym_filter,
+            synonym_page_size: synonym_page_size,
+            prev_id:null
+        }));
+        console.log("useEffect")
+    }, [props])
+
 
     function getSynonymList()
     {

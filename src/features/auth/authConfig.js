@@ -22,6 +22,7 @@ export const msalConfig = {
     auth: {
         clientId: window.ENV.client_id,
         authority: window.ENV.authority,
+        knownAuthorities: ["https://simsageapi.b2clogin.com"],
         redirectUri: wl
     },
     cache: {
@@ -63,7 +64,7 @@ export const msalConfig = {
  * https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#openid-connect-scopes
  */
 export const loginRequest = {
-    scopes: ["User.Read"]
+    scopes: ["openid"]
 };
 
 /**
