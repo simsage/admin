@@ -1,9 +1,10 @@
-import {useSelector} from "react-redux";
-import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect, useState} from "react";
 import SemanticsFilter from "./SemanticsFilter";
 import {Pagination} from "../../common/pagination";
+import {loadSemantics} from "./semanticSlice";
 
-export default function SemanticsHome() {
+export default function SemanticsHome(props) {
     const title = "Semantics";
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
@@ -18,9 +19,24 @@ export default function SemanticsHome() {
     const [semantic_page, setSemanticPage] = useState(useSelector((state) => state.semanticReducer.semantic_page));
     const [semantic_filter,setSemanticFilter] = useState();
 
+    const dispatch = useDispatch();
+
+
+    useEffect(() => {
+        dispatch(loadSemantics({
+            session_id: session_id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id,
+            prev_word:null,
+            filter: semantic_filter,
+            page_size: semantic_page_size
+        }));
+    }, [props])
+
+
     function getSemanticList()
     {
-        return semantic_list;
+        return semantic_list?semantic_list:[];
     }
 
     function deleteSemanticAsk(semantic)

@@ -42,17 +42,18 @@ const initialState = {
 const reducers = {}
 const extraReducers = (builder) => {
     builder
-        .addCase(loadDocumentList.pending, (state, action) => {
+        .addCase(loadSynonyms.pending, (state, action) => {
             state.status = "loading"
         })
 
-        .addCase(loadDocumentList.fulfilled, (state, action) => {
+        .addCase(loadSynonyms.fulfilled, (state, action) => {
             console.log("addCase getDocuments fulfilled ", action);
             state.status = "fulfilled";
-            state.synonym_list = action.payload.synonymList;
-            state.num_synonyms = action.payload.numSynonyms;
+            state.synonym_list = action.payload.synonymList?action.payload.synonymList:[];
+            state.num_synonyms = action.payload.numSynonyms?action.payload.numSynonyms:0;
+            console.log("loadSynonymsaction.payload",action.payload)
         })
-        .addCase(loadDocumentList.rejected, (state, action) => {
+        .addCase(loadSynonyms.rejected, (state, action) => {
             console.log("addCase getDocuments rejected ", action)
             state.status = "rejected"
         })
@@ -64,27 +65,31 @@ const synonymSlice = createSlice({
     reducers,
     extraReducers
 })
-const getSynonym = createAsyncThunk("synonyms/getSynonym",
+
+
+export const loadSynonyms = createAsyncThunk("synonyms/getSynonym",
     async ({session_id, organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size}) => {
 
+        //curl -X PUT "https://uat.simsage.ai/api/language/synonyms" -H "accept: application/json;charset=UTF-8" -H "session-id: 0182ef30-9016-27d2-9359-3d0a41550ceb" -H "API-Version: 1" -H "Content-Type: application/json" -d "{ \"filter\": \"string\", \"kbId\": \"46ff0c75-7938-492c-ab50-442496f5de51\", \"organisationId\": \"c276f883-e0c8-43ae-9119-df8b7df9c574\", \"pageSize\": 10, \"prevId\": 1}"
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/synonyms';
-        // return "Hello";
+        // return "Hello";language/synonyms
         if (url !== '/stats/stats/os') {
-            console.log('GET ' + url);
+            console.log('put ' + url);
         }
 
         const data = {
             "organisationId": organisation_id,
             "kbId": kb_id,
             "prevId": prev_id ? prev_id : 1,
-            "filter": synonym_filter ? synonym_filter : null,
+            "filter": synonym_filter ? synonym_filter : "",
             "pageSize": synonym_page_size ? synonym_page_size : 10
         };
 
-        return axios.post(url, data, Comms.getHeaders(session_id))
+        console.log("loadSynonymsaction data",data)
+        return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("getSynonym data", response.data)
+                console.log("loadSynonymsaction responsedata", response.data)
                 return response.data
             }).catch(
                 (error) => {
@@ -93,6 +98,8 @@ const getSynonym = createAsyncThunk("synonyms/getSynonym",
 
                 }
             )
+
+
 
     })
 

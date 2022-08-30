@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import SynonymFilter from "./SynonymFilter";
 import {Pagination} from "../../common/pagination";
+import {loadSynonyms} from "./synonymSlice";
 
 export default function SynonymsHome(props) {
     const title = "Synonyms";
@@ -21,24 +22,20 @@ export default function SynonymsHome(props) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        let arg = {
-            session_id: session.id, organisation_id: selected_organisation_id
-        }
-        dispatch(getSynonyms({
+        dispatch(loadSynonyms({
             session_id: session_id,
             organisation_id: selected_organisation_id,
             kb_id: selected_knowledge_base_id,
+            prev_id:null,
             synonym_filter: synonym_filter,
-            synonym_page_size: synonym_page_size,
-            prev_id:null
+            synonym_page_size: synonym_page_size
         }));
-        console.log("useEffect")
     }, [props])
 
 
     function getSynonymList()
     {
-        return synonym_list;
+        return synonym_list?synonym_list:[];
     }
 
     function getSynonyms(){

@@ -32,19 +32,19 @@ export default function MindHome(){
                 <SubNav sub_nav={sub_nav} active_item={selected_sub_nav} onClick={changeNav} />
             </div>
             {selected_sub_nav === 'bot' &&
-                <BotHome />
+                <BotHome tab={selected_sub_nav} />
             }
             {selected_sub_nav === 'synonyms' &&
-                <SynonymsHome />
+                <SynonymsHome tab={selected_sub_nav} />
             }
             {selected_sub_nav === 'semantics' &&
-                <SemanticsHome />
+                <SemanticsHome tab={selected_sub_nav} />
             }
             {selected_sub_nav === 'synsets' &&
-                <SynsetsHome />
+                <SynsetsHome tab={selected_sub_nav} />
             }
             {selected_sub_nav === 'categorization' &&
-                <CategorizationHome />
+                <CategorizationHome tab={selected_sub_nav} />
             }
         </div>
     )
