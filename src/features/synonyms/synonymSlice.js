@@ -97,9 +97,6 @@ export const loadSynonyms = createAsyncThunk("synonyms/getSynonym",
 
                 }
             )
-
-
-
     })
 
 export const {} = synonymSlice.actions;

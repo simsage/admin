@@ -1,7 +1,8 @@
-import {useSelector} from "react-redux";
-import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect, useState} from "react";
+import {loadCategorizations} from "./categorizationSlice";
 
-export default function CategorizationHome() {
+export default function CategorizationHome(props) {
     const title = "Categorization";
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
@@ -12,6 +13,14 @@ export default function CategorizationHome() {
 
 
     const category_list = useSelector((state) => state.categorizationReducer.category_list);
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        console.log("loadCategorizations")
+        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
+        console.log("loadCategorizations")
+    },[props])
 
     const empty_category = {
         metadata: "",
@@ -71,6 +80,11 @@ export default function CategorizationHome() {
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
+    function getCategoryList(){
+        return category_list?category_list:[];
+    }
+
+
     return (
         <div className="section px-5 pt-4">
             <div className="synset-page">
@@ -92,7 +106,7 @@ export default function CategorizationHome() {
                             </thead>
                             <tbody>
                             {
-                                category_list.map((category, i) => {
+                                getCategoryList().map((category, i) => {
                                     return (
                                         <tr key={i}>
                                             <td>
