@@ -129,6 +129,19 @@ export function UserEdit(props){
         return tempRoleList;
     }
 
+    function addRoleToUser(roleToAdd){
+        setRoles([...roles , {
+            organisation_id: organisation_id,
+            role: roleToAdd
+        }])
+    };
+
+    function removeRoleFromUser(roleToRemove){
+      setRoles(roles.filter( r => {
+          return r.role !== roleToRemove.role
+      }))
+    };
+
     function getKbName(kbID) {
         const temp_list = available_KBs.filter( (obj) => {return obj.kbId == kbID})
         if(temp_list.length < 1) return "No KBs"
@@ -138,18 +151,31 @@ export function UserEdit(props){
     const getAvailableKnowledgeBases = () => {
         const userKbName = kbs.map(kb => getKbName(kb.kbId))
         const availableKbNames = available_KBs.map( kb => kb.name)
-        console.log('TEST, ', userKbName)
-        console.log('TEST2 ', availableKbNames)
         let tempKBsList = [];
         availableKbNames.forEach( kb => {
             if(!userKbName.includes(kb)){
                 tempKBsList.push(kb);
             }
         })
-        console.log('TEST3 ', tempKBsList)
         return tempKBsList;
     }
 
+    function addKbToUser(kb){
+        const kbObj = available_KBs.filter( k => {
+            return k.name == kb;
+        })
+        setKBs([...kbs, {
+            userId: user_id, 
+            organisationId: organisation_id,
+            kbId: kbObj[0].kbId
+        }])
+    };
+
+    function removeKbFromUser(kb){
+       setKBs( kbs.filter( k => {
+           return k.kbId !== kb
+       }))
+    };
 
     if (show_user_form === false)
         return (<div/>);
@@ -235,7 +261,7 @@ export function UserEdit(props){
                                              {
                                                   roles.map((role, i) => {
                                                      return (<Chip key={i} color="secondary"
-                                                                   // onClick={() => removeRoleFromUser(role)}
+                                                                    onClick={() => removeRoleFromUser(role)}
                                                                    label={Api.getPrettyRole(role.role)} variant="outlined"/>)
                                                  })
                                              }
@@ -247,7 +273,7 @@ export function UserEdit(props){
                                              {
                                                  getAvailableRoles().map((role, i) => {
                                                      return (<Chip key={i} color="primary"
-                                                                   // onClick={() => addRoleToUser(role)}
+                                                                    onClick={() => addRoleToUser(role)}
                                                                    label={Api.getPrettyRole(role)} variant="outlined"/>)
                                                  })
                                              }
@@ -266,7 +292,7 @@ export function UserEdit(props){
                                              {
                                                  kbs.map((kb, i) => {
                                                      return (<Chip key={i} color="secondary"
-                                                                   // onClick={() => removeKBFromUser(kb)}
+                                                                   onClick={() => removeKbFromUser(kb.kbId)}
                                                                    label={getKbName(kb.kbId)} variant="outlined"/>)
                                                  })
                                              }
@@ -278,7 +304,7 @@ export function UserEdit(props){
                                              {
                                                  getAvailableKnowledgeBases().map((kb, i) => {
                                                      return (<Chip key={i} color="primary"
-                                                                   // onClick={() => addKBToUser(kb)}
+                                                                   onClick={() => addKbToUser(kb)}
                                                                    label={kb} variant="outlined"/>)
                                                  })
                                              }
@@ -289,21 +315,21 @@ export function UserEdit(props){
                          }
 
 
-                         {/*{*/}
-                         {/*    selectedTab === 'groups' &&*/}
-                         {/*    <div className="tab-content">*/}
+                         {
+                             selectedTab === 'groups' &&
+                             <div className="tab-content">
 
-                         {/*        /!*<GroupSelector*!/*/}
-                         {/*        /!*    group_list={this.props.all_groups}*!/*/}
-                         {/*        /!*    include_users={false}*!/*/}
-                         {/*        /!*    organisation_id={this.props.organisation_id}*!/*/}
-                         {/*        /!*    user_list={this.props.all_users}*!/*/}
-                         {/*        /!*    selected_group_list={edit_groups}*!/*/}
-                         {/*        /!*    onChange={(groups) => setGroups( groups)}*!/*/}
+                                 {/*<GroupSelector*/}
+                                 {/*    group_list={this.props.all_groups}*/}
+                                 {/*    include_users={false}*/}
+                                 {/*    organisation_id={this.props.organisation_id}*/}
+                                 {/*    user_list={this.props.all_users}*/}
+                                 {/*    selected_group_list={edit_groups}*/}
+                                 {/*    onChange={(groups) => setGroups( groups)}*/}
                                  {/*/>*/}
 
-                         {/*    </div>*/}
-                         {/*}*/}
+                             </div>
+                         }
 
                      </div>
 
