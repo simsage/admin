@@ -1,5 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {loadDocumentList} from "../document_management/documentSlice";
+import Comms from "../../common/comms";
+import axios from "axios";
 
 const initialState = {
     mind_item_list:[
@@ -45,6 +47,24 @@ const initialState = {
 
 }
 
+export const loadMindItems = createAsyncThunk(
+    "bot/loadMindItems",
+    async ({session_id, data}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/mind/memories';
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+
+
+    }
+)
+
 const reducers = null
 
 const extraReducers = (builder) => {
@@ -56,8 +76,8 @@ const extraReducers = (builder) => {
         .addCase(loadMindItems.fulfilled, (state, action) => {
             console.log("addCase getDocuments fulfilled ", action);
             state.status = "fulfilled";
-            state.mind_item_list = action.payload.documentList;
-            state.num_mind_items = action.payload.numDocuments;
+            state.mind_item_list = action.payload;
+            // state.num_mind_items = action.payload.numDocuments;
             // console.log('action.payload', action.payload);
         })
         .addCase(loadMindItems.rejected, (state, action) => {
@@ -73,13 +93,6 @@ const botSlice = createSlice({
     extraReducers
 })
 
-//TODO:: to load bot data
-export const loadMindItems = createAsyncThunk(
-    "bot/loadMindItems",
-    async ({}) => {
-
-    }
-)
 
 export const {} = botSlice.actions
 export default botSlice.reducer

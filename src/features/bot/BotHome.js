@@ -1,9 +1,11 @@
 import {useDispatch, useSelector} from "react-redux";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import BotFilter from "./BotFilter";
 import {Pagination} from "../../common/pagination";
 import Comms from "../../common/comms";
 import Api from "../../common/api";
+import {getUserList} from "../users/usersSlice";
+import {loadMindItems} from "./botSlice";
 
 export default function BotHome(props) {
     const title = "Bot";
@@ -11,8 +13,6 @@ export default function BotHome(props) {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
-    const session = useSelector((state) => state.authReducer.session);
-    const session_id = session.id;
 
     const mind_item_list = useSelector((state) => state.botReducer.mind_item_list)
 
@@ -25,7 +25,25 @@ export default function BotHome(props) {
     const [mind_item_page, setMindItemPage] = useState(useSelector((state) => state.botReducer.mind_item_page))
 
     const dispatch = useDispatch()
+    const session = useSelector((state) => state.authReducer.session);
+    const session_id = session.id;
     const user = useSelector((state) => state.authReducer.user);
+
+    const data = {
+        filter: "",
+        kbId: selected_knowledge_base_id,
+        organisationId: selected_organisation_id,
+        pageSize: 10,
+        prevId: 0
+    };
+
+    useEffect(()=>{
+        if(true){
+            console.log("session useEffect",session_id)
+            console.log("selected_organisation", data)
+            dispatch(loadMindItems({ session_id, data }))
+        }
+    },[])
 
 
     function deleteMemoryAsk(memory) {
@@ -125,8 +143,10 @@ export default function BotHome(props) {
     }
 
     function getMemoryList() {
-        if (mind_item_list) {
-            return mind_item_list;
+
+        const list = mind_item_list.memoryList ? mind_item_list.memoryList : false;
+        if (list) {
+            return list;
         }
         return [];
     }
