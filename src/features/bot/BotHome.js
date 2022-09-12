@@ -6,36 +6,39 @@ import Comms from "../../common/comms";
 import Api from "../../common/api";
 import {getUserList} from "../users/usersSlice";
 import {loadMindItems} from "./botSlice";
+import {Prompt} from "react-router";
 
 export default function BotHome(props) {
-    const title = "Bot";
+
     const theme = null;
+    const dispatch = useDispatch()
+    const session = useSelector((state) => state.authReducer.session);
+    const session_id = session.id;
+
+
+
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
 
-    const mind_item_list = useSelector((state) => state.botReducer.mind_item_list)
+    const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
+    const num_mind_items = useSelector((state) => state.botReducer.num_mind_items);
 
-    let [mind_item, setMindItem] = useState();
-    let [mind_edit, setMindEdit] = useState();
-    let [mind_item_filter, setMindItemFilter] = useState();
-
-    const num_mind_items = useSelector((state) => state.botReducer.num_mind_items)
     const [page_size, setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
     const [mind_item_page, setMindItemPage] = useState(useSelector((state) => state.botReducer.mind_item_page))
+    const [mind_item_filter, setMindItemFilter] = useState();
 
-    const dispatch = useDispatch()
-    const session = useSelector((state) => state.authReducer.session);
-    const session_id = session.id;
-    const user = useSelector((state) => state.authReducer.user);
-
-    const data = {
+    //Legacy Hooks
+    const [mindEdit, setMindEdit] = useState('');
+    const [mindItem, setMindItem] = useState('');
+    //End of legacy hooks
+    let data = {
         filter: "",
         kbId: selected_knowledge_base_id,
         organisationId: selected_organisation_id,
         pageSize: 10,
         prevId: 0
-    };
+    }
 
     useEffect(()=>{
         if(true){
@@ -45,16 +48,55 @@ export default function BotHome(props) {
         }
     },[])
 
+    function isVisible() {
+        return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
+            selected_organisation !== null && selected_organisation.id === selected_organisation_id &&
+            selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
+    }
+
+    function getMemoryList() {
+
+        if (mind_item_list) {
+            return mind_item_list;
+        }
+        return [];
+    }
+
+    function filterMemories(event) {
+        if (event.key === "Enter") {
+            data.filter = mind_item_filter
+            dispatch(loadMindItems({ session_id, data }));
+        }
+    }
+
+    function handleEditMemory(memory){
+        console.log(`Editing... `);
+        console.log(memory)
+    }
 
     function deleteMemoryAsk(memory) {
         if (memory) {
-            this.props.openDialog("are you sure you want to remove id " + memory.id + "?<br/><br/>(" + memory.questionList[0] + ")",
-                "Remove Memory", (action) => {
-                    this.deleteMemory(action)
-                });
-            this.setState({mind_item: memory});
+            let check = prompt(`Are you sure you want to remove the memory: ${memory.questionList[0]}`, "Yes");
+            if(check.toLowerCase() == 'yes') {
+                console.log('crack on with the remove');
+                return
+            }
+            console.log('Cancel the remove');
+            // this.props.openDialog("are you sure you want to remove id " + memory.id + "?<br/><br/>(" + memory.questionList[0] + ")",
+            //     "Remove Memory", (action) => {
+            //         this.deleteMemory(action)
+            //     });
+            // this.setState({mind_item: memory});
         }
     }
+
+    function handleRemoveMemory(memory){
+        console.log(`Removing... `);
+        console.log(memory)
+    }
+
+////Legacy Functions
+
 
     function deleteMemory(action) {
         if (action && Api.defined(this.state.mind_item)) {
@@ -81,11 +123,7 @@ export default function BotHome(props) {
         }
     }
 
-    function handleSearchTextKeydown(event) {
-        if (event.key === "Enter") {
-            this.props.getMindItems();
-        }
-    }
+
 
     function getDisplayText(memory) {
         let str = "";
@@ -142,26 +180,6 @@ export default function BotHome(props) {
         }
     }
 
-    function getMemoryList() {
-
-        const list = mind_item_list.memoryList ? mind_item_list.memoryList : false;
-        if (list) {
-            return list;
-        }
-        return [];
-    }
-
-    function isVisible() {
-        return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
-            selected_organisation !== null && selected_organisation.id === selected_organisation_id &&
-            selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
-    }
-
-    function getMindItems() {
-
-    }
-
-
     return (
         <div className="section px-5 pt-4">
 
@@ -179,18 +197,15 @@ export default function BotHome(props) {
                     <div className="filter-find-box">
                         <span className="filter-label">filter</span>
                         <span className="filter-find-text">
-                            <input type="text" value={mind_item_filter}
+                            <input type="text"
+                                   placeholder={"Filter"}
+                                   value={mind_item_filter}
                                    autoFocus={true} className={"filter-text-width " + theme}
-                                   onKeyPress={(event) => handleSearchTextKeydown(event)}
+                                    onKeyDown={(event) => filterMemories(event)}
                                    onChange={(event) => {
                                        setMindItemFilter(event.target.value)
-                                   }}/>
-                        </span> &nbsp;
-                        <span className="filter-find-image">
-                            <button className="btn btn-secondary"
-                                    onClick={() => getMindItems()}
-                                    src="../images/dark-magnifying-glass.svg" title="search"
-                                    alt="search">search</button>
+                                   }}
+                            />
                         </span>
                     </div>
                 }
@@ -221,7 +236,7 @@ export default function BotHome(props) {
                                                      title={getDisplayText(memory)}>{getDisplayText(memory)}</div>
                                             </td>
                                             <td>
-                                                <button onClick={() => editMemory(memory)} className="btn btn-secondary" title="edit memory">edit
+                                                <button onClick={() => handleEditMemory(memory)} className="btn btn-secondary" title="edit memory">edit
                                                 </button> &nbsp;
                                                 <button onClick={() => deleteMemoryAsk(memory)} className="btn btn-secondary"
                                                         title="remove memory">remove

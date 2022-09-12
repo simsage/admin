@@ -54,13 +54,10 @@ export function UsersHome(){
     }
 
     function handleAddNewUser(){
-        console.log(selectedUser);
         dispatch(showAddUserForm(true))
     }
 
     function handleEditUser(u) {
-        console.log('HERE', u);
-        console.log('HERE', u.id);
         dispatch(showEditUserForm({show:true,
         user_id: u.id}));
     }

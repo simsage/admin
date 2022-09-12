@@ -76,7 +76,8 @@ const extraReducers = (builder) => {
         .addCase(loadMindItems.fulfilled, (state, action) => {
             console.log("addCase getDocuments fulfilled ", action);
             state.status = "fulfilled";
-            state.mind_item_list = action.payload;
+            state.mind_item_list = action.payload.memoryList;
+            state.num_mind_items = action.payload.numMemories;
             // state.num_mind_items = action.payload.numDocuments;
             // console.log('action.payload', action.payload);
         })
