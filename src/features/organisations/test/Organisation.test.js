@@ -1,6 +1,6 @@
 import {
     closeOrganisationForm,
-    getOrganisationList, getOrganisationListTest,
+    getOrganisationList,
     showAddOrganisationForm,
     showEditOrganisationForm
 } from "../organisationSlice";
@@ -24,7 +24,7 @@ const initialState = {
     error: null,
     show_organisation_form: false,
     edit_organisation_id: null,
-    test: ""
+    load_data: false,
 }
 
 let mock;
@@ -38,18 +38,14 @@ const store = configureStore({
 })
 
 
-// test('should return the initial state of source', () => {
-//     expect(organisationReducer(undefined, {type: undefined})).toEqual(initialState)
-// })
-
 
 describe("Show / close forms", () => {
-    it("showAddOrganisationForm", () => {
+    it("Organisation: Form: Show Add ", () => {
         const showForm = ({...initialState, "show_organisation_form": true});
         expect(organisationReducer(initialState, showAddOrganisationForm({"show_form": true}))).toEqual(showForm);
     });
 
-    it("showEditOrganisationForm", () => {
+    it("Organisation: Form: Show Edit", () => {
         const t_org_id = "1234";
         const editForm = ({...initialState, "show_organisation_form": true, "edit_organisation_id": t_org_id});
         expect(organisationReducer(initialState, showEditOrganisationForm({
@@ -58,7 +54,7 @@ describe("Show / close forms", () => {
         }))).toEqual(editForm);
     });
 
-    it("closeOrganisationForm", () => {
+    it("Organisation: Form: Close Add/Edit", () => {
         expect(organisationReducer(initialState, closeOrganisationForm())).toEqual(initialState);
     });
 

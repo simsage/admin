@@ -15,6 +15,7 @@ const initialState = {
     error: null,
     show_organisation_form: false,
     edit_organisation_id: null,
+    data_status: 'load_now',//load_now,loading,loaded
 }
 
 const reducers = {
@@ -38,17 +39,20 @@ const extraReducers = (builder) => {
     builder
         .addCase(getOrganisationList.pending, (state, action) => {
             state.status = "loading"
+            state.data_status = 'loading';
         })
 
         .addCase(getOrganisationList.fulfilled, (state, action) => {
             console.log("addCase getOrganisationList fulfilled ", action);
             state.status = "fulfilled";
             state.organisation_list = action.payload;
+            state.data_status = 'loaded';
             // console.log('action.payload', action.payload);
         })
         .addCase(getOrganisationList.rejected, (state, action) => {
             console.log("addCase getOrganisationList rejected ", action)
             state.status = "rejected"
+            state.data_status = 'rejected';
         })
 
         //update Organisation
@@ -56,6 +60,7 @@ const extraReducers = (builder) => {
             console.log("addCase updateOrganisation fulfilled ", action)
             state.show_organisation_form = false;
             state.edit_organisation_id = undefined;
+            state.data_status = 'load_now';
             // state.organisation_list = action.payload
         })
         .addCase(updateOrganisation.rejected, (state, action) => {
@@ -74,8 +79,6 @@ const extraReducers = (builder) => {
 export const getOrganisationList = createAsyncThunk(
     'organisations/getOrganisationList',
     async ({session, filter}) => {
-        // console.log("organisations/getOrganisationList 67",session);
-        // const api_base = 'https://uat-cloud.simsage.ai/api';
         const api_base = window.ENV.api_base;
         const url = '/auth/user/organisations/' + encodeURIComponent(filter);
         const {id} = session
@@ -98,6 +101,7 @@ export const getOrganisationList = createAsyncThunk(
 );
 
 
+// /api/auth/organisation/
 export const updateOrganisation = createAsyncThunk(
     'organisations/updateOrganisation',
     async ({session_id, data}) => {
@@ -119,6 +123,7 @@ export const updateOrganisation = createAsyncThunk(
             )
     }
 )
+
 
 // /api/auth/organisation/{organisationId}
 export const deleteOrganisation = createAsyncThunk(
@@ -143,56 +148,6 @@ export const deleteOrganisation = createAsyncThunk(
     }
 )
 
-
-
-
-
-
-//These functions are created for testing the equivalent function
-
-// export const getOrganisationListTest = createAsyncThunk(
-//     'organisations/getOrganisationListTest',
-//     async ({session, filter}) => {
-//         const api_base = 'https://uat-cloud.simsage.ai/api';
-//         // const api_version = 1;
-//         // // const url = '/auth/user/organisations/' + encodeURIComponent(filter);
-//         // const url = '/auth/user/organisations/';
-//         // const {id} = session
-//         //
-//         // return axios.get(api_base + url)
-//         //     .then((res)=>{ console.log("inside the reducer",res.data)})
-//
-//         return await axios.get(api_base+"/auth/user/organisations/").then((res) => {
-//             // console.log("res",res.data)
-//             return res.data
-//         })
-//     }
-// );
-
-
-// function getOrganisationList(current_org_name, current_org_id, _filter, change_organisation, dispatch, getState, session_id) {
-//     dispatch({type: BUSY, busy: true});
-//     session_id = session_id ? session_id : get_session_id(getState)
-//     let filter = _filter;
-//     if (!_filter || _filter.trim() === "") {
-//         filter = "null";
-//     }
-//     await Comms.http_get('/auth/user/organisations/' + encodeURIComponent(filter), session_id,
-//         (response) => {
-//             const organisation_list = response.data;
-//             dispatch({type: SET_ORGANISATION_LIST, organisation_list: organisation_list});
-//             // select an organisation if there is one to select and none yet has been selected
-//             if (change_organisation && organisation_list && organisation_list.length > 0 && current_org_id.length === 0) {
-//                 dispatch({type: SELECT_ORGANISATION, name: organisation_list[0].name, id: organisation_list[0].id});
-//                 // todo::and get the knowledge bases for this org
-//                 // _getKnowledgeBases(organisation_list[0].id, dispatch, getState);
-//             }
-//         },
-//         (errStr) => {
-//             dispatch({type: ERROR, title: "Error", error: errStr})
-//         }
-//     )
-// }
 
 
 const organisationSlice = createSlice({

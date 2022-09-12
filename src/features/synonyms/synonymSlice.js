@@ -5,34 +5,34 @@ import {loadDocumentList} from "../document_management/documentSlice";
 
 const initialState = {
     synonym_list: [
-        {
-            "id": "1",
-            "words": "GLP,Global Legal Post,legal posts"
-        },
-        {
-            "id": "2",
-            "words": "cc,Clifford Chance"
-        },
-        {
-            "id": "3",
-            "words": "job,role,candidate,position,assistant"
-        },
-        {
-            "id": "4",
-            "words": "ip,intellectual property"
-        },
-        {
-            "id": "5",
-            "words": "german,germany,berlin,munich"
-        },
-        {
-            "id": "6",
-            "words": "fieldfisher,field fisher"
-        },
-        {
-            "id": "7",
-            "words": "russia,moscow"
-        }
+    //     {
+    //         "id": "1",
+    //         "words": "GLP,Global Legal Post,legal posts"
+    //     },
+    //     {
+    //         "id": "2",
+    //         "words": "cc,Clifford Chance"
+    //     },
+    //     {
+    //         "id": "3",
+    //         "words": "job,role,candidate,position,assistant"
+    //     },
+    //     {
+    //         "id": "4",
+    //         "words": "ip,intellectual property"
+    //     },
+    //     {
+    //         "id": "5",
+    //         "words": "german,germany,berlin,munich"
+    //     },
+    //     {
+    //         "id": "6",
+    //         "words": "fieldfisher,field fisher"
+    //     },
+    //     {
+    //         "id": "7",
+    //         "words": "russia,moscow"
+    //     }
     ],
     num_synonyms: 0,
     synonym_page_size: 10,

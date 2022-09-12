@@ -28,6 +28,8 @@ const AccountDropdown = (props) => {
 
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
 
+    const data_status = useSelector((state) => state.organisationReducer.data_status)
+
     const filter = null;
 
     function handleSelectOrganisation(session_id,org){
@@ -37,9 +39,9 @@ const AccountDropdown = (props) => {
         dispatch(selectTab('home'))
     }
 
-    // useEffect(()=>{
-    //     dispatch(getOrganisationList({session:session, filter:null}))
-    // },[organisation_list_status])
+    useEffect(()=>{
+        dispatch(getOrganisationList({session:session, filter:null}))
+    },[data_status == 'load_now'])
 
     function handleAddOrganisation(){
         dispatch(showAddOrganisationForm({show_form:true}))
