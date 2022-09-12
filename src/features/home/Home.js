@@ -5,6 +5,7 @@ import StatusHome from "../status/StatusHome";
 import LogHome from "./LogHome";
 import {useDispatch, useSelector} from "react-redux";
 import {getOrganisationList} from "../organisations/organisationSlice";
+import {OrganisationHome} from "../organisations/OrganisationHome";
 
 export default function Home() {
     const [selected_sub_nav, setSelectedSubNav] = useState('knowledge-bases')
@@ -14,6 +15,7 @@ export default function Home() {
         {label: "Knowledge Bases", slug:"knowledge-bases" },
         {label: "Status", slug:"status" },
         {label: "Logs", slug:"logs" },
+        {label: "Organisations", slug:"org" },
     ]
 
 
@@ -35,6 +37,9 @@ export default function Home() {
                 }
                 {selected_sub_nav === 'logs' &&
                 <LogHome />
+                }
+                {selected_sub_nav === 'org' &&
+                    <OrganisationHome />
                 }
             </div>
     );
