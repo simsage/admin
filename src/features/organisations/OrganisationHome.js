@@ -50,7 +50,9 @@ export function OrganisationHome() {
                     <thead>
                     <tr>
                         <td className="small text-black-50 px-4">Organisation</td>
-                        <td></td>
+                        <td>
+                                <button onClick={() => handleAddOrganisation()} className={"btn btn-primary"}>+ Add New Organisation</button>
+                        </td>
                     </tr>
                     </thead>
                     <tbody>
