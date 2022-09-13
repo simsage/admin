@@ -1,12 +1,11 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Pagination} from "../../common/pagination";
-import {deleteRecord, getKBList, setViewIds, showAddForm, showEditForm, showDeleteAskForm} from "./knowledgeBaseSlice";
+import {getKBList, setViewIds, showAddForm, showEditForm, showDeleteAskForm} from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
 
 export default function KnowledgeBaseList(){
 
-    const defaultDmsIndexSchedule = '';
     const theme = '';
 
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
@@ -104,30 +103,6 @@ export default function KnowledgeBaseList(){
                         </tr>
                         </thead>
                         <tbody>
-
-                        {/* SIVA: active row example - start */}
-                        <tr className="selected-kb">
-                            <td className="pt-3 ps-4 pe-0 pb-3 active-marker">
-                                <img src="../images/active-marker.svg"></img>
-                            </td>
-                            <td className="pt-3 px-4 pb-3">
-                                <div className="kb-label">Selected KB</div>
-                            </td>
-                            <td className="pt-3 px-4 pb-3 fw-light">
-                                <div className="kb-label">example@email.co.nz</div>
-                            </td>
-
-                            <td className="pt-3 px-4 pb-0">
-                                <div className="link-button" >
-                                    <button title="edit knowledge base" className={"btn text-primary btn-sm"}>Edit</button>
-                                    <button title="remove knowledge base" className={"btn text-danger btn-sm"}>Delete</button>
-                                    <button title="view knowledge base ids" className={"btn text-primary btn-sm"}>View Ids</button>
-                                    <button title="optimize indexes" className={"btn text-sprimary btn-sm"}>Optimize indexes</button>
-
-                                </div>
-                            </td>
-                        </tr>
-                        {/* end */}
 
                         {
                             getKnowledgeBases().map((knowledge_base) => {
