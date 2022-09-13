@@ -259,38 +259,50 @@ export default function KnowledgeBaseEdit(){
 
                                   <div className="control-row">
                                       <span className="label-wide">maximum number of queries per day (0 is no limits)</span>
-                                      <span className="text margin-left">
-                                                        <input type="text"
-                                                               onChange={(event) => setMaxQueriesPerDay(event.target.value)}
-                                                               placeholder="max transactions per month"
-                                                               value={max_queries_per_day}
-                                                        />
-                                                    </span>
                                   </div>
+                                  <div className="control-row">
+                                      <span className="label-2">queries per day</span>
+                                      <span className="text">
+                                            <input type="text"
+                                                   className="edit-box"
+                                                   onChange={(event) => setMaxQueriesPerDay(event.target.value)}
+                                                   placeholder="max transactions per month"
+                                                   value={max_queries_per_day}
+                                            />
+                                        </span>
+                                  </div>
+
 
 
                                   <div className="control-row">
                                       <span className="label-wide">maximum analytics retention period in months (0 is no limits)</span>
-                                      <span className="text margin-left">
-                                                        <input type="text"
-                                                               onChange={(event) => setAnalyticsWindowInMonths(event.target.value)}
-                                                               placeholder="max analytics retention period in months"
-                                                               value={analytics_window_size_in_months}
-                                                        />
-                                                    </span>
+                                  </div>
+                                  <div className="control-row">
+                                      <span className="label-2">retention period</span>
+                                      <span className="text">
+                                            <input type="text"
+                                                   className="edit-box"
+                                                   onChange={(event) => setAnalyticsWindowInMonths(event.target.value)}
+                                                   placeholder="max analytics retention period in months"
+                                                   value={analytics_window_size_in_months}
+                                            />
+                                        </span>
                                   </div>
 
 
-                                  {/*<div className="control-row">*/}
-                                  {/*    <span className="label-wide">document similarity (a number between 0.75 and 1.0)</span>*/}
-                                  {/*    <span className="text">*/}
-                                  {/*        <input type="text"*/}
-                                  {/*               onChange={(event) => this.setState({edit_document_similarity_threshold: event.target.value})}*/}
-                                  {/*               placeholder="document similarity threshold"*/}
-                                  {/*               value={document_similarity_threshold}*/}
-                                  {/*        />*/}
-                                  {/*    </span>*/}
-                                  {/*</div>*/}
+                                  <div className="control-row">
+                                      <span className="label-wide">document similarity (a number between 0.75 and 1.0)</span>
+                                  </div>
+                                  <div className="control-row">
+                                      <span className="label-2">document similarity</span>
+                                      <span className="text">
+                                          <input type="text"
+                                                 onChange={(event) => this.setState({edit_document_similarity_threshold: event.target.value})}
+                                                 placeholder="document similarity threshold"
+                                                 value={document_similarity_threshold}
+                                          />
+                                        </span>
+                                  </div>
 
 
                               </div>

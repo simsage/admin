@@ -40,6 +40,18 @@
     height: 0;
 }
 
+.edit-box {
+    width: 300px;
+}
+
+.sid-box {
+    width: 300px;
+}
+
+.number-box {
+    width: 100px;
+}
+
 .control-row {
     display: inline-block;
     height: 40px;
