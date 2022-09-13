@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import KnowledgeBaseIntro from "./KnowledgeBaseIntro";
 import {useDispatch, useSelector} from "react-redux";
 import KnowledgeBaseList from "./KnowledgeBaseList";
-import {getOrganisationList} from "../organisations/organisationSlice";
-import {getKBList, setViewIds} from "./knowledgeBaseSlice";
+import {setViewIds} from "./knowledgeBaseSlice";
 import KnowledgeBaseEdit from "./KnowledgeBaseEdit";
 import Api from "../../common/api";
 import KnowledgeBaseDelete from "./KnowledgeBaseDelete";
@@ -14,20 +13,12 @@ export default function KnowledgeBaseHome() {
 
 
     const dispatch = useDispatch();
-    const session = useSelector((state) => state.authReducer.session)
-    const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
     const status = useSelector((state) => state.kbReducer.status);
     const kb_show_form = useSelector((state) => state.kbReducer.show_form)
     const kb_show_delete_form = useSelector((state) => state.kbReducer.show_delete_form)
     const kb_show_delete_info_form = useSelector((state) => state.kbReducer.show_delete_info_form)
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
-
-    useEffect(() => {
-        if (session && session.id && organisation_id) {
-            // dispatch(getKBList({session_id: session.id, organization_id: organisation_id}));
-        }
-    }, [])
 
     return (
 
@@ -55,12 +46,8 @@ export default function KnowledgeBaseHome() {
                 <KnowledgeBaseDeleteInfo />
             }
             {/*show view list*/}
-            {(kb_view_id !== null)&&
-                <>
-                {console.log("kb_view_id",kb_view_id)}
-                    <ViewIds/>
-                </>
-
+            { (kb_view_id !== null) &&
+                <ViewIds/>
             }
 
         </div>
@@ -108,7 +95,7 @@ export default function KnowledgeBaseHome() {
                         <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
                             <div className="modal-header">
-                                <h5 className="modal-title" id="staticBackdropLabel">{kb.name} </h5>
+                                <h5 className="modal-title" id="staticBackdropLabel">{kb && kb.name ? kb.name : ""} </h5>
                                 <button onClick={handleClose} type="button" className="btn-close"
                                         data-bs-dismiss="modal"
                                         aria-label="Close"></button>
