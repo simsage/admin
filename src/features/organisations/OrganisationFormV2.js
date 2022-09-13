@@ -40,16 +40,21 @@ export default function OrganisationFormV2(props) {
     const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm();
 
     const name = organisation?organisation.name:'';
+    const enabled = organisation?organisation.enabled:false;
+    const org_id = organisation?organisation.id:null;
 
     useEffect(() => {
         let defaultValues = {};
         defaultValues.name = name;
+        defaultValues.enabled = enabled;
+        // defaultValues.id = org_id;
         reset({ ...defaultValues });
     }, [organisation]);
 
     const onSubmit = data => {
-        data = {...data,id:props.organisation_id,enabled:true}
-        console.log("data",data)
+        // console.log("data",data)
+        data = {...data,id:props.organisation_id}
+        // console.log("data",data)
         dispatch(updateOrganisation({session_id:props.session.id,data:data}))
     };
 
@@ -66,16 +71,23 @@ export default function OrganisationFormV2(props) {
                         <form onSubmit={handleSubmit(onSubmit)}>
 
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">{title} -- Form</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
                             <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <span className="label-2">name{organisation?organisation.name:''}</span>
-                                <input defaultValue="test 2" {...register("name", { required: true })} />
-                                {errors.name && <span>This field is required</span>}
+                            <span className="label-2">Name</span>
+                                <input {...register("name", { required: true })} /><br />
+                                {errors.name && <span >This field is required <br /></span> }
 
 
+                            <label className="label-2">Enabled</label>
+                            <input name="enabled" type="checkbox" {...register('enabled')}  />
+                            {errors.acceptTerms && <span>This field is required</span>}
+
+                            {/*{org_id &&*/}
+                            {/*    <input {...register("id")} type="hidden"/>*/}
+                            {/*}*/}
                         </div>
                         <div className="modal-footer">
                             <input type="submit" />
