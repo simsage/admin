@@ -28,13 +28,13 @@ export default function KnowledgeBaseEdit(){
     const [enabled,setEnabled] = useState(true);
     const [security_id,setSecurityId] = useState('');
     const [max_queries_per_day,setMaxQueriesPerDay] = useState(0);
-    const [analytics_window_size_in_months,setAnalyticsWindowInMonths] = useState('');
+    const [analytics_window_size_in_months,setAnalyticsWindowInMonths] = useState(0);
     const [capacity_warnings,setCapacityWarnings] = useState(true);
     const [created,setCreated] = useState('');
     const [dms_index_schedule,setDmsIndexSchedule] = useState('');
     const [operator_enabled,setOperatorEnabled] = useState(true);
 
-    const [enable_document_similarity,setEnableDocumentSimilarity] = useState((kb)?kb.enableDocumentSimilarity:'');
+    const [enable_document_similarity,setEnableDocumentSimilarity] = useState((kb)?kb.enableDocumentSimilarity:true);
     const [document_similarity_threshold,setDocumentSimilarityThreshold] = useState(0.9);
 
     const kb_show_form = useSelector((state)=>state.kbReducer.show_form)
@@ -266,7 +266,7 @@ export default function KnowledgeBaseEdit(){
 
                                   <div className="control-row">
                                       <span className="label-wide">maximum number of queries per day (0 is no limits)</span>
-                                      <span className="text">
+                                      <span className="text margin-left">
                                                         <input type="text"
                                                                onChange={(event) => setMaxQueriesPerDay(event.target.value)}
                                                                placeholder="max transactions per month"
@@ -278,7 +278,7 @@ export default function KnowledgeBaseEdit(){
 
                                   <div className="control-row">
                                       <span className="label-wide">maximum analytics retention period in months (0 is no limits)</span>
-                                      <span className="text">
+                                      <span className="text margin-left">
                                                         <input type="text"
                                                                onChange={(event) => setAnalyticsWindowInMonths(event.target.value)}
                                                                placeholder="max analytics retention period in months"
