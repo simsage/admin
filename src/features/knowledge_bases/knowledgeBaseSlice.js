@@ -27,7 +27,7 @@ export const getKBList = createAsyncThunk(
     'knowledgeBases/getKBList',
     async ({session_id,organization_id}) => {
         const api_base = window.ENV.api_base;
-        console.log("organization_id getKBList",organization_id)
+        console.log("organization_id getKBList", organization_id)
         const url = api_base + '/knowledgebase/'+ encodeURIComponent(organization_id);
 
         // return "Hello";

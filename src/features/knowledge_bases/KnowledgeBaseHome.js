@@ -15,14 +15,19 @@ export default function KnowledgeBaseHome() {
 
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session)
-    const filter = null;
-    const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
+    const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
     const status = useSelector((state) => state.kbReducer.status);
     const kb_show_form = useSelector((state) => state.kbReducer.show_form)
     const kb_show_delete_form = useSelector((state) => state.kbReducer.show_delete_form)
     const kb_show_delete_info_form = useSelector((state) => state.kbReducer.show_delete_info_form)
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
+
+    useEffect(() => {
+        if (session && session.id && organisation_id) {
+            // dispatch(getKBList({session_id: session.id, organization_id: organisation_id}));
+        }
+    }, [])
 
     return (
 

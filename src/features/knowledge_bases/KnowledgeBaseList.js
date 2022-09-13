@@ -20,8 +20,8 @@ export default function KnowledgeBaseList(){
     
 
     useEffect(()=>{
-        dispatch(getKBList({session_id:session.id, organization_id:organisation_id}));
-    },[])
+        dispatch(getKBList({session_id: session.id, organization_id: organisation_id}));
+    }, [])
 
 
     function getKnowledgeBases() {
