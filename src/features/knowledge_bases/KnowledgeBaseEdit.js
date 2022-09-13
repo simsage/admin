@@ -1,9 +1,6 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {store} from "../../app/store";
-import {addOrUpdate, closeForm, getKBList, showAddForm, showEditForm} from "./knowledgeBaseSlice";
-import {getOrganisationList, updateOrganisation} from "../organisations/organisationSlice";
-import App from "../../App";
+import {addOrUpdate, closeForm} from "./knowledgeBaseSlice";
 import Api from "../../common/api";
 
 export default function KnowledgeBaseEdit(){
@@ -18,10 +15,6 @@ export default function KnowledgeBaseEdit(){
     const kb_id = useSelector((state) => state.kbReducer.edit_id)
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
     let kb = undefined;
-
-    console.log("Load ID", kb_id)
-
-    const [refreshKey, setRefreshKey] = useState(0);
 
     const [name,setName] = useState('');
     const [email,setEmail] = useState('');

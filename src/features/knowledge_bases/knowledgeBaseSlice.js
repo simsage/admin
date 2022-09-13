@@ -74,16 +74,14 @@ export const deleteRecord = createAsyncThunk(
 export const addOrUpdate = createAsyncThunk(
     'knowledgeBases/addOrUpdate',
     async ({session_id,data})=>{
-        console.log("organisations/updateOrganisation");
+        console.log("knowledgeBases/updateKnowledgeBase");
 
         const api_base = window.ENV.api_base;
         const url = '/knowledgebase/';
-        if (url !== '/stats/stats/os') {
-            console.log('PUT ' + api_base + url);
-        }
+        console.log('PUT ' + api_base + url);
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("updateOrganisation data",response.data)
+                console.log("updateKnowledgeBase data", response.data)
                 return response.data
             }).catch(
                 (error) => {return error}
