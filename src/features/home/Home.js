@@ -4,9 +4,9 @@ import KnowledgeBaseHome from "../knowledge_bases/KnowledgeBaseHome";
 import StatusHome from "../status/StatusHome";
 import LogHome from "./LogHome";
 import {useDispatch, useSelector} from "react-redux";
-import {getOrganisationList} from "../organisations/organisationSlice";
 import {OrganisationHome} from "../organisations/OrganisationHome";
 import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
+import ErrorDialog from "./ErrorDialog";
 
 export default function Home() {
     const [selected_sub_nav, setSelectedSubNav] = useState('knowledge-bases')
@@ -50,6 +50,9 @@ export default function Home() {
             {selected_sub_nav === 'org' &&
                 <OrganisationHome />
             }
+
+            <ErrorDialog />
+
         </div>
     );
 }

@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {addOrUpdate, closeForm} from "./knowledgeBaseSlice";
+import {showError} from "../auth/authSlice";
 import Api from "../../common/api";
 
 export default function KnowledgeBaseEdit(){
@@ -107,11 +108,10 @@ export default function KnowledgeBaseEdit(){
     // refreshSecurityId()
 
     const handleSave = () => {
-        if(email.length > 3 && name.length > 3 && security_id.length > 0) {
-
+        if (email && email.length > 3 && name && name.length > 3 && security_id && security_id.length > 0) {
             console.log("handleSave called")
             const session_id = session.id
-            if (organisation_id !== undefined) {
+            if (organisation_id) {
                 const data = {
                     kbId: kb_id,
                     organisationId: organisation_id,
@@ -129,19 +129,17 @@ export default function KnowledgeBaseEdit(){
                     documentSimilarityThreshold: document_similarity_threshold
                 };
 
-                console.log("data",data)
+                console.log("data", data)
                 dispatch(addOrUpdate({session_id, data}))
                 clearFormData();
                 dispatch(closeForm());
-                //     // dispatch(getOrganisationList({session:session,filter:null}))
-                //     // setName('')
-            } else {
-                console.log("organisation_id is undefined")
-            }
-        }else{
-            console.log("Error")
-        }
 
+            } else {
+                dispatch(showError({"text": "can't save, organisation-id missing", "title": "error"}));
+            }
+        } else {
+            dispatch(showError({"text": "can't save, missing or invalid parameter(s)", "title": "error"}));
+        }
     }
 
 
