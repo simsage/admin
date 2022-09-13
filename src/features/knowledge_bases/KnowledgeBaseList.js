@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Pagination} from "../../common/pagination";
-import {deleteRecord, getKBList, setViewIds, showAddForm, showEditForm} from "./knowledgeBaseSlice";
+import {deleteRecord, getKBList, setViewIds, showAddForm, showEditForm, showDeleteAskForm} from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
 
 export default function KnowledgeBaseList(){
@@ -52,16 +52,8 @@ export default function KnowledgeBaseList(){
         dispatch(showEditForm({kb_id:kb_id}));
     }
 
-    const handleDeleteForm = (kb_id) => {
-        console.log("delete",kb_id);
-
-        // const data = {session_id:session_id,organisation_id:organisation_id,kb_id:kb_id}
-        const data = {session_id,organisation_id,kb_id}
-        console.log("delete data",data)
-        dispatch(deleteRecord(data));
-        // dispatch(getKBList({session_id:session.id, organization_id:organisation_id}));
-        // TODO:Delete warning
-        // TODO:Reload kb list
+    const handleDeleteFormAsk = (kb) => {
+        dispatch(showDeleteAskForm({session_id, kb}));
     }
 
 
@@ -152,7 +144,7 @@ export default function KnowledgeBaseList(){
                                         <td className="pt-3 px-4 pb-0">
                                             <div className="link-button" >
                                                 <button title="edit knowledge base" onClick={() => handleEditForm(knowledge_base.kbId)}  className={"btn text-primary btn-sm"}>Edit</button>
-                                                <button title="remove knowledge base" onClick={() => handleDeleteForm(knowledge_base.kbId)}  className={"btn text-danger btn-sm"}>Delete</button>
+                                                <button title="remove knowledge base" onClick={() => handleDeleteFormAsk(knowledge_base)}  className={"btn text-danger btn-sm"}>Delete</button>
                                                 <button title="view knowledge base ids" onClick={() => handleViewIds(knowledge_base.kbId)}  className={"btn text-primary btn-sm"}>View Ids</button>
                                                 <button title="optimize indexes" onClick={() => handleOptimizeIndexesAsk(knowledge_base)}  className={"btn text-sprimary btn-sm"}>Optimize indexes</button>
 

@@ -6,6 +6,8 @@ import {getOrganisationList} from "../organisations/organisationSlice";
 import {getKBList, setViewIds} from "./knowledgeBaseSlice";
 import KnowledgeBaseEdit from "./KnowledgeBaseEdit";
 import Api from "../../common/api";
+import KnowledgeBaseDelete from "./KnowledgeBaseDelete";
+import KnowledgeBaseDeleteInfo from "./KnowledgeBaseDeleteInfo";
 
 
 export default function KnowledgeBaseHome() {
@@ -18,6 +20,8 @@ export default function KnowledgeBaseHome() {
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
     const status = useSelector((state) => state.kbReducer.status);
     const kb_show_form = useSelector((state) => state.kbReducer.show_form)
+    const kb_show_delete_form = useSelector((state) => state.kbReducer.show_delete_form)
+    const kb_show_delete_info_form = useSelector((state) => state.kbReducer.show_delete_info_form)
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
 
     return (
@@ -38,6 +42,12 @@ export default function KnowledgeBaseHome() {
             {/*show kb add/edit form*/}
             {kb_show_form === true &&
                 <KnowledgeBaseEdit/>
+            }
+            {kb_show_delete_form === true &&
+                <KnowledgeBaseDelete />
+            }
+            {kb_show_delete_info_form === true &&
+                <KnowledgeBaseDeleteInfo />
             }
             {/*show view list*/}
             {(kb_view_id !== null)&&

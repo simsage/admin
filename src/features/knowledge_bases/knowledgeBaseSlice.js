@@ -15,6 +15,11 @@ const initialState = {
     show_form: false,
     edit_id: null,
     view_id: null,
+
+    // delete dialog
+    show_delete_form: false,
+    show_delete_info_form: false,
+    delete_data: null,              // {session and kb}
 }
 
 
@@ -140,6 +145,19 @@ const knowledgeBaseSlice = createSlice({
             state.show_form = true
             state.edit_id = action.payload.kb_id
         },
+        showDeleteAskForm:(state, action) => {
+            state.show_delete_form = true;
+            state.delete_data = action.payload;
+        },
+        closeDelete:(state) => {
+            state.show_delete_form = false;
+            state.show_delete_info_form = false;
+            state.delete_data = null;
+        },
+        showDeleteInfo: (state) => {
+            state.show_delete_form = false;
+            state.show_delete_info_form = true;
+        },
         setViewIds:(state,action) => {
             console.log("setViewIds",action.payload)
             state.view_id = action.payload?action.payload:null;
@@ -148,11 +166,15 @@ const knowledgeBaseSlice = createSlice({
             state.show_form = false;
             state.edit_id = undefined;
         },
+        optimizeIndexes:(state, action) => {
+            console.log("optimizeIndexes", action.payload)
+        },
     },
     extraReducers
 });
 
 
 
-export const { showAddForm, showEditForm, closeForm, setViewIds} = knowledgeBaseSlice.actions
+export const { showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
+               setViewIds, optimizeIndexes} = knowledgeBaseSlice.actions
 export default knowledgeBaseSlice.reducer;
