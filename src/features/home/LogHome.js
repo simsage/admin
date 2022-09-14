@@ -42,6 +42,14 @@ export default function LogHome(){
 
     useEffect(()=> {
         getLogsLocal(log_type, log_service, log_hours)
+
+        return function cleanup() {
+            if (window.log_timer) {
+                clearInterval(window.log_timer);
+                window.log_timer = null;
+            }
+        }
+
     }, [])
 
     // convert a log-type to a css class for display purposes
@@ -85,6 +93,17 @@ export default function LogHome(){
 
     function setLogRefresh(time) {
         setRefresh(time);
+
+        // clear any existing timer
+        if (window.log_timer) {
+            clearInterval(window.log_timer);
+            window.log_timer = null;
+        }
+        if (time > 0) {
+            window.log_timer = setInterval(() => {
+                getLogsLocal(log_type, log_service, log_hours);
+            }, time * 1000);
+        }
     }
 
     function setLogServiceLocal(log_service) {
