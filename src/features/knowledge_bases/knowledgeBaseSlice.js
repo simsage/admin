@@ -15,11 +15,14 @@ const initialState = {
     show_form: false,
     edit_id: null,
     view_id: null,
+    data_status: 'load_now',//load_now,loading,loaded
 
     // delete dialog
     show_delete_form: false,
     show_delete_info_form: false,
     delete_data: null,              // {session and kb}
+
+
 }
 
 
@@ -94,15 +97,18 @@ const extraReducers = (builder) => {
     builder
         //getKBList
         .addCase(getKBList.pending, (state, action) => {
-            state.status = "loading"
+            state.status = "loading";
+            state.data_status = 'loading';
         })
         .addCase(getKBList.fulfilled, (state, action) => {
             console.log("knowledgeBases/getKBList ",action)
-            state.status = "fulfilled"
-            state.kb_list = action.payload
+            state.status = "fulfilled";
+            state.kb_list = action.payload;
+            state.data_status = 'loaded';
         })
         .addCase(getKBList.rejected, (state, action) => {
-            state.status = "rejected"
+            state.status = "rejected";
+            state.data_status = 'rejected';
         })
 
         //deleteRecord
@@ -112,6 +118,7 @@ const extraReducers = (builder) => {
         .addCase(deleteRecord.fulfilled, (state, action) => {
             console.log("knowledgeBases/deleteRecord ",action)
             state.status = "fulfilled"
+            state.data_status = 'load-now';
         })
         .addCase(deleteRecord.rejected, (state, action) => {
             state.status = "rejected"
@@ -124,6 +131,7 @@ const extraReducers = (builder) => {
         .addCase(addOrUpdate.fulfilled, (state, action) => {
             console.log("knowledgeBases/addOrUpdate ",action)
             state.status = "fulfilled"
+            state.data_status = 'load-now';
         })
         .addCase(addOrUpdate.rejected, (state, action) => {
             state.status = "rejected"

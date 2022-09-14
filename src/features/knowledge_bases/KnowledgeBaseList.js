@@ -14,7 +14,7 @@ export default function KnowledgeBaseList(){
     const session_id = session.id;
     const [kb_page, setKbPage] = useState(0)
     const [kb_page_size, setKbPageSize] = useState(useSelector((state) => state.kbReducer.kb_page_size))
-
+    const data_status = useState(useSelector((state) => state.kbReducer.data_status))
     const dispatch = useDispatch()
     
 

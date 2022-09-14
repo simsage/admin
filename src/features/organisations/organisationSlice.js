@@ -71,7 +71,6 @@ const extraReducers = (builder) => {
         .addCase(deleteRecord.fulfilled, (state, action) => {
             console.log("knowledgeBases/deleteRecord ",action)
             state.status = "fulfilled"
-            state.data_status = 'load_now';
         })
 
 }

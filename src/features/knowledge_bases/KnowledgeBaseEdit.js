@@ -9,9 +9,7 @@ export default function KnowledgeBaseEdit(){
         return (<div />);
 
     return(
-        <KnowledgeBaseForm
-            show_kb_form = {show_kb_form}
-        />
+        <KnowledgeBaseForm />
     );
 
 }
