@@ -33,14 +33,14 @@ export default function LogHome(){
     const log_list = useSelector((state) => state.homeReducer.log_list);
     const [log_refresh, setRefresh] = useState(0);
 
-    function getLogsLocal() {
+    function getLogsLocal(log_type, log_service, log_hours) {
         if (session && session.id && organisation_id) {
             dispatch(getLogs({session_id: session.id, organisation_id, log_type, log_service, log_hours}));
         }
     }
 
     useEffect(()=> {
-        getLogsLocal()
+        getLogsLocal(log_type, log_service, log_hours)
     }, [])
 
     // convert a log-type to a css class for display purposes
@@ -72,14 +72,14 @@ export default function LogHome(){
         else return "btn btn-outline-primary small-button-spacer btn-block";
     }
 
-    function setHours(hours) {
-        dispatch(setLogHours(hours));
-        getLogsLocal();
+    function setHours(log_hours) {
+        dispatch(setLogHours(log_hours));
+        getLogsLocal(log_type, log_service, log_hours);
     }
 
     function setLogTypeLocal(log_type) {
         dispatch(setLogType(log_type));
-        getLogsLocal();
+        getLogsLocal(log_type, log_service, log_hours);
     }
 
     function setLogRefresh(time) {
@@ -88,7 +88,7 @@ export default function LogHome(){
 
     function setLogServiceLocal(log_service) {
         dispatch(setLogService(log_service));
-        getLogsLocal();
+        getLogsLocal(log_type, log_service, log_hours);
     }
 
 
@@ -146,12 +146,12 @@ export default function LogHome(){
             <div className="log-list-overflow">
             {
                 log_list && log_list.map((line, j) => {
-                    return (<tr key={j} className="log-line" id={line.created}><td>
+                    return (<div key={j} className="log-line" id={line.created}>
                                 <span className={'log-type-width ' + getClassForType(line.type)}>{line.type}</span>
                                 <span className='log-service-width'>{line.service}</span>
                                 <span className='log-time-width'>{Api.unixTimeConvert(line.created)}</span>
                                 <span>{line.message}</span>
-                            </td></tr>)
+                            </div>)
                 })
             }
             </div>

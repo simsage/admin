@@ -68,7 +68,6 @@ export const getLogs = createAsyncThunk(
 
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("response.data.logList", response.data);
                 const log_list = response.data.logList ? response.data.logList : [];
                 const list = [];
                 for (let i = 0; i < log_list.length; i++) {
@@ -99,7 +98,6 @@ const extraReducers = (builder) => {
             state.status = "rejected"
         })
         .addCase(getLogs.fulfilled, (state, action) => {
-            console.log("getLogs.fulfilled", action.payload);
             state.log_list = action.payload;
         })
 }
