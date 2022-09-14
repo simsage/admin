@@ -9,6 +9,7 @@ export default function OrganisationFormV2(props) {
     let organisation = null;
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
 
+    //load organisation
     if (props.organisation_id && organisation_list) {
         let temp_org = organisation_list.filter((org) => {
             return org.id === props.organisation_id
@@ -22,7 +23,6 @@ export default function OrganisationFormV2(props) {
         dispatch(closeOrganisationForm());
     }
 
-
     const handleDelete = () => {
         dispatch(deleteOrganisation({session_id: props.session.id, organisation_id: organisation.id}))
         handleClose();
@@ -32,7 +32,7 @@ export default function OrganisationFormV2(props) {
     const title = (organisation === null) ? "Add new Organisation" : "Edit Organisation";
 
     //Form Hook
-    const {register, handleSubmit, watch, formState: {errors}, reset, setValue} = useForm();
+    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
 
     //set default value depends on organisation and show_organisation_form
     useEffect(() => {

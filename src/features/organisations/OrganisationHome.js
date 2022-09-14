@@ -9,9 +9,8 @@ import {selectTab} from "../home/homeSlice";
 
 export function OrganisationHome() {
     const theme = null
-    const organisationReducer = useSelector((state) => state.organisationReducer)
-    const organisation_list = organisationReducer.organisation_list
-    const load_data = organisationReducer.load_data
+    const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
+    const load_data = useSelector((state) => state.organisationReducer.load_data)
 
     const session = useSelector((state) => state.authReducer.session)
     const dispatch = useDispatch();
@@ -22,9 +21,10 @@ export function OrganisationHome() {
     const [page, setPage] = useState(0);
     const [page_size, setPageSize] = useState(10);
 
+
     useEffect(() => {
         dispatch(getOrganisationList({session: session, filter: filter}))
-    }, [load_data === 'load_data'])
+    }, [load_data === 'load_now'])
 
 
     function handleSelectOrganisation(session_id, org) {

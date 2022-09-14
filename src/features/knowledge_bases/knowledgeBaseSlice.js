@@ -81,7 +81,7 @@ export const addOrUpdate = createAsyncThunk(
         console.log('PUT ' + api_base + url);
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                thunkAPI.dispatch(updateKB(response.data));
+                // thunkAPI.dispatch(updateKB(response.data));
                 return response.data
             }).catch(
                 (error) => {return error}
@@ -167,25 +167,25 @@ const knowledgeBaseSlice = createSlice({
         optimizeIndexes:(state, action) => {
             console.log("optimizeIndexes", action.payload)
         },
-        updateKB: (state, action) => {
-            const kb = action.payload;
-            const existing_list = state.kb_list ? state.kb_list : [];
-            if (kb && kb.kbId && existing_list && existing_list.length >= 0) {
-                let found = false;
-                for (const i in existing_list) {
-                    const item = existing_list[i];
-                    if (item.kbId === kb.kbId) {
-                        existing_list[i] = item;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    existing_list.push(kb);
-                }
-                state.kb_list = existing_list;
-            }
-        },
+        // updateKB: (state, action) => {
+        //     const kb = action.payload;
+        //     const existing_list = state.kb_list ? state.kb_list : [];
+        //     if (kb && kb.kbId && existing_list && existing_list.length >= 0) {
+        //         let found = false;
+        //         for (const i in existing_list) {
+        //             const item = existing_list[i];
+        //             if (item.kbId === kb.kbId) {
+        //                 existing_list[i] = item;
+        //                 found = true;
+        //                 break;
+        //             }
+        //         }
+        //         if (!found) {
+        //             existing_list.push(kb);
+        //         }
+        //         state.kb_list = existing_list;
+        //     }
+        // },
     },
     extraReducers
 });
