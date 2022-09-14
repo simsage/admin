@@ -110,3 +110,40 @@
 .margin-left {
     margin-left: 170px;
 }
+
+/* logs */
+.log-type-debug {
+    color: #51B274;
+}
+
+.log-type-info {
+    color: #0e70a5;
+}
+
+.log-type-error {
+    color: darkred;
+}
+
+.log-type-warn {
+    color: darkmagenta;
+}
+
+.log-type-width {
+    width: 50px;
+    display: inline-block;
+}
+
+.log-service-width {
+    width: 80px;
+    display: inline-block;
+}
+
+.log-time-width {
+    width: 130px;
+    display: inline-block;
+}
+
+.log-line {
+    font-size: 0.65em;
+    margin-bottom: 4px;
+}
