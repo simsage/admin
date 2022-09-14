@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {getLogs, setLogHours, setLogType, setLogService} from "./homeSlice";
@@ -32,6 +32,7 @@ export default function LogHome(){
     const log_hours = useSelector((state) => state.homeReducer.log_hours)
     const log_list = useSelector((state) => state.homeReducer.log_list);
     const [log_refresh, setRefresh] = useState(0);
+    const lastItemRef = useRef();
 
     function getLogsLocal(log_type, log_service, log_hours) {
         if (session && session.id && organisation_id) {
@@ -91,6 +92,10 @@ export default function LogHome(){
         getLogsLocal(log_type, log_service, log_hours);
     }
 
+    window.setTimeout(() => {
+        if (lastItemRef && lastItemRef.current && lastItemRef.current.scrollIntoView)
+            lastItemRef.current.scrollIntoView({ block: "end", behavior: "auto" })
+    }, 100);
 
     return(
         <div className="section px-5 pt-4">
@@ -144,16 +149,17 @@ export default function LogHome(){
             </div>
             <br />
             <div className="log-list-overflow">
-            {
-                log_list && log_list.map((line, j) => {
-                    return (<div key={j} className="log-line" id={line.created}>
-                                <span className={'log-type-width ' + getClassForType(line.type)}>{line.type}</span>
-                                <span className='log-service-width'>{line.service}</span>
-                                <span className='log-time-width'>{Api.unixTimeConvert(line.created)}</span>
-                                <span>{line.message}</span>
-                            </div>)
-                })
-            }
+                {
+                    log_list && log_list.map((line, j) => {
+                        return (<div key={j} className="log-line" id={line.created}>
+                                    <span className={'log-type-width ' + getClassForType(line.type)}>{line.type}</span>
+                                    <span className='log-service-width'>{line.service}</span>
+                                    <span className='log-time-width'>{Api.unixTimeConvert(line.created)}</span>
+                                    <span>{line.message}</span>
+                                </div>)
+                    })
+                }
+                <div ref={lastItemRef}></div>
             </div>
         </div>
     )
