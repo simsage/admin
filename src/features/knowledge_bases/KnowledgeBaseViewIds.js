@@ -39,9 +39,11 @@ export default function KnowledgeBaseViewIds() {
         dispatch(setViewIds(''))
     }
 
+    // get the ids safely
     const organisationId = kb && kb.organisationId ? kb.organisationId : "";
     const kbId = kb && kb.kbId ? kb.kbId : "";
     const securityId = kb && kb.securityId ? kb.securityId : "";
+
     return (
         <div>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
@@ -59,7 +61,7 @@ export default function KnowledgeBaseViewIds() {
                                 <table>
                                     <tr>
                                         <td>organisation id</td>
-                                        <td>{organisationId}</td>
+                                        <td className="id-width">{organisationId}</td>
                                         <td>
                                             <button onClick={() => handleCopyIds(organisationId)}
                                                     className={"btn btn-outline-primary"}>copy
@@ -74,7 +76,7 @@ export default function KnowledgeBaseViewIds() {
                                     </tr>
                                     <tr>
                                         <td>knowledge id</td>
-                                        <td>{kbId}</td>
+                                        <td className="id-width">{kbId}</td>
                                         <td>
                                             <button onClick={() => handleCopyIds(kbId)}
                                                     className={"btn btn-outline-primary"}>copy
@@ -89,7 +91,7 @@ export default function KnowledgeBaseViewIds() {
                                     </tr>
                                     <tr>
                                         <td>security id</td>
-                                        <td>{securityId}</td>
+                                        <td className="id-width">{securityId}</td>
                                         <td>
                                             <button onClick={() => handleCopyIds(securityId)}
                                                     className={"btn btn-outline-primary"}>copy

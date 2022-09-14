@@ -46,6 +46,16 @@
     width: 400px;
 }
 
+.id-width {
+    padding-left: 20px;
+    width: 320px;
+}
+
+.copied-style {
+    padding-left: 10px;
+    font-size: 12px;
+}
+
 .text:after {
     visibility: hidden;
     display: block;
