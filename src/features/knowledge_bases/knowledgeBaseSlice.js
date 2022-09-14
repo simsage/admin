@@ -1,8 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
-import db_users from "../../notes/db.json";
 import axios from "axios";
-import {getOrganisationList} from "../organisations/organisationSlice";
 
 const initialState = {
     kb_list: [],
@@ -22,6 +20,9 @@ const initialState = {
     show_delete_info_form: false,
     delete_data: null,              // {session and kb}
 
+    // ask optimize
+    show_optimize_form: false,
+    optimize_data: null,            // {session and kb}
 
 }
 
@@ -81,6 +82,25 @@ export const addOrUpdate = createAsyncThunk(
 
         const api_base = window.ENV.api_base;
         const url = '/knowledgebase/';
+        console.log('PUT ' + api_base + url);
+        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                // thunkAPI.dispatch(updateKB(response.data));
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    }
+)
+
+
+export const optimizeIndexes = createAsyncThunk(
+    'knowledgeBases/optimizeIndexes',
+    async ({session_id, organisation_id, kb_id}, thunkAPI)=>{
+        const data = {"organisationId": organisation_id, "kbId": kb_id}
+        console.log("knowledgeBases/optimizeIndexes", data);
+        const api_base = window.ENV.api_base;
+        const url = '/language/optimize-indexes';
         console.log('PUT ' + api_base + url);
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
@@ -172,8 +192,14 @@ const knowledgeBaseSlice = createSlice({
             state.show_form = false;
             state.edit_id = undefined;
         },
-        optimizeIndexes:(state, action) => {
+        showOptimizeAskDialog:(state, action) => {
             console.log("optimizeIndexes", action.payload)
+            state.optimize_data = action.payload;
+            state.show_optimize_form = true;
+        },
+        closeOptimize: (state) => {
+            state.show_optimize_form = false;
+            state.optimize_data = null;
         },
         // updateKB: (state, action) => {
         //     const kb = action.payload;
@@ -201,5 +227,5 @@ const knowledgeBaseSlice = createSlice({
 
 
 export const { showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
-               setViewIds, optimizeIndexes, updateKB} = knowledgeBaseSlice.actions
+               setViewIds, showOptimizeAskDialog, closeOptimize, updateKB} = knowledgeBaseSlice.actions
 export default knowledgeBaseSlice.reducer;

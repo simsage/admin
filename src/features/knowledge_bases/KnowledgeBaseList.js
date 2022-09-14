@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Pagination} from "../../common/pagination";
-import {getKBList, setViewIds, showAddForm, showEditForm, showDeleteAskForm} from "./knowledgeBaseSlice";
+import {getKBList, setViewIds, showAddForm, showEditForm, showDeleteAskForm, showOptimizeAskDialog} from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
 
 export default function KnowledgeBaseList(){
@@ -63,8 +63,7 @@ export default function KnowledgeBaseList(){
 
 
     function handleOptimizeIndexesAsk(knowledge_base){
-        //TODO::add handleOptimizeIndexesAsk
-        console.log("handleOptimizeIndexesAsk",knowledge_base)
+        dispatch(showOptimizeAskDialog({session_id, kb: knowledge_base}));
     }
 
 
@@ -121,7 +120,7 @@ export default function KnowledgeBaseList(){
                                                 <button title="edit knowledge base" onClick={() => handleEditForm(knowledge_base.kbId)}  className={"btn text-primary btn-sm"}>Edit</button>
                                                 <button title="remove knowledge base" onClick={() => handleDeleteFormAsk(knowledge_base)}  className={"btn text-danger btn-sm"}>Delete</button>
                                                 <button title="view knowledge base ids" onClick={() => handleViewIds(knowledge_base.kbId)}  className={"btn text-primary btn-sm"}>View Ids</button>
-                                                <button title="optimize indexes" onClick={() => handleOptimizeIndexesAsk(knowledge_base)}  className={"btn text-sprimary btn-sm"}>Optimize indexes</button>
+                                                <button title="optimize indexes" onClick={() => handleOptimizeIndexesAsk(knowledge_base)}  className={"btn text-primary btn-sm"}>Optimize indexes</button>
 
                                             </div>
                                         </td>

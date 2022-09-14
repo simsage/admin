@@ -7,6 +7,7 @@ import KnowledgeBaseEdit from "./KnowledgeBaseEdit";
 import Api from "../../common/api";
 import KnowledgeBaseDelete from "./KnowledgeBaseDelete";
 import KnowledgeBaseDeleteInfo from "./KnowledgeBaseDeleteInfo";
+import KnowledgeBaseOptimize from "./KnowledgeBaseOptimize";
 
 
 export default function KnowledgeBaseHome() {
@@ -18,6 +19,7 @@ export default function KnowledgeBaseHome() {
     const kb_show_form = useSelector((state) => state.kbReducer.show_form)
     const kb_show_delete_form = useSelector((state) => state.kbReducer.show_delete_form)
     const kb_show_delete_info_form = useSelector((state) => state.kbReducer.show_delete_info_form)
+    const kb_show_optimize_form = useSelector((state) => state.kbReducer.show_optimize_form)
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
 
     return (
@@ -48,6 +50,9 @@ export default function KnowledgeBaseHome() {
             {/*show view list*/}
             { (kb_view_id !== null) &&
                 <ViewIds/>
+            }
+            {kb_show_optimize_form === true &&
+                <KnowledgeBaseOptimize/>
             }
 
         </div>
