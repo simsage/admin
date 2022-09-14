@@ -111,7 +111,29 @@
     margin-left: 170px;
 }
 
+
 /* logs */
+
+.log-list-overflow {
+    height: 60vh;
+    overflow: scroll;
+    scroll-behavior: auto;
+}
+
+.logger-service-selector {
+    width: 300px;
+    padding-bottom: 10px;
+}
+
+.log-spacer {
+    width: 20px;
+    display: inline-block;
+}
+
+.small-button-spacer {
+    margin-right: 2px;
+}
+
 .log-type-debug {
     color: #51B274;
 }
