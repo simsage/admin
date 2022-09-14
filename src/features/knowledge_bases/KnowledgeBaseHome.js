@@ -93,6 +93,9 @@ export default function KnowledgeBaseHome() {
             dispatch(setViewIds(''))
         }
 
+        const organisationId = kb && kb.organisationId ? kb.organisationId : "";
+        const kbId = kb && kb.kbId ? kb.kbId : "";
+        const securityId = kb && kb.securityId ? kb.securityId : "";
         return (
             <div>
                 <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
@@ -110,45 +113,45 @@ export default function KnowledgeBaseHome() {
                                     <table>
                                         <tr>
                                             <td>organisation id</td>
-                                            <td>{kb.kbId}</td>
+                                            <td>{organisationId}</td>
                                             <td>
-                                                <button onClick={() => handleCopyIds(kb.kbId)}
+                                                <button onClick={() => handleCopyIds(organisationId)}
                                                         className={"btn btn-outline-primary"}>copy
                                                 </button>
 
                                             </td>
                                             <td>
-                                                {(copied_id === kb.kbId) &&
+                                                {(copied_id === organisationId) &&
                                                     <div className="copied-style">copied</div>
                                                 }
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>knowledge id</td>
-                                            <td>{kb.organisationId}</td>
+                                            <td>{kbId}</td>
                                             <td>
-                                                <button onClick={() => handleCopyIds(kb.organisationId)}
+                                                <button onClick={() => handleCopyIds(kbId)}
                                                         className={"btn btn-outline-primary"}>copy
                                                 </button>
 
                                             </td>
                                             <td>
-                                                {(copied_id === kb.organisationId) &&
+                                                {(copied_id === kbId) &&
                                                     <div className="copied-style">copied</div>
                                                 }
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>security id</td>
-                                            <td>{kb.securityId}</td>
+                                            <td>{securityId}</td>
                                             <td>
-                                                <button onClick={() => handleCopyIds(kb.securityId)}
+                                                <button onClick={() => handleCopyIds(securityId)}
                                                         className={"btn btn-outline-primary"}>copy
                                                 </button>
 
                                             </td>
                                             <td>
-                                                {(copied_id === kb.securityId) &&
+                                                {(copied_id === securityId) &&
                                                     <div className="copied-style">copied</div>
                                                 }
                                             </td>
