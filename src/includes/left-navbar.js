@@ -80,7 +80,7 @@ export default function LeftNavbar(){
                         </select>
                     </li>
 
-                    {selected_kb_id !== null &&
+                    {selected_kb_id &&
                         nav2.map((item, i) => {
                             return <LeftSidebarNavItem key={i} label={item.label} slug={item.slug} logo={item.logo}/>
                         })
