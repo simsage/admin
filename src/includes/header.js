@@ -18,15 +18,19 @@ const Header = (props) => {
         dispatch(showAccount())
     }
 
+    const full_name = firstName + " " + surname;
+    const org_name = (organisation && organisation.name) ? organisation.name : "";
+
     return(
         <>
         <div className="navbar d-flex justify-content-between align-items-center px-4">
             <div className=" d-flex align-items-center position-relative">
             </div>
             <div className="d-flex align-items-center">
+
                 <div className="d-none d-lg-flex flex-column text-end me-3">
-                    <p className="user-name mb-0">{firstName + " " + surname} - org: {organisation.id} -sess: {session.id}</p>
-                    <p className="org-name mb-0">{((organisation !== null && organisation.name !== null) ? organisation.name : "") }</p>
+                    <p className="user-name mb-0" title={"you are signed in as " + full_name}>{full_name}</p>
+                    <p className="org-name mb-0" title={"your primary organisation is " + org_name}>{org_name}</p>
                 </div>
 
                 <div className="account" title="this is the sign-out button for now">
