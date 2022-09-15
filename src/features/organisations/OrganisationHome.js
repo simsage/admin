@@ -50,6 +50,7 @@ export function OrganisationHome() {
                     <thead>
                     <tr>
                         <td className="small text-black-50 px-4">Organisation</td>
+                        <td className="small text-black-50 px-4">Enabled</td>
                         <td>
                                 <button onClick={() => handleAddOrganisation()} className={"btn btn-primary"}>+ Add New Organisation</button>
                         </td>
@@ -61,12 +62,16 @@ export function OrganisationHome() {
                         organisation_list.map((item) => {
                             return (
                                 <tr key={item.id}>
-                                    <td className="pt-3 px-4 pb-3"
+                                    <td className="pt-3 px-4 pb-3" title={"organisation " + item.name}
                                         onClick={() => handleSelectOrganisation(session.id, item)}>
                                         {item.name}
                                     </td>
+                                    <td className="pt-3 px-4 pb-3" title={item.enabled ? item.name + " is enabled" : item.name + " is disabled"}>
+                                        {item.enabled ? "yes" : "no"}
+                                    </td>
                                     <td>
-                                        <button className={"btn btn-outline-primary"} onClick={() => handleEditOrganisation(item.id)}>Edit</button>
+                                        <button className={"btn btn-outline-primary"} title={"edit organisation " + item.name}
+                                                onClick={() => handleEditOrganisation(item.id)}>Edit</button>
                                     </td>
                                 </tr>
                             )
