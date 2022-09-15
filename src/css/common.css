@@ -111,6 +111,12 @@
     margin-left: 170px;
 }
 
+.organisation-menu-item {
+    width: 200px;
+    display: block;
+    cursor: default;
+}
+
 
 /* logs */
 

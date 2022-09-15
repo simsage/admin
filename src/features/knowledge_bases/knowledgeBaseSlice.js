@@ -41,13 +41,10 @@ export const getKBList = createAsyncThunk(
 
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("knowledgeBases11",response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("knowledgeBases12",error)
                     return error
-
                 }
             )
     }

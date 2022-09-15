@@ -17,8 +17,6 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const dispatch = useDispatch();
 
-    console.log("PageLayout 1");
-
     const {session, jwt} = useSelector((state)=>state.authReducer)
     const { instance, accounts } = useMsal();
 
@@ -30,7 +28,6 @@ export const PageLayout = (props) => {
         };
 
         instance.acquireTokenSilent(request).then((response) => {
-            console.log("PageLayout 2");
             // dispatch(setJwt(response.idToken));
             const api_base = window.ENV.api_base;
             const url = '/auth/admin/authenticate/msal';
@@ -41,11 +38,8 @@ export const PageLayout = (props) => {
             })
                 .then(function (response2) {
                     dispatch(login(response2.data));
-                    console.log("response2.data", response2.data);
                     const session = response2.data.session;
                     const filter = null;
-                    console.log("response2.data.session", session.organisationId);
-                    console.log("getOrganisationList in pageLayout")
                     dispatch(getOrganisationList({session:session,filter:filter}));
                     dispatch(getKBList({session_id:session.id, organization_id:session.organisationId}));
 

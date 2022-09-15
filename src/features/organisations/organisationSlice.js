@@ -43,21 +43,18 @@ const extraReducers = (builder) => {
         })
 
         .addCase(getOrganisationList.fulfilled, (state, action) => {
-            console.log("addCase getOrganisationList fulfilled ", action);
             state.status = "fulfilled";
             state.organisation_list = action.payload;
             state.data_status = 'loaded';
             // console.log('action.payload', action.payload);
         })
         .addCase(getOrganisationList.rejected, (state, action) => {
-            console.log("addCase getOrganisationList rejected ", action)
             state.status = "rejected"
             state.data_status = 'rejected';
         })
 
         //update Organisation
         .addCase(updateOrganisation.fulfilled, (state, action) => {
-            console.log("addCase updateOrganisation fulfilled ", action)
             state.show_organisation_form = false;
             state.edit_organisation_id = undefined;
             state.data_status = 'load_now';
@@ -69,7 +66,6 @@ const extraReducers = (builder) => {
 
         //delete Record
         .addCase(deleteRecord.fulfilled, (state, action) => {
-            console.log("knowledgeBases/deleteRecord ",action)
             state.status = "fulfilled"
         })
 
@@ -89,11 +85,9 @@ export const getOrganisationList = createAsyncThunk(
 
         return axios.get(api_base + url, Comms.getHeaders(id))
             .then((response) => {
-                console.log("organisations/getOrganisationList1 78", response.data);
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("organisations/getOrganisationList1 82", error);
                     return error
                 }
             )

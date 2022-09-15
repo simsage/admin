@@ -1,4 +1,4 @@
-import React, {Component, useEffect} from 'react';
+import React, {useEffect} from 'react';
 
 import {useDispatch, useSelector} from "react-redux";
 import {useMsal} from "@azure/msal-react";
@@ -7,7 +7,7 @@ import {
     showAddOrganisationForm,
     showEditOrganisationForm
 } from "../features/organisations/organisationSlice";
-import {setSelectedOrganisation} from "../features/auth/authSlice";
+import {setSelectedKB, setSelectedOrganisation} from "../features/auth/authSlice";
 import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
 import {selectTab} from "../features/home/homeSlice";
 
@@ -19,10 +19,9 @@ const AccountDropdown = (props) => {
 
     const { instance } = useMsal();
     const dispatch = useDispatch();
-    const state = useSelector((state) => state).authReducer;
 
-    const accounts_dropdown = state.accounts_dropdown;
-    const session = state.session;
+    const accounts_dropdown = useSelector((state) => state.authReducer.accounts_dropdown)
+    const session = useSelector((state) => state.authReducer.session)
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
     const organisation_list_status = useSelector((state) => state.organisationReducer.status);
 
@@ -30,18 +29,21 @@ const AccountDropdown = (props) => {
 
     const data_status = useSelector((state) => state.organisationReducer.data_status)
 
-    const filter = null;
 
-    function handleSelectOrganisation(session_id,org){
-        const org_id = org.id
-        dispatch(setSelectedOrganisation(org));
-        dispatch(getKBList({session_id:session.id, organization_id:org_id}));
-        dispatch(selectTab('home'))
+    // menu selects a different organisation
+    function handleSelectOrganisation(session_id, org) {
+        if (session_id && org && org.id) {
+            const org_id = org.id
+            dispatch(setSelectedOrganisation(org));
+            dispatch(getKBList({session_id: session_id, organization_id: org_id}));
+            dispatch(selectTab('home'))
+            dispatch(setSelectedKB(undefined))
+        }
     }
 
     useEffect(()=>{
         dispatch(getOrganisationList({session:session, filter:null}))
-    },[data_status == 'load_now'])
+    },[data_status === 'load_now'])
 
     function handleAddOrganisation(){
         dispatch(showAddOrganisationForm({show_form:true}))
@@ -82,8 +84,8 @@ const AccountDropdown = (props) => {
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
                             <li key={item.id}
                                 className={(item.id === selected_organisation.id)? "acc-item px-4 py-3 d-flex justify-content-between active":"acc-item px-4 py-3 d-flex justify-content-between"}>
-                                <label onClick={() => handleSelectOrganisation(session.id,item)}>{item.name}</label>
-                                <img onClick={()=>handleEditOrganisation(item.id)} src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>
+                                <span className="organisation-menu-item" onClick={() => handleSelectOrganisation(session.id, item)}>{item.name}</span>
+                                <img onClick={() => handleEditOrganisation(item.id)} src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>
                             </li>)
                     })
                 }
@@ -92,7 +94,8 @@ const AccountDropdown = (props) => {
                 <li className="acc-item px-4 py-3" onClick={() => handleAddOrganisation()}>
                     <label>+ Add New Organisation</label>
                 </li>
-<hr />
+
+                <hr />
 
                 {/*{window.ENV.use_experimental &&*/}
                 <li className="acc-item px-4 py-3 " onClick={() => editAccount()}>
@@ -114,43 +117,3 @@ const AccountDropdown = (props) => {
 }
 
 export default AccountDropdown;
-
-
-// export default class AccountDropdown extends Component {
-//     constructor(props){
-//         super(props);
-//         this.state={
-//             has_error: false,  // error trapping
-//             my_error_title: 'default error title',
-//             my_error_message: 'default error message'
-//         }
-//     }
-//     componentDidCatch(error, info) {
-//         this.setState({ has_error: true });
-//         console.log(error, info);
-//     }
-//     render() {
-//         if (this.state.has_error) {
-//             return <h1>account.js: Something went wrong.</h1>;
-//         }
-//         return (
-//             <div className={(this.props.isAccountsDropdown ? "d-flex" : "d-none") + " account-dropdown"}>
-//                 <ul className="acc-nav ps-0 mb-0">
-//
-//                     {window.ENV.use_experimental &&
-//                     <li className="acc-item px-4 py-3" onClick={() => {if (this.props.onEditAccount) this.props.onEditAccount()}}>
-//                         <label>Account</label>
-//                     </li>
-//                     }
-//                     {/*<li className="acc-item px-4 py-3" onClick={() => {if (this.props.onSettingsModal) this.props.onSettingsModal()}}>*/}
-//                     {/*    <label>Settings</label>*/}
-//                     {/*</li>*/}
-//                     <li className="acc-item px-4 py-3"
-//                         onClick={() => {if (this.props.onSignOut) this.props.onSignOut()}}>
-//                         <label>Sign Out</label>
-//                     </li>
-//                 </ul>
-//             </div>
-//         );
-//     }
-// }

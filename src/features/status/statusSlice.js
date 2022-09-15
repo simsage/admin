@@ -18,13 +18,11 @@ const extraReducers = (builder) => {
             })
 
             .addCase(getSimSageStatus.fulfilled, (state, action) => {
-                console.log("addCase getOrganisationList fulfilled ", action);
                 state.status = "fulfilled";
                 state.status_list = action.payload;
                 // console.log('action.payload', action.payload);
             })
             .addCase(getSimSageStatus.rejected, (state, action) => {
-                console.log("addCase getOrganisationList rejected ", action)
                 state.status = "rejected"
             })
 }
