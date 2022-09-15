@@ -3,6 +3,9 @@ import {useMsal} from "@azure/msal-react";
 import {loginRequest} from "./authConfig";
 import {Button} from "bootstrap";
 
+import "../../css/sign-in.css";
+
+
 function handleLogin(instance) {
     instance.loginRedirect(loginRequest).catch(e => {
         console.error(e)
@@ -20,22 +23,21 @@ export const SignInButton = () => {
             <div className="logo-box">
                 <img alt="SimSage" title="Search less; find more." className="logo" src={image} onClick={() => {}} />
             </div>
-            <div className="auth-wrapper">
-                <div className="auth-inner" style={{"backgroundColor": "#f0f0f080"}}>
-                    <h3>SimSage Mind sign in</h3>
+            <div className="auth-wrapper header-height">
+                <div className="auth-inner">
 
-                    <div className="form-group spacer-height">
-                    </div>
+                    <div className="sign-in-title">SimSage Mind sign in</div>
 
-                    <div className="form-group">
+                    <span className="form-group sign-in-button" title="Sign into the SimSage mind">
                         <button className="btn btn-primary" onClick={() => handleLogin(instance)}>
-                            Sign in using redirect
+                            Sign in
                         </button>
-                    </div>
+                    </span>
 
-                    <p className="forgot-password text-right">
-                        <span className="forgot-password-link" onClick={() => window.location = '/#/foss-license'}>open-source licenses</span>
+                    <p className="forgot-password text-right" title="view the open-source licenses used" onClick={() => window.location = '/foss-license'}>
+                        <span className="forgot-password-link">open-source licenses</span>
                     </p>
+
                 </div>
             </div>
 
