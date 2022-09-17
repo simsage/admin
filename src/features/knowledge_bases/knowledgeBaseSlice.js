@@ -135,7 +135,7 @@ const extraReducers = (builder) => {
         .addCase(deleteRecord.fulfilled, (state, action) => {
             console.log("knowledgeBases/deleteRecord ",action)
             state.status = "fulfilled"
-            state.data_status = 'load-now';
+            state.data_status = 'load_now';
         })
         .addCase(deleteRecord.rejected, (state, action) => {
             state.status = "rejected"
@@ -148,7 +148,7 @@ const extraReducers = (builder) => {
         .addCase(addOrUpdate.fulfilled, (state, action) => {
             console.log("knowledgeBases/addOrUpdate ",action)
             state.status = "fulfilled"
-            state.data_status = 'load-now';
+            state.data_status = 'load_now';
         })
         .addCase(addOrUpdate.rejected, (state, action) => {
             state.status = "rejected"
