@@ -10,7 +10,7 @@ import {selectTab} from "../home/homeSlice";
 export function OrganisationHome() {
     const theme = null
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
-    const load_data = useSelector((state) => state.organisationReducer.load_data)
+    const load_data = useSelector((state) => state.organisationReducer.data_status)
 
     const session = useSelector((state) => state.authReducer.session)
     const dispatch = useDispatch();

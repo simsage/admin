@@ -8,6 +8,8 @@ import {showError} from "../auth/authSlice";
 
 export default function KnowledgeBaseForm(props) {
 
+    //TODO: Speak to Cole regarding highlighting the form errors
+
 
     const dispatch = useDispatch();
     //get the data from slices
@@ -19,7 +21,7 @@ export default function KnowledgeBaseForm(props) {
     const show_kb_form = useSelector((state) => state.kbReducer.show_form);
     const session = useSelector((state) => state.authReducer.session);
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-
+    const [security_id, setSecurityId] = useState('');
 
 
     function showMissingOrganisationError() {
@@ -43,16 +45,20 @@ export default function KnowledgeBaseForm(props) {
 
 
     const refreshSecurityId = () => {
-        setSecurityId(Api.createGuid());
+        const id = Api.createGuid();
+        setSecurityId(id);
+        return id;
     }
 
 
     useEffect(() => {
-        if (kb_id === undefined) {
+
+        if (kb_id === undefined || kb_id === null) {
             refreshSecurityId();
         }
+        //Show Missing Org error at page loading if no org set.
         showMissingOrganisationError()
-    }, [show_kb_form])
+    }, [show_kb_form]);
 
 
     const handleClose = () => {
@@ -62,12 +68,10 @@ export default function KnowledgeBaseForm(props) {
 
     // set title
     const title = (kb_id) ? "Edit Knowledge Base" : "Add new Knowledge Base";
-    const [security_id, setSecurityId] = useState('');
 
+    console.log(security_id)
     //Form Hook
     const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
-
-    console.log(watch("email"));
 
     //set default value depends on organisation and show_organisation_form
     useEffect(() => {
@@ -76,7 +80,7 @@ export default function KnowledgeBaseForm(props) {
         defaultValues.kbId = kb_id ? kb_id : undefined;
         defaultValues.name = kb ? kb.name : '';
         defaultValues.email = kb ? kb.email : '';
-        defaultValues.securityId = kb ? kb.securityId : security_id;
+        defaultValues.securityId = kb ? kb.securityId : refreshSecurityId();
         defaultValues.maxQueriesPerDay = kb ? kb.maxQueriesPerDay : 0;
         defaultValues.analyticsWindowInMonths = kb ? kb.analyticsWindowInMonths : 0;
 
@@ -105,7 +109,6 @@ export default function KnowledgeBaseForm(props) {
     if (!show_kb_form)
         return (<div/>);
     return (
-
         <div>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
@@ -121,13 +124,14 @@ export default function KnowledgeBaseForm(props) {
                                 <div>
                                     <div className="control-row">
                                         <span className="label-3">name</span>
-                                        <input {...register("name", {required: true})} /><br/>
-
+                                        <input {...register("name", {required: true})} />
+                                        {errors.name && <span className=""> Name is required <br/></span>}
                                     </div>
 
                                     <div className="control-row">
                                         <span className="label-3">email questions to</span>
-                                        <input {...register("email", {required: true})} /><br/>
+                                        <input {...register("email", {required: true, pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i})} />
+                                        {errors.email && <span> Email is required <br/></span>}
                                     </div>
 
                                     <div className="control-row">
@@ -138,6 +142,7 @@ export default function KnowledgeBaseForm(props) {
                                              src={theme === 'light' ? "../images/refresh.svg" : "../images/refresh.svg"}
                                              onClick={() => refreshSecurityId()}
                                              className="image-size form-icon"/>
+                                        {errors.securityId && <span> Security id is required <br/></span>}
                                     </div>
 
                                     <div className="control-row">
@@ -170,6 +175,7 @@ export default function KnowledgeBaseForm(props) {
                                         <span className="label-3">maximum number of queries per day </span>
                                         <input {...register("maxQueriesPerDay", {required: true})} /> (0 is no
                                         limits)<br/>
+
                                     </div>
 
                                     <div className="control-row">
