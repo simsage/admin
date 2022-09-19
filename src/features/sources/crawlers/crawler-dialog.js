@@ -100,9 +100,9 @@ export class CrawlerDialog extends Component {
         }
     }
     handleCancel() {
-        // if (this.state.onSave) {
-        //     this.state.onSave(null);
-        // }
+        if (this.state.onSave) {
+            this.state.onSave(null);
+        }
         this.props.hideForm();
         // this.setState({open: false});
     }

@@ -5,7 +5,7 @@ import axios from "axios";
 import {updateOrganisation} from "../organisations/organisationSlice";
 
 const initialState = {
-    source_list: {},
+    source_list: [],
     source_filter: null,
     source_page: 0,
     source_page_size: 10,

@@ -184,9 +184,9 @@ export default function SynsetsHome(props) {
                                             </td>
                                             <td>
 
-                                                <button onClick={() => editSynSet(synSet)} className="btn btn-secondary" title="edit syn-set">edit
+                                                <button onClick={() => editSynSet(synSet)} className="btn text-primary btn-sm" title="edit syn-set">edit
                                                 </button> &nbsp;
-                                                <button onClick={() => deleteSynSetAsk(synSet)} className="btn btn-secondary"
+                                                <button onClick={() => deleteSynSetAsk(synSet)} className="btn text-danger btn-sm"
                                                         title="remove syn-set">remove
                                                 </button>
 
@@ -200,9 +200,9 @@ export default function SynsetsHome(props) {
                                 <td>
                                     {isVisible() &&
                                         <div>
-                                            <button className="btn btn-secondary" onClick={() => newSynSet()}
+                                            <button className="btn text-primary btn-sm" onClick={() => newSynSet()}
                                                     title="add a new syn-set">new</button>&nbsp;
-                                            <button className="btn btn-secondary" onClick={() => defaultSynSetsAsk()}
+                                            <button className="btn text-primary btn-sm" onClick={() => defaultSynSetsAsk()}
                                                     title="add all default syn-sets">defaults</button>
                                         </div>
 

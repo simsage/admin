@@ -8,6 +8,8 @@ import CrawlerDialog from "./crawlers/crawler-dialog";
 import MessageDialog from "../../common/message-dialog";
 import CrawlerImportExport from "./crawler-import-export";
 
+//TODO:: No need to list documents anymore.
+
 export default function SourceHome(props){
 
     const dispatch = useDispatch();
@@ -39,9 +41,10 @@ export default function SourceHome(props){
 
     let [selected_source,setSelectedSource] = useState({})
 
-    useEffect(()=>{
-            dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
-    },[selected_knowledge_base_id,session,props.tab])
+
+    // useEffect(()=>{
+    //         dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
+    // },[selected_knowledge_base_id,session,props.tab])
 
 
     function getCrawlers() {
@@ -108,7 +111,7 @@ export default function SourceHome(props){
 
     function addNewCrawler() {
         dispatch(showAddForm());
-        this.setState({open: true, selected_source: empty_crawler, title: 'Create New Crawler'});
+        // this.setState({open: true, selected_source: empty_crawler, title: 'Create New Crawler'});
     }
     function onUpdate(crawler) {
         // this.setState({selected_source: crawler});
