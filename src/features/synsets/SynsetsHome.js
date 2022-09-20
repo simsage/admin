@@ -3,7 +3,8 @@ import React, {useEffect, useState} from "react";
 import SynsetFilter from "./SynsetFilter";
 import {Pagination} from "../../common/pagination";
 import {loadSynsets} from "./synsetSlice";
-
+import {showEditForm} from "../synsets/synsetSlice"
+import SynsetEdit from "./SynsetEdit";
 
 export default function SynsetsHome(props) {
     const title = "Synsets";
@@ -20,6 +21,9 @@ export default function SynsetsHome(props) {
     const [synset_page, setSynSetPage] = useState(useSelector((state) => state.synsetReducer.synset_page))
     let [synset_filter, setSynSetFilter] = useState();
 
+    const synset_show_form = useSelector((state) => state.synsetReducer.show_data_form)
+    const load_data = useSelector((state) => state.synsetReducer.data_status)
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -27,11 +31,11 @@ export default function SynsetsHome(props) {
             session_id: session_id,
             organisation_id: selected_organisation_id,
             kb_id: selected_knowledge_base_id,
-            page:synset_page,
+            page: synset_page,
             filter: synset_filter,
             page_size: synset_page_size
         }));
-    }, [props])
+    }, [load_data === 'load_now', session_id, selected_organisation_id, selected_knowledge_base_id])
 
 
     function deleteSynSetAsk(synSet) {
@@ -61,10 +65,13 @@ export default function SynsetsHome(props) {
         }
     }
 
-
-    function editSynSet(synSet) {
-        this.setState({synSet_edit: true, synSet: synSet});
+    const handleEditForm = (synset) => {
+        console.log("synset", synset)
+        dispatch(showEditForm({selected_synset: synset}));
     }
+    // function editSynSet(synSet) {
+    //     this.setState({synSet_edit: true, synSet: synSet});
+    // }
 
     function newSynSet() {
         this.setState({
@@ -123,25 +130,20 @@ export default function SynsetsHome(props) {
         }
     }
 
-    function findSynSets(){
+    function findSynSets() {
         //todo::findSynSets
         console.log("findSynSets clicked");
     }
 
-    function getSynSets()
-    {
-        return synset_list?synset_list:[];
+    function getSynSets() {
+        return synset_list ? synset_list : [];
     }
 
     return (
         <div className="section px-5 pt-4">
             {/*<SynsetFilter/>*/}
+
             <div className="synset-page">
-                {/*<SynSetEdit open={this.state.synSet_edit}*/}
-                {/*            theme={theme}*/}
-                {/*            synSet={this.state.synSet}*/}
-                {/*            onSave={(item) => this.save(item)}*/}
-                {/*            onError={(err) => this.props.setError("Error", err)}/>*/}
 
                 {
                     isVisible() &&
@@ -184,9 +186,12 @@ export default function SynsetsHome(props) {
                                             </td>
                                             <td>
 
-                                                <button onClick={() => editSynSet(synSet)} className="btn text-primary btn-sm" title="edit syn-set">edit
-                                                </button> &nbsp;
-                                                <button onClick={() => deleteSynSetAsk(synSet)} className="btn text-danger btn-sm"
+                                                <button onClick={() => handleEditForm(synSet)}
+                                                        className="btn text-primary btn-sm" title="edit syn-set">edit
+                                                </button>
+                                                &nbsp;
+                                                <button onClick={() => deleteSynSetAsk(synSet)}
+                                                        className="btn text-danger btn-sm"
                                                         title="remove syn-set">remove
                                                 </button>
 
@@ -201,9 +206,13 @@ export default function SynsetsHome(props) {
                                     {isVisible() &&
                                         <div>
                                             <button className="btn text-primary btn-sm" onClick={() => newSynSet()}
-                                                    title="add a new syn-set">new</button>&nbsp;
-                                            <button className="btn text-primary btn-sm" onClick={() => defaultSynSetsAsk()}
-                                                    title="add all default syn-sets">defaults</button>
+                                                    title="add a new syn-set">new
+                                            </button>
+                                            &nbsp;
+                                            <button className="btn text-primary btn-sm"
+                                                    onClick={() => defaultSynSetsAsk()}
+                                                    title="add all default syn-sets">defaults
+                                            </button>
                                         </div>
 
                                     }
@@ -229,6 +238,10 @@ export default function SynsetsHome(props) {
                 }
 
             </div>
+
+
+            {/*Edit form*/}
+            <SynsetEdit />
         </div>
     )
 }

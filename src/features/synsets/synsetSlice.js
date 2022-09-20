@@ -8,9 +8,32 @@ const initialState = {
     synset_page: 0,
     synset_list: [],
     status: false,
+
+    //add edit data
+    error: null,
+    show_data_form: false,
+    selected_synset: null,
+    data_status: 'load_now',//load_now,loading,loaded
+
+
 };
 
-const reducers = {};
+const reducers = {
+    showAddForm:(state) => {
+        state.show_data_form = true
+    },
+
+    showEditForm:(state,action) => {
+        state.show_data_form = true
+        state.selected_synset = action.payload.selected_synset
+    },
+
+    closeForm:(state) => {
+        state.show_data_form = false;
+        state.selected_synset = null;
+    },
+
+};
 
 const extraReducers = (builder) => {
     builder
@@ -71,7 +94,7 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
     })
 
 
-export const {} = synsetSlice.actions;
+export const {showAddForm, showEditForm, closeForm, } = synsetSlice.actions;
 export default synsetSlice.reducer;
 
 
