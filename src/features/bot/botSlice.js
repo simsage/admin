@@ -65,6 +65,17 @@ export const loadMindItems = createAsyncThunk(
     }
 )
 
+export const updateMindItem = createAsyncThunk(
+    'bot/updateMindItem',
+    async ({session_id, organisation_id, kb_id , data}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/mind/memory/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}`
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+    }
+)
+
 const reducers = null
 
 const extraReducers = (builder) => {
