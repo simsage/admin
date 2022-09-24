@@ -46,6 +46,16 @@
     width: 400px;
 }
 
+.text-area {
+    float: left;
+    width: 400px;
+    min-height: 100px;
+    height: auto;
+
+}
+
+
+
 .id-width {
     padding-left: 20px;
     width: 320px;
@@ -78,8 +88,13 @@
 
 .control-row {
     display: inline-block;
-    height: 40px;
+    /*height: 40px;*/
     width: 100%;
+    margin-bottom: 10px;
+}
+
+.synset-text-area {
+    height: auto;
 }
 
 .control-row:after {

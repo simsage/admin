@@ -1,8 +1,7 @@
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector, Controller} from "react-redux";
 import {closeForm} from "./synsetSlice";
-import {useForm} from "react-hook-form";
-import React, {useEffect} from "react";
-import {addOrUpdate} from "../knowledge_bases/knowledgeBaseSlice";
+import {useForm, useFieldArray} from "react-hook-form";
+import React, {useEffect, useState} from "react";
 
 
 export default function SynsetForm() {
@@ -16,22 +15,28 @@ export default function SynsetForm() {
 
     const selected_synset = useSelector((state) => state.synsetReducer.selected_synset)
 
-    console.log("data", selected_synset)
-    console.log("data", selected_synset.word)
+    // console.log("data", selected_synset)
+    // console.log("data", selected_synset.word)
 
     // set title
     const title = (selected_synset) ? "Edit syn-set " + selected_synset.word : "Add new syn-set";
     const synset_show_form = useSelector((state) => state.synsetReducer.show_data_form)
 
     //Form Hook
-    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
+    const {register, handleSubmit, watch, formState: {errors, dirtyFields}, reset, control} = useForm();
+
+    const [data,setData]=useState(null)
+    const [wordCloudFields, setWordCloudFields]=useState(selected_synset.wordCloudCsvList)
 
 
+    // console.log("wordCloudFields", wordCloudFields)
     //set default value when selected_synset or synset_show_form changes
     useEffect(() => {
         let defaultValues = {};
-
+        defaultValues.word = selected_synset.word;
+        defaultValues.wordCloudCsvList = selected_synset.wordCloudCsvList;
         reset({...defaultValues});
+
     }, [selected_synset, synset_show_form]);
 
 
@@ -40,9 +45,15 @@ export default function SynsetForm() {
         // data = {...data}
         console.log("data", data)
         // dispatch(addOrUpdate({session_id: session.id, data: data}))
-        handleClose()
+        // handleClose()
+
     };
 
+    //add a word cloud field
+    function newSyn() {
+        const newWordCloudFields = wordCloudFields.concat("")
+        setWordCloudFields(newWordCloudFields);
+    }
 
     // copied from edit page
     function updateWC(index, str) {
@@ -50,31 +61,42 @@ export default function SynsetForm() {
         cl[index] = str;
         this.setState({cloud_list: cl});
     }
-    function newSyn() {
-        const cl = this.state.cloud_list;
-        cl.push("");
-        this.setState({cloud_list: cl});
-    }
     function deleteSyn(index) {
-        const newList = [];
-        const cl = this.state.cloud_list;
-        for (let i = 0; i < cl.length; i++) {
-            if (i !== index) {
-                newList.push(cl[i]);
+        let nArr = [];
+        for( let i = 0; i < wordCloudFields.length; i++){
+            if ( i != index) {
+                nArr.push(wordCloudFields[i]);
             }
         }
-        this.setState({cloud_list: newList});
+        setWordCloudFields(nArr);
+
+        // const newList = [];
+        // const cl = this.state.cloud_list;
+        // for (let i = 0; i < cl.length; i++) {
+        //     if (i !== index) {
+        //         newList.push(cl[i]);
+        //     }
+        // }
+        // this.setState({cloud_list: newList});
     }
 
+    const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
 
+    useEffect(() => {
+        console.log("watch: ",watchAllFields);
+        console.count();
+    }, [watchAllFields]);
 
 
 
     if (!synset_show_form)
         return (<div/>);
     return (
+
         <div className="modal user-display" tabIndex="-1" role="dialog"
              style={{display: "inline", background: "#202731bb"}}>
+
+
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
                     <div className="modal-header">
@@ -90,45 +112,43 @@ export default function SynsetForm() {
                             <div>
                                 <div className="control-row">
                                     <span className="label-2">syn-set</span>
-                                    <input {...register("word", {required: true})} />
+                                    <input className="text" {...register("word", {required: true})} />
                                     {errors.word && <span className=""> Syn-Set is required <br/></span>}
                                 </div>
 
-
-                                { selected_synset.wordCloudCsvList.map((item, index) => {
+                                {wordCloudFields.map((item, index) => {
                                     return (
-                                        <div className="edit-row" key={index}>
-                                            <span className="label-2">{"word cloud " + (index+1)}</span>
-                                            <span className="input-area synset-area-width">
-                                                <textarea className="input-area"
-                                                          onChange={(event) => updateWC(index, event.target.value)}
-                                                          placeholder={"word-cloud for syn-set " + (index + 1)}
-                                                          rows={2}
-                                                          value={item}
-                                                />
-                                                {
-                                                    index > 1 &&
+                                        <>
+                                            <div className="control-row" key={index}>
+                                                <span className="label-2">{"word cloud " + (index + 1)}</span>
+                                                <span className="input-area ">
+                                                <textarea {...register("wordCloudCsvList[" + index + "]", {required: true})}
+                                                          className="input-area text-area" rows={3}/>
+                                                    {errors.word &&
+                                                        <span className=""> Syn-Set is required <br/></span>}
 
-                                                    <div className="synset-trashcan" >
-
-                                                        <button onClick={() => deleteSyn(index)}
-                                                                className="btn text-danger btn-sm"
-                                                                title="remove syn">remove
-                                                        </button>
-
-                                                    </div>
-                                                }
-                                            </span>
-                                        </div>)
+                                                    {index > 1 &&
+                                                        <div className="synset-trashcan">
+                                                            <button onClick={() => deleteSyn(index)}
+                                                                    className="btn text-danger btn-sm"
+                                                                    title="remove syn">
+                                                                remove
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                </span>
+                                            </div>
+                                        </>
+                                    )
                                 })}
 
-                                <div className="new-syn-button">
 
+
+                                <div className="new-syn-button">
                                     <button onClick={() => newSyn()}
                                             className="btn btn-primary btn-sm"
                                             title="add a new syn">add a new syn item
                                     </button>
-
                                 </div>
                             </div>
                         </div>
@@ -141,7 +161,7 @@ export default function SynsetForm() {
                     </form>
                     {/*form ends*/}
 
-
+                    {watch("word")}
                 </div>
             </div>
         </div>

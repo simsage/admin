@@ -79,7 +79,7 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
         console.log("loadSynsets data",data)
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("loadSynsets responsedata", response.data)
+                console.log("load Synsets response data", response.data)
                 return response.data
             }).catch(
                 (error) => {
@@ -92,6 +92,8 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
 
 
     })
+
+
 
 
 export const {showAddForm, showEditForm, closeForm, } = synsetSlice.actions;

@@ -8,6 +8,7 @@ export default function SynsetEdit(props) {
     if (synset_show_form === false)
         return (<div/>);
     return (
+
         <SynsetForm />
     )
 }
