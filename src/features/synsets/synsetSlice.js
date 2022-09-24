@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
+import {deleteRecord} from "../knowledge_bases/knowledgeBaseSlice";
 
 const initialState = {
     synset_total_size: 0,
@@ -48,6 +49,34 @@ const extraReducers = (builder) => {
         .addCase(loadSynsets.rejected, (state, action) => {
             state.status = "rejected"
         })
+
+        //deleteRecord
+        .addCase(deleteRecord.pending, (state, action) => {
+            state.status = "loading"
+        })
+        .addCase(deleteRecord.fulfilled, (state, action) => {
+            console.log("synsets/deleteRecord ",action)
+            state.status = "fulfilled"
+            state.data_status = 'load_now';
+        })
+        .addCase(deleteRecord.rejected, (state, action) => {
+            state.status = "rejected"
+        })
+
+        //addOrUpdate
+        .addCase(addOrUpdate.pending, (state, action) => {
+            state.status = "loading"
+        })
+        .addCase(addOrUpdate.fulfilled, (state, action) => {
+            console.log("synsets/addOrUpdate ",action)
+            state.status = "fulfilled"
+            state.data_status = 'load_now';
+        })
+        .addCase(addOrUpdate.rejected, (state, action) => {
+            state.status = "rejected"
+        })
+
+
 };
 
 const synsetSlice = createSlice({
@@ -88,12 +117,45 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
 
                 }
             )
-
-
-
     })
 
 
+export const addOrUpdate = createAsyncThunk(
+    "synsets/updateSynset",
+    async ({organisation_id, kb_id, session_id, data}) => {
+        console.log("synsets/updateSynset");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        console.log('PUT ' + url);
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                // thunkAPI.dispatch(updateKB(response.data));
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+})
+
+
+export const deleteSynSet = createAsyncThunk(
+    "synsets/deleteSynSet",
+    async ({organisation_id, kb_id, session_id, lemma}) => {
+        console.log("synsets/deleteSynSet");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(lemma);
+        console.log('PUT ' + url);
+
+        return axios.delete(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                // thunkAPI.dispatch(updateKB(response.data));
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    })
 
 
 export const {showAddForm, showEditForm, closeForm, } = synsetSlice.actions;
