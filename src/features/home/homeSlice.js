@@ -19,6 +19,8 @@ const initialState = {
     log_type: 'All',        // error/debug/info
     log_service: 'All',     // service to view
     log_refresh: 0,         // refresh in seconds
+
+
 };
 
 

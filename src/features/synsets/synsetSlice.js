@@ -40,11 +40,13 @@ const extraReducers = (builder) => {
     builder
         .addCase(loadSynsets.pending, (state, action) => {
             state.status = "pending"
+            state.data_status = 'loading';
         })
         .addCase(loadSynsets.fulfilled, (state, action) => {
             state.status = "fulfilled"
             state.synset_list = action.payload.list?action.payload.list:[]
             state.synset_total_size = action.payload.totalSize?action.payload.totalSize:0
+            state.data_status = 'loaded';
         })
         .addCase(loadSynsets.rejected, (state, action) => {
             state.status = "rejected"
@@ -131,7 +133,7 @@ export const addOrUpdate = createAsyncThunk(
 
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                // thunkAPI.dispatch(updateKB(response.data));
+                console.log("response",response.data)
                 return response.data
             }).catch(
                 (error) => {return error}

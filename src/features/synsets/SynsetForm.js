@@ -1,5 +1,5 @@
 import {useDispatch, useSelector, Controller} from "react-redux";
-import {closeForm} from "./synsetSlice";
+import {addOrUpdate, closeForm} from "./synsetSlice";
 import {useForm, useFieldArray} from "react-hook-form";
 import React, {useEffect, useState} from "react";
 
@@ -14,6 +14,10 @@ export default function SynsetForm() {
     }
 
     const selected_synset = useSelector((state) => state.synsetReducer.selected_synset)
+    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
+    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
+    const session = useSelector((state) => state.authReducer.session);
+    const session_id = session.id;
 
     // console.log("data", selected_synset)
     // console.log("data", selected_synset.word)
@@ -40,14 +44,6 @@ export default function SynsetForm() {
     }, [selected_synset, synset_show_form]);
 
 
-    //on submit store or update
-    const onSubmit = data => {
-        // data = {...data}
-        console.log("data", data)
-        // dispatch(addOrUpdate({session_id: session.id, data: data}))
-        // handleClose()
-
-    };
 
     //add a word cloud field
     function newSyn() {
@@ -61,7 +57,10 @@ export default function SynsetForm() {
         cl[index] = str;
         this.setState({cloud_list: cl});
     }
+
+    // delete a word cloud field
     function deleteSyn(index) {
+
         let nArr = [];
         for( let i = 0; i < wordCloudFields.length; i++){
             if ( i != index) {
@@ -69,23 +68,22 @@ export default function SynsetForm() {
             }
         }
         setWordCloudFields(nArr);
-
-        // const newList = [];
-        // const cl = this.state.cloud_list;
-        // for (let i = 0; i < cl.length; i++) {
-        //     if (i !== index) {
-        //         newList.push(cl[i]);
-        //     }
-        // }
-        // this.setState({cloud_list: newList});
     }
 
-    const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
-
+    // when pass nothing as argument, you are watching everything
+    const watchAllFields = watch();
     useEffect(() => {
         console.log("watch: ",watchAllFields);
         console.count();
     }, [watchAllFields]);
+
+
+    //on submit store or update
+    const onSubmit = data => {
+        console.log("data", data)
+        dispatch(addOrUpdate({organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id,session_id:session_id,data:data}))
+        handleClose()
+    };
 
 
 

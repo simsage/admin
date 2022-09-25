@@ -25,8 +25,10 @@ export default function SynsetsHome(props) {
     const load_data = useSelector((state) => state.synsetReducer.data_status)
 
     const dispatch = useDispatch();
+    console.log("load_data",load_data)
 
     useEffect(() => {
+        console.log("load_data",load_data)
         dispatch(loadSynsets({
             session_id: session_id,
             organisation_id: selected_organisation_id,
@@ -40,11 +42,13 @@ export default function SynsetsHome(props) {
 
     function deleteSynSetAsk(synSet) {
         if (synSet) {
-            this.props.openDialog("are you sure you want to remove id " + synSet.word + "?",
-                "Remove SynSet", (action) => {
-                    this.deleteSynSet(action)
-                });
-            this.setState({synSet: synSet});
+            // this.props.openDialog("are you sure you want to remove id " + synSet.word + "?",
+            //     "Remove SynSet", (action) => {
+            //         this.deleteSynSet(action)
+            //     });
+            // this.setState({synSet: synSet});
+
+            alert("are you sure you want to remove id " + synSet.word + "?")
         }
     }
 
