@@ -42,9 +42,9 @@ export default function SourceHome(props){
     let [selected_source,setSelectedSource] = useState({})
 
 
-    // useEffect(()=>{
-    //         dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
-    // },[selected_knowledge_base_id,session,props.tab])
+    useEffect(()=>{
+            dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
+    },[selected_knowledge_base_id,session,props.tab])
 
 
     function getCrawlers() {
