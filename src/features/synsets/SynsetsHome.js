@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import SynsetFilter from "./SynsetFilter";
 import {Pagination} from "../../common/pagination";
-import {loadSynsets, showDeleteAskForm} from "./synsetSlice";
+import {loadSynsets, showAddForm, showDeleteAskForm} from "./synsetSlice";
 import {showEditForm} from "../synsets/synsetSlice"
 import SynsetEdit from "./SynsetEdit";
 import SynsetDelete from "./SynsetDelete";
@@ -47,16 +47,18 @@ export default function SynsetsHome(props) {
         }
     }
 
-
-    function deleteSynSet(action) {
-        if (action && this.state.synSet) {
-            this.props.deleteSynSet(this.state.synSet.lemma);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-        this.setState({synSet_edit: false, synSet: {}});
+    const handleEdit = (synset) => {
+        console.log("synset", synset)
+        dispatch(showEditForm({selected_synset: synset}));
     }
+
+    const handleAddSynSet = () => {
+        console.log("handleAddSynSet")
+        dispatch(showAddForm());
+    }
+
+
+
 
     function handleSynSetFilterKeydown(event) {
         if (event.key === "Enter") {
@@ -64,10 +66,7 @@ export default function SynsetsHome(props) {
         }
     }
 
-    const handleEdit = (synset) => {
-        console.log("synset", synset)
-        dispatch(showEditForm({selected_synset: synset}));
-    }
+
 
     function newSynSet() {
         this.setState({
@@ -201,7 +200,7 @@ export default function SynsetsHome(props) {
                                 <td>
                                     {isVisible() &&
                                         <div>
-                                            <button className="btn text-primary btn-sm" onClick={() => newSynSet()}
+                                            <button className="btn text-primary btn-sm" onClick={() => handleAddSynSet()}
                                                     title="add a new syn-set">new
                                             </button>
                                             &nbsp;

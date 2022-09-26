@@ -30,19 +30,25 @@ export default function SynsetForm() {
     const {register, handleSubmit, watch, formState: {errors, dirtyFields}, reset, control} = useForm();
 
     const [data,setData]=useState(null)
-    const [wordCloudFields, setWordCloudFields]=useState(selected_synset.wordCloudCsvList)
+    const [wordCloudFields, setWordCloudFields]=useState(selected_synset?selected_synset.wordCloudCsvList:[])
 
 
-    // console.log("wordCloudFields", wordCloudFields)
-    //set default value when selected_synset or synset_show_form changes
+    //set default value
     useEffect(() => {
         let defaultValues = {};
-        defaultValues.word = selected_synset.word;
-        defaultValues.wordCloudCsvList = selected_synset.wordCloudCsvList;
+        defaultValues.word = selected_synset?selected_synset.word:'';
+        //add a blank word cloud when adding a new syn-set
+        defaultValues.wordCloudCsvList = selected_synset?selected_synset.wordCloudCsvList:setWordCloudFields([""]);
         reset({...defaultValues});
 
     }, [selected_synset, synset_show_form]);
 
+
+
+    // useEffect(() => {
+    //     console.log("wordCloudCsvList",wordCloudCsvList)
+    //     // newSyn()
+    // }, [selected_synset === null]);
 
 
     //add a word cloud field
@@ -122,8 +128,8 @@ export default function SynsetForm() {
                                                 <span className="input-area ">
                                                 <textarea {...register("wordCloudCsvList[" + index + "]", {required: true})}
                                                           className="input-area text-area" rows={3}/>
-                                                    {errors.word &&
-                                                        <span className=""> Syn-Set is required <br/></span>}
+                                                    {/*{errors.wordCloudCsvList+[index] &&*/}
+                                                    {/*    <span className=""> Syn-Set is required <br/></span>}*/}
 
                                                     {index > 1 &&
                                                         <div className="synset-trashcan">
