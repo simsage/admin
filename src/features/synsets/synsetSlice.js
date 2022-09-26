@@ -132,9 +132,9 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
 
 ///api/language/save-syn-set/{organisationId}/{kbId}
 export const addOrUpdate = createAsyncThunk(
-    "synsets/updateSynset",
+    "synsets/addOrUpdate",
     async ({organisation_id, kb_id, session_id, data}) => {
-        console.log("synsets/updateSynset");
+        console.log("synsets/addOrUpdate");
 
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);

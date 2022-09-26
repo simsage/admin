@@ -37,8 +37,9 @@ export default function SynsetForm() {
     useEffect(() => {
         let defaultValues = {};
         defaultValues.word = selected_synset?selected_synset.word:'';
-        //add a blank word cloud when adding a new syn-set
-        defaultValues.wordCloudCsvList = selected_synset?selected_synset.wordCloudCsvList:setWordCloudFields([""]);
+        defaultValues.lemma = selected_synset?selected_synset.lemma:'';
+        //add two blank word cloud when adding a new syn-set
+        defaultValues.wordCloudCsvList = selected_synset?selected_synset.wordCloudCsvList:setWordCloudFields(["",""]);
         reset({...defaultValues});
 
     }, [selected_synset, synset_show_form]);
@@ -87,6 +88,7 @@ export default function SynsetForm() {
     //on submit store or update
     const onSubmit = data => {
         console.log("data", data)
+        data.lemma = data.word;
         dispatch(addOrUpdate({organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id,session_id:session_id,data:data}))
         handleClose()
     };
@@ -159,13 +161,14 @@ export default function SynsetForm() {
 
 
                         <div className="modal-footer">
+                            {/*<input type="hidden" {...register("lemma")} />*/}
                             <button className="btn btn-outline-secondary" onClick={handleClose}>Cancel</button>
                             <input type="submit" className={"btn btn-outline-primary"}/>
                         </div>
                     </form>
                     {/*form ends*/}
 
-                    {watch("word")}
+                    {/*{watch("word")}*/}
                 </div>
             </div>
         </div>
