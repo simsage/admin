@@ -2,10 +2,11 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import SynsetFilter from "./SynsetFilter";
 import {Pagination} from "../../common/pagination";
-import {loadSynsets, showAddForm, showDeleteAskForm} from "./synsetSlice";
+import {loadSynsets, showAddDefaultAskForm, showAddForm, showDeleteAskForm} from "./synsetSlice";
 import {showEditForm} from "../synsets/synsetSlice"
 import SynsetEdit from "./SynsetEdit";
 import SynsetDelete from "./SynsetDelete";
+import SynsetDefault from "./SynsetDefault";
 
 export default function SynsetsHome(props) {
     const title = "Synsets";
@@ -57,7 +58,10 @@ export default function SynsetsHome(props) {
         dispatch(showAddForm());
     }
 
-
+    const handleAddDefaultSynSet = () => {
+        console.log("handleAddSynSet")
+        dispatch(showAddDefaultAskForm());
+    }
 
 
     function handleSynSetFilterKeydown(event) {
@@ -67,40 +71,40 @@ export default function SynsetsHome(props) {
     }
 
 
+    //
+    // function newSynSet() {
+    //     this.setState({
+    //         synSet_edit: true, synSet: {
+    //             word: "",
+    //             lemma: "",
+    //             wordCloudCsvList: [],
+    //         }
+    //     });
+    // }
 
-    function newSynSet() {
-        this.setState({
-            synSet_edit: true, synSet: {
-                word: "",
-                lemma: "",
-                wordCloudCsvList: [],
-            }
-        });
-    }
-
-    function save(synSet) {
-        if (synSet) {
-            if (synSet.word.trim().length > 0 && synSet.wordCloudCsvList.length > 1) {
-                const list = synSet.wordCloudCsvList;
-                let validList = true;
-                for (const item of list) {
-                    if (item.trim().length === 0) {
-                        validList = false;
-                    }
-                }
-                if (validList) {
-                    this.props.saveSynSet(synSet);
-                    this.setState({synSet_edit: false, synSet: {}});
-                } else {
-                    this.props.setError("Error Saving SynSet", "syn-set word-cloud items must not be empty.");
-                }
-            } else {
-                this.props.setError("Error Saving SynSet", "syn-set cannot be empty and need more than one item");
-            }
-        } else {
-            this.setState({synSet_edit: false, synSet: {}});
-        }
-    }
+    // function save(synSet) {
+    //     if (synSet) {
+    //         if (synSet.word.trim().length > 0 && synSet.wordCloudCsvList.length > 1) {
+    //             const list = synSet.wordCloudCsvList;
+    //             let validList = true;
+    //             for (const item of list) {
+    //                 if (item.trim().length === 0) {
+    //                     validList = false;
+    //                 }
+    //             }
+    //             if (validList) {
+    //                 this.props.saveSynSet(synSet);
+    //                 this.setState({synSet_edit: false, synSet: {}});
+    //             } else {
+    //                 this.props.setError("Error Saving SynSet", "syn-set word-cloud items must not be empty.");
+    //             }
+    //         } else {
+    //             this.props.setError("Error Saving SynSet", "syn-set cannot be empty and need more than one item");
+    //         }
+    //     } else {
+    //         this.setState({synSet_edit: false, synSet: {}});
+    //     }
+    // }
 
 
     function isVisible() {
@@ -116,14 +120,14 @@ export default function SynsetsHome(props) {
             });
     }
 
-    function addDefaultSynSets(action) {
-        if (action) {
-            this.props.addDefaultSynSets();
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-    }
+    // function addDefaultSynSets(action) {
+    //     if (action) {
+    //         this.props.addDefaultSynSets();
+    //     }
+    //     if (this.props.closeDialog) {
+    //         this.props.closeDialog();
+    //     }
+    // }
 
     function findSynSets() {
         //todo::findSynSets
@@ -205,7 +209,7 @@ export default function SynsetsHome(props) {
                                             </button>
                                             &nbsp;
                                             <button className="btn text-primary btn-sm"
-                                                    onClick={() => defaultSynSetsAsk()}
+                                                    onClick={() => handleAddDefaultSynSet()}
                                                     title="add all default syn-sets">defaults
                                             </button>
                                         </div>
@@ -240,6 +244,9 @@ export default function SynsetsHome(props) {
 
             {/* delete   */}
             <SynsetDelete/>
+
+            {/* add default   */}
+            <SynsetDefault/>
         </div>
     )
 }

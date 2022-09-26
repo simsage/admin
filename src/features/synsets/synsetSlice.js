@@ -17,7 +17,9 @@ const initialState = {
 
     //delete
     show_delete_form:false,
-    delete_data:null
+
+    //add default
+    show_add_default_form:false,
 
 };
 
@@ -35,11 +37,16 @@ const reducers = {
         state.show_data_form = false;
         state.selected_synset = null;
         state.show_delete_form = false;
+        state.show_add_default_form = false;
     },
 
     showDeleteAskForm:(state, action) => {
         state.show_delete_form = true;
         state.selected_synset = action.payload.selected_synset;
+    },
+
+    showAddDefaultAskForm:(state, action) => {
+        state.show_add_default_form = true;
     },
 
 };
@@ -83,6 +90,20 @@ const extraReducers = (builder) => {
             state.data_status = 'load_now';
         })
         .addCase(addOrUpdate.rejected, (state, action) => {
+            state.status = "rejected"
+        })
+
+
+        //addDefaultSynsets
+        .addCase(addDefaultSynsets.pending, (state, action) => {
+            state.status = "loading"
+        })
+        .addCase(addDefaultSynsets.fulfilled, (state, action) => {
+            console.log("synsets/addDefaultSynsets ",action)
+            state.status = "fulfilled"
+            state.data_status = 'load_now';
+        })
+        .addCase(addDefaultSynsets.rejected, (state, action) => {
             state.status = "rejected"
         })
 
@@ -169,7 +190,27 @@ export const deleteRecord = createAsyncThunk(
     })
 
 
-export const {showAddForm, showEditForm, closeForm, showDeleteAskForm} = synsetSlice.actions;
+// /api/language/default-syn-sets/{organisationId}/{kbId}
+export const addDefaultSynsets = createAsyncThunk(
+    "synsets/addDefaultSynsets",
+    async ({organisation_id, kb_id, session_id, data}) => {
+        console.log("synsets/addDefaultSynsets");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/language/default-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        console.log('PUT ' + url);
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("response",response.data)
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    })
+
+
+export const {showAddForm, showEditForm, closeForm, showDeleteAskForm, showAddDefaultAskForm} = synsetSlice.actions;
 export default synsetSlice.reducer;
 
 
