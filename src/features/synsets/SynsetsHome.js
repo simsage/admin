@@ -2,9 +2,10 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import SynsetFilter from "./SynsetFilter";
 import {Pagination} from "../../common/pagination";
-import {loadSynsets} from "./synsetSlice";
+import {loadSynsets, showDeleteAskForm} from "./synsetSlice";
 import {showEditForm} from "../synsets/synsetSlice"
 import SynsetEdit from "./SynsetEdit";
+import SynsetDelete from "./SynsetDelete";
 
 export default function SynsetsHome(props) {
     const title = "Synsets";
@@ -40,15 +41,9 @@ export default function SynsetsHome(props) {
     }, [load_data === 'load_now', session_id, selected_organisation_id, selected_knowledge_base_id])
 
 
-    function deleteSynSetAsk(synSet) {
+    function handleDelete(synSet) {
         if (synSet) {
-            // this.props.openDialog("are you sure you want to remove id " + synSet.word + "?",
-            //     "Remove SynSet", (action) => {
-            //         this.deleteSynSet(action)
-            //     });
-            // this.setState({synSet: synSet});
-
-            alert("are you sure you want to remove id " + synSet.word + "?")
+            dispatch(showDeleteAskForm({selected_synset: synSet}));
         }
     }
 
@@ -69,13 +64,10 @@ export default function SynsetsHome(props) {
         }
     }
 
-    const handleEditForm = (synset) => {
+    const handleEdit = (synset) => {
         console.log("synset", synset)
         dispatch(showEditForm({selected_synset: synset}));
     }
-    // function editSynSet(synSet) {
-    //     this.setState({synSet_edit: true, synSet: synSet});
-    // }
 
     function newSynSet() {
         this.setState({
@@ -190,11 +182,11 @@ export default function SynsetsHome(props) {
                                             </td>
                                             <td>
 
-                                                <button onClick={() => handleEditForm(synSet)}
+                                                <button onClick={() => handleEdit(synSet)}
                                                         className="btn text-primary btn-sm" title="edit syn-set">edit
                                                 </button>
                                                 &nbsp;
-                                                <button onClick={() => deleteSynSetAsk(synSet)}
+                                                <button onClick={() => handleDelete(synSet)}
                                                         className="btn text-danger btn-sm"
                                                         title="remove syn-set">remove
                                                 </button>
@@ -246,6 +238,9 @@ export default function SynsetsHome(props) {
 
             {/*Edit form*/}
             <SynsetEdit />
+
+            {/* delete   */}
+            <SynsetDelete/>
         </div>
     )
 }

@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
-import {deleteRecord} from "../knowledge_bases/knowledgeBaseSlice";
 
 const initialState = {
     synset_total_size: 0,
@@ -16,6 +15,9 @@ const initialState = {
     selected_synset: null,
     data_status: 'load_now',//load_now,loading,loaded
 
+    //delete
+    show_delete_form:false,
+    delete_data:null
 
 };
 
@@ -32,6 +34,12 @@ const reducers = {
     closeForm:(state) => {
         state.show_data_form = false;
         state.selected_synset = null;
+        state.show_delete_form = false;
+    },
+
+    showDeleteAskForm:(state, action) => {
+        state.show_delete_form = true;
+        state.selected_synset = action.payload.selected_synset;
     },
 
 };
@@ -122,6 +130,7 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
     })
 
 
+///api/language/save-syn-set/{organisationId}/{kbId}
 export const addOrUpdate = createAsyncThunk(
     "synsets/updateSynset",
     async ({organisation_id, kb_id, session_id, data}) => {
@@ -141,18 +150,18 @@ export const addOrUpdate = createAsyncThunk(
 })
 
 
-export const deleteSynSet = createAsyncThunk(
-    "synsets/deleteSynSet",
+///api/language/delete-syn-set/{organisationId}/{kbId}/{lemma}
+export const deleteRecord = createAsyncThunk(
+    "synsets/deleteRecord",
     async ({organisation_id, kb_id, session_id, lemma}) => {
         console.log("synsets/deleteSynSet");
 
         const api_base = window.ENV.api_base;
-        const url = api_base + '/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(lemma);
+        const url = api_base + '/language/delete-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(lemma);
         console.log('PUT ' + url);
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                // thunkAPI.dispatch(updateKB(response.data));
                 return response.data
             }).catch(
                 (error) => {return error}
@@ -160,7 +169,7 @@ export const deleteSynSet = createAsyncThunk(
     })
 
 
-export const {showAddForm, showEditForm, closeForm, } = synsetSlice.actions;
+export const {showAddForm, showEditForm, closeForm, showDeleteAskForm} = synsetSlice.actions;
 export default synsetSlice.reducer;
 
 

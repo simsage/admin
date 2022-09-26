@@ -20,7 +20,6 @@ const initialState = {
     log_service: 'All',     // service to view
     log_refresh: 0,         // refresh in seconds
 
-
 };
 
 
@@ -135,6 +134,6 @@ export const homeSlice = createSlice({
     extraReducers
 });
 
-export const { selectTab, setLogHours, setLogService, setLogType, closeAllMenus } = homeSlice.actions;
+export const { selectTab, setLogHours, setLogService, setLogType, closeAllMenus, showDeleteAskForm } = homeSlice.actions;
 
 export default homeSlice.reducer;
