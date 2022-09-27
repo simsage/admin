@@ -4,46 +4,16 @@ import Comms from "../../common/comms";
 import axios from "axios";
 
 const initialState = {
-    mind_item_list:[
-        // {
-        //     "organisationId": "7cc95aa3-e1e2-4596-9347-6bcd7b2234c2",
-        //     "mid": "77e30769-012a-47a2-a819-480e40d55e8d",
-        //     "id": 1,
-        //     "information": "John Malpas",
-        //     "questionList": [
-        //         "who is the editor of GLP "
-        //     ],
-        //     "urlList": [
-        //         "https://www.globallegalpost.com/ "
-        //     ],
-        //     "imageList": [
-        //         "https://pbs.twimg.com/profile_images/646000045158977536/QlTXYmSj_400x400.jpg "
-        //     ],
-        //     "videoList": [],
-        //     "soundList": [],
-        //     "created": 1658506280239
-        // },
-        // {
-        //     "organisationId": "7cc95aa3-e1e2-4596-9347-6bcd7b2234c2",
-        //     "mid": "77e30769-012a-47a2-a819-480e40d55e8d",
-        //     "id": 2,
-        //     "information": "You can email us at information@nicholas-scott.com, phone us at: +44 203 475 3192, or visit us at 33 Cannon St, London EC4M 5SB.",
-        //     "questionList": [
-        //         "how do I contact Nicholas Scott "
-        //     ],
-        //     "urlList": [
-        //         "https://www.nicholas-scott.com/contact-us "
-        //     ],
-        //     "imageList": [],
-        //     "videoList": [],
-        //     "soundList": [],
-        //     "created": 1658506280239
-        // }
-    ],
+    mind_item_list:[],
     num_mind_items:0,
     page_size:10,
     mind_item_page:0,
     status: null,
+    show_memory_form: false,
+    edit: undefined,
+    data_status: 'load_now',
+
+    show_delete_form: false,
 
 }
 
@@ -67,21 +37,57 @@ export const loadMindItems = createAsyncThunk(
 
 export const updateMindItem = createAsyncThunk(
     'bot/updateMindItem',
-    async ({session_id, organisation_id, kb_id , data}) => {
+    async ({session_id, organisation_id, knowledge_base_id , data}) => {
 
         const api_base = window.ENV.api_base;
-        const url = api_base + `/mind/memory/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}`
+        const url = api_base + `/mind/memory/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}`
 
         return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
     }
 )
 
-const reducers = null
+export const deleteMindItem = createAsyncThunk(
+    'bot/deleteMindItem',
+    async ({session_id,organisation_id,knowledge_base_id, id})=>{
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/mind/memory/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(id)}`;
+
+        return axios.delete(url,Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error}
+            )
+    }
+)
+export const deleteAllMindItems = createAsyncThunk(
+    'bot/deleteAllMindItem',
+    async ({session_id,organisation_id,knowledgeBase_id})=>{
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/mind/delete-all/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}`;
+
+        return axios.delete(url,Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error}
+            )
+    }
+)
+
 
 const extraReducers = (builder) => {
     builder
         .addCase(loadMindItems.pending, (state, action) => {
-            state.status = "loading"
+            state.status = "loading";
+            state.data_status = 'loading';
         })
 
         .addCase(loadMindItems.fulfilled, (state, action) => {
@@ -89,11 +95,57 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.mind_item_list = action.payload.memoryList;
             state.num_mind_items = action.payload.numMemories;
-            // state.num_mind_items = action.payload.numDocuments;
-            // console.log('action.payload', action.payload);
+            state.data_status = 'loaded';
         })
         .addCase(loadMindItems.rejected, (state, action) => {
             console.log("addCase getDocuments rejected ", action)
+            state.status = "rejected"
+            state.data_status = 'rejected';
+        })
+
+        //update memory
+        .addCase(updateMindItem.pending, (state, action) => {
+            state.status = "loading"
+        })
+
+        .addCase(updateMindItem.fulfilled, (state, action) => {
+            console.log("memories/update", action);
+            state.status = "fulfilled";
+            state.data_status = 'load_now';
+
+        })
+        .addCase(updateMindItem.rejected, (state, action) => {
+            console.log("memories/delete", action)
+            state.status = "rejected"
+        })
+        //delete memory
+        .addCase(deleteMindItem.pending, (state, action) => {
+            state.status = "loading"
+        })
+
+        .addCase(deleteMindItem.fulfilled, (state, action) => {
+            console.log("memories/delete", action);
+            state.status = "fulfilled";
+            state.data_status = 'load_now';
+
+        })
+        .addCase(deleteMindItem.rejected, (state, action) => {
+            console.log("memories/delete", action)
+            state.status = "rejected"
+        })
+        //delete all memories
+        .addCase(deleteAllMindItems.pending, (state, action) => {
+            state.status = "loading"
+        })
+
+        .addCase(deleteAllMindItems.fulfilled, (state, action) => {
+            console.log("memories/delete", action);
+            state.status = "fulfilled";
+            state.data_status = 'load_now';
+
+        })
+        .addCase(deleteAllMindItems.rejected, (state, action) => {
+            console.log("memories/delete", action)
             state.status = "rejected"
         })
 }
@@ -101,10 +153,30 @@ const extraReducers = (builder) => {
 const botSlice = createSlice({
     name:"bot",
     initialState,
-    reducers,
+    reducers: {
+        showEditMemoryForm:(state, action) => {
+            state.show_memory_form = action.payload.show
+            state.edit = action.payload.memory
+        },
+        showAddMemoryForm:(state, action) => {
+            state.show_memory_form = action.payload
+        },
+        closeMemoryForm:(state) => {
+            state.show_memory_form = false;
+            state.edit = undefined;
+        },
+        showDeleteMemoryForm:(state, action) => {
+            state.show_delete_form = action.payload.show
+            state.edit = action.payload.memory
+        },
+        closeDeleteForm:(state) => {
+            state.show_delete_form = false;
+            state.edit = undefined;
+        }
+    },
     extraReducers
 })
 
 
-export const {} = botSlice.actions
+export const {showEditMemoryForm, showAddMemoryForm, closeMemoryForm, showDeleteMemoryForm, closeDeleteForm} = botSlice.actions
 export default botSlice.reducer
