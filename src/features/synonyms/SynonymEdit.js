@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeSynonymForm} from "./synonymSlice";
+import {closeSynonymForm, updateSynonyms} from "./synonymSlice";
 
 
 
@@ -40,6 +40,15 @@ export function SynonymEdit(props){
 
 
     const handleSave = () => {
+        const session_id = session.id;
+        console.log(`Editing...`, synonym)
+        const data = {
+            "id": synonym ? synonym.id : "",
+            "words": synonymList
+        }
+        console.log(`Saving...`, data);
+        dispatch(updateSynonyms({session_id, organisation_id, knowledge_base_id, data}));
+        dispatch(closeSynonymForm());
 
     }
 

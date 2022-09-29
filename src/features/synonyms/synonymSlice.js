@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
 import {loadDocumentList} from "../document_management/documentSlice";
+import {deleteMindItem} from "../bot/botSlice";
 
 const initialState = {
     synonym_list: [],
@@ -12,6 +13,7 @@ const initialState = {
     data_status: 'load_now',
     show_synonym_form: false,
     edit:undefined,
+    show_delete_form: false,
 }
 //organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size
 export const loadSynonyms = createAsyncThunk(
@@ -19,7 +21,7 @@ export const loadSynonyms = createAsyncThunk(
     async ({session_id, data}) => {
 
         const api_base = window.ENV.api_base;
-        const url = api_base + '/language/synonyms';
+        const url = api_base + `/language/synonyms`;
 
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
@@ -31,6 +33,39 @@ export const loadSynonyms = createAsyncThunk(
             )
     })
 
+export const updateSynonyms = createAsyncThunk(
+    "synonyms/updateSynonym",
+    async ({session_id, organisation_id, knowledge_base_id, data}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/language/save-synonym/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}`;
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    }
+)
+
+export const deleteSynonym = createAsyncThunk(
+            "synonyms/deleteSynonym",
+                async ({session_id, organisation_id, knowledge_base_id , id}) => {
+
+                const api_base = window.ENV.api_base;
+                const url = api_base + `/language/delete-synonym/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(id)}`
+
+                return axios.delete(url,Comms.getHeaders(session_id))
+                    .then((response) => {
+                        return response.data
+                    }).catch(
+                        (error) => {return error}
+                    )
+                }
+)
 
 const extraReducers = (builder) => {
     builder
@@ -51,6 +86,37 @@ const extraReducers = (builder) => {
             state.status = "rejected";
             state.data_status = 'rejected';
         })
+
+    // update synonym
+        .addCase(updateSynonyms.pending, (state, action) => {
+            state.status = "loading";
+        })
+
+        .addCase(updateSynonyms.fulfilled, (state, action) => {
+            console.log("addCase getDocuments fulfilled ", action);
+            state.status = "fulfilled";
+            state.data_status = 'load_now';
+        })
+        .addCase(updateSynonyms.rejected, (state, action) => {
+            console.log("addCase getDocuments rejected ", action)
+            state.status = "rejected";
+            state.data_status = 'rejected';
+        })
+        //delete Synonym
+        .addCase(deleteSynonym.pending, (state, action) => {
+            state.status = "loading"
+        })
+
+        .addCase(deleteSynonym.fulfilled, (state, action) => {
+            console.log("memories/delete", action);
+            state.status = "fulfilled";
+            state.data_status = 'load_now';
+
+        })
+        .addCase(deleteSynonym.rejected, (state, action) => {
+            console.log("memories/delete", action)
+            state.status = "rejected"
+        })
 }
 
 const synonymSlice = createSlice({
@@ -67,6 +133,14 @@ const synonymSlice = createSlice({
         closeSynonymForm:(state, action) => {
             state.show_synonym_form = false;
             state.edit = undefined;
+        },
+        showDeleteSynonymForm:(state, action) => {
+            state.show_delete_form = action.payload.show
+            state.edit = action.payload.synonym
+        },
+        closeDeleteForm:(state) => {
+            state.show_delete_form = false;
+            state.edit = undefined;
         }
 
     },
@@ -76,5 +150,5 @@ const synonymSlice = createSlice({
 
 
 
-export const {showAddSynonymForm, closeSynonymForm, showEditSynonymForm} = synonymSlice.actions;
+export const {showAddSynonymForm, closeSynonymForm, showEditSynonymForm, showDeleteSynonymForm, closeDeleteForm } = synonymSlice.actions;
 export default synonymSlice.reducer;

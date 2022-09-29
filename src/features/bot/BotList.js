@@ -73,9 +73,6 @@ export default function BotHome() {
     function deleteMemoryAsk(memory) {
             dispatch(showDeleteMemoryForm({show: true, memory: memory}))
     }
-    function deleteAllMemoryAsk() {
-
-    }
 
     function getDisplayText(memory) {
         let str = "";

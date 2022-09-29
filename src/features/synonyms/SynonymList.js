@@ -2,8 +2,9 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 
 import {Pagination} from "../../common/pagination";
-import {loadSynonyms, showAddSynonymForm, showEditSynonymForm} from "./synonymSlice";
+import {loadSynonyms, showAddSynonymForm, showEditSynonymForm, showDeleteSynonymForm} from "./synonymSlice";
 import {SynonymEdit} from "./SynonymEdit";
+import SynonymDeleteAsk from "./SynonymDeleteAsk";
 
 export default function SynonymsHome(props) {
 
@@ -48,20 +49,13 @@ export default function SynonymsHome(props) {
         dispatch(showAddSynonymForm(true));
     }
 
+    function deleteSynonymAsk(synonym) {
+        dispatch(showDeleteSynonymForm({show: true, synonym: synonym}))
+    }
+
     //Legacy functions
     function getSynonyms(){
         //Todo::getSynonyms
-    }
-
-    function deleteSynonymAsk(synonym)
-    {
-        if (synonym) {
-            this.props.openDialog("are you sure you want to remove id " + synonym.id + "?<br/><br/>(" + synonym.words + ")",
-                "Remove Synonym", (action) => {
-                    this.deleteSynonym(action)
-                });
-            this.setState({synonym: synonym});
-        }
     }
 
     function deleteSynonym(action)
@@ -199,6 +193,7 @@ export default function SynonymsHome(props) {
 
             </div>
             <SynonymEdit />
+            <SynonymDeleteAsk />
         </div>
     )
 }
