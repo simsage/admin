@@ -41,11 +41,14 @@ export default function SynonymsHome(props) {
         return synonym_list ? synonym_list : [];
     }
 
-    function filterSynonyms(event) {
+    function handleKeyDown(event) {
         if (event.key === "Enter") {
-            data.filter = synonym_filter
-            dispatch(loadSynonyms( {session_id, data } ))
+            filterSynonyms()
         }
+    }
+    function filterSynonyms() {
+        data.filter = synonym_filter
+        dispatch(loadSynonyms( {session_id, data } ))
     }
 
     function editSynonym(s) {
@@ -60,52 +63,10 @@ export default function SynonymsHome(props) {
         dispatch(showDeleteSynonymForm({show: true, synonym: synonym}))
     }
 
-    //Legacy functions
-    function getSynonyms(){
-        //Todo::getSynonyms
-    }
-
-    function deleteSynonym(action)
-    {
-        if (action && this.state.synonym) {
-            this.props.deleteSynonym(this.state.synonym.id);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-        this.setState({synonym_edit: false, synonym: {}});
-    }
-
-    function handleSearchTextKeydown(event)
-    {
-        if (event.key === "Enter") {
-            getSynonyms();
-        }
-    }
-
-    function save(synonym)
-    {
-        if (synonym) {
-            if (synonym.words.length > 0 && synonym.words.indexOf(",") > 0) {
-                this.props.saveSynonym(synonym);
-                this.setState({synonym_edit: false, synonym: {}});
-            } else {
-                this.props.setError("Error Saving Synonym", "synonym cannot be empty and need more than one item");
-            }
-        } else {
-            this.setState({synonym_edit: false, synonym: {}});
-        }
-    }
-    function isVisible() {
+     function isVisible() {
         return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
             selected_organisation !== null && selected_organisation.id === selected_organisation_id &&
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
-    }
-
-
-    const getSemantics = () => {
-        console.log("getSemantics clicked")
-        //Todo::getSemantics
     }
 
 
@@ -122,14 +83,14 @@ export default function SynonymsHome(props) {
                         <span className="filter-find-text">
                             <input type="text" value={synonym_filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
-                                   onKeyDown={(event) => filterSynonyms(event)}
+                                   onKeyDown={(event) => handleKeyDown(event)}
                                    onChange={(event) => {
                                        setSynonymFilter(event.target.value)
                                    }}/>
                         </span> &nbsp;
                         <span className="filter-find-image">
                             <button className="btn btn-secondary"
-                                    onClick={() => getSemantics()}
+                                    onClick={() => filterSynonyms()}
                                     src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
                         </span>
                     </div>
