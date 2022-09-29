@@ -15,7 +15,7 @@ export function BotEdit(props){
     const show_memory_form = useSelector((state) => state.botReducer.show_memory_form);
     const memory = useSelector( (state) => state.botReducer.edit);
 
-    //user form details
+    //Memory details
     const [q1, setQ1] = useState('');
     const [q2, setQ2] = useState('');
     const [q3, setQ3] = useState('');
@@ -23,8 +23,6 @@ export function BotEdit(props){
     const [q5, setQ5] = useState('');
     const [answer, setAnswer] = useState('');
     const [links, setLinks] = useState([]);
-
-    //Memory details
     const [created, setCreated] = useState('');
     const [id, setID] = useState('');
     const [imageList, setImageList] = useState('');
@@ -34,7 +32,7 @@ export function BotEdit(props){
 
 
 
-    // Grab user details if editing
+    // Grab memory details if editing
     let selectedMemory = {}
     useEffect(()=> {
         if (memory && selected_memories) {

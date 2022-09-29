@@ -4,46 +4,39 @@ import Comms from "../../common/comms";
 import {loadDocumentList} from "../document_management/documentSlice";
 
 const initialState = {
-    synonym_list: [
-    //     {
-    //         "id": "1",
-    //         "words": "GLP,Global Legal Post,legal posts"
-    //     },
-    //     {
-    //         "id": "2",
-    //         "words": "cc,Clifford Chance"
-    //     },
-    //     {
-    //         "id": "3",
-    //         "words": "job,role,candidate,position,assistant"
-    //     },
-    //     {
-    //         "id": "4",
-    //         "words": "ip,intellectual property"
-    //     },
-    //     {
-    //         "id": "5",
-    //         "words": "german,germany,berlin,munich"
-    //     },
-    //     {
-    //         "id": "6",
-    //         "words": "fieldfisher,field fisher"
-    //     },
-    //     {
-    //         "id": "7",
-    //         "words": "russia,moscow"
-    //     }
-    ],
+    synonym_list: [],
     num_synonyms: 0,
     synonym_page_size: 10,
     synonym_page: 0,
-    status: null
+    status: null,
+    data_status: 'load_now',
+    show_synonym_form: false,
+    edit:undefined,
 }
-const reducers = {}
+//organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size
+export const loadSynonyms = createAsyncThunk(
+    "synonyms/getSynonym",
+    async ({session_id, data}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/language/synonyms';
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    })
+
+
 const extraReducers = (builder) => {
     builder
         .addCase(loadSynonyms.pending, (state, action) => {
-            state.status = "loading"
+            state.status = "loading";
+            state.data_status = 'loading';
         })
 
         .addCase(loadSynonyms.fulfilled, (state, action) => {
@@ -51,73 +44,37 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.synonym_list = action.payload.synonymList?action.payload.synonymList:[];
             state.num_synonyms = action.payload.numSynonyms?action.payload.numSynonyms:0;
-            console.log("loadSynonymsaction.payload",action.payload)
+            state.data_status = 'loaded';
         })
         .addCase(loadSynonyms.rejected, (state, action) => {
             console.log("addCase getDocuments rejected ", action)
-            state.status = "rejected"
+            state.status = "rejected";
+            state.data_status = 'rejected';
         })
 }
 
 const synonymSlice = createSlice({
     name: "synonyms",
     initialState,
-    reducers,
+    reducers: {
+        showAddSynonymForm:(state, action) => {
+            state.show_synonym_form = action.payload
+        },
+        showEditSynonymForm:(state, action) => {
+            state.show_synonym_form = action.payload.show;
+            state.edit = action.payload.syn;
+        },
+        closeSynonymForm:(state, action) => {
+            state.show_synonym_form = false;
+            state.edit = undefined;
+        }
+
+    },
     extraReducers
 })
 
 
-export const loadSynonyms = createAsyncThunk("synonyms/getSynonym",
-    async ({session_id, organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size}) => {
 
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/language/synonyms';
-        // return "Hello";language/synonyms
-        if (url !== '/stats/stats/os') {
-            console.log('put ' + url);
-        }
 
-        const data = {
-            "organisationId": organisation_id,
-            "kbId": kb_id,
-            "prevId": prev_id ? prev_id : 1,
-            "filter": synonym_filter ? synonym_filter : "",
-            "pageSize": synonym_page_size ? synonym_page_size : 10
-        };
-
-        console.log("loadSynonymsaction data",data)
-        return axios.put(url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                console.log("loadSynonymsaction responsedata", response.data)
-                return response.data
-            }).catch(
-                (error) => {
-                    console.log("getSynonym error", error)
-                    return error
-
-                }
-            )
-    })
-
-export const {} = synonymSlice.actions;
+export const {showAddSynonymForm, closeSynonymForm, showEditSynonymForm} = synonymSlice.actions;
 export default synonymSlice.reducer;
-
-
-// export async function _getSynonyms(organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size, dispatch, getState) {
-//     const session_id = get_session_id(getState)
-//     if (session_id && organisation_id.length > 0 && kb_id.length > 0) {
-//         dispatch({type: BUSY, busy: true});
-//         const data = {
-//             "organisationId": organisation_id, "kbId": kb_id, "prevId": prev_id ? prev_id : "",
-//             "filter": synonym_filter, "pageSize": synonym_page_size
-//         };
-//         await Comms.http_put('/language/synonyms', session_id, data,
-//             (response) => {
-//                 dispatch({type: SET_SYNONYMS_PAGINATED, data: response.data});
-//             },
-//             (errStr) => {
-//                 dispatch({type: ERROR, title: "Error", error: errStr})
-//             }
-//         )
-//     }
-// }
