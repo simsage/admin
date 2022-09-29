@@ -20,7 +20,7 @@ export default function SynonymsHome(props) {
     const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
     const [synonym_page_size,setSynonymPageSize] = useState(useSelector((state)=>state.synonymReducer.synonym_page_size))
     const [synonym_page,setSynonymPage] = useState(useSelector((state)=>state.synonymReducer.synonym_page))
-    const [synonym_filter,setSynonymFilter] = useState()
+    const [synonym_filter,setSynonymFilter] = useState('');
 
     const dispatch = useDispatch();
 
@@ -39,6 +39,13 @@ export default function SynonymsHome(props) {
 
     function getSynonymList() {
         return synonym_list ? synonym_list : [];
+    }
+
+    function filterSynonyms(event) {
+        if (event.key === "Enter") {
+            data.filter = synonym_filter
+            dispatch(loadSynonyms( {session_id, data } ))
+        }
     }
 
     function editSynonym(s) {
@@ -115,7 +122,7 @@ export default function SynonymsHome(props) {
                         <span className="filter-find-text">
                             <input type="text" value={synonym_filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
-                                   onKeyPress={(event) => handleSearchTextKeydown(event)}
+                                   onKeyDown={(event) => filterSynonyms(event)}
                                    onChange={(event) => {
                                        setSynonymFilter(event.target.value)
                                    }}/>
