@@ -86,66 +86,6 @@ export default function BotHome() {
         return str;
     }
 
-////Legacy Functions
-
-
-    // function deleteMemory(action) {
-    //     if (action && Api.defined(this.state.mind_item)) {
-    //         this.props.deleteMemory(this.state.mind_item.id);
-    //     }
-    //     if (this.props.closeDialog) {
-    //         this.props.closeDialog();
-    //     }
-    // }
-    //
-    // function deleteAllMemoriesAsk() {
-    //     this.props.openDialog("are you sure you want to remove all memories of this knowledge-base?",
-    //         "Remove All Memories", (action) => {
-    //             this.deleteAllMemories(action)
-    //         });
-    // }
-    //
-    // function deleteAllMemories(action) {
-    //     if (action) {
-    //         this.props.deleteAllMemories();
-    //     }
-    //     if (this.props.closeDialog) {
-    //         this.props.closeDialog();
-    //     }
-    // }
-    // function editMemory(memory) {
-    //     setMindEdit(true);
-    //     setMindItem(memory)
-    //     // this.setState({mind_edit: true, mind_item: memory});
-    // }
-    //
-    //
-    // function programUploaded() {
-    //     this.props.openDialog("SimSage is now processing these new memories.  Check 'the mind' periodically for updates.", "Uploading Memories", () => this.programUploadedClose());
-    // }
-    //
-    // function programUploadedClose() {
-    //     this.props.closeDialog();
-    // }
-    //
-    // function mindDump() {
-    //     if (this.props.session && session_id)
-    //         Comms.download_mind_dump(selected_organisation_id, selected_knowledge_base_id, session_id);
-    // }
-    //
-    // function save(memory) {
-    //     if (memory) {
-    //         if (memory.information.length > 0 && memory.questionList.length > 0) {
-    //             this.props.saveMemory(memory);
-    //             this.setState({mind_edit: false});
-    //         } else {
-    //             this.props.setError("Error Saving Memory", "memory must have questions and an answer");
-    //         }
-    //     } else {
-    //         this.setState({mind_edit: false});
-    //     }
-    // }
-
     return (
         <div className="section px-5 pt-4">
 

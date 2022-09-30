@@ -3,7 +3,7 @@ import {useState, useEffect} from "react";
 import {closeMemoryForm, updateMindItem} from "./botSlice";
 
 
-export function BotEdit(props){
+export function BotEdit(){
 
     const dispatch = useDispatch();
 

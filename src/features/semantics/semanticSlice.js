@@ -5,58 +5,35 @@ import Comms from "../../common/comms";
 
 const initialState ={
     semantic_list: [],
-    // semantic_list: [
-    //     {
-    //         "word": "Aaran",
-    //         "semantic": "person"
-    //     },
-    //     {
-    //         "word": "Aaron",
-    //         "semantic": "person"
-    //     },
-    //     {
-    //         "word": "Aarons",
-    //         "semantic": "person"
-    //     },
-    //     {
-    //         "word": "Aasen",
-    //         "semantic": "person"
-    //     },
-    //     {
-    //         "word": "Abad",
-    //         "semantic": "person"
-    //     },
-    //     {
-    //         "word": "Abadie",
-    //         "semantic": "person"
-    //     },
-    //     {
-    //         "word": "Abarca",
-    //         "semantic": "person"
-    //     },
-    //     {
-    //         "word": "Abas",
-    //         "semantic": "person"
-    //     },
-    //     {
-    //         "word": "Abbas",
-    //         "semantic": "person"
-    //     },
-    //     {
-    //         "word": "Abbate",
-    //         "semantic": "person"
-    //     }
-    // ],
     status:null,
     num_semantics:0,
     semantic_page_size:10,
     semantic_page:0,
+    data_status: 'load_now',
+    show_semantic_form: false,
+    edit: undefined,
+    show_delete_form : false
 }
-const reducers = {}
+//organisation_id,kb_id,prev_word,filter,page_size
+export const loadSemantics = createAsyncThunk("semantics/getSemantic",
+    async ({session_id, data})=>{
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/language/semantics';
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    })
+
 const extraReducers = (builder) => {
     builder
         .addCase(loadSemantics.pending, (state, action) => {
-            state.status = "loading"
+            state.status = "loading";
+            state.data_status = "loading";
         })
 
         .addCase(loadSemantics.fulfilled, (state, action) => {
@@ -64,53 +41,42 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.semantic_list = action.payload.semanticList?action.payload.semanticList:[];
             state.num_semantics = action.payload.numSemantics?action.payload.numSemantics:0;
+            state.data_status = "loaded";
         })
         .addCase(loadSemantics.rejected, (state, action) => {
             console.log("loadSemantics rejected ", action)
             state.status = "rejected"
+            state.data_status = "rejected";
         })
 }
 
 const semanticSlice = createSlice({
     name:"semantics",
     initialState,
-    reducers,
+    reducers: {
+        showEditSemanticForm:(state, action) => {
+            state.show_semantic_form = action.payload.show;
+            state.edit = action.payload.semantic
+        },
+        showAddSemanticForm:(state, action) => {
+            state.show_semantic_form = action.payload;
+        },
+        closeSemanticForm:(state, action) => {
+            state.show_semantic_form = false;
+            state.edit = undefined;
+        },
+        showDeleteSemanticAsk:(state, action) => {
+            state.show_delete_form = action.payload.show;
+            state.edit = action.payload.semantic;
+        },
+        closeDeleteForm:(state, action) => {
+            state.show_delete_form = false;
+            state.edit = undefined;
+        }
+    },
     extraReducers
 })
 
 
-export const loadSemantics = createAsyncThunk("semantics/getSemantic",
-    async ({session_id,organisation_id,kb_id,prev_word,filter,page_size})=>{
-
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/language/semantics';
-        // return "Hello";language/synonyms
-        if (url !== '/stats/stats/os') {
-            console.log('put ' + url);
-        }
-
-        const data = {
-            "organisationId": organisation_id,
-            "kbId": kb_id,
-            "prevWord": prev_word ? prev_word : 1,
-            "filter": filter ? filter : "",
-            "pageSize": page_size ? page_size : 10
-        };
-
-        console.log("loadSemantics data",data)
-        return axios.put(url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                console.log("loadSemantics responsedata", response.data)
-                return response.data
-            }).catch(
-                (error) => {
-                    console.log("loadSemantics error", error)
-                    return error
-
-                }
-            )
-
-    })
-
-export const {} = semanticSlice.actions;
+export const {showEditSemanticForm, closeSemanticForm, showAddSemanticForm, showDeleteSemanticAsk, closeDeleteForm} = semanticSlice.actions;
 export default semanticSlice.reducer;
