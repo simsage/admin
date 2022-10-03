@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeCategoryForm} from "./categorizationSlice";
+import {closeCategoryForm, updateCategorization} from "./categorizationSlice";
 
 
 export function CategorizationEdit(){
@@ -53,12 +53,18 @@ export function CategorizationEdit(){
         const session_id = session.id;
         console.log(`Editing...`, selectedCategory)
         const data = {
-            "id": selectedCategory ? selectedCategory: "",
-
+            "categorizationList": [{
+                category: category,
+                wordCloud: wordCloud
+            }],
+            "displayName": displayName,
+            "kbId": knowledge_base_id,
+            "metadata": metadataName,
+            "organisationId": organisation_id
         }
         console.log(`Saving...`, data);
-        // dispatch(updateSynonyms({session_id, organisation_id, knowledge_base_id, data}));
-        // dispatch(closeSynonymForm());
+        dispatch(updateCategorization({session_id, data}));
+        dispatch(closeCategoryForm());
 
     }
 

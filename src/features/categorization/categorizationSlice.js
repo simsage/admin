@@ -1,4 +1,3 @@
-import CategorizationHome from "./CategorizationHome";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
@@ -28,6 +27,22 @@ export const loadCategorizations = createAsyncThunk("categorization/loadCategori
     }
 );
 
+export const updateCategorization = createAsyncThunk(
+    "categorization/updateCategorization",
+    async({session_id, data}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/language/categorization`;
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data;
+            }).catch(
+                (error) => {return error}
+            )
+    }
+)
+
 const extraReducers = (builder) => {
     builder
         .addCase(loadCategorizations.pending,(state, action) => {
@@ -40,6 +55,20 @@ const extraReducers = (builder) => {
             state.data_status = "loaded";
         })
         .addCase(loadCategorizations.rejected,(state, action) => {
+            state.status = "rejected";
+            state.data_status = "rejected";
+        })
+        //updates
+        .addCase(updateCategorization.pending,(state, action) => {
+            state.status = "pending";
+            state.data_status = "loading";
+        })
+        .addCase(updateCategorization.fulfilled,(state, action) => {
+            state.status = "fulfilled"
+            state.category_list = action.payload
+            state.data_status = "loaded";
+        })
+        .addCase(updateCategorization.rejected,(state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
