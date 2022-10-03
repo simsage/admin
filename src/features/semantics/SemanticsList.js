@@ -75,12 +75,6 @@ export default function SemanticsHome(props) {
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
-    const getSemantics = () => {
-        console.log("getSemantics clicked")
-        //Todo::getSemantics
-    }
-
-
     return (
         <div className="section px-5 pt-4">
             <div>
