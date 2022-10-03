@@ -10,29 +10,31 @@ const initialState = {
     source_page: 0,
     source_page_size: 10,
 
+    selected_source: null,
+    data_status: 'load_now',//load_now,loading,loaded
+
     status: null,
     error: '',
 
-    show_form: false,
-    edit_id: null,
-    selected_source: {}
+    // data form
+    show_data_form: false,
+
+    //start_crawler warning
+    show_start_crawler_form: false
 }
 
 const reducers = {
     showAddForm:(state) => {
-        state.show_form = true
-        state.edit_id = null
-        state.selected_source = {}
+        state.show_data_form = true
     },
     showEditForm:(state,action) => {
-        state.show_form = true
-        state.edit_id = action.payload.source_id
+        state.show_data_form = true
         state.selected_source = action.payload.source
     },
     closeForm:(state) => {
         console.log("closeForm sourceSlice")
-        state.show_form = false;
-        state.edit_id = null;
+        state.show_data_form = false;
+        state.selected_source = null;
     },
 }
 
@@ -51,10 +53,10 @@ const extraReducers = (builder) => {
 
         .addCase(updateSources.fulfilled, (state, action) => {
             console.log("updateSources fulfilled ",action)
-            state.show_form = false;
-            state.edit_id = null;
-            state.selected_source = {};
+            state.show_data_form = false;
+            state.selected_source = null;
         })
+
         .addCase(updateSources.rejected, (state, action) => {
             console.log("updateSources rejected ", action)
         })
@@ -80,6 +82,7 @@ export const getSources = createAsyncThunk(
     }
 );
 
+
 export const updateSources = createAsyncThunk(
     'sources/updateSources',
     async ({session_id,data}) => {
@@ -87,12 +90,12 @@ export const updateSources = createAsyncThunk(
         console.log("sources/updateSources");
 
         const api_base = window.ENV.api_base;
-        const url = '/crawler/crawler/';
+        const url = api_base + '/crawler/crawler/';
 
         if (url !== '/stats/stats/os') {
-            console.log('PUT ' + api_base + url);
+            console.log('PUT ' + url);
         }
-        return axios.post(api_base + url, data, Comms.getHeaders(session_id))
+        return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("updateSources data",response.data)
                 return response.data

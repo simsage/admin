@@ -362,9 +362,11 @@ html, body, #root, .App, .dms {
 }
 
 
-
-
-
+/*crawler page / source page*/
+.crawler-page {
+    margin-top: 20px;
+    width: 98%;
+}
 
 
 

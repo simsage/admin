@@ -1,35 +1,43 @@
-import reducer, {showAddForm, showEditForm, closeForm} from '../sourceSlice'
+import {showAddForm, showEditForm, closeForm} from '../sourceSlice'
+import sourceReducer from "../sourceSlice";
 
 const previousState = {
-    "edit_id": null,
-    "error": "",
-    "selected_source": {},
-    "show_form": false,
-    "source_filter": null,
-    "source_list": {},
-    "source_page": 0,
-    "source_page_size": 10,
-    "status": ""}
+    source_list: [],
+    source_filter: null,
+    source_page: 0,
+    source_page_size: 10,
+
+    status: null,
+    error: '',
+
+    // data form
+    show_form: false,
+    edit_id: null,
+    selected_source: {},
+
+    //start_crawler warning
+    show_start_crawler_form: false
+}
 
 test('should return the initial state of source', () => {
-    expect(reducer(undefined, { type: undefined })).toEqual(previousState)
+    expect(sourceReducer(undefined, { type: undefined })).toEqual(previousState)
 })
 
 test('should return showAddForm', () => {
-    expect(reducer(previousState, showAddForm())).toEqual(
+    expect(sourceReducer(previousState, showAddForm())).toEqual(
         {"edit_id": null, "error": "", "selected_source": {}, "show_form": true, "source_filter": null,
             "source_list": {}, "source_page": 0, "source_page_size": 10, "status": ""}
     )
 })
 
 test('test showEditForm', () => {
-    expect(reducer(previousState, showEditForm({"source_id":"2343","source":{"selected_source":"true"}}))).toEqual(
+    expect(sourceReducer(previousState, showEditForm({"source_id":"2343","source":{"selected_source":"true"}}))).toEqual(
         {"edit_id": "2343", "error": "", "selected_source": {"selected_source": "true"}, "show_form": true, "source_filter": null, "source_list": {}, "source_page": 0, "source_page_size": 10, "status": ""}
     )
 })
 
 test('test closeForm', () => {
-    expect(reducer(previousState, closeForm())).toEqual(previousState )
+    expect(sourceReducer(previousState, closeForm())).toEqual(previousState )
 })
 
 

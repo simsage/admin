@@ -199,7 +199,13 @@ export class CrawlerDialog extends Component {
         }
         return true;
     }
-    handleSave() {
+
+    handleSave(){
+        console.log("handle save new")
+
+    }
+
+    handleSave2() {
         console.log("handleSave step 1")
         const crawler = this.state.crawler;
         console.log("handleSave step 2 ", crawler)
@@ -773,7 +779,8 @@ export class CrawlerDialog extends Component {
 
 const mapStateToProps = state => {
     return {
-        open: state.sourceReducer.show_form,
+        // open: state.sourceReducer.show_form,
+        open: false,
         source_id: state.sourceReducer.edit_id,
         crawler: state.sourceReducer.selected_source
     }
