@@ -43,11 +43,15 @@ export default function SemanticsHome(props) {
         return semantic_list?semantic_list:[];
     }
 
-    function filterSemantic(event) {
-        if (event.key === "Enter") {
+    function filterSemantic() {
             data.filter = semantic_filter
-            console.log(`filtering...`, data)
             dispatch(loadSemantics({ session_id, data }));
+    }
+
+    function handleSearchTextKeydown(event)
+    {
+        if (event.key === "Enter") {
+            filterSemantic();
         }
     }
 
@@ -63,15 +67,6 @@ export default function SemanticsHome(props) {
         console.log(`deleting...` , semantic)
         dispatch(showDeleteSemanticAsk({show:true, semantic: semantic}));
     }
-
-    //legacy Functions
-    function handleSearchTextKeydown(event)
-    {
-        if (event.key === "Enter") {
-            getSemantics();
-        }
-    }
-
 
 
     function isVisible() {
@@ -96,14 +91,14 @@ export default function SemanticsHome(props) {
                         <span className="filter-find-text">
                             <input type="text" value={semantic_filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
-                                   onKeyDown={(event) => filterSemantic(event)}
+                                   onKeyDown={(event) => handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        setSemanticFilter(event.target.value);
                                    }}/>
                         </span> &nbsp;
                         <span className="filter-find-image">
                             <button className="btn btn-secondary"
-                                    onClick={() => getSemantics()}
+                                    onClick={() => filterSemantic()}
                                     src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
                         </span>
                     </div>

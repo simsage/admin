@@ -10,7 +10,6 @@ export function SemanticEdit(){
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
 
-    const selected_memories = useSelector((state) => state.botReducer.mind_item_list)
     const show_semantic_form = useSelector((state) => state.semanticReducer.show_semantic_form);
     const selectedSemantic = useSelector( (state) => state.semanticReducer.edit);
 
