@@ -7,6 +7,7 @@ const initialState = {
     category_list:[],
     data_status: "load_now",
     show_category_form: false,
+    show_delete_form: false,
     category: undefined,
 }
 
@@ -43,6 +44,22 @@ export const updateCategorization = createAsyncThunk(
     }
 )
 
+export const deleteCategorization = createAsyncThunk(
+        "categorization/deleteCategorization",
+            async({session_id, organisation_id, knowledge_base_id, metadata}) => {
+
+            const api_base = window.ENV.api_base;
+            const url = api_base + `/language/categorization/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(metadata)}`;
+
+            return axios.delete(url, Comms.getHeaders(session_id))
+                .then((response) => {
+                    return response.data;
+                }).catch(
+                    (error) => {return error}
+                )
+            }
+)
+
 const extraReducers = (builder) => {
     builder
         .addCase(loadCategorizations.pending,(state, action) => {
@@ -65,10 +82,22 @@ const extraReducers = (builder) => {
         })
         .addCase(updateCategorization.fulfilled,(state, action) => {
             state.status = "fulfilled"
-            state.category_list = action.payload
             state.data_status = "loaded";
         })
         .addCase(updateCategorization.rejected,(state, action) => {
+            state.status = "rejected";
+            state.data_status = "rejected";
+        })
+    //Delete
+        .addCase(deleteCategorization.pending,(state, action) => {
+            state.status = "pending";
+            state.data_status = "loading";
+        })
+        .addCase(deleteCategorization.fulfilled,(state, action) => {
+            state.status = "fulfilled"
+            state.data_status = "loaded";
+        })
+        .addCase(deleteCategorization.rejected,(state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
@@ -88,6 +117,14 @@ const categorizationSlice = createSlice({
         closeCategoryForm:(state,action) => {
             state.show_category_form = false;
             state.edit = undefined;
+        },
+        showDeleteCategorizationForm:(state, action) => {
+            state.show_delete_form = action.payload.show
+            state.edit = action.payload.category
+        },
+        closeDeleteForm:(state) => {
+            state.show_delete_form = false;
+            state.edit = undefined;
         }
     },
     extraReducers
@@ -95,5 +132,5 @@ const categorizationSlice = createSlice({
 
 
 
-export const {showAddCategoryForm, showEditCategoryForm, closeCategoryForm} = categorizationSlice.actions;
+export const {showAddCategoryForm, showEditCategoryForm, closeCategoryForm, showDeleteCategorizationForm, closeDeleteForm } = categorizationSlice.actions;
 export default categorizationSlice.reducer;

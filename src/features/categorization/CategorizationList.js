@@ -1,7 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
-import {loadCategorizations, showAddCategoryForm, showEditCategoryForm} from "./categorizationSlice";
+import {
+    loadCategorizations,
+    showAddCategoryForm,
+    showDeleteCategorizationForm,
+    showEditCategoryForm
+} from "./categorizationSlice";
 import {CategorizationEdit} from "./CategorizationEdit";
+import CategorizationDeleteAsk from "./CategorizationDeleteAsk";
 
 export default function CategorizationHome() {
 
@@ -41,6 +47,10 @@ export default function CategorizationHome() {
         dispatch(showEditCategoryForm({show:true, category:category}));
     }
 
+    function deleteCategoryAsk(category) {
+        dispatch(showDeleteCategorizationForm({show:true, category:category}));
+    }
+
 
 
     function isVisible() {
@@ -60,16 +70,6 @@ export default function CategorizationHome() {
         return JSON.parse(JSON.stringify(empty_category));
     }
 
-
-    function deleteCategoryAsk(category) {
-        if (category && category.metadata) {
-            this.props.openDialog("are you sure you want to remove category: " + category.metadata + "?",
-                "Remove SynSet", (action) => {
-                    this.deleteCategory(action)
-                });
-            this.setState({category: category});
-        }
-    }
 
     function deleteCategory(action) {
         if (action && this.state.category) {
@@ -158,6 +158,7 @@ export default function CategorizationHome() {
 
             </div>
             <CategorizationEdit />
+            <CategorizationDeleteAsk />
         </div>
 
     )
