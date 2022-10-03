@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeSemanticForm} from "./semanticSlice";
+import {closeSemanticForm, updateSemantics} from "./semanticSlice";
 
 export function SemanticEdit(){
 
@@ -18,7 +18,7 @@ export function SemanticEdit(){
     const [word, setWord] = useState('');
     const [semanticType, setSemanticType] = useState('');
     // Grab memory details if editing
-    console.log('Hello',selectedSemantic)
+
     useEffect(()=> {
         if(selectedSemantic) {
             setWord(selectedSemantic.word);
@@ -42,26 +42,19 @@ export function SemanticEdit(){
 
 
     const handleSave = () => {
-        // let questions = [q1, q2, q3, q4, q5]
-        // //begin updating user
-        // const session_id = session.id;
-        // const data = {
-        //     "created": created,
-        //     "id": id,
-        //     "imageList": imageList,
-        //     "information": answer,
-        //     "mid": mid,
-        //     "organisationId": organisation_id,
-        //     "questionList": questions.filter( q => q.length > 0),
-        //     "soundList": soundList,
-        //     "urlList": links,
-        //     "videoList": videoList
-        // }
-        // console.log('Saving...', data);
-        // dispatch(updateMindItem({session_id,organisation_id, knowledge_base_id, data}));
-        // dispatch(closeMemoryForm());
+        //begin updating user
+        const session_id = session.id;
+        const data = {
+            "prevWord": selectedSemantic ? selectedSemantic.word : "",
+            "semantic": semanticType,
+            "word": word
+        }
+         console.log('Saving...', data);
+        dispatch(updateSemantics({session_id, organisation_id, knowledge_base_id, data}));
+        dispatch(closeSemanticForm());
     }
-
+// dispatch(updateMindItem({session_id,organisation_id, knowledge_base_id, data}));
+        // dispatch();
 
     if (show_semantic_form === false)
         return (<div/>);

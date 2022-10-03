@@ -5,6 +5,7 @@ import {loadSemantics, showAddSemanticForm, showDeleteSemanticAsk, showEditSeman
 import {SemanticEdit} from "./SemanticEdit";
 import SemanticDeleteAsk from "./SemanticDeleteAsk";
 
+
 export default function SemanticsHome(props) {
     const title = "Semantics";
     const theme = null;
@@ -24,11 +25,11 @@ export default function SemanticsHome(props) {
     const dispatch = useDispatch();
 
     let data = {
-        "organisationId": selected_organisation_id,
-        "kbId": selected_knowledge_base_id,
-        "prevWord": 1,
         "filter": "",
-        "pageSize": 10
+        "kbId": selected_knowledge_base_id,
+        "organisationId": selected_organisation_id,
+        "pageSize": 10,
+        "prevWord": 0
     };
 
 
@@ -40,6 +41,14 @@ export default function SemanticsHome(props) {
     function getSemanticList()
     {
         return semantic_list?semantic_list:[];
+    }
+
+    function filterSemantic(event) {
+        if (event.key === "Enter") {
+            data.filter = semantic_filter
+            console.log(`filtering...`, data)
+            dispatch(loadSemantics({ session_id, data }));
+        }
     }
 
     function handleEditSemantic(semantic)
@@ -63,28 +72,7 @@ export default function SemanticsHome(props) {
         }
     }
 
-    function save(semantic)
-    {
-        if (semantic) {
-            if (semantic.word.length > 0 && semantic.semantic.length > 0) {
-                // delete the previous semantic?
-                if (this.state.prev_semantic.word !== "" && this.state.prev_semantic.word !== semantic.word) {
-                    semantic.prevWord = this.state.prev_semantic.word;
-                } else {
-                    semantic.prevWord = '';
-                }
-                this.props.saveSemantic(semantic);
-                this.setState({semantic_edit: false, semantic: {}});
-                if (this.state.closeDialog) {
-                    this.state.closeDialog();
-                }
-            } else {
-                this.props.setError("Error Saving Semantic", "word and semantic must have a value");
-            }
-        } else {
-            this.setState({semantic_edit: false, semantic: {}});
-        }
-    }
+
 
     function isVisible() {
         return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
@@ -108,7 +96,7 @@ export default function SemanticsHome(props) {
                         <span className="filter-find-text">
                             <input type="text" value={semantic_filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
-                                   onKeyPress={(event) => handleSearchTextKeydown(event)}
+                                   onKeyDown={(event) => filterSemantic(event)}
                                    onChange={(event) => {
                                        setSemanticFilter(event.target.value);
                                    }}/>

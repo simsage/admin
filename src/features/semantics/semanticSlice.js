@@ -1,5 +1,4 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {loadSynonyms} from "../synonyms/synonymSlice";
 import axios from "axios";
 import Comms from "../../common/comms";
 
@@ -29,6 +28,23 @@ export const loadSemantics = createAsyncThunk("semantics/getSemantic",
             )
     })
 
+export const updateSemantics = createAsyncThunk(
+    "semantics/updateSemantics",
+
+        async ({session_id, organisation_id, knowledge_base_id, data}) => {
+
+            const api_base = window.ENV.api_base;
+            const url = api_base + `language/save-semantic/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}`;
+
+            return axios.put(url, data, Comms.getHeaders(session_id))
+                .then((response) => {
+                    return response.data
+                }).catch(
+                    (error) => {return error}
+                )
+        }
+)
+
 const extraReducers = (builder) => {
     builder
         .addCase(loadSemantics.pending, (state, action) => {
@@ -44,6 +60,22 @@ const extraReducers = (builder) => {
             state.data_status = "loaded";
         })
         .addCase(loadSemantics.rejected, (state, action) => {
+            console.log("loadSemantics rejected ", action)
+            state.status = "rejected"
+            state.data_status = "rejected";
+        })
+
+        //update semantics
+        .addCase(updateSemantics.pending, (state, action) => {
+            state.status = "loading";
+            state.data_status = "loading";
+        })
+        .addCase(updateSemantics.fulfilled, (state, action) => {
+            console.log("loadSemantics fulfilled ", action);
+            state.status = "fulfilled";
+            state.data_status = "loaded";
+        })
+        .addCase(updateSemantics.rejected, (state, action) => {
             console.log("loadSemantics rejected ", action)
             state.status = "rejected"
             state.data_status = "rejected";
