@@ -82,7 +82,7 @@ const extraReducers = (builder) => {
         })
         .addCase(updateCategorization.fulfilled,(state, action) => {
             state.status = "fulfilled"
-            state.data_status = "loaded";
+            state.data_status = "load_now";
         })
         .addCase(updateCategorization.rejected,(state, action) => {
             state.status = "rejected";
@@ -95,7 +95,7 @@ const extraReducers = (builder) => {
         })
         .addCase(deleteCategorization.fulfilled,(state, action) => {
             state.status = "fulfilled"
-            state.data_status = "loaded";
+            state.data_status = "load_now";
         })
         .addCase(deleteCategorization.rejected,(state, action) => {
             state.status = "rejected";

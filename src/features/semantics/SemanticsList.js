@@ -14,7 +14,7 @@ export default function SemanticsHome(props) {
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
-    const load_data = useSelector( (state) => state.botReducer.data_status)
+    const load_data = useSelector( (state) => state.semanticReducer.data_status)
 
     const semantic_list = useSelector((state) => state.semanticReducer.semantic_list);
     const num_semantics = useSelector((state) => state.semanticReducer.num_semantics);
@@ -35,7 +35,7 @@ export default function SemanticsHome(props) {
 
     useEffect(() => {
         dispatch(loadSemantics({ session_id, data }));
-    }, [load_data === 'load_now'])
+    }, [load_data === "load_now"])
 
 
     function getSemanticList()

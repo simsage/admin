@@ -27,9 +27,9 @@ export default function CategorizationHome() {
     const dispatch = useDispatch();
 
     useEffect(()=>{
+        console.log(load_data)
         dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
-
-    },[load_data === 'load_now'])
+    },[load_data === "load_now"])
 
 
 

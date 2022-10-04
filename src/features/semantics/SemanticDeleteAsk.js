@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeDeleteForm} from "./semanticSlice";
+import {closeDeleteForm, deleteSemantic} from "./semanticSlice";
 
 
 export default function SemanticDeleteAsk(){
@@ -22,8 +22,8 @@ export default function SemanticDeleteAsk(){
         const data = {"session_id": session_id, "organisation_id": organisation_id, "knowledge_base_id": knowledgeBase_id };
         console.log("delete data",semantic)
 
-            //dispatch(deleteMindItem(data));
-            //dispatch(closeDeleteForm());
+        dispatch(deleteSemantic({session_id:session_id, organisation_id: organisation_id, knowledge_base_id: knowledgeBase_id, word: semantic.word}))
+        dispatch(closeDeleteForm());
     }
 
 

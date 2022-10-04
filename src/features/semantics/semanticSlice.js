@@ -45,6 +45,23 @@ export const updateSemantics = createAsyncThunk(
         }
 )
 
+export const deleteSemantic = createAsyncThunk(
+    "semantic/deleteSemantic",
+
+        async ({session_id, organisation_id, knowledge_base_id, word}) => {
+
+            const api_base = window.ENV.api_base;
+            const url = api_base + `/language/delete-semantic/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(word)}`
+
+            return axios.delete(url, Comms.getHeaders(session_id))
+                .then( (response) => {
+                    return response.data
+                }).catch(
+                    (error) => {return error}
+                )
+            }
+)
+
 const extraReducers = (builder) => {
     builder
         .addCase(loadSemantics.pending, (state, action) => {
@@ -73,10 +90,24 @@ const extraReducers = (builder) => {
         .addCase(updateSemantics.fulfilled, (state, action) => {
             console.log("loadSemantics fulfilled ", action);
             state.status = "fulfilled";
-            state.data_status = "loaded";
+            state.data_status = "load_now";
         })
         .addCase(updateSemantics.rejected, (state, action) => {
             console.log("loadSemantics rejected ", action)
+            state.status = "rejected"
+            state.data_status = "rejected";
+        })
+        //delete semantic
+        .addCase(deleteSemantic.pending, (state, action) => {
+            state.status = "loading";
+            state.data_status = "loading";
+        })
+        .addCase(deleteSemantic.fulfilled, (state, action) => {
+            console.log("loadSemantics fulfilled ", action);
+            state.status = "fulfilled";
+            state.data_status = "load_now";
+        })
+        .addCase(deleteSemantic.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected";
         })

@@ -15,6 +15,7 @@ export default function SynonymsHome(props) {
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
+    const load_data = useSelector( (state) => state.synonymReducer.data_status)
 
     const synonym_list = useSelector((state)=>state.synonymReducer.synonym_list)
     const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
@@ -34,7 +35,7 @@ export default function SynonymsHome(props) {
 
     useEffect(() => {
         dispatch(loadSynonyms({session_id, data }));
-    }, [])
+    }, [load_data === "load_now"])
 
 
     function getSynonymList() {

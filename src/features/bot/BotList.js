@@ -38,7 +38,7 @@ export default function BotHome() {
             console.log("session useEffect",session_id)
             console.log("selected_organisation", data)
             dispatch(loadMindItems({ session_id, data }))
-    },[load_data === 'load_now'])
+    },[load_data === "load_now"])
 
     function isVisible() {
         return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
