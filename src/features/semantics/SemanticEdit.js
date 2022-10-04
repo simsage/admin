@@ -44,11 +44,12 @@ export function SemanticEdit(){
         //begin updating user
         const session_id = session.id;
         const data = {
+            "word": word,
             "prevWord": selectedSemantic ? selectedSemantic.word : "",
-            "semantic": semanticType,
-            "word": word
+            "semantic": semanticType
+
         }
-         console.log('Saving...', data);
+         console.log('org', organisation_id, 'kb',knowledge_base_id,'Saving...', data);
         dispatch(updateSemantics({session_id, organisation_id, knowledge_base_id, data}));
         dispatch(closeSemanticForm());
     }

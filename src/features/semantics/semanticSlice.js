@@ -34,7 +34,7 @@ export const updateSemantics = createAsyncThunk(
         async ({session_id, organisation_id, knowledge_base_id, data}) => {
 
             const api_base = window.ENV.api_base;
-            const url = api_base + `language/save-semantic/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}`;
+            const url = api_base + `/language/save-semantic/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}`;
 
             return axios.put(url, data, Comms.getHeaders(session_id))
                 .then((response) => {
