@@ -32,7 +32,6 @@ export function UserEdit(props){
     const [showKbs, setShowKBs] = useState(false);
 
 
-
     // Grab user details if editing
     let selectedUser = {}
     useEffect(()=> {
@@ -47,12 +46,14 @@ export function UserEdit(props){
         }
         //Populate form if necessary
         if(selectedUser){
+
             setEmail(selectedUser.email)
             setFirstName(selectedUser.firstName)
             setLastName(selectedUser.surname)
             setRoles(selectedUser.roles)
             setGroups(selectedUser.groupList)
             setKBs(selectedUser.operatorKBList)
+            setShowKBs(hasRole(selectedUser, ['operator']))
         }
     }, [show_user_form])
 
@@ -77,6 +78,7 @@ export function UserEdit(props){
         if( !validEmail(email) ) { alert('Invalid Email') }
         if( !firstName ) { alert('Invalid Name') }
         if( !lastName ) { alert('Invalid Last Name') }
+        if( showKbs && kbs.length < 1) {alert("A knowledge operator must have at least 1 Knowledge base assigned")}
         //begin updating user
         const session_id = session.id;
         const data = {
