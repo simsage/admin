@@ -5,6 +5,7 @@ import {getUserList, showAddUserForm, showEditUserForm} from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import {formatRoles, hasRole} from "../../common/helpers";
 import Api from '../../common/api'
+import {getGroupList} from "../groups/groupSlice";
 
 export function UsersHome(){
 
@@ -25,7 +26,7 @@ export function UsersHome(){
     const user_list_status = useSelector((state) => state.usersReducer.status)
     const session = useSelector((state)=>state.authReducer.session)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
-
+    const load_data = useSelector((state) => state.usersReducer.data_status)
 
     const isAdmin = hasRole(user, ['admin']);
     const isManager = hasRole(user, ['manager']);
@@ -39,7 +40,7 @@ export function UsersHome(){
             console.log("selected_organisation",selected_organisation_id)
             dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:null}))
         }
-    },[])
+    },[load_data === "load_now"])
     console.log("users ",user_list)
 
     function handleSearchTextKeydown(e) {
@@ -54,10 +55,12 @@ export function UsersHome(){
     }
 
     function handleAddNewUser(){
+        dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         dispatch(showAddUserForm(true))
     }
 
     function handleEditUser(u) {
+        dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         dispatch(showEditUserForm({show:true,
         user_id: u.id}));
     }

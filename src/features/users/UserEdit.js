@@ -4,6 +4,8 @@ import {closeUserForm, updateUser} from "./usersSlice";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import {hasRole} from "../../common/helpers";
+import {getGroupList} from "../groups/groupSlice";
+import {set} from "react-hook-form";
 
 export function UserEdit(props){
 
@@ -17,6 +19,8 @@ export function UserEdit(props){
     const user_list = useSelector( (state)=> state.usersReducer.user_list );
     const available_roles = useSelector( (state) => state.usersReducer.roles);
     const available_KBs = useSelector((state) => state.kbReducer.kb_list);
+    const group_list_parent = useSelector(( (state) => state.groupReducer.group_list))
+    const group_list_full = group_list_parent ? group_list_parent.groupList : group_list_parent;
 
     //user form details
     const [email, setEmail] = useState('');
@@ -25,11 +29,12 @@ export function UserEdit(props){
     const [roles, setRoles] = useState([]);
     const [groups, setGroups] = useState([]);
     const [kbs, setKBs] = useState([]);
+    const [showKbs, setShowKBs] = useState(false);
 
 
 
     // Grab user details if editing
-     let selectedUser = {}
+    let selectedUser = {}
     useEffect(()=> {
         if (user_id && user_list) {
             let temp_obj = user_list.filter((o) => {
@@ -75,18 +80,18 @@ export function UserEdit(props){
         //begin updating user
         const session_id = session.id;
         const data = {
-           id: user_id,
-           email: email,
-           firstName: firstName,
-           surname: lastName,
-           roles: roles,
-           groupList: groups,
-           operatorKBList: kbs
+            email: email,
+            firstName: firstName,
+            groupList: groups,
+            id: user_id,
+            operatorKBList: kbs,
+            roles: roles,
+            surname: lastName
         }
         console.log('Saving...', data);
         dispatch(updateUser({session_id,organisation_id, data}));
         dispatch(closeUserForm());
-        }
+    }
 
 
     function fillNames() {
@@ -118,14 +123,17 @@ export function UserEdit(props){
         }
     }
 
+    //Roles functions
     const getAvailableRoles = () => {
-        const roleNames = roles.map( r => r.role);
+        const roleNames = roles ? roles.map( r => r.role) :  [];
         let tempRoleList = [];
+
         available_roles.forEach( ar => {
             if(!roleNames.includes(ar)){
                 tempRoleList.push(ar);
             }
         })
+        console.log('here', tempRoleList)
         return tempRoleList;
     }
 
@@ -134,14 +142,18 @@ export function UserEdit(props){
             organisation_id: organisation_id,
             role: roleToAdd
         }])
+        if (roleToAdd === "operator") setShowKBs(true);
     };
 
     function removeRoleFromUser(roleToRemove){
-      setRoles(roles.filter( r => {
-          return r.role !== roleToRemove.role
-      }))
+        setRoles(roles.filter( r => {
+            return r.role !== roleToRemove.role
+        }))
+        if (roleToRemove.role === "operator") setShowKBs(false);
     };
 
+
+    //Knowledge base functions
     function getKbName(kbID) {
         const temp_list = available_KBs.filter( (obj) => {return obj.kbId == kbID})
         if(temp_list.length < 1) return "No KBs"
@@ -149,7 +161,7 @@ export function UserEdit(props){
     }
 
     const getAvailableKnowledgeBases = () => {
-        const userKbName = kbs.map(kb => getKbName(kb.kbId))
+        const userKbName = kbs ? kbs.map(kb => getKbName(kb.kbId)) : [];
         const availableKbNames = available_KBs.map( kb => kb.name)
         let tempKBsList = [];
         availableKbNames.forEach( kb => {
@@ -165,29 +177,52 @@ export function UserEdit(props){
             return k.name == kb;
         })
         setKBs([...kbs, {
-            userId: user_id, 
+            userId: user_id,
             organisationId: organisation_id,
             kbId: kbObj[0].kbId
         }])
+
     };
 
     function removeKbFromUser(kb){
-       setKBs( kbs.filter( k => {
-           return k.kbId !== kb
-       }))
+        setKBs( kbs.filter( k => {
+            return k.kbId !== kb
+        }))
     };
+
+    //Groups functions
+
+    const getAvailableGroups = () => {
+        const groupNames = groups ? groups.map( g => g.name) : []
+        const availableGroups = group_list_full.filter( grp => {
+            return !groupNames.includes(grp.name)
+        })
+        return availableGroups
+    }
+
+    function addGroupToUser(groupToAdd){
+        setGroups([...groups , groupToAdd])
+    };
+
+    function removeGroupFromUser(groupToRemove){
+        setGroups(groups.filter( grp => {
+            return grp.name !== groupToRemove.name
+        }))
+    };
+
+
 
     if (show_user_form === false)
         return (<div/>);
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
-             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                 <div className="modal-content">
-                     <div className="modal-header">{user_id ? "Edit User" : "Add New User"}</div>
-                     <div className="modal-body">
-                         <ul className="nav nav-tabs">
-                             <li className="nav-item nav-cursor">
-                                 <div className={"nav-link " + (selectedTab === 'details' ? 'active' : '')}
+            <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
+                <div className="modal-content">
+                    <div className="modal-header">{user_id ? "Edit User" : "Add New User"}</div>
+                    <div className="modal-body">
+                        <ul className="nav nav-tabs">
+                            <li className="nav-item nav-cursor">
+                                <div className={"nav-link " + (selectedTab === 'details' ? 'active' : '')}
                                      onClick={() => setSelectedTab( 'details')}>user details</div>
                             </li>
                             <li className="nav-item nav-cursor">
@@ -201,13 +236,13 @@ export function UserEdit(props){
                         </ul>
 
 
-                         {
-                             selectedTab === 'details' &&
-                             <div className="tab-content">
+                        {
+                            selectedTab === 'details' &&
+                            <div className="tab-content">
 
-                                 <div className="control-row">
-                                     <span className="label-2">email</span>
-                                     <span className="text">
+                                <div className="control-row">
+                                    <span className="label-2">email</span>
+                                    <span className="text">
                                             <form>
                                                 <input type="text" className="form-control"
                                                        autoFocus={true}
@@ -219,11 +254,11 @@ export function UserEdit(props){
                                                 />
                                                 </form>
                                         </span>
-                                 </div>
+                                </div>
 
-                                 <div className="control-row">
-                                     <span className="label-2">first name</span>
-                                     <span className="text">
+                                <div className="control-row">
+                                    <span className="label-2">first name</span>
+                                    <span className="text">
                                             <form>
                                                 <input type="text" className="form-control"
                                                        autoComplete="false"
@@ -233,11 +268,11 @@ export function UserEdit(props){
                                                 />
                                             </form>
                                         </span>
-                                 </div>
+                                </div>
 
-                                 <div className="control-row">
-                                     <span className="label-2">surname</span>
-                                     <span className="text">
+                                <div className="control-row">
+                                    <span className="label-2">surname</span>
+                                    <span className="text">
                                             <form>
                                                 <input type="text" className="form-control"
                                                        autoComplete="false"
@@ -247,101 +282,121 @@ export function UserEdit(props){
                                                 />
                                             </form>
                                         </span>
-                                 </div>
-                             </div>
-                         }
+                                </div>
+                            </div>
+                        }
 
-                         {
-                             selectedTab === 'roles' &&
-                             <div className="tab-content">
-                                 <div>
-                                     <div className="role-block">
-                                         <div className="role-label">SimSage roles</div>
-                                         <div className="role-area">
-                                             {
-                                                  roles.map((role, i) => {
-                                                     return (<Chip key={i} color="secondary"
-                                                                    onClick={() => removeRoleFromUser(role)}
-                                                                   label={Api.getPrettyRole(role.role)} variant="outlined"/>)
-                                                 })
-                                             }
-                                         </div>
-                                     </div>
-                                     <div className="role-block">
-                                         <div className="role-label">available SimSage roles</div>
-                                         <div className="role-area">
-                                             {
-                                                 getAvailableRoles().map((role, i) => {
-                                                     return (<Chip key={i} color="primary"
-                                                                    onClick={() => addRoleToUser(role)}
-                                                                   label={Api.getPrettyRole(role)} variant="outlined"/>)
-                                                 })
-                                             }
-                                         </div>
-                                     </div>
-                                 </div>
+                        {
+                            selectedTab === 'roles' &&
+                            <div className="tab-content">
+                                <div>
+                                    <div className="role-block">
+                                        <div className="role-label">SimSage roles</div>
+                                        <div className="role-area">
+                                            {
+                                                roles && roles.map((role, i) => {
+                                                    return (<Chip key={i} color="secondary"
+                                                                  onClick={() => removeRoleFromUser(role)}
+                                                                  label={Api.getPrettyRole(role.role)} variant="outlined"/>)
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="role-block">
+                                        <div className="role-label">available SimSage Roles</div>
+                                        <div className="role-area">
+                                            {
+                                                getAvailableRoles().map((role, i) => {
+                                                    return (<Chip key={i} color="primary"
+                                                                  onClick={() => addRoleToUser(role)}
+                                                                  label={Api.getPrettyRole(role)} variant="outlined"/>)
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
 
-                                 <br style={{clear: 'both'}} />
+                                    <br style={{clear: 'both'}}/>
+                                {showKbs &&
+                                    <div>
+                                        <div className="role-block">
+                                            <div className="role-label">operator's knowledge bases</div>
+                                            <div className="role-area">
+                                                {
+                                                    kbs && kbs.map((kb, i) => {
+                                                        return (<Chip key={i} color="secondary"
+                                                                      onClick={() => removeKbFromUser(kb.kbId)}
+                                                                      label={getKbName(kb.kbId)} variant="outlined"/>)
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="role-block">
+                                            <div className="role-label">operator available knowledge bases</div>
+                                            <div className="role-area">
+                                                {
+                                                    getAvailableKnowledgeBases().map((kb, i) => {
+                                                        return (<Chip key={i} color="primary"
+                                                                      onClick={() => addKbToUser(kb)}
+                                                                      label={kb} variant="outlined"/>)
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
 
-                                 {/*{UserEdit.hasOperatorRole(edit_roles) &&*/}
-                                 {/*{hasOperatorRole(edit_roles) &&*/}
-                                 <div>
-                                     <div className="role-block">
-                                         <div className="role-label">operator's knowledge bases</div>
-                                         <div className="role-area">
-                                             {
-                                                 kbs.map((kb, i) => {
-                                                     return (<Chip key={i} color="secondary"
-                                                                   onClick={() => removeKbFromUser(kb.kbId)}
-                                                                   label={getKbName(kb.kbId)} variant="outlined"/>)
-                                                 })
-                                             }
-                                         </div>
-                                     </div>
-                                     <div className="role-block">
-                                         <div className="role-label">operator available knowledge bases</div>
-                                         <div className="role-area">
-                                             {
-                                                 getAvailableKnowledgeBases().map((kb, i) => {
-                                                     return (<Chip key={i} color="primary"
-                                                                   onClick={() => addKbToUser(kb)}
-                                                                   label={kb} variant="outlined"/>)
-                                                 })
-                                             }
-                                         </div>
-                                     </div>
-                                 </div>
-                             </div>
-                         }
-
-
-                         {
-                             selectedTab === 'groups' &&
-                             <div className="tab-content">
-
-                                 {/*<GroupSelector*/}
-                                 {/*    group_list={this.props.all_groups}*/}
-                                 {/*    include_users={false}*/}
-                                 {/*    organisation_id={this.props.organisation_id}*/}
-                                 {/*    user_list={this.props.all_users}*/}
-                                 {/*    selected_group_list={edit_groups}*/}
-                                 {/*    onChange={(groups) => setGroups( groups)}*/}
-                                 {/*/>*/}
-
-                             </div>
-                         }
-
-                     </div>
+                        }
 
 
-        <div className="modal-footer">
-            <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
-            <button className="btn btn-primary btn-block" onClick={(e) => handleSave(e)}>Save</button>
+                        {
+                            selectedTab === 'groups' &&
+                            <div className="tab-content">
+                                <div>
+                                    <div className="role-block">
+                                        <div className="role-label">SimSage Groups</div>
+                                        <div className="role-area">
+                                            {
+                                                groups && groups.map((grp, i) => {
+                                                    return (
+
+                                                        <Chip key={i} color="secondary"
+                                                              onClick={() => removeGroupFromUser(grp)}
+                                                              label={grp.name} variant="outlined"/>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="role-block">
+                                        <div className="role-label">available SimSage groups</div>
+                                        <div className="role-area">
+                                            {
+                                                getAvailableGroups().map((grp, i) => {
+                                                    return (<Chip key={i} color="primary"
+                                                                  onClick={() => addGroupToUser(grp)}
+                                                                  label={grp.name}
+                                                                  variant="outlined"/>)
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+
+                    <div className="modal-footer">
+                        <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
+                        <button className="btn btn-primary btn-block" onClick={(e) => handleSave(e)}>Save</button>
+                    </div>
+
+                </div>
+            </div>
         </div>
-
-        </div>
-    </div>
-</div>
 
     )
 }

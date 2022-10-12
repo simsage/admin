@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
-import db_users from "../../notes/db.json";
 import axios from "axios";
 
 
@@ -16,7 +15,7 @@ const initialState = {
     show_user_form: false,
     edit_id: undefined,
     roles: ['admin', 'operator', 'dms', 'manager'],
-    // roles: [],
+    data_status: "load_now"
 }
 
 
@@ -88,27 +87,33 @@ const extraReducers = (builder) => {
     builder
         //Get Users
         .addCase(getUserList.pending, (state, action) => {
-            state.status = "loading"
+            state.status = "loading";
+            state.data_status = "loading";
         })
         .addCase(getUserList.fulfilled, (state, action) => {
             console.log("users/getUserList 111",action.payload)
             state.status = "fulfilled"
             state.user_list = action.payload
+            state.data_status = "loaded"
         })
         .addCase(getUserList.rejected, (state, action) => {
             state.status = "rejected"
+            state.data_status = "rejected"
         })
 
         //Update Users
         .addCase(updateUser.pending, (state, action) => {
             state.status = "Loading"
+            state.data_status = "loading"
         })
         .addCase(updateUser.fulfilled, (state, action) => {
             console.log("users/update ", action);
             state.status = "fulfilled";
+            state.data_status = "load_now"
         })
         .addCase(updateUser.rejected, (state, action) => {
             state.status = "rejected";
+            state.data_status = "rejected";
         })
 }
 
