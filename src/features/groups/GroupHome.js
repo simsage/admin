@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState, useEffect} from "react";
-import {getGroupList, showEditGroupForm, showGroupDeleteAsk} from "./groupSlice";
+import {getGroupList, showAddGroupForm, showEditGroupForm, showGroupDeleteAsk} from "./groupSlice";
 import {Pagination} from "../../common/pagination";
 import {hasRole} from "../../common/helpers";
 import GroupEdit from "./groupEdit";
@@ -59,6 +59,9 @@ export default function GroupHome(){
         console.log('Opening..', group.name)
         dispatch(showEditGroupForm({show:true, name:group.name}));
     }
+    function handleAddGroup() {
+        dispatch(showAddGroupForm(true));
+    }
 
     function deleteGroupAsk(group){
         dispatch(showGroupDeleteAsk({show:true, group:group}))
@@ -75,7 +78,7 @@ export default function GroupHome(){
                 </div>
 
                 <div className="form-group col ms-auto">
-                    <button className="btn btn-primary text-nowrap">
+                    <button className="btn btn-primary text-nowrap" onClick={() => handleAddGroup()}>
                         + Add Group
                     </button>
                 </div>

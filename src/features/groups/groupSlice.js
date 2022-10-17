@@ -110,6 +110,9 @@ const groupSlice = createSlice({
             state.show_group_form = action.payload.show
             state.edit_group = action.payload.name
         },
+        showAddGroupForm:(state, action) => {
+            state.show_group_form = action.payload;
+        },
         closeGroupForm:(state) => {
         state.show_group_form = false;
         state.edit_group = undefined;
@@ -128,4 +131,4 @@ const groupSlice = createSlice({
 
 
 export default groupSlice.reducer;
-export const { showEditGroupForm, closeGroupForm ,showGroupDeleteAsk , closeDeleteForm} = groupSlice.actions
+export const { showEditGroupForm, showAddGroupForm, closeGroupForm ,showGroupDeleteAsk , closeDeleteForm} = groupSlice.actions
