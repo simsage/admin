@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import axios from "axios";
-import {updateUser} from "../users/usersSlice";
 
 const initialState = {
     group_list: undefined,
@@ -50,6 +49,20 @@ export const updateGroup = createAsyncThunk(
             )
     }
 )
+
+export const deleteGroup = createAsyncThunk(
+    'group/delete',
+    async ({session_id, organisation_id, name}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/auth/group/${encodeURIComponent(organisation_id)}/${encodeURIComponent(name)}`;
+
+        return axios.delete( url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch( error => {return error})
+    }
+)
+
 const extraReducers = (builder) => {
     builder
         //GET GROUPS
@@ -75,6 +88,17 @@ const extraReducers = (builder) => {
         .addCase(updateGroup.rejected, (state, action) => {
             state.status = "rejected";
         })
+        //DELETE GROUPS
+        .addCase(deleteGroup.pending, (state, action) => {
+            state.status = "Loading"
+        })
+        .addCase(deleteGroup.fulfilled, (state, action) => {
+            console.log("group/update ", action);
+            state.status = "fulfilled";
+        })
+        .addCase(deleteGroup.rejected, (state, action) => {
+            state.status = "rejected";
+        })
 }
 
 
@@ -90,10 +114,18 @@ const groupSlice = createSlice({
         state.show_group_form = false;
         state.edit_group = undefined;
         },
+        showGroupDeleteAsk:(state, action) => {
+            state.show_delete_form = action.payload.show;
+            state.edit_group = action.payload.group
+        },
+        closeDeleteForm:(state, action) => {
+            state.show_delete_form = false;
+            state.edit_group = undefined
+        }
     },
     extraReducers
 });
 
 
 export default groupSlice.reducer;
-export const { showEditGroupForm, closeGroupForm } = groupSlice.actions
+export const { showEditGroupForm, closeGroupForm ,showGroupDeleteAsk , closeDeleteForm} = groupSlice.actions

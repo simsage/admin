@@ -64,7 +64,18 @@ export function UserEdit(props){
 
 
     function handleClose(e){
+        defaultValues()
         dispatch(closeUserForm())
+    }
+
+    function defaultValues() {
+        setEmail('')
+        setFirstName('')
+        setLastName('')
+        setRoles([])
+        setGroups([])
+        setKBs([])
+        setShowKBs(false)
     }
 
     //Valid email check --##Need to add in validation here.
@@ -140,10 +151,11 @@ export function UserEdit(props){
     }
 
     function addRoleToUser(roleToAdd){
-        setRoles([...roles , {
+        setRoles([ ...(roles || []), {
             organisation_id: organisation_id,
             role: roleToAdd
         }])
+
         if (roleToAdd === "operator") setShowKBs(true);
     };
 
@@ -178,7 +190,7 @@ export function UserEdit(props){
         const kbObj = available_KBs.filter( k => {
             return k.name == kb;
         })
-        setKBs([...kbs, {
+        setKBs([...(kbs || []), {
             userId: user_id,
             organisationId: organisation_id,
             kbId: kbObj[0].kbId
@@ -203,7 +215,7 @@ export function UserEdit(props){
     }
 
     function addGroupToUser(groupToAdd){
-        setGroups([...groups , groupToAdd])
+        setGroups([...(groups || []) , groupToAdd])
     };
 
     function removeGroupFromUser(groupToRemove){

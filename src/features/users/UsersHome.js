@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
-import {getUserList, showAddUserForm, showEditUserForm} from "./usersSlice";
+import {getUserList, showAddUserForm, showDeleteUserAsk, showEditUserForm} from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import {formatRoles, hasRole} from "../../common/helpers";
 import Api from '../../common/api'
 import {getGroupList} from "../groups/groupSlice";
+import UserDeleteAsk from "./UserDeleteAsk";
 
 export function UsersHome(){
 
@@ -21,7 +22,6 @@ export function UsersHome(){
 
 
     const user = useSelector((state) => state.authReducer.user)
-    const show_user_form = useSelector((state) => state.authReducer.show_user_form)
     const user_list = useSelector((state) => state.usersReducer.user_list)
     const user_list_status = useSelector((state) => state.usersReducer.status)
     const session = useSelector((state)=>state.authReducer.session)
@@ -41,12 +41,12 @@ export function UsersHome(){
             dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:null}))
         }
     },[load_data === "load_now"])
-    console.log("users ",user_list)
 
     function handleSearchTextKeydown(e) {
         if (e.key === "Enter"  && selected_organisation_id) {
             // console.log(session, selected_organisation_id, searchFilter);
             dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:searchFilter=='' ? null : searchFilter}));
+            setSearchFilter('');
         }
     }
 
@@ -65,11 +65,16 @@ export function UsersHome(){
         user_id: u.id}));
     }
 
+    function deleteUserAsk(u){
+        console.log('deleting', u)
+       dispatch(showDeleteUserAsk({show:true, user_id:u.id}))
+    }
+
 
     // is this user entitle to edit the user passed in?
     function canEdit(user, isAdmin, isManager) {
         // admin can edit anyone, always
-        console.log((isAdmin)?"Admin":"Not Admin")
+        //console.log((isAdmin)?"Admin":"Not Admin")
         if (isAdmin) return true;
         // a non admin user can never edit an administrator
         const userIsAdmin = hasRole(user, ['admin']);
@@ -79,7 +84,6 @@ export function UsersHome(){
     }
     // is this user entitle to edit the user passed in?
     function canDelete(user, signedInUser, isAdmin, isManager) {
-        console.log()
         // one cannot delete the signed-in user
         if (user.email === signedInUser.email) return false;
         // admin can edit anyone, always
@@ -177,10 +181,9 @@ export function UsersHome(){
                         getUsers().map((user) => {
                             //user does not have chosen role then skip.
                             if(!filterRoles(user.roles, userFilter)){return null}
-                            //Todo:: implement canEdit canDelete
                             const editYes = canEdit(user, isAdmin, isManager);
                             // const editYes = true;
-                            const deleteYes = false; //canDelete(user, session.user, isAdmin, isManager);
+                            const deleteYes = canDelete(user, session, isAdmin, isManager);
 
                             return <tr key={user.id} >
 
@@ -195,7 +198,7 @@ export function UsersHome(){
                                 </td>
                                 <td className="pt-2 px-4 pb-0">
                                     <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit</button>
-                                    <button className={"btn text-danger btn-sm"}>Delete {deleteYes}</button>
+                                    <button className={(deleteYes)? "btn text-danger btn-sm" : "btn text-danger btn-sm disabled"} onClick={ () => deleteUserAsk(user)}>Delete</button>
                                 </td>
                             </tr>
                         })
@@ -216,91 +219,9 @@ export function UsersHome(){
                         onChangeRowsPerPage={(rows) => setPageSize(rows)}
                     />
                     }
-
-
-                    {/*<tbody>*/}
-                    {/*{*/}
-                    {/*    this.getUsers(isAdmin).map((user) => {*/}
-                    {/*        const canEdit = Home.canEdit(user, isAdmin, isManager);*/}
-                    {/*        const canDelete = Home.canDelete(user, this.props.user, isAdmin, isManager);*/}
-                    {/*        return (*/}
-                    {/*            <tr key={user.id}>*/}
-                    {/*                <td>*/}
-                    {/*                    <div className="label">{user.email}</div>*/}
-                    {/*                </td>*/}
-                    {/*                <td>*/}
-                    {/*                    <div className="label">{user.firstName}</div>*/}
-                    {/*                </td>*/}
-                    {/*                <td>*/}
-                    {/*                    <div className="label">{user.surname}</div>*/}
-                    {/*                </td>*/}
-                    {/*                <td>*/}
-                    {/*                    <div className="role-label">{UserManager.formatRoles(this.props.selected_organisation_id, user.roles)}</div>*/}
-                    {/*                </td>*/}
-                    {/*                <td>*/}
-                    {/*                    { !canEdit &&*/}
-                    {/*                    <div className="disabled-link-button" title="cannot edit this user">*/}
-                    {/*                        <img src="../images/edit.svg" className="dl-image-size-disabled"*/}
-                    {/*                             title="cannot edit this user" alt="cannot edit this user"/>*/}
-                    {/*                    </div>*/}
-                    {/*                    }*/}
-                    {/*                    { canEdit &&*/}
-                    {/*                    <div className="link-button" title="Edit this user"*/}
-                    {/*                         onClick={() => this.editUser(user)}>*/}
-                    {/*                        <img src="../images/edit.svg" className="dl-image-size"*/}
-                    {/*                             title="edit user" alt="edit"/>*/}
-                    {/*                    </div>*/}
-                    {/*                    }*/}
-                    {/*                    {*/}
-                    {/*                        !canDelete &&*/}
-                    {/*                        <div className="disabled-link-button" title="cannot remove this user">*/}
-                    {/*                            <img src="../images/delete.svg" className="dl-image-size-disabled"*/}
-                    {/*                                 title="cannot remove this user" alt="cannot remove this user"/>*/}
-                    {/*                        </div>*/}
-                    {/*                    }*/}
-                    {/*                    {*/}
-                    {/*                        canDelete &&*/}
-                    {/*                        <div className="link-button" title="Remove this user"*/}
-                    {/*                             onClick={() => this.deleteUserAsk(user, isAdmin)}>*/}
-                    {/*                            <img src="../images/delete.svg" className="dl-image-size"*/}
-                    {/*                                 title={isAdmin ? "remove user" : "remove user roles"} alt="remove"/>*/}
-                    {/*                        </div>*/}
-                    {/*                    }*/}
-                    {/*                </td>*/}
-                    {/*            </tr>*/}
-                    {/*        )*/}
-                    {/*    })*/}
-                    {/*}*/}
-                    {/*<tr>*/}
-                    {/*    <td />*/}
-                    {/*    <td />*/}
-                    {/*    <td />*/}
-                    {/*    <td />*/}
-                    {/*    <td>*/}
-                    {/*        {this.props.selected_organisation_id.length > 0 && (isAdmin || isManager) &&*/}
-                    {/*        <div className="image-button" onClick={() => this.addNewUser()}>*/}
-                    {/*            <img className="add-image" src="../images/add.svg" title="add new user" alt="add new user"/>*/}
-                    {/*        </div>*/}
-                    {/*        }*/}
-                    {/*    </td>*/}
-                    {/*</tr>*/}
-                    {/*<tr>*/}
-                    {/*    <td colSpan={5}>*/}
-                    {/*        <Pagination*/}
-                    {/*            rowsPerPageOptions={[5, 10, 25]}*/}
-                    {/*            component="div"*/}
-                    {/*            count={this.numUsers(this.props.selected_organisation_id, isAdmin)}*/}
-                    {/*            rowsPerPage={this.props.user_page_size}*/}
-                    {/*            page={this.props.user_page}*/}
-                    {/*            onChangePage={(page) => this.changePage(page)}*/}
-                    {/*            onChangeRowsPerPage={(rows) => this.changePageSize(rows)}*/}
-                    {/*        />*/}
-                    {/*    </td>*/}
-                    {/*</tr>*/}
-                    {/*</tbody>*/}
-
             </div>
             <UserEdit user={selectedUser} setSelectedUser={setSelectedUser}/>
+            <UserDeleteAsk />
         </div>
     )
 }

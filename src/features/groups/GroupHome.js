@@ -1,9 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState, useEffect} from "react";
-import {getGroupList, showEditGroupForm } from "./groupSlice";
+import {getGroupList, showEditGroupForm, showGroupDeleteAsk} from "./groupSlice";
 import {Pagination} from "../../common/pagination";
 import {hasRole} from "../../common/helpers";
 import GroupEdit from "./groupEdit";
+import GroupDeleteAsk from "./GroupDeleteAsk";
 
 
 
@@ -36,6 +37,7 @@ export default function GroupHome(){
 
     function getGroups(access) {
         console.log("HERE TO SEE ACCESS:", access);
+
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
@@ -56,6 +58,10 @@ export default function GroupHome(){
     function handleEditGroup(group) {
         console.log('Opening..', group.name)
         dispatch(showEditGroupForm({show:true, name:group.name}));
+    }
+
+    function deleteGroupAsk(group){
+        dispatch(showGroupDeleteAsk({show:true, group:group}))
     }
 
     return(
@@ -94,7 +100,7 @@ export default function GroupHome(){
                             const editYes = true;
                             //const deleteYes = canDelete(group, session.user, isAdmin, isManager);
                             const deleteYes = false;
-                            return <tr key={group.id} >
+                            return <tr key={group.name} >
                                 <td className=""> {group.name}</td>
                                 <td>
                                     <button
@@ -102,7 +108,7 @@ export default function GroupHome(){
                                     onClick={() => handleEditGroup(group)}
                                     >Edit icon</button>
                                 </td>
-                                <td><button className={(deleteYes)? "btn btn-outline-danger" :"btn btn-secondary disabled" }>Delete icon </button></td>
+                                <td><button className={(deleteYes)? "btn btn-outline-danger" :"btn btn-secondary" } onClick={() => deleteGroupAsk(group)}>Delete icon </button></td>
                             </tr>
                         })
                     }
@@ -127,6 +133,7 @@ export default function GroupHome(){
 
             </div>
                 <GroupEdit/>
+                <GroupDeleteAsk/>
         </div>
     )
 }

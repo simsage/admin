@@ -13,6 +13,7 @@ const initialState = {
     status: undefined,
     error: undefined,
     show_user_form: false,
+    show_delete_form: false,
     edit_id: undefined,
     roles: ['admin', 'operator', 'dms', 'manager'],
     data_status: "load_now"
@@ -83,6 +84,20 @@ export const updateUser = createAsyncThunk(
             )
     }
 )
+
+export const deleteUser = createAsyncThunk (
+    'users/delete',
+    async ({session_id,user_id, organisation_id}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/auth/organisation/user/${encodeURIComponent(user_id)}/${encodeURIComponent(organisation_id)}`;
+
+        return axios.delete( url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch ((error) => {return error})
+    }
+)
 const extraReducers = (builder) => {
     builder
         //Get Users
@@ -115,6 +130,21 @@ const extraReducers = (builder) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
+
+        //Delete User
+        .addCase(deleteUser.pending, (state, action) => {
+            state.status = "Loading"
+            state.data_status = "loading"
+        })
+        .addCase(deleteUser.fulfilled, (state, action) => {
+            console.log("users/update ", action);
+            state.status = "fulfilled";
+            state.data_status = "load_now"
+        })
+        .addCase(deleteUser.rejected, (state, action) => {
+            state.status = "rejected";
+            state.data_status = "rejected";
+        })
 }
 
 
@@ -133,10 +163,19 @@ const usersSlice = createSlice({
             state.show_user_form = false;
             state.edit_id = undefined;
         },
+        showDeleteUserAsk:(state, action) => {
+            state.show_delete_form = action.payload.show;
+            state.edit_id = action.payload.user_id
+        },
+        closeDeleteForm:(state, action) => {
+            state.show_delete_form = false;
+            state.edit_id = undefined;
+        }
+
         },
     extraReducers
 });
 
 
-export const { showAddUserForm, showEditUserForm, closeUserForm} = usersSlice.actions
+export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm} = usersSlice.actions
 export default usersSlice.reducer;
