@@ -2,7 +2,7 @@ import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux";
-import {closeGroupForm, updateGroup} from "./groupSlice";
+import {closeGroupForm, getGroupList, updateGroup} from "./groupSlice";
 
 
 export default function GroupEdit(){
@@ -68,6 +68,7 @@ export default function GroupEdit(){
         console.log('Saving...', data);
         dispatch(updateGroup({session_id, data}));
         dispatch(closeGroupForm());
+        dispatch(getGroupList({session_id:session.id, organization_id: organisation_id}))
     }
 
 

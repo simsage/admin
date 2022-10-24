@@ -1,5 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {closeDeleteForm, deleteAllMindItems, deleteMindItem} from "./botSlice";
+import AlertBox from "../../common/AlertBox";
 
 
 export default function BotDeleteAsk(){
@@ -31,33 +32,14 @@ export default function BotDeleteAsk(){
         }
     }
 
-
     if (!show_delete_form)
         return (<div />);
-    const message = memory && memory.id ? ` bot item: ${memory.id}` : ` all of the bot items`;
-    return(
-        <div>
-            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
-                <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">delete {message}?</h5>
-                            <button onClick={ handleClose } type="button" className="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <div className="control-row">
-                                <span className="label-wide">Are you sure you wish to delete {message}?</span>
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button onClick={ handleClose } type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button onClick={ handleDelete } type="button" className="btn btn-primary">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    const object = memory && memory.id ? ` bot item: ${memory.id}` : ` all of the bot items`;
+    const title = `delete ${object}`
+    const message = `Are you sure you wish to delete ${object}`;
+
+    return(
+        <AlertBox title={title} message ={message} handleClose={handleClose} handleOk={handleDelete}/>
     );
 }

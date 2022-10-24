@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeDeleteForm, deleteGroup} from "./groupSlice";
+import {closeDeleteForm, deleteGroup, getGroupList} from "./groupSlice";
 
 
 export default function GroupDeleteAsk(){
@@ -25,6 +25,7 @@ export default function GroupDeleteAsk(){
     const handleDelete = () => {
         dispatch(deleteGroup({session_id: session_id, organisation_id:organisation_id, name: group.name}))
         dispatch(closeDeleteForm());
+        dispatch(getGroupList({session_id:session.id, organization_id:organisation_id}))
     }
 
 

@@ -16,29 +16,27 @@ export function BotEdit(){
     const memory = useSelector( (state) => state.botReducer.edit);
 
     //Memory details
-    const [q1, setQ1] = useState('');
-    const [q2, setQ2] = useState('');
-    const [q3, setQ3] = useState('');
-    const [q4, setQ4] = useState('');
-    const [q5, setQ5] = useState('');
+    const [questions, setQuestions] = useState([]);
+    const [newQuestion, setNewQuestion] = useState('');
     const [answer, setAnswer] = useState('');
     const [links, setLinks] = useState([]);
+    const [newLink, setNewLink] = useState('');
     const [created, setCreated] = useState('');
-    const [id, setID] = useState('');
-    const [imageList, setImageList] = useState('');
+    const [id, setID] = useState(' ');
+    const [imageList, setImageList] = useState([]);
     const [mid, setMId] = useState('');
     const [soundList, setSoundList] = useState('');
     const [videoList, setVideoList] = useState('');
 
-
-
     // Grab memory details if editing
     let selectedMemory = {}
     useEffect(()=> {
+        console.log('running......')
         if (memory && selected_memories) {
             let temp_obj = selected_memories.filter((o) => {
                 return o.id === memory.id
             })
+            console.log('here',temp_obj)
             if (temp_obj.length > 0) {
                 selectedMemory = (temp_obj[0])
                 console.log('selectedMemory!', selectedMemory)
@@ -47,13 +45,8 @@ export function BotEdit(){
         }
         //Populate form if necessary
         if(selectedMemory){
-            if(selectedMemory.questionList) {
-                setQ1(selectedMemory.questionList[0] ? selectedMemory.questionList[0] : '')
-                setQ2(selectedMemory.questionList[1] ? selectedMemory.questionList[1] : '')
-                setQ3(selectedMemory.questionList[2] ? selectedMemory.questionList[2] : '')
-                setQ4(selectedMemory.questionList[3] ? selectedMemory.questionList[3] : '')
-                setQ5(selectedMemory.questionList[4] ? selectedMemory.questionList[4] : '')
-            }
+            console.log('selected memory',selectedMemory)
+            setQuestions(selectedMemory.questionList)
             setAnswer(selectedMemory.information)
             setLinks(selectedMemory.urlList)
             setCreated(selectedMemory.created)
@@ -66,11 +59,7 @@ export function BotEdit(){
     }, [show_memory_form])
 
     function resetData () {
-        setQ1('')
-        setQ2('')
-        setQ3('')
-        setQ4( '')
-        setQ5('')
+        setQuestions([]);
         setAnswer('')
         setLinks([])
         setCreated('')
@@ -89,24 +78,55 @@ export function BotEdit(){
 
 
     const handleSave = () => {
-        let questions = [q1, q2, q3, q4, q5]
         //begin updating user
         const session_id = session.id;
         const data = {
-            "created": created,
-            "id": id,
-            "imageList": imageList,
-            "information": answer,
-            "mid": mid,
-            "organisationId": organisation_id,
-            "questionList": questions.filter( q => q.length > 0),
-            "soundList": soundList,
-            "urlList": links,
-            "videoList": videoList
+            id : id ? id : '' ,
+            questionList : questions ? questions : [],
+            urlList: links ? links : [],
+            information:answer ? answer : '',
+            imageList : imageList ? imageList : []
         }
-        console.log('Saving...', data);
+
+        console.log('Saving...', data,organisation_id,knowledge_base_id);
         dispatch(updateMindItem({session_id,organisation_id, knowledge_base_id, data}));
         dispatch(closeMemoryForm());
+    }
+
+    const updateLink = index => e => {
+        let newArr = [...links];
+        newArr[index] = e.target.value;
+        console.log('links', newArr)
+        setLinks(newArr);
+    }
+
+    const updateQuestion = index => e => {
+        let newArr = [...questions];
+        newArr[index] = e.target.value;
+        console.log('questions', newArr)
+        setQuestions(newArr);
+    }
+
+    const addNewLink = e => {
+        if(e.key === 'Enter') {
+            e.preventDefault()
+            let newArr = [...(links || [])];
+            setNewLink(e.target.value)
+            newArr.push(newLink)
+            setLinks(newArr);
+            setNewLink('')
+        }
+    }
+
+    const addNewQuestion = e => {
+        if(e.key === 'Enter') {
+            e.preventDefault()
+            let newArr = [...(questions || [])];
+            setNewQuestion(e.target.value)
+            newArr.push(newQuestion)
+            setQuestions(newArr);
+            setNewQuestion('')
+        }
     }
 
 
@@ -120,105 +140,92 @@ export function BotEdit(){
                     <div className="modal-body">
                             <div className="tab-content">
 
+                                {
+                                    questions && questions.map( (question,i) => {
+                                        console.log(question)
+                                        if (question === '') {return;}
+                                        return (
+                                            <div className="control-row" key={i}>
+                                                <span className="label-2">Question </span>
+                                                <span className="text">
+                                                    <form>
+                                                        <input type="text" className="form-control"
+                                                               autoComplete="false"
+                                                               placeholder="Question"
+                                                               value={questions[i]}
+                                                               onChange={updateQuestion(i)}
+                                                        />
+                                                    </form>
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                }
                                 <div className="control-row">
-                                    <span className="label-2">Q1</span>
+                                    <span className="label-2">Add new question </span>
                                     <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="Question 1"
-                                                       value={q1}
-                                                       onChange={(event) => setQ1(event.target.value)}
-                                                />
-                                                </form>
-                                        </span>
+                                        <form>
+                                            <input type="text"
+                                                   className="form-control"
+                                                   autoComplete="false"
+                                                   placeholder="Type and press enter to submit"
+                                                   value={newQuestion}
+                                                   onChange={(e) => {setNewQuestion(e.target.value)}}
+                                                   onKeyDown={(e) => addNewQuestion(e)}
+                                            />
+                                        </form>
+                                    </span>
                                 </div>
-                                <div className="control-row">
-                                    <span className="label-2">Q2</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="Question 2"
-                                                       value={q2}
-                                                       onChange={(event) => setQ2(event.target.value)}
-                                                />
-                                                </form>
-                                        </span>
-                                </div>
-                                <div className="control-row">
-                                    <span className="label-2">Q3</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="Question 3"
-                                                       value={q3}
-                                                       onChange={(event) => setQ3(event.target.value)}
-                                                />
-                                                </form>
-                                        </span>
-                                </div>
-                                <div className="control-row">
-                                    <span className="label-2">Q4</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="Question 4"
-                                                       value={q4}
-                                                       onChange={(event) => setQ4(event.target.value)}
-                                                />
-                                                </form>
-                                        </span>
-                                </div>
-                                <div className="control-row">
-                                    <span className="label-2">Q5</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="Question 5"
-                                                       value={q5}
-                                                       onChange={(event) => setQ5(event.target.value)}
-                                                />
-                                                </form>
-                                        </span>
-                                </div>
-
+                            </div>
                                 <div className="control-row">
                                     <span className="label-2">Answer</span>
                                     <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
+                                        <form>
+                                            <input type="text" className="form-control"
                                                        autoComplete="false"
                                                        placeholder="Answer"
                                                        value={answer}
                                                        onChange={(e) => setAnswer(e.target.value)}
-                                                />
-                                            </form>
-                                        </span>
+                                            />
+                                        </form>
+                                    </span>
                                 </div>
-
+                                {
+                                    links && links.map( (link,i) => {
+                                        console.log(link)
+                                        if (link === '') {return;}
+                                        return (
+                                            <div className="control-row" key={i}>
+                                                <span className="label-2">Link </span>
+                                                <span className="text">
+                                                    <form>
+                                                        <input type="text" className="form-control"
+                                                               autoComplete="false"
+                                                               placeholder="Links"
+                                                               value={links[i]}
+                                                               onChange={updateLink(i)}
+                                                        />
+                                                    </form>
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                }
                                 <div className="control-row">
-                                    <span className="label-2">links (one per line)</span>
+                                    <span className="label-2">Add new link </span>
                                     <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="Links"
-                                                       value={links}
-                                                       onChange={(event) => setLinks(event.target.value)}
-                                                />
-                                            </form>
-                                        </span>
+                                        <form>
+                                            <input type="text"
+                                                   className="form-control"
+                                                   autoComplete="false"
+                                                   placeholder="Type and press enter to submit"
+                                                   value={newLink}
+                                                   onChange={(e) => {setNewLink(e.target.value)}}
+                                                   onKeyDown={(e) => addNewLink(e)}
+                                            />
+                                        </form>
+                                    </span>
                                 </div>
-                            </div>
                     </div>
 
 

@@ -14,6 +14,7 @@ export default function GroupHome(){
     const [page_size, setPageSize] = useState(useSelector((state) => state.groupReducer.page_size))
     const theme = null;
     const dispatch = useDispatch();
+    const load_data = useSelector((state) => state.groupReducer.data_status)
 
 
     const user = useSelector((state) => state.authReducer.user)
@@ -33,7 +34,8 @@ export default function GroupHome(){
             console.log("selected_organisation",selected_organisation_id)
             dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
         }
-    },[])
+        console.log('use effect ran',load_data);
+    },[load_data === "load_now"])
 
     function getGroups(access) {
         console.log("HERE TO SEE ACCESS:", access);
@@ -74,6 +76,7 @@ export default function GroupHome(){
                     <div className="form-group me-2">
                         <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme}
                         />
+                        <button className="btn btn-primary text-nowrap" onClick={() => dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))}>refresh</button>
                     </div>
                 </div>
 

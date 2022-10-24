@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeDeleteForm, deleteUser} from "./usersSlice";
+import {closeDeleteForm, deleteUser, getUserList} from "./usersSlice";
 
 
 export default function UserDeleteAsk(){
@@ -28,6 +28,7 @@ export default function UserDeleteAsk(){
     const handleDelete = () => {
         dispatch(deleteUser({session_id:session_id, user_id: user_id, organisation_id: organisation_id}))
         dispatch(closeDeleteForm());
+        dispatch(getUserList({session_id:session.id, organization_id:organisation_id,filter:null}))
     }
 
 

@@ -10,6 +10,7 @@ const initialState = {
     error: undefined,
     show_group_form: false,
     edit_group: undefined,
+    data_status: "load_now"
 }
 
 export const getGroupList = createAsyncThunk(
@@ -45,7 +46,8 @@ export const updateGroup = createAsyncThunk(
                 console.log("updateGroup data", response.data);
                 return response.data;
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error}
             )
     }
 )
@@ -59,7 +61,9 @@ export const deleteGroup = createAsyncThunk(
         return axios.delete( url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch( error => {return error})
+            }).catch( error => {
+                console.log('error...', error.response.data.error);
+                return error})
     }
 )
 
@@ -70,7 +74,7 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(getGroupList.fulfilled, (state, action) => {
-            console.log("groups/getGroupList 111",action.payload)
+            console.log("groups/getGroupList",action.payload)
             state.status = "fulfilled"
             state.group_list = action.payload
         })
@@ -79,25 +83,31 @@ const extraReducers = (builder) => {
         })
     //UPDATE GROUPS
         .addCase(updateGroup.pending, (state, action) => {
-            state.status = "Loading"
+            state.status = "Loading";
+            state.data_status = "loading";
         })
         .addCase(updateGroup.fulfilled, (state, action) => {
             console.log("group/update ", action);
             state.status = "fulfilled";
+            state.data_status = "load_now";
         })
         .addCase(updateGroup.rejected, (state, action) => {
             state.status = "rejected";
+            state.data_status = "rejected";
         })
         //DELETE GROUPS
         .addCase(deleteGroup.pending, (state, action) => {
-            state.status = "Loading"
+            state.status = "Loading";
+            state.data_status = "loading";
         })
         .addCase(deleteGroup.fulfilled, (state, action) => {
             console.log("group/update ", action);
             state.status = "fulfilled";
+            state.data_status = "load_now";
         })
         .addCase(deleteGroup.rejected, (state, action) => {
             state.status = "rejected";
+            state.data_status = "rejected";
         })
 }
 

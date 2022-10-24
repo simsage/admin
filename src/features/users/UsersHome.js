@@ -45,7 +45,7 @@ export function UsersHome(){
     function handleSearchTextKeydown(e) {
         if (e.key === "Enter"  && selected_organisation_id) {
             // console.log(session, selected_organisation_id, searchFilter);
-            dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:searchFilter=='' ? null : searchFilter}));
+            dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:searchFilter === '' ? null : searchFilter}));
             setSearchFilter('');
         }
     }
@@ -61,8 +61,7 @@ export function UsersHome(){
 
     function handleEditUser(u) {
         dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
-        dispatch(showEditUserForm({show:true,
-        user_id: u.id}));
+        dispatch(showEditUserForm({show:true, user_id: u.id}));
     }
 
     function deleteUserAsk(u){
@@ -220,7 +219,7 @@ export function UsersHome(){
                     />
                     }
             </div>
-            <UserEdit user={selectedUser} setSelectedUser={setSelectedUser}/>
+            <UserEdit user={selectedUser} setSelectedUser={setSelectedUser} filter={searchFilter}/>
             <UserDeleteAsk />
         </div>
     )

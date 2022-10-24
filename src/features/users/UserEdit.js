@@ -1,13 +1,15 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeUserForm, updateUser} from "./usersSlice";
+import {closeUserForm, getUserList, updateUser} from "./usersSlice";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import {hasRole} from "../../common/helpers";
 import {getGroupList} from "../groups/groupSlice";
 import {set} from "react-hook-form";
 
-export function UserEdit(props){
+export function UserEdit( {filter} ){
+
+
 
     const dispatch = useDispatch();
 
@@ -104,6 +106,7 @@ export function UserEdit(props){
         console.log('Saving...', data);
         dispatch(updateUser({session_id,organisation_id, data}));
         dispatch(closeUserForm());
+        dispatch(getUserList({session_id:session.id, organization_id:organisation_id,filter:filter === '' ? null : filter}))
     }
 
 
