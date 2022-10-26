@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {addDefaultSynsets, closeForm, deleteRecord} from "./synsetSlice";
+import {addDefaultSynsets, closeDefaultAskForm} from "./synsetSlice";
 
 
 export default function SynsetDefault(){
@@ -16,7 +16,7 @@ export default function SynsetDefault(){
 
     //handle form close or cancel
     const handleClose = () => {
-        dispatch(closeForm());
+        dispatch(closeDefaultAskForm());
     }
 
     const handAddDefault = () => {

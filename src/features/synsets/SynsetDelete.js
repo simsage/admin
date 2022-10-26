@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeForm, deleteRecord} from "./synsetSlice";
+import {closeDeleteForm, deleteRecord} from "./synsetSlice";
 
 
 export default function SynsetDelete(){
@@ -10,7 +10,7 @@ export default function SynsetDelete(){
     const show_delete_form = useSelector((state) => state.synsetReducer.show_delete_form)
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
-    const selected_synset = useSelector((state) => state.synsetReducer.selected_synset)
+    const selected_synset = useSelector((state) => state.synsetReducer.edit)
 
     const lemma = selected_synset?selected_synset.lemma:"not set";
 
@@ -18,7 +18,7 @@ export default function SynsetDelete(){
 
     //handle form close or cancel
     const handleClose = () => {
-        dispatch(closeForm());
+        dispatch(closeDeleteForm());
     }
 
     const handleDelete = () => {

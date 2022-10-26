@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeSynonymForm, updateSynonyms} from "./synonymSlice";
+import {closeSynonymForm, loadSynonyms, updateSynonyms} from "./synonymSlice";
 
 
 
@@ -21,7 +21,6 @@ export function SynonymEdit(props){
 
 
     // Grab synonym details if editing
-    let selectedSynonym = {}
     useEffect(()=> {
     if ( synonym ) {
         setSynonymList(synonym.words);

@@ -8,11 +8,12 @@ const initialState = {
     synset_page: 0,
     synset_list: [],
     status: false,
+    show_synset_form: false,
 
     //add edit data
     error: null,
     show_data_form: false,
-    selected_synset: null,
+    edit: null,
     data_status: 'load_now',//load_now,loading,loaded
 
     //delete
@@ -23,33 +24,98 @@ const initialState = {
 
 };
 
-const reducers = {
-    showAddForm:(state) => {
-        state.show_data_form = true
-    },
 
-    showEditForm:(state,action) => {
-        state.show_data_form = true
-        state.selected_synset = action.payload.selected_synset
-    },
+export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
+    async ({session_id, organisation_id, kb_id, page, filter, page_size}) => {
 
-    closeForm:(state) => {
-        state.show_data_form = false;
-        state.selected_synset = null;
-        state.show_delete_form = false;
-        state.show_add_default_form = false;
-    },
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/language/find-syn-sets';
 
-    showDeleteAskForm:(state, action) => {
-        state.show_delete_form = true;
-        state.selected_synset = action.payload.selected_synset;
-    },
+        if (url !== '/stats/stats/os') {
+            console.log('put ' + url);
+        }
 
-    showAddDefaultAskForm:(state, action) => {
-        state.show_add_default_form = true;
-    },
+        const data = {
+            "organisationId": organisation_id,
+            "kbId": kb_id,
+            "page": page ? page : 0,
+            "filter": filter ? filter : "",
+            "pageSize": page_size ? page_size : 10
+        };
 
-};
+        console.log("loadSynsets data",data)
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("load Synsets response data", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("loadSynsets error", error)
+                    return error
+
+                }
+            )
+    })
+
+
+///api/language/save-syn-set/{organisationId}/{kbId}
+export const addOrUpdate = createAsyncThunk(
+    "synsets/addOrUpdate",
+    async ({organisation_id, kb_id, session_id, data}) => {
+        console.log("synsets/addOrUpdate");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        console.log('PUT ' + url);
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("response",response.data)
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    })
+
+
+///api/language/delete-syn-set/{organisationId}/{kbId}/{lemma}
+export const deleteRecord = createAsyncThunk(
+    "synsets/deleteRecord",
+    async ({organisation_id, kb_id, session_id, lemma}) => {
+        console.log("synsets/deleteSynSet");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/language/delete-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(lemma);
+        console.log('PUT ' + url);
+
+        return axios.delete(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    })
+
+
+// /api/language/default-syn-sets/{organisationId}/{kbId}
+export const addDefaultSynsets = createAsyncThunk(
+    "synsets/addDefaultSynsets",
+    async ({organisation_id, kb_id, session_id, data}) => {
+        console.log("synsets/addDefaultSynsets");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/language/default-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        console.log('PUT ' + url);
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("response",response.data)
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    })
+
 
 const extraReducers = (builder) => {
     builder
@@ -113,104 +179,44 @@ const extraReducers = (builder) => {
 const synsetSlice = createSlice({
     name: "synsets",
     initialState,
-    reducers,
+    reducers : {
+        showAddSynSetForm:(state) => {
+            state.show_synset_form = true
+        },
+
+        showEditSynSetForm:(state,action) => {
+            state.show_synset_form = true
+            state.edit = action.payload.selected_synset
+        },
+
+        closeSynSetForm:(state) => {
+            state.show_synset_form = false;
+            state.edit = null;
+        },
+
+        showDeleteSynSetForm:(state, action) => {
+            state.show_delete_form = true;
+            state.edit = action.payload.selected_synset;
+        },
+
+        closeDeleteForm:(state) => {
+            state.show_delete_form = false;
+            state.edit = undefined;
+        },
+
+        showAddDefaultAskForm:(state, action) => {
+            state.show_add_default_form = true;
+        },
+
+        closeDefaultAskForm:(state) => {
+            state.show_add_default_form = false;
+        }
+
+    },
     extraReducers
 });
 
-//
-export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
-    async ({session_id, organisation_id, kb_id, page, filter, page_size}) => {
-
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/language/find-syn-sets';
-
-        if (url !== '/stats/stats/os') {
-            console.log('put ' + url);
-        }
-
-        const data = {
-            "organisationId": organisation_id,
-            "kbId": kb_id,
-            "page": page ? page : 0,
-            "filter": filter ? filter : "",
-            "pageSize": page_size ? page_size : 10
-        };
-
-        console.log("loadSynsets data",data)
-        return axios.put(url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                console.log("load Synsets response data", response.data)
-                return response.data
-            }).catch(
-                (error) => {
-                    console.log("loadSynsets error", error)
-                    return error
-
-                }
-            )
-    })
-
-
-///api/language/save-syn-set/{organisationId}/{kbId}
-export const addOrUpdate = createAsyncThunk(
-    "synsets/addOrUpdate",
-    async ({organisation_id, kb_id, session_id, data}) => {
-        console.log("synsets/addOrUpdate");
-
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-        console.log('PUT ' + url);
-
-        return axios.put(url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                console.log("response",response.data)
-                return response.data
-            }).catch(
-                (error) => {return error}
-            )
-})
-
-
-///api/language/delete-syn-set/{organisationId}/{kbId}/{lemma}
-export const deleteRecord = createAsyncThunk(
-    "synsets/deleteRecord",
-    async ({organisation_id, kb_id, session_id, lemma}) => {
-        console.log("synsets/deleteSynSet");
-
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/language/delete-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(lemma);
-        console.log('PUT ' + url);
-
-        return axios.delete(url, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch(
-                (error) => {return error}
-            )
-    })
-
-
-// /api/language/default-syn-sets/{organisationId}/{kbId}
-export const addDefaultSynsets = createAsyncThunk(
-    "synsets/addDefaultSynsets",
-    async ({organisation_id, kb_id, session_id, data}) => {
-        console.log("synsets/addDefaultSynsets");
-
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/language/default-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-        console.log('PUT ' + url);
-
-        return axios.put(url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                console.log("response",response.data)
-                return response.data
-            }).catch(
-                (error) => {return error}
-            )
-    })
-
-
-export const {showAddForm, showEditForm, closeForm, showDeleteAskForm, showAddDefaultAskForm} = synsetSlice.actions;
+export const {showAddSynSetForm, showEditSynSetForm, closeSynSetForm, showDeleteSynSetForm, closeDeleteForm, showAddDefaultAskForm, closeDefaultAskForm} = synsetSlice.actions;
 export default synsetSlice.reducer;
 
 
