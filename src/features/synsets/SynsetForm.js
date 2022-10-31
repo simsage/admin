@@ -29,7 +29,6 @@ export default function SynsetForm() {
     //Form Hook
     const {register, handleSubmit, watch, formState: {errors, dirtyFields}, reset, control} = useForm();
 
-    const [data,setData]=useState(null)
     const [wordCloudFields, setWordCloudFields]=useState(selected_synset?selected_synset.wordCloudCsvList:[])
 
 

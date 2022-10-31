@@ -20,21 +20,36 @@ const initialState = {
     show_data_form: false,
 
     //start_crawler warning
-    show_start_crawler_form: false
+    show_start_crawler_form: false,
+
+    //selected source tab
+    selected_source_tab: null,
+    //selected source type in form
+    selected_source_type: null,
 }
 
 const reducers = {
     showAddForm:(state) => {
         state.show_data_form = true
     },
+
     showEditForm:(state,action) => {
         state.show_data_form = true
         state.selected_source = action.payload.source
     },
+
     closeForm:(state) => {
         console.log("closeForm sourceSlice")
         state.show_data_form = false;
         state.selected_source = null;
+    },
+
+    setSelectedSourceTab:(state,action) => {
+        state.selected_source_tab = action.payload
+    },
+
+    setSelectedSourceType:(state,action) => {
+        state.selected_source_type = action.payload
     },
 }
 
@@ -129,5 +144,5 @@ const sourceSlice = createSlice({
     extraReducers
 });
 
-export const { showAddForm, showEditForm, closeForm  } = sourceSlice.actions
+export const { showAddForm, showEditForm, closeForm, setSelectedSourceTab, setSelectedSourceType  } = sourceSlice.actions
 export default sourceSlice.reducer;

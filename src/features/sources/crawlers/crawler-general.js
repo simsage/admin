@@ -182,31 +182,36 @@ export class CrawlerGeneral extends Component {
     }
     testCrawler() {
         const name = this.state.name;
-        if (this.props.testCrawler) {
-            this.props.testCrawler(this.state.sourceId, () => {
-                this.setState({
-                    message_callback: () => {
-                        this.setState({message_title: '', message: ''})
-                    },
-                    message_title: 'Crawler Test',
-                    message: 'Success!  crawler "' + name + '" can communicate with its intended end-point.'
-                });
-            }, (errStr) => {
-                console.error(errStr);
-                this.setError("Error Testing Crawler", errStr);
-            });
-        }
+        // if (this.props.testCrawler) {
+        //     this.props.testCrawler(this.state.sourceId, () => {
+        //         this.setState({
+        //             message_callback: () => {
+        //                 this.setState({message_title: '', message: ''})
+        //             },
+        //             message_title: 'Crawler Test',
+        //             message: 'Success!  crawler "' + name + '" can communicate with its intended end-point.'
+        //         });
+        //     }, (errStr) => {
+        //         console.error(errStr);
+        //         this.setError("Error Testing Crawler", errStr);
+        //     });
+        // }
     }
+
     canHaveEdgeDevice() {
         const crawlerType = this.state.crawlerType;
         return crawlerType !== 'exchange365' && crawlerType !== 'wordpress' &&
                crawlerType !== 'gdrive' && crawlerType !== 'onedrive' && crawlerType !== 'sharepoint365';
     }
+
+
     setProcessingLevelFromMark(value) {
         if (this.state.onSave) {
             this.state.onSave(this.construct_data({"processingLevel": value}));
         }
     }
+
+
     filteredEdgeDevices() {
         let list = [{"key": "none", "value": "n/a"}];
         if (this.props.edge_device_list) {
@@ -218,6 +223,9 @@ export class CrawlerGeneral extends Component {
         }
         return list;
     }
+
+
+
     render() {
         if (this.state.has_error) {
             return <h1>crawler-general.js: Something went wrong.</h1>;
@@ -278,6 +286,8 @@ export class CrawlerGeneral extends Component {
                     </div>
 
 
+
+
                     <div className="form-group">
                         <span className="left-column">
                             <input type="text" className="form-control"
@@ -287,6 +297,10 @@ export class CrawlerGeneral extends Component {
                                 onChange={(event) => {this.change_callback({name: event.target.value})}}
                             />
                         </span>
+
+
+
+
                         <span className="right-column">
                             <span className="label-right">files per second throttle</span>
                             <span className="number-textbox">

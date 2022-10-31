@@ -155,7 +155,6 @@ export default function KnowledgeBaseForm(props) {
                                     <div className="control-row">
                                         <span className="label-3">operator enabled?</span>
                                         <input type="checkbox" {...register('operatorEnabled')}  />
-
                                     </div>
 
 
