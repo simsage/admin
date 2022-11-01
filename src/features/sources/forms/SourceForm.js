@@ -12,7 +12,7 @@ export default function SourceForm(props) {
     const session = useSelector((state) => state.authReducer.session);
 
     const selected_source = useSelector((state) => state.sourceReducer.selected_source);
-    const selected_source_tab = useSelector((state) => state.sourceReducer.selected_source_tab)
+    // const selected_source_tab = useSelector((state) => state.sourceReducer.selected_source_tab)
     const selected_source_type = useSelector((state) => state.sourceReducer.selected_source_type)
 
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
@@ -34,6 +34,14 @@ export default function SourceForm(props) {
         {label: "ACLs", slug: "acls"},
         {label: "schedule", slug: "schedule"},
     ]
+
+    const [selected_source_tab, setSelectedSourceTab] = useState('general')
+
+    function changeNav(slug){
+        console.log(slug)
+        setSelectedSourceTab(slug);
+    }
+
 
     // marker for an external node
     const external_node_id = 1000000;
@@ -90,7 +98,7 @@ export default function SourceForm(props) {
 
 
                         <div className="modal-body">
-                            <SourceTabs source_tabs={source_tabs}/>
+                            <SourceTabs source_tabs={source_tabs} onClick={changeNav}/>
 
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 {selected_source_tab === 'general' &&

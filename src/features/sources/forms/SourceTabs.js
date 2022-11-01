@@ -8,16 +8,16 @@ export default function SourceTabs(props) {
     let is_active = false;
     const dispatch = useDispatch();
 
-    function changeNav(slug){
-        dispatch(setSelectedSourceTab(slug));
-    }
+    // function changeNav(slug){
+    //     dispatch(setSelectedSourceTab(slug));
+    // }
 
     return (
         <ul className="nav nav-tabs">
             {
                 props.source_tabs.map((item, index) => {
                     is_active = (selected_tab === item.slug) ? true : false;
-                    return (<li key={index} className="nav-item nav-cursor" onClick={()=>changeNav(item.slug)}>
+                    return (<li key={index} className="nav-item nav-cursor" onClick={()=>props.onClick(item.slug)}>
                         <div className={is_active?"nav-link active":"nav-link"}>{item.label}</div>
                     </li>)
                 })
