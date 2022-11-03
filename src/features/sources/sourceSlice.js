@@ -26,6 +26,7 @@ const initialState = {
     selected_source_tab: null,
     //selected source type in form
     selected_source_type: null,
+
 }
 
 const reducers = {
@@ -57,23 +58,28 @@ const extraReducers = (builder) => {
     builder
         .addCase(getSources.pending, (state, action) => {
             state.status = "loading"
+            state.data_status = 'loading'
         })
         .addCase(getSources.fulfilled, (state, action) => {
             state.status = "fulfilled"
             state.source_list = action.payload
+            state.data_status = 'loaded';
         })
         .addCase(getSources.rejected, (state, action) => {
             state.status = "rejected"
+            state.data_status = "rejected"
         })
 
         .addCase(updateSources.fulfilled, (state, action) => {
             console.log("updateSources fulfilled ",action)
             state.show_data_form = false;
             state.selected_source = null;
+            state.data_status = 'load_now';
         })
 
         .addCase(updateSources.rejected, (state, action) => {
             console.log("updateSources rejected ", action)
+            state.data_status = 'load_now';
         })
 }
 
@@ -97,7 +103,8 @@ export const getSources = createAsyncThunk(
     }
 );
 
-
+// https://uat.simsage.ai/api/crawler/crawler
+// POST
 export const updateSources = createAsyncThunk(
     'sources/updateSources',
     async ({session_id,data}) => {
@@ -108,7 +115,7 @@ export const updateSources = createAsyncThunk(
         const url = api_base + '/crawler/crawler/';
 
         if (url !== '/stats/stats/os') {
-            console.log('PUT ' + url);
+            console.log('POST ' + url);
         }
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {

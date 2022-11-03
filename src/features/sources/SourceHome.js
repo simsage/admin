@@ -25,6 +25,7 @@ export default function SourceHome(props){
     const source_list_status = useSelector((state) => state.sourceReducer.status);
 
     const show_form_source = useSelector((state) => state.sourceReducer.show_data_form);
+    const data_status = useSelector((state) => state.sourceReducer.data_status);
 
 
     const [page, setPage] = useState(0)
@@ -45,7 +46,7 @@ export default function SourceHome(props){
 
     useEffect(()=>{
             dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
-    },[selected_knowledge_base_id,session,props.tab])
+    },[selected_knowledge_base_id,session,props.tab,data_status=='load_now'])
 
 
     function getCrawlers() {
@@ -72,7 +73,7 @@ export default function SourceHome(props){
 
     function handleEditCrawler(source) {
         if (source) {
-            console.log("crawler",source)
+            console.log("handleEditCrawler",source)
             dispatch(showEditForm({source:source}));
         }
     }

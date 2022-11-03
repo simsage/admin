@@ -1,8 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 
 export default function GeneralForm(props) {
 
+    console.log("selected source in General Form", props.source)
     // a few defaults
     // marker for an external node
     const external_node_id = 1000000;
@@ -30,24 +31,27 @@ export default function GeneralForm(props) {
     ];
 
 
-
-    const selected_source = useSelector((state) => state.sourceReducer.selected_source);
-    const selected_source_tab = useSelector((state) => state.sourceReducer.selected_source_tab)
+    const selected_source = props.source;
     const selected_source_type = useSelector((state) => state.sourceReducer.selected_source_type)
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
 
+    console.log("selected source", selected_source)
 
     const [internal_crawler, setInternalCrawler] = useState();
 
 
+
     //methods
     function canHaveEdgeDevice() {
-        const crawlerType = selected_source_type;
-        return crawlerType !== 'exchange365' && crawlerType !== 'wordpress' &&
-            crawlerType !== 'gdrive' && crawlerType !== 'onedrive' && crawlerType !== 'sharepoint365';
+        const crawlerType = props.getValues("crawlerType");
+        return !['exchange365','wordpress', 'gdrive', 'onedrive', 'sharepoint365'].includes(crawlerType)
     }
 
+
+    // useEffect(() => {
+    //     canHaveEdgeDevice()
+    // },[props.getValues("crawlerType")])
 
     function filteredEdgeDevices() {
         let list = [{"key": "none", "value": "n/a"}];
@@ -81,6 +85,7 @@ export default function GeneralForm(props) {
     }
 
 
+    //Validation Data
 
 
     return (
@@ -185,7 +190,6 @@ export default function GeneralForm(props) {
                 </div>
             </div>
 
-
             <div className="my-lg-4">
                 <div className="form-group">
                     <div className="left-column"
@@ -196,8 +200,13 @@ export default function GeneralForm(props) {
 
                     <div className="right-column"
                          title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
-                        <input type="checkbox" {...props.register("allowAnonymous")}
-                               disabled={selected_source_type === 'web' || selected_source_type === 'rss'}/>
+
+                        <input
+                            type="checkbox"
+                            {...props.register(
+                                "allowAnonymous",
+                                {disabled: ['web','rss','googlesite'].includes(props.getValues("crawlerType"))}
+                            )} />
                         <span className="label-3">allow anonymous access to these files?</span>
                     </div>
                 </div>
@@ -217,6 +226,18 @@ export default function GeneralForm(props) {
                         <span className="label-3">use default built-in relationships?</span>
                     </div>
                 </div>
+
+                <div className="form-group">
+                    <div className="left-column"
+                         title="If checked, SimSage will auto-optimize the indexes after this source finishes crawling.">
+                        <input type="checkbox" {...props.register("autoOptimize")} />
+                        <span className="label-3">Auto-optimize this source after it finishes crawling?</span>
+                    </div>
+
+                    <div className="right-column" title="">
+                    </div>
+                </div>
+
             </div>
 
 
@@ -260,16 +281,14 @@ export default function GeneralForm(props) {
                                 Edge device
                             </span>
                         <span className="select-box-after-label">
-                                <select className="form-select" {...props.register("edgeDeviceId", {required: true})} >
-                                        {/* onChange={(event) => this.change_callback({edgeDeviceId: event.target.value})}*/}
-                                    {/* disabled={("" + this.state.sourceId) !== "0"}*/}
-                                    {/* defaultValue={this.state.edgeDeviceId !== '' ? this.state.edgeDeviceId : 'none'}*/}
-
-                                    {
-                                        filteredEdgeDevices().map((value) => {
+                                <select className="form-select" {...props.register("edgeDeviceId", {
+                                    required: true,
+                                    disabled: props.getValues("sourceId") !== 0
+                                })} >
+                                    {filteredEdgeDevices().map((value) => {
                                             return (<option key={value.key} value={value.key}>{value.value}</option>)
-                                        })
-                                    }
+                                        }
+                                    )}
                                 </select>
                             </span>
                     </div>
@@ -286,6 +305,7 @@ export default function GeneralForm(props) {
                         </button>
                     </div>
                 }
+
 
 
             </div>
