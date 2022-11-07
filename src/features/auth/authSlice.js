@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Comms from "../../common/comms";
-import {useMsal} from "@azure/msal-react";
-import axios from "axios";
-import {getOrganisationList} from "../organisations/organisationSlice";
-import {useSelector} from "react-redux";
-import {useState} from "react";
+// import {useMsal} from "@azure/msal-react";
+// import axios from "axios";
+// import {getOrganisationList} from "../organisations/organisationSlice";
+// import {useSelector} from "react-redux";
+// import {useState} from "react";
 
 
 const initialState = {

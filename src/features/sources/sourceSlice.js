@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import db from "../../notes/db.json"
 import axios from "axios";
-import {updateOrganisation} from "../organisations/organisationSlice";
+// import {updateOrganisation} from "../organisations/organisationSlice";
 
 const initialState = {
     source_list: [],
@@ -11,6 +11,7 @@ const initialState = {
     source_page_size: 10,
 
     selected_source: null,
+    selected_source_id: null,
     data_status: 'load_now',//load_now,loading,loaded
 
     status: null,
@@ -37,6 +38,7 @@ const reducers = {
     showEditForm:(state,action) => {
         state.show_data_form = true
         state.selected_source = action.payload.source
+        state.selected_source_id = action.payload.source.sourceId
     },
 
     closeForm:(state) => {
@@ -70,6 +72,22 @@ const extraReducers = (builder) => {
             state.data_status = "rejected"
         })
 
+        //
+        // .addCase(getSource.pending, (state, action) => {
+        //     state.status = "loading"
+        //     state.data_status = 'loading'
+        // })
+        // .addCase(getSource.fulfilled, (state, action) => {
+        //     state.status = "fulfilled"
+        //     state.selected_source = action.payload
+        //     state.data_status = 'loaded';
+        // })
+        // .addCase(getSource.rejected, (state, action) => {
+        //     state.status = "rejected"
+        //     state.data_status = "rejected"
+        // })
+
+
         .addCase(updateSources.fulfilled, (state, action) => {
             console.log("updateSources fulfilled ",action)
             state.show_data_form = false;
@@ -81,6 +99,9 @@ const extraReducers = (builder) => {
             console.log("updateSources rejected ", action)
             state.data_status = 'load_now';
         })
+
+
+
 }
 
 
@@ -102,6 +123,28 @@ export const getSources = createAsyncThunk(
             )
     }
 );
+
+
+// export const getSource = createAsyncThunk(
+//     'sources/getSource',
+//     async ({session_id, organisation_id, kb_id,source_id}) => {
+//         const api_base = window.ENV.api_base;
+//         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(source_id);
+//
+//         if (url !== '/stats/stats/os') {
+//             console.log('GET ' + api_base + url);
+//         }
+//         return axios.get(api_base + url, Comms.getHeaders(session_id))
+//             .then((response) => {
+//                 console.log("sources/getSource",response.data);
+//                 return response.data
+//             }).catch(
+//                 (error) => {return error}
+//             )
+//     }
+// );
+
+
 
 // https://uat.simsage.ai/api/crawler/crawler
 // POST

@@ -4,7 +4,6 @@ import {closeForm, updateSources} from "./sourceSlice";
 import SourceTabs from "./forms/SourceTabs";
 import React, {useEffect, useState} from "react";
 import GeneralForm from "./forms/GeneralForm";
-import CrawlerMetadata from "./crawlers/crawler-metadata";
 import CrawlerMetadataForm from "./forms/CrawlerMetadataForm";
 
 
@@ -12,10 +11,12 @@ export default function SourceForm(props) {
 
     const theme = '';
     const session = useSelector((state) => state.authReducer.session);
+    const session_id = session.id;
     const selected_source = useSelector((state) => state.sourceReducer.selected_source);
+    const selected_source_id = useSelector((state) => state.sourceReducer.selected_source_id);
     const selected_source_type = useSelector((state) => state.sourceReducer.selected_source_type)
-    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
-    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    const selected_organisation_id = useSelector((state) => state.sourceReducer.organisationId);
+    const selected_knowledge_base_id = useSelector((state) => state.sourceReducer.kbId);
     const user_list = useSelector((state) => state.usersReducer.user_list);
     const dispatch = useDispatch();
 
@@ -115,6 +116,11 @@ export default function SourceForm(props) {
     const handleClose = () => {
         dispatch(closeForm());
     }
+
+    useEffect(()=>{
+        console.log(session_id)
+        // dispatch(getSource({session_id:session_id, organisation_id:selected_organisation_id, kb_id:selected_knowledge_base_id, source_id:selected_source_id}))
+    },[selected_source_id,selected_knowledge_base_id,selected_organisation_id,session])
 
 
     useEffect(() => {

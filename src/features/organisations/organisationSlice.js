@@ -33,6 +33,10 @@ const reducers = {
         state.edit_organisation_id = null;
     },
 
+    setOrganisationList:(state,action) => {
+        state.organisation_list = action.payload.organisationList
+    }
+
 }
 
 const extraReducers = (builder) => {
@@ -151,5 +155,5 @@ const organisationSlice = createSlice({
     extraReducers
 });
 
-export const {showAddOrganisationForm, showEditOrganisationForm, closeOrganisationForm} = organisationSlice.actions
+export const {showAddOrganisationForm, showEditOrganisationForm, closeOrganisationForm, setOrganisationList} = organisationSlice.actions
 export default organisationSlice.reducer;

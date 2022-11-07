@@ -22,9 +22,9 @@ export function OrganisationHome() {
     const [page_size, setPageSize] = useState(10);
 
 
-    useEffect(() => {
-        dispatch(getOrganisationList({session: session, filter: filter}))
-    }, [load_data === 'load_now'])
+    // useEffect(() => {
+    //     dispatch(getOrganisationList({session: session, filter: filter}))
+    // }, [load_data === 'load_now'])
 
 
     function handleSelectOrganisation(session_id, org) {

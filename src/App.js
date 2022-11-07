@@ -4,45 +4,48 @@ import LeftNavbar from "./includes/left-navbar";
 import Header from "./includes/header";
 import {useSelector, useDispatch} from "react-redux";
 import {PageLayout} from "./features/auth/pageLayout";
-import { AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
+import {AuthenticatedTemplate, UnauthenticatedTemplate} from "@azure/msal-react";
 import {closeAllMenus} from "./features/auth/authSlice";
 import MainSection from "./components/MainSection";
 import {getOrganisationList} from "./features/organisations/organisationSlice";
 
 
-
 function App() {
 
     const dispatch = useDispatch();
-    function localCloseAllMenus(){
+
+    function localCloseAllMenus() {
         dispatch(closeAllMenus())
     }
+
     const busy = false;
-    const {user, session } = useSelector((state) => state.authReducer)
+    const {user, session} = useSelector((state) => state.authReducer)
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
     const status = useSelector((state) => state.organisationReducer.status);
 
     const org_filter = null;
 
-    useEffect(()=>{
-        if(organisation_list === {}){
+    useEffect(() => {
+        if (organisation_list === {}) {
             console.log("getOrganisationList in App")
-            dispatch(getOrganisationList({session,org_filter}))
+            // dispatch(getOrganisationList({session,org_filter}))
+            //    todo show error
+            console.error("organisation_list is empty")
         }
-    },[status])
+    }, [status])
 
     // console.log("App organisation_list",organisation_list)
     return (
         <PageLayout>
-          <AuthenticatedTemplate>
+            <AuthenticatedTemplate>
                 <div className={busy ? "dms wait-cursor" : "dms"} onClick={() => localCloseAllMenus()}>
-                    <LeftNavbar />
+                    <LeftNavbar/>
                     <div className="outer">
-                        <Header />
-                        <MainSection />
+                        <Header/>
+                        <MainSection/>
                     </div>
                 </div>
-          </AuthenticatedTemplate>
+            </AuthenticatedTemplate>
         </PageLayout>
     );
 }

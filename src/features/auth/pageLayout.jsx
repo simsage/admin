@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {login, setJwt, simSageSignIn} from "./authSlice";
 import Comms from "../../common/comms";
 import axios from "axios";
-import {getOrganisationList} from "../organisations/organisationSlice";
+import {getOrganisationList, setOrganisationList} from "../organisations/organisationSlice";
 import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 
 
@@ -40,7 +40,9 @@ export const PageLayout = (props) => {
                     dispatch(login(response2.data));
                     const session = response2.data.session;
                     const filter = null;
-                    dispatch(getOrganisationList({session:session,filter:filter}));
+                    dispatch(setOrganisationList(response2.data))
+                    // dispatch(getOrganisationList({session:session,filter:filter}));
+
                     dispatch(getKBList({session_id:session.id, organization_id:session.organisationId}));
 
                 })

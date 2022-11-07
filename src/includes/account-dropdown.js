@@ -25,6 +25,7 @@ const AccountDropdown = (props) => {
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
     const organisation_list_status = useSelector((state) => state.organisationReducer.status);
 
+    console.log("session",session)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
 
     const data_status = useSelector((state) => state.organisationReducer.data_status)
