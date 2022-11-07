@@ -158,7 +158,7 @@ export default function SourceForm(props) {
         let new_data = { ...data,...form_data}
         setFormData(new_data)
         console.log("onSubmit", new_data)
-        // dispatch(updateSources({session_id: session.id, data: new_data}))
+        dispatch(updateSources({session_id: session.id, data: new_data}))
         // handleClose()
     };
 
@@ -193,7 +193,9 @@ export default function SourceForm(props) {
 
                                 {selected_source_tab === 'metadata' &&
                                     <CrawlerMetadataForm
-                                        source={selected_source} />
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormValues={setFormData}/>
                                 // {selected_source_tab === 'metadata' && c_type !== "restfull" && c_type !== "database" && c_type !== "wordpress" &&
                                 //     <CrawlerMetadataForm
                                         // theme={theme}
