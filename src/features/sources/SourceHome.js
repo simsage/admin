@@ -54,7 +54,7 @@ export default function SourceHome(props){
         const first = page * page_size;
         const last = first + parseInt(page_size);
 
-        console.log("source_list",source_list);
+        // console.log("source_list",source_list);
         // source_list.sort((a, b) => { return a.sourceId - b.sourceId });
         // for (const i in source_list) {
         //     if (i >= first && i < last) {

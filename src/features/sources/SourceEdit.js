@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
 import {closeForm} from "./sourceSlice";
-import SourceForm from "./forms/SourceForm";
+import SourceForm from "./SourceForm";
 
 
 export default function SourceEdit(props){

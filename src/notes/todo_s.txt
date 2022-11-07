@@ -2,3 +2,9 @@
 sources/generalForm
     tab
     canHaveEdgeDevice
+
+
+
+source tabs
+
+   if ! wordpress then meta

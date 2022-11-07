@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 
 export default function GeneralForm(props) {
 
-    console.log("selected source in General Form", props.source)
+    // console.log("selected source in General Form", props.source)
     // a few defaults
     // marker for an external node
     const external_node_id = 1000000;
@@ -11,7 +11,7 @@ export default function GeneralForm(props) {
     const default_num_results = 5;
     const default_num_fragments = 3;
     const default_qna_threshold = 0.8125;
-    const source_list = [
+    const crawler_list = [
         {"key": "none", "value": "please select crawler type"},
         {"key": "file", "value": "file crawler"},
         {"key": "web", "value": "web crawler"},
@@ -36,7 +36,7 @@ export default function GeneralForm(props) {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
 
-    console.log("selected source", selected_source)
+    // console.log("selected_source_type", selected_source)
 
     const [internal_crawler, setInternalCrawler] = useState();
 
@@ -44,8 +44,8 @@ export default function GeneralForm(props) {
 
     //methods
     function canHaveEdgeDevice() {
-        const crawlerType = props.getValues("crawlerType");
-        return !['exchange365','wordpress', 'gdrive', 'onedrive', 'sharepoint365'].includes(crawlerType)
+        const crawler_type = props.getValues("crawlerType");
+        return !['exchange365','wordpress', 'gdrive', 'onedrive', 'sharepoint365'].includes(crawler_type)
     }
 
 
@@ -94,9 +94,9 @@ export default function GeneralForm(props) {
             {/* crawlerType */}
             <div className="control-row">
                 <span className="label-3">Crawler type</span>
-                <select className="form-select w-50"  {...props.register("crawlerType")}>
+                <select className="form-select w-50"  {...props.register("crawlerType",{disabled:(selected_source && selected_source.sourceId !== '0')})}>
                     {
-                        source_list.map((value) => {
+                        crawler_list.map((value) => {
                             return (<option key={value.key} value={value.key}>{value.value}</option>)
                         })
                     }
