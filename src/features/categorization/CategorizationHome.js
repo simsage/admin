@@ -18,7 +18,8 @@ export default function CategorizationHome(props) {
 
 
     useEffect(()=>{
-        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
+        console.log('data...', session_id, selected_organisation_id, selected_knowledge_base_id)
+        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel:null,pageSize:5}))
     },[load_data === 'load_now'])
 
     return (

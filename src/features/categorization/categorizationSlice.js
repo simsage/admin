@@ -12,10 +12,10 @@ const initialState = {
 }
 
 export const loadCategorizations = createAsyncThunk("categorization/loadCategorizations",
-    async ({session_id, organisation_id, kb_id}) => {
+    async ({session_id, organisation_id, kb_id, prevCategorizationLabel, pageSize}) => {
 
         const api_base = window.ENV.api_base;
-        const url = api_base + '/language/categorization/' + encodeURIComponent(organisation_id) +'/'+ encodeURIComponent(kb_id);
+        const url = api_base + '/language/categorization/' + encodeURIComponent(organisation_id) +'/'+ encodeURIComponent(kb_id)+'/'+ encodeURIComponent(prevCategorizationLabel)+'/'+encodeURIComponent(pageSize);
 
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {

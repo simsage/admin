@@ -116,7 +116,7 @@ export default function SynsetList() {
                         </div>
                         <div className="form-group ms-auto w-20">
                             <button className="btn btn-primary text-nowrap m-1"  onClick={() => handleAddSynSet()}>
-                                + Add User
+                                + Add SynSet
                             </button>
                             <button className="btn btn-primary text-nowrap m-1"
                                     onClick={() => handleAddDefaultSynSet()}

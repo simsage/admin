@@ -13,6 +13,7 @@ export default function SynonymsHome() {
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
     const status = useSelector((state) => state.synonymReducer.status);
+    const load_data = useSelector( (state) => state.synonymReducer.data_status)
 
     const synonym_list = useSelector((state)=>state.synonymReducer.synonym_list)
     const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
@@ -28,7 +29,7 @@ export default function SynonymsHome() {
 
     useEffect(() => {
         dispatch(loadSynonyms({ session_id, data }));
-    }, [])
+    }, [load_data === 'load_now'])
 
 
     return (

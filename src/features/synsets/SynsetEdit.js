@@ -79,6 +79,19 @@ export default function SynsetEdit(){
         }
     }
 
+    const addNewWordCloudBtn = () => {
+        let newArr = [...(wordCloud || [])];
+        newArr.push(newWordCloud)
+        setWordCloud(newArr);
+        setNewWordCloud('')
+    }
+
+    const removeNewWordCloudBtn= (wc, index) => {
+        let newArr = [...wordCloud];
+        newArr.splice(index,1)
+        setWordCloud(newArr);
+    }
+
     if (show_synset_form === false)
         return (<div/>);
     return (
@@ -119,12 +132,13 @@ export default function SynsetEdit(){
                                                 />
                                             </form>
                                         </span>
+                                        <button className="btn-danger btn-block" onClick={() => removeNewWordCloudBtn(cloud, i)}>-</button>
                                     </div>
                                     )
                                 })
                             }
                             <div className="control-row">
-                                <span className="label-2">New word cloud (Hit Enter to add)</span>
+                                <span className="label-2">New word cloud</span>
                                 <span className="text">
                                             <form>
                                                 <textarea type="text" className="form-control"
@@ -136,6 +150,7 @@ export default function SynsetEdit(){
                                                 />
                                             </form>
                                         </span>
+                                <button className="btn-primary btn-block" onClick={(e) => addNewWordCloudBtn(e, newWordCloud)}>+</button>
                             </div>
                         </div>
                     </div>

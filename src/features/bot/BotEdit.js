@@ -1,6 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
 import {closeMemoryForm, updateMindItem} from "./botSlice";
+import Button from "bootstrap/js/src/button";
 
 
 export function BotEdit(){
@@ -111,7 +112,6 @@ export function BotEdit(){
         if(e.key === 'Enter') {
             e.preventDefault()
             let newArr = [...(links || [])];
-            setNewLink(e.target.value)
             newArr.push(newLink)
             setLinks(newArr);
             setNewLink('')
@@ -122,11 +122,41 @@ export function BotEdit(){
         if(e.key === 'Enter') {
             e.preventDefault()
             let newArr = [...(questions || [])];
-            setNewQuestion(e.target.value)
             newArr.push(newQuestion)
             setQuestions(newArr);
             setNewQuestion('')
         }
+    }
+
+    const addNewQuestionBtn = () => {
+        let newArr = [...(questions || [])];
+        // setNewQuestion(e.target.value)
+        newArr.push(newQuestion)
+        setQuestions(newArr);
+        setNewQuestion('')
+    }
+
+    const removeQuestionBtn = (q, index) => {
+        let newArr = [...questions];
+        newArr.splice(index,1)
+        console.log('questions', newArr)
+        setQuestions(newArr);
+
+    }
+
+    const removeLinkBtn = (l, index) => {
+        let newArr = [...links];
+        newArr.splice(index,1)
+        console.log('links', newArr)
+        setLinks(newArr);
+    }
+
+    const addNewLinkBtn = () => {
+        let newArr = [...(links || [])];
+        // setNewQuestion(e.target.value)
+        newArr.push(newLink)
+        setLinks(newArr);
+        setNewLink('')
     }
 
 
@@ -157,6 +187,7 @@ export function BotEdit(){
                                                         />
                                                     </form>
                                                 </span>
+                                                <button className="btn-danger btn-block" onClick={() => removeQuestionBtn(question, i)}>-</button>
                                             </div>
                                         )
                                     })
@@ -175,6 +206,7 @@ export function BotEdit(){
                                             />
                                         </form>
                                     </span>
+                                    <button className="btn-primary btn-block" onClick={(e) => addNewQuestionBtn(e, newQuestion)}>+</button>
                                 </div>
                             </div>
                                 <div className="control-row">
@@ -207,6 +239,7 @@ export function BotEdit(){
                                                         />
                                                     </form>
                                                 </span>
+                                                <button className="btn-danger btn-block" onClick={() => removeLinkBtn(link, i)}>-</button>
                                             </div>
                                         )
                                     })
@@ -225,6 +258,7 @@ export function BotEdit(){
                                             />
                                         </form>
                                     </span>
+                                    <button className="btn-primary btn-block" onClick={(e) => addNewLinkBtn(e, newQuestion)}>+</button>
                                 </div>
                     </div>
 
