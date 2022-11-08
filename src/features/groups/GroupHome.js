@@ -29,11 +29,11 @@ export default function GroupHome(){
     const isManager = hasRole(user, ['manager']);
 
     useEffect(()=>{
-        if(group_list_status === undefined && group_list === undefined){
+        // if(group_list_status === undefined && group_list === undefined){
             console.log("session useEffect",session)
             console.log("selected_organisation",selected_organisation_id)
             dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
-        }
+        // }
         console.log('use effect ran',load_data);
     },[load_data === "load_now"])
 

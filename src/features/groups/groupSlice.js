@@ -3,7 +3,7 @@ import Comms from "../../common/comms";
 import axios from "axios";
 
 const initialState = {
-    group_list: undefined,
+    group_list: [],
     page: 0,
     page_size: 5,
     status: undefined,
@@ -15,9 +15,12 @@ const initialState = {
 
 export const getGroupList = createAsyncThunk(
     'groups/getGroupList',
-    async ({session_id,organization_id}) => {
+    async ({session_id, organization_id}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/groups/'+ encodeURIComponent(organization_id);
+
+        console.log("groups/getGroupList organization_id", organization_id)
+        console.log("groups/getGroupList session_id", session_id)
+        const url = api_base + '/auth/groups/' + encodeURIComponent(organization_id);
 
         if (url !== '/stats/stats/os') {
             console.log('GET ' + url);
@@ -25,10 +28,12 @@ export const getGroupList = createAsyncThunk(
 
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("groups",response.data)
-                return response.data
+                console.log("groups", response.data)
+                return response.data.groupList
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error
+                }
             )
     }
 );
@@ -37,9 +42,9 @@ export const updateGroup = createAsyncThunk(
     'group/update',
     async ({session_id, data}) => {
         const api_base = window.ENV.api_base;
-        const url = '/auth/group/' ;
+        const url = '/auth/group/';
         if (url !== '/stats/stats/os') {
-            console.log('PUT ' + api_base + url );
+            console.log('PUT ' + api_base + url);
         }
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
@@ -47,7 +52,8 @@ export const updateGroup = createAsyncThunk(
                 return response.data;
             }).catch(
                 (error) => {
-                    return error}
+                    return error
+                }
             )
     }
 )
@@ -58,12 +64,13 @@ export const deleteGroup = createAsyncThunk(
         const api_base = window.ENV.api_base;
         const url = api_base + `/auth/group/${encodeURIComponent(organisation_id)}/${encodeURIComponent(name)}`;
 
-        return axios.delete( url, Comms.getHeaders(session_id))
+        return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch( error => {
+            }).catch(error => {
                 console.log('error...', error.response.data.error);
-                return error})
+                return error
+            })
     }
 )
 
@@ -74,14 +81,14 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(getGroupList.fulfilled, (state, action) => {
-            console.log("groups/getGroupList",action.payload)
+            console.log("groups/getGroupList", action.payload)
             state.status = "fulfilled"
             state.group_list = action.payload
         })
         .addCase(getGroupList.rejected, (state, action) => {
             state.status = "rejected"
         })
-    //UPDATE GROUPS
+        //UPDATE GROUPS
         .addCase(updateGroup.pending, (state, action) => {
             state.status = "Loading";
             state.data_status = "loading";
@@ -116,22 +123,22 @@ const groupSlice = createSlice({
     name: 'groups',
     initialState,
     reducers: {
-        showEditGroupForm:(state,action) => {
+        showEditGroupForm: (state, action) => {
             state.show_group_form = action.payload.show
             state.edit_group = action.payload.name
         },
-        showAddGroupForm:(state, action) => {
+        showAddGroupForm: (state, action) => {
             state.show_group_form = action.payload;
         },
-        closeGroupForm:(state) => {
-        state.show_group_form = false;
-        state.edit_group = undefined;
+        closeGroupForm: (state) => {
+            state.show_group_form = false;
+            state.edit_group = undefined;
         },
-        showGroupDeleteAsk:(state, action) => {
+        showGroupDeleteAsk: (state, action) => {
             state.show_delete_form = action.payload.show;
             state.edit_group = action.payload.group
         },
-        closeDeleteForm:(state, action) => {
+        closeDeleteForm: (state, action) => {
             state.show_delete_form = false;
             state.edit_group = undefined
         }
@@ -141,4 +148,10 @@ const groupSlice = createSlice({
 
 
 export default groupSlice.reducer;
-export const { showEditGroupForm, showAddGroupForm, closeGroupForm ,showGroupDeleteAsk , closeDeleteForm} = groupSlice.actions
+export const {
+    showEditGroupForm,
+    showAddGroupForm,
+    closeGroupForm,
+    showGroupDeleteAsk,
+    closeDeleteForm
+} = groupSlice.actions

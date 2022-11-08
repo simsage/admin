@@ -38,13 +38,14 @@ const reducers = {
     showEditForm:(state,action) => {
         state.show_data_form = true
         state.selected_source = action.payload.source
-        state.selected_source_id = action.payload.source.sourceId
+        state.selected_source_id = state.selected_source.sourceId
     },
 
     closeForm:(state) => {
         console.log("closeForm sourceSlice")
-        state.show_data_form = false;
-        state.selected_source = null;
+        state.show_data_form = false
+        state.selected_source = null
+        state.selected_source_id = null
     },
 
     setSelectedSourceTab:(state,action) => {
@@ -72,20 +73,20 @@ const extraReducers = (builder) => {
             state.data_status = "rejected"
         })
 
-        //
-        // .addCase(getSource.pending, (state, action) => {
-        //     state.status = "loading"
-        //     state.data_status = 'loading'
-        // })
-        // .addCase(getSource.fulfilled, (state, action) => {
-        //     state.status = "fulfilled"
-        //     state.selected_source = action.payload
-        //     state.data_status = 'loaded';
-        // })
-        // .addCase(getSource.rejected, (state, action) => {
-        //     state.status = "rejected"
-        //     state.data_status = "rejected"
-        // })
+
+        .addCase(getSource.pending, (state, action) => {
+            state.status = "loading"
+            state.data_status = 'loading'
+        })
+        .addCase(getSource.fulfilled, (state, action) => {
+            state.status = "fulfilled"
+            state.selected_source = action.payload
+            state.data_status = 'loaded';
+        })
+        .addCase(getSource.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = "rejected"
+        })
 
 
         .addCase(updateSources.fulfilled, (state, action) => {
@@ -125,24 +126,24 @@ export const getSources = createAsyncThunk(
 );
 
 
-// export const getSource = createAsyncThunk(
-//     'sources/getSource',
-//     async ({session_id, organisation_id, kb_id,source_id}) => {
-//         const api_base = window.ENV.api_base;
-//         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(source_id);
-//
-//         if (url !== '/stats/stats/os') {
-//             console.log('GET ' + api_base + url);
-//         }
-//         return axios.get(api_base + url, Comms.getHeaders(session_id))
-//             .then((response) => {
-//                 console.log("sources/getSource",response.data);
-//                 return response.data
-//             }).catch(
-//                 (error) => {return error}
-//             )
-//     }
-// );
+export const getSource = createAsyncThunk(
+    'sources/getSource',
+    async ({session_id, organisation_id, kb_id,source_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(source_id);
+
+        if (url !== '/stats/stats/os') {
+            console.log('GET ' + api_base + url);
+        }
+        return axios.get(api_base + url, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("sources/getSource",response.data);
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    }
+);
 
 
 

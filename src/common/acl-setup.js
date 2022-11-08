@@ -58,9 +58,11 @@ export class AclSetup extends Component {
         return this.props.group_list ? this.props.group_list : [];
     }
     getAllUsers() {
+        console.log("getAllUsers",this.props)
         return this.props.user_list ? this.props.user_list : [];
     }
     getAvailableGroupsOrUsers() {
+        console.log("getAllUsers")
         const list = [];
         const filter = this.state.availableFilter.trim().toLowerCase();
         for (const group of this.getAllGroups()) {
@@ -78,6 +80,7 @@ export class AclSetup extends Component {
             }
         }
         for (const user of this.getAllUsers()) {
+            // console.error("getAllUsers", user)
             let found = false;
             for (const s_acl of this.state.acl_list) {
                 if (user.email === s_acl.acl) {

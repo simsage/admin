@@ -3,9 +3,12 @@ import React, {useEffect, useState} from "react";
 
 export default function CrawlerMetadataForm(props) {
 
+    console.log("CrawlerMetadataForm",props.form_data)
     const selected_source = props.source;
+
     const [form_error, setFormError] = useState();
-    const [specific_json, setSpecificJson] = useState(JSON.parse(selected_source.specificJson ? selected_source.specificJson : "{}"))
+    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
+    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
 
     const self = this;
     const theme = props.theme;
@@ -166,7 +169,7 @@ export default function CrawlerMetadataForm(props) {
     useEffect(()=>{
         let specific_json_stringify = JSON.stringify(specific_json)
         // console.log("specific_json stringify",specific_json_stringify)
-        props.setFormValues({...l_form_data, specificJson:specific_json_stringify})
+        props.setFormData({...l_form_data, specificJson:specific_json_stringify})
     },[specific_json])
 
 

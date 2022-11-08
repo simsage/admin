@@ -1,10 +1,15 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
-import {closeForm, updateSources} from "./sourceSlice";
+import {closeForm, getSource, updateSources} from "./sourceSlice";
 import SourceTabs from "./forms/SourceTabs";
 import React, {useEffect, useState} from "react";
 import GeneralForm from "./forms/GeneralForm";
 import CrawlerMetadataForm from "./forms/CrawlerMetadataForm";
+import ScheduleForm from "./forms/ScheduleForm";
+import AclSetup from "../../common/acl-setup";
+import {getGroupList} from "../groups/groupSlice";
+import {getUserList} from "../users/usersSlice";
+import TimeSelect from "../../common/time-select";
 
 
 export default function SourceForm(props) {
@@ -13,11 +18,18 @@ export default function SourceForm(props) {
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
     const selected_source = useSelector((state) => state.sourceReducer.selected_source);
-    const selected_source_id = useSelector((state) => state.sourceReducer.selected_source_id);
-    const selected_source_type = useSelector((state) => state.sourceReducer.selected_source_type)
-    const selected_organisation_id = useSelector((state) => state.sourceReducer.organisationId);
-    const selected_knowledge_base_id = useSelector((state) => state.sourceReducer.kbId);
+    const selected_source_id = selected_source.sourceId;
+    const selected_organisation_id = selected_source.organisationId;
+    const selected_knowledge_base_id = selected_source.kbId;
+
+    console.log("selected_knowledge_base_id: ", selected_knowledge_base_id)
+    console.log("selected_organisation_id: ", selected_organisation_id)
+    console.log("selected_source_id: ", selected_source)
+    console.log("session_id: ", session_id)
+
+
     const user_list = useSelector((state) => state.usersReducer.user_list);
+    const group_list = useSelector((state) => state.groupReducer.group_list);
     const dispatch = useDispatch();
 
     const show_form = useSelector((state) => state.sourceReducer.show_data_form);
@@ -117,11 +129,16 @@ export default function SourceForm(props) {
         dispatch(closeForm());
     }
 
+    //todo: getsource is not working
     useEffect(()=>{
         console.log(session_id)
         // dispatch(getSource({session_id:session_id, organisation_id:selected_organisation_id, kb_id:selected_knowledge_base_id, source_id:selected_source_id}))
     },[selected_source_id,selected_knowledge_base_id,selected_organisation_id,session])
 
+    useEffect(()=>{
+        dispatch(getGroupList({session_id:session_id,organization_id:selected_organisation_id}))
+        dispatch(getUserList({session_id:session_id, organization_id:selected_organisation_id, filter:null}))
+    }, [selected_source, show_form, group_list === []]);
 
     useEffect(() => {
         let defaultValues = {};
@@ -168,6 +185,26 @@ export default function SourceForm(props) {
         // handleClose()
     };
 
+
+    function updateAclList(list){
+        console.log("acl in source form", list)
+        setFormData({...form_data, acls:list})
+        console.log("acl in source form form_data", form_data)
+    }
+
+    function updateSchedule(time) {
+        console.log(time)
+        // if (time !== null) {
+        //     setFormData({...form_data, schedule:time})
+        //
+        //     // this.setState({schedule: time});
+        //     // if (this.state.onUpdate) {
+        //     //     this.state.onUpdate({...this.gather_data(), "schedule": time});
+        //     // }
+        // }
+    }
+
+
     // console.log("selected_source.maxQNAItems tab", selected_source)
 
     if (!show_form)
@@ -201,7 +238,7 @@ export default function SourceForm(props) {
                                     <CrawlerMetadataForm
                                         source={selected_source}
                                         form_data={form_data}
-                                        setFormValues={setFormData}/>
+                                        setFormData={setFormData}/>
                                 // {selected_source_tab === 'metadata' && c_type !== "restfull" && c_type !== "database" && c_type !== "wordpress" &&
                                 //     <CrawlerMetadataForm
                                         // theme={theme}
@@ -209,24 +246,30 @@ export default function SourceForm(props) {
                                         // onError={(title, errStr) => this.setError(title, errStr)}
                                         // onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                 }
-                                {/*{selected_source_tab === 'acls' &&*/}
-                                {/*    <div>*/}
-                                {/*        <div className="acl-text">this list sets a default set of Access Control for this source</div>*/}
-                                {/*        <AclSetup*/}
-                                {/*            organisation_id={this.props.organisation_id}*/}
-                                {/*            acl_list={crawler.acls}*/}
-                                {/*            onChange={(acl_list) => this.update_acl_list(acl_list)}*/}
-                                {/*            user_list={this.props.user_list}*/}
-                                {/*            group_list={this.props.group_list} />*/}
-                                {/*    </div>*/}
-                                {/*}*/}
-                                {/*{selected_source_tab === 'schedule' &&*/}
-                                {/*// {selected_source_tab === 'schedule' && c_type !== "wordpress" &&*/}
-                                {/*    <div className="time-tab-content">*/}
-                                {/*        <TimeSelect time={crawler.schedule}*/}
-                                {/*                    onSave={(time) => this.updateSchedule(time)}/>*/}
-                                {/*    </div>*/}
-                                {/*}*/}
+                                {selected_source_tab === 'acls' &&
+                                    <div>
+                                        <div className="acl-text">this list sets a default set of Access Control for this source</div>
+                                        {/*<AclSetupForm*/}
+                                        {/*    source={selected_source}*/}
+                                        {/*    form_data={form_data}*/}
+                                        {/*    setFormData={setFormData}/>*/}
+
+
+                                        <AclSetup
+                                            organisation_id={selected_organisation_id}
+                                            acl_list={form_data.acls}
+                                            onChange={(acl_list) => updateAclList(acl_list)}
+                                            user_list={user_list}
+                                            group_list={group_list} />
+                                    </div>
+                                }
+                                {selected_source_tab === 'schedule' &&
+                                // {selected_source_tab === 'schedule' && c_type !== "wordpress" &&
+                                    <div className="time-tab-content">
+                                        <TimeSelect time={form_data.schedule}
+                                                    onSave={(time) => updateSchedule(time)}/>
+                                    </div>
+                                }
 
 
                             </div>

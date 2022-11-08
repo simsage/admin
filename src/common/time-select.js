@@ -69,13 +69,15 @@ export class TimeSelect extends Component {
             return "inactive";
         }
     }
-    clearAll() {
+    clearAll(e) {
+        e.preventDefault();
         this.setState({time_map: this.setupTimeMap(''), time: ''});
         if (this.state.onSave) {
             this.state.onSave('');
         }
     }
-    selectAll() {
+    selectAll(e) {
+        e.preventDefault();
         this.setState({time_map: this.setupTimeMap(defaultAllTimesSelected), time: defaultAllTimesSelected});
         if (this.state.onSave) {
             this.state.onSave(defaultAllTimesSelected);
@@ -202,12 +204,12 @@ export class TimeSelect extends Component {
                     <div className="activeText">active</div>
                     <div className="inactiveText">inactive</div>
                     <div className="button1">
-                        <button className="btn btn-primary btn-block" onClick={() => this.clearAll()}>
+                        <button className="btn btn-primary btn-block" onClick={(e) => this.clearAll(e)}>
                             clear all
                         </button>
                     </div>
                     <div className="button2">
-                        <button className="btn btn-primary btn-block" onClick={() => this.selectAll()}>
+                        <button className="btn btn-primary btn-block" onClick={(e) => this.selectAll(e)}>
                             select all
                         </button>
                     </div>
