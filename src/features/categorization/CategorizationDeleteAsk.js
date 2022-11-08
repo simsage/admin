@@ -20,14 +20,14 @@ export default function CategorizationDeleteAsk(){
     const handleDelete = () => {
         const data = {"session_id": session_id, "organisation_id": organisation_id, "knowledge_base_id": knowledgeBase_id, "metadata": category.metadata };
         console.log(`deleteing...`, data)
-        dispatch(deleteCategorization({session_id: session_id, organisation_id: organisation_id, knowledge_base_id: knowledgeBase_id, metadata: category.metadata }))
+        dispatch(deleteCategorization({session_id: session_id, organisation_id: organisation_id, knowledge_base_id: knowledgeBase_id, categorizationLabel: category.categorizationLabel }))
         dispatch(closeDeleteForm())
     }
 
 
     if (!show_delete_form)
         return (<div />);
-    const message = category && category.displayName ? ` category item: ${category.displayName}` : ` all of the category items`;
+    const message = category && category.categorizationLabel ? ` category item: ${category.categorizationLabel}` : ` all of the category items`;
     return(
         <div>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>

@@ -4,7 +4,7 @@ import {loadCategorizations} from "./categorizationSlice";
 import CategorizationIntro from "./CategorizationIntro";
 import CategorizationList from "./CategorizationList";
 
-export default function CategorizationHome(props) {
+export default function CategorizationHome() {
 
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session);
@@ -19,7 +19,7 @@ export default function CategorizationHome(props) {
 
     useEffect(()=>{
         console.log('data...', session_id, selected_organisation_id, selected_knowledge_base_id)
-        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel:null,pageSize:5}))
+        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel: null, pageSize: 5}))
     },[load_data === 'load_now'])
 
     return (

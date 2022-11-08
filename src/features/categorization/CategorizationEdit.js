@@ -1,6 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
 import {closeCategoryForm, updateCategorization} from "./categorizationSlice";
+import CategorizationError from './CategorizationError';
 
 
 export function CategorizationEdit(){
@@ -12,12 +13,10 @@ export function CategorizationEdit(){
     const knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const show_category_form = useSelector( (state) => state.categorizationReducer.show_category_form)
     const selectedCategory = useSelector( (state) => state.categorizationReducer.edit);
-
+    const error = useSelector((state) => state.categorizationReducer.error)
     //Synonym details
-    const [displayName, setDisplayName] = useState('');
-    const [metadataName, setMetadataName] = useState('');
-    const [category, setCategory] = useState('');
-    const [wordCloud, setWordCloud] = useState('');
+    const [categoryLabel, setCategoryLabel] = useState('');
+    const [rule, setRule] = useState('');
 
 
 
@@ -25,47 +24,51 @@ export function CategorizationEdit(){
     useEffect(()=> {
         if ( selectedCategory ) {
             console.log(`editing...`, selectedCategory)
-            setDisplayName(selectedCategory.displayName);
-            setMetadataName(selectedCategory.metadata);
-            if (selectedCategory.categorizationList.length > 0){
-                setCategory(selectedCategory.categorizationList[0].category);
-                setWordCloud(selectedCategory.categorizationList[0].wordCloud);
-            }
-
+            setCategoryLabel(selectedCategory.categorizationLabel);
+            setRule(selectedCategory.rule)
         }
     }, [show_category_form])
 
     function resetData () {
-        setDisplayName('');
-        setMetadataName('');
-        setCategory('');
-        setWordCloud('');
+        setCategoryLabel('');
+        setRule('')
     }
 
-    function handleClose(e){
+    const handleClose =  () => {
         dispatch(closeCategoryForm());
         resetData();
     }
 
+    function handleError(){
+        //Todo: Need to look into presenting response errors
+    }
 
 
     const handleSave = () => {
         const session_id = session.id;
         console.log(`Editing...`, selectedCategory)
         const data = {
-            "categorizationList": [{
-                category: category,
-                wordCloud: wordCloud
-            }],
-            "displayName": displayName,
+            "categorizationLabel": categoryLabel,
             "kbId": knowledge_base_id,
-            "metadata": metadataName,
-            "organisationId": organisation_id
+            "organisationId": organisation_id,
+            "rule": rule
         }
-        console.log(`Saving...`, data);
+         console.log(`Saving...`, data);
         dispatch(updateCategorization({session_id, data}));
-        dispatch(closeCategoryForm());
+        // if(error) {
+        //     console.log('error')
+        // }
+        // else {
+        //     handleClose()
+        // }
+        //resetData();
+    }
 
+    function handleKeyDown(e) {
+        if(e.key === 'Enter') {
+            e.preventDefault()
+            handleSave()
+        }
     }
 
 
@@ -78,64 +81,36 @@ export function CategorizationEdit(){
                     <div className="modal-header">{selectedCategory ? "Edit Category" : "Add New Category"}</div>
                     <div className="modal-body">
                         <div className="tab-content">
-
-
                             <div className="control-row">
-                                <span className="label-2">Display Name</span>
+                                <span className="label-2">Category Label</span>
                                 <span className="text">
                                             <form>
                                                 <input type="text" className="form-control"
                                                        autoComplete="false"
                                                        placeholder="Display Name"
-                                                       value={displayName}
-                                                       onChange={(event) => setDisplayName(event.target.value)}
+                                                       value={categoryLabel}
+                                                       onChange={(event) => setCategoryLabel(event.target.value)}
+                                                       onKeyDown={(e) => {handleKeyDown(e)}}
                                                 />
                                             </form>
                                         </span>
                             </div>
                             <div className="control-row">
-                                <span className="label-2">Metadata Name</span>
+                                <span className="label-2">Rule</span>
                                 <span className="text">
                                             <form>
                                                 <input type="text" className="form-control"
                                                        autoComplete="false"
-                                                       placeholder="Metadata Name (key)"
-                                                       value={metadataName}
-                                                       onChange={(event) => setMetadataName(event.target.value)}
-                                                />
-                                            </form>
-                                        </span>
-                            </div>
-                            <div className="control-row">
-                                <span className="label-2">Description / Value</span>
-                                <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="metadata value"
-                                                       value={category}
-                                                       onChange={(event) => setCategory(event.target.value)}
-                                                />
-                                            </form>
-                                        </span>
-                            </div>
-                            <div className="control-row">
-                                <span className="label-2">Word Cloud</span>
-                                <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="Word cloud for identifying members of this category"
-                                                       value={wordCloud}
-                                                       onChange={(event) => setWordCloud(event.target.value)}
+                                                       placeholder="SimSage rule defining the matching criteria"
+                                                       value={rule}
+                                                       onChange={(event) => setRule(event.target.value)}
+                                                       onKeyDown={(e) => {handleKeyDown(e)}}
                                                 />
                                             </form>
                                         </span>
                             </div>
                         </div>
                     </div>
-
-
                     <div className="modal-footer">
                         <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
                         <button className="btn btn-primary btn-block" onClick={(e) => handleSave(e)}>Save</button>
@@ -143,7 +118,7 @@ export function CategorizationEdit(){
 
                 </div>
             </div>
+            <CategorizationError />
         </div>
-
     )
 }

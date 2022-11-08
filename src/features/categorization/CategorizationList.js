@@ -11,8 +11,7 @@ import CategorizationDeleteAsk from "./CategorizationDeleteAsk";
 
 export default function CategorizationHome() {
 
-    const title = "Categorization";
-    const theme = null;
+
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
@@ -28,7 +27,7 @@ export default function CategorizationHome() {
 
     useEffect(()=>{
         console.log(load_data)
-        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
+        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel: null, pageSize: 5}))
     },[load_data === "load_now"])
 
 
@@ -59,46 +58,6 @@ export default function CategorizationHome() {
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
-    //legacy functions
-    const empty_category = {
-        metadata: "",
-        displayName: "",
-        categorizationList: [{category: "",wordCloud: ""}]
-    }
-
-    function create_empty_category() {
-        return JSON.parse(JSON.stringify(empty_category));
-    }
-
-
-    function deleteCategory(action) {
-        if (action && this.state.category) {
-            this.props.deleteCategory(this.state.category.metadata);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-        this.setState({category_edit: false, category: create_empty_category()});
-    }
-
-
-
-    function save(category) {
-        if (category) {
-            if (category.metadata.trim().length > 0 && category.displayName.trim().length > 0 && category.categorizationList.length > 0) {
-                this.props.saveCategory(category);
-                this.setState({category_edit: false, category: create_empty_category()});
-            } else {
-                this.props.setError("Error Saving document classification", "metadata, category, and/or word-cloud cannot be empty");
-            }
-        } else {
-            this.setState({category_edit: false, category: create_empty_category()});
-        }
-    }
-
-
-
-
     return (
         <div className="section px-5 pt-4">
             <div className="synset-page">
@@ -109,21 +68,22 @@ export default function CategorizationHome() {
                         <table className="table">
                             <thead>
                             <tr className='table-header'>
-                                <th className='table-header'>metadata</th>
-                                <th className='table-header'>category</th>
+                                <th className='table-header'>Category</th>
+                                <th className='table-header'>Rule</th>
                                 <th className='table-header'>actions</th>
                             </tr>
                             </thead>
                             <tbody>
                             {
                                 getCategoryList().map((category, i) => {
+                                    console.log(category)
                                     return (
                                         <tr key={i}>
                                             <td>
-                                                <div className="synset-label">{category.metadata} </div>
+                                                <div className="synset-label">{category.categorizationLabel} </div>
                                             </td>
                                             <td>
-                                                <div className="synset-label">{category.category}</div>
+                                                <div className="synset-label">{category.rule}</div>
                                             </td>
                                             <td>
                                                 <button className="link-button" title="edit syn-set"
