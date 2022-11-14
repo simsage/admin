@@ -3,6 +3,35 @@ import {useSelector} from "react-redux";
 
 export default function GeneralForm(props) {
 
+
+    let new_data= {
+        "sourceId": 1,
+        "crawlerType": "rss",
+        "name": "glp rss 2512",
+        "deleteFiles": false,
+        "allowAnonymous": true,
+        "enablePreview": true,
+        //"schedule":"",
+        "filesPerSecond": 0.5,
+        //"specificJson":"{}",
+        "processingLevel": "NLU",
+        "nodeId": 0,
+        "maxItems": 0,
+        "maxQNAItems": 0,
+        "customRender": false,
+       // "acls": [],
+        "useDefaultRelationships": true,
+        "autoOptimize": true,
+        // "organisationId": "018336d1-f905-98c4-61c9-827978f333cb",
+        // "kbId": "01833a6a-47ef-422a-6376-32c3187ec488",
+        // "sessionId": "",
+        "numFragments": 3,
+        "qaMatchStrength": 0.8125,
+        "errorThreshold": 10,
+        "numResults": 5,
+    }
+
+
     // console.log("selected source in General Form", props.source)
     // a few defaults
     // marker for an external node
@@ -94,6 +123,7 @@ export default function GeneralForm(props) {
             {/* crawlerType */}
             <div className="control-row">
                 <span className="label-3">Crawler type</span>
+
                 <select className="form-select w-50"  {...props.register("crawlerType",{disabled:(selected_source && selected_source.sourceId !== '0')})}>
                     {
                         crawler_list.map((value) => {
@@ -101,6 +131,7 @@ export default function GeneralForm(props) {
                         })
                     }
                 </select>
+
             </div>
 
             {/* processingLevel */}
