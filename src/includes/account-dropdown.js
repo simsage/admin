@@ -42,9 +42,9 @@ const AccountDropdown = (props) => {
         }
     }
 
-    useEffect(()=>{
-        dispatch(getOrganisationList({session:session, filter:null}))
-    },[data_status === 'load_now'])
+    // useEffect(()=>{
+    //     dispatch(getOrganisationList({session:session, filter:null}))
+    // },[data_status === 'load_now'])
 
     function handleAddOrganisation(){
         dispatch(showAddOrganisationForm({show_form:true}))

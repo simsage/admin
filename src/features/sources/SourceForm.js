@@ -10,6 +10,7 @@ import AclSetup from "../../common/acl-setup";
 import {getGroupList} from "../groups/groupSlice";
 import {getUserList} from "../users/usersSlice";
 import TimeSelect from "../../common/time-select";
+import CrawlerRss from "./crawlers/crawler-rss";
 
 
 export default function SourceForm(props) {
@@ -85,7 +86,7 @@ export default function SourceForm(props) {
 
 
 
-    //Source Form Tabs
+    //Source Form Menu/Tabs
     const source_tabs = [
         {label: "general", slug: "general", type: "core"},
 
@@ -137,22 +138,19 @@ export default function SourceForm(props) {
         dispatch(closeForm());
     }
 
-    //todo: getsource is not working
-    // useEffect(()=>{
-    //     console.log(session_id)
-    //     // dispatch(getSource({session_id:session_id, organisation_id:selected_organisation_id, kb_id:selected_knowledge_base_id, source_id:selected_source_id}))
-    // },[selected_source_id,selected_knowledge_base_id,selected_organisation_id,session])
+
+
 
     useEffect(() => {
         dispatch(getGroupList({session_id: session_id, organization_id: selected_organisation_id}))
         dispatch(getUserList({session_id: session_id, organization_id: selected_organisation_id, filter: null}))
     }, [show_form]);
 
+    // console.log("getValues",watch(getValues()))
+
+    // Set form defaultValues
     useEffect(() => {
         let defaultValues = {};
-        console.log("useEffect 159")
-        // defaultValues = {...defaultValues, ...default_form_data}
-        // let defaultValues = selected_source? selected_source : {};
 
         defaultValues.name = selected_source ? selected_source.name : '';
         defaultValues.crawlerType = selected_source ? selected_source.crawlerType : 'none';
@@ -184,19 +182,14 @@ export default function SourceForm(props) {
     }, [show_form]);
 
 
-    // useEffect(()=>{
-    //     console.log("form_values.crawlerType", form_data.crawlerType)
-    //     // console.log("form_values.processingLevel", form_data.processingLevel)
-    //     // console.log("form_values.name", form_data.name)
-    //     // setFormData(getSource())
-    //     // console.log(form_data)
-    // },[getValues()])
+
+
 
     //on submit store or update
     const onSubmit = data => {
-        // console.log("onSubmit data", data)
 
-        //crawlerType will be undefined for existing data
+        // for existing data form returns data.crawlerType as undefined because the form field is disabled
+        // thus merge form_data.crawlerType to data
         if (data.crawlerType === undefined) {
             data = {...data, crawlerType: form_data.crawlerType}
         }
@@ -255,26 +248,22 @@ export default function SourceForm(props) {
     };
 
 
+    //set acl data to form_data
     function updateAclList(list) {
         console.log("acl in source form", list)
         setFormData({...form_data, acls: list})
         console.log("acl in source form form_data", form_data)
     }
 
+    //set schedule data to form_data
     function updateSchedule(time) {
         console.log(time)
         if (time !== null) {
             setFormData({...form_data, schedule:time})
-
-            // this.setState({schedule: time});
-            // if (this.state.onUpdate) {
-            //     this.state.onUpdate({...this.gather_data(), "schedule": time});
-            // }
         }
     }
 
 
-    // console.log("selected_source.maxQNAItems tab", selected_source)
 
     if (!show_form)
         return (<div/>);
@@ -298,10 +287,26 @@ export default function SourceForm(props) {
                                     onClick={changeNav}
                                     crawler_type={selected_source ? selected_source.crawlerType : null}/>
 
+
+
                                 {selected_source_tab === 'general' &&
                                     <GeneralForm errors={errors} register={register} source={selected_source}
                                                  getValues={getValues}/>
                                 }
+                                {/*{selected_source_tab === 'rss' &&*/}
+                                {/*    <CrawlerRss*/}
+                                {/*        theme={theme}*/}
+                                {/*        source_id={selected_source.sourceId}*/}
+                                {/*        organisation_id={selected_source.organisation_id}*/}
+                                {/*        kb_id={selected_source.kb_id}*/}
+                                {/*        endpoint={selected_source.specificJson.endpoint}*/}
+                                {/*        initial_feed={selected_source.specificJson.initial_feed}*/}
+                                {/*        specific_json={selected_source.specificJson}*/}
+                                {/*        onError={(title, errStr) => this.setError(title, errStr)}*/}
+                                {/*        onSave={(specific_json) => this.update_specific_json(specific_json)}/>*/}
+                                {/*}*/}
+
+
 
                                 {selected_source_tab === 'metadata' &&
                                     <CrawlerMetadataForm

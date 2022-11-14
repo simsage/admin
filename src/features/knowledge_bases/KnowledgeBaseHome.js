@@ -31,8 +31,9 @@ export default function KnowledgeBaseHome() {
 
     useEffect(() => {
         console.log("load getKBList line 33", load_data)
-        dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
-    }, [load_data==='load_now', session_id, organisation_id])
+        console.log("load getKBList line 33 organisation_id", organisation_id)
+        if(organisation_id) dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
+    }, [load_data==='load_now', session_id, organisation_id, organisation_id!==null])
 
 
 
