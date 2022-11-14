@@ -69,8 +69,9 @@ export default function SourceForm(props) {
     // if selected_source === '' then show add form otherwise show edit form
     const show_form = useSelector((state) => state.sourceReducer.show_data_form);
     const title = selected_source ? "Edit Source: " + selected_source.name : "Add Source";
-    const selected_source_id = selected_source ? selected_source.sourceId : 0;
 
+
+    //if we are adding a new source add
     if (!selected_source) {
         //if selected_source === '' then set selected_source = new_default_source_data
         selected_source = {
@@ -82,10 +83,6 @@ export default function SourceForm(props) {
 
     const [form_data, setFormData] = useState(selected_source);
 
-    // console.log("selected_knowledge_base_id: ", selected_knowledge_base_id)
-    // console.log("selected_organisation_id: ", selected_organisation_id)
-    console.log("form_data : ", form_data)
-    // console.log("session_id: ", session_id)
 
 
     //Source Form Tabs
@@ -266,14 +263,14 @@ export default function SourceForm(props) {
 
     function updateSchedule(time) {
         console.log(time)
-        // if (time !== null) {
-        //     setFormData({...form_data, schedule:time})
-        //
-        //     // this.setState({schedule: time});
-        //     // if (this.state.onUpdate) {
-        //     //     this.state.onUpdate({...this.gather_data(), "schedule": time});
-        //     // }
-        // }
+        if (time !== null) {
+            setFormData({...form_data, schedule:time})
+
+            // this.setState({schedule: time});
+            // if (this.state.onUpdate) {
+            //     this.state.onUpdate({...this.gather_data(), "schedule": time});
+            // }
+        }
     }
 
 
