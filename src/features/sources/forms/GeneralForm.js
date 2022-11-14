@@ -61,11 +61,10 @@ export default function GeneralForm(props) {
 
 
     const selected_source = props.source;
-    const selected_source_type = useSelector((state) => state.sourceReducer.selected_source_type)
-    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
-    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    // const selected_source_type = useSelector((state) => state.sourceReducer.selected_source_type)
+    const selected_source_type = selected_source.crawlerType
 
-    // console.log("selected_source_type", selected_source)
+    // console.log("selected_source_type", selected_source_type)
 
     const [internal_crawler, setInternalCrawler] = useState();
 
