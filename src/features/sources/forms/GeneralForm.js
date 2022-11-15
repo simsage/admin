@@ -4,38 +4,8 @@ import {useSelector} from "react-redux";
 export default function GeneralForm(props) {
 
 
-    let new_data= {
-        "sourceId": 1,
-        "crawlerType": "rss",
-        "name": "glp rss 2512",
-        "deleteFiles": false,
-        "allowAnonymous": true,
-        "enablePreview": true,
-        //"schedule":"",
-        "filesPerSecond": 0.5,
-        //"specificJson":"{}",
-        "processingLevel": "NLU",
-        "nodeId": 0,
-        "maxItems": 0,
-        "maxQNAItems": 0,
-        "customRender": false,
-       // "acls": [],
-        "useDefaultRelationships": true,
-        "autoOptimize": true,
-        // "organisationId": "018336d1-f905-98c4-61c9-827978f333cb",
-        // "kbId": "01833a6a-47ef-422a-6376-32c3187ec488",
-        // "sessionId": "",
-        "numFragments": 3,
-        "qaMatchStrength": 0.8125,
-        "errorThreshold": 10,
-        "numResults": 5,
-    }
-
-
-    // console.log("selected source in General Form", props.source)
     // a few defaults
     // marker for an external node
-    const external_node_id = 1000000;
     const default_error_threshold = 10;
     const default_num_results = 5;
     const default_num_fragments = 3;
@@ -61,13 +31,8 @@ export default function GeneralForm(props) {
 
 
     const selected_source = props.source;
-    // const selected_source_type = useSelector((state) => state.sourceReducer.selected_source_type)
     const selected_source_type = selected_source.crawlerType
-
-    // console.log("selected_source_type", selected_source_type)
-
-    const [internal_crawler, setInternalCrawler] = useState();
-
+    const internal_crawler = useState(selected_source.internalCrawler);
 
 
     //methods
@@ -77,10 +42,7 @@ export default function GeneralForm(props) {
     }
 
 
-    // useEffect(() => {
-    //     canHaveEdgeDevice()
-    // },[props.getValues("crawlerType")])
-
+    //todo:: filteredEdgeDevices
     function filteredEdgeDevices() {
         let list = [{"key": "none", "value": "n/a"}];
         // if (props.edge_device_list) {

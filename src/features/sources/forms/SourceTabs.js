@@ -13,12 +13,15 @@ export default function SourceTabs(props) {
                     // show core tabs [general, acls, schedules]
                     // show the crawler tab
                     // show the meta tab if crawler is not wordpress
-                    if(item.type === 'core' || (item.type=== 'optional' && item.slug === props.crawler_type) || (item.type=== 'meta' && props.crawler_type!=='wordpress')) {
-                        return (<li key={index} className="nav-item nav-cursor" onClick={()=>props.onClick(item.slug)} >
-                            <div className={(selected_tab === item.slug) ?"nav-link active":"nav-link"}>{item.label}</div>
-                        </li>)
-                    }
+                    if (item.type === 'core' ||
+                        (item.type === 'optional' && item.slug === props.crawler_type) ||
+                        (item.type === 'meta' && props.crawler_type !== 'wordpress')) {
 
+                        return (
+                            <li key={index} className="nav-item nav-cursor" onClick={() => props.onClick(item.slug)}>
+                                <div className={(selected_tab === item.slug) ? "nav-link active" : "nav-link"}>{item.label}</div>
+                            </li>)
+                    }
                 })
             }
         </ul>

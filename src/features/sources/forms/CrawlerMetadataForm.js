@@ -1,12 +1,11 @@
-import Api from "../../../common/api";
 import React, {useEffect, useState} from "react";
 
 export default function CrawlerMetadataForm(props) {
 
-    console.log("CrawlerMetadataForm",props.form_data)
     const selected_source = props.source;
 
     const [form_error, setFormError] = useState();
+    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
 
@@ -15,22 +14,7 @@ export default function CrawlerMetadataForm(props) {
     const num_rows = get_md_list().length;
     const l_form_data = props.form_data;
 
-    console.log("l_form_data",l_form_data)
 
-    // const selected_source_specific_json = JSON.parse(selected_source.specificJson ? selected_source.specificJson : "{}");
-    //
-    // console.log("selected_source", selected_source)
-    // console.log("selected_source specificJson", selected_source_specific_json)
-    // console.log("selected_source specificJson endpoint", selected_source_specific_json["endpoint"])
-    // console.log("selected_source specificJson endpoint", selected_source_specific_json.endpoint)
-
-
-    // selected_source.map((item) => {
-    //     console.log(item)
-    // })
-// console.log("source specificJson", props.source.specificJson)
-// console.log("meta source specificJson metadata_list", props.source.specificJson.metadata_list)
-    // valid metadata drop-down values
     const metadata_list = [
         {
             "key": "none",
@@ -164,13 +148,12 @@ export default function CrawlerMetadataForm(props) {
         },
     ];
 
-    // console.log()
 
     useEffect(()=>{
         let specific_json_stringify = JSON.stringify(specific_json)
-        // console.log("specific_json stringify",specific_json_stringify)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
     },[specific_json])
+
 
 
     function set_md_type(record, index, value) {
@@ -186,10 +169,6 @@ export default function CrawlerMetadataForm(props) {
             if (match_item != null) {
                 md_list[index] = JSON.parse(JSON.stringify(match_item));
                 setSpecificJson({...specific_json, metadata_list: md_list})
-                // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-                // if (this.state.onSave) {
-                //     this.state.onSave(this.construct_data(md_list));
-                // }
             }
         }
     }
@@ -204,10 +183,6 @@ export default function CrawlerMetadataForm(props) {
     function addNewMetadataMapping() {
         const md_list = get_md_list();
         md_list.push(JSON.parse(JSON.stringify(metadata_list[0]))); // add a copy of item 0
-        // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-        // if (this.state.onSave) {
-        //     this.state.onSave(this.construct_data(md_list));
-        // }
         setSpecificJson({...specific_json, metadata_list: md_list})
     }
 
@@ -224,11 +199,6 @@ export default function CrawlerMetadataForm(props) {
         }
 
         setSpecificJson({...specific_json, metadata_list: existing_md_list})
-
-        // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-        // if (this.state.onSave) {
-        //     this.state.onSave(this.construct_data(md_list));
-        // }
     }
 
 
@@ -240,13 +210,9 @@ export default function CrawlerMetadataForm(props) {
             md_list[index] = temp;
 
             setSpecificJson({...specific_json, metadata_list: md_list})
-
-            // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-            // if (this.state.onSave) {
-            //     this.state.onSave(this.construct_data(md_list));
-            // }
         }
     }
+
 
     function move_row_down(md, index) {
         const md_list = get_md_list();
@@ -256,13 +222,9 @@ export default function CrawlerMetadataForm(props) {
             md_list[index] = temp;
 
             setSpecificJson({...specific_json, metadata_list: md_list})
-
-            // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-            // if (this.state.onSave) {
-            //     this.state.onSave(this.construct_data(md_list));
-            // }
         }
     }
+
 
     function setDefaultSort(record, index, direction, value) {
         const md_list = get_md_list();
@@ -275,11 +237,6 @@ export default function CrawlerMetadataForm(props) {
             }
 
             setSpecificJson({...specific_json, metadata_list: md_list})
-
-            // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-            // if (this.state.onSave) {
-            //     this.state.onSave(this.construct_data(md_list));
-            // }
         }
     }
 
@@ -290,12 +247,6 @@ export default function CrawlerMetadataForm(props) {
             md_list[index].sort = value ? "true" : "false";
 
             setSpecificJson({...specific_json, metadata_list: md_list})
-
-
-            // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-            // if (this.state.onSave) {
-            //     this.state.onSave(this.construct_data(md_list));
-            // }
         }
     }
 
@@ -324,10 +275,6 @@ export default function CrawlerMetadataForm(props) {
             md_list[index].metadata = value;
 
             setSpecificJson({...specific_json, metadata_list: md_list})
-            // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-            // if (this.state.onSave) {
-            //     this.state.onSave(this.construct_data(md_list));
-            // }
         }
     }
 
@@ -338,12 +285,6 @@ export default function CrawlerMetadataForm(props) {
             md_list[index][field_name] = value;
 
             setSpecificJson({...specific_json, metadata_list: md_list})
-
-
-            // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-            // if (this.state.onSave) {
-            //     this.state.onSave(this.construct_data(md_list));
-            // }
         }
     }
 
@@ -354,11 +295,6 @@ export default function CrawlerMetadataForm(props) {
             md_list[index].display = value;
 
             setSpecificJson({...specific_json, metadata_list: md_list})
-
-            // this.setState({specific_json: {...this.props.specific_json, metadata_list: md_list}});
-            // if (this.state.onSave) {
-            //     this.state.onSave(this.construct_data(md_list));
-            // }
         }
     }
 
