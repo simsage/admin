@@ -32,7 +32,7 @@ export default function GeneralForm(props) {
 
     const selected_source = props.source;
     const selected_source_type = selected_source.crawlerType
-    const internal_crawler = useState(selected_source.internalCrawler);
+    const internal_crawler = selected_source.internalCrawler;
 
 
     //methods

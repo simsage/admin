@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
 import {closeForm, getSource, updateSources} from "./sourceSlice";
-import SourceTabs from "./forms/SourceTabs";
+import SourceTabs from "./SourceTabs";
 import React, {useEffect, useState} from "react";
 import GeneralForm from "./forms/GeneralForm";
 import CrawlerMetadataForm from "./forms/CrawlerMetadataForm";
@@ -10,6 +10,7 @@ import {getGroupList} from "../groups/groupSlice";
 import {getUserList} from "../users/usersSlice";
 import TimeSelect from "../../common/time-select";
 import Crawler_RssForm from "./forms/Crawler_RssForm";
+import CrawlerBoxForm from "./forms/CrawlerBoxForm";
 
 
 export default function SourceForm(props) {
@@ -279,6 +280,15 @@ export default function SourceForm(props) {
                                         setFormData={setFormData}/>
 
                                 }
+
+                                {selected_source_tab === 'box' &&
+                                    <CrawlerBoxForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
                                 {/*    <CrawlerRss*/}
                                 {/*        theme={theme}*/}
                                 {/*        source_id={selected_source.sourceId}*/}

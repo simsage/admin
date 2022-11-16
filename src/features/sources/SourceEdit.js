@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
 import {closeForm} from "./sourceSlice";
 import SourceForm from "./SourceForm";
-
+import "../../css/crawler.css"
 
 export default function SourceEdit(props){
 

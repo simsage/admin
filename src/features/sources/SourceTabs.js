@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {setSelectedSourceTab} from "../sourceSlice";
+import {setSelectedSourceTab} from "./sourceSlice";
 import {useDispatch, useSelector} from "react-redux";
 
 export default function SourceTabs(props) {

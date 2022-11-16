@@ -4,10 +4,10 @@ import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import SourceFilter from "./SourceFilter";
 import {closeForm, getSources, showAddForm, showEditForm, updateSources} from "./sourceSlice";
-import CrawlerDialog from "./crawlers/crawler-dialog";
 import MessageDialog from "../../common/message-dialog";
 import CrawlerImportExport from "./crawler-import-export";
 import SourceEdit from "./SourceEdit";
+
 
 //TODO:: No need to list documents anymore.
 
