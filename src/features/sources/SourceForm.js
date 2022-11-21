@@ -9,7 +9,7 @@ import AclSetup from "../../common/acl-setup";
 import {getGroupList} from "../groups/groupSlice";
 import {getUserList} from "../users/usersSlice";
 import TimeSelect from "../../common/time-select";
-import Crawler_RssForm from "./forms/Crawler_RssForm";
+import CrawlerRssForm from "./forms/CrawlerRssForm";
 import CrawlerBoxForm from "./forms/CrawlerBoxForm";
 
 
@@ -274,7 +274,7 @@ export default function SourceForm(props) {
                                 {/* Page 2: form for the selected_source_tab  */}
 
                                 {selected_source_tab === 'rss' &&
-                                    <Crawler_RssForm
+                                    <CrawlerRssForm
                                         source={selected_source}
                                         form_data={form_data}
                                         setFormData={setFormData}/>

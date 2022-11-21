@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-export default function Crawler_RssForm(props) {
+export default function CrawlerRssForm(props) {
 
 
     const selected_source = props.source;
