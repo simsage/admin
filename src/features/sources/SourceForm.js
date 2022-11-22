@@ -11,6 +11,7 @@ import {getUserList} from "../users/usersSlice";
 import TimeSelect from "../../common/time-select";
 import CrawlerRssForm from "./forms/CrawlerRssForm";
 import CrawlerBoxForm from "./forms/CrawlerBoxForm";
+import CrawlerDatabaseForm from "./forms/CrawlerDatabaseForm";
 
 
 export default function SourceForm(props) {
@@ -271,7 +272,7 @@ export default function SourceForm(props) {
 
 
 
-                                {/* Page 2: form for the selected_source_tab  */}
+                                {/* Page 2: form for the selected_source_tab - crawler config  */}
 
                                 {selected_source_tab === 'rss' &&
                                     <CrawlerRssForm
@@ -288,6 +289,16 @@ export default function SourceForm(props) {
                                         setFormData={setFormData}/>
 
                                 }
+
+
+                                {selected_source_tab === 'database' &&
+                                    <CrawlerDatabaseForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
 
                                 {/*    <CrawlerRss*/}
                                 {/*        theme={theme}*/}
