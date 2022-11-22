@@ -20,6 +20,7 @@ import CrawlerGDriveForm from "./forms/CrawlerGDriveForm";
 import CrawlerIManageForm from "./forms/CrawlerIManageForm";
 import CrawlerNfsForm from "./forms/CrawlerNfsForm";
 import CrawlerOnedriveForm from "./forms/CrawlerOnedriveForm";
+import CrawlerRestfulForm from "./forms/CrawlerRestfulForm";
 
 
 export default function SourceForm(props) {
@@ -381,6 +382,14 @@ export default function SourceForm(props) {
 
                                 {selected_source_tab === 'onedrive' &&
                                     <CrawlerOnedriveForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+                                {selected_source_tab === 'restfull' &&
+                                    <CrawlerRestfulForm
                                         source={selected_source}
                                         form_data={form_data}
                                         setFormData={setFormData}/>
