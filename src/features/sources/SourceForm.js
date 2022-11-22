@@ -23,6 +23,7 @@ import CrawlerOnedriveForm from "./forms/CrawlerOnedriveForm";
 import CrawlerRestfulForm from "./forms/CrawlerRestfulForm";
 import CrawlerSharepoint365Form from "./forms/CrawlerSharepoint365Form";
 import CrawlerWebForm from "./forms/CrawlerWebForm";
+import CrawlerWordPressForm from "./forms/CrawlerWordPressForm";
 
 
 export default function SourceForm(props) {
@@ -134,7 +135,7 @@ export default function SourceForm(props) {
 
         //rest
         {label: "ACLs", slug: "acls", type: "core"},
-        {label: "schedule", slug: "schedule", type: "core"},
+        {label: "schedule", slug: "schedule", type: "schedule"},
 
     ]
     const [selected_source_tab, setSelectedSourceTab] = useState('general')
@@ -414,6 +415,16 @@ export default function SourceForm(props) {
                                         setFormData={setFormData}/>
 
                                 }
+
+
+                                {selected_source_tab === 'wordpress' &&
+                                    <CrawlerWordPressForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
 
                                 {/*{label: "file crawler", slug: "file", type: "optional"},*/}
                                 {/*{label: "web crawler", slug: "web", type: "optional"},*/}
