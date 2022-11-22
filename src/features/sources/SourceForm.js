@@ -22,6 +22,7 @@ import CrawlerNfsForm from "./forms/CrawlerNfsForm";
 import CrawlerOnedriveForm from "./forms/CrawlerOnedriveForm";
 import CrawlerRestfulForm from "./forms/CrawlerRestfulForm";
 import CrawlerSharepoint365Form from "./forms/CrawlerSharepoint365Form";
+import CrawlerWebForm from "./forms/CrawlerWebForm";
 
 
 export default function SourceForm(props) {
@@ -406,6 +407,13 @@ export default function SourceForm(props) {
 
                                 }
 
+                                {selected_source_tab === 'web' &&
+                                    <CrawlerWebForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
 
                                 {/*{label: "file crawler", slug: "file", type: "optional"},*/}
                                 {/*{label: "web crawler", slug: "web", type: "optional"},*/}
