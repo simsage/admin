@@ -598,13 +598,7 @@ export class CrawlerDialog extends Component {
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                     }
-                                    {t_value === 'metadata' && (c_type === "database" || c_type === "restfull") &&
-                                        <CrawlerMetadataMapper
-                                            theme={theme}
-                                            specificJson={sj}
-                                            onError={(title, errStr) => this.setError(title, errStr)}
-                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                    }
+
                                     {t_value === 'exchange365 crawler' &&
                                     <CrawlerExchange365
                                         theme={theme}
@@ -734,6 +728,13 @@ export class CrawlerDialog extends Component {
                                         specific_json={sj}
                                         onError={(title, errStr) => this.setError(title, errStr)}
                                         onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'metadata' && (c_type === "database" || c_type === "restfull") &&
+                                        <CrawlerMetadataMapper
+                                            theme={theme}
+                                            specificJson={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                     }
                                     {t_value === 'metadata' && c_type !== "restfull" && c_type !== "database" && c_type !== "wordpress" &&
                                         <CrawlerMetadata

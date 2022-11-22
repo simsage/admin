@@ -22,7 +22,8 @@ export default function CrawlerIManageForm(props) {
         setSpecificJson({...specific_json,...data})
     }
 
-    function resetCursor() {
+    function resetCursor(e) {
+        e.preventDefault();
         setData({cursor: '0'});
     }
 
@@ -163,7 +164,7 @@ export default function CrawlerIManageForm(props) {
                                         />
                                     </td>
                                     <td>
-                                        <button className="btn bt-sm btn-primary" onClick={() => resetCursor()}>reset</button>
+                                        <button className="btn bt-sm btn-primary" onClick={(e) => resetCursor(e)}>reset</button>
                                     </td>
                                 </tr>
                                 </tbody>
