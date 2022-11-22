@@ -20,13 +20,13 @@ export default function GeneralForm(props) {
         {"key": "box", "value": "box crawler"},
         {"key": "imanage", "value": "iManage crawler"},
         {"key": "dropbox", "value": "dropbox crawler"},
-        {"key": "wordpress", "value": "WordPress external crawler"},
-        {"key": "gdrive", "value": "Google-drive crawler"},
+        {"key": "wordpress", "value": "wordpress external crawler"},
+        {"key": "gdrive", "value": "google-drive crawler"},
         {"key": "nfs", "value": "nfs external crawler"},
         {"key": "database", "value": "database crawler"},
-        {"key": "restfull", "value": "REST-full crawler"},
-        {"key": "rss", "value": "RSS crawler"},
-        {"key": "external", "value": "External crawler"},
+        {"key": "restfull", "value": "rest-full crawler"},
+        {"key": "rss", "value": "rss crawler"},
+        {"key": "external", "value": "external crawler"},
     ];
 
 
