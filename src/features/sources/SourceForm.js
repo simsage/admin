@@ -17,6 +17,7 @@ import CrawlerExchange365Form from "./forms/CrawlerExchange365Form";
 import CrawlerExternalForm from "./forms/CrawlerExternalForm";
 import CrawlerFileForm from "./forms/CrawlerFileForm";
 import CrawlerGDriveForm from "./forms/CrawlerGDriveForm";
+import CrawlerIManageForm from "./forms/CrawlerIManageForm";
 
 
 export default function SourceForm(props) {
@@ -348,6 +349,13 @@ export default function SourceForm(props) {
                                 }
 
 
+                                {selected_source_tab === 'imanage' &&
+                                    <CrawlerIManageForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
 
                                 {/*{label: "file crawler", slug: "file", type: "optional"},*/}
                                 {/*{label: "web crawler", slug: "web", type: "optional"},*/}
