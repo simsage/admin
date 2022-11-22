@@ -12,6 +12,9 @@ import TimeSelect from "../../common/time-select";
 import CrawlerRssForm from "./forms/CrawlerRssForm";
 import CrawlerBoxForm from "./forms/CrawlerBoxForm";
 import CrawlerDatabaseForm from "./forms/CrawlerDatabaseForm";
+import CrawlerDropboxForm from "./forms/CrawlerDropboxForm";
+import CrawlerExchange365Form from "./forms/CrawlerExchange365Form";
+import CrawlerExternalForm from "./forms/CrawlerExternalForm";
 
 
 export default function SourceForm(props) {
@@ -299,6 +302,49 @@ export default function SourceForm(props) {
 
                                 }
 
+
+                                {selected_source_tab === 'dropbox' &&
+                                    <CrawlerDropboxForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+
+                                {selected_source_tab === 'exchange365' &&
+                                    <CrawlerExchange365Form
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+                                {selected_source_tab === 'external' &&
+                                    <CrawlerExternalForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+
+
+                                //crawlers
+                                {/*{label: "file crawler", slug: "file", type: "optional"},*/}
+                                {/*{label: "web crawler", slug: "web", type: "optional"},*/}
+                                {/*{label: "database crawler", slug: "database", type: "optional"},*/}
+                                {/*{label: "RESTful crawler", slug: "restfull", type: "optional"},*/}
+                                {/*{label: "exchange365 crawler", slug: "exchange365", type: "optional"},*/}
+                                {/*{label: "sharepoint365 crawler", slug: "sharepoint365", type: "optional"},*/}
+                                {/*{label: "dropbox crawler", slug: "dropbox", type: "optional"},*/}
+                                {/*{label: "box crawler", slug: "box", type: "optional"},*/}
+                                {/*{label: "iManage crawler", slug: "imanage", type: "optional"},*/}
+                                {/*{label: "google drive crawler", slug: "gdrive", type: "optional"},*/}
+                                {/*{label: "wordpress crawler", slug: "wordpress", type: "optional"},*/}
+                                {/*{label: "nfs crawler", slug: "nfs", type: "optional"},*/}
+                                {/*{label: "rss crawler", slug: "rss", type: "optional"},*/}
+                                {/*{label: "external crawler", slug: "external", type: "optional"},*/}
 
                                 {/*    <CrawlerRss*/}
                                 {/*        theme={theme}*/}
