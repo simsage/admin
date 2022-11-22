@@ -18,6 +18,8 @@ import CrawlerExternalForm from "./forms/CrawlerExternalForm";
 import CrawlerFileForm from "./forms/CrawlerFileForm";
 import CrawlerGDriveForm from "./forms/CrawlerGDriveForm";
 import CrawlerIManageForm from "./forms/CrawlerIManageForm";
+import CrawlerNfsForm from "./forms/CrawlerNfsForm";
+import CrawlerOnedriveForm from "./forms/CrawlerOnedriveForm";
 
 
 export default function SourceForm(props) {
@@ -122,6 +124,7 @@ export default function SourceForm(props) {
         {label: "nfs crawler", slug: "nfs", type: "optional"},
         {label: "rss crawler", slug: "rss", type: "optional"},
         {label: "external crawler", slug: "external", type: "optional"},
+        {label: "onedrive crawler", slug: "onedrive", type: "optional"},
 
         //metadata
         {label: "metadata", slug: "metadata", type: "meta"},
@@ -351,6 +354,33 @@ export default function SourceForm(props) {
 
                                 {selected_source_tab === 'imanage' &&
                                     <CrawlerIManageForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+
+                                {selected_source_tab === 'nfs' &&
+                                    <CrawlerNfsForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+
+                                {selected_source_tab === 'nfs' &&
+                                    <CrawlerNfsForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+
+                                {selected_source_tab === 'onedrive' &&
+                                    <CrawlerOnedriveForm
                                         source={selected_source}
                                         form_data={form_data}
                                         setFormData={setFormData}/>
