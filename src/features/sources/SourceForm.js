@@ -15,6 +15,8 @@ import CrawlerDatabaseForm from "./forms/CrawlerDatabaseForm";
 import CrawlerDropboxForm from "./forms/CrawlerDropboxForm";
 import CrawlerExchange365Form from "./forms/CrawlerExchange365Form";
 import CrawlerExternalForm from "./forms/CrawlerExternalForm";
+import CrawlerFileForm from "./forms/CrawlerFileForm";
+import CrawlerGDriveForm from "./forms/CrawlerGDriveForm";
 
 
 export default function SourceForm(props) {
@@ -328,9 +330,25 @@ export default function SourceForm(props) {
 
                                 }
 
+                                {selected_source_tab === 'file' &&
+                                    <CrawlerFileForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
 
 
-                                //crawlers
+                                {selected_source_tab === 'gdrive' &&
+                                    <CrawlerGDriveForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+
+
                                 {/*{label: "file crawler", slug: "file", type: "optional"},*/}
                                 {/*{label: "web crawler", slug: "web", type: "optional"},*/}
                                 {/*{label: "database crawler", slug: "database", type: "optional"},*/}
