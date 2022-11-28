@@ -24,6 +24,7 @@ import CrawlerRestfulForm from "./forms/CrawlerRestfulForm";
 import CrawlerSharepoint365Form from "./forms/CrawlerSharepoint365Form";
 import CrawlerWebForm from "./forms/CrawlerWebForm";
 import CrawlerWordPressForm from "./forms/CrawlerWordPressForm";
+import CrawlerMetaMapperForm from "./forms/CrawlerMetaMapperForm";
 
 
 export default function SourceForm(props) {
@@ -53,7 +54,7 @@ export default function SourceForm(props) {
         "schedule": "mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3,mon-4,tue-4,wed-4,thu-4,fri-4,sat-4,sun-4,mon-5,tue-5,wed-5,thu-5,fri-5,sat-5,sun-5,mon-6,tue-6,wed-6,thu-6,fri-6,sat-6,sun-6,mon-8,tue-8,wed-8,thu-8,fri-8,sat-8,sun-8,mon-9,tue-9,wed-9,thu-9,fri-9,sat-9,sun-9,mon-10,tue-10,wed-10,thu-10,fri-10,sat-10,sun-10,mon-11,tue-11,wed-11,thu-11,fri-11,sat-11,sun-11,mon-12,tue-12,wed-12,thu-12,fri-12,sat-12,sun-12,mon-13,tue-13,wed-13,thu-13,fri-13,sat-13,sun-13,mon-14,tue-14,wed-14,thu-14,fri-14,sat-14,sun-14,mon-15,tue-15,wed-15,thu-15,fri-15,sat-15,sun-15,mon-16,tue-16,wed-16,thu-16,fri-16,sat-16,sun-16,mon-17,tue-17,wed-17,thu-17,fri-17,sat-17,sun-17,mon-18,tue-18,wed-18,thu-18,fri-18,sat-18,sun-18,mon-19,tue-19,wed-19,thu-19,fri-19,sat-19,sun-19,mon-20,tue-20,wed-20,thu-20,fri-20,sat-20,sun-20,mon-21,tue-21,wed-21,thu-21,fri-21,sat-21,sun-21,mon-22,tue-22,wed-22,thu-22,fri-22,sat-22,sun-22,mon-23,tue-23,wed-23,thu-23,fri-23,sat-23,sun-23",
         "acls": [],
         "kbId": "",
-        "internalCrawler":""
+        "internalCrawler": ""
     }
 
     const dispatch = useDispatch();
@@ -84,11 +85,10 @@ export default function SourceForm(props) {
     const group_list = useSelector((state) => state.groupReducer.group_list);
 
 
-
     /**
      Set Form Data
      */
-    // load the selected source
+        // load the selected source
     let selected_source = useSelector((state) => state.sourceReducer.selected_source);
     // if selected_source === '' then show add form otherwise show edit form
     const title = selected_source ? "Edit Source: " + selected_source.name : "Add Source";
@@ -104,7 +104,6 @@ export default function SourceForm(props) {
 
     //set the selected source as the form_data
     const [form_data, setFormData] = useState(selected_source);
-
 
 
     /**
@@ -145,12 +144,18 @@ export default function SourceForm(props) {
     }
 
 
-
-
     /**
-        Get React Form Hook
+     Get React Form Hook
      */
-    const { register, handleSubmit, watch, formState: {errors, dirtyFields}, reset, control, getValues} = useForm({mode: 'onChange'});
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: {errors, dirtyFields},
+        reset,
+        control,
+        getValues
+    } = useForm({mode: 'onChange'});
 
     const handleClose = () => {
         dispatch(closeForm());
@@ -190,7 +195,6 @@ export default function SourceForm(props) {
     }, [show_form]);
 
 
-
     //on submit store or update
     const onSubmit = data => {
 
@@ -211,15 +215,12 @@ export default function SourceForm(props) {
     };
 
 
-
-
     //update the crawlerType
     useEffect(() => {
         let selected_val = getValues("crawlerType")
         console.log("selected_val", selected_val)
-        if(selected_val) setFormData({...form_data,crawlerType:selected_val})
-    },[watch("crawlerType")])
-
+        if (selected_val) setFormData({...form_data, crawlerType: selected_val})
+    }, [watch("crawlerType")])
 
 
     //set acl data to form_data
@@ -229,24 +230,26 @@ export default function SourceForm(props) {
         console.log("acl in source form form_data", form_data)
     }
 
-    //set schedule data to form_data
-    function updateSchedule(time) {
-        console.log(time)
-        if (time !== null) {
-            setFormData({...form_data, schedule:time})
-        }
-    }
+    // //set schedule data to form_data
+    // function updateSchedule(time) {
+    //     console.log(time)
+    //     if (time !== null) {
+    //         setFormData({...form_data, schedule:time})
+    //     }
+    // }
 
 
     //set schedule data to form_data
     function updateSchedule(time) {
         console.log(time)
         if (time !== null) {
-            setFormData({...form_data, schedule:time})
+            setFormData({...form_data, schedule: time})
         }
     }
 
 
+    //consoles
+    console.log("elected_source.crawlerType", selected_source.crawlerType)
 
 
     if (!show_form)
@@ -274,15 +277,11 @@ export default function SourceForm(props) {
                                     crawler_type={form_data ? form_data.crawlerType : null}/>
 
 
-
-
                                 {/* Page 1: GeneralForm */}
                                 {selected_source_tab === 'general' &&
                                     <GeneralForm errors={errors} register={register} source={selected_source}
                                                  getValues={getValues}/>
                                 }
-
-
 
 
                                 {/* Page 2: form for the selected_source_tab - crawler config  */}
@@ -454,13 +453,21 @@ export default function SourceForm(props) {
                                 {/*}*/}
 
 
-
                                 {/* Page 3: CrawlerMetadataForm  */}
-                                {selected_source_tab === 'metadata' &&
+                                {selected_source_tab === 'metadata' && (selected_source.crawlerType === "database" || selected_source.crawlerType === "restfull") &&
+
+                                    <CrawlerMetaMapperForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+                                {selected_source_tab === 'metadata' && selected_source.crawlerType !== "restfull" && selected_source.crawlerType !== "database" && selected_source.crawlerType !== "wordpress" &&
                                     <CrawlerMetadataForm
                                         source={selected_source}
                                         form_data={form_data}
                                         setFormData={setFormData}/>
+
                                     // {selected_source_tab === 'metadata' && c_type !== "restfull" && c_type !== "database" && c_type !== "wordpress" &&
                                     //     <CrawlerMetadataForm
                                     // theme={theme}
@@ -468,8 +475,6 @@ export default function SourceForm(props) {
                                     // onError={(title, errStr) => this.setError(title, errStr)}
                                     // onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                 }
-
-
 
 
                                 {/* Page 4: AclSetup  */}
@@ -492,7 +497,6 @@ export default function SourceForm(props) {
                                             group_list={group_list}/>
                                     </div>
                                 }
-
 
 
                                 {/* Page 5: schedule TimeSelect  */}

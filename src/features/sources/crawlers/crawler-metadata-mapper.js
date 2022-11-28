@@ -37,7 +37,6 @@ export class CrawlerMetadataMapper extends Component {
             onSave: props.onSave,
             onError: props.onError,
             sourceId: 0,
-
             // metadata set
             specificJson: props.specificJson ? props.specificJson : {},
         };
@@ -52,12 +51,12 @@ export class CrawlerMetadataMapper extends Component {
         if (nextProps !== null) {
             this.setState(this.construct_data({
                 specificJson: nextProps.specificJson ? nextProps.specificJson : {},
-
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
             }));
         }
     }
+
     get_md_list() {
         return this.state && this.state.specificJson && this.state.specificJson.metadata_list ?
             this.state.specificJson.metadata_list : [];
@@ -229,11 +228,19 @@ export class CrawlerMetadataMapper extends Component {
         }
     }
     needs_metadata_field(md) {
-        return md && md.key && (md.key === "category" || md.key === "number range" || md.key === "two level category" ||
-                md.key === "monetary x 100 range" || md.key === "monetary range" || md.key === "star rating" ||
-                md.key === "created date range" || md.key === "last modified date ranges" ||
-                md.key === "select if true" || md.key === "csv string");
+        return md && md.key &&
+            (   md.key === "category" ||
+                md.key === "number range" ||
+                md.key === "two level category" ||
+                md.key === "monetary x 100 range" ||
+                md.key === "monetary range" ||
+                md.key === "star rating" ||
+                md.key === "created date range" ||
+                md.key === "last modified date ranges" ||
+                md.key === "select if true" ||
+                md.key === "csv string");
     }
+
     render() {
         if (this.state.has_error) {
             return <h1>crawler-metadata-mapper.js: Something went wrong.</h1>;

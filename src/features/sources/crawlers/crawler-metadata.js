@@ -19,6 +19,15 @@ const metadata_list = [
 ];
 
 
+
+
+
+
+
+
+
+
+
 export class CrawlerMetadata extends Component {
     constructor(props) {
         super(props);
@@ -46,6 +55,11 @@ export class CrawlerMetadata extends Component {
                 onError: nextProps.onError,
             });
         }
+    }
+
+    get_md_list() {
+        return this.state && this.state.specific_json && this.state.specific_json.metadata_list ?
+            this.state.specific_json.metadata_list : [];
     }
     construct_data(md_list) {
         // set the order field
@@ -99,6 +113,7 @@ export class CrawlerMetadata extends Component {
             }
         }
     }
+
     setDisplayName(record, index, value) {
         const md_list = this.get_md_list();
         if (index >= 0 && index < md_list.length) {
@@ -213,10 +228,7 @@ export class CrawlerMetadata extends Component {
             }
         }
     }
-    get_md_list() {
-        return this.state && this.state.specific_json && this.state.specific_json.metadata_list ?
-               this.state.specific_json.metadata_list : [];
-    }
+
     needs_metadata_field(md) {
         return (md.metadata !== null);
     }

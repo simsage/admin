@@ -209,7 +209,7 @@
 }
 
 .crawler-page .selector-column {
-    float: left;
+    /*float: left;*/
     margin-left: 10px;
     width: 220px;
     padding: 5px;
@@ -275,7 +275,7 @@
 }
 
 .crawler-page .up-arrow {
-    float: left;
+    /*float: left;*/
     margin-top: -16px;
     padding: 2px;
     font-size: 26px;
