@@ -66,6 +66,7 @@ export default function SourceHome(props){
 
 
 
+
     function handleAddCrawler() {
         dispatch(showAddForm());
         // this.setState({open: true, selected_source: empty_crawler, title: 'Create New Crawler'});

@@ -25,6 +25,7 @@ import CrawlerSharepoint365Form from "./forms/CrawlerSharepoint365Form";
 import CrawlerWebForm from "./forms/CrawlerWebForm";
 import CrawlerWordPressForm from "./forms/CrawlerWordPressForm";
 import CrawlerMetaMapperForm from "./forms/CrawlerMetaMapperForm";
+import {showError} from "../auth/authSlice";
 
 
 export default function SourceForm(props) {
@@ -104,6 +105,8 @@ export default function SourceForm(props) {
 
     //set the selected source as the form_data
     const [form_data, setFormData] = useState(selected_source);
+
+    const [has_error,setError] = useState({title:undefined,message:undefined})
 
 
     /**
@@ -195,6 +198,16 @@ export default function SourceForm(props) {
     }, [show_form]);
 
 
+
+    function dispatchErrorMsg(errMsg){
+        if(errMsg && errMsg.title && errMsg.text){
+            dispatch(showError({"text": "Organisation-id missing, please select an organisation first.", "title": "error"}))
+        }else{
+            console.error("dispatchErrorMsg called with invalid parameters")
+        }
+
+    }
+
     //on submit store or update
     const onSubmit = data => {
 
@@ -229,14 +242,6 @@ export default function SourceForm(props) {
         setFormData({...form_data, acls: list})
         console.log("acl in source form form_data", form_data)
     }
-
-    // //set schedule data to form_data
-    // function updateSchedule(time) {
-    //     console.log(time)
-    //     if (time !== null) {
-    //         setFormData({...form_data, schedule:time})
-    //     }
-    // }
 
 
     //set schedule data to form_data
@@ -279,8 +284,11 @@ export default function SourceForm(props) {
 
                                 {/* Page 1: GeneralForm */}
                                 {selected_source_tab === 'general' &&
-                                    <GeneralForm errors={errors} register={register} source={selected_source}
-                                                 getValues={getValues}/>
+                                    <GeneralForm
+                                        errors={errors}
+                                        register={register}
+                                        source={selected_source}
+                                        getValues={getValues}/>
                                 }
 
 
@@ -425,34 +433,6 @@ export default function SourceForm(props) {
                                 }
 
 
-                                {/*{label: "file crawler", slug: "file", type: "optional"},*/}
-                                {/*{label: "web crawler", slug: "web", type: "optional"},*/}
-                                {/*{label: "database crawler", slug: "database", type: "optional"},*/}
-                                {/*{label: "RESTful crawler", slug: "restfull", type: "optional"},*/}
-                                {/*{label: "exchange365 crawler", slug: "exchange365", type: "optional"},*/}
-                                {/*{label: "sharepoint365 crawler", slug: "sharepoint365", type: "optional"},*/}
-                                {/*{label: "dropbox crawler", slug: "dropbox", type: "optional"},*/}
-                                {/*{label: "box crawler", slug: "box", type: "optional"},*/}
-                                {/*{label: "iManage crawler", slug: "imanage", type: "optional"},*/}
-                                {/*{label: "google drive crawler", slug: "gdrive", type: "optional"},*/}
-                                {/*{label: "wordpress crawler", slug: "wordpress", type: "optional"},*/}
-                                {/*{label: "nfs crawler", slug: "nfs", type: "optional"},*/}
-                                {/*{label: "rss crawler", slug: "rss", type: "optional"},*/}
-                                {/*{label: "external crawler", slug: "external", type: "optional"},*/}
-
-                                {/*    <CrawlerRss*/}
-                                {/*        theme={theme}*/}
-                                {/*        source_id={selected_source.sourceId}*/}
-                                {/*        organisation_id={selected_source.organisation_id}*/}
-                                {/*        kb_id={selected_source.kb_id}*/}
-                                {/*        endpoint={selected_source.specificJson.endpoint}*/}
-                                {/*        initial_feed={selected_source.specificJson.initial_feed}*/}
-                                {/*        specific_json={selected_source.specificJson}*/}
-                                {/*        onError={(title, errStr) => this.setError(title, errStr)}*/}
-                                {/*        onSave={(specific_json) => this.update_specific_json(specific_json)}/>*/}
-                                {/*}*/}
-
-
                                 {/* Page 3: CrawlerMetadataForm  */}
                                 {selected_source_tab === 'metadata' && (selected_source.crawlerType === "database" || selected_source.crawlerType === "restfull") &&
 
@@ -472,7 +452,7 @@ export default function SourceForm(props) {
                                     //     <CrawlerMetadataForm
                                     // theme={theme}
                                     // specific_json={sj}
-                                    // onError={(title, errStr) => this.setError(title, errStr)}
+
                                     // onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                 }
 

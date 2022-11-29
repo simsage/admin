@@ -52,6 +52,8 @@ const authSlice = createSlice({
         },
 
         showError: (state, action) => {
+            // alert("test")
+            console.log("showError")
             if (action && action.payload && action.payload.title && action.payload.text) {
                 state.is_error = true;
                 state.error_title = action.payload.title;

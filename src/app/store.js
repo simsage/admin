@@ -15,7 +15,7 @@ import synonymSlice from "../features/synonyms/synonymSlice";
 import semanticSlice from "../features/semantics/semanticSlice";
 import synsetSlice from "../features/synsets/synsetSlice";
 import categorizationSlice from "../features/categorization/categorizationSlice";
-
+import alertSlice from "../features/alerts/alertSlice"
 /**
  * Logs all actions and states after they are dispatched.
  */
@@ -38,6 +38,7 @@ export const store = configureStore({
     semanticReducer:semanticSlice,
     synsetReducer:synsetSlice,
     categorizationReducer:categorizationSlice,
+    alertReducer:alertSlice,
 
   },
   middleware:(getDefaultMiddleware => getDefaultMiddleware().concat(logger))
