@@ -51,15 +51,15 @@ const authSlice = createSlice({
             state.selected_knowledge_base_id = action.payload;
         },
 
-        showError: (state, action) => {
-            // alert("test")
-            console.log("showError")
-            if (action && action.payload && action.payload.title && action.payload.text) {
-                state.is_error = true;
-                state.error_title = action.payload.title;
-                state.error_text = action.payload.text;
-            }
-        },
+        // showError: (state, action) => {
+        //     // alert("test")
+        //     console.log("showError")
+        //     if (action && action.payload && action.payload.title && action.payload.text) {
+        //         state.is_error = true;
+        //         state.error_title = action.payload.title;
+        //         state.error_text = action.payload.text;
+        //     }
+        // },
 
         closeError: (state) => {
             state.is_error = false;
@@ -131,6 +131,6 @@ export const simSageSignIn = createAsyncThunk(
     }
 );
 
-export const {reset, login, showAccount, closeAllMenus, setSelectedOrganisation, showError, closeError,
+export const {reset, login, showAccount, closeAllMenus, setSelectedOrganisation, closeError,
               logout, setJwt, setSelectedKB } = authSlice.actions
 export default authSlice.reducer;

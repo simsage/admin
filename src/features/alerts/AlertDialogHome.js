@@ -1,8 +1,9 @@
 import {useDispatch, useSelector} from "react-redux";
 import {closeError} from "../auth/authSlice";
 import {closeAlert} from "./alertSlice";
+import ErrorAlert from "./ErrorAlert";
 
-export default function AlertDialog(props){
+export default function AlertDialogHome(props){
 
     const show_alert = useSelector((state) => state.alertReducer.show_alert)
     const alert_type = useSelector((state) => state.alertReducer.alert_type)
@@ -20,20 +21,34 @@ export default function AlertDialog(props){
     return(
         <>
             {alert_type === 'alert-error' &&
-                <div>Alert error</div>
+               <ErrorAlert />
             }
 
+            //todo: implement alert-danger alert
             {alert_type === 'alert-danger' &&
-                <div>Alert danger</div>
+                <ErrorAlert />
             }
 
+            //todo: implement alert-success alert
             {alert_type === 'alert-success' &&
-                <div>Alert success</div>
+                <ErrorAlert />
             }
 
+            //todo: implement alert-warning alert
             {alert_type === 'alert-warning' &&
-                <div>Alert warning</div>
+                <ErrorAlert />
             }
+
+            //todo: implement alert-primary alert
+            {alert_type === 'alert-primary' &&
+                <ErrorAlert />
+            }
+
+            //todo: implement alert-info alert
+            {alert_type === 'alert-info' &&
+                <ErrorAlert />
+            }
+
         </>
     )
 }

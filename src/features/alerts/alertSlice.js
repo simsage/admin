@@ -22,38 +22,42 @@ const reducers = {
     showAlert: (state, action) => {
         state.show_alert = true
         //default alert_type = 'alert-warning'
-        state.alert_type = action.alert_type ? action.alert_type : 'alert-warning'
-        state.title = action.title
-        state.message = action.message
+        state.alert_type = action.payload.alert_type ? action.payload.alert_type : 'alert-warning'
+        state.title = action.payload.title
+        state.message = action.payload.message
         console.log("Alert: ", state.alert_type, ' | ', state.title, ' | ', state.message)
     },
 
     showErrorAlert: (state, action) => {
-        action.alert_type = 'alert-error'
-        state.title = action.title
-        state.message = action.message
+        state.show_alert = true
+        state.alert_type = 'alert-error'
+        state.title = action.payload.title
+        state.message = action.payload.message
         console.log("Error Alert: ", state.title, ' => ', state.message)
     },
 
     showDangerAlert: (state, action) => {
-        action.alert_type = 'alert-danger'
-        state.title = action.title
-        state.message = action.message
+        state.show_alert = true
+        state.alert_type = 'alert-danger'
+        state.title = action.payload.title
+        state.message = action.payload.message
         console.log("Error Alert: ", state.title, ' => ', state.message)
     },
 
     showWarningAlert: (state, action) => {
         state.show_alert = true
         state.alert_type = 'alert-warning'
-        state.title = action.title
-        state.message = action.message
+        state.title = action.payload.title
+        state.message = action.payload.message
+        console.log("Error Alert: ", state.title, ' => ', state.message)
     },
 
     showSuccessAlert: (state, action) => {
         state.show_alert = true
         state.alert_type = 'alert-success'
-        state.title = action.title
-        state.message = action.message
+        state.title = action.payload.title
+        state.message = action.payload.message
+        console.log("Error Alert: ", state.title, ' => ', state.message)
     },
 
     closeAlert: (state) => {

@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {OrganisationHome} from "../organisations/OrganisationHome";
 import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import ErrorDialog from "../alerts/ErrorDialog";
-import AlertDialog from "../alerts/AlertDialog";
+import AlertDialogHome from "../alerts/AlertDialogHome";
 import {showErrorAlert} from "../alerts/alertSlice";
 
 export default function Home() {
@@ -22,9 +22,8 @@ export default function Home() {
     ]
 
 
-
-
     function changeNav(slug) {
+
         setSelectedSubNav(slug);
         // load the knowledge-bases (get the list) if we click the knowledge-bases slug
         if (slug === "knowledge-bases") {
@@ -51,7 +50,7 @@ export default function Home() {
             }
 
             <ErrorDialog />
-            <AlertDialog />
+            <AlertDialogHome />
 
         </div>
     );

@@ -25,7 +25,7 @@ import CrawlerSharepoint365Form from "./forms/CrawlerSharepoint365Form";
 import CrawlerWebForm from "./forms/CrawlerWebForm";
 import CrawlerWordPressForm from "./forms/CrawlerWordPressForm";
 import CrawlerMetaMapperForm from "./forms/CrawlerMetaMapperForm";
-import {showError} from "../auth/authSlice";
+import {showErrorAlert} from "../alerts/alertSlice";
 
 
 export default function SourceForm(props) {
@@ -201,7 +201,7 @@ export default function SourceForm(props) {
 
     function dispatchErrorMsg(errMsg){
         if(errMsg && errMsg.title && errMsg.text){
-            dispatch(showError({"text": "Organisation-id missing, please select an organisation first.", "title": "error"}))
+            dispatch(showErrorAlert({"message": "Organisation-id missing, please select an organisation first.", "title": "error"}))
         }else{
             console.error("dispatchErrorMsg called with invalid parameters")
         }

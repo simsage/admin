@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
 import Api from "../../common/api";
 import {addOrUpdate, closeForm} from "./knowledgeBaseSlice";
-import {showError} from "../auth/authSlice";
+import {showErrorAlert} from "../alerts/alertSlice";
 
 export default function KnowledgeBaseForm(props) {
 
@@ -26,7 +26,7 @@ export default function KnowledgeBaseForm(props) {
 
     function showMissingOrganisationError() {
         if (!organisation_id) {
-            dispatch(showError({"text": "Organisation-id missing, please select an organisation first.", "title": "error"}));
+            dispatch(showErrorAlert({"message": "Organisation-id missing, please select an organisation first.", "title": "error"}));
             handleClose();
         }
     }
