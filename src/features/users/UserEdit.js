@@ -6,6 +6,7 @@ import Api from "../../common/api";
 import {hasRole} from "../../common/helpers";
 import {getGroupList} from "../groups/groupSlice";
 import {set} from "react-hook-form";
+import SubNav from "../../includes/sub-nav";
 
 export function UserEdit( {filter} ){
 
@@ -15,6 +16,19 @@ export function UserEdit( {filter} ){
 
     const session = useSelector((state) => state.authReducer.session);
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
+
+    const [selected_sub_nav, setSelectedSubNav] = useState('users')
+
+    const sub_nav = [
+        {label: "Details", slug:"details" },
+        {label: "Roles", slug:"roles" },
+        {label: "Groups", slug:"groups" },
+    ]
+
+    function changeNav(slug){
+        console.log(slug)
+        setSelectedTab(slug);
+    }
 
     const show_user_form = useSelector((state) => state.usersReducer.show_user_form);
     const user_id = useSelector( (state) => state.usersReducer.edit_id);
@@ -237,41 +251,14 @@ export function UserEdit( {filter} ){
                 <div className="modal-content">
                     <div className="modal-header">{user_id ? "Edit User" : "Add New User"}</div>
                     <div className="modal-body">
-                        <ul className="nav nav-tabs">
-                            <li className="nav-item nav-cursor">
-                                <div className={"nav-link " + (selectedTab === 'details' ? 'active' : '')}
-                                     onClick={() => setSelectedTab( 'details')}>user details</div>
-                            </li>
-                            <li className="nav-item nav-cursor">
-                                <div className={"nav-link " + (selectedTab === 'roles' ? 'active' : '')}
-                                     onClick={() => setSelectedTab('roles')}>roles</div>
-                            </li>
-                            <li className="nav-item nav-cursor">
-                                <div className={"nav-link " + (selectedTab === 'groups' ? 'active' : '')}
-                                     onClick={() => setSelectedTab('groups')}>groups</div>
-                            </li>
-                        </ul>
 
+                        <div className="nav nav-tabs mb-3 overflow-auto">
+                            <SubNav sub_nav={sub_nav} active_item={selectedTab} onClick={changeNav} />
+                        </div>
 
                         {
                             selectedTab === 'details' &&
                             <div className="tab-content">
-
-                                <div className="control-row">
-                                    <span className="label-2">email</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="email"
-                                                       value={email}
-                                                       onBlur={() => fillNames()}
-                                                       onChange={(event) => setEmail(event.target.value)}
-                                                />
-                                                </form>
-                                        </span>
-                                </div>
 
                                 <div className="control-row">
                                     <span className="label-2">first name</span>
@@ -300,7 +287,26 @@ export function UserEdit( {filter} ){
                                             </form>
                                         </span>
                                 </div>
+
+
+                                <div className="control-row">
+                                    <span className="label-2">email</span>
+                                    <span className="text">
+                                            <form>
+                                                <input type="text" className="form-control"
+                                                       autoFocus={true}
+                                                       autoComplete="false"
+                                                       placeholder="email"
+                                                       value={email}
+                                                       onBlur={() => fillNames()}
+                                                       onChange={(event) => setEmail(event.target.value)}
+                                                />
+                                                </form>
+                                        </span>
+                                </div>
                             </div>
+
+
                         }
 
                         {

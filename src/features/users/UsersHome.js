@@ -21,15 +21,15 @@ export function UsersHome(){
     const dispatch = useDispatch();
 
 
-    const user = useSelector((state) => state.authReducer.user)
+    const user_account = useSelector((state) => state.authReducer.user)
     const user_list = useSelector((state) => state.usersReducer.user_list)
     const user_list_status = useSelector((state) => state.usersReducer.status)
     const session = useSelector((state)=>state.authReducer.session)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
     const load_data = useSelector((state) => state.usersReducer.data_status)
 
-    const isAdmin = hasRole(user, ['admin']);
-    const isManager = hasRole(user, ['manager']);
+    const isAdmin = hasRole(user_account, ['admin']);
+    const isManager = hasRole(user_account, ['manager']);
 
     console.log("isAdmin:",(isAdmin)?" Yes":"No",session)
     console.log("isManager:",(isManager)?" Yes":"No")
@@ -186,7 +186,7 @@ export function UsersHome(){
 
                             return <tr key={user.id} >
 
-                                <td className="pt-3 px-4 pb-3">{user.firstName} {user.surname}</td>
+                                <td className="pt-3 px-4 pb-3">{user.firstName} {user.surname} <span className="fw-light pt-2">{user.email === user_account.email ? '(you)' : ""}</span> </td>
                                 <td className="pt-3 px-4 pb-3 fw-light">{user.email}</td>
                                 <td className="pt-3 px-4 pb-0" style={{width:"250px"}}>
                                     <div className="d-flex flex-wrap">
