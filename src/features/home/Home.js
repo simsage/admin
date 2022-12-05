@@ -5,9 +5,7 @@ import LogHome from "./LogHome";
 import {useDispatch, useSelector} from "react-redux";
 import {OrganisationHome} from "../organisations/OrganisationHome";
 import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
-import ErrorDialog from "../alerts/ErrorDialog";
 import AlertDialogHome from "../alerts/AlertDialogHome";
-import {showErrorAlert} from "../alerts/alertSlice";
 
 export default function Home() {
     const [selected_sub_nav, setSelectedSubNav] = useState('knowledge-bases')
@@ -49,7 +47,7 @@ export default function Home() {
                 <OrganisationHome />
             }
 
-            <ErrorDialog />
+            {/*<ErrorDialog />*/}
             <AlertDialogHome />
 
         </div>

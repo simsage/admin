@@ -29,6 +29,9 @@ const reducers = {
     },
 
     showErrorAlert: (state, action) => {
+
+        console.log("showErrorAlert: event received", action.payload.title, ' => ', action.payload.message)
+
         state.show_alert = true
         state.alert_type = 'alert-error'
         state.title = action.payload.title

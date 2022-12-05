@@ -3,6 +3,8 @@ import {useForm} from "react-hook-form";
 import {closeForm} from "./sourceSlice";
 import SourceForm from "./SourceForm";
 import "../../css/crawler.css"
+import AlertDialogHome from "../alerts/AlertDialogHome";
+import React from "react";
 
 export default function SourceEdit(props){
 
@@ -14,6 +16,12 @@ export default function SourceEdit(props){
     if (!show_form)
         return (<div/>);
     return (
-        <SourceForm />
+        <>
+
+            <SourceForm />
+
+            <AlertDialogHome />
+        </>
+
     );
 }

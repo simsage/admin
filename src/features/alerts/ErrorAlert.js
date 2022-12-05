@@ -4,6 +4,7 @@ import {closeAlert} from "./alertSlice";
 
 export default function ErrorAlert(props){
 
+    console.log("showErrorAlert: load page")
     const show_alert = useSelector((state) => state.alertReducer.show_alert)
     const alert_type = useSelector((state) => state.alertReducer.alert_type)
     const title = useSelector((state) => state.alertReducer.title)
@@ -21,7 +22,7 @@ export default function ErrorAlert(props){
 
     return(
         <div>
-            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+            <div id={"error_alert"} className="modal alert-warning" tabIndex="-1" role="dialog" style={{display: "inline", 'zIndex':9999}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
