@@ -7,6 +7,7 @@ import {appCreators} from "../actions/appActions";
 import UserEdit from "./user-edit";
 import Api from "../common/api";
 import {Pagination} from "../common/pagination";
+import UserImport from "../common/user-import";
 
 import '../css/users.css';
 
@@ -34,33 +35,10 @@ export class UserManager extends React.Component {
         console.log(error, info);
     }
     numUsers(organisation_id, isAdmin) {
-        let count = 0;
-        for (const i in this.props.user_list) {
-            const user = this.props.user_list[i];
-            const roleStr = UserManager.formatRoles(this.props.selected_organisation_id, user.roles);
-            if (isAdmin || roleStr.length > 0) { // has a role or isAdmin?
-                count += 1;
-            }
-        }
-        return count;
+        return this.props.user_count;
     }
     getUsers(isAdmin) {
-        const paginated_list = [];
-        const first = this.props.user_page * this.props.user_page_size;
-        const last = first + parseInt(this.props.user_page_size);
-        let index = 0;
-        for (const i in this.props.user_list) {
-            // paginate all users - but only those that have roles in this organisation
-            const user = this.props.user_list[i];
-            const roleStr = UserManager.formatRoles(this.props.selected_organisation_id, user.roles);
-            if (isAdmin || roleStr.length > 0) { // has a role or is admin?
-                if (index >= first && index < last) {
-                    paginated_list.push(user);
-                }
-                index += 1; // one more user in this set of roles
-            }
-        }
-        return paginated_list;
+        return this.props.user_list;
     }
     changePage(page) {
         this.props.setUserPage(page);
@@ -99,6 +77,8 @@ export class UserManager extends React.Component {
                             edit_groups: [],
                         })
     }
+    importUsers() {
+    }
     editUser(user) {
         if (user) {
             // only allow roles that apply to this organisation that this user has
@@ -128,6 +108,18 @@ export class UserManager extends React.Component {
                 edit_groups: user.groupList,
             })
         }
+    }
+    doUpdate(data) {
+        this.setState({
+            edit_user_id: data.user_id,
+            edit_first_name: data.first_name,
+            edit_surname: data.surname,
+            edit_email: data.email,
+            edit_password: data.password,
+            edit_roles: data.roles,
+            edit_kb_list: data.kb_list,
+            edit_groups: data.groups,
+        })
     }
     deleteUserAsk(user, isAdmin) {
         if (user && this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0) {
@@ -168,7 +160,7 @@ export class UserManager extends React.Component {
         }
         return false;
     }
-    editDone(save, data) {
+    editDone(save, data, on_success) {
         if (!save) {
             this.setState({edit_user: false, user: null,
                 edit_user_id: "", edit_first_name: "", edit_surname: "", edit_email: "",
@@ -197,13 +189,16 @@ export class UserManager extends React.Component {
 
                     // organisation_id, user_id, name, surname, email, password, role_list, kb_list
                     this.props.updateUser(this.props.selected_organisation_id, data.user_id,
-                        data.first_name, data.surname, data.email, data.password, data.roles, data.kb_list, data.groups);
+                        data.first_name, data.surname, data.email, data.password, data.roles, data.kb_list, data.groups, () => {
+                            this.setState({
+                                edit_user: false, user: null,
+                                edit_user_id: "", edit_first_name: "", edit_surname: "", edit_email: "",
+                                edit_password: "", edit_roles: [], edit_kb_list: [], edit_groups: [],
+                            });
+                            if (on_success)
+                                on_success();
+                        });
 
-                    this.setState({
-                        edit_user: false, user: null,
-                        edit_user_id: "", edit_first_name: "", edit_surname: "", edit_email: "",
-                        edit_password: "", edit_roles: [], edit_kb_list: [], edit_groups: [],
-                    });
 
                 }
             } else {
@@ -214,13 +209,19 @@ export class UserManager extends React.Component {
         }
     }
     handleSearchTextKeydown(event) {
-        if (event.key === "Enter" && this.props.selected_organisation_id) {
-            this.props.getUsers(this.props.selected_organisation_id);
+        if (event.key === "Enter") {
+            this.props.getUsers();
         }
     }
     isVisible() {
         return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0 &&
             this.props.selected_organisation && this.props.selected_organisation.length > 0;
+    }
+    userUploadDone() {
+        this.props.openDialog("SimSage is importing your data.  Check 'user manager' periodically for updates.", "Uploading User/Groups/Roles", () => this.uploadedClose());
+    }
+    uploadedClose() {
+        this.props.closeDialog();
     }
     render() {
         const theme = this.props.theme;
@@ -314,9 +315,14 @@ export class UserManager extends React.Component {
                                     })
                                 }
                                 <tr>
-                                    <td />
-                                    <td />
-                                    <td />
+                                    <td colSpan={3}>
+                                        {isAdmin &&
+                                            <div className="uploader">
+                                                <UserImport onUploadDone={() => this.userUploadDone()}
+                                                            onError={(errStr) => this.props.setError("Error", errStr)}/>
+                                            </div>
+                                        }
+                                    </td>
                                     <td />
                                     <td>
                                         {this.props.selected_organisation_id.length > 0 && (isAdmin || isManager) &&
@@ -361,6 +367,7 @@ export class UserManager extends React.Component {
                               knowledge_base_list={this.props.knowledge_base_list}
                               setError={this.props.setError}
                               onClose={(save, data) => this.editDone(save, data)}
+                              onUpdate={(data) => this.doUpdate(data)}
                               onError={(title, msg) => this.props.setError(title, msg)}
                     />
 
@@ -386,6 +393,7 @@ const mapStateToProps = function(state) {
         user: state.appReducer.user,
         user_page: state.appReducer.user_page,
         user_page_size: state.appReducer.user_page_size,
+        user_count: state.appReducer.user_count, // total user count
     };
 };
 

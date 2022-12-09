@@ -11,22 +11,39 @@ export class CategoryEdit extends Component {
         this.state = {
             has_error: false,
             open: props.open,
-
-            displayName: "",
-            metadata: "",
-            categorizationList: [{category: "", wordCloud: ""}],
+            categorizationLabel: props.category && props.category.categorizationLabel ? props.category.categorizationLabel : "",
+            rule: props.category && props.category.rule ? props.category.rule : "",
         };
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
         console.log(error, info);
     }
+
+    // mirrors RockUtils.isValidMetadataName(str) on server-side
+    isValidLabel(str) {
+        if (str && str.length > 0) {
+            for (let i = 0; i < str.length; i++) {
+                if (!((str[i] >= 'a' && str[i] <= 'z') || (str[i] >= 'A' && str[i] <= 'Z') ||
+                      (str[i] >= '0' && str[i] <= '9') || str[i] === '-' || str[i] === '_')) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     handleSave() {
         if (this.props.onSave) {
-            if (this.state.displayName.trim().length > 0 && this.state.metadata.trim().length > 0 && this.state.categorizationList.length > 0) {
-                this.props.onSave({displayName: this.state.displayName, metadata: this.state.metadata, categorizationList: this.state.categorizationList});
+            if (this.state.categorizationLabel.trim().length > 1 && this.state.rule.trim().length > 2) {
+                if (!this.isValidLabel(this.state.categorizationLabel)) {
+                    this.props.onError("Invalid characters in metadata label.  A label can only contain numbers (0..9), letters (a..z, A..Z) or underscore (_) or hyphen (-).");
+                } else {
+                    this.props.onSave({categorizationLabel: this.state.categorizationLabel, rule: this.state.rule});
+                }
             } else if (this.props.onError) {
-                this.props.onError("display-name, metadata, and category-list cannot be empty");
+                this.props.onError("categorization label and rule cannot be empty");
             }
         }
     }
@@ -36,66 +53,19 @@ export class CategoryEdit extends Component {
         }
     }
     UNSAFE_componentWillReceiveProps(props) {
-        const categorizationList = props.category && Api.defined(props.category.categorizationList) ? props.category.categorizationList : [];
-        if (categorizationList.length === 0) {
-            categorizationList.push({category: "", wordCloud: ""});
-        }
-        this.setState({
-            open: props.open,
-
-            displayName: props.category && Api.defined(props.category.displayName) ? props.category.displayName : "",
-            metadata: props.category && Api.defined(props.category.metadata) ? props.category.metadata : "",
-            categorizationList: categorizationList,
-        })
-    }
-    newCategory() {
-        const cl = this.state.categorizationList;
-        cl.push({category: "", wordCloud: ""});
-        this.setState({categorizationList: cl});
-    }
-    deleteCategory(index) {
-        const newList = [];
-        const cl = this.state.categorizationList;
-        for (let i = 0; i < cl.length; i++) {
-            if (i !== index) {
-                newList.push(cl[i]);
-            }
-        }
-        this.setState({categorizationList: newList});
-    }
-    getCategory(index) {
-        const cl = this.state.categorizationList;
-        if (index >= 0 && index < cl.length) {
-            return cl[index].category;
-        }
-        return "";
-    }
-    setCategory(index, text) {
-        const cl = this.state.categorizationList;
-        if (index >= 0 && index < cl.length) {
-            cl[index].category = text;
-            this.setState({categorizationList: cl});
-        }
-    }
-    getWC(index) {
-        const cl = this.state.categorizationList;
-        if (index >= 0 && index < cl.length) {
-            return cl[index].wordCloud;
-        }
-        return "";
-    }
-    setWC(index, text) {
-        const cl = this.state.categorizationList;
-        if (index >= 0 && index < cl.length) {
-            cl[index].wordCloud = text;
-            this.setState({categorizationList: cl});
+        if (props.category) {
+            const cat = props.category;
+            this.setState({
+                open: props.open,
+                categorizationLabel: cat.categorizationLabel && Api.defined(cat.categorizationLabel) ? cat.categorizationLabel : "",
+                rule: cat.rule && Api.defined(cat.rule) ? cat.rule : "",
+            })
         }
     }
     render() {
         if (this.state.has_error) {
             return <h1>category-edit.js: Something went wrong.</h1>;
         }
-        const categorizationList = this.state.categorizationList;
         if (!this.state.open)
             return (<div />);
         return (
@@ -108,70 +78,33 @@ export class CategoryEdit extends Component {
                             <div>
 
                                 <div className="control-row">
-                                    <span className="label-2">display name</span>
+                                    <span className="label-2">category label</span>
                                     <span className="text">
                                         <input type="text" className="form-control"
                                                autoFocus={true}
-                                               onChange={(event) => this.setState({displayName: event.target.value})}
+                                               onChange={(event) => this.setState({categorizationLabel: event.target.value})}
                                                placeholder={"display name"}
-                                               value={this.state.displayName} />
+                                               value={this.state.categorizationLabel} />
                                     </span>
                                 </div>
 
                                 <div className="control-row">
-                                    <span className="label-2">metadata name</span>
+                                    <span className="label-2">rule</span>
                                     <span className="text">
-                                        <input type="text" className="form-control"
-                                               onChange={(event) => this.setState({metadata: event.target.value})}
-                                               placeholder={"metadata name (key)"}
-                                               value={this.state.metadata} />
+                                        <textarea className="input-area category-text-area-width"
+                                                  onChange={(event) => this.setState({rule: event.target.value})}
+                                                  placeholder={"SimSage rule defining the matching criteria"}
+                                                  rows={4}
+                                                  value={this.state.rule}
+                                        />
                                     </span>
                                 </div>
-
-                                {
-                                    categorizationList && categorizationList.map((item, index) => {
-                                        return (
-                                            <div key={index} className="category-list">
-                                                <div className="category-row">
-                                                    <span className="label-area">description / value</span>
-                                                    <span className="category-text-area-width">
-                                                        <input type="text" className="form-control"
-                                                               onChange={(event) => this.setCategory(index, event.target.value)}
-                                                               placeholder={"metadata value"}
-                                                               value={this.getCategory(index)} />
-                                                    </span>
-                                                </div>
-
-                                                <div className="category-row">
-                                                    <span className="label-area">{"word cloud "}</span>
-                                                    <span className="category-area-width">
-                                                        <textarea className="input-area category-text-area-width"
-                                                                  onChange={(event) => this.setWC(index, event.target.value)}
-                                                                  placeholder={"word-cloud for identifying members of this category"}
-                                                                  rows={4}
-                                                                  value={this.getWC(index)}
-                                                        />
-                                                    </span>
-                                                    {
-                                                        index > 0 &&
-                                                        <div className="category-trashcan"
-                                                             onClick={() => this.deleteCategory(index)}>
-                                                            <img src="../images/delete.svg" className="image-size" title="remove category" alt="remove category"/>
-                                                        </div>
-                                                    }
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                }
 
                             </div>
 
                             <br clear="both" />
-
-                            <div className="new-syn-button" onClick={() => this.newCategory()}>
-                                <img src="../images/add.svg" title="add a new category" className="image-size" alt="add a new category"/>
-                            </div>
+                            <br clear="both" />
+                            <br clear="both" />
 
                         </div>
                         <div className="modal-footer">

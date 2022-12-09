@@ -16,14 +16,16 @@ import Api from "../common/api";
 const default_specific_json = '{"metadata_list":[' +
     '{"key":"created date range","display":"created","metadata":"created","db1":"","db2":"","sort":"true","sortDefault":"desc","sortAscText":"oldest documents first","sortDescText":"newest documents first", "fieldOrder": "0"},' +
     '{"key":"last modified date ranges","display":"last modified","metadata":"last-modified","db1":"","db2":"","sort":"true","sortDefault":"","sortAscText":"least recently modified","sortDescText":"most recently modified", "fieldOrder": "1"},' +
-    '{"key":"document type","display":"document type","metadata":"document-type","db1":"","db2":"","sort":"","sortDefault":"","sortAscText":"","sortDescText":"", "fieldOrder": "2"}' +
+    '{"key":"document type","display":"document type","metadata":"document-type","db1":"","db2":"","sort":"","sortDefault":"","sortAscText":"","sortDescText":"", "fieldOrder": "2"},' +
+    '{"key":"categorical list","display":"document category","metadata":"categorization","db1":"","db2":"","sort":"","sortDefault":"","sortAscText":"","sortDescText":"", "fieldOrder": "3"}' +
     ']}';
 
 // default values for an empty / new crawler
 const empty_crawler= {id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: false,
                       enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: default_specific_json,
-                      processingLevel: 'NLU', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false,
-                      "acls": [], useDefaultRelationships: true};
+                      processingLevel: 'INDEX', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false,
+                      "acls": [], useDefaultRelationships: true, autoOptimize: false, storeBinary: true,
+                      versioned: true, writeToCassandra: true};
 
 export class DocumentSources extends Component {
     constructor(props) {
@@ -131,51 +133,6 @@ export class DocumentSources extends Component {
             this.setState({export_open: false, selected_crawler: {}});
         }
     }
-    getCrawlerStatus(crawler) {
-        if (crawler) {
-            if (crawler.startTime <= 0)
-                return "never started";
-            if (crawler.endTime > crawler.startTime && crawler.optimizedTime > crawler.endTime)
-                return "up to date since " + Api.unixTimeConvert(crawler.startTime);
-            if (crawler.startTime > 0 && crawler.endTime < crawler.startTime) {
-                if (Api.defined(crawler.schedule) && crawler.schedule.length === 0 && crawler.endTime > 0)
-                    return "schedule disabled: last finished " + Api.unixTimeConvert(crawler.endTime);
-                else if (Api.defined(crawler.schedule) && crawler.schedule.length === 0 && crawler.endTime <= 0)
-                    return "schedule disabled";
-                else
-                    return "running: started on " + Api.unixTimeConvert(crawler.startTime);
-            }
-            if (crawler.endTime > crawler.startTime) {
-                if (Api.defined(crawler.schedule) && crawler.schedule.length === 0 && crawler.endTime > 0)
-                    return "schedule disabled: last finished " + Api.unixTimeConvert(crawler.endTime);
-                if (crawler.numErrors === 0)
-                    return "finished at " + Api.unixTimeConvert(crawler.startTime);
-                else if (crawler.numErrors > crawler.errorThreshold)
-                    return "failed with " + crawler.numErrors + " errors at " + Api.unixTimeConvert(crawler.startTime);
-                else
-                    return "finished at " + Api.unixTimeConvert(crawler.startTime);
-            }
-        }
-        return "?";
-    }
-    isCrawlerRunning(crawler) {
-        if (crawler) {
-            if (crawler.startTime <= 0)
-                return false;
-            if (crawler.endTime > crawler.startTime && crawler.optimizedTime > crawler.endTime)
-                return false;
-            if (crawler.startTime > 0 && crawler.endTime < crawler.startTime) {
-                if (Api.defined(crawler.schedule) && crawler.schedule.length === 0)
-                    return false;
-                else
-                    return true;
-            }
-            if (crawler.endTime > crawler.startTime) {
-                return false;
-            }
-        }
-        return false;
-    }
     zipSourceAsk(crawler) {
         this.setState({crawler_ask: crawler});
         this.props.openDialog("are you sure you want to zip the content of <b>" + crawler.name + "</b>?",
@@ -204,21 +161,10 @@ export class DocumentSources extends Component {
             this.props.closeDialog();
         }
     }
-    resetCrawlersAsk() {
-        this.props.openDialog("Are you sure you want to reset all crawlers?  This will clear crawler schedules, and mark their files as out-of-date.",
-            "Reset Crawlers", (action) => { this.resetCrawlers(action) });
-    }
-    resetCrawlers(action) {
-        if (action) {
-            this.props.resetCrawlers(this.props.selected_organisation_id, this.props.selected_knowledgebase_id);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-    }
     processAllFilesCrawlerAsk(crawler) {
         this.setState({crawler_ask: crawler});
-        this.props.openDialog("are you sure you want to process all files for <b>" + crawler.name + "</b>?",
+        this.props.openDialog("are you sure you want to process all files for <b>" + crawler.name + "</b>?" +
+            "<br/><br/>NB. Please stop any crawling activity first to keep your counters up-to-date.",
             "Process all files for Crawler", (action) => { this.processAllFilesCrawler(action) });
     }
     processAllFilesCrawler(action) {
@@ -279,16 +225,13 @@ export class DocumentSources extends Component {
                                     <th className='table-header'>id</th>
                                     <th className='table-header'>name</th>
                                     <th className='table-header'>type</th>
-                                    <th className='table-header'>status</th>
-                                    <th className='table-header'>crawled / indexed</th>
+                                    <th className='table-header'>progress</th>
                                     <th className='table-header'>actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     this.getCrawlers().map((crawler) => {
-                                        const description = this.getCrawlerStatus(crawler);
-                                        const is_running = this.isCrawlerRunning(crawler);
                                         return (
                                             <tr key={crawler.sourceId}>
                                                 <td>
@@ -301,34 +244,40 @@ export class DocumentSources extends Component {
                                                     <div className="source-label">{crawler.crawlerType}</div>
                                                 </td>
                                                 <td>
-                                                    <div className="source-label small-label-size" title={description}>{description}</div>
+                                                    <div className="small-label-size" title="first stage of the pipeline: collect/gather the documents and/or data"><span className="counter-label"><span className="counter-number counter-color1">1</span> collected</span><span>{Api.numberWithCommas(crawler.numCrawledDocuments)}</span></div>
+                                                    <div className="small-label-size" title="stage two of the pipeline: extract text from the collected data"><span className="counter-label"><span className="counter-number counter-color2">2</span> converted</span><span>{Api.numberWithCommas(crawler.numConvertedDocuments)}</span></div>
+                                                    <div className="small-label-size" title="stage three of the pipeline: Perform natural language processing on the text"><span className="counter-label"><span className="counter-number counter-color3">3</span> analyzed</span><span>{Api.numberWithCommas(crawler.numParsedDocuments)}</span></div>
+                                                    <div className="small-label-size" title="stage four of the pipeline: create the SimSage index graph for the parsed data (if enabled)"><span className="counter-label"><span className="counter-number counter-color4">4</span> indexed</span><span>{Api.numberWithCommas(crawler.numIndexedDocuments)}</span></div>
+                                                    <div className="small-label-size" title="stage five of the pipeline: generate preview information of the data (if enabled)"><span className="counter-label"><span className="counter-number counter-border-bottom counter-color5">5</span> completed</span><span>{Api.numberWithCommas(crawler.numFinishedDocuments)}</span></div>
+                                                    <div className="small-label-size" title="the total number of documents in SimSage for this source"><span className="counter-label">total documents</span><span>{Api.numberWithCommas(crawler.numTotalDocuments)}</span></div>
                                                 </td>
                                                 <td>
-                                                    <div className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>
-                                                </td>
-                                                <td>
-                                                    {!is_running &&
                                                     <div className="link-button"
                                                          onClick={() => this.startCrawlerAsk(crawler)}>
                                                         <img src="../images/play.svg" className="image-size"
                                                              title="start this crawler" alt="start"/>
                                                     </div>
-                                                    }
-                                                    {is_running &&
-                                                    <div className="link-button">
-                                                        <img src="../images/play-disabled.svg" className="image-size"
-                                                             title="crawler running" alt="start"/>
-                                                    </div>
-                                                    }
                                                     <div className="link-button" onClick={() => this.editCrawler(crawler)}>
                                                         <img src="../images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>
                                                     </div>
                                                     <div className="link-button" onClick={() => this.deleteCrawlerAsk(crawler)}>
                                                         <img src="../images/delete.svg" className="image-size" title="remove crawler" alt="remove"/>
                                                     </div>
-                                                    <div className="link-button" onClick={() => this.processAllFilesCrawlerAsk(crawler)}>
-                                                        <img src="../images/file.svg" className="image-size" title="process all files for a source" alt="process files"/>
-                                                    </div>
+                                                    {crawler.storeBinary &&
+                                                        <div className="link-button"
+                                                             onClick={() => this.processAllFilesCrawlerAsk(crawler)}>
+                                                            <img src="../images/file.svg" className="image-size"
+                                                                 title="process all files for a source"
+                                                                 alt="process files"/>
+                                                        </div>
+                                                    }
+                                                    {!crawler.storeBinary &&
+                                                        <div className="link-button">
+                                                            <img src="../images/file-disabled.svg" className="image-size"
+                                                                 title="process all files for a source disabled (store binaries is not set)"
+                                                                 alt="process files"/>
+                                                        </div>
+                                                    }
                                                     <div className="link-button" onClick={() => this.exportCrawler(crawler)}>
                                                         <img src="../images/download.svg" className="image-size" title="get crawler JSON for export" alt="export"/>
                                                     </div>
@@ -345,17 +294,11 @@ export class DocumentSources extends Component {
                                     <td/>
                                     <td/>
                                     <td/>
-                                    <td/>
                                     <td>
                                         {this.props.selected_organisation_id.length > 0 &&
                                             <div className="image-button" onClick={() => this.addNewCrawler()}><img
                                                 className="image-size" src="../images/add.svg" title="add new crawler"
                                                 alt="add new crawler"/></div>
-                                        }
-                                        {this.props.selected_knowledgebase_id.length > 0 &&
-                                            <div className="image-button" onClick={() => this.resetCrawlersAsk()}><img
-                                                className="image-size" src="../images/refresh.svg" title="reset crawlers"
-                                                alt="reset crawlers"/></div>
                                         }
                                         {this.props.selected_organisation_id.length > 0 &&
                                             <div className="image-button" onClick={() => this.importCrawler()}><img

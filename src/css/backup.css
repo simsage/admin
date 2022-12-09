@@ -1,0 +1,15 @@
+
+.backup-page {
+    margin-top: 50px;
+    float: left;
+    min-width: 950px;
+    width: 950px;
+}
+
+.backup-page .action-row {
+    width: 150px;
+}
+
+.backup-page .padding-right {
+    margin-right: 20px;
+}

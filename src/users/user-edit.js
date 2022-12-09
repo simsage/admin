@@ -8,7 +8,7 @@ import Api from "../common/api";
 import '../css/users.css';
 
 
-const roles = ['admin', 'operator', 'dms', 'manager'];
+const roles = ['admin', 'operator', 'dms', 'manager', 'discover'];
 
 // props:  theme, open, edit_user_id, edit_email, edit_first_name, edit_surname, edit_password, edit_roles, edit_groups, edit_kb_list
 // fns: onClose(save:boolean)
@@ -45,9 +45,23 @@ export class UserEdit extends React.Component {
         this.props.setError(error, info);
         console.log(error, info);
     }
+    getData() {
+        return {
+            user_id: this.state.edit_user_id,
+            email: this.state.edit_email,
+            first_name: this.state.edit_first_name,
+            surname: this.state.edit_surname,
+            password: this.state.edit_password,
+            roles: this.state.edit_roles,
+            kb_list: this.state.edit_kb_list,
+            groups: this.state.edit_groups,
+        };
+    }
     close(save) {
         let do_save = true;
         if (save) {
+            if (this.props.onUpdate)
+                this.props.onUpdate(this.getData());
             if (this.state.edit_password_2 !== this.state.edit_password) {
                 do_save = false;
                 if (this.props.onError) {
@@ -58,17 +72,11 @@ export class UserEdit extends React.Component {
         if (do_save) {
             if (this.props.onClose) {
                 if (save) {
-                    this.props.onClose(save, {
-                        user_id: this.state.edit_user_id,
-                        email: this.state.edit_email,
-                        first_name: this.state.edit_first_name,
-                        surname: this.state.edit_surname,
-                        password: this.state.edit_password,
-                        roles: this.state.edit_roles,
-                        kb_list: this.state.edit_kb_list,
-                        groups: this.state.edit_groups,
+                    this.props.onClose(save, this.getData(), () => {
+                        this.setState({edit_password_2: ''});
                     });
                 } else {
+                    this.setState({edit_password_2: ''});
                     this.props.onClose(save, {});
                 }
             }

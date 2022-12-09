@@ -52,10 +52,6 @@ export class SingleSearchResult extends React.Component {
         return window.ENV.api_base + "/document/preview/" + this.props.organisationId + "/" +
                     this.props.kbId + "/" + this.props.clientId + "/" + item.urlId + "/-1"
     }
-    getBinarySource(item) {
-        return window.ENV.api_base + "/document/binary/" + this.props.organisationId + "/" +
-            this.props.kbId + "/" + this.props.clientId + "/" + item.urlId;
-    }
     render() {
         if (this.state.has_error) {
             return <h1>single-search-result: Something went wrong.</h1>;

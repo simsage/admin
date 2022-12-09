@@ -6,8 +6,7 @@
 }
 
 .job-id-column-width {
-    width: 300px;
-   min-width: 300px;
+    column-width: auto;
 }
 
 .status-column-width {

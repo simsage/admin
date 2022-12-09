@@ -13,7 +13,7 @@ export class AppMenu extends Component {
         this.state={
             title: props.title,
             signed_in: props.signed_in,
-            showDocumentation: window.location.toString().indexOf('/#/documentation') < 0,
+            showDocumentation: window.location.toString().indexOf('/documentation') < 0,
         };
     }
     componentDidMount() {

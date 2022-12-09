@@ -65,14 +65,13 @@ export class CrawlerIManage extends Component {
     }
     change_callback(data) {
         this.setState(data);
-        if (this.state.onSave) {
+        if (this.props.onSave) {
             const c_data = this.construct_data(data);
-            this.state.onSave(c_data);
+            this.props.onSave(c_data);
         }
     }
     resetCursor() {
         this.setState({cursor: '0'});
-        this.change_callback({cursor: '0'});
     }
     render() {
         if (this.state.has_error) {
@@ -97,7 +96,7 @@ export class CrawlerIManage extends Component {
                         </span>
                     </span>
                     <span className="dropbox-manual-box">
-                        <a href="../resources/imanage-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage iManage setup guide">
+                        <a href="resources/imanage-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage iManage setup guide">
                             <span className="instructions-label">instructions</span>
                             <img src="../images/pdf-icon.png" alt="box setup guide" className="image-size" />
                         </a>
@@ -143,7 +142,7 @@ export class CrawlerIManage extends Component {
                             <form>
                                 <input type="text" className="form-control dropbox-text-width"
                                        spellCheck={false}
-                                       placeholder="client id"
+                                       placeholder="client id aka. api key"
                                        value={this.state.clientId}
                                        onChange={(event) => {this.change_callback({clientId: event.target.value})}}
                                 />
@@ -154,12 +153,12 @@ export class CrawlerIManage extends Component {
 
                 <div className="form-group">
                     <span className="left-column">
-                        <span className="small-label-right">client secret</span>
+                        <span className="small-label-right">client secret / api secret</span>
                         <span className="big-text">
                             <form>
                                 <input type="text" className="form-control dropbox-text-width"
                                        spellCheck={false}
-                                       placeholder="client secret"
+                                       placeholder="client secret aka. api secret"
                                        value={this.state.clientSecret}
                                        onChange={(event) => {this.change_callback({clientSecret: event.target.value})}}
                                 />
@@ -202,7 +201,7 @@ export class CrawlerIManage extends Component {
                                         />
                                     </td>
                                     <td>
-                                        <button className="btn bt-sm btn-primary" onClick={() => this.resetCursor()}>reset</button>
+                                        <div className="btn bt-sm btn-primary" onClick={() => this.change_callback({cursor: '0'})}>reset</div>
                                     </td>
                                 </tr>
                                 </tbody>

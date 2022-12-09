@@ -2,13 +2,14 @@ import React from 'react';
 // import 'babel-polyfill'
 import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
-import {HashRouter} from 'react-router-dom'
+import {BrowserRouter} from 'react-router-dom'
 import {Route} from 'react-router'
 
 import configureStore from "./reducers/configureStore";
 import {saveState} from "./reducers/stateLoader";
 // must not have {} to work
 import SignIn from './auth/sign_in'
+import PasswordSignIn from './auth/password_sign_in'
 
 // import ResetPasswordRequest from './auth/reset_password_request'
 // import ResetPasswordResponse from './auth/reset_password_response'
@@ -28,6 +29,8 @@ import {PublicClientApplication} from "@azure/msal-browser";
 import { AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
 import {PageLayout} from "./pageLayout";
 import SignInError from "./auth/sign_in_error";
+import {ResetPasswordRequest} from "./auth/reset_password_request";
+import {ResetPasswordResponse} from "./auth/reset_password_response";
 
 require('typeface-roboto')
 
@@ -45,29 +48,45 @@ const msalInstance = new PublicClientApplication(msalConfig);
 
 ReactDOM.render(
     <Provider store={store}>
-        <MsalProvider instance={msalInstance}>
-            <HashRouter basename={'/'}>
+        { window.ENV.authentication === "password" &&
+            <BrowserRouter basename="/">
                 <PageLayout>
-                    <AuthenticatedTemplate>
-                        <div>
-                            <Route exact path="/" component={Home} />
-                            <Route exact path="/error" component={SignInError} />
-                            {/*<Route path="/reset-password-request" component={ResetPasswordRequest} />*/}
-                            {/*<Route path="/reset-password-response" component={ResetPasswordResponse} />*/}
-                        </div>
-                    </AuthenticatedTemplate>
-                    <UnauthenticatedTemplate>
-                        <div>
-                            <Route exact path="/" component={SignIn} />
-                            <Route exact path="/error" component={SignInError} />
-                            <Route exact path="/foss-license" component={OpenSourceLicenses} />
-                            <Route exact path="/license-agreement" component={LicenseAgreement} />
-                            <Route exact path="/search" component={SearchPage} />
-                        </div>
-                    </UnauthenticatedTemplate>
+                    <div>
+                        <Route exact path="/" component={PasswordSignIn} />
+                        <Route exact path="/home" component={Home} />
+                        <Route exact path="/error" component={SignInError} />
+                        <Route exact path="/foss-license" component={OpenSourceLicenses} />
+                        <Route exact path="/license-agreement" component={LicenseAgreement} />
+                        <Route exact path="/search" component={SearchPage} />
+                        <Route exact path="/reset-password-request" component={ResetPasswordRequest} />
+                        <Route exact path="/reset-password-response" component={ResetPasswordResponse} />
+                    </div>
                 </PageLayout>
-            </HashRouter>
-        </MsalProvider>
+            </BrowserRouter>
+        }
+        { window.ENV.authentication !== "password" &&
+            <MsalProvider instance={msalInstance}>
+                <BrowserRouter basename="/">
+                    <PageLayout>
+                        <AuthenticatedTemplate>
+                            <div>
+                                <Route exact path="/" component={Home}/>
+                                <Route exact path="/error" component={SignInError}/>
+                            </div>
+                        </AuthenticatedTemplate>
+                        <UnauthenticatedTemplate>
+                            <div>
+                                <Route exact path="/" component={SignIn}/>
+                                <Route exact path="/error" component={SignInError}/>
+                                <Route exact path="/foss-license" component={OpenSourceLicenses}/>
+                                <Route exact path="/license-agreement" component={LicenseAgreement}/>
+                                <Route exact path="/search" component={SearchPage}/>
+                            </div>
+                        </UnauthenticatedTemplate>
+                    </PageLayout>
+                </BrowserRouter>
+            </MsalProvider>
+        }
     </Provider>,
     document.getElementById('content')
 );

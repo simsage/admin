@@ -13,38 +13,29 @@ export class SignInError extends Component {
     }
     render() {
         const error = this.props.error ? this.props.error : "";
-        const error_length = (error.length / 2) * 7;
-        const error_left = (Math.round(window.innerWidth / 2) - error_length) + "px";
         if (error.toLowerCase().indexOf("cannot contact servers") > 0) {
             return (
                 <div>
-                    <div className="offset-top">
-                        <div className="big-title-left">
+                    <center>
+                        <div className="offset-top">
                             <h1>An error occurred.</h1>
-                        </div>
-                        <div className="small-title-left">
                             <h3>the SimSage server is offline</h3>
+                            <div className="link-style" onClick={() => this.tryAgain()} title="click here to try and connect again">click here to try and connect again</div>
                         </div>
-                        <div className="sub-header clickable-cursor">
-                            <span onClick={() => this.tryAgain()}>click here to try and connect again</span>
-                        </div>
-                    </div>
+                    </center>
                 </div>
             )
         } else {
             return (
                 <div>
-                    <div className="offset-top">
-                        <div className="big-title-left">
+                    <center>
+                        <div className="offset-top">
                             <h1>An error occurred.</h1>
-                        </div>
-                        <div className="small-title-left">
                             <h3>You are not authorized to use this application.</h3>
+                            <div>{this.props.error}</div>
+                            <div className="link-style" onClick={() => this.tryAgain()} title="click here to try again">click here to try again</div>
                         </div>
-                        <div style={{position: "absolute", left: error_left}}>
-                            {this.props.error}
-                        </div>
-                    </div>
+                    </center>
                 </div>
             )
         }

@@ -94,8 +94,14 @@ import {
     SET_LOG_SERVICE,
     SET_LOG_REFRESH,
 
+    SET_BACKUP_LIST,
+
     GET_EDGE_DEVICES,
     GET_EDGE_DEVICE_COMMANDS,
+
+    // user upload
+    UPLOADING_USERS,
+    UPLOADING_USERS_FINISHED,
 
     // groups
     SET_GROUPS_PAGINATED,
@@ -103,9 +109,22 @@ import {
     SET_GROUP_PAGE,
     SET_GROUP_FILTER,
 
+    // text to search
+    RESET_TEXT2SEARCH_PAGINATION,
+    SET_TEXT2SEARCH_PAGINATED,
+    SET_TEXT2SEARCH_PAGE,
+    SET_TEXT2SEARCH_PAGE_SIZE,
+    SET_TEXT2SEARCH_FILTER,
+    SET_TEXT2SEARCH_TRY_TEXT,
+    SET_TEXT2SEARCH_TRY_REPLY,
+
     // categories
-    SET_CATEGORIES,
+    SET_CATEGORIZATION_LIST,
     SIMSAGE_STATUS,
+    SET_CATEGORIZATION_PAGE,
+    SET_CATEGORIZATION_PAGE_SIZE,
+    SET_INVENTORIZE_PAGE_SIZE,
+    SET_INVENTORIZE_PAGE,
 
 } from "../actions/actions";
 import {initializeState} from './stateLoader'
@@ -166,7 +185,7 @@ export const reducer = (state, action) => {
                 // alert("invalid session id");
                 // wipe session and user objects - this is now a logout event
                 window.location.reload(true);
-                // window.location = "/#/";
+                // window.location = "/";
                 return {
                     ...state,
                     session: null,
@@ -229,6 +248,7 @@ export const reducer = (state, action) => {
             const user = action.data.user;
             const session = action.data.session;
             const organisation_list = action.data.organisationList ? action.data.organisationList : [];
+            const enable_vectorizer = Api.defined(action.data.enableVectorizer) ? action.data.enableVectorizer : true;
 
             if (user && user.roles) {
                 for (const role of user.roles) {
@@ -275,6 +295,7 @@ export const reducer = (state, action) => {
                 selected_organisation: selected_organisation,
                 organisation_list: organisation_list,
                 session_age: Api.getSystemTime(),
+                enable_vectorizer: enable_vectorizer,
                 busy: false,
             };
         }
@@ -346,6 +367,21 @@ export const reducer = (state, action) => {
                 ...state,
                 inventorize_list: action.inventorize_list,
                 busy: false,
+            };
+        }
+
+        case SET_INVENTORIZE_PAGE: {
+            return {
+                ...state,
+                inventorize_page: action.page,
+            };
+        }
+
+        case SET_INVENTORIZE_PAGE_SIZE: {
+            return {
+                ...state,
+                inventorize_page: 0,
+                inventorize_page_size: action.page_size,
             };
         }
 
@@ -462,6 +498,7 @@ export const reducer = (state, action) => {
             return {
                 ...state,
                 user_list: action.user_list,
+                user_count: action.user_count,
                 busy: false,
             };
         }
@@ -521,6 +558,21 @@ export const reducer = (state, action) => {
         }
 
         case UPLOADING_PROGRAM_FINISHED: {
+            return {
+                ...state,
+                uploading: false,
+                busy: false,
+            };
+        }
+
+        case UPLOADING_USERS: {
+            return {
+                ...state,
+                uploading: true,
+            };
+        }
+
+        case UPLOADING_USERS_FINISHED: {
             return {
                 ...state,
                 uploading: false,
@@ -1245,6 +1297,14 @@ export const reducer = (state, action) => {
             }
         }
 
+        case SET_BACKUP_LIST: {
+            return {
+                ...state,
+                backup_list: action.backup_list,
+                busy: false,
+            }
+        }
+
         case SET_LOG_DATE: {
             return {
                 ...state,
@@ -1335,20 +1395,118 @@ export const reducer = (state, action) => {
 
 
 
-        case SET_CATEGORIES: {
+        case SET_CATEGORIZATION_LIST: {
             return {
                 ...state,
-                category_list: action.category_list,
+                categorization_list: action.categorization_list,
+                num_categorizations: action.num_categorizations,
                 busy: false,
             };
         }
 
+
+        case SET_CATEGORIZATION_PAGE: {
+            const categorization_nav_list = state.categorization_nav_list;
+            if (action.page >= categorization_nav_list.length && action.prev_id) {
+                categorization_nav_list.push(action.prev_id);
+            }
+            console.log("categorization_nav_list", categorization_nav_list, action.prev_id);
+            return {
+                ...state,
+                categorization_page: action.page,
+                categorization_prev_id: action.prev_id,
+                categorization_nav_list: categorization_nav_list,
+                busy: false,
+            }
+        }
+
+        case SET_CATEGORIZATION_PAGE_SIZE: {
+            return {
+                ...state,
+                categorization_page: 0,
+                categorization_prev_id: null,
+                categorization_nav_list: ['null'],
+                categorization_page_size: action.page_size,
+            }
+        }
 
         case SIMSAGE_STATUS: {
             return {
                 ...state,
                 status_list: action.status_list,
                 busy: false,
+            };
+        }
+
+
+        ///////////////////////////////////////////////////////////////////////////////////
+
+        case SET_TEXT2SEARCH_PAGINATED: {
+            const textToSearchList = action.data && action.data.textToSearchList ? action.data.textToSearchList : [];
+            const numTextToSearch = action.data && action.data.numTextToSearch ? action.data.numTextToSearch : 0;
+            return {
+                ...state,
+                text2search_list: textToSearchList,
+                num_text2search: numTextToSearch,
+                busy: false,
+            };
+        }
+
+        case SET_TEXT2SEARCH_TRY_TEXT: {
+            return {
+                ...state,
+                text2search_try_text: action.text ? action.text : "",
+            };
+        }
+
+        case SET_TEXT2SEARCH_TRY_REPLY: {
+            console.log(action);
+            return {
+                ...state,
+                text2search_try_reply: action.text ? action.text : "",
+                busy: false,
+            };
+        }
+
+        case SET_TEXT2SEARCH_PAGE: {
+            const text2search_nav_list = state.text2search_nav_list;
+            if (action.page >= text2search_nav_list.length && action.prev_id) {
+                text2search_nav_list.push(action.prev_id);
+            }
+            return {
+                ...state,
+                text2search_page: action.page,
+                text2search_prev_id: action.prev_id,
+                text2search_nav_list: text2search_nav_list,
+                busy: false,
+            }
+        }
+
+        case SET_TEXT2SEARCH_PAGE_SIZE: {
+            return {
+                ...state,
+                text2search_page: 0,
+                text2search_prev_id: null,
+                text2search_nav_list: ['null'],
+                text2search_page_size: action.page_size,
+            }
+        }
+
+        case RESET_TEXT2SEARCH_PAGINATION: {
+            return {
+                ...state,
+                text2search_page: 0,
+                text2search_prev_id: null,
+                text2search_nav_list: ['null'],
+                busy: false,
+            }
+        }
+
+        case SET_TEXT2SEARCH_FILTER: {
+            return {
+                ...state,
+                text2search_page: 0,
+                text2search_filter: action.text2search_filter,
             };
         }
 

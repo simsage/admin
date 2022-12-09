@@ -18,4 +18,49 @@
 .small-label-size {
     font-size: 10px;
     cursor: default;
+    width: 180px;
+}
+
+.counter-label {
+    display: inline-block;
+    width: 86px;
+}
+
+.counter-number {
+    display: inline-block;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-top: 1px solid black;
+    padding-left: 4px;
+    padding-right: 6px;
+    margin-right: 2px;
+}
+
+.counter-color1 {
+    background: #111E6C;
+    color: white;
+}
+
+.counter-color2 {
+    background: #0080FF;
+    color: white;
+}
+
+.counter-color3 {
+    background: #6593F5;
+    color: white;
+}
+
+.counter-color4 {
+    background: #73C2FB;
+    color: black;
+}
+
+.counter-color5 {
+    background: #89CFF0;
+    color: black;
+}
+
+.counter-border-bottom {
+    border-bottom: 1px solid black;
 }

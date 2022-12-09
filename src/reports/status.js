@@ -32,13 +32,11 @@ export class Status extends React.Component {
                         <table className="table">
                             <thead>
                             <tr className='table-header'>
-                                <th className='table-header job-id-column-width'>job id</th>
-                                <th className='table-header'>hostname</th>
-                                <th className='table-header'>service</th>
-                                <th className='table-header status-column-width'>status</th>
-                                <th className='table-header'>free memory</th>
-                                <th className='table-header'>created</th>
-                                <th className='table-header'>last modified</th>
+                                <th className='table-header job-id-column-width'>hostname</th>
+                                <th className='table-header job-id-column-width'>service</th>
+                                <th className='table-header job-id-column-width'>free memory</th>
+                                <th className='table-header job-id-column-width'>created</th>
+                                <th className='table-header job-id-column-width'>last modified</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -46,17 +44,11 @@ export class Status extends React.Component {
                                 status_list.map((item, i) => {
                                     return (
                                         <tr key={i}>
-                                            <td className='job-id-column-width'>
-                                                <div>{item.jobId}</div>
-                                            </td>
                                             <td>
                                                 <div>{item.hostname}</div>
                                             </td>
                                             <td>
                                                 <div>{item.service}</div>
-                                            </td>
-                                            <td>
-                                                <div className="status-column-width-display">{item.status}</div>
                                             </td>
                                             <td>
                                                 <div>{Api.formatSizeUnits(item.memoryFreeInBytes ? item.memoryFreeInBytes : 0)}</div>

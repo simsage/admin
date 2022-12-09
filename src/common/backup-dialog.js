@@ -39,20 +39,8 @@ export class BackupDialog extends Component {
                         <div className="modal-header">{this.props.title}</div>
                         <div className="modal-body">
                             <div className="control-row">
-                                <div dangerouslySetInnerHTML={{__html: this.props.message}} />
+                                <div>{this.props.message}</div>
                             </div>
-
-                            <div className="control-row">
-                                    <span className="checkbox-only">
-                                        <input type="checkbox"
-                                               checked={this.state.include}
-                                               onChange={(event) => { this.setState({include: event.target.checked}); }}
-                                               value="include document binaries?"
-                                        />
-                                    </span>
-                                <span>include document binaries?</span>
-                            </div>
-
                         </div>
                         <div className="modal-footer">
                             <button className="btn btn-primary btn-block" onClick={() => this.cancel()}>Cancel</button>

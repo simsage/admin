@@ -318,7 +318,7 @@ export class OpenSourceLicenses extends Component {
                      <br clear="both" />
 
                      <div className="button-bottom">
-                         <button onClick={() => window.location = "/#/"} className="btn btn-primary btn-block">Return to Sign-in</button>
+                         <button onClick={() => window.location="/"} className="btn btn-primary btn-block">Return to Sign-in</button>
                      </div>
 
                  </div>

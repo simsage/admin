@@ -69,8 +69,9 @@ export class BotSearchComponent extends Component {
                     <div className="full-column">
                         <span className="left-1">
                             <input type="text" className="form-control text-width"
-                                onChange={(event) => this.props.setBotQueryString(event.target.value)}
-                                onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                   placeholder="test your queries above by asking a question"
+                                   onChange={(event) => this.props.setBotQueryString(event.target.value)}
+                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
                             />
                         </span>
                         <span className="left">

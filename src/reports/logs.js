@@ -4,8 +4,6 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Api from "../common/api";
 
 import '../css/logs.css';
@@ -33,6 +31,9 @@ export class Logs extends React.Component {
             openDialog: nextProps.openDialog,
             closeDialog: nextProps.closeDialog,
         });
+    }
+    componentDidMount() {
+        this.props.getLogs();
     }
     componentWillUnmount() {
         if (this.timer != null) {
@@ -67,10 +68,9 @@ export class Logs extends React.Component {
          else return "log-hour-selector";
     }
     getHourTitle(hours) {
-        if (hours === 1) return "display the next one hour after the selected time";
-        else if (hours === 2) return "display the next two hours after the selected time";
-        else if (hours === 4) return "display the next four hours after the selected time";
-        else return "display the next " + hours + " hours after the selected time";
+        if (hours === 1) return "display logs from the current hour as shown above";
+        else if (hours === 2) return "display logs for the last two hours from the time shown";
+        else return "display logs for the last " + hours + " hours from the time shown";
     }
     setLogHours(hours) {
         this.props.setLogHours(hours);
@@ -120,11 +120,8 @@ export class Logs extends React.Component {
         return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0;
     }
     render() {
-        let date = new Date();
-        if (this.props.log_date) {
-            date = new Date(this.props.log_date);
-        }
-        const theme = this.props.theme;
+        // all servers log their times in GMT
+        let date = Api.getGMTDate();
         const hours = this.props.log_hours;
         const log_type = this.props.log_type;
         const log_service = this.props.log_service;
@@ -134,33 +131,18 @@ export class Logs extends React.Component {
                 <div className="log-page">
 
                     <div className="date-select">
-                        <DatePicker
-                            className={theme === "light" ? "wide-date-picker-input" : "wide-date-picker-input-dark"}
-                            selected={date}
-                            dateFormat="yyyy/MM/dd HH:mm"
-                            timeFormat="HH:mm"
-                            showTimeSelect
-                            timeIntervals={60}
-                            todayButton="today"
-                            onChange={date => {
-                                this.props.setLogDate(date);
-                                this.props.getLogs();
-                            }}/>
+                        <span className="date-message">{"logs for " + Api.toShortIsoDateTime(date) + "  (log-times are in GMT)"}</span>
                     </div>
 
                     <div className="log-selectors">
                         <span title={this.getHourTitle(1)} className={this.getSelectedHourStyle(hours === 1)}
-                              onClick={() => this.setLogHours(1)}>1 hour</span>
+                              onClick={() => this.setLogHours(1)}>this hour</span>
                         <span title={this.getHourTitle(2)} className={this.getSelectedHourStyle(hours === 2)}
-                              onClick={() => this.setLogHours(2)}>2 hours</span>
-                        <span title={this.getHourTitle(4)} className={this.getSelectedHourStyle(hours === 4)}
-                              onClick={() => this.setLogHours(4)}>4 hours</span>
+                              onClick={() => this.setLogHours(2)}>last 2 hours</span>
                         <span title={this.getHourTitle(12)} className={this.getSelectedHourStyle(hours === 12)}
-                              onClick={() => this.setLogHours(12)}>12 hours</span>
+                              onClick={() => this.setLogHours(12)}>last 12 hours</span>
                         <span title={this.getHourTitle(24)} className={this.getSelectedHourStyle(hours === 24)}
-                              onClick={() => this.setLogHours(24)}>24 hours</span>
-                        <span title={this.getHourTitle(48)} className={this.getSelectedHourStyle(hours === 48)}
-                              onClick={() => this.setLogHours(48)}>48 hours</span>
+                              onClick={() => this.setLogHours(24)}>last 24 hours</span>
                         <span className="log-spacer">&nbsp;</span>
                         <span title="display all log-types" className={this.getSelectedLogStyle(log_type === "All")}
                               onClick={() => this.setLogType("All")}>all</span>
@@ -204,6 +186,9 @@ export class Logs extends React.Component {
                         <span title="only display logs from the Document service"
                               className={this.getSelectedServiceStyle(log_service === 'Document')}
                               onClick={() => this.setLogService('Document')}>doc</span>
+                        <span title="only display logs from the Discovert service"
+                              className={this.getSelectedServiceStyle(log_service === 'Discovery')}
+                              onClick={() => this.setLogService('Discovery')}>discover</span>
                         <span title="only display logs from the Index service"
                               className={this.getSelectedServiceStyle(log_service === 'Index')}
                               onClick={() => this.setLogService('Index')}>index</span>

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import Api from '../common/api'
-import AppMenu from './app-menu';
 import ErrorDialog from '../common/error-dialog';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -26,10 +25,10 @@ export class ResetPasswordRequest extends Component {
         this.setState({ has_error: true });
         console.log(error, info);
     }
-    handleClick(event) {
+    resetPasswordRequest() {
         const self = this;
         //To be done:check for empty values before hitting submit
-        if(this.state.email.length > 0) {
+        if (this.state.email.length > 0) {
             Api.passwordResetRequest(this.state.email,
                 (response) => {
                     self.showError('Success', "we've emailed you a link for resetting your password.");
@@ -41,6 +40,11 @@ export class ResetPasswordRequest extends Component {
         }
         else{
             this.showError('Error', 'Input field value is missing');
+        }
+    }
+    onKeyPress(event) {
+        if (event.key === "Enter") {
+            this.resetPasswordRequest();
         }
     }
     showError(title, error_msg) {
@@ -55,42 +59,37 @@ export class ResetPasswordRequest extends Component {
         }
         return (
             <div>
-
-                <AppMenu title="administration" loggedIn={false} />
-
                 <ErrorDialog title={this.state.error_title}
                              theme={this.props.theme}
                              message={this.state.error_msg}
                              callback={this.closeError.bind(this)} />
 
-                <div>
+                <div className="no-select auth-wrapper d-flex justify-content-center align-items-center overflow-auto">
+                    <div className="auth-inner">
+                        <div>
+                            <h3>Reset Password</h3>
 
-                    <div className="auth-wrapper">
-                        <div className="auth-inner">
-                            <div>
-                                <h3>Reset Password</h3>
+                            <div className="label-text">Please enter your email address and we'll email you a link to reset your password.</div>
+                            <br />
 
-                                <div>Please enter your email address and we'll email you a link to reset your password.</div>
-                                <br />
-
-                                <div className="form-group">
-                                    <input type="text" className="form-control"
-                                        autoFocus
-                                        placeholder="Enter your email Address"
-                                        onChange = {(event) => this.setState({email: event.target.value})} />
-                                </div>
-
-                                <div className="form-group submit-adjust">
-                                    <button className="btn btn-primary btn-block" onClick={(event) => this.handleClick(event)}>
-                                        Submit
-                                    </button>
-                                </div>
-
-                                <p className="forgot-password text-right">
-                                    Click here to return to <span className="forgot-password-link" onClick={() => window.location = '/#/'}>sign-in</span>
-                                </p>
-
+                            <div className="form-group form-label">
+                                <input type="text" className="form-control"
+                                    autoFocus={true}
+                                    onKeyPress={(event) => this.onKeyPress(event)}
+                                    placeholder="Enter your email Address"
+                                    onChange = {(event) => this.setState({email: event.target.value})} />
                             </div>
+
+                            <div className="form-group submit-adjust">
+                                <button className="btn btn-primary btn-block" onClick={() => this.resetPasswordRequest()}>
+                                    Submit
+                                </button>
+                            </div>
+
+                            <p className="forgot-password text-right">
+                                Click here to return to <span className="forgot-password-link" onClick={() => window.location = '/'}>sign-in</span>
+                            </p>
+
                         </div>
                     </div>
 

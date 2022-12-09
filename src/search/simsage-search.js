@@ -10,9 +10,9 @@ import '../css/search.css';
 // const api_base = "http://localhost:8080/api";   // the remote SimSage server's location
 const api_base = window.ENV.api_base;
 const pageSize = 10;                            // number of search results per page
-const fragmentCount = 3;                        // number of fragments per search result
+const fragmentCount = 10;                       // number of fragments per search result
 const scoreThreshold = 0.8125;                  // bot score threshold (0.8125 is a good value)
-const maxWordDistance = 20;                     // distance between words in search results for scoring
+const maxWordDistance = 40;                     // distance between words in search results for scoring
 const numQNAResults = 1;                        // number of Q&A replies, set to 1
 
 

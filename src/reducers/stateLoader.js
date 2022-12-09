@@ -21,6 +21,7 @@ export function initializeState() {
         organisation_list: [],
         organisation_page: 0,
         organisation_page_size: 10,
+        enable_vectorizer: true,            // vectorizer enabled? (bot and operator depend on it)
 
         // kb status
         selected_knowledgebase: null,
@@ -37,6 +38,8 @@ export function initializeState() {
 
         // inventory items for a given kb
         inventorize_list: [],
+        inventorize_page:0,
+        inventorize_page_size:10,
         inventorize_busy: false,
 
         // the users
@@ -44,6 +47,7 @@ export function initializeState() {
         user_filter: '',
         user_page: 0,
         user_page_size: 10,
+        user_count: 0,
 
         // crawlers
         crawler_list: [],
@@ -116,8 +120,26 @@ export function initializeState() {
         synset_page_size: 10,
         synset_total_size: 0,
 
-        // categories
-        category_list: [],
+        // document categorization
+        categorization_list: [],
+        prev_categorization_label: '',
+        categorization_page_size: 5,
+        categorization_page: 0,
+        categorization_prev_id: null,           // pretend pagination over word sets
+        categorization_nav_list: ["null"],
+        num_categorizations: 0,                 // total count in SimSage for pagination
+
+        // text2search
+        text2search_list: [],
+        text2search_filter: "",
+        text2search_prev_filter: "",
+        text2search_page: 0,
+        text2search_page_size: 5,
+        text2search_prev_id: null,          // pretend pagination over word sets
+        text2search_nav_list: ["null"],
+        num_text2search: 0,
+        text2search_try_text: "",
+        text2search_try_reply: "",
 
         // reports
         report_date: Api.toIsoDate(new Date().getUTCDate()),
@@ -146,13 +168,16 @@ export function initializeState() {
         // system logs
         log_list: [],
         log_date: null,
-        log_hours: 2,
+        log_hours: 1,
         log_type: 'All',
         log_service: 'All',
         log_refresh: 0,
 
         // ad domain manager
         domain_list: [],
+
+        // list of backups,
+        backup_list: [],
 
         // semantic display categories for org:kb
         semantic_display_category_list: [],
@@ -174,8 +199,8 @@ export function initializeState() {
 
 export function loadState() {
     try {
-        let serializedState = localStorage.getItem("https://simsage.ai/state");
-        if (serializedState === null || window.location.href.endsWith("/#/")) {
+        let serializedState = localStorage.getItem(window.ENV.local_storage_key);
+        if (serializedState === null || window.location.href.endsWith("/")) {
             return {"appReducer": initializeState()};
         }
         return JSON.parse(serializedState);
@@ -188,7 +213,7 @@ export function loadState() {
 export function saveState(state) {
     try {
         let serializedState = JSON.stringify(state);
-        localStorage.setItem("https://simsage.ai/state", serializedState);
+        localStorage.setItem(window.ENV.local_storage_key, serializedState);
     } catch (err) {
     }
 }

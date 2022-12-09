@@ -18,3 +18,9 @@
 .clickable-cursor {
     cursor: pointer;
 }
+
+.link-style {
+    color: dodgerblue;
+    text-decoration: underline;
+    cursor: pointer;
+}

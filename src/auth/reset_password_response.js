@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import Api from '../common/api'
-import AppMenu from './app-menu';
 import ErrorDialog from '../common/error-dialog';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -42,7 +41,7 @@ export class ResetPasswordResponse extends Component {
         this.setState({ has_error: true });
         console.log(error, info);
     }
-    handleClick(event) {
+    resetPassword() {
         const self = this;
         //To be done:check for empty values before hitting submit
         if(this.state.email.length > 0 && this.state.reset_id.length > 0 && this.state.password.length > 5) {
@@ -62,7 +61,7 @@ export class ResetPasswordResponse extends Component {
     }
     onKeyPress(event) {
         if (event.key === "Enter") {
-            this.handleClick(event);
+            this.resetPassword();
         }
     }
     showError(title, error_msg) {
@@ -78,52 +77,56 @@ export class ResetPasswordResponse extends Component {
         return (
             <div>
 
-                <AppMenu title="" loggedIn={false} />
-
                 <ErrorDialog title={this.state.error_title}
                              theme={this.props.theme}
                              message={this.state.error_msg}
                              callback={this.closeError.bind(this)} />
 
-                <div className="auth-wrapper">
+                <div className="no-select auth-wrapper d-flex justify-content-center align-items-center overflow-auto">
                     <div className="auth-inner">
                         <div>
                             <h3>Reset Password</h3>
 
-                            <form>
+                            <div className="form-group form-label">
+                                <label className="label-text">SimSage email address</label>
                                 <input type="text" className="form-control margin-bottom"
                                        placeholder="Enter your email Address"
-                                       autoComplete={false}
-                                        value={this.state.email}
-                                        onChange = {(event) => this.setState({email: event.target.value})} />
-                            </form>
+                                       autoComplete="off"
+                                       value={this.state.email}
+                                       onChange = {(event) => this.setState({email: event.target.value})} />
+                            </div>
 
-                            <form>
+                            <div className="form-group form-label">
+                                <label className="label-text">SimSage reset key</label>
                                 <input type="text" className="form-control margin-bottom"
                                         placeholder="Enter the reset-id we sent you"
-                                        autoComplete={false}
+                                        autoComplete="off"
                                         value={this.state.reset_id}
                                         onChange = {(event) => this.setState({reset_id: event.target.value})} />
-                            </form>
+                            </div>
 
-                            <form>
+                            <div className="form-group form-label">
+                                <label className="label-text">new password</label>
                                 <input type="password" className="form-control margin-bottom"
                                         placeholder="Enter your new Password"
                                         autoFocus={true}
-                                        autoComplete={false}
+                                        autoComplete="off"
                                         onChange = {(event) => this.setState({password: event.target.value})}
                                         onKeyPress = {this.onKeyPress.bind(this)} />
-                            </form>
+                            </div>
+
+                            <div className="form-group spacer-height">
+                            </div>
 
                             <div>
                                 <button className="btn btn-primary btn-block"
-                                              onClick={(event) => this.handleClick(event)}>
+                                              onClick={() => this.resetPassword()}>
                                     Reset Password
                                 </button>
                             </div>
 
                             <p className="forgot-password text-right">
-                                Click here to return to <span className="forgot-password-link" onClick={() => window.location = '/#/'}>sign-in</span>
+                                Click here to return to <span className="forgot-password-link" onClick={() => window.location = '/'}>sign-in</span>
                             </p>
 
                         </div>

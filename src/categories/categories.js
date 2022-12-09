@@ -7,11 +7,11 @@ import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
 import '../css/synset.css';
+import {Pagination} from "../common/pagination";
 
 const empty_category = {
-    metadata: "",
-    displayName: "",
-    categorizationList: [{category: "",wordCloud: ""}]
+    categorizationLabel: "",
+    rule: "",
 }
 
 function create_empty_category() {
@@ -39,35 +39,35 @@ export class Categories extends React.Component {
         this.props.setError(error, info);
         console.log(error, info);
     }
-    deleteCategoryAsk(category) {
-        if (category && category.metadata) {
-            this.props.openDialog("are you sure you want to remove category: " + category.metadata + "?",
-                                    "Remove SynSet", (action) => { this.deleteCategory(action) });
+    deleteCategorizationRuleAsk(category) {
+        if (category && category.categorizationLabel) {
+            this.props.openDialog("are you sure you want to remove category: " + category.categorizationLabel + "?",
+                                    "Remove Document Categorization rule", (action) => { this.deleteCategorizationRule(action) });
             this.setState({category: category});
         }
     }
-    deleteCategory(action) {
-        if (action && this.state.category) {
-            this.props.deleteCategory(this.state.category.metadata);
+    deleteCategorizationRule(action) {
+        if (action && this.state.category && this.state.category.categorizationLabel) {
+            this.props.deleteCategorizationRule(this.state.category.categorizationLabel);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
         }
         this.setState({category_edit: false, category: create_empty_category()});
     }
-    editCategory(category) {
+    editCategorizationRule(category) {
         this.setState({category_edit: true, category: category});
     }
-    newCategory() {
+    newCategorizationRule() {
         this.setState({category_edit: true, category: create_empty_category()});
     }
-    save(category) {
+    saveCategorizationRule(category) {
         if (category) {
-            if (category.metadata.trim().length > 0 && category.displayName.trim().length > 0 && category.categorizationList.length > 0) {
-                this.props.saveCategory(category);
+            if (category.categorizationLabel.trim().length > 1 && category.rule.trim().length > 2) {
+                this.props.saveCategorizationRule(category);
                 this.setState({category_edit: false, category: create_empty_category()});
             } else {
-                this.props.setError("Error Saving document classification", "metadata, category, and/or word-cloud cannot be empty");
+                this.props.setError("Error Saving document categorization rule", "categorization label, and rule cannot be empty");
             }
         } else {
             this.setState({category_edit: false, category: create_empty_category()});
@@ -79,12 +79,13 @@ export class Categories extends React.Component {
             this.props.selected_knowledgebase_id && this.props.selected_knowledgebase_id.length > 0;
     }
     render() {
-        const category_list = this.props.category_list ? this.props.category_list : [];
+        const categorization_list = this.props.categorization_list ? this.props.categorization_list : [];
+        const theme = this.props.theme;
         return (
             <div className="synset-page">
                 <CategoryEdit open={this.state.category_edit}
                               category={this.state.category}
-                              onSave={(item) => this.save(item)}
+                              onSave={(item) => this.saveCategorizationRule(item)}
                               onError={(err) => this.props.setError("Error", err)} />
 
                 {
@@ -93,27 +94,23 @@ export class Categories extends React.Component {
                         <table className="table">
                             <thead>
                                 <tr className='table-header'>
-                                    <th className='table-header'>metadata</th>
-                                    <th className='table-header'>category</th>
+                                    <th className='table-header'>category label</th>
                                     <th className='table-header'>actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    category_list.map((category, i) => {
+                                    categorization_list.map((category, i) => {
                                         return (
                                             <tr key={i}>
                                                 <td>
-                                                    <div className="synset-label">{category.metadata} </div>
+                                                    <div className="synset-label">{category.categorizationLabel} </div>
                                                 </td>
                                                 <td>
-                                                    <div className="synset-label">{category.category}</div>
-                                                </td>
-                                                <td>
-                                                    <div className="link-button" onClick={() => this.editCategory(category)}>
+                                                    <div className="link-button" onClick={() => this.editCategorizationRule(category)}>
                                                         <img src="../images/edit.svg" className="image-size" title="edit syn-set" alt="edit"/>
                                                     </div>
-                                                    <div className="link-button" onClick={() => this.deleteCategoryAsk(category)}>
+                                                    <div className="link-button" onClick={() => this.deleteCategorizationRuleAsk(category)}>
                                                         <img src="../images/delete.svg" className="image-size" title="remove syn-set" alt="remove"/>
                                                     </div>
                                                 </td>
@@ -123,10 +120,9 @@ export class Categories extends React.Component {
                                 }
                                 <tr>
                                     <td/>
-                                    <td/>
                                     <td>
                                         {this.isVisible() &&
-                                        <div className="image-button" onClick={() => this.newCategory()} title="add a new categpry"><img
+                                        <div className="image-button" onClick={() => this.newCategorizationRule()} title="add a new categorization label"><img
                                             className="image-size" src="../images/add.svg"
                                             alt="new"/>&nbsp;new</div>
                                         }
@@ -136,6 +132,24 @@ export class Categories extends React.Component {
                             </tbody>
 
                         </table>
+
+                        <Pagination
+                            theme={theme}
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={this.props.num_categorizations}
+                            rowsPerPage={this.props.categorization_page_size}
+                            page={this.props.categorization_page}
+                            backIconButtonProps={{
+                                'aria-label': 'Previous Page',
+                            }}
+                            nextIconButtonProps={{
+                                'aria-label': 'Next Page',
+                            }}
+                            onChangePage={(page) => this.props.setCategorizationPage(page)}
+                            onChangeRowsPerPage={(rows) => this.props.setCategorizationPageSize(rows)}
+                        />
+
 
                     </div>
                 }
@@ -151,11 +165,14 @@ const mapStateToProps = function(state) {
         error_title: state.appReducer.error_title,
         theme: state.appReducer.theme,
 
-        category_list: state.appReducer.category_list,
+        categorization_list: state.appReducer.categorization_list,
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_organisation: state.appReducer.selected_organisation,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+        num_categorizations: state.appReducer.num_categorizations,
+        categorization_page: state.appReducer.categorization_page,
+        categorization_page_size: state.appReducer.categorization_page_size,
     };
 };
 

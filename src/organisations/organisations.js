@@ -8,9 +8,10 @@ import {appCreators} from "../actions/appActions";
 import {Home} from "../home";
 import {OrganisationEdit} from "./organisation-edit"
 import {Pagination} from "../common/pagination";
+import {Backups} from "../backup/backups";
+import BackupDialog from "../common/backup-dialog";
 
 import '../css/organisations.css';
-import BackupDialog from "../common/backup-dialog";
 
 
 export class Organisations extends React.Component {
@@ -121,13 +122,16 @@ export class Organisations extends React.Component {
         if (backup_organisation_id) {
             this.setState({message: "are you sure you want to back up organisation: " + backup_organisation_id + "?",
                                  title: "Backup Organisation",
-                                 callback: (action, include) => this.backup(action, include),
+                                 callback: (action) => this.backup(action),
                                  backup_organisation_id: backup_organisation_id});
         }
     }
-    backup(action, include) {
+    backup(action) {
         if (action && this.state.backup_organisation_id) {
-            this.props.binaryBackupToFile(this.state.backup_organisation_id, include);
+            this.props.textBackup(this.state.backup_organisation_id, () => {
+                this.props.openDialog("we're now backing up this organisation, please refresh and check the table below for progress.",
+                    "backup in progress", () => { this.props.closeDialog(); });
+            });
         }
         this.setState({callback: null, backup_organisation_id: ""});
     }
@@ -227,11 +231,6 @@ export class Organisations extends React.Component {
                                         className="addImage" src="../images/add.svg" title="add new organisation"
                                         alt="add new organisation"/></div>
                                     <br />
-                                    {isAdmin &&
-                                        <div className="linkButton" onClick={() => this.restore()}>
-                                            <img src="../images/backup.svg" className="image-size" title="restore an organisation from file" alt="restore" />
-                                        </div>
-                                    }
                                 </td>
                             </tr>
                         </tbody>
@@ -291,6 +290,17 @@ export class Organisations extends React.Component {
                     </div>
                 }
 
+                <Backups
+                    user={this.props.user}
+                    selected_organisation_id={this.props.selected_organisation_id}
+                    selected_knowledgebase_id={this.props.selected_knowledgebase_id}
+                    backup_list={this.props.backup_list}
+                    session={this.props.session}
+                    openDialog={this.props.openDialog}
+                    getBackup={this.props.getBackup}
+                    setError={this.props.setError}
+                    deleteBackup={this.props.deleteBackup}
+                    closeDialog={this.props.closeDialog} />
 
             </div>
         )
@@ -305,9 +315,11 @@ const mapStateToProps = function(state) {
         theme: state.appReducer.theme,
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
+        selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
         organisation_list: state.appReducer.organisation_list,
         organisation_page: state.appReducer.organisation_page,
         organisation_page_size: state.appReducer.organisation_page_size,
+        backup_list: state.appReducer.backup_list,
         session: state.appReducer.session,
     };
 };

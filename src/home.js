@@ -11,9 +11,7 @@ import EdgeDevices from "./edge/edge-devices";
 import EdgeDeviceCommands from "./edge/edge-device-commands";
 import Inventory from './inventory/inventory'
 import DocumentSources from "./documents/document-sources";
-import Documents from "./documents/documents";
 import Bot from "./bot/bot";
-import BotTest from "./bot/bot-test";
 import Synonyms from "./synonyms/synonyms";
 import Semantics from "./semantics/semantics";
 import SynSets from "./synsets/synsets";
@@ -23,7 +21,6 @@ import Reports from "./reports/reports";
 import OperatorTabs from "./operator/operator_tabs";
 import Domains from "./ad/domains";
 import Groups from "./users/groups";
-import Status from "./reports/status";
 
 import SockJsClient from 'react-stomp';
 
@@ -32,6 +29,7 @@ import {bindActionCreators} from "redux";
 import {appCreators} from "./actions/appActions";
 import './css/home.css';
 import { MsalContext } from "@azure/msal-react";
+import {Text2Search} from "./test2search/text2search";
 
 // if not defined, use this one
 const default_operator_wait_timeout_in_ms = 10000;
@@ -55,28 +53,36 @@ export class Home extends Component {
         console.log(error, info);
     }
     componentDidMount() {
-        const instance = this.context.instance;
-        const request = {
-            account: this.context.accounts[0]
-        };
-        // do we have a session object locally? if not - sign-in
-        const session = this.props.session;
-        if (!session || !session.id) {
-            instance.acquireTokenSilent(request).then((response) => {
-                // this.setState({response: response});
-                this.setState({jwt: response.idToken});
-                this.props.signIn(response.idToken,
-                    (response) => {
-                        this.setupHome(response);
-                    },
-                    () => {
-                        this.props.history.push("/error");
-                    });
-            }).catch((e) => {
-                this.setState({jwt: null});
-                this.props.setError("acquire-token", e);
-                this.props.history.push("/error");
-            });
+        if (window.ENV.authentication === "password") {
+            const session = this.props.session;
+            if (!session || !session.id) {
+                // back to sign-on
+                window.location = "/";
+            }
+        } else {
+            const instance = this.context.instance;
+            const request = {
+                account: this.context.accounts[0]
+            };
+            // do we have a session object locally? if not - sign-in
+            const session = this.props.session;
+            if (!session || !session.id) {
+                instance.acquireTokenSilent(request).then((response) => {
+                    // this.setState({response: response});
+                    this.setState({jwt: response.idToken});
+                    this.props.signIn(response.idToken,
+                        (response) => {
+                            this.setupHome(response);
+                        },
+                        () => {
+                            this.props.history.push("/error");
+                        });
+                }).catch((e) => {
+                    this.setState({jwt: null});
+                    this.props.setError("acquire-token", e);
+                    this.props.history.push("/error");
+                });
+            }
         }
     }
     setupHome(response) {
@@ -297,6 +303,7 @@ export class Home extends Component {
             }
         }
         const theme = this.props.theme;
+        const isPasswordSignIn = (window.ENV.authentication === "password");
         return (
             <div className="home-screen">
                 {
@@ -324,6 +331,20 @@ export class Home extends Component {
 
                  <div>
 
+                     { isPasswordSignIn &&
+                         <div className="logo-box">
+                             <img alt="SimSage" title="Search Reimagined" className="logo" src={"../images/simsage-logo-no-strapline.svg"} onClick={() => {
+                                 window.location = "/";
+                             }}/>
+                         </div>
+                     }
+                     { isPasswordSignIn &&
+                         <div className="sign-out-password-image-container">
+                             <img src={theme === 'light' ? "../images/sign-out.svg" : "../images/sign-out-light.svg"} alt="sign-out" title="sign-out"
+                                  onClick={() => { this.props.signOut(() => {window.location = "/"}) }} className="sign-out-image" />
+                         </div>
+                     }
+
                      <div className="page-nav">
                          {
                              Home.hasRole(this.props.user, ['admin']) &&
@@ -335,11 +356,11 @@ export class Home extends Component {
                              <div className={this.getStyle('knowledge bases', false)}
                                   onClick={() => this.props.selectTab('knowledge bases')}>knowledge bases</div>
                          }
-                         {
-                             Home.hasRole(this.props.user, ['admin']) &&
-                             <div className={this.getStyle('status', false)}
-                                  onClick={() => this.props.selectTab('status')}>status</div>
-                         }
+                         {/*{*/}
+                         {/*    Home.hasRole(this.props.user, ['admin']) &&*/}
+                         {/*    <div className={this.getStyle('status', false)}*/}
+                         {/*         onClick={() => this.props.selectTab('status')}>status</div>*/}
+                         {/*}*/}
                          {/*{*/}
                          {/*    Home.hasRole(this.props.user, ['admin', 'manager']) &&*/}
                          {/*    <div className={this.getStyle('edge devices', false)}*/}
@@ -362,7 +383,7 @@ export class Home extends Component {
                                   onClick={() => this.props.selectTab('groups')}>group manager</div>
                          }
                          {
-                             Home.hasRole(this.props.user, ['operator']) &&
+                             Home.hasRole(this.props.user, ['operator']) && this.props.enable_vectorizer &&
                              <div className={this.getStyle('operator', !this.props.operator_connected || !isOperator)}
                                   onClick={() => { if (isOperator) this.props.selectTab('operator')}} >operator</div>
                          }
@@ -377,25 +398,20 @@ export class Home extends Component {
                                   onClick={() => this.props.selectTab('document sources')}>document
                                  sources</div>
                          }
-                         {
-                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div className={this.getStyle('documents', false)} 
-                                  onClick={() => this.props.selectTab('documents')}>documents</div>
-                         }
+                         {/*{*/}
+                         {/*    Home.hasRole(this.props.user, ['admin', 'manager']) &&*/}
+                         {/*    <div className={this.getStyle('documents', false)} */}
+                         {/*         onClick={() => this.props.selectTab('documents')}>documents</div>*/}
+                         {/*}*/}
                          {/*{*/}
                          {/*    Home.hasRole(this.props.user, ['admin', 'manager']) &&*/}
                          {/*    <div className={this.getStyle('active directory', false)} */}
                          {/*         onClick={() => this.props.selectTab('active directory')}>active directory</div>*/}
                          {/*}*/}
                          {
-                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
+                             Home.hasRole(this.props.user, ['admin', 'manager']) && this.props.enable_vectorizer &&
                              <div className={this.getStyle('bot', false)}
                                   onClick={() => this.props.selectTab('bot')}>bot</div>
-                         }
-                         {
-                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
-                             <div className={this.getStyle('bot-test', false)}
-                                  onClick={() => this.props.selectTab('bot-test')}>test bot</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
@@ -418,6 +434,11 @@ export class Home extends Component {
                                   onClick={() => this.props.selectTab('categories')}>categorization</div>
                          }
                          {
+                             Home.hasRole(this.props.user, ['admin']) &&
+                             <div className={this.getStyle('text2search')}
+                                  onClick={() => this.props.selectTab('text2search')}>text to search</div>
+                         }
+                         {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              <div className={this.getStyle('reports', false)} 
                                   onClick={() => this.props.selectTab('reports')}>reports</div>
@@ -425,7 +446,7 @@ export class Home extends Component {
                          {
                              Home.hasRole(this.props.user, ['admin']) &&
                              <div className={this.getStyle('logs', false)}
-                                  onClick={() => this.props.selectTab('logs')}>logs</div>
+                                  onClick={() => this.props.selectTab('logs')}>log viewer</div>
                          }
                      </div>
 
@@ -433,7 +454,8 @@ export class Home extends Component {
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
                           this.props.selected_tab !== 'status' && this.props.selected_tab !== 'operator' &&
-                          this.props.selected_tab !== 'license' && isAdmin &&
+                          this.props.selected_tab !== 'license' && this.props.selected_tab !== 'logs' &&
+                             isAdmin  &&
                              <div className="organisation-select">
                                  <div className="lhs">organisation</div>
                                  <div className="rhs">
@@ -450,7 +472,8 @@ export class Home extends Component {
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
                              this.props.selected_tab !== 'status' && this.props.selected_tab !== 'license' &&
-                             this.props.selected_tab !== 'operator' && !isAdmin &&
+                             this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'logs' &&
+                             !isAdmin  &&
                              <div className="organisation-select">
                                  <div className="lhs">organisation</div>
                                  <div className="rhs">
@@ -546,12 +569,6 @@ export class Home extends Component {
                                 closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'documents' &&
-                             <Documents
-                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                 closeDialog={() => this.closeDialog()} />
-                         }
-
                          { this.props.selected_tab === 'active directory' &&
                              <Domains
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
@@ -564,15 +581,31 @@ export class Home extends Component {
                                  closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'bot-test' &&
-                             <BotTest
+                         { this.props.selected_tab === 'synonyms' &&
+                             <Synonyms
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'synonyms' &&
-                             <Synonyms
+                         { this.props.selected_tab === 'text2search' &&
+                             <Text2Search
+                                 selected_organisation_id={this.props.selected_organisation_id}
+                                 selected_knowledgebase_id={this.props.selected_knowledgebase_id}
+                                 text2search_list={this.props.text2search_list}
+                                 num_text2search={this.props.num_text2search}
+                                 text2search_page_size={this.props.text2search_page_size}
+                                 text2search_page={this.props.text2search_page}
+                                 text2search_try_text={this.props.text2search_try_text}
+                                 text2search_try_reply={this.props.text2search_try_reply}
+                                 deleteText2Search={(search_part) => this.props.deleteText2Search(search_part)}
+                                 tryText2Search={() => this.props.tryText2Search()}
+                                 saveText2Search={(search_part, search_type, match_words) => this.props.saveText2Search(search_part, search_type, match_words)}
+                                 setText2SearchFilter={(filter) => this.props.setText2SearchFilter(filter)}
+                                 setText2SearchTryText={(text) => this.props.setText2SearchTryText(text)}
+                                 getText2SearchList={() => this.props.getText2SearchList()}
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
+                                 setText2SearchPageSize={(rows) => this.props.setText2SearchPageSize(rows)}
+                                 setText2SearchPage={(page) => this.props.setText2SearchPage(page)}
                                  closeDialog={() => this.closeDialog()} />
                          }
 
@@ -592,13 +625,6 @@ export class Home extends Component {
                              <Categories
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
-                         }
-
-                         { this.props.selected_tab === 'status' &&
-                             <div>
-                                 <div className="organisation-select" />
-                                 <Status />
-                             </div>
                          }
 
                          { this.props.selected_tab === 'reports' &&
@@ -645,6 +671,7 @@ const mapStateToProps = function(state) {
 
         organisation_list: state.appReducer.organisation_list,
         knowledge_base_list: state.appReducer.knowledge_base_list,
+        enable_vectorizer: state.appReducer.enable_vectorizer,
 
         html5_notifications: state.appReducer.html5_notifications,
 
@@ -657,6 +684,13 @@ const mapStateToProps = function(state) {
         edge_device_list: state.appReducer.edge_device_list,
         selected_edge_device: state.appReducer.selected_edge_device,
         selected_edge_device_id: state.appReducer.selected_edge_device_id,
+
+        text2search_list: state.appReducer.text2search_list,
+        num_text2search: state.appReducer.num_text2search,
+        text2search_page: state.appReducer.text2search_page,
+        text2search_page_size: state.appReducer.text2search_page_size,
+        text2search_try_reply: state.appReducer.text2search_try_reply,
+        text2search_try_text: state.appReducer.text2search_try_text,
     };
 };
 

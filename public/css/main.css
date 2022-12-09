@@ -392,6 +392,12 @@ a:visited {
     color: #fff !important;
 }
 
+.secondary-table-header {
+    background: dimgrey;
+    font-size: 0.95em !important;
+    color: #fff !important;
+}
+
 .table-width-70 {
     width: 70%;
 }

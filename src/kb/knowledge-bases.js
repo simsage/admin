@@ -100,9 +100,11 @@ export class KnowledgeBases extends Component {
     }
     deleteKnowledgeBase(action) {
         if (action) {
-            this.props.deleteKnowledgeBase(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
-        }
-        if (this.props.closeDialog) {
+            this.props.deleteKnowledgeBase(this.props.selected_organisation_id, this.state.knowledgeBase.kbId, () => {
+                this.props.openDialog("SimSage has started removing this knowledge-base.  This might take some time.",
+                                      "Removing Knowledge base", () => {this.props.closeDialog()});
+            });
+        } else if (this.props.closeDialog) {
             this.props.closeDialog();
         }
     }

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 import '../css/pagination.css';
+import Api from "./api";
 
 
 export class Pagination extends Component {
@@ -23,7 +24,7 @@ export class Pagination extends Component {
                     </li>
                     <li className="page-item">
                         <span className="page-display">
-                            <label>{"page " + (this.props.page + 1) + " of " + num_pages + ", for " + count + " items"}</label>
+                            <label>{"page " + Api.numberWithCommas(this.props.page + 1) + " of " + Api.numberWithCommas(num_pages) + ", for " + Api.numberWithCommas(count) + " items"}</label>
                         </span>
                     </li>
                     <li className="page-item">

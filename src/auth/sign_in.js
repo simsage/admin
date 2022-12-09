@@ -1,68 +1,50 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-import ErrorDialog from '../common/error-dialog';
 import {clearState} from '../reducers/stateLoader';
-
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {appCreators} from "../actions/appActions";
 
 import '../css/sign-in.css';
 import '../css/spinner.css';
+import {loginRequest} from "../authConfig";
+import {useMsal} from "@azure/msal-react";
 
 
 // sign-in screen
-export class SignIn extends Component {
-    constructor(props) {
-        super(props);
+export const SignIn = () => {
+    const { instance } = useMsal();
+    return (
+        <div>
+            <div className="no-select auth-wrapper d-flex justify-content-center align-items-center overflow-auto">
 
-        this.state={
-            email: '',
-            password: '',
-        }
-    }
-    componentDidMount() {
-        clearState();
-        this.props.notBusy();
-    }
-    componentDidCatch(error, info) {
-        this.props.setError(error, info);
-        console.log(error, info);
-    }
-    handleClick() {
-        this.props.signIn(this.state.email, this.state.password, () => {
-            this.props.history.push("/home");
-        });
-    }
-    onKeyPress(event) {
-        if (event.key === "Enter") {
-            this.handleClick();
-        }
-    }
-    render() {
-        return (
-            <div>
-                <ErrorDialog title={this.props.error_title}
-                             theme={this.props.theme}
-                             message={this.props.error}
-                             callback={() => this.props.closeError()} />
+                <div className="auth-inner">
 
+                    <div className="d-flex justify-content-between align-items-end mb-4 pb-3 border-bottom">
+                        <div className="d-flex align-items-end">
+                            <img alt="SimSage" title="Search Reimagined" src="../images/simsage-logo-no-strapline.svg"
+                                 className="auth-logo" onClick={() => { window.location = window.ENV.api_base.replace('/api', '/'); }} />
+                            <p className="mb-1 fw-bold auth-text-primary fst-italic">ADMIN</p>
+                        </div>
+                        <div className="version">Version {window.ENV.version}</div>
+                    </div>
+
+                    <div className="form-group">
+                        <button type="submit" className="btn btn-primary btn-block" onClick={() => {
+                            // clear any existing state
+                            clearState();
+                            // sign in and re-direct
+                            instance.loginRedirect(loginRequest).catch(e => {
+                                console.error(e);
+                            });
+                        }}>Sign in</button>
+                    </div>
+
+                    <p className="forgot-password text-right">
+                        <span className="forgot-password-link" onClick={() => window.location = 'foss-license'}>open-source licenses</span>
+                    </p>
+                </div>
             </div>
-        );
-    }
 
+        </div>
+    );
 }
 
-const mapStateToProps = function(state) {
-    return {
-        error: state.appReducer.error,
-        error_title: state.appReducer.error_title,
-        busy: state.appReducer.busy,
-        theme: state.appReducer.theme,
-    };
-};
-
-export default connect(
-    mapStateToProps,
-    dispatch => bindActionCreators(appCreators, dispatch)
-)(SignIn);
+export default SignIn;

@@ -12,19 +12,20 @@ import { LogLevel } from "@azure/msal-browser";
  */
 let wl = "" + window.location;
 if (wl.lastIndexOf('/') > 8) {
-    wl = wl.substr(0, wl.lastIndexOf('/#'));
+    wl = wl.substr(0, wl.lastIndexOf('/'));
 }
 export const msalConfig = {
     auth: {
         clientId: window.ENV.client_id,
-        authority: window.ENV.authority,
+        authority: window.ENV.full_authority,
+        knownAuthorities: [window.ENV.known_authority],
         redirectUri: wl
     },
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored
         storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
     },
-    system: {	
+    system: {
         loggerOptions: {	
             loggerCallback: (level, message, containsPii) => {	
                 if (containsPii) {		
@@ -59,7 +60,7 @@ export const msalConfig = {
  * https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#openid-connect-scopes
  */
 export const loginRequest = {
-    scopes: ["User.Read"]
+    scopes: ["openid"]
 };
 
 /**

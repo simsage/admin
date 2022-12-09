@@ -1,18 +1,32 @@
 
 .log-page {
+    margin-top: 50px;
     float: left;
     min-width: 950px;
     width: 950px;
 }
 
 .log-page .date-select {
-    width: 200px;
+    width: 400px;
+}
+
+.log-page .log-hour-selector {
+    width: 110px;
+}
+
+.log-page .log-hour-selector-selected {
+    width: 110px;
+}
+
+.log-page .date-message {
+    margin-left: 10px;
+    font-size: 12px;
 }
 
 
 .log-page .log-files {
     margin-top: 20px;
-    max-height: 80vh;
+    max-height: 580px;
     min-width: 900px;
     width: 110%;
     overflow-x: auto;

@@ -11,6 +11,7 @@ import Comms from "../common/comms";
 import {Pagination} from "../common/pagination";
 
 import '../css/mind.css';
+import {BotTest} from "./bot-test";
 
 
 export class Bot extends React.Component {
@@ -234,6 +235,21 @@ export class Bot extends React.Component {
                     </div>
                 }
 
+                {
+                    this.isVisible() &&
+                    <div className="bot-test-box">
+                        <BotTest
+                            openDialog={(message, title, callback) => this.props.openDialog(message, title, callback)}
+                            selected_knowledgebase_id={this.props.selected_knowledgebase_id}
+                            mindQuery={this.props.mindQuery}
+                            botQueryString={this.props.bot_query}
+                            setBotQueryString={this.props.setBotQueryString}
+                            queryResultList={this.props.mind_result_list}
+                            closeDialog={() => this.props.closeDialog()} />
+                    </div>
+                }
+
+
             </div>
         )
     }
@@ -258,6 +274,7 @@ const mapStateToProps = function(state) {
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_organisation: state.appReducer.selected_organisation,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+
     };
 };
 

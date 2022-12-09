@@ -1,0 +1,41 @@
+.text2search-page .input-area {
+    width: 700px;
+    display: inline-block;
+    padding: 10px;
+}
+
+.text2search-column-width {
+    width: 200px;
+    inline-size: 200px;
+    overflow-wrap: break-word;
+}
+
+.icon-left {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.text2search-column-width-display {
+    width: 200px;
+    inline-size: 200px;
+    overflow-wrap: break-word;
+}
+
+.text2search-section {
+    margin-bottom: 20px;
+}
+
+.text2search-label {
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.try-text2search-box {
+    display: inline-block;
+    width: 400px;
+}
+
+.text2search-result {
+    margin-top: 10px;
+    margin-left: 196px;
+}

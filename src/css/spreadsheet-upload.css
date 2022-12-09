@@ -34,3 +34,12 @@
     float: left;
 }
 
+.help-button {
+    margin-left: 10px;
+}
+
+.help-button-img {
+    width: 24px;
+    height: 24px;
+}
+

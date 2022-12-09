@@ -13,6 +13,8 @@ export const UPDATE_USER = "update user";
 export const SET_USER_FILTER = "set user filter";
 export const SET_USER_PAGE = "set user page";
 export const SET_USER_PAGE_SIZE = "set user page size";
+export const UPLOADING_USERS = "uploading users";
+export const UPLOADING_USERS_FINISHED = "uploading users finished";
 
 export const SET_ORGANISATION_LIST = "get organisation list";
 export const SELECT_ORGANISATION = "select organisation";
@@ -27,6 +29,8 @@ export const SELECT_KNOWLEDGE_BASE = "selected knowledge base";
 export const SELECT_EDGE_DEVICE = "select edge device";
 export const GET_INVENTORIZE_LIST = "get inventorize list";
 export const GET_INVENTORIZE_BUSY = "get inventorize busy";
+export const SET_INVENTORIZE_PAGE = "set inventory page";
+export const SET_INVENTORIZE_PAGE_SIZE = "set inventory page size";
 export const SET_KB_PAGE = "set kb page";
 export const SET_KB_PAGE_SIZE = "set kb page size";
 
@@ -80,6 +84,14 @@ export const SET_SYNSET_PAGE = "set synset page";
 export const SET_SYNSET_PAGE_SIZE = "set synset page size";
 export const RESET_SYNSET_PAGINATION = "reset synset pagination";
 
+export const SET_TEXT2SEARCH_PAGINATED = "set text2search paginated";
+export const SET_TEXT2SEARCH_PAGE_SIZE = "set text2search page size";
+export const SET_TEXT2SEARCH_PAGE = "set text2search page";
+export const RESET_TEXT2SEARCH_PAGINATION = "reset text2search pagination";
+export const SET_TEXT2SEARCH_FILTER = "set text2search filter";
+export const SET_TEXT2SEARCH_TRY_TEXT = "set text2search try text";
+export const SET_TEXT2SEARCH_TRY_REPLY = "set text2search try reply";
+
 export const RESTORE_SYSTEM = "restore system";
 
 export const GET_LICENSE = "get license";
@@ -130,8 +142,14 @@ export const SET_GROUP_PAGE_SIZE = "set group page size";
 export const SET_GROUP_PAGE = "set group page";
 export const SET_GROUP_FILTER = "set group filter";
 
-// categories
-export const SET_CATEGORIES = "set categories";
+// document categorization
+export const SET_CATEGORIZATION_LIST = "set categorization list";
+export const SET_CATEGORIZATION_PAGE_SIZE = "set categorization page size";
+export const SET_CATEGORIZATION_PAGE = "set categorization page";
+export const RESET_CATEGORIZATION_PAGINATION = "reset categorization pagination";
 
 // SimSage status
 export const SIMSAGE_STATUS = "simsage status";
+
+// backups
+export const SET_BACKUP_LIST = "set backup list";

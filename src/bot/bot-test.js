@@ -2,10 +2,6 @@ import React from 'react';
 
 import {Api} from '../common/api'
 import {BotSearchComponent} from "./bot-search-component";
-
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {appCreators} from "../actions/appActions";
 import Comms from "../common/comms";
 
 
@@ -96,7 +92,7 @@ export class BotTest extends React.Component {
                                         mindQuery={this.props.mindQuery}
                                         botQueryString={this.props.bot_query}
                                         setBotQueryString={this.props.setBotQueryString}
-                                        queryResultList={this.props.mind_result_list} />
+                                        queryResultList={this.props.queryResultList} />
                 }
 
             </div>
@@ -104,22 +100,4 @@ export class BotTest extends React.Component {
     }
 }
 
-const mapStateToProps = function(state) {
-    return {
-        error: state.appReducer.error,
-        error_title: state.appReducer.error_title,
-
-        bot_query: state.appReducer.bot_query,
-        mind_result_list: state.appReducer.mind_result_list,
-
-        selected_organisation_id: state.appReducer.selected_organisation_id,
-        selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
-        session: state.appReducer.session,
-    };
-};
-
-export default connect(
-    mapStateToProps,
-    dispatch => bindActionCreators(appCreators, dispatch)
-)(BotTest);
-
+export default BotTest;

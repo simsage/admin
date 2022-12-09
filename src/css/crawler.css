@@ -136,7 +136,7 @@
 }
 
 .crawler-page .processing-list {
-    width: 400px;
+    width: 450px;
     display: inline-block;
 }
 
@@ -307,3 +307,9 @@
     width: 800px;
 }
 
+.crawler-page .instruction-text {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    display: block;
+}
