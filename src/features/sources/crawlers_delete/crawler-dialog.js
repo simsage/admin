@@ -108,6 +108,7 @@ export class CrawlerDialog extends Component {
     }
     // validate metadata
     isValidMetadata(list, is_db) {
+        console.log("isValidMetadata",list)
         //  "key": "none", "display": null, "metadata": "", "field2": "", "db1": "", "db2":"", "sort": ""
         const metadata_name_map = {};
         let sort_counter = 0;

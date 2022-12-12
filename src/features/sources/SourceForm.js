@@ -26,6 +26,7 @@ import CrawlerWebForm from "./forms/CrawlerWebForm";
 import CrawlerWordPressForm from "./forms/CrawlerWordPressForm";
 import CrawlerMetaMapperForm from "./forms/CrawlerMetaMapperForm";
 import {showErrorAlert} from "../alerts/alertSlice";
+import Api from "../../common/api";
 
 
 export default function SourceForm(props) {
@@ -196,10 +197,112 @@ export default function SourceForm(props) {
     }, [show_form]);
 
 
+
+
     const [has_error, setError] = useState();
     useEffect(() => {
         if (has_error) dispatch(showErrorAlert(has_error))
     }, [has_error])
+
+
+
+    function isValidMetadata(list, is_db) {
+        //  "key": "none", "display": null, "metadata": "", "field2": "", "db1": "", "db2":"", "sort": ""
+        const metadata_name_map = {};
+        let sort_counter = 0;
+        let empty_sort_field_counter = 0;
+        let default_sort_counter = 0;
+        if (!Api.defined(list)) {
+            list = [];
+        }
+        for (const item of list) {
+            const name = item.metadata;
+            if (!name || name.length ===0) {
+                setError({title: 'invalid parameters', message: "metadata field missing metadata-field-name"});
+                return false;
+            }
+            const db_name = item.db1;
+            if (is_db && (!db_name || db_name.length ===0)) {
+                setError({title: 'invalid parameters', message: "database field missing for database-field-name \"" + name + "\""});
+                return false;
+            }
+            if (item.key === "two level category") {
+                const db_name2 = item.db2;
+                if (!db_name2 || db_name2.length ===0) {
+                    setError({title: 'invalid parameters', message: "database field missing for database-field-name \"" + name + "\""});
+                    return false;
+                }
+            }
+            const display = item.display;
+            if (display !== null && display.length ===0) {
+                setError({title: 'invalid parameters', message: "database field missing display-name \"" + name + "\""});
+                return false;
+            }
+            if (!metadata_name_map[name]) {
+                metadata_name_map[name] = 1;
+            } else {
+                metadata_name_map[name] += 1;
+            }
+            // sorting checks
+            if (item.sort === "true") {
+                sort_counter += 1;
+                if (item.sortAscText.trim().length === 0) empty_sort_field_counter += 1;
+                if (item.sortDescText.trim().length === 0) empty_sort_field_counter += 1;
+                if (item.sortDefault.trim() !== "") default_sort_counter += 1;
+            }
+        }
+        for (const key in metadata_name_map) {
+            if (metadata_name_map.hasOwnProperty(key)) {
+                const counter = metadata_name_map[key];
+                if (counter > 1) {
+                    setError({title: 'invalid parameters', message: "metadata name \"" + key + "\" is used more than once."});
+                    return false;
+                }
+            }
+        }
+        if (sort_counter > 0) { // has sort
+            if (empty_sort_field_counter > 0) {
+                setError({title: 'invalid parameters', message: "sort-by fields cannot be empty"});
+                return false;
+            }
+            if (default_sort_counter !== 1) {
+                setError({title: 'invalid parameters', message: "you must specify the default UI sort field"});
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function validFQDN(fqdn) {
+        if (fqdn && fqdn.length > 0) {
+            // valid characters ., a..z A..Z 0..9
+            for (let i = 0; i < fqdn.length; i++) {
+                const ch = fqdn.charAt(i);
+                if (ch !== '.' && !((ch >='a' && ch<='z') || (ch >='A' && ch<='Z') || (ch >='0' && ch<='9'))) {
+                    return false;
+                }
+            }
+            // must have at least one . in it and it can't be the first or last item in the string
+            return fqdn.indexOf('.') > 0 && (fqdn.indexOf('.') + 1 < fqdn.length);
+        }
+        return false;
+    }
+
+
+    function validDropBoxFolderList(folder_list) {
+        for (const i of folder_list.split(",")) {
+            const item = i.trim();
+            if (item.length > 0) {
+                if (!item.startsWith("/"))
+                    return false;
+                if (item.lastIndexOf("/") > 0)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+
 
     //on submit store or update
     const onSubmit = data => {
@@ -243,7 +346,7 @@ export default function SourceForm(props) {
         } else if (new_data.crawlerType === 'file' && (
             (!sj.username || sj.username.length === 0) ||
             (!sj.server || sj.server.length === 0) ||
-            !this.validFQDN(sj.fqdn) ||
+            !validFQDN(sj.fqdn) ||
             (!sj.shareName || sj.shareName.length === 0))) {
 
             setError({title: 'invalid parameters', message:' file crawler: you must supply a name, username, server, valid FQDN and share path as a minimum.'});
@@ -274,7 +377,7 @@ export default function SourceForm(props) {
                 setError({title: 'invalid parameters', message:' you must supply a primary-key, a url, and a content-url as a minimum.'});
 
         } else if (new_data.crawlerType === 'database' && sj.metadata_list && sj.metadata_list.length > 0 &&
-            !this.isValidMetadata(sj.metadata_list, true)) {
+            !isValidMetadata(sj.metadata_list, true)) {
 
             // isValidDBMetadata will set the error
 
@@ -306,15 +409,15 @@ export default function SourceForm(props) {
 
             setError({title: 'invalid parameters', message:' dropbox crawler: you must supply a client-token, and select a user as a minimum.'});
 
-        } else if (new_data.crawlerType === 'dropbox' && !this.validDropBoxFolderList(sj.folderList)) {
+        } else if (new_data.crawlerType === 'dropbox' && !validDropBoxFolderList(sj.folderList)) {
 
             setError({title: 'invalid parameters', message:' dropbox crawler: you have invalid values in your start folder.'});
 
-        } else if (new_data.crawlerType === 'box' && !this.validDropBoxFolderList(sj.folderList)) {
+        } else if (new_data.crawlerType === 'box' && !validDropBoxFolderList(sj.folderList)) {
 
             setError({title: 'invalid parameters', message:' box crawler: you have invalid values in your start folder.'});
 
-        } else if (new_data.crawlerType === 'imanage' && !this.validDropBoxFolderList(sj.folderList)) {
+        } else if (new_data.crawlerType === 'imanage' && !validDropBoxFolderList(sj.folderList)) {
 
             setError({title: 'invalid parameters', message:' iManage crawler: you have invalid values in your start folder.'});
 
@@ -359,23 +462,25 @@ export default function SourceForm(props) {
 
            setError({title: 'invalid parameters', message:'files-per-second must be a number'});
 
-        } else if (!this.isValidMetadata(sj.metadata_list, false)) {
+        } else if (!isValidMetadata(sj.metadata_list, false)) {
             // takes care of itself
 
+        }else {
+            dispatch(updateSources({session_id: session.id, data: new_data}))
         }
 
 
         // setFormData(new_data)
         console.log("onSubmit new_data", new_data)
         // console.log("onSubmit new_default_source_data", new_default_source_data)
-        errors = {title: "Form validation", message: "Invalid name added"}
+        // errors = {title: "Form validation", message: "Invalid name added"}
 
-        if (errors != undefined) {
-            console.log("showErrorAlert: event dispatch", errors)
-            dispatch(showErrorAlert(errors))
-        } else {
-            dispatch(updateSources({session_id: session.id, data: new_data}))
-        }
+        // if (errors != undefined) {
+        //     console.log("showErrorAlert: event dispatch", errors)
+        //     dispatch(showErrorAlert(errors))
+        // } else {
+
+        // }
 
         // handleClose()
     };
