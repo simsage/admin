@@ -43,6 +43,19 @@ export function OrganisationHome() {
     }
 
 
+    function getOrganisations() {
+        const paginated_list = [];
+        const first = page * page_size;
+        const last = first + parseInt(page_size);
+        for (const i in organisation_list) {
+            if (i >= first && i < last) {
+                paginated_list.push(organisation_list[i]);
+            }
+        }
+        return paginated_list;
+    }
+
+
     return (
         <div className="section px-5 pt-4">
             <div>
@@ -59,7 +72,7 @@ export function OrganisationHome() {
                     <tbody>
 
                     {organisation_list &&
-                        organisation_list.map((item) => {
+                        getOrganisations().map((item) => {
                             return (
                                 <tr key={item.id}>
                                     <td className="pt-3 px-4 pb-3" title={"organisation " + item.name}
