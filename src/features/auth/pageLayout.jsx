@@ -42,7 +42,6 @@ export const PageLayout = (props) => {
                     const filter = null;
                     dispatch(setOrganisationList(response2.data))
                     // dispatch(getOrganisationList({session:session,filter:filter}));
-
                     dispatch(getKBList({session_id:session.id, organization_id:session.organisationId}));
 
                 })

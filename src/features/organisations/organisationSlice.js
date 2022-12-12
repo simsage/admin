@@ -35,6 +35,7 @@ const reducers = {
 
     setOrganisationList:(state,action) => {
         state.organisation_list = action.payload.organisationList
+        state.status = "fulfilled";
     }
 
 }

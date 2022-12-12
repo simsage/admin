@@ -59,6 +59,8 @@ export default function KnowledgeBaseViewIds() {
                         <div className="modal-body">
                             <div>
                                 <table>
+                                    <tbody>
+
                                     <tr>
                                         <td>organisation id</td>
                                         <td className="id-width">{organisationId}</td>
@@ -104,6 +106,8 @@ export default function KnowledgeBaseViewIds() {
                                             }
                                         </td>
                                     </tr>
+                                    </tbody>
+
                                 </table>
                             </div>
 
