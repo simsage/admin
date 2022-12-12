@@ -11,6 +11,8 @@ import UserDeleteAsk from "./UserDeleteAsk";
 export function UsersHome(){
 
     const [page, setPage] = useState(useSelector((state) => state.usersReducer.page))
+    const roles = useState(useSelector((state) => state.usersReducer.roles))
+
     const [page_size, setPageSize] = useState(useSelector((state) => state.usersReducer.page_size))
     const [selectedUser, setSelectedUser] = useState()
     const [searchFilter,setSearchFilter] = useState('')
@@ -122,6 +124,13 @@ export function UsersHome(){
         return reducedRoleArray.includes(role);
     }
 
+
+    roles.map((role) => {
+        // let [v1,v2] = role
+        console.log(role.key)
+        // console.log(v2)
+    })
+
     return(
         <div className="section px-5 pt-4">
             <div className="d-flex justify-content-beteween w-100 mb-4">
@@ -132,14 +141,18 @@ export function UsersHome(){
                             onChange={(e) => handleSearchTextChange(e)}
                         />
                     </div>
+
+
+                    {/*todo Max: implementing the order by; Please see KB - Orderby*/}
                     <div className="form-group me-2">
                         <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}
                                 onChange={(e) => setOrderFilter(e.target.value)}>
                             <option value="alphabetical">Alphabetical</option>
-                            <option value="">Recently Added</option>
+                            <option value="recently_added">Recently Added</option>
                         </select>
-
                     </div>
+
+                    {/*todo:: Max - implementing the filter by role, similar to order by; Also load the roles from the slice*/}
                     <div className="form-group me-2">
                         <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
                                 onChange={(e) => {setUserFilter(e.target.value);}}>
