@@ -69,12 +69,10 @@ export default function SourceHome(props){
 
     function handleAddCrawler() {
         dispatch(showAddForm());
-        // this.setState({open: true, selected_source: empty_crawler, title: 'Create New Crawler'});
     }
 
     function handleEditCrawler(source) {
         if (source) {
-            console.log("handleEditCrawler",source)
             dispatch(showEditForm({source:source}));
         }
     }
@@ -275,28 +273,6 @@ export default function SourceHome(props){
 
     return(
         <div className="section px-5 pt-4">
-
-            {/*<CrawlerDialog*/}
-            {/*    open={open}*/}
-            {/*    title={source_title}*/}
-            {/*    theme={theme}*/}
-            {/*    session={session}*/}
-            {/*    organisation_id={selected_organisation_id}*/}
-            {/*    kb_id={selected_knowledge_base_id}*/}
-            {/*    user_list={user_list}*/}
-            {/*    onSave={(crawler) => saveCrawler(crawler)}*/}
-            {/*    onUpdate={(crawler) => onUpdate(crawler)}*/}
-            {/*    onError={(title, errStr) => setError(title, errStr)}*/}
-            {/*    error_title={error_title}*/}
-            {/*    error_msg={error_msg}*/}
-            {/*    wpUploadArchive={(data) => wpUploadArchive(data) }*/}
-            {/*    group_list={group_list}*/}
-            {/*    crawler={selected_source}*/}
-            {/*    edge_device_list={edge_device_list}*/}
-            {/*    testCrawler={testCrawler}*/}
-            {/*    onClose={handleClose}*/}
-            {/*/>*/}
-
 
             <CrawlerImportExport
                 open={export_open}
