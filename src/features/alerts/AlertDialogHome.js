@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {closeError} from "../auth/authSlice";
 import {closeAlert} from "./alertSlice";
 import ErrorAlert from "./ErrorAlert";
+import WarningAlert from "./WarningAlert";
 
 export default function AlertDialogHome(props){
 
@@ -24,10 +25,12 @@ export default function AlertDialogHome(props){
                <ErrorAlert />
             }
 
-            //todo: implement alert-danger alert
             {alert_type === 'alert-danger' &&
-                <ErrorAlert />
+                <WarningAlert />
             }
+
+
+
 
             //todo: implement alert-success alert
             {alert_type === 'alert-success' &&
