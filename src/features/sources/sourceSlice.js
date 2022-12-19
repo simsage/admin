@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import db from "../../notes/db.json"
 import axios from "axios";
+import {deleteRecord} from "../knowledge_bases/knowledgeBaseSlice";
 // import {updateOrganisation} from "../organisations/organisationSlice";
 
 const initialState = {
@@ -102,6 +103,19 @@ const extraReducers = (builder) => {
         })
 
 
+        //deleteRecord
+        .addCase(deleteSource.pending, (state, action) => {
+            state.status = "loading"
+        })
+        .addCase(deleteSource.fulfilled, (state, action) => {
+            console.log("source/deleteSource ", action)
+            state.status = "fulfilled"
+            state.data_status = 'load_now';
+        })
+        .addCase(deleteSource.rejected, (state, action) => {
+            state.status = "rejected"
+        })
+
 
 }
 
@@ -173,6 +187,31 @@ export const updateSources = createAsyncThunk(
             )
 
 });
+
+
+export const deleteSource = createAsyncThunk(
+    'sources/deleteSource',
+    async ({session_id, organisation_id, kb_id,source_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/crawler/crawler/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(source_id);
+
+        if (url !== '/stats/stats/os') {
+            console.log('DELETE ' + api_base + url);
+        }
+
+        return axios.delete(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("deleteRecord sources data", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("deleteRecord sources error", error)
+                    return error
+                }
+            )
+    }
+)
+
 
 // updateCrawler: (crawler) => async (dispatch, getState) => {
 //     dispatch({type: BUSY, busy: true});

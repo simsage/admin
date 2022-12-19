@@ -4,7 +4,7 @@ import {closeAlert} from "./alertSlice";
 
 export default function WarningAlert(props){
 
-    console.log("WarningAlert: load page")
+    console.log("WarningAlert1: load page")
     const show_alert = useSelector((state) => state.alertReducer.show_alert)
     const alert_type = useSelector((state) => state.alertReducer.alert_type)
     const title = useSelector((state) => state.alertReducer.title)
@@ -14,11 +14,13 @@ export default function WarningAlert(props){
 
     //handle form close or cancel
     const handleCancel = () => {
+        console.log("handleCancel")
         dispatch(closeAlert());
     }
 
     const handleOk = () => {
-        dispatch(props.callback);
+        console.log("Ok")
+        props.onOk();
     }
 
 
@@ -42,7 +44,7 @@ export default function WarningAlert(props){
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button onClick={ handleCancel } type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button onClick={ (e) => handleCancel(e) } type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button onClick={ handleOk } type="button" className="btn btn-secondary" data-bs-dismiss="modal">OK</button>
 
                         </div>

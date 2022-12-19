@@ -52,7 +52,15 @@ const reducers = {
         state.alert_type = 'alert-warning'
         state.title = action.payload.title
         state.message = action.payload.message
-        console.log("Error Alert: ", state.title, ' => ', state.message)
+        console.log("Error Alert showWarningAlert: ", state.title, ' => ', state.message)
+    },
+
+    showDeleteAlert: (state, action) => {
+        state.show_alert = true
+        state.alert_type = 'alert-delete'
+        state.title = action.payload.title
+        state.message = action.payload.message
+        console.log("Error Alert showWarningAlert: ", state.title, ' => ', state.message)
     },
 
     showSuccessAlert: (state, action) => {
@@ -83,5 +91,5 @@ const alertSlice = createSlice({
     extraReducers
 });
 
-export const {showAlert, showDangerAlert, showErrorAlert, showSuccessAlert, showWarningAlert, closeAlert} = alertSlice.actions
+export const {showAlert, showDangerAlert, showErrorAlert, showDeleteAlert, showWarningAlert, closeAlert} = alertSlice.actions
 export default alertSlice.reducer;

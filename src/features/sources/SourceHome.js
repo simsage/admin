@@ -3,15 +3,17 @@ import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import SourceFilter from "./SourceFilter";
-import {closeForm, getSources, showAddForm, showEditForm, updateSources} from "./sourceSlice";
+import {closeForm, deleteSource, getSources, showAddForm, showEditForm, updateSources} from "./sourceSlice";
 import MessageDialog from "../../common/message-dialog";
 import CrawlerImportExport from "./crawler-import-export";
 import SourceEdit from "./SourceEdit";
+import {closeAlert, showDeleteAlert, showErrorAlert, showWarningAlert} from "../alerts/alertSlice";
+import AlertDialogHome from "../alerts/AlertDialogHome";
 
 
 //TODO:: No need to list documents anymore.
 
-export default function SourceHome(props){
+export default function SourceHome(props) {
 
     const dispatch = useDispatch();
     const title = "Source";
@@ -27,9 +29,9 @@ export default function SourceHome(props){
     const show_form_source = useSelector((state) => state.sourceReducer.show_data_form);
     const data_status = useSelector((state) => state.sourceReducer.data_status);
 
-
     const [page, setPage] = useState(0)
     const [page_size, setPageSize] = useState(10)
+
 
     const default_specific_json = '{"metadata_list":[' +
         '{"key":"created date range","display":"created","metadata":"created","db1":"","db2":"","sort":"true","sortDefault":"desc","sortAscText":"oldest documents first","sortDescText":"newest documents first", "fieldOrder": "0"},' +
@@ -37,16 +39,22 @@ export default function SourceHome(props){
         '{"key":"document type","display":"document type","metadata":"document-type","db1":"","db2":"","sort":"","sortDefault":"","sortAscText":"","sortDescText":"", "fieldOrder": "2"}' +
         ']}';
 
-    const empty_crawler= {id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: false,
+    const empty_crawler = {
+        id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: false,
         enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: default_specific_json,
-        processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []};
+        processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []
+    };
 
-    let [selected_source,setSelectedSource] = useState({})
+    let [selected_source, setSelectedSource] = useState(undefined)
 
 
-    useEffect(()=>{
-            dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
-    },[selected_knowledge_base_id,session,props.tab,data_status=='load_now'])
+    useEffect(() => {
+        dispatch(getSources({
+            session_id: session.id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id
+        }))
+    }, [selected_knowledge_base_id, session, props.tab, data_status == 'load_now'])
 
 
     function getCrawlers() {
@@ -64,24 +72,37 @@ export default function SourceHome(props){
         return source_list;
     }
 
-
-
-
     function handleAddCrawler() {
         dispatch(showAddForm());
     }
 
     function handleEditCrawler(source) {
         if (source) {
-            dispatch(showEditForm({source:source}));
+            dispatch(showEditForm({source: source}));
         }
     }
 
     function handleDeleteCrawler(crawler) {
-        console.log("handleStartCrawler")
-        // this.setState({crawler_ask: crawler});
-        // this.props.openDialog("are you sure you want to remove the crawler named <b>" + crawler.name + "</b>?",
-        //     "Remove Crawler", (action) => { this.deleteCrawler(action) });
+        if (crawler) {
+            setSelectedSource(crawler)
+            console.log("handleDeleteCrawler", crawler)
+
+            const delete_warning = {
+                message: "are you sure you want to remove the crawler named <b>" + crawler.name + "</b>?",
+                title: "Remove Crawler",
+                data:crawler
+            }
+            console.log("delete_warning", delete_warning)
+
+            dispatch(showDeleteAlert(delete_warning))
+        }
+    }
+
+    function deleteCrawler(source){
+        let source_id = selected_source.sourceId;
+        console.log("deleteOk is called ", source_id)
+        dispatch(deleteSource({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id,source_id:source_id}))
+        dispatch(closeAlert())
     }
 
     function handleExportCrawler(crawler) {
@@ -110,10 +131,10 @@ export default function SourceHome(props){
 
     function handleResetCrawlers() {
         this.props.openDialog("Are you sure you want to reset all crawlers?  This will clear crawler schedules, and mark their files as out-of-date.",
-            "Reset Crawlers", (action) => { this.resetCrawlers(action) });
+            "Reset Crawlers", (action) => {
+                this.resetCrawlers(action)
+            });
     }
-
-
 
 
     function getCrawlerStatus(crawler) {
@@ -164,40 +185,34 @@ export default function SourceHome(props){
     }
 
 
-
-
-
-
     function onUpdate(crawler) {
         // this.setState({selected_source: crawler});
         // setSelectedSource(crawler)
         console.log(crawler)
         console.log(crawler.url)
     }
-    function deleteCrawler(action) {
-        if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
-            this.props.deleteCrawler(this.state.crawler_ask.sourceId);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-    }
+
+    // function deleteCrawler(action) {
+    //     if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
+    //         this.props.deleteCrawler(this.state.crawler_ask.sourceId);
+    //     }
+    //     if (this.props.closeDialog) {
+    //         this.props.closeDialog();
+    //     }
+    // }
+
     function saveCrawler(crawler) {
         if (crawler) {
-            console.log("crawler.sourceID :",crawler )
-            console.log("crawler.sourceID :",crawler.sourceId )
-            console.log("crawler.organisationId :",crawler.organisationId )
-            console.log("crawler.kbId :",crawler.kbId )
+            console.log("crawler.sourceID :", crawler)
+            console.log("crawler.sourceID :", crawler.sourceId)
+            console.log("crawler.organisationId :", crawler.organisationId)
+            console.log("crawler.kbId :", crawler.kbId)
 
-            dispatch(updateSources({session_id:session.id,data:crawler}))
-            // crawler.organisationId = selected_organisation_id;
-            // crawler.kbId = selected_knowledge_base_id;
-            // this.props.updateCrawler(crawler);
+            dispatch(updateSources({session_id: session.id, data: crawler}))
         }
 
-        //dispatch(closeForm())
-        // this.setState({open: false});
     }
+
     function canDeleteDocuments(crawler) {
         return crawler.crawlerType !== 'wordpress';
     }
@@ -221,8 +236,6 @@ export default function SourceHome(props){
         }
     }
 
-
-
     function startCrawler(action) {
         if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
             const crawler = this.state.crawler_ask;
@@ -242,8 +255,6 @@ export default function SourceHome(props){
         }
     }
 
-
-
     //handle form close or cancel
     const handleClose = () => {
         // clearFormData();
@@ -252,9 +263,14 @@ export default function SourceHome(props){
     }
 
 
-    function setError(title,errStr) {}
-    function wpUploadArchive(data) {}
-    function message_callback(action) {}
+    function setError(title, errStr) {
+    }
+
+    function wpUploadArchive(data) {
+    }
+
+    function message_callback(action) {
+    }
 
     const open = show_form_source;
     const source_title = 'Add/Edit Source';
@@ -267,11 +283,10 @@ export default function SourceHome(props){
     const export_open = false;
     const export_upload = false;
 
-
     const message = ""
     const message_title = "message_title"
 
-    return(
+    return (
         <div className="section px-5 pt-4">
 
             <CrawlerImportExport
@@ -280,18 +295,18 @@ export default function SourceHome(props){
                 upload={export_upload}
                 crawler={selected_source}
                 export_upload={export_upload}
-                onSave={(crawler) => saveExport(crawler) }
+                onSave={(crawler) => saveExport(crawler)}
                 onError={(title, errStr) => setError(title, errStr)}
             />
 
-            <MessageDialog callback={(action) => message_callback(action)}
-                           open={message.length > 0}
-                           theme={theme}
-                           message={message}
-                           title={message_title} />
+            {/*<MessageDialog callback={(action) => message_callback(action)}*/}
+            {/*               open={message.length > 0}*/}
+            {/*               theme={theme}*/}
+            {/*               message={message}*/}
+            {/*               title={message_title}/>*/}
 
-            <SourceFilter />
-            { source_list_status !== undefined && source_list && source_list.length > 0 &&
+            <SourceFilter/>
+            {source_list_status !== undefined && source_list && source_list.length > 0 &&
                 <div className="source-page">
                     <table className="table">
                         <thead>
@@ -321,10 +336,12 @@ export default function SourceHome(props){
                                             <div className="source-label">{crawler.crawlerType}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-3 fw-light small fst-italic">
-                                            <div className="source-label small-label-size" title={description}>{description}</div>
+                                            <div className="source-label small-label-size"
+                                                 title={description}>{description}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-3 fw-light">
-                                            <div className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>
+                                            <div
+                                                className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
                                             {/*{!is_running &&*/}
@@ -341,13 +358,37 @@ export default function SourceHome(props){
                                             {/*</div>*/}
                                             {/*}*/}
                                             <div className="d-flex">
-                                                {!is_running && <><button title="start crawler" onClick={() => handleStartCrawler(crawler)}  className={"btn text-primary btn-sm"}>Start</button>&nbsp; &nbsp;</> }
-                                                {is_running && <><button title="start crawler" disabled className={"btn text-primary btn-sm"}>Start</button>&nbsp; &nbsp; </>}
+                                                {!is_running && <>
+                                                    <button title="start crawler"
+                                                            onClick={() => handleStartCrawler(crawler)}
+                                                            className={"btn text-primary btn-sm"}>Start
+                                                    </button>
+                                                    &nbsp; &nbsp;</>}
+                                                {is_running && <>
+                                                    <button title="start crawler" disabled
+                                                            className={"btn text-primary btn-sm"}>Start
+                                                    </button>
+                                                    &nbsp; &nbsp; </>}
 
-                                                <button title="edit crawler" onClick={() => handleEditCrawler(crawler)}  className={"btn text-primary btn-sm"}>Edit</button>&nbsp; &nbsp;
-                                                <button title="remove crawler" onClick={() => handleDeleteCrawler(crawler)}  className={"btn text-danger btn-sm"}>Remove</button>&nbsp; &nbsp;
-                                                <button title="get crawler JSON for export" onClick={() => handleExportCrawler(crawler)}  className={"btn text-primary btn-sm"}>Export</button>&nbsp; &nbsp;
-                                                <button title="zip all files in a source" onClick={() => handleZipSource(crawler)}  className={"btn text-primary btn-sm"}>Zip</button>&nbsp; &nbsp;
+                                                <button title="edit crawler" onClick={() => handleEditCrawler(crawler)}
+                                                        className={"btn text-primary btn-sm"}>Edit
+                                                </button>
+                                                &nbsp; &nbsp;
+                                                <button title="remove crawler"
+                                                        onClick={() => handleDeleteCrawler(crawler)}
+                                                        className={"btn text-danger btn-sm"}>Remove
+                                                </button>
+                                                &nbsp; &nbsp;
+                                                <button title="get crawler JSON for export"
+                                                        onClick={() => handleExportCrawler(crawler)}
+                                                        className={"btn text-primary btn-sm"}>Export
+                                                </button>
+                                                &nbsp; &nbsp;
+                                                <button title="zip all files in a source"
+                                                        onClick={() => handleZipSource(crawler)}
+                                                        className={"btn text-primary btn-sm"}>Zip
+                                                </button>
+                                                &nbsp; &nbsp;
                                             </div>
                                             {/*<div className="link-button" onClick={() => editCrawler(crawler)}>*/}
                                             {/*    <img src="../../images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>*/}
@@ -375,19 +416,25 @@ export default function SourceHome(props){
                             <td>
                                 {/* Siva - Can we place this in SourceFilter.js please */}
                                 {selected_organisation_id.length > 0 &&
-                                <div className="image-button" >
-                                    <button onClick={() => handleAddCrawler()} className={"btn btn-primary p-1"}>Add New Source</button>
-                                </div>
+                                    <div className="image-button">
+                                        <button onClick={() => handleAddCrawler()} className={"btn btn-primary p-1"}>Add
+                                            New Source
+                                        </button>
+                                    </div>
                                 }
                                 {selected_knowledge_base_id.length > 0 &&
-                                <div className="image-button" >
-                                    <button onClick={() => handleResetCrawlers()} className={"btn btn-primary"}>reset crawlers</button>
-                                </div>
+                                    <div className="image-button">
+                                        <button onClick={() => handleResetCrawlers()}
+                                                className={"btn btn-primary"}>reset crawlers
+                                        </button>
+                                    </div>
                                 }
                                 {selected_organisation_id.length > 0 &&
-                                <div className="image-button" >
-                                    <button onClick={() => handleImportCrawler()} className={"btn btn-primary"}>upload crawler JSON</button>
-                                </div>
+                                    <div className="image-button">
+                                        <button onClick={() => handleImportCrawler()}
+                                                className={"btn btn-primary"}>upload crawler JSON
+                                        </button>
+                                    </div>
                                 }
                             </td>
                         </tr>
@@ -408,12 +455,12 @@ export default function SourceHome(props){
                     />
 
 
-
                 </div>
             }
 
-
             <SourceEdit />
+
+            <AlertDialogHome onDelete={deleteCrawler} />
         </div>
     )
 }
