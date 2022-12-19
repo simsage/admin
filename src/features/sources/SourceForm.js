@@ -520,7 +520,7 @@ export default function SourceForm(props) {
         return (<div/>);
     return (
         <div>
-            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", 'zIndex': 8000}}>
                 <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded crawler-page w-100">
                         <form onSubmit={handleSubmit(onSubmit)}>

@@ -11,7 +11,7 @@ export default function AlertDialogHome(props) {
 
     const dispatch = useDispatch()
 
-    console.log("alert_type",alert_type, props)
+    console.log("alert_type qqqq",alert_type, props)
     //handle form close or cancel
     const handleClose = () => {
         dispatch(closeAlert());
@@ -34,7 +34,7 @@ export default function AlertDialogHome(props) {
 
             {alert_type === 'alert-delete' &&
                 <>
-                    <WarningAlert onOk={props.onDelete}/>
+                    <WarningAlert onOk={props.onOk}/>
                 </>
             }
 

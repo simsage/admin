@@ -1,9 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
-import db from "../../notes/db.json"
 import axios from "axios";
-import {deleteRecord} from "../knowledge_bases/knowledgeBaseSlice";
-// import {updateOrganisation} from "../organisations/organisationSlice";
+import alertSlice from "../alerts/alertSlice";
 
 const initialState = {
     source_list: [],
@@ -16,10 +14,17 @@ const initialState = {
     data_status: 'load_now',//load_now,loading,loaded
 
     status: null,
-    error: '',
+
 
     // data form
     show_data_form: false,
+    show_export_form: false,
+    show_import_form: false,
+
+    //error
+    show_error_form:false,
+    error_title: undefined,
+    error_message: undefined,
 
     //start_crawler warning
     show_start_crawler_form: false,
@@ -28,7 +33,6 @@ const initialState = {
     selected_source_tab: null,
     //selected source type in form
     selected_source_type: null,
-
 }
 
 const reducers = {
@@ -42,11 +46,22 @@ const reducers = {
         state.selected_source_id = state.selected_source.sourceId
     },
 
+    showExportForm:(state,action) => {
+        state.show_export_form = true
+        state.selected_source = action.payload.source
+    },
+
+    showImportForm:(state) => {
+        state.show_import_form = true
+    },
+
     closeForm:(state) => {
         console.log("closeForm sourceSlice")
         state.show_data_form = false
+        state.show_export_form =false
         state.selected_source = null
         state.selected_source_id = null
+        state.show_import_form = false
     },
 
     setSelectedSourceTab:(state,action) => {
@@ -91,15 +106,26 @@ const extraReducers = (builder) => {
 
 
         .addCase(updateSources.fulfilled, (state, action) => {
-            console.log("updateSources fulfilled ",action)
-            state.show_data_form = false;
-            state.selected_source = null;
-            state.data_status = 'load_now';
+
+            if(action.payload.response && action.payload.response.data && action.payload.response.data.error){
+                console.log("updateSources fulfilled ",action.payload.response.data.error)
+                state.show_error_form = true
+                state.error_title = "Error"
+                state.error_message = action.payload.response.data.error
+                // alertSlice().show_alert="true"
+
+            }else{
+                state.show_data_form = false;
+                state.selected_source = null;
+                state.data_status = 'load_now';
+                console.log("updateSources fulfilled ",action.payload)
+            }
         })
 
         .addCase(updateSources.rejected, (state, action) => {
             console.log("updateSources rejected ", action)
             state.data_status = 'load_now';
+            state.error = action.payload
         })
 
 
@@ -213,6 +239,42 @@ export const deleteSource = createAsyncThunk(
 )
 
 
+
+
+// https://uat.simsage.ai/api/crawler/crawler
+// POST
+export const zipSource = createAsyncThunk(
+    'sources/zipSource',
+    async ({session_id, organisation_id, kb_id,source_id}) => {
+
+        console.log("sources/zipSource");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/document/zip/source/';
+
+        const data = {
+            "kbId": kb_id,
+            "organisationId": organisation_id,
+            "sourceId": source_id
+        }
+
+        if (url !== '/stats/stats/os') {
+            console.log('POST ' + url);
+        }
+        return axios.post(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("zipSource data",response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("error",error)
+                    return error
+                }
+            )
+
+    });
+
+
 // updateCrawler: (crawler) => async (dispatch, getState) => {
 //     dispatch({type: BUSY, busy: true});
 //     const organisation_id = getState().appReducer.selected_organisation_id;
@@ -234,5 +296,5 @@ const sourceSlice = createSlice({
     extraReducers
 });
 
-export const { showAddForm, showEditForm, closeForm, setSelectedSourceTab, setSelectedSourceType  } = sourceSlice.actions
+export const { showAddForm, showEditForm, closeForm, setSelectedSourceTab, setSelectedSourceType, showExportForm, showImportForm  } = sourceSlice.actions
 export default sourceSlice.reducer;

@@ -3,12 +3,22 @@ import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import SourceFilter from "./SourceFilter";
-import {closeForm, deleteSource, getSources, showAddForm, showEditForm, updateSources} from "./sourceSlice";
+import {
+    closeForm,
+    deleteSource,
+    getSources,
+    showAddForm,
+    showEditForm,
+    showExportForm, showImportForm,
+    updateSources
+} from "./sourceSlice";
 import MessageDialog from "../../common/message-dialog";
 import CrawlerImportExport from "./crawler-import-export";
 import SourceEdit from "./SourceEdit";
 import {closeAlert, showDeleteAlert, showErrorAlert, showWarningAlert} from "../alerts/alertSlice";
 import AlertDialogHome from "../alerts/AlertDialogHome";
+import {SourceExport} from "./SourceExport";
+import {SourceImport} from "./SourceImport";
 
 
 //TODO:: No need to list documents anymore.
@@ -16,17 +26,22 @@ import AlertDialogHome from "../alerts/AlertDialogHome";
 export default function SourceHome(props) {
 
     const dispatch = useDispatch();
-    const title = "Source";
     const theme = '';
     const session = useSelector((state) => state.authReducer.session);
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
-    const user_list = useSelector((state) => state.usersReducer.user_list);
 
     let source_list = useSelector((state) => state.sourceReducer.source_list);
     const source_list_status = useSelector((state) => state.sourceReducer.status);
 
     const show_form_source = useSelector((state) => state.sourceReducer.show_data_form);
+    const show_export_form = useSelector((state) => state.sourceReducer.show_export_form);
+    const show_import_form = useSelector((state) => state.sourceReducer.show_import_form);
+
+    const show_error_form = useSelector((state) => state.sourceReducer.show_error_form);
+    const error_title = useSelector((state) => state.sourceReducer.error_title);
+    const error_message = useSelector((state) => state.sourceReducer.error_message);
+
     const data_status = useSelector((state) => state.sourceReducer.data_status);
 
     const [page, setPage] = useState(0)
@@ -45,7 +60,8 @@ export default function SourceHome(props) {
         processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []
     };
 
-    let [selected_source, setSelectedSource] = useState(undefined)
+    const [selected_source, setSelectedSource] = useState(undefined)
+    const [button_clicked, setButtonClicked] = useState(undefined);
 
 
     useEffect(() => {
@@ -82,41 +98,60 @@ export default function SourceHome(props) {
         }
     }
 
-    function handleDeleteCrawler(crawler) {
-        if (crawler) {
-            setSelectedSource(crawler)
-            console.log("handleDeleteCrawler", crawler)
 
-            const delete_warning = {
-                message: "are you sure you want to remove the crawler named <b>" + crawler.name + "</b>?",
-                title: "Remove Crawler",
-                data:crawler
-            }
-            console.log("delete_warning", delete_warning)
-
-            dispatch(showDeleteAlert(delete_warning))
-        }
-    }
-
-    function deleteCrawler(source){
+    function deleteCrawler() {
         let source_id = selected_source.sourceId;
         console.log("deleteOk is called ", source_id)
-        dispatch(deleteSource({session_id:session.id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id,source_id:source_id}))
+        dispatch(deleteSource({
+            session_id: session.id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id,
+            source_id: source_id
+        }))
         dispatch(closeAlert())
     }
 
+
+    function alertHandler() {
+        console.log("alertHandler")
+        if (button_clicked === 'remove_crawler') {
+            deleteCrawler()
+        } else if (button_clicked === 'reset_crawlers') {
+
+        }
+    }
+
+    function handleDeleteCrawler(crawler) {
+        if (crawler) {
+            setSelectedSource(crawler)
+            setButtonClicked('remove_crawler')
+            const warning = {
+                message: "are you sure you want to remove the crawler named <b>" + crawler.name + "</b>?",
+                title: "Remove Crawler"
+            }
+            dispatch(showDeleteAlert(warning))
+        }
+    }
+
+
     function handleExportCrawler(crawler) {
-        console.log("handleStartCrawler")
-        // this.setState({selected_source: crawler, export_upload: false, export_open: true})
+
+        console.log("handleExportCrawler", show_export_form)
+        if (crawler) {
+            dispatch(showExportForm({source: crawler}))
+        }
     }
 
     function handleImportCrawler() {
-        console.log("handleStartCrawler")
-        // this.setState({selected_source: {}, export_upload: true, export_open: true})
+        dispatch(showImportForm())
     }
+
 
     function handleZipSource(crawler) {
         console.log("handleStartCrawler")
+        setSelectedSource(crawler)
+        setButtonClicked('zip_source')
+
         // this.setState({crawler_ask: crawler});
         // this.props.openDialog("are you sure you want to zip the content of <b>" + crawler.name + "</b>?",
         //     "Zip Source", (action) => { this.zipSource(action) });
@@ -124,18 +159,22 @@ export default function SourceHome(props) {
 
     function handleStartCrawler(crawler) {
         console.log("handleStartCrawler")
+        setSelectedSource(crawler)
+        setButtonClicked('start_crawler')
+
         // this.setState({crawler_ask: crawler});
         // this.props.openDialog("are you sure you want to start <b>" + crawler.name + "</b>?",
         //     "Start Crawler", (action) => { this.startCrawler(action) });
     }
 
     function handleResetCrawlers() {
+
+        setButtonClicked('reset_crawlers')
         this.props.openDialog("Are you sure you want to reset all crawlers?  This will clear crawler schedules, and mark their files as out-of-date.",
             "Reset Crawlers", (action) => {
                 this.resetCrawlers(action)
             });
     }
-
 
     function getCrawlerStatus(crawler) {
         if (crawler) {
@@ -183,7 +222,6 @@ export default function SourceHome(props) {
         }
         return false;
     }
-
 
     function onUpdate(crawler) {
         // this.setState({selected_source: crawler});
@@ -276,8 +314,8 @@ export default function SourceHome(props) {
     const source_title = 'Add/Edit Source';
     const group_list = [];
     const edge_device_list = [];
-    const error_title = ''
-    const error_msg = ''
+    // const error_title = ''
+    // const error_msg = ''
     const testCrawler = null
 
     const export_open = false;
@@ -458,9 +496,17 @@ export default function SourceHome(props) {
                 </div>
             }
 
-            <SourceEdit />
+            <SourceEdit/>
 
-            <AlertDialogHome onDelete={deleteCrawler} />
+            <AlertDialogHome onOk={alertHandler}/>
+
+            {show_export_form &&
+                <SourceExport/>
+            }
+
+            {show_import_form &&
+                <SourceImport/>
+            }
         </div>
     )
 }
