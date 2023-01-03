@@ -61,7 +61,7 @@ export function CategorizationEdit(){
         // else {
         //     handleClose()
         // }
-        //resetData();
+        resetData();
     }
 
     function handleKeyDown(e) {
