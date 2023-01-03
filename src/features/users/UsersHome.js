@@ -124,7 +124,6 @@ export function UsersHome(){
         return reducedRoleArray.includes(role);
     }
 
-
     roles.map((role) => {
         // let [v1,v2] = role
         console.log(role.key)

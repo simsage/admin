@@ -171,6 +171,9 @@ const usersSlice = createSlice({
         closeDeleteForm:(state, action) => {
             state.show_delete_form = false;
             state.edit_id = undefined;
+        },
+        orderBy: (state, action) => {
+
         }
 
         },
