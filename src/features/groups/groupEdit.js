@@ -14,8 +14,8 @@ export default function GroupEdit(){
 
     const showGroupForm = useSelector((state) => state.groupReducer.show_group_form);
     const groupName = useSelector( (state) => state.groupReducer.edit_group)
-    const group_list_parent = useSelector((state) => state.groupReducer.group_list)
-    const group_list = group_list_parent ? group_list_parent.groupList : group_list_parent;
+    const group_list = useSelector((state) => state.groupReducer.group_list)
+    //const group_list = group_list_parent ? group_list_parent.groupList : group_list_parent;
     const user_list = useSelector((state) => state.usersReducer.user_list)
 
     //group form details
