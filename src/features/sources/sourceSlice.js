@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import axios from "axios";
-import alertSlice from "../alerts/alertSlice";
 
 const initialState = {
     source_list: [],
@@ -62,20 +61,25 @@ const reducers = {
         state.selected_source = null
         state.selected_source_id = null
         state.show_import_form = false
+
+        state.show_error_form=false
+        state.error_title= undefined
+        state.error_message= undefined
+
     },
 
     setSelectedSourceTab:(state,action) => {
         state.selected_source_tab = action.payload
     },
 
-    setSelectedSourceType:(state,action) => {
-        state.selected_source_type = action.payload
-    },
+    // setSelectedSourceType:(state,action) => {
+    //     state.selected_source_type = action.payload
+    // },
 }
 
 const extraReducers = (builder) => {
     builder
-        .addCase(getSources.pending, (state, action) => {
+        .addCase(getSources.pending, (state) => {
             state.status = "loading"
             state.data_status = 'loading'
         })
@@ -84,13 +88,13 @@ const extraReducers = (builder) => {
             state.source_list = action.payload
             state.data_status = 'loaded';
         })
-        .addCase(getSources.rejected, (state, action) => {
+        .addCase(getSources.rejected, (state) => {
             state.status = "rejected"
             state.data_status = "rejected"
         })
 
 
-        .addCase(getSource.pending, (state, action) => {
+        .addCase(getSource.pending, (state) => {
             state.status = "loading"
             state.data_status = 'loading'
         })
@@ -99,7 +103,7 @@ const extraReducers = (builder) => {
             state.selected_source = action.payload
             state.data_status = 'loaded';
         })
-        .addCase(getSource.rejected, (state, action) => {
+        .addCase(getSource.rejected, (state) => {
             state.status = "rejected"
             state.data_status = "rejected"
         })
@@ -112,9 +116,9 @@ const extraReducers = (builder) => {
                 state.show_error_form = true
                 state.error_title = "Error"
                 state.error_message = action.payload.response.data.error
-                // alertSlice().show_alert="true"
 
             }else{
+                state.show_import_form = false
                 state.show_data_form = false;
                 state.selected_source = null;
                 state.data_status = 'load_now';
@@ -130,7 +134,7 @@ const extraReducers = (builder) => {
 
 
         //deleteRecord
-        .addCase(deleteSource.pending, (state, action) => {
+        .addCase(deleteSource.pending, (state) => {
             state.status = "loading"
         })
         .addCase(deleteSource.fulfilled, (state, action) => {
@@ -138,7 +142,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(deleteSource.rejected, (state, action) => {
+        .addCase(deleteSource.rejected, (state) => {
             state.status = "rejected"
         })
 
@@ -241,7 +245,7 @@ export const deleteSource = createAsyncThunk(
 
 
 
-// https://uat.simsage.ai/api/crawler/crawler
+// https://uat.simsage.ai/api/document/zip/source/
 // POST
 export const zipSource = createAsyncThunk(
     'sources/zipSource',
@@ -275,19 +279,6 @@ export const zipSource = createAsyncThunk(
     });
 
 
-// updateCrawler: (crawler) => async (dispatch, getState) => {
-//     dispatch({type: BUSY, busy: true});
-//     const organisation_id = getState().appReducer.selected_organisation_id;
-//     const kb_id = getState().appReducer.selected_knowledgebase_id;
-//     const session_id = get_session_id(getState);
-//     await Comms.http_post('/crawler/crawler', session_id, crawler,
-//         () => {
-//             _getCrawlers(organisation_id, kb_id, dispatch, getState)
-//         },
-//         (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
-//     )
-// },
-
 
 const sourceSlice = createSlice({
     name: 'sources',
@@ -296,5 +287,5 @@ const sourceSlice = createSlice({
     extraReducers
 });
 
-export const { showAddForm, showEditForm, closeForm, setSelectedSourceTab, setSelectedSourceType, showExportForm, showImportForm  } = sourceSlice.actions
+export const { showAddForm, showEditForm, closeForm, setSelectedSourceTab, showExportForm, showImportForm } = sourceSlice.actions
 export default sourceSlice.reducer;

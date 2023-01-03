@@ -109,7 +109,7 @@ const extraReducers = (builder) => {
         .addCase(getUserList.fulfilled, (state, action) => {
             console.log("users/getUserList 111",action.payload)
             state.status = "fulfilled"
-            state.user_list = action.payload
+            state.user_list = action.payload?.userList
             state.data_status = "loaded"
         })
         .addCase(getUserList.rejected, (state, action) => {

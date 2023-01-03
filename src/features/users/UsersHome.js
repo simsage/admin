@@ -104,6 +104,7 @@ export function UsersHome(){
         for (const i in user_list) {
             // paginate all users - but only those that have roles in this organisation
             const user = user_list[i];
+            console.log("user Siva",user)
             const roleStr = formatRoles(selected_organisation_id, user.roles);
             if (isAdmin || roleStr.length > 0) { // has a role or is admin?
                 if (index >= first && index < last) {

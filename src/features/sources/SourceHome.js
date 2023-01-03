@@ -3,6 +3,12 @@ import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import SourceFilter from "./SourceFilter";
+import CrawlerImportExport from "./crawler-import-export";
+import SourceEdit from "./SourceEdit";
+import {closeAlert, showDeleteAlert} from "../alerts/alertSlice";
+import AlertDialogHome from "../alerts/AlertDialogHome";
+import {SourceExport} from "./SourceExport";
+import {SourceImport} from "./SourceImport";
 import {
     closeForm,
     deleteSource,
@@ -12,13 +18,6 @@ import {
     showExportForm, showImportForm,
     updateSources
 } from "./sourceSlice";
-import MessageDialog from "../../common/message-dialog";
-import CrawlerImportExport from "./crawler-import-export";
-import SourceEdit from "./SourceEdit";
-import {closeAlert, showDeleteAlert, showErrorAlert, showWarningAlert} from "../alerts/alertSlice";
-import AlertDialogHome from "../alerts/AlertDialogHome";
-import {SourceExport} from "./SourceExport";
-import {SourceImport} from "./SourceImport";
 
 
 //TODO:: No need to list documents anymore.
@@ -37,10 +36,6 @@ export default function SourceHome(props) {
     const show_form_source = useSelector((state) => state.sourceReducer.show_data_form);
     const show_export_form = useSelector((state) => state.sourceReducer.show_export_form);
     const show_import_form = useSelector((state) => state.sourceReducer.show_import_form);
-
-    const show_error_form = useSelector((state) => state.sourceReducer.show_error_form);
-    const error_title = useSelector((state) => state.sourceReducer.error_title);
-    const error_message = useSelector((state) => state.sourceReducer.error_message);
 
     const data_status = useSelector((state) => state.sourceReducer.data_status);
 
@@ -70,7 +65,7 @@ export default function SourceHome(props) {
             organisation_id: selected_organisation_id,
             kb_id: selected_knowledge_base_id
         }))
-    }, [selected_knowledge_base_id, session, props.tab, data_status == 'load_now'])
+    }, [selected_knowledge_base_id, session, props.tab, data_status === 'load_now'])
 
 
     function getCrawlers() {
@@ -85,6 +80,12 @@ export default function SourceHome(props) {
         //         paginated_list.push(source_list[i]);
         //     }
         // }
+        // for (const i in source_list) {
+        //     if (i >= first && i < last) {
+        //         paginated_list.push(source_list[i]);
+        //     }
+        // }
+
         return source_list;
     }
 
@@ -451,27 +452,21 @@ export default function SourceHome(props) {
                             <td/>
                             <td/>
                             <td/>
-                            <td>
+                            <td style={{display:'grid', gridTemplateColumns:'auto auto auto', justifyContent:"start", gap:"1em"}}>
                                 {/* Siva - Can we place this in SourceFilter.js please */}
                                 {selected_organisation_id.length > 0 &&
                                     <div className="image-button">
-                                        <button onClick={() => handleAddCrawler()} className={"btn btn-primary p-1"}>Add
-                                            New Source
-                                        </button>
+                                        <button onClick={() => handleAddCrawler()} className={"btn btn-primary"}>+ Add Source</button>
                                     </div>
                                 }
                                 {selected_knowledge_base_id.length > 0 &&
                                     <div className="image-button">
-                                        <button onClick={() => handleResetCrawlers()}
-                                                className={"btn btn-primary"}>reset crawlers
-                                        </button>
+                                        <button onClick={() => handleResetCrawlers()} className={"btn btn-primary"}>Reset Crawlers </button>
                                     </div>
                                 }
                                 {selected_organisation_id.length > 0 &&
                                     <div className="image-button">
-                                        <button onClick={() => handleImportCrawler()}
-                                                className={"btn btn-primary"}>upload crawler JSON
-                                        </button>
+                                        <button onClick={() => handleImportCrawler()} className={"btn btn-primary"}>Upload Crawler [JSON]</button>
                                     </div>
                                 }
                             </td>
