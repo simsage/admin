@@ -15,8 +15,6 @@ export default function GroupDeleteAsk(){
     const user_list = useSelector((state) => state.usersReducer.user_list)
 
 
-    console.log('Group...', group)
-
     //handle form close or cancel
     const handleClose = () => {
         dispatch(closeDeleteForm());

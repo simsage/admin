@@ -9,6 +9,7 @@ const initialState = {
     status: undefined,
     error: undefined,
     show_group_form: false,
+    show_delete_form: false,
     edit_group: undefined,
     data_status: "load_now"
 }
@@ -79,14 +80,17 @@ const extraReducers = (builder) => {
         //GET GROUPS
         .addCase(getGroupList.pending, (state, action) => {
             state.status = "loading"
+            state.data_status = "loading"
         })
         .addCase(getGroupList.fulfilled, (state, action) => {
             console.log("groups/getGroupList", action.payload)
             state.status = "fulfilled"
+            state.data_status = "loaded"
             state.group_list = action.payload
         })
         .addCase(getGroupList.rejected, (state, action) => {
             state.status = "rejected"
+            state.data_status = "rejected"
         })
         //UPDATE GROUPS
         .addCase(updateGroup.pending, (state, action) => {

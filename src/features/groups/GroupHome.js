@@ -38,7 +38,7 @@ export default function GroupHome(){
     },[load_data === "load_now"])
 
     function getGroups(access) {
-        console.log("HERE TO SEE ACCESS:", access);
+        //console.log("HERE TO SEE ACCESS:", access);
 
         const paginated_list = [];
         const first = page * page_size;
@@ -54,6 +54,7 @@ export default function GroupHome(){
                 index += 1; // one more user in this set of roles
             }
         }
+        console.log('we are here', paginated_list)
         return paginated_list;
     }
 
@@ -102,20 +103,24 @@ export default function GroupHome(){
                     <tbody>
                     {
                         getGroups((isAdmin || isManager)).map(group => {
+                            console.log('hello we made it to here')
                             //const editYes = canEdit(group, isAdmin, isManager);
                             const editYes = true;
                             //const deleteYes = canDelete(group, session.user, isAdmin, isManager);
                             const deleteYes = false;
-                            return <tr key={group.name} >
-                                <td className=""> {group.name}</td>
-                                <td>
-                                    <button
-                                    className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"}
-                                    onClick={() => handleEditGroup(group)}
-                                    >Edit icon</button>
-                                </td>
-                                <td><button className={(deleteYes)? "btn btn-outline-danger" :"btn btn-secondary" } onClick={() => deleteGroupAsk(group)}>Delete icon </button></td>
-                            </tr>
+                            return (
+                                console.log(group)
+                            // <tr key={group.name} >
+                            //     <td className=""> {group.name}</td>
+                            //     <td>
+                            //         <button
+                            //         className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"}
+                            //         onClick={() => handleEditGroup(group)}
+                            //         >Edit icon</button>
+                            //     </td>
+                            //     <td><button className={(deleteYes)? "btn btn-outline-danger" :"btn btn-secondary" } onClick={() => deleteGroupAsk(group)}>Delete icon </button></td>
+                            // </tr>
+                            )
                         })
                     }
 
