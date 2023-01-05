@@ -1,10 +1,11 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState, useEffect} from "react";
-import {getGroupList, showAddGroupForm, showEditGroupForm, showGroupDeleteAsk} from "./groupSlice";
+import {getGroupList, showAddGroupForm, showEditGroupForm, showErrorMessage, showGroupDeleteAsk} from "./groupSlice";
 import {Pagination} from "../../common/pagination";
 import {hasRole} from "../../common/helpers";
 import GroupEdit from "./groupEdit";
 import GroupDeleteAsk from "./GroupDeleteAsk";
+import GroupError from "./groupError";
 
 
 
@@ -66,7 +67,14 @@ export default function GroupHome(){
     }
 
     function deleteGroupAsk(group){
-        dispatch(showGroupDeleteAsk({show:true, group:group}))
+        console.log('click delete...', group.userIdList.length)
+        if (group.userIdList.length === 0) {
+            dispatch(showGroupDeleteAsk({show: true, group: group}))
+        } else {
+            const message = 'Please remove users from group before deleting'
+            console.log(message)
+            dispatch(showErrorMessage(message))
+        }
     }
 
     return(
@@ -142,6 +150,7 @@ export default function GroupHome(){
             </div>
                 <GroupEdit/>
                 <GroupDeleteAsk/>
+                <GroupError/>
         </div>
     )
 }

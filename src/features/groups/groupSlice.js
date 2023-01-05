@@ -10,6 +10,8 @@ const initialState = {
     error: undefined,
     show_group_form: false,
     show_delete_form: false,
+    show_error_message: false,
+    error_message: undefined,
     edit_group: undefined,
     data_status: "load_now"
 }
@@ -145,6 +147,14 @@ const groupSlice = createSlice({
         closeDeleteForm: (state, action) => {
             state.show_delete_form = false;
             state.edit_group = undefined
+        },
+        showErrorMessage: (state, action) => {
+            state.show_error_message = true;
+            state.error_message = action.payload;
+        },
+        closeErrorMessage: (state, action) => {
+            state.show_error_message = false;
+            state.error_message = undefined;
         }
     },
     extraReducers
@@ -157,5 +167,7 @@ export const {
     showAddGroupForm,
     closeGroupForm,
     showGroupDeleteAsk,
-    closeDeleteForm
+    closeDeleteForm,
+    showErrorMessage,
+    closeErrorMessage
 } = groupSlice.actions
