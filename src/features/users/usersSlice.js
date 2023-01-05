@@ -4,6 +4,7 @@ import axios from "axios";
 
 
 const initialState = {
+    user_original_list: [],
     user_list: undefined,
     filter: undefined,
     page: 0,
@@ -109,7 +110,8 @@ const extraReducers = (builder) => {
         .addCase(getUserList.fulfilled, (state, action) => {
             console.log("users/getUserList 111",action.payload)
             state.status = "fulfilled"
-            state.user_list = action.payload?.userList
+            state.user_list = action.payload.userList
+            state.user_original_list = action.payload.userList
             state.data_status = "loaded"
         })
         .addCase(getUserList.rejected, (state, action) => {
@@ -174,6 +176,17 @@ const usersSlice = createSlice({
         },
         orderBy: (state, action) => {
 
+            switch(action.payload.order_by) {
+                default:
+                case 'first_name':
+                    state.user_list = state.user_original_list.sort((a,b) => (a.firstName.toLowerCase() > b.firstName.toLowerCase()) ? 1 : -1);
+                    state.status = "fulfilled";
+                    break;
+                case 'last_name':
+                    state.user_list = state.user_original_list.sort( (a,b) => (a.surname.toLowerCase() > b.surname.toLowerCase()) ? 1 : -1);
+                    state.status = "fulfilled";
+                    break;
+            }
         }
 
         },
@@ -181,5 +194,5 @@ const usersSlice = createSlice({
 });
 
 
-export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm} = usersSlice.actions
+export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm, orderBy} = usersSlice.actions
 export default usersSlice.reducer;

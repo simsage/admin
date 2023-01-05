@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
-import {getUserList, showAddUserForm, showDeleteUserAsk, showEditUserForm} from "./usersSlice";
+import {getUserList, showAddUserForm, showDeleteUserAsk, showEditUserForm, orderBy} from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import {formatRoles, hasRole} from "../../common/helpers";
 import Api from '../../common/api'
@@ -66,6 +66,12 @@ export function UsersHome(){
         dispatch(showEditUserForm({show:true, user_id: u.id}));
     }
 
+    function handleOrderBy(e) {
+        const val = e.target.value;
+        console.log("handleOrderBy: ", val)
+        dispatch(orderBy({order_by: val}))
+    }
+
     function deleteUserAsk(u){
         console.log('deleting', u)
        dispatch(showDeleteUserAsk({show:true, user_id:u.id}))
@@ -104,7 +110,6 @@ export function UsersHome(){
         for (const i in user_list) {
             // paginate all users - but only those that have roles in this organisation
             const user = user_list[i];
-            console.log("user Siva",user)
             const roleStr = formatRoles(selected_organisation_id, user.roles);
             if (isAdmin || roleStr.length > 0) { // has a role or is admin?
                 if (index >= first && index < last) {
@@ -146,9 +151,9 @@ export function UsersHome(){
                     {/*todo Max: implementing the order by; Please see KB - Orderby*/}
                     <div className="form-group me-2">
                         <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}
-                                onChange={(e) => setOrderFilter(e.target.value)}>
-                            <option value="alphabetical">Alphabetical</option>
-                            <option value="recently_added">Recently Added</option>
+                                onChange={(e) => handleOrderBy(e)}>
+                            <option value="first_name">Order by: First Name</option>
+                            <option value="last_name">Order by: Last Name</option>
                         </select>
                     </div>
 
