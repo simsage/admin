@@ -99,7 +99,7 @@ export default function GroupHome(){
 
                 <div className="form-group col ms-auto">
                     <button className="btn btn-primary text-nowrap" onClick={() => handleAddGroup()}>
-                        {`+ Add Group + ${filter} `}
+                        + Add Group
                     </button>
                 </div>
             </div>
