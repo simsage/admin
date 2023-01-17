@@ -28,14 +28,14 @@ export default function SemanticsHome(props) {
         "filter": "",
         "kbId": selected_knowledge_base_id,
         "organisationId": selected_organisation_id,
-        "pageSize": 10,
+        "pageSize": semantic_page_size,
         "prevWord": 0
     };
 
 
     useEffect(() => {
         dispatch(loadSemantics({ session_id, data }));
-    }, [load_data === "load_now"])
+    }, [load_data === "load_now" , semantic_page_size ,selected_organisation_id, selected_knowledge_base_id])
 
 
     function getSemanticList()
@@ -45,6 +45,7 @@ export default function SemanticsHome(props) {
 
     function filterSemantic() {
             data.filter = semantic_filter
+            data.pageSize = semantic_page_size
             dispatch(loadSemantics({ session_id, data }));
     }
 

@@ -35,7 +35,7 @@ export default function SynonymsHome(props) {
 
     useEffect(() => {
         dispatch(loadSynonyms({session_id, data }));
-    }, [load_data === "load_now"])
+    }, [load_data === "load_now" || synonym_page_size])
 
 
     function getSynonymList() {
