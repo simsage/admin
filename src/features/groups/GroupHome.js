@@ -39,15 +39,25 @@ export default function GroupHome(){
         console.log('use effect ran',load_data);
     },[load_data === "load_now", page_size])
 
+    function filterGroups() {
+        let filteredGroup = []
+        group_list.forEach( grp => {
+            if(grp.name.toLowerCase().includes(filter.toLowerCase())) {
+                filteredGroup.push(grp)
+            }
+        })
+        return filteredGroup
+    }
+    filterGroups();
     function getGroups(access) {
-        //console.log("HERE TO SEE ACCESS:", access);
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
         let index = 0;
-        for (const i in group_list) {
+        const iterable_list = filter.length > 0 ? filterGroups() : group_list
+        for (const i in iterable_list) {
             // paginate all users - but only those that have roles in this organisation
-            const group = group_list[i];
+            const group = iterable_list[i];
             if (access ) { // Has access to view groups.
                 if (index >= first && index < last) {
                     paginated_list.push(group);
@@ -82,14 +92,14 @@ export default function GroupHome(){
             <div className="d-flex justify-content-between w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme}
+                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
                         />
                     </div>
                 </div>
 
                 <div className="form-group col ms-auto">
                     <button className="btn btn-primary text-nowrap" onClick={() => handleAddGroup()}>
-                        + Add Group
+                        {`+ Add Group + ${filter} `}
                     </button>
                 </div>
             </div>
