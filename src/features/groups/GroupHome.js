@@ -37,7 +37,7 @@ export default function GroupHome(){
             dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
         // }
         console.log('use effect ran',load_data);
-    },[load_data === "load_now"])
+    },[load_data === "load_now", page_size])
 
     function getGroups(access) {
         //console.log("HERE TO SEE ACCESS:", access);
@@ -110,9 +110,9 @@ export default function GroupHome(){
                     {
                         getGroups((isAdmin || isManager)).map(group => {
                             //const editYes = canEdit(group, isAdmin, isManager);
-                            const editYes = true;
+                            const editYes = isAdmin || isManager;
                             //const deleteYes = canDelete(group, session.user, isAdmin, isManager);
-                            const deleteYes = false;
+                            const deleteYes = isAdmin || isManager;
                             return (
                                 //console.log(group)
                             <tr key={group.name} >
@@ -123,7 +123,7 @@ export default function GroupHome(){
                                     onClick={() => handleEditGroup(group)}
                                     >Edit icon</button>
                                 </td>
-                                <td><button className={(deleteYes)? "btn btn-outline-danger" :"btn btn-secondary" } onClick={() => deleteGroupAsk(group)}>Delete icon </button></td>
+                                <td><button className={(deleteYes) ? "btn btn-outline-danger" :"btn btn-secondary" }  disabled={!deleteYes} onClick={() => deleteGroupAsk(group)}> Delete icon </button></td>
                             </tr>
                             )
                         })
