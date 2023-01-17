@@ -35,8 +35,8 @@ export function UserEdit( {filter} ){
     const user_list = useSelector( (state)=> state.usersReducer.user_list );
     const available_roles = useSelector( (state) => state.usersReducer.roles);
     const available_KBs = useSelector((state) => state.kbReducer.kb_list);
-    const group_list_parent = useSelector(( (state) => state.groupReducer.group_list))
-    const group_list_full = group_list_parent ? group_list_parent.groupList : group_list_parent;
+    const group_list_full = useSelector(( (state) => state.groupReducer.group_list))
+    //const group_list_full = group_list_parent ? group_list_parent.groupList : group_list_parent;
 
     //user form details
     const [email, setEmail] = useState('');
