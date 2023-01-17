@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import React, { useEffect } from "react";
 import {loadSemantics} from "./semanticSlice";
 import SemanticList from "./SemanticsList";
+import SemanticsIntro from "./SemanticsIntro";
 
 
 export default function SemanticsHome(props) {
@@ -35,6 +36,14 @@ export default function SemanticsHome(props) {
 
     return (
         <div className="section px-5 pt-4">
+
+            {status === null &&
+                <SemanticsIntro/>
+            }
+
+            {status !== null && semantic_list.length === 0 && num_semantics === 0 &&
+                <SemanticsIntro />
+            }
 
             {/*show semantic list*/}
             {status !== null && semantic_list.length > 0 && num_semantics > 0 &&

@@ -40,7 +40,7 @@ export default function SynonymsHome() {
 
             }
             {/*Intro message when there are no bot items loaded*/}
-            {status !== null && synonym_list.length === 0 && num_synonyms == 0 &&
+            {status !== null && synonym_list.length === 0 && num_synonyms === 0 &&
                 <SynonymIntro />
 
             }

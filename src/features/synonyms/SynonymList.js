@@ -30,7 +30,7 @@ export default function SynonymsHome(props) {
         "kbId": selected_knowledge_base_id,
         "prevId": null,
         "filter": "",
-        "pageSize": 10
+        "pageSize": synonym_page_size
     };
 
     useEffect(() => {
