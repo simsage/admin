@@ -48,7 +48,7 @@ export function SynonymEdit(props){
         console.log(`Saving...`, data);
         dispatch(updateSynonyms({session_id, organisation_id, knowledge_base_id, data}));
         dispatch(closeSynonymForm());
-
+        resetData();
     }
 
 

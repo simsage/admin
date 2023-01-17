@@ -22,12 +22,12 @@ export function BotEdit(){
     const [answer, setAnswer] = useState('');
     const [links, setLinks] = useState([]);
     const [newLink, setNewLink] = useState('');
-    const [created, setCreated] = useState('');
+    const [created, setCreated] = useState('0');
     const [id, setID] = useState(' ');
     const [imageList, setImageList] = useState([]);
-    const [mid, setMId] = useState('');
-    const [soundList, setSoundList] = useState('');
-    const [videoList, setVideoList] = useState('');
+    const [mId, setMId] = useState('');
+    const [soundList, setSoundList] = useState([]);
+    const [videoList, setVideoList] = useState([]);
 
     // Grab memory details if editing
     let selectedMemory = {}
@@ -63,12 +63,12 @@ export function BotEdit(){
         setQuestions([]);
         setAnswer('')
         setLinks([])
-        setCreated('')
+        setCreated(0)
         setID('')
-        setImageList('')
+        setImageList([])
         setMId('')
-        setSoundList('')
-        setVideoList('')
+        setSoundList([])
+        setVideoList([])
     }
 
     function handleClose(e){
@@ -82,11 +82,16 @@ export function BotEdit(){
         //begin updating user
         const session_id = session.id;
         const data = {
-            id : id ? id : '' ,
-            questionList : questions ? questions : [],
-            urlList: links ? links : [],
+            created: 0,
+            id : id ? id : 1 ,
+            imageList : imageList ? imageList : [],
             information:answer ? answer : '',
-            imageList : imageList ? imageList : []
+            mid: mId,
+            organisationId: organisation_id,
+            questionList : questions ? questions : [],
+            soundList:soundList,
+            urlList: links ? links : [],
+            videoList:videoList
         }
 
         console.log('Saving...', data,organisation_id,knowledge_base_id);
