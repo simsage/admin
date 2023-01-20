@@ -42,19 +42,25 @@ export default function GroupHome(){
     function filterGroups() {
         let filteredGroup = []
         group_list.forEach( grp => {
+            console.log()
             if(grp.name.toLowerCase().includes(filter.toLowerCase())) {
                 filteredGroup.push(grp)
             }
         })
         return filteredGroup
     }
-    filterGroups();
+
+    //filterGroups();
+
     function getGroups(access) {
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
         let index = 0;
         const iterable_list = filter.length > 0 ? filterGroups() : group_list
+        console.log('filter lenght check ', filter.length > 0)
+        console.log('group_list', group_list)
+        console.log('iterable list: ', iterable_list)
         for (const i in iterable_list) {
             // paginate all users - but only those that have roles in this organisation
             const group = iterable_list[i];

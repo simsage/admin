@@ -31,7 +31,6 @@ export const getGroupList = createAsyncThunk(
 
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("groups", response.data)
                 return response.data.groupList
             }).catch(
                 (error) => {
