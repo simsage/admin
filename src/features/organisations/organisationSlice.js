@@ -6,8 +6,9 @@ import {useSelector} from "react-redux";
 import {deleteRecord} from "../knowledge_bases/knowledgeBaseSlice";
 
 const initialState = {
+    organisation_original_list: [],
     organisation_filter: null,
-    organisation_list: {},
+    organisation_list: [],
     organisation_page: 0,
     organisation_page_size: 10,
 
@@ -35,9 +36,45 @@ const reducers = {
 
     setOrganisationList:(state,action) => {
         state.organisation_list = action.payload.organisationList
+        state.organisation_original_list = action.payload.organisationList
         state.status = "fulfilled";
-    }
+    },
 
+    //
+    search: (state, action) => {
+
+        if (action.payload.keyword.length > 0) {
+            let temp = state.organisation_original_list.filter(list_item => {
+                return list_item.name.match(new RegExp(action.payload.keyword, "i"))
+            });
+            if (temp.length > 0) {
+                state.organisation_list = temp
+                state.status = "fulfilled";
+            } else {
+                // dispatchEvent(ErrorAlert({title:"Search",message:"No matching record found"}))
+                state.organisation_list = state.organisation_original_list;
+                state.status = "fulfilled";
+            }
+        } else {
+            state.organisation_list = state.organisation_original_list;
+            state.status = "fulfilled";
+        }
+    },
+
+    orderBy: (state, action) => {
+
+        switch (action.payload.order_by) {
+            default:
+            case 'alphabetical':
+                state.organisation_list = state.organisation_original_list.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                state.status = "fulfilled";
+                break;
+            case 'recently_added':
+                state.organisation_list = state.organisation_original_list.sort((a, b) => (a.created > b.created) ? 1 : -1);
+                state.status = "fulfilled";
+                break
+        }
+    }
 }
 
 const extraReducers = (builder) => {
@@ -50,6 +87,7 @@ const extraReducers = (builder) => {
         .addCase(getOrganisationList.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.organisation_list = action.payload;
+            state.organisation_original_list = action.payload;
             state.data_status = 'loaded';
             // console.log('action.payload', action.payload);
         })
@@ -156,5 +194,5 @@ const organisationSlice = createSlice({
     extraReducers
 });
 
-export const {showAddOrganisationForm, showEditOrganisationForm, closeOrganisationForm, setOrganisationList} = organisationSlice.actions
+export const {showAddOrganisationForm, showEditOrganisationForm, closeOrganisationForm, setOrganisationList, search, orderBy} = organisationSlice.actions
 export default organisationSlice.reducer;

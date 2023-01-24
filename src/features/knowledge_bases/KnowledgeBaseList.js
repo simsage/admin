@@ -113,6 +113,9 @@ export default function KnowledgeBaseList() {
                     </div>
 
                     <div>
+
+
+
                         <table className="table">
                             <thead>
                             <tr>

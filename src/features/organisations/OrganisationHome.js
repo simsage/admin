@@ -3,13 +3,15 @@ import React, {useEffect, useState} from "react";
 import {getOrganisationList, showAddOrganisationForm, showEditOrganisationForm} from "./organisationSlice";
 import {setSelectedKB, setSelectedOrganisation} from "../auth/authSlice";
 import {Pagination} from "../../common/pagination";
-import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import {selectTab} from "../home/homeSlice";
+import {search, orderBy} from "./organisationSlice";
+import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 
 
 export function OrganisationHome() {
     const theme = null
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
+    const organisation_original_list = useSelector((state) => state.organisationReducer.organisation_original_list)
     const load_data = useSelector((state) => state.organisationReducer.data_status)
 
     const session = useSelector((state) => state.authReducer.session)
@@ -20,6 +22,7 @@ export function OrganisationHome() {
     //pagination
     const [page, setPage] = useState(0);
     const [page_size, setPageSize] = useState(10);
+
 
 
     // useEffect(() => {
@@ -47,7 +50,9 @@ export function OrganisationHome() {
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
-        for (const i in organisation_list) {
+        const list = organisation_list;
+        // const list = organisation_list != null ? organisation_list : organisation_original_list;
+        for (const i in list) {
             if (i >= first && i < last) {
                 paginated_list.push(organisation_list[i]);
             }
@@ -55,9 +60,42 @@ export function OrganisationHome() {
         return paginated_list;
     }
 
+    function handleSearchFilter(event){
+        console.log("handleSearchFilter clicked")
+        const val = event.target.value;
+        dispatch(search({keyword: val}))
+    }
+
+    function handleOrderBy(event) {
+        const val = event.target.value;
+        console.log("handleOrderBy", val)
+        dispatch(orderBy({order_by: val}))
+    }
+
 
     return (
         <div className="section px-5 pt-4">
+            <div>
+                <div className="d-flex justify-content-beteween w-100 mb-4">
+                    <div className="d-flex w-100">
+                        <div className="form-group me-2">
+                            <input onKeyUp={(event) => handleSearchFilter(event)} type="text"
+                                   placeholder={"Filter..."} className="form-control"/>
+                        </div>
+                        <div className="form-group me-2">
+                            <select placeholder={"Filter"} className="form-select filter-text-width" onChange={(e)=>handleOrderBy(e)}>
+                                <option value="alphabetical">Alphabetical</option>
+                                <option value="recently_added">Recently added</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="form-group col ms-auto">
+                        <button onClick={() => handleAddOrganisation()} className={"btn btn-primary"}>+ Add New
+                        Organisation
+                    </button>
+                    </div>
+                </div>
+            </div>
             <div>
                 <table className="table">
                     <thead>
@@ -65,7 +103,7 @@ export function OrganisationHome() {
                         <td className="small text-black-50 px-4">Organisation</td>
                         <td className="small text-black-50 px-4">Enabled</td>
                         <td>
-                                <button onClick={() => handleAddOrganisation()} className={"btn btn-primary"}>+ Add New Organisation</button>
+
                         </td>
                     </tr>
                     </thead>
@@ -79,12 +117,15 @@ export function OrganisationHome() {
                                         onClick={() => handleSelectOrganisation(session.id, item)}>
                                         {item.name}
                                     </td>
-                                    <td className="pt-3 px-4 pb-3" title={item.enabled ? item.name + " is enabled" : item.name + " is disabled"}>
+                                    <td className="pt-3 px-4 pb-3"
+                                        title={item.enabled ? item.name + " is enabled" : item.name + " is disabled"}>
                                         {item.enabled ? "yes" : "no"}
                                     </td>
                                     <td>
-                                        <button className={"btn btn-outline-primary"} title={"edit organisation " + item.name}
-                                                onClick={() => handleEditOrganisation(item.id)}>Edit</button>
+                                        <button className={"btn btn-outline-primary"}
+                                                title={"edit organisation " + item.name}
+                                                onClick={() => handleEditOrganisation(item.id)}>Edit
+                                        </button>
                                     </td>
                                 </tr>
                             )

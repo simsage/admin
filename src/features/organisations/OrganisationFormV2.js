@@ -67,15 +67,20 @@ export default function OrganisationFormV2(props) {
                                         aria-label="Close"></button>
                             </div>
                             <div className="modal-body">
+                                {console.log("error", errors)}
+                                <div className={"name" + (errors.name ? " error " : "")}>
+                                    <span className="label-2">Name</span>
+                                    <input {...register("name", {required: true})} /><br/>
+                                    {errors.name && <span>This field is required <br/></span>}
+                                </div>
+                                <div>
+                                    <label className="label-2">Enabled</label>
+                                    <input name="enabled" type="checkbox" {...register('enabled')}  />
+                                </div>
 
-                                <span className="label-2">Name</span>
-                                <input {...register("name", {required: true})} /><br/>
-                                {errors.name && <span>This field is required <br/></span>}
-
-                                <label className="label-2">Enabled</label>
-                                <input name="enabled" type="checkbox" {...register('enabled')}  />
-
-                                <input {...register("id")} type="hidden"/>
+                                <div>
+                                    <input {...register("id")} type="hidden"/>
+                                </div>
 
                             </div>
                             <div className="modal-footer">
