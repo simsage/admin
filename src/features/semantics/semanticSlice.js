@@ -11,7 +11,8 @@ const initialState ={
     data_status: 'load_now',
     show_semantic_form: false,
     edit: undefined,
-    show_delete_form : false
+    show_delete_form : false,
+    prev_word:0
 }
 //organisation_id,kb_id,prev_word,filter,page_size
 export const loadSemantics = createAsyncThunk("semantics/getSemantic",
