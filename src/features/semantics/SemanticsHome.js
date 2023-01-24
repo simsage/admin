@@ -10,7 +10,7 @@ export default function SemanticsHome(props) {
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
-    const load_data = useSelector( (state) => state.botReducer.data_status);
+    const load_data = useSelector( (state) => state.semanticReducer.data_status);
     const status = useSelector((state) => state.semanticReducer.status);
 
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
