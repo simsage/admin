@@ -27,7 +27,8 @@ export default function SynsetList() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log("load_data",load_data)
+        console.log(" useEffect load_data",load_data)
+        console.log(" useEffect load_data",load_data)
         dispatch(loadSynsets({
             session_id: session_id,
             organisation_id: selected_organisation_id,
@@ -36,7 +37,7 @@ export default function SynsetList() {
             filter: synset_filter,
             page_size: synset_page_size
         }));
-    }, [load_data === 'load_now', session_id, selected_organisation_id, selected_knowledge_base_id])
+    }, [load_data === 'load_now', synset_page, synset_page_size, session_id, selected_organisation_id, selected_knowledge_base_id])
 
     const handleFilterTextChange = (e) => {
         setSynSetFilter(e.target.value);
