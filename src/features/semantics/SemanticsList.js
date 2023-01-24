@@ -28,15 +28,13 @@ export default function SemanticsHome(props) {
 
 
 
-    let prev_semantic_set1 = semantic_list.slice(-1)[0]['word']
-    // console.log("prev_semantic_set1",prev_semantic_set1)
-    //set last word in semantics
-    let prev_semantic_set = semantic_list[page_size-1]
-    let prev_word = page != 0 ? prev_semantic_set1:0
-    useEffect(() => {
-        console.log("Page",page)
-        console.log("prev_semantic_set1",prev_semantic_set1)
-    },[page,page!=0])
+    let prev_semantic_set = semantic_list.slice(-1)[0]
+    let prev_word = page != 0 ? prev_semantic_set['word']:0
+    // useEffect(() => {
+    //     console.log("Page",page)
+    //     console.log("prev_semantic_set1",prev_semantic_set)
+    //
+    // },[page,page!=0])
 
 
     console.log("page num",page,prev_word)
@@ -58,20 +56,7 @@ export default function SemanticsHome(props) {
 
     function getSemanticList()
     {
-        const paginated_list = [];
-        // const data_list = semantic_list?semantic_list:[];
-        const first = page * page_size;
-        console.log("first",first)
-        const last = first + parseInt(page_size);
-        console.log("last",last)
-        for (const i in semantic_list) {
-            console.log("semantic_list",semantic_list[i])
-            if (i >= first && i < last) {
-                paginated_list.push(semantic_list[i]);
-            }
-        }
-        console.log("paginated_list",paginated_list)
-        return paginated_list;
+        return semantic_list;
     }
 
     function filterSemantic() {
