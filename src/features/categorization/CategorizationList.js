@@ -21,7 +21,8 @@ export default function CategorizationHome() {
 
 
 
-    const category_list = useSelector((state) => state.categorizationReducer.category_list);
+    const parent_category_list = useSelector((state) => state.categorizationReducer.category_list);
+    const category_list = parent_category_list ? parent_category_list.categorizationList : []
 
     const dispatch = useDispatch();
 
@@ -33,7 +34,7 @@ export default function CategorizationHome() {
 
 
     function getCategoryList(){
-        return category_list?category_list:[];
+        return category_list ? category_list : [];
     }
 
     function newCategory() {

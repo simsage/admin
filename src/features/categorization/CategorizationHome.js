@@ -14,7 +14,8 @@ export default function CategorizationHome() {
 
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
-    const category_list = useSelector( (state) => state.categorizationReducer.category_list)
+    const parent_category_list = useSelector((state) => state.categorizationReducer.category_list);
+    const category_list = parent_category_list ? parent_category_list.categorizationList : []
 
 
     useEffect(()=>{
