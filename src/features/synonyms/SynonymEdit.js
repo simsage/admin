@@ -59,19 +59,20 @@ export function SynonymEdit(props){
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header">{synonym ? "Edit Synonym" : "Add New Synonym"}</div>
+                    <div className="modal-header fw-bold">{synonym ? "Edit Synonym" : "Add New Synonym"}</div>
                     <div className="modal-body">
                         <div className="tab-content">
 
 
                             <div className="control-row">
-                                <span className="label-2">Related Words</span>
+                                <span className="label-2 py-4">Related Words</span>
                                 <span className="text">
                                             <form>
-                                                <input type="text" className="form-control"
+                                                <textarea type="text" className="form-control"
                                                        autoComplete="false"
                                                        placeholder="words"
                                                        value={synonymList}
+                                                          rows={10}
                                                        onChange={(event) => setSynonymList(event.target.value)}
                                                 />
                                             </form>

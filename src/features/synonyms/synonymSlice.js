@@ -90,12 +90,13 @@ const extraReducers = (builder) => {
     // update synonym
         .addCase(updateSynonyms.pending, (state, action) => {
             state.status = "loading";
+            state.data_status = 'loading';
         })
 
         .addCase(updateSynonyms.fulfilled, (state, action) => {
             console.log("addCase getDocuments fulfilled ", action);
             state.status = "fulfilled";
-            state.data_status = 'load_now';
+            state.data_status = 'loaded';
         })
         .addCase(updateSynonyms.rejected, (state, action) => {
             console.log("addCase getDocuments rejected ", action)

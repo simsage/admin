@@ -4,7 +4,7 @@ import {loadSynonyms} from "./synonymSlice";
 import SynonymIntro from "./SynonymIntro";
 import SynonymList from "./SynonymList";
 
-export default function SynonymsHome() {
+export default function SynonymsHome(props) {
 
     const dispatch = useDispatch()
 
@@ -25,13 +25,15 @@ export default function SynonymsHome() {
         "filter": "",
         "pageSize": 10
     };
-
+    console.log("synonym_list",synonym_list)
 
     useEffect(() => {
         dispatch(loadSynonyms({ session_id, data }));
-    }, [load_data === 'load_now'])
+        console.log("useEffect load_data",load_data)
 
+    }, [selected_knowledge_base_id, session, props.tab, load_data === 'load_now'])
 
+    // console.log("useEffect out load_data",load_data)
     return (
         <div className="section px-5 pt-4">
 
