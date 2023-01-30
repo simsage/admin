@@ -70,7 +70,7 @@ export function SynonymEdit(props){
                                             <form>
                                                 <input type="text" className="form-control"
                                                        autoComplete="false"
-                                                       placeholder="Links"
+                                                       placeholder="words"
                                                        value={synonymList}
                                                        onChange={(event) => setSynonymList(event.target.value)}
                                                 />

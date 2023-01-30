@@ -25,9 +25,9 @@ export default function CategorizationHome() {
     const category_list = parent_category_list ? parent_category_list.categorizationList : []
 
     const dispatch = useDispatch();
-
+    console.log("category_list",load_data)
     useEffect(()=>{
-        console.log(load_data)
+        console.log("category_list",load_data)
         dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel: null, pageSize: 5}))
     },[load_data === "load_now"])
 
