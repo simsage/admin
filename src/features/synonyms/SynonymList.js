@@ -25,17 +25,20 @@ export default function SynonymsHome(props) {
 
     const dispatch = useDispatch();
 
+    let prev_synonym_set = synonym_list.slice(-1)[0]
+    let prev_id = synonym_page != 0 ? prev_synonym_set['id']:0
+
     let data = {
         "organisationId": selected_organisation_id,
         "kbId": selected_knowledge_base_id,
-        "prevId": null,
+        "prevId": prev_id,
         "filter": "",
         "pageSize": synonym_page_size
     };
 
     useEffect(() => {
         dispatch(loadSynonyms({session_id, data }));
-    }, [load_data === "load_now", synonym_page_size])
+    }, [load_data === "load_now", synonym_page_size,synonym_page])
 
 
     function getSynonymList() {
