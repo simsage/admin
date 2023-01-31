@@ -26,6 +26,7 @@ export default function CategorizationHome() {
     const total_count = useSelector((state) => state.categorizationReducer.total_count);
     const [page_size,setPageSize] = useState(useSelector((state)=>state.categorizationReducer.page_size))
     const [page,setPage] = useState(useSelector((state)=>state.categorizationReducer.page))
+    const [filter, setFilter] = useState('');
 
     const dispatch = useDispatch();
         // console.log("category_list",load_data)
@@ -45,9 +46,21 @@ export default function CategorizationHome() {
             pageSize: page_size}))
     },[load_data === "load_now",page_size,page])
 
+    function filterCategories() {
+        let filteredGroup = []
+        category_list && category_list.forEach( cat => {
+            console.log('here',cat)
+            if(cat.categorizationLabel.toLowerCase().includes(filter.toLowerCase())) {
+                filteredGroup.push(cat)
+            }
+        })
+        return filteredGroup
+    }
+
 
     function getCategoryList(){
-        return category_list ? category_list : [];
+        const iterable_list = filter.length > 0 ? filterCategories() : category_list
+        return iterable_list ? iterable_list : [];
     }
 
     function newCategory() {
@@ -74,6 +87,12 @@ export default function CategorizationHome() {
     return (
         <div className="section px-5 pt-4">
             <div className="synset-page">
+                <div className="d-flex w-100">
+                    <div className="form-group me-2">
+                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => setFilter(e.target.value)}
+                        />
+                    </div>
+                </div>
 
                 {
                     isVisible() &&
