@@ -15,6 +15,7 @@ export default function SourceFilter(props) {
 
     function handleSearchTextKeydown(e) {
         console.log("handleSearchTextKeydown")
+
         // if (e.key === "Enter" && this.props.selected_organisation_id) {
         //     this.props.getUsers(this.props.selected_organisation_id);
         // }

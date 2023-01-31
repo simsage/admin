@@ -43,7 +43,7 @@ export default function SynonymsHome(props) {
             }
             {/*Intro message when there are no bot items loaded*/}
             {status !== null && synonym_list.length === 0 && num_synonyms === 0 &&
-                <SynonymIntro />
+                <SynonymList />
 
             }
             {status !== null && synonym_list.length > 0 && num_synonyms > 0 &&

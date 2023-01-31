@@ -14,6 +14,7 @@ const initialState = {
     show_synonym_form: false,
     edit:undefined,
     show_delete_form: false,
+    filter: "",
 }
 //organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size
 export const loadSynonyms = createAsyncThunk(
@@ -142,7 +143,11 @@ const synonymSlice = createSlice({
         closeDeleteForm:(state) => {
             state.show_delete_form = false;
             state.edit = undefined;
-        }
+        },
+        // filterSearch:(state,action) => {
+        //     state.data_status = 'load_now';
+        //     state.filter = action.payload;
+        // }
 
     },
     extraReducers

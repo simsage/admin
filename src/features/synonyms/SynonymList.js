@@ -2,9 +2,15 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 
 import {Pagination} from "../../common/pagination";
-import {loadSynonyms, showAddSynonymForm, showEditSynonymForm, showDeleteSynonymForm} from "./synonymSlice";
+import {
+    loadSynonyms,
+    showAddSynonymForm,
+    showEditSynonymForm,
+    showDeleteSynonymForm,
+} from "./synonymSlice";
 import {SynonymEdit} from "./SynonymEdit";
 import SynonymDeleteAsk from "./SynonymDeleteAsk";
+import SynonymFilter from "./SynonymFilter";
 
 export default function SynonymsHome(props) {
 
@@ -21,7 +27,7 @@ export default function SynonymsHome(props) {
     const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
     const [synonym_page_size,setSynonymPageSize] = useState(useSelector((state)=>state.synonymReducer.synonym_page_size))
     const [synonym_page,setSynonymPage] = useState(useSelector((state)=>state.synonymReducer.synonym_page))
-    const [synonym_filter,setSynonymFilter] = useState('');
+    const [filter,setFilter] = useState('')
 
     const dispatch = useDispatch();
 
@@ -32,7 +38,7 @@ export default function SynonymsHome(props) {
         "organisationId": selected_organisation_id,
         "kbId": selected_knowledge_base_id,
         "prevId": prev_id,
-        "filter": "",
+        "filter": '',
         "pageSize": synonym_page_size
     };
 
@@ -41,19 +47,21 @@ export default function SynonymsHome(props) {
     }, [load_data === "load_now", synonym_page_size,synonym_page])
 
 
+
     function getSynonymList() {
         return synonym_list ? synonym_list : [];
     }
-
-    function handleKeyDown(event) {
-        if (event.key === "Enter") {
-            filterSynonyms()
-        }
-    }
-    function filterSynonyms() {
-        data.filter = synonym_filter
-        dispatch(loadSynonyms( {session_id, data } ))
-    }
+    //
+    // function handleKeyDown(event) {
+    //     if (event.key === "Enter") {
+    //         filterSynonyms()
+    //     }
+    // }
+    // function filterSynonyms() {
+    //
+    //     // data.filter = synonym_filter
+    //     // dispatch(loadSynonyms( {session_id, data } ))
+    // }
 
     function editSynonym(s) {
        dispatch(showEditSynonymForm({show:true, syn: s}))
@@ -73,35 +81,47 @@ export default function SynonymsHome(props) {
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
+    function handleAddNew(){
+        dispatch(showAddSynonymForm(true));
+    }
+
+    function handleSearchFilter(event) {
+        let filter = event.target.value;
+        if(filter.length > 2){
+            console.log("handleSearchTextKeydown",filter)
+            // setFilter(filter)
+            data = {...data,  ...{"filter": filter,}}
+            dispatch(loadSynonyms({session_id, data }));
+        }
+    }
 
     return (
         <div className="section px-5 pt-4">
 
             <div>
 
-                {
-                    isVisible() &&
 
-                    <div className="filter-find-box">
-                        <span className="filter-label">find synonyms </span>
-                        <span className="filter-find-text">
-                            <input type="text" value={synonym_filter} autoFocus={true}
-                                   className={"filter-text-width " + theme}
-                                   onKeyDown={(event) => handleKeyDown(event)}
-                                   onChange={(event) => {
-                                       setSynonymFilter(event.target.value)
-                                   }}/>
-                        </span> &nbsp;
-                        <span className="filter-find-image">
-                            <button className="btn btn-secondary"
-                                    onClick={() => filterSynonyms()}
-                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
-                        </span>
+                {/*<br clear="both"/>*/}
+                <div className="d-flex justify-content-beteween w-50 mb-4">
+                    <div className="d-flex w-100">
+                        <div className="form-group me-2">
+                            {/*<input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control " + theme}*/}
+                            {/*       onKeyPress={(e) => handleSearchTextKeydown(e)}*/}
+                            {/*       onChange={(e) => setSearchFilter(e.target.value)}/>*/}
+
+                            <input onKeyUp={(event) => handleSearchFilter(event)} type="text"
+                                   placeholder={"Filter..."} className="form-control"/>
+
+                        </div>
+
                     </div>
-                }
 
-                <br clear="both"/>
-
+                    <div className="form-group col ms-auto">
+                        <button className="btn btn-primary text-nowrap" onClick={() => handleAddNew()}>
+                            + Add
+                        </button>
+                    </div>
+                </div>
                 {
                     isVisible() &&
                     <div>
