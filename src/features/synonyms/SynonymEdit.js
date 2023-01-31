@@ -38,7 +38,7 @@ export function SynonymEdit(props){
 
 
 
-    const handleSave = (e) => {
+    function handleSave(e) {
         e.preventDefault();
         const session_id = session.id;
         console.log(`Editing...`, synonym)

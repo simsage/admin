@@ -173,16 +173,16 @@ export function BotEdit(){
                 <div className="modal-content">
                     <div className="modal-header">{memory ? "Edit Memory" : "Add New Memory"}</div>
                     <div className="modal-body">
-                            <div className="tab-content">
+                        <div className="tab-content">
 
-                                {
-                                    questions && questions.map( (question,i) => {
-                                        console.log(question)
-                                        if (question === '') {return;}
-                                        return (
-                                            <div className="control-row" key={i}>
-                                                <span className="label-2">Question </span>
-                                                <span className="text">
+                            {
+                                questions && questions.map( (question,i) => {
+                                    console.log(question)
+                                    if (question === '') {return;}
+                                    return (
+                                        <div className="control-row" key={i}>
+                                            <span className="label-2">Question </span>
+                                            <span className="text">
                                                     <form>
                                                         <input type="text" className="form-control"
                                                                autoComplete="false"
@@ -192,14 +192,14 @@ export function BotEdit(){
                                                         />
                                                     </form>
                                                 </span>
-                                                <button className="btn-danger btn-block" onClick={() => removeQuestionBtn(question, i)}>-</button>
-                                            </div>
-                                        )
-                                    })
-                                }
-                                <div className="control-row">
-                                    <span className="label-2">Add new question </span>
-                                    <span className="text">
+                                            <button className="btn-danger btn-block" onClick={() => removeQuestionBtn(question, i)}>-</button>
+                                        </div>
+                                    )
+                                })
+                            }
+                            <div className="control-row">
+                                <span className="label-2">Add new question </span>
+                                <span className="text">
                                         <form>
                                             <input type="text"
                                                    className="form-control"
@@ -211,30 +211,30 @@ export function BotEdit(){
                                             />
                                         </form>
                                     </span>
-                                    <button className="btn-primary btn-block" onClick={(e) => addNewQuestionBtn(e, newQuestion)}>+</button>
-                                </div>
+                                <button className="btn-primary btn-block" onClick={(e) => addNewQuestionBtn(e, newQuestion)}>+</button>
                             </div>
-                                <div className="control-row">
-                                    <span className="label-2">Answer</span>
-                                    <span className="text">
+                        </div>
+                        <div className="control-row">
+                            <span className="label-2">Answer</span>
+                            <span className="text">
                                         <form>
                                             <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="Answer"
-                                                       value={answer}
-                                                       onChange={(e) => setAnswer(e.target.value)}
+                                                   autoComplete="false"
+                                                   placeholder="Answer"
+                                                   value={answer}
+                                                   onChange={(e) => setAnswer(e.target.value)}
                                             />
                                         </form>
                                     </span>
-                                </div>
-                                {
-                                    links && links.map( (link,i) => {
-                                        console.log(link)
-                                        if (link === '') {return;}
-                                        return (
-                                            <div className="control-row" key={i}>
-                                                <span className="label-2">Link </span>
-                                                <span className="text">
+                        </div>
+                        {
+                            links && links.map( (link,i) => {
+                                console.log(link)
+                                if (link === '') {return;}
+                                return (
+                                    <div className="control-row" key={i}>
+                                        <span className="label-2">Link </span>
+                                        <span className="text">
                                                     <form>
                                                         <input type="text" className="form-control"
                                                                autoComplete="false"
@@ -244,14 +244,14 @@ export function BotEdit(){
                                                         />
                                                     </form>
                                                 </span>
-                                                <button className="btn-danger btn-block" onClick={() => removeLinkBtn(link, i)}>-</button>
-                                            </div>
-                                        )
-                                    })
-                                }
-                                <div className="control-row">
-                                    <span className="label-2">Add new link </span>
-                                    <span className="text">
+                                        <button className="btn-danger btn-block" onClick={() => removeLinkBtn(link, i)}>-</button>
+                                    </div>
+                                )
+                            })
+                        }
+                        <div className="control-row">
+                            <span className="label-2">Add new link </span>
+                            <span className="text">
                                         <form>
                                             <input type="text"
                                                    className="form-control"
@@ -263,8 +263,8 @@ export function BotEdit(){
                                             />
                                         </form>
                                     </span>
-                                    <button className="btn-primary btn-block" onClick={(e) => addNewLinkBtn(e, newQuestion)}>+</button>
-                                </div>
+                            <button className="btn-primary btn-block" onClick={(e) => addNewLinkBtn(e, newQuestion)}>+</button>
+                        </div>
                     </div>
 
 
