@@ -14,18 +14,22 @@ export default function CategorizationHome() {
 
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
-    const parent_category_list = useSelector((state) => state.categorizationReducer.category_list);
-    const category_list = parent_category_list ? parent_category_list.categorizationList : []
+    const category_list = useSelector((state) => state.categorizationReducer.category_list);
+    const total_count = useSelector((state) => state.categorizationReducer.total_count);
+    const [page_size,setPageSize] = useState(useSelector((state)=>state.categorizationReducer.page_size))
+    const [page,setPage] = useState(useSelector((state)=>state.categorizationReducer.page))
 
+    let prev_cat_label = null;
 
     useEffect(()=>{
-        console.log('data...', session_id, selected_organisation_id, selected_knowledge_base_id)
-        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel: null, pageSize: 5}))
+        // console.log('data...', session_id, selected_organisation_id, selected_knowledge_base_id)
+        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel: prev_cat_label, pageSize: page_size}))
     },[load_data === 'load_now'])
+
 
     return (
         <div className="section px-5 pt-4">
-
+            {console.log("category_list",category_list)}
             {status === null &&
                 <CategorizationIntro />
             }

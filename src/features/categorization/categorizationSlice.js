@@ -11,12 +11,16 @@ const initialState = {
     category: undefined,
     error:undefined,
     show_error: false,
+    page_size: 10,
+    page: 0,
+    total_count:0,
 }
 
 export const loadCategorizations = createAsyncThunk("categorization/loadCategorizations",
     async ({session_id, organisation_id, kb_id, prevCategorizationLabel, pageSize}) => {
 
         const api_base = window.ENV.api_base;
+        //https://adminux.simsage.ai/api/language/categorization/c276f883-e0c8-43ae-9119-df8b7df9c574/0185c075-31ea-23d7-ec8d-a573738bcd0b/null/5
         const url = api_base + '/language/categorization/' + encodeURIComponent(organisation_id) +'/'+ encodeURIComponent(kb_id)+'/'+ encodeURIComponent(prevCategorizationLabel)+'/'+encodeURIComponent(pageSize);
 
         return axios.get(url, Comms.getHeaders(session_id))
@@ -81,8 +85,10 @@ const extraReducers = (builder) => {
         })
         .addCase(loadCategorizations.fulfilled,(state, action) => {
             state.status = "fulfilled"
-            state.category_list = action.payload
-            state.data_status = "loaded";
+            state.category_list = action.payload.categorizationList
+            // state.category_list = action.payload
+            state.total_count = action.payload.totalCategorizationCount
+            // state.data_status = "loaded";
         })
         .addCase(loadCategorizations.rejected,(state, action) => {
             state.status = "rejected";

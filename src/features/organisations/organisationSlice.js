@@ -110,6 +110,7 @@ const extraReducers = (builder) => {
         //delete Record
         .addCase(deleteRecord.fulfilled, (state, action) => {
             state.status = "fulfilled"
+            state.data_status = 'load_now';
         })
 
 }
@@ -185,6 +186,33 @@ export const deleteOrganisation = createAsyncThunk(
     }
 )
 
+
+
+// /api/auth/organisation/{organisationId}
+export const backupOrganisation = createAsyncThunk(
+    'organisations/deleteOrganisation',
+    async ({session_id,organisation_id})=>{
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/auth/organisation/'+ encodeURIComponent(organisation_id);
+
+        if (url !== '/stats/stats/os') {
+            console.log('DELETE ' + api_base + url);
+        }
+
+        return axios.delete(url,Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("deleteOrganisation",response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("deleteOrganisation error",error)
+                    return error}
+            )
+    }
+)
+
+
+// https://adminux.simsage.ai/api/backup/backup/0185bfd5-676e-3acd-1259-077838a55188/specific
 
 
 const organisationSlice = createSlice({

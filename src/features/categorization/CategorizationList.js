@@ -8,10 +8,11 @@ import {
 } from "./categorizationSlice";
 import {CategorizationEdit} from "./CategorizationEdit";
 import CategorizationDeleteAsk from "./CategorizationDeleteAsk";
+import {Pagination} from "../../common/pagination";
 
 export default function CategorizationHome() {
 
-
+    const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
@@ -19,18 +20,30 @@ export default function CategorizationHome() {
     const session_id = session.id;
     const load_data = useSelector( (state) => state.categorizationReducer.data_status)
 
-
-
     const parent_category_list = useSelector((state) => state.categorizationReducer.category_list);
-    const category_list = parent_category_list ? parent_category_list.categorizationList : []
+
+    const category_list = useSelector((state) => state.categorizationReducer.category_list);
+    const total_count = useSelector((state) => state.categorizationReducer.total_count);
+    const [page_size,setPageSize] = useState(useSelector((state)=>state.categorizationReducer.page_size))
+    const [page,setPage] = useState(useSelector((state)=>state.categorizationReducer.page))
 
     const dispatch = useDispatch();
-    console.log("category_list",load_data)
-    useEffect(()=>{
-        console.log("category_list",load_data)
-        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel: null, pageSize: 5}))
-    },[load_data === "load_now"])
+        // console.log("category_list",load_data)
 
+    let prev_set = category_list.slice(-1)[0]
+    // console.log("prev_set",prev_set)
+    let prev_cat_label = page != 0 ? prev_set['categorizationLabel']:null
+    console.log("prev_cat_label",prev_cat_label)
+
+    useEffect(()=>{
+        // console.log("category_list",load_data)
+        dispatch(loadCategorizations({
+            session_id: session_id,
+            organisation_id:selected_organisation_id,
+            kb_id:selected_knowledge_base_id,
+            prevCategorizationLabel: prev_cat_label,
+            pageSize: page_size}))
+    },[load_data === "load_now",page_size,page])
 
 
     function getCategoryList(){
@@ -50,7 +63,6 @@ export default function CategorizationHome() {
     function deleteCategoryAsk(category) {
         dispatch(showDeleteCategorizationForm({show:true, category:category}));
     }
-
 
 
     function isVisible() {
@@ -113,7 +125,18 @@ export default function CategorizationHome() {
                             </tbody>
 
                         </table>
-
+                        <Pagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            theme={theme}
+                            component="div"
+                            count={total_count}
+                            rowsPerPage={page_size}
+                            page={page}
+                            backIconButtonProps={{'aria-label': 'Previous Page',}}
+                            nextIconButtonProps={{'aria-label': 'Next Page',}}
+                            onChangePage={(page) => setPage(page)}
+                            onChangeRowsPerPage={(rows) => setPageSize(rows)}
+                        />
                     </div>
                 }
 
