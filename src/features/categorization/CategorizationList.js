@@ -43,7 +43,7 @@ export default function CategorizationHome() {
             organisation_id:selected_organisation_id,
             kb_id:selected_knowledge_base_id,
             prevCategorizationLabel: prev_cat_label,
-            pageSize: page_size}))
+            pageSize: 50}))
     },[load_data === "load_now",page_size,page])
 
     function filterCategories() {

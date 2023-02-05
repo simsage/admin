@@ -109,7 +109,7 @@ export default function SynsetList() {
                                 <input type="text" value={synset_filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
                                    onKeyDown={(e) => handleFilterTextKeyDown(e)}
-                                   onChange={(e) => {handleFilterTextChange(e)}}/>
+                                   onChange={(e) => {setSynSetFilter(e)}}/>
                             </span>
                             <button className="filter-find-image" onClick={() => findSynSets()} title="search">
                             search

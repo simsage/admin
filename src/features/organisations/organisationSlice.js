@@ -189,30 +189,55 @@ export const deleteOrganisation = createAsyncThunk(
 
 
 // /api/auth/organisation/{organisationId}
+// https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific
 export const backupOrganisation = createAsyncThunk(
-    'organisations/deleteOrganisation',
+    'organisations/backupOrganisation',
     async ({session_id,organisation_id})=>{
         const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/organisation/'+ encodeURIComponent(organisation_id);
+        const url = api_base + '/backup/backup/'+ encodeURIComponent(organisation_id)+'/specific';
 
         if (url !== '/stats/stats/os') {
-            console.log('DELETE ' + api_base + url);
+            console.log('POST ' + api_base + url);
         }
-
-        return axios.delete(url,Comms.getHeaders(session_id))
+        const data = {};
+        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("deleteOrganisation",response.data)
+                console.log("backupOrganisation",response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("deleteOrganisation error",error)
+                    console.log("backupOrganisation error",error)
                     return error}
             )
     }
 )
 
 
-// https://adminux.simsage.ai/api/backup/backup/0185bfd5-676e-3acd-1259-077838a55188/specific
+// /api/auth/organisation/{organisationId}
+// https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific
+export const restoreOrganisation = createAsyncThunk(
+    'organisations/backupOrganisation',
+    async ({session_id,data})=>{
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/backup/restore/';
+
+        if (url !== '/stats/stats/os') {
+            console.log('POST ' + api_base + url);
+        }
+        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("backupOrganisation",response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("backupOrganisation error",error)
+                    return error}
+            )
+    }
+)
+
+
+
 
 
 const organisationSlice = createSlice({

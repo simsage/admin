@@ -11,6 +11,7 @@ import {
 import {SynonymEdit} from "./SynonymEdit";
 import SynonymDeleteAsk from "./SynonymDeleteAsk";
 import SynonymFilter from "./SynonymFilter";
+import {loadSemantics} from "../semantics/semanticSlice";
 
 export default function SynonymsHome(props) {
 
@@ -85,43 +86,55 @@ export default function SynonymsHome(props) {
         dispatch(showAddSynonymForm(true));
     }
 
-    function handleSearchFilter(event) {
-        let filter = event.target.value;
-        if(filter.length > 2){
-            console.log("handleSearchTextKeydown",filter)
-            // setFilter(filter)
-            data = {...data,  ...{"filter": filter,}}
-            dispatch(loadSynonyms({session_id, data }));
+    // function handleSearchFilter(event) {
+    //     let filter = event.target.value;
+    //     if(filter.length > 2){
+    //         console.log("handleSearchTextKeydown",filter)
+    //         // setFilter(filter)
+    //         data = {...data,  ...{"filter": filter,}}
+    //         dispatch(loadSynonyms({session_id, data }));
+    //     }
+    // }
+
+    function handleSearchTextKeydown(event)
+    {
+        if (event.key === "Enter") {
+            filterRecords();
         }
     }
+
+    function filterRecords() {
+        data.filter = filter
+        data.pageSize = synonym_page_size
+        dispatch(loadSynonyms({ session_id, data }));
+    }
+
 
     return (
         <div className="section px-5 pt-4">
 
             <div>
-
-
-                {/*<br clear="both"/>*/}
-                <div className="d-flex justify-content-beteween w-50 mb-4">
-                    <div className="d-flex w-100">
-                        <div className="form-group me-2">
-                            {/*<input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control " + theme}*/}
-                            {/*       onKeyPress={(e) => handleSearchTextKeydown(e)}*/}
-                            {/*       onChange={(e) => setSearchFilter(e.target.value)}/>*/}
-
-                            <input onKeyUp={(event) => handleSearchFilter(event)} type="text"
-                                   placeholder={"Filter..."} className="form-control"/>
-
-                        </div>
-
+                {
+                    isVisible() &&
+                    <div className="filter-find-box">
+                        <span className="filter-label">find synonym </span>
+                        <span className="filter-find-text">
+                            <input type="text" value={filter} autoFocus={true}
+                                   className={"filter-text-width " + theme}
+                                   onKeyDown={(event) => handleSearchTextKeydown(event)}
+                                   onChange={(event) => {
+                                       setFilter(event.target.value);
+                                   }}/>
+                        </span> &nbsp;
+                        <span className="filter-find-image">
+                            <button className="btn btn-secondary"
+                                    onClick={() => filterRecords()}
+                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
+                        </span>
                     </div>
+                }
 
-                    <div className="form-group col ms-auto">
-                        <button className="btn btn-primary text-nowrap" onClick={() => handleAddNew()}>
-                            + Add
-                        </button>
-                    </div>
-                </div>
+                <br clear="both"/>
                 {
                     isVisible() &&
                     <div>
