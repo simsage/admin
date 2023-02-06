@@ -17,6 +17,14 @@ const initialState = {
     show_organisation_form: false,
     edit_organisation_id: null,
     data_status: 'load_now',//load_now,loading,loaded
+
+    //for backups
+    organisation_original_backup_list: [],
+    organisation_backup_filter: null,
+    organisation_backup_list: [],
+    organisation_backup_page: 0,
+    organisation_backup_page_size: 10,
+
 }
 
 const reducers = {
@@ -83,7 +91,6 @@ const extraReducers = (builder) => {
             state.status = "loading"
             state.data_status = 'loading';
         })
-
         .addCase(getOrganisationList.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.organisation_list = action.payload;
@@ -113,6 +120,14 @@ const extraReducers = (builder) => {
             state.data_status = 'load_now';
         })
 
+
+        //backup
+        .addCase(getOrganisationBackupList.fulfilled, (state, action) => {
+            state.status = "fulfilled";
+            state.organisation_backup_list = action.payload;
+            state.organisation_original_backup_list = action.payload;
+            // console.log('action.payload', action.payload);
+        })
 }
 
 
@@ -187,6 +202,33 @@ export const deleteOrganisation = createAsyncThunk(
 )
 
 
+
+
+//Organisation Backups
+
+
+//https://adminux.simsage.ai/api/backup/backups/c276f883-e0c8-43ae-9119-df8b7df9c574
+export const getOrganisationBackupList = createAsyncThunk(
+    'organisations/getOrganisationList',
+    async ({session, organisation_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = '/backup/backups/' + encodeURIComponent(organisation_id);
+        const {id} = session
+
+        if (url !== '/stats/stats/os') {
+            console.log('GET ' + api_base + url);
+        }
+
+        return axios.get(api_base + url, Comms.getHeaders(id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    }
+);
 
 // /api/auth/organisation/{organisationId}
 // https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific

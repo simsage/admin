@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {
-    deleteOrganisation,
+    deleteOrganisation, getOrganisationBackupList,
     getOrganisationList,
     showAddOrganisationForm,
     showEditOrganisationForm
@@ -10,7 +10,8 @@ import {setSelectedKB, setSelectedOrganisation} from "../auth/authSlice";
 import {Pagination} from "../../common/pagination";
 import {selectTab} from "../home/homeSlice";
 import {search, orderBy} from "./organisationSlice";
-import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
+import {closeForm, getKBList} from "../knowledge_bases/knowledgeBaseSlice";
+import {showErrorAlert} from "../alerts/alertSlice";
 
 
 export function OrganisationHome() {
@@ -29,9 +30,21 @@ export function OrganisationHome() {
     const [page_size, setPageSize] = useState(10);
 
 
+    //
+    // function showBackupWarning(organisation_id) {
+    //     if (!organisation_id) {
+    //         dispatch(showErrorAlert({"message": "Organisation-id missing, please select an organisation first.", "title": "error"}));
+    //         handleClose();
+    //     }
+    // }
+
+    const handleClose = () => {
+        dispatch(closeForm());
+    }
 
     useEffect(() => {
         dispatch(getOrganisationList({session: session, filter: filter}))
+        dispatch(getOrganisationBackupList({session: session, filter: filter}))
     }, [load_data === 'load_now'])
 
 
