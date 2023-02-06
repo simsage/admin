@@ -24,26 +24,28 @@ export default function SynsetList() {
 
     const load_data = useSelector((state) => state.synsetReducer.data_status)
 
+    let data = {
+        session_id: session_id,
+        organisation_id: selected_organisation_id,
+        kb_id: selected_knowledge_base_id,
+        page: synset_page,
+        filter: synset_filter,
+        page_size: synset_page_size
+    };
+
     const dispatch = useDispatch();
 
     useEffect(() => {
         console.log(" useEffect load_data",load_data)
         console.log(" useEffect load_data",load_data)
-        dispatch(loadSynsets({
-            session_id: session_id,
-            organisation_id: selected_organisation_id,
-            kb_id: selected_knowledge_base_id,
-            page: synset_page,
-            filter: synset_filter,
-            page_size: synset_page_size
-        }));
-    }, [load_data === 'load_now', synset_page, synset_page_size, session_id, selected_organisation_id, selected_knowledge_base_id])
+        dispatch(loadSynsets(data));
+    }, [load_data === 'load_now', synset_page, synset_page_size])
 
     const handleFilterTextChange = (e) => {
         setSynSetFilter(e.target.value);
     }
 
-    const handleFilterTextKeyDown = (e) => {
+    const handleSearchTextKeydown = (e) => {
         if( e.key === "Enter") {
             dispatch(loadSynsets({
                 session_id: session_id,
@@ -53,8 +55,23 @@ export default function SynsetList() {
                 filter: synset_filter,
                 page_size: synset_page_size
             }))
-            setSynSetFilter('');
+            // setSynSetFilter('');
         }
+    }
+
+    // function handleSearchTextKeydown(event)
+    // {
+    //     if (event.key === "Enter") {
+    //         setSynSetFilter('');
+    //     }
+    // }
+
+    function filterRecords() {
+        //todo::findSynSets
+        console.log("findSynSets clicked");
+        dispatch(loadSynsets(data));
+        // filterRecords();
+
     }
 
     const handleEdit = (synset) => {
@@ -86,10 +103,7 @@ export default function SynsetList() {
         //TODO: Add in filtering.
     }
 
-    function findSynSets() {
-        //todo::findSynSets
-        console.log("findSynSets clicked");
-    }
+
 
     function getSynSets() {
         return synset_list ? synset_list : [];
@@ -108,10 +122,10 @@ export default function SynsetList() {
                             <span className="filter-find-text">
                                 <input type="text" value={synset_filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
-                                   onKeyDown={(e) => handleFilterTextKeyDown(e)}
-                                   onChange={(e) => {setSynSetFilter(e)}}/>
+                                   onKeyDown={(e) => handleSearchTextKeydown(e)}
+                                   onChange={(e) => {setSynSetFilter(e.target.value)}}/>
                             </span>
-                            <button className="filter-find-image" onClick={() => findSynSets()} title="search">
+                            <button className="filter-find-image" onClick={() => filterRecords()} title="search">
                             search
                             </button>
                         </div>
