@@ -9,6 +9,7 @@ import {
 import {CategorizationEdit} from "./CategorizationEdit";
 import CategorizationDeleteAsk from "./CategorizationDeleteAsk";
 import {Pagination} from "../../common/pagination";
+import {loadSynonyms} from "../synonyms/synonymSlice";
 
 export default function CategorizationHome() {
 
@@ -36,14 +37,16 @@ export default function CategorizationHome() {
     let prev_cat_label = page != 0 ? prev_set['categorizationLabel']:null
     console.log("prev_cat_label",prev_cat_label)
 
+    let data = {
+        session_id: session_id,
+        organisation_id:selected_organisation_id,
+        kb_id:selected_knowledge_base_id,
+        prevCategorizationLabel: prev_cat_label,
+        pageSize: page_size};
+
     useEffect(()=>{
         // console.log("category_list",load_data)
-        dispatch(loadCategorizations({
-            session_id: session_id,
-            organisation_id:selected_organisation_id,
-            kb_id:selected_knowledge_base_id,
-            prevCategorizationLabel: prev_cat_label,
-            pageSize: 50}))
+        dispatch(loadCategorizations(data))
     },[load_data === "load_now",page_size,page])
 
     function filterCategories() {
@@ -84,17 +87,58 @@ export default function CategorizationHome() {
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
+    function handleSearchTextKeydown(event)
+    {
+        if (event.key === "Enter") {
+            filterRecords();
+        }
+    }
+
+    function filterRecords() {
+        data.filter = filter
+        data.pageSize = page_size
+        dispatch(loadCategorizations(data))
+    }
+
+
     return (
         <div className="section px-5 pt-4">
-            <div className="synset-page">
-                <div className="d-flex w-100">
-                    <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => setFilter(e.target.value)}
-                        />
-                    </div>
-                </div>
 
+            {/*<div className="synset-page">*/}
+            {/*    <div className="d-flex w-100">*/}
+            {/*        <div className="form-group me-2">*/}
+            {/*            <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => setFilter(e.target.value)}*/}
+            {/*            />*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+
+            {/*    {*/}
+
+
+            <div>
                 {
+                    isVisible() &&
+                    <div className="filter-find-box">
+                        <span className="filter-label">find category </span>
+                        <span className="filter-find-text">
+                            <input type="text" value={filter} autoFocus={true}
+                                   className={"filter-text-width " + theme}
+                                   onKeyDown={(event) => handleSearchTextKeydown(event)}
+                                   onChange={(event) => {
+                                       setFilter(event.target.value);
+                                   }}/>
+                        </span> &nbsp;
+                        <span className="filter-find-image">
+                            <button className="btn btn-secondary"
+                                    onClick={() => filterRecords()}
+                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
+                        </span>
+                    </div>
+                }
+
+                <br clear="both"/>
+                {
+
                     isVisible() &&
                     <div>
                         <table className="table">
