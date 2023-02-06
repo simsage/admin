@@ -108,7 +108,7 @@ const extraReducers = (builder) => {
         })
 
         //delete Record
-        .addCase(deleteRecord.fulfilled, (state, action) => {
+        .addCase(deleteOrganisation.fulfilled, (state, action) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })

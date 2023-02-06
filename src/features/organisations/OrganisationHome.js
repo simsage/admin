@@ -1,6 +1,11 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
-import {getOrganisationList, showAddOrganisationForm, showEditOrganisationForm} from "./organisationSlice";
+import {
+    deleteOrganisation,
+    getOrganisationList,
+    showAddOrganisationForm,
+    showEditOrganisationForm
+} from "./organisationSlice";
 import {setSelectedKB, setSelectedOrganisation} from "../auth/authSlice";
 import {Pagination} from "../../common/pagination";
 import {selectTab} from "../home/homeSlice";
@@ -43,6 +48,24 @@ export function OrganisationHome() {
 
     function handleEditOrganisation(org_id) {
         dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
+    }
+
+    function handleViewOrganisationID(org_id) {
+        console.log("handleViewOrganisationID")
+        // dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
+    }
+
+
+    function handleRemoveOrganisation(org_id) {
+        dispatch(deleteOrganisation({session_id: session.id, organisation_id: org_id}))
+        console.log("handleRemoveOrganisation")
+        // dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
+    }
+
+
+    function handleBackupOrganisation(org_id) {
+        console.log("handleBackupOrganisation")
+        // dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
     }
 
 
@@ -123,8 +146,23 @@ export function OrganisationHome() {
                                     </td>
                                     <td>
                                         <button className={"btn btn-outline-primary"}
+                                                title={"view organisation id" + item.name}
+                                                onClick={() => handleViewOrganisationID(item.id)}>View ID
+                                        </button>
+
+                                        <button className={"btn btn-outline-primary"}
                                                 title={"edit organisation " + item.name}
                                                 onClick={() => handleEditOrganisation(item.id)}>Edit
+                                        </button>
+
+                                        <button className={"btn btn-outline-primary"}
+                                                title={"remove organisation " + item.name}
+                                                onClick={() => handleRemoveOrganisation(item.id)}>Remove
+                                        </button>
+
+                                        <button className={"btn btn-outline-primary"}
+                                                title={"backup organisation " + item.name}
+                                                onClick={() => handleBackupOrganisation(item.id)}>Backup
                                         </button>
                                     </td>
                                 </tr>
