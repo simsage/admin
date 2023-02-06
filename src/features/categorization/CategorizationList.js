@@ -35,7 +35,7 @@ export default function CategorizationHome() {
     let prev_set = category_list.slice(-1)[0]
     // console.log("prev_set",prev_set)
     let prev_cat_label = page != 0 ? prev_set['categorizationLabel']:null
-    console.log("prev_cat_label",prev_cat_label)
+    // console.log("prev_cat_label",prev_cat_label)
 
     let data = {
         session_id: session_id,
@@ -44,10 +44,10 @@ export default function CategorizationHome() {
         prevCategorizationLabel: prev_cat_label,
         pageSize: page_size};
 
-    useEffect(()=>{
-        // console.log("category_list",load_data)
-        dispatch(loadCategorizations(data))
-    },[load_data === "load_now",page_size,page])
+    // useEffect(()=>{
+    //     // console.log("category_list",load_data)
+    //     dispatch(loadCategorizations(data))
+    // },[load_data === "load_now",page_size,page])
 
     function filterCategories() {
         let filteredGroup = []
@@ -96,7 +96,7 @@ export default function CategorizationHome() {
 
     function filterRecords() {
         data.filter = filter
-        data.pageSize = page_size
+        // data.pageSize = page_size
         dispatch(loadCategorizations(data))
     }
 
@@ -152,7 +152,7 @@ export default function CategorizationHome() {
                             <tbody>
                             {
                                 getCategoryList().map((category, i) => {
-                                    console.log(category)
+                                    console.log("getCategoryList: ",category)
                                     return (
                                         <tr key={i}>
                                             <td>
