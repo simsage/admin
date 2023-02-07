@@ -21,10 +21,24 @@ const initialState = {
     //for backups
     organisation_original_backup_list: [],
     organisation_backup_filter: null,
-    organisation_backup_list:[],
+    organisation_backup_list: [],
     organisation_backup_page: 0,
     organisation_backup_page_size: 10,
     backup_data_status: 'load_now',//load_now,loading,loaded
+
+    //backup forms
+    show_backup_form: false,
+    backup_organisation_id: null,
+
+    //backup_progress
+    show_backup_progress_message: false,
+
+    //remove, download backup
+    show_delete_backup_form: false,
+    show_download_backup_form: false,
+    backup_id: null,
+
+
 }
 
 const reducers = {
@@ -42,7 +56,7 @@ const reducers = {
         state.edit_organisation_id = null;
     },
 
-    setOrganisationList:(state,action) => {
+    setOrganisationList: (state, action) => {
         state.organisation_list = action.payload.organisationList
         state.organisation_original_list = action.payload.organisationList
         state.status = "fulfilled";
@@ -82,7 +96,27 @@ const reducers = {
                 state.status = "fulfilled";
                 break
         }
-    }
+    },
+
+    showBackupForm: (state, action) => {
+        state.show_backup_form = action.payload.show_form;
+        state.backup_organisation_id = action.payload.org_id;
+    },
+
+    closeBackupForm: (state) => {
+        state.show_backup_form = false;
+        state.backup_organisation_id = null;
+    },
+
+    closeBackupProgressMessage: (state) => {
+        state.show_backup_progress_message = false;
+    },
+
+    showDeleteBackupForm: (state, action) => {
+        state.show_delete_backup_form = action.payload.show_form;
+        state.backup_organisation_id = action.payload.org_id;
+    },
+
 }
 
 const extraReducers = (builder) => {
@@ -121,13 +155,25 @@ const extraReducers = (builder) => {
             state.data_status = 'load_now';
         })
 
-        //backup
+        //load backup list
         .addCase(getOrganisationBackupList.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.organisation_backup_list = action.payload;
             state.organisation_original_backup_list = action.payload;
             // console.log('action.payload', action.payload);
         })
+
+        //backup an org
+        .addCase(backupOrganisation.pending, (state, action) => {
+            state.show_backup_progress_message = true;
+        })
+
+        .addCase(backupOrganisation.fulfilled, (state, action) => {
+            state.show_backup_progress_message = true;
+            // state.backup_data_status = 'load_now';
+        })
+
+
 }
 
 
@@ -181,27 +227,26 @@ export const updateOrganisation = createAsyncThunk(
 // /api/auth/organisation/{organisationId}
 export const deleteOrganisation = createAsyncThunk(
     'organisations/deleteOrganisation',
-    async ({session_id,organisation_id})=>{
+    async ({session_id, organisation_id}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/organisation/'+ encodeURIComponent(organisation_id);
+        const url = api_base + '/auth/organisation/' + encodeURIComponent(organisation_id);
 
         if (url !== '/stats/stats/os') {
             console.log('DELETE ' + api_base + url);
         }
 
-        return axios.delete(url,Comms.getHeaders(session_id))
+        return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("deleteOrganisation",response.data)
+                console.log("deleteOrganisation", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("deleteOrganisation error",error)
-                    return error}
+                    console.log("deleteOrganisation error", error)
+                    return error
+                }
             )
     }
 )
-
-
 
 
 //Organisation Backups
@@ -221,7 +266,7 @@ export const getOrganisationBackupList = createAsyncThunk(
 
         return axios.get(api_base + url, Comms.getHeaders(id))
             .then((response) => {
-                console.log("getOrganisationBackupList",response.data)
+                console.log("getOrganisationBackupList", response.data)
                 return response.data
             }).catch(
                 (error) => {
@@ -235,22 +280,23 @@ export const getOrganisationBackupList = createAsyncThunk(
 // https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific
 export const backupOrganisation = createAsyncThunk(
     'organisations/backupOrganisation',
-    async ({session_id,organisation_id})=>{
+    async ({session_id, organisation_id}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/backup/backup/'+ encodeURIComponent(organisation_id)+'/specific';
+        const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/specific';
 
         if (url !== '/stats/stats/os') {
             console.log('POST ' + api_base + url);
         }
         const data = {};
-        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+        return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("backupOrganisation",response.data)
+                console.log("backupOrganisation", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("backupOrganisation error",error)
-                    return error}
+                    console.log("backupOrganisation error", error)
+                    return error
+                }
             )
     }
 )
@@ -260,7 +306,7 @@ export const backupOrganisation = createAsyncThunk(
 // https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific
 export const restoreOrganisation = createAsyncThunk(
     'organisations/backupOrganisation',
-    async ({session_id,data})=>{
+    async ({session_id, data}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/restore/';
 
@@ -269,18 +315,19 @@ export const restoreOrganisation = createAsyncThunk(
         }
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("backupOrganisation",response.data)
+                console.log("backupOrganisation", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("backupOrganisation error",error)
-                    return error}
+                    console.log("backupOrganisation error", error)
+                    return error
+                }
             )
     }
 )
 
 
-
+//https://adminux.simsage.ai/api/backup/c276f883-e0c8-43ae-9119-df8b7df9c574/1675160719696
 
 
 const organisationSlice = createSlice({
@@ -290,5 +337,10 @@ const organisationSlice = createSlice({
     extraReducers
 });
 
-export const {showAddOrganisationForm, showEditOrganisationForm, closeOrganisationForm, setOrganisationList, search, orderBy} = organisationSlice.actions
+export const {
+    showAddOrganisationForm, showEditOrganisationForm,
+    closeOrganisationForm, setOrganisationList, search, orderBy,
+    showBackupForm, closeBackupForm, closeBackupProgressMessage,
+    showDeleteBackupForm
+} = organisationSlice.actions
 export default organisationSlice.reducer;

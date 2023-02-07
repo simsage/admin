@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {
     deleteOrganisation, getOrganisationBackupList,
     getOrganisationList,
-    showAddOrganisationForm,
+    showAddOrganisationForm, showBackupForm,
     showEditOrganisationForm
 } from "./organisationSlice";
 import {setSelectedKB, setSelectedOrganisation} from "../auth/authSlice";
@@ -13,6 +13,8 @@ import {search, orderBy} from "./organisationSlice";
 import {closeForm, getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import {showErrorAlert} from "../alerts/alertSlice";
 import BkOrganisationBackupHome from "./BkOrganisationBackupHome";
+import BkOrganisationBackupDialog from "./BkOrganisationBackupDialog";
+import BkOrganisationBackupProgressDialog from "./BkOrganisationBackupProgressDialog";
 
 
 export function OrganisationHome() {
@@ -86,7 +88,7 @@ export function OrganisationHome() {
 
     function handleBackupOrganisation(org_id) {
         console.log("handleBackupOrganisation")
-        // dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
+        dispatch(showBackupForm({show_form: true, org_id: org_id}))
     }
 
 
@@ -214,6 +216,10 @@ export function OrganisationHome() {
             {/*Show backups*/}
             <div>
                 <BkOrganisationBackupHome/>
+
+                <BkOrganisationBackupDialog />
+
+                <BkOrganisationBackupProgressDialog />
             </div>
         </div>);
 }
