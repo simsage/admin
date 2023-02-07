@@ -12,6 +12,7 @@ import {selectTab} from "../home/homeSlice";
 import {search, orderBy} from "./organisationSlice";
 import {closeForm, getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import {showErrorAlert} from "../alerts/alertSlice";
+import BkOrganisationBackupHome from "./BkOrganisationBackupHome";
 
 
 export function OrganisationHome() {
@@ -19,6 +20,7 @@ export function OrganisationHome() {
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
     const organisation_original_list = useSelector((state) => state.organisationReducer.organisation_original_list)
     const load_data = useSelector((state) => state.organisationReducer.data_status)
+    const organisation_backup_list = useSelector((state) => state.organisationReducer.organisation_backup_list)
 
     const session = useSelector((state) => state.authReducer.session)
     const dispatch = useDispatch();
@@ -44,8 +46,11 @@ export function OrganisationHome() {
 
     useEffect(() => {
         dispatch(getOrganisationList({session: session, filter: filter}))
-        dispatch(getOrganisationBackupList({session: session, filter: filter}))
     }, [load_data === 'load_now'])
+
+    function loadBackupList(organisation_id){
+        dispatch(getOrganisationBackupList({session: session, organisation_id: organisation_id}))
+    }
 
 
     function handleSelectOrganisation(session_id, org) {
@@ -95,6 +100,8 @@ export function OrganisationHome() {
         }
         return paginated_list;
     }
+
+
 
     function handleSearchFilter(event){
         console.log("handleSearchFilter clicked")
@@ -198,6 +205,12 @@ export function OrganisationHome() {
                     onChangeRowsPerPage={(rows) => setPageSize(rows)}
                 />
 
+
+            </div>
+
+            {/*Show backups*/}
+            <div>
+                <BkOrganisationBackupHome/>
             </div>
         </div>);
 }

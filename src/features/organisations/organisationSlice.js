@@ -21,7 +21,7 @@ const initialState = {
     //for backups
     organisation_original_backup_list: [],
     organisation_backup_filter: null,
-    organisation_backup_list: [],
+    organisation_backup_list: [{"backupId":1675160719696,"organisationId":"0185bfd5-676e-3acd-1259-077838a55188","name":"MaxTest2","data":""},{"backupId":1675160666126,"organisationId":"c276f883-e0c8-43ae-9119-df8b7df9c574","name":"SimSage","data":""},{"backupId":1675157688590,"organisationId":"c276f883-e0c8-43ae-9119-df8b7df9c574","name":"SimSage","data":""},{"backupId":1675154527361,"organisationId":"0185bfcb-3a35-2583-5ae2-718d6f197db6","name":"MaxTest","data":""},{"backupId":1675154557931,"organisationId":"0185bfd5-676e-3acd-1259-077838a55188","name":"MaxTest2","data":""}],
     organisation_backup_page: 0,
     organisation_backup_page_size: 10,
 
@@ -110,16 +110,16 @@ const extraReducers = (builder) => {
             state.data_status = 'load_now';
             // state.organisation_list = action.payload
         })
+
         .addCase(updateOrganisation.rejected, (state, action) => {
             console.log("addCase updateOrganisation rejected ", action)
         })
 
         //delete Record
         .addCase(deleteOrganisation.fulfilled, (state, action) => {
-            state.status = "fulfilled"
+            state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-
 
         //backup
         .addCase(getOrganisationBackupList.fulfilled, (state, action) => {
@@ -209,7 +209,7 @@ export const deleteOrganisation = createAsyncThunk(
 
 //https://adminux.simsage.ai/api/backup/backups/c276f883-e0c8-43ae-9119-df8b7df9c574
 export const getOrganisationBackupList = createAsyncThunk(
-    'organisations/getOrganisationList',
+    'organisations/getOrganisationBackupListc',
     async ({session, organisation_id}) => {
         const api_base = window.ENV.api_base;
         const url = '/backup/backups/' + encodeURIComponent(organisation_id);
@@ -221,6 +221,7 @@ export const getOrganisationBackupList = createAsyncThunk(
 
         return axios.get(api_base + url, Comms.getHeaders(id))
             .then((response) => {
+                console.log("getOrganisationBackupList",response.data)
                 return response.data
             }).catch(
                 (error) => {
