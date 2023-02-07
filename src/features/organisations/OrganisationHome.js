@@ -78,19 +78,16 @@ export function OrganisationHome() {
         // dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
     }
 
-
     function handleRemoveOrganisation(org_id) {
         dispatch(deleteOrganisation({session_id: session.id, organisation_id: org_id}))
         console.log("handleRemoveOrganisation")
         // dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
     }
 
-
     function handleBackupOrganisation(org_id) {
         console.log("handleBackupOrganisation")
         dispatch(showBackupForm({show_form: true, org_id: org_id}))
     }
-
 
     function getOrganisations() {
         const paginated_list = [];

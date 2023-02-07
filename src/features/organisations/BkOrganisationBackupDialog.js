@@ -11,6 +11,7 @@ export default function BkOrganisationBackupDialog(props) {
 
     //handle form close or cancel
     const handleClose = () => {
+        console.log("BkOrganisationBackupDialog handleClose")
         dispatch(closeBackupForm());
     }
 
@@ -42,7 +43,7 @@ export default function BkOrganisationBackupDialog(props) {
                         <div className="modal-body">
                             <div className="control-row">
                                 <span
-                                    className="label-wide">Are you sure you want to backup {backup_organisation_id}?</span>
+                                    className="label-wide">Are you sure you want to backup --- {backup_organisation_id}?</span>
                             </div>
                         </div>
                         <div className="modal-footer">

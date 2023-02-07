@@ -23,7 +23,8 @@ export default function BkOrganisationBackupHome() {
     }
 
     function handleDeleteBackup(backup_id) {
-        dispatch(showDeleteBackupForm(backup_id))
+        console.log("handleDeleteBackup")
+        dispatch(showDeleteBackupForm({show_form: true, backup_id:backup_id}))
     }
 
     console.log("organisation_backup_list", organisation_backup_list.length)

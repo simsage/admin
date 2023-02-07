@@ -113,10 +113,17 @@ const reducers = {
     },
 
     showDeleteBackupForm: (state, action) => {
+        console.log("showDeleteBackupForm in Slice")
         state.show_delete_backup_form = action.payload.show_form;
-        state.backup_organisation_id = action.payload.org_id;
+        // state.backup_organisation_id = action.payload.org_id;
+        state.backup_id = action.payload.backup_id;
     },
 
+    closeBackupDeleteMessage: (state) => {
+        state.show_delete_backup_form = false;
+        state.backup_organisation_id = null;
+        state.backup_id = null;
+    },
 }
 
 const extraReducers = (builder) => {
@@ -160,6 +167,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.organisation_backup_list = action.payload;
             state.organisation_original_backup_list = action.payload;
+            state.backup_data_status = 'loaded';
             // console.log('action.payload', action.payload);
         })
 
@@ -341,6 +349,6 @@ export const {
     showAddOrganisationForm, showEditOrganisationForm,
     closeOrganisationForm, setOrganisationList, search, orderBy,
     showBackupForm, closeBackupForm, closeBackupProgressMessage,
-    showDeleteBackupForm
+    showDeleteBackupForm, closeBackupDeleteMessage
 } = organisationSlice.actions
 export default organisationSlice.reducer;
