@@ -1,21 +1,25 @@
 import {useSelector} from "react-redux";
 import React from "react";
+import Api from "../../common/api";
+import {hasRole} from "../../common/helpers";
 
 export default function BkOrganisationBackupHome() {
     const organisation_backup_list = useSelector((state) => state.organisationReducer.organisation_backup_list)
 
+    const user = useSelector((state) => state.authReducer.user);
+    const isAdmin = hasRole(user, ['admin']);
 
     function getBackupList() {
         return organisation_backup_list;
     }
 
 
-    function handleDownloadBackup(backup_id){
+    function handleDownloadBackup(backup_id) {
         console.log("handleDownloadBackup")
         return "handleDownloadBackup"
     }
 
-    function handleDeleteBackup(backup_id){
+    function handleDeleteBackup(backup_id) {
         console.log("handleDeleteBackup")
         return "handleDeleteBackup"
     }
@@ -43,9 +47,8 @@ export default function BkOrganisationBackupHome() {
 
                             <tr key={item.id}>
 
-                                <td className="pt-3 px-4 pb-3"
-                                    title={item.enabled ? item.name + " is enabled" : item.name + " is disabled"}>
-                                    {item.enabled ? "yes" : "no"}
+                                <td className="pt-3 px-4 pb-3">
+                                    {Api.unixTimeConvert(item.backupId)}
                                 </td>
 
                                 <td className="pt-3 px-4 pb-3" title={"organisation " + item.name}>
@@ -57,6 +60,7 @@ export default function BkOrganisationBackupHome() {
                                             title="download backup"
                                             onClick={() => handleDownloadBackup(item.id)}>Download Backup
                                     </button>
+                                    &nbsp;
 
                                     <button className={"btn btn-outline-primary"}
                                             title="delete backup"
@@ -68,6 +72,11 @@ export default function BkOrganisationBackupHome() {
 
                         );
                     })
+                }
+
+                {isAdmin &&
+                    <div>
+                    </div>
                 }
                 </tbody>
             </table>

@@ -32,6 +32,7 @@ export function OrganisationHome() {
     const [page_size, setPageSize] = useState(10);
 
 
+
     //
     // function showBackupWarning(organisation_id) {
     //     if (!organisation_id) {
@@ -168,17 +169,17 @@ export function OrganisationHome() {
                                         <button className={"btn btn-outline-primary"}
                                                 title={"view organisation id" + item.name}
                                                 onClick={() => handleViewOrganisationID(item.id)}>View ID
-                                        </button>
+                                        </button>&nbsp;
 
                                         <button className={"btn btn-outline-primary"}
                                                 title={"edit organisation " + item.name}
                                                 onClick={() => handleEditOrganisation(item.id)}>Edit
-                                        </button>
+                                        </button>&nbsp;
 
                                         <button className={"btn btn-outline-primary"}
                                                 title={"remove organisation " + item.name}
                                                 onClick={() => handleRemoveOrganisation(item.id)}>Remove
-                                        </button>
+                                        </button>&nbsp;
 
                                         <button className={"btn btn-outline-primary"}
                                                 title={"backup organisation " + item.name}
