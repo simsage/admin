@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {backupOrganisation, closeBackupForm, closeBackupProgressMessage} from "./organisationSlice";
 
-export default function BkOrganisationBackupDialog(props) {
+export default function BkOrganisationBackupProgressDialog(props) {
 
     const dispatch = useDispatch();
 

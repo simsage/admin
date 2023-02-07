@@ -36,9 +36,7 @@ const initialState = {
     //remove, download backup
     show_delete_backup_form: false,
     show_download_backup_form: false,
-    backup_id: null,
-
-
+    selected_backup: {},
 }
 
 const reducers = {
@@ -116,13 +114,12 @@ const reducers = {
         console.log("showDeleteBackupForm in Slice")
         state.show_delete_backup_form = action.payload.show_form;
         // state.backup_organisation_id = action.payload.org_id;
-        state.backup_id = action.payload.backup_id;
+        state.selected_backup = action.payload.selected_backup;
     },
 
     closeBackupDeleteMessage: (state) => {
         state.show_delete_backup_form = false;
-        state.backup_organisation_id = null;
-        state.backup_id = null;
+        state.selected_backup = null;
     },
 }
 
@@ -178,9 +175,13 @@ const extraReducers = (builder) => {
 
         .addCase(backupOrganisation.fulfilled, (state, action) => {
             state.show_backup_progress_message = true;
-            // state.backup_data_status = 'load_now';
+            state.backup_data_status = 'load_now';
         })
 
+        //delete Record
+        .addCase(deleteBackup.fulfilled, (state, action) => {
+            state.backup_data_status = 'load_now';
+        })
 
 }
 
@@ -335,7 +336,34 @@ export const restoreOrganisation = createAsyncThunk(
 )
 
 
+// https://adminux.simsage.ai/api/backup/backup/c276f883-e0c8-43ae-9119-df8b7df9c574/1675160719696
+export const deleteBackup = createAsyncThunk(
+    'organisations/deleteBackup',
+    async ({session_id, organisation_id, backup_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
+
+        if (url !== '/stats/stats/os') {
+            console.log('DELETE ' + api_base + url);
+        }
+
+        return axios.delete(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("delete organisations deleteBackup data", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("delete organisations deleteBackup data error", error)
+                    return error
+                }
+            )
+    }
+)
+
+
+
 //https://adminux.simsage.ai/api/backup/c276f883-e0c8-43ae-9119-df8b7df9c574/1675160719696
+
 
 
 const organisationSlice = createSlice({
