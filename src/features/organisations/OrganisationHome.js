@@ -20,6 +20,7 @@ export function OrganisationHome() {
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
     const organisation_original_list = useSelector((state) => state.organisationReducer.organisation_original_list)
     const load_data = useSelector((state) => state.organisationReducer.data_status)
+    const backup_data_status = useSelector((state) => state.organisationReducer.backup_data_status)
     const organisation_backup_list = useSelector((state) => state.organisationReducer.organisation_backup_list)
 
     const session = useSelector((state) => state.authReducer.session)
@@ -31,7 +32,8 @@ export function OrganisationHome() {
     const [page, setPage] = useState(0);
     const [page_size, setPageSize] = useState(10);
 
-
+    //use one org id to load the backups
+    const org_id = organisation_list[0]?organisation_list[0].id:null;
 
     //
     // function showBackupWarning(organisation_id) {
@@ -49,9 +51,9 @@ export function OrganisationHome() {
         dispatch(getOrganisationList({session: session, filter: filter}))
     }, [load_data === 'load_now'])
 
-    function loadBackupList(organisation_id){
-        dispatch(getOrganisationBackupList({session: session, organisation_id: organisation_id}))
-    }
+    useEffect(()=>{
+        dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
+    }, [backup_data_status === 'load_now',org_id != null])
 
 
     function handleSelectOrganisation(session_id, org) {

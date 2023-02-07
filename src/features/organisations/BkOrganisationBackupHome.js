@@ -2,6 +2,7 @@ import {useSelector} from "react-redux";
 import React from "react";
 import Api from "../../common/api";
 import {hasRole} from "../../common/helpers";
+import BkOrganisationRestore from "./BkOrganisationRestore";
 
 export default function BkOrganisationBackupHome() {
     const organisation_backup_list = useSelector((state) => state.organisationReducer.organisation_backup_list)
@@ -12,7 +13,6 @@ export default function BkOrganisationBackupHome() {
     function getBackupList() {
         return organisation_backup_list;
     }
-
 
     function handleDownloadBackup(backup_id) {
         console.log("handleDownloadBackup")
@@ -76,6 +76,7 @@ export default function BkOrganisationBackupHome() {
 
                 {isAdmin &&
                     <div>
+                        <BkOrganisationRestore />
                     </div>
                 }
                 </tbody>
