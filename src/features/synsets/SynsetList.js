@@ -1,7 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {Pagination} from "../../common/pagination";
-import {loadSynsets,showDeleteSynSetForm, showAddSynSetForm, showAddDefaultAskForm} from "./synsetSlice";
+import {
+    loadSynsets,
+    showDeleteSynSetForm,
+    showAddSynSetForm,
+    showAddDefaultAskForm,
+    noResultsMessage
+} from "./synsetSlice";
 import {showEditSynSetForm} from "../synsets/synsetSlice"
 import SynsetEdit from "./SynsetEdit";
 import SynsetDelete from "./SynsetDelete";
@@ -55,7 +61,8 @@ export default function SynsetList() {
                 filter: synset_filter,
                 page_size: synset_page_size
             }))
-            // setSynSetFilter('');
+            dispatch(noResultsMessage(true))
+            setSynSetFilter('');
         }
     }
 
@@ -103,7 +110,18 @@ export default function SynsetList() {
         //TODO: Add in filtering.
     }
 
-
+    function findSynSets() {
+        dispatch(loadSynsets({
+            session_id: session_id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id,
+            page: synset_page,
+            filter: synset_filter,
+            page_size: synset_page_size
+        }))
+        dispatch(noResultsMessage(true))
+        setSynSetFilter('');
+    }
 
     function getSynSets() {
         return synset_list ? synset_list : [];

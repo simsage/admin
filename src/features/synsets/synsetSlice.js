@@ -22,6 +22,9 @@ const initialState = {
     //add default
     show_add_default_form:false,
 
+    //filter
+    allow_no_results: false,
+
 };
 
 
@@ -210,13 +213,17 @@ const synsetSlice = createSlice({
 
         closeDefaultAskForm:(state) => {
             state.show_add_default_form = false;
+        },
+        noResultsMessage:(state, action) => {
+            state.allow_no_results = action.payload;
         }
+
 
     },
     extraReducers
 });
 
-export const {showAddSynSetForm, showEditSynSetForm, closeSynSetForm, showDeleteSynSetForm, closeDeleteForm, showAddDefaultAskForm, closeDefaultAskForm} = synsetSlice.actions;
+export const {showAddSynSetForm, showEditSynSetForm, closeSynSetForm, showDeleteSynSetForm, closeDeleteForm, showAddDefaultAskForm, closeDefaultAskForm, noResultsMessage} = synsetSlice.actions;
 export default synsetSlice.reducer;
 
 

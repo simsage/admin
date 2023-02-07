@@ -17,6 +17,8 @@ export default function SynsetHome() {
     const synset_list = useSelector((state)=>state.synsetReducer.synset_list)
     const num_synsets = useSelector((state)=>state.synsetReducer.synset_total_size)
 
+    const allow_no_results = useSelector((state)=> state.synsetReducer.allow_no_results)
+
     let data = {
         "organisation_id": selected_organisation_id,
         "kb_id": selected_knowledge_base_id,
@@ -34,16 +36,20 @@ export default function SynsetHome() {
     return (
         <div className="section px-5 pt-4">
 
-            {status === null &&
+            {allow_no_results &&
+                <SynsetList />
+            }
+
+            {status === null && allow_no_results &&
                 <SynsetIntro />
 
             }
             {/*Intro message when there are no synsets items loaded*/}
-            {status !== null && synset_list.length === 0 && num_synsets == 0 &&
+            {status !== null && synset_list.length === 0 && num_synsets == 0 && allow_no_results &&
                 <SynsetIntro />
 
             }
-            {status !== null && synset_list.length > 0 && num_synsets > 0 &&
+            {status !== null && synset_list.length > 0 && num_synsets > 0 && !allow_no_results &&
                 <SynsetList />
 
             }
