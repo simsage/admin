@@ -171,7 +171,7 @@ export default function SynsetList() {
 
                 <div className="form-group col ms-auto">
                     <button className="btn btn-primary text-nowrap" onClick={() => handleAddSynSet()}>
-                        + Add Synonym
+                        + Add Syn-set
                     </button>
                 </div>
             </div>
