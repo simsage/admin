@@ -134,41 +134,58 @@ export default function SynsetList() {
 
                 {
                     isVisible() &&
-                    <div className="d-flex justify-content-center w-100 mb-4">
-                        <div className="filter-find-box">
-                            <span className="filter-label">find synsets </span>
-                            <span className="filter-find-text">
-                                <input type="text" value={synset_filter} autoFocus={true}
-                                   className={"filter-text-width " + theme}
-                                   onKeyDown={(e) => handleSearchTextKeydown(e)}
-                                   onChange={(e) => {setSynSetFilter(e.target.value)}}/>
-                            </span>
-                            <button className="filter-find-image" onClick={() => filterRecords()} title="search">
+                    <div className="filter-find-box">
+                        <span className="filter-label">find </span>
+                        <span className="filter-find-text">
+                            <input type="text" value={synset_filter} autoFocus={true}
+                                className={"filter-text-width " + theme}
+                                onKeyDown={(e) => handleSearchTextKeydown(e)}
+                                onChange={(e) => {setSynSetFilter(e.target.value)}}/>
+                        </span> &nbsp;
+                        <span className="filter-find-image">
+                            <button className="btn btn-secondary" onClick={() => filterRecords()} title="search">
                             search
                             </button>
-                        </div>
-                        <div className="form-group ms-auto w-20">
-                            <button className="btn btn-primary text-nowrap m-1"  onClick={() => handleAddSynSet()}>
-                                + Add SynSet
-                            </button>
-                            <button className="btn btn-primary text-nowrap m-1"
-                                    onClick={() => handleAddDefaultSynSet()}
-                                    title="add all default syn-sets">+ Defaults
-                            </button>
-                        </div>
+                        </span>
+                        <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Couldn't get the filter below to work without a button</span>
+                    {/* <div className="form-group ms-auto w-20">
+                        <button className="btn btn-primary text-nowrap m-1"  onClick={() => handleAddSynSet()}>
+                            + Add SynSet
+                        </button>
+                        <button className="btn btn-primary text-nowrap m-1"
+                                onClick={() => handleAddDefaultSynSet()}
+                                title="add all default syn-sets">+ Defaults
+                        </button>
+                    </div> */}
+                </div>
+            }
+            <br/><br/><br/>
+            
+            <div className="d-flex justify-content-between w-100 mb-4">
+                <div className="d-flex w-100">
+                    <div className="form-group me-2">
+                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={synset_filter} onChange={(e) => {setSynSetFilter(e.target.value)}}
+                        />
                     </div>
-                }
+                </div>
 
-                <br clear="both"/>
+                <div className="form-group col ms-auto">
+                    <button className="btn btn-primary text-nowrap" onClick={() => handleAddSynSet()}>
+                        + Add Synonym
+                    </button>
+                </div>
+            </div>
+
+                {/* <br clear="both"/> */}
 
                 {
                     isVisible() &&
                     <div>
                         <table className="table">
                             <thead>
-                            <tr className='table-header'>
-                                <th className='table-header'>syn-set</th>
-                                <th className='table-header'>actions</th>
+                            <tr className=''>
+                                <td className='small text-black-50 px-4'>Syn-set</td>
+                                <td className='small text-black-50 px-4'></td>
                             </tr>
                             </thead>
                             <tbody>
@@ -176,13 +193,13 @@ export default function SynsetList() {
                                 getSynSets().map((synSet) => {
                                     return (
                                         <tr key={synSet.word}>
-                                            <td>
+                                            <td className="pt-3 px-4 pb-3">
                                                 <div className="synset-label">{synSet.word}</div>
                                             </td>
-                                            <td>
+                                            <td className="pt-3 px-4 pb-0">
 
                                                 <button onClick={() => handleEdit(synSet)}
-                                                        className="btn text-primary btn-sm" title="edit syn-set">edit
+                                                        className="btn text-primary btn-sm" title="edit syn-set">Edit
                                                 </button>
                                                 &nbsp;
                                                 <button
@@ -190,7 +207,7 @@ export default function SynsetList() {
                                                         title="remove syn-set"
                                                         onClick={() => deleteSynSetAsk(synSet)}
                                                 >
-                                                    remove
+                                                    Delete
                                                 </button>
 
                                             </td>
@@ -198,7 +215,7 @@ export default function SynsetList() {
                                     )
                                 })
                             }
-                            <tr>
+                            {/* <tr>
                                 <td/>
                                 <td>
                                     {isVisible() &&
@@ -211,7 +228,7 @@ export default function SynsetList() {
 
                                     }
                                 </td>
-                            </tr>
+                            </tr> */}
 
                             </tbody>
 

@@ -34,7 +34,7 @@ export default function SynsetHome() {
 
 
     return (
-        <div className="section px-5 pt-4">
+        <div className="">
 
             {allow_no_results &&
                 <SynsetList />

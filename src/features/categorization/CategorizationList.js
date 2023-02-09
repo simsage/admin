@@ -119,7 +119,7 @@ export default function CategorizationHome() {
                 {
                     isVisible() &&
                     <div className="filter-find-box">
-                        <span className="filter-label">find category </span>
+                        <span className="filter-label">find </span>
                         <span className="filter-find-text">
                             <input type="text" value={filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
@@ -133,20 +133,37 @@ export default function CategorizationHome() {
                                     onClick={() => filterRecords()}
                                     src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
                         </span>
+                        <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Couldn't get the filter below to work without a button</span>
                     </div>
                 }
+                <br/><br/><br/>
 
-                <br clear="both"/>
+                <div className="d-flex justify-content-between w-100 mb-4">
+                    <div className="d-flex w-100">
+                        <div className="form-group me-2">
+                            <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group col ms-auto">
+                        <button className="btn btn-primary text-nowrap" onClick={() => newCategory()}>
+                            + Add Category
+                        </button>
+                    </div>
+                </div>
+
+                {/* <br clear="both"/> */}
                 {
 
                     isVisible() &&
                     <div>
                         <table className="table">
                             <thead>
-                            <tr className='table-header'>
-                                <th className='table-header'>Category</th>
-                                <th className='table-header'>Rule</th>
-                                <th className='table-header'>actions</th>
+                            <tr className=''>
+                                <td className='small text-black-50 px-4'>Category</td>
+                                <td className='small text-black-50 px-4'>Rule</td>
+                                <td className='small text-black-50 px-4'></td>
                             </tr>
                             </thead>
                             <tbody>
@@ -155,26 +172,26 @@ export default function CategorizationHome() {
                                     console.log("getCategoryList: ",category)
                                     return (
                                         <tr key={i}>
-                                            <td>
+                                            <td className="pt-3 px-4 pb-3">
                                                 <div className="synset-label">{category.categorizationLabel} </div>
                                             </td>
-                                            <td>
+                                            <td className="pt-3 px-4 pb-3">
                                                 <div className="synset-label">{category.rule}</div>
                                             </td>
-                                            <td>
-                                                <button className="link-button" title="edit syn-set"
-                                                        onClick={() => editCategory(category)}>edit
+                                            <td className="pt-3 px-4 pb-0">
+                                                <button className="btn text-primary btn-sm" title="edit syn-set"
+                                                        onClick={() => editCategory(category)}>Edit
                                                 </button>&nbsp;
-                                                <button className="link-button" title="remove syn-set"
+                                                <button className="btn text-danger btn-sm" title="remove syn-set"
                                                         onClick={() => deleteCategoryAsk(category)}>
-                                                    remove
+                                                    Delete
                                                 </button>
                                             </td>
                                         </tr>
                                     )
                                 })
                             }
-                            <tr>
+                            {/* <tr>
                                 <td/>
                                 <td/>
                                 <td>
@@ -183,7 +200,7 @@ export default function CategorizationHome() {
                                                 title="add a new categpry">new</button>
                                     }
                                 </td>
-                            </tr>
+                            </tr> */}
 
                             </tbody>
 

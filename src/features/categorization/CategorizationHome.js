@@ -28,7 +28,7 @@ export default function CategorizationHome() {
 
 
     return (
-        <div className="section px-5 pt-4">
+        <div className="">
             {console.log("category_list",category_list)}
             {status === null &&
                 <CategorizationIntro />

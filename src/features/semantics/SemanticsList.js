@@ -98,7 +98,7 @@ export default function SemanticsHome(props) {
                 {
                     isVisible() &&
                     <div className="filter-find-box">
-                        <span className="filter-label">find semantics </span>
+                        <span className="filter-label">find </span>
                         <span className="filter-find-text">
                             <input type="text" value={semantic_filter} autoFocus={true}
                                    className={"filter-text-width " + theme}
@@ -156,11 +156,11 @@ export default function SemanticsHome(props) {
                                             <td className="pt-3 px-4 pb-3">
                                                 <div>{semantic.semantic}</div>
                                             </td>
-                                            <td>
-                                                <button className="btn btn-secondary" title="edit semantic"
+                                            <td className="pt-3 px-4 pb-0">
+                                                <button className="btn text-primary btn-sm" title="edit semantic"
                                                         onClick={() => handleEditSemantic(semantic)}>Edit
                                                 </button> &nbsp;
-                                                <button className="btn btn-secondary"  title="remove semantic"
+                                                <button className="btn text-danger btn-sm"  title="remove semantic"
                                                         onClick={() => deleteSemanticAsk(semantic)}>Delete
                                                 </button>
                                             </td>

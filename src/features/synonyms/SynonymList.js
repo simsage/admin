@@ -115,7 +115,7 @@ export default function SynonymsHome(props) {
             {
                 isVisible() &&
                 <div className="filter-find-box">
-                    <span className="filter-label">find synonym </span>
+                    <span className="filter-label">find </span>
                     <span className="filter-find-text">
                         <input type="text" value={filter} autoFocus={true}
                                 className={"filter-text-width " + theme}
