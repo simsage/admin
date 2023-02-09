@@ -112,20 +112,37 @@ export default function SemanticsHome(props) {
                                     onClick={() => filterSemantic()}
                                     src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
                         </span>
-                    </div>
-                }
+                        <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Couldn't get the filter below to work without a button</span>
+                </div>
+            }
+            <br/><br/><br/>
 
-                <br clear="both"/>
+                <div className="d-flex justify-content-between w-100 mb-4">
+                    <div className="d-flex w-100">
+                        <div className="form-group me-2">
+                            <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={semantic_filter} onChange={(e) => {setSemanticFilter(e.target.value)}}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group col ms-auto">
+                        <button className="btn btn-primary text-nowrap" onClick={() => handleAddSemantic()}>
+                            + Add Semantic
+                        </button>
+                    </div>
+                </div>
+
+                {/* <br clear="both"/> */}
 
                 {
                     isVisible() &&
                     <div>
                         <table className="table">
                             <thead>
-                            <tr className='table-header'>
-                                <th className='table-header'>word</th>
-                                <th className='table-header'>semantic</th>
-                                <th className='table-header'>actions</th>
+                            <tr className=''>
+                                <td className='small text-black-50 px-4'>Word</td>
+                                <td className='small text-black-50 px-4'>Semantic</td>
+                                <td className='small text-black-50 px-4'></td>
                             </tr>
                             </thead>
                             <tbody>
@@ -133,25 +150,25 @@ export default function SemanticsHome(props) {
                                 getSemanticList().map((semantic) => {
                                     return (
                                         <tr key={semantic.word + ":" + semantic.semantic}>
-                                            <td>
+                                            <td className="pt-3 px-4 pb-3">
                                                 <div>{semantic.word}</div>
                                             </td>
-                                            <td>
+                                            <td className="pt-3 px-4 pb-3">
                                                 <div>{semantic.semantic}</div>
                                             </td>
                                             <td>
                                                 <button className="btn btn-secondary" title="edit semantic"
-                                                        onClick={() => handleEditSemantic(semantic)}>edit
+                                                        onClick={() => handleEditSemantic(semantic)}>Edit
                                                 </button> &nbsp;
                                                 <button className="btn btn-secondary"  title="remove semantic"
-                                                        onClick={() => deleteSemanticAsk(semantic)}>remove
+                                                        onClick={() => deleteSemanticAsk(semantic)}>Delete
                                                 </button>
                                             </td>
                                         </tr>
                                     )
                                 })
                             }
-                            <tr>
+                            {/* <tr>
                                 <td/>
                                 <td/>
                                 <td>
@@ -159,7 +176,7 @@ export default function SemanticsHome(props) {
                                         <button className="btn btn-outline-primary" title="new semantic" onClick={() => handleAddSemantic()}>new semantic</button>
                                     }
                                 </td>
-                            </tr>
+                            </tr> */}
                             </tbody>
                         </table>
 

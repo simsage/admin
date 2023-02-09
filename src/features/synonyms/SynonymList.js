@@ -112,91 +112,104 @@ export default function SynonymsHome(props) {
 
     return (
         <div className="section px-5 pt-4">
+            {
+                isVisible() &&
+                <div className="filter-find-box">
+                    <span className="filter-label">find synonym </span>
+                    <span className="filter-find-text">
+                        <input type="text" value={filter} autoFocus={true}
+                                className={"filter-text-width " + theme}
+                                onKeyDown={(event) => handleSearchTextKeydown(event)}
+                                onChange={(event) => {
+                                    setFilter(event.target.value);
+                                }}/>
+                    </span> &nbsp;
+                    <span className="filter-find-image">
+                        <button className="btn btn-secondary"
+                                onClick={() => filterRecords()}
+                                src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
+                    </span>
+                    <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Couldn't get the filter below to work without a button</span>
+                </div>
+            }
+            <br/><br/><br/>
 
-            <div>
-                {
-                    isVisible() &&
-                    <div className="filter-find-box">
-                        <span className="filter-label">find synonym </span>
-                        <span className="filter-find-text">
-                            <input type="text" value={filter} autoFocus={true}
-                                   className={"filter-text-width " + theme}
-                                   onKeyDown={(event) => handleSearchTextKeydown(event)}
-                                   onChange={(event) => {
-                                       setFilter(event.target.value);
-                                   }}/>
-                        </span> &nbsp;
-                        <span className="filter-find-image">
-                            <button className="btn btn-secondary"
-                                    onClick={() => filterRecords()}
-                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
-                        </span>
-                    </div>
-                }
-
-                <br clear="both"/>
-                {
-                    isVisible() &&
-                    <div>
-                        <table className="table">
-                            <thead>
-                            <tr className='table-header'>
-                                <th className='table-header'>id</th>
-                                <th className='table-header synonym-column-width'>synonyms</th>
-                                <th className='table-header'>actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                getSynonymList().map((synonym) => {
-                                    return (
-                                        <tr key={synonym.id}>
-                                            <td>
-                                                <div>{synonym.id}</div>
-                                            </td>
-                                            <td>
-                                                <div>{synonym.words}</div>
-                                            </td>
-                                            <td>
-                                                <button className="btn btn-secondary" title="edit synonym" onClick={() => editSynonym(synonym)}>edit</button> &nbsp;
-                                                <button className="btn btn-secondary" title="remove synonym" onClick={() => deleteSynonymAsk(synonym)}>remove</button>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                            <tr>
-                                <td/>
-                                <td/>
-                                <td>
-                                    {isVisible() &&
-                                        <button className="btn btn-outline-primary" title="add new synonym" onClick={() => newSynonym()}>new synonym</button>
-                                    }
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-
-                        <Pagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            theme={theme}
-                            component="div"
-                            count={num_synonyms}
-                            rowsPerPage={synonym_page_size}
-                            page={synonym_page}
-                            backIconButtonProps={{'aria-label': 'Previous Page',}}
-                            nextIconButtonProps={{'aria-label': 'Next Page',}}
-                            onChangePage={(page) => setSynonymPage(page)}
-                            onChangeRowsPerPage={(rows) => setSynonymPageSize(rows)}
+            <div className="d-flex justify-content-between w-100 mb-4">
+                <div className="d-flex w-100">
+                    <div className="form-group me-2">
+                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
                         />
-
                     </div>
-                }
+                </div>
 
+                <div className="form-group col ms-auto">
+                    <button className="btn btn-primary text-nowrap" onClick={() => newSynonym()}>
+                        + Add Synonym
+                    </button>
+                </div>
             </div>
+
+            {/* <br clear="both"/> */}
+            {
+                isVisible() &&
+                <div>
+                    <table className="table">
+                        <thead>
+                        <tr className=''>
+                            <td className='small text-black-50 px-4'>ID</td>
+                            <td className='small text-black-50 px-4 synonym-column-width'>Synonyms</td>
+                            <td className='small text-black-50 px-4'></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            getSynonymList().map((synonym) => {
+                                return (
+                                    <tr key={synonym.id}>
+                                        <td className="pt-3 px-4 pb-3">
+                                            <div>{synonym.id}</div>
+                                        </td>
+                                        <td className="pt-3 px-4 pb-3">
+                                            <div>{synonym.words}</div>
+                                        </td>
+                                        <td className="pt-3 px-4 pb-3">
+                                            <button className="btn text-primary btn-sm" title="edit synonym" onClick={() => editSynonym(synonym)}>Edit</button> &nbsp;
+                                            <button className="btn text-danger btn-sm" title="remove synonym" onClick={() => deleteSynonymAsk(synonym)}>Delete</button>
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
+                        {/* <tr>
+                            <td/>
+                            <td/>
+                            <td>
+                                {isVisible() &&
+                                    <button className="btn btn-outline-primary" title="add new synonym" onClick={() => newSynonym()}>new synonym</button>
+                                }
+                            </td>
+                        </tr> */}
+
+                        </tbody>
+
+                    </table>
+
+
+                    <Pagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        theme={theme}
+                        component="div"
+                        count={num_synonyms}
+                        rowsPerPage={synonym_page_size}
+                        page={synonym_page}
+                        backIconButtonProps={{'aria-label': 'Previous Page',}}
+                        nextIconButtonProps={{'aria-label': 'Next Page',}}
+                        onChangePage={(page) => setSynonymPage(page)}
+                        onChangeRowsPerPage={(rows) => setSynonymPageSize(rows)}
+                    />
+
+                </div>
+            }
             <SynonymEdit />
             <SynonymDeleteAsk />
         </div>

@@ -119,7 +119,7 @@ export default function GroupList(){
                 <table className="table">
                     <thead>
                     <tr>
-                        <td className="small">Name</td>
+                        <td className="small text-black-50 px-4">Name</td>
                     </tr>
                     </thead>
                     <tbody>
@@ -132,14 +132,19 @@ export default function GroupList(){
                             return (
                                 //console.log(group)
                                 <tr key={group.name} >
-                                    <td className=""> {group.name}</td>
-                                    <td>
+                                    <td className="pt-3 px-4 pb-3"> {group.name}</td>
+                                    {/* <td>
                                         <button
                                             className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"}
                                             onClick={() => handleEditGroup(group)}
                                         >Edit icon</button>
                                     </td>
-                                    <td><button className={(deleteYes) ? "btn btn-outline-danger" :"btn btn-secondary" }  disabled={!deleteYes} onClick={() => deleteGroupAsk(group)}> Delete icon </button></td>
+                                    <td><button className={(deleteYes) ? "btn btn-outline-danger" :"btn btn-secondary" }  disabled={!deleteYes} onClick={() => deleteGroupAsk(group)}> Delete icon </button></td> */}
+
+                                    <td className="pt-2 px-4 pb-0">
+                                        <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditGroup(group)}>Edit</button>
+                                        <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteGroupAsk(group)}>Delete</button>
+                                    </td>
                                 </tr>
                             )
                         })

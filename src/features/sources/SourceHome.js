@@ -453,12 +453,11 @@ export default function SourceHome(props) {
                             <td/>
                             <td/>
                             <td style={{display:'grid', gridTemplateColumns:'auto auto auto', justifyContent:"start", gap:"1em"}}>
-                                {/* Siva - Can we place this in SourceFilter.js please */}
-                                {selected_organisation_id.length > 0 &&
+                                {/* {selected_organisation_id.length > 0 &&
                                     <div className="image-button">
                                         <button onClick={() => handleAddCrawler()} className={"btn btn-primary"}>+ Add Source</button>
                                     </div>
-                                }
+                                } */}
                                 {selected_knowledge_base_id.length > 0 &&
                                     <div className="image-button">
                                         <button onClick={() => handleResetCrawlers()} className={"btn btn-primary"}>Reset Crawlers </button>

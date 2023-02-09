@@ -35,7 +35,7 @@ export default function SynonymsHome(props) {
 
     // console.log("useEffect out load_data",load_data)
     return (
-        <div className="section px-5 pt-4">
+        <div className="">
 
             {status === null &&
                 <SynonymIntro />

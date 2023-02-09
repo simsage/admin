@@ -35,7 +35,7 @@ export default function SemanticsHome(props) {
     }, [load_data === 'load_now'])
 
     return (
-        <div className="section px-5 pt-4">
+        <div className="">
 
             {status === null &&
                 <SemanticsIntro/>

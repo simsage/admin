@@ -215,7 +215,7 @@ export function UsersHome(){
                                 </td>
                                 <td className="pt-2 px-4 pb-0">
                                     <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit</button>
-                                    <button className={(deleteYes)? "btn text-danger btn-sm" : "btn text-danger btn-sm disabled"} onClick={ () => deleteUserAsk(user)}>Delete</button>
+                                    <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteUserAsk(user)}>Delete</button>
                                 </td>
                             </tr>
                         })

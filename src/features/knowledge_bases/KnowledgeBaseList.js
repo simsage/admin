@@ -104,7 +104,7 @@ export default function KnowledgeBaseList() {
                             </div>
                         </div>
 
-                        <div className="form-group col ms-auto">
+                        <div className="form-group ms-auto">
                             {organisation_id && organisation_id.length > 0 &&
                                 <button onClick={() => handleAddForm()} className={"btn btn-primary text-nowrap"}>+ Add
                                     Knowledge Base</button>
@@ -119,7 +119,7 @@ export default function KnowledgeBaseList() {
                         <table className="table">
                             <thead>
                             <tr>
-                                <td></td>
+                                {/* <td></td> */}
                                 <td className="small text-black-50 px-4">Knowledge Base</td>
                                 <td className="small text-black-50 px-4">Email Queries</td>
                                 <td></td>
@@ -131,7 +131,7 @@ export default function KnowledgeBaseList() {
                                 getKnowledgeBases().map((knowledge_base) => {
                                     return (
                                         <tr key={knowledge_base.kbId}>
-                                            <td className="pt-3 ps-4 pe-0 pb-3"></td>
+                                            {/* <td className="pt-3 ps-4 pe-0 pb-3"></td> */}
                                             <td className="pt-3 px-4 pb-3">
                                                 <div className="kb-label"
                                                      onClick={() => dispatch(setSelectedKB(knowledge_base.kbId))}>{knowledge_base.name}</div>
@@ -143,14 +143,7 @@ export default function KnowledgeBaseList() {
 
                                             <td className="pt-3 px-4 pb-0">
                                                 <div className="link-button">
-                                                    <button title="edit knowledge base"
-                                                            onClick={() => handleEditForm(knowledge_base.kbId)}
-                                                            className={"btn text-primary btn-sm"}>Edit
-                                                    </button>
-                                                    <button title="remove knowledge base"
-                                                            onClick={() => handleDeleteFormAsk(knowledge_base)}
-                                                            className={"btn text-danger btn-sm"}>Delete
-                                                    </button>
+
                                                     <button title="view knowledge base ids"
                                                             onClick={() => handleViewIds(knowledge_base.kbId)}
                                                             className={"btn text-primary btn-sm"}>View Ids
@@ -158,6 +151,14 @@ export default function KnowledgeBaseList() {
                                                     <button title="optimize indexes"
                                                             onClick={() => handleOptimizeIndexesAsk(knowledge_base)}
                                                             className={"btn text-primary btn-sm"}>Optimize indexes
+                                                    </button>
+                                                    <button title="edit knowledge base"
+                                                            onClick={() => handleEditForm(knowledge_base.kbId)}
+                                                            className={"btn text-primary btn-sm"}>Edit
+                                                    </button>
+                                                    <button title="remove knowledge base"
+                                                            onClick={() => handleDeleteFormAsk(knowledge_base)}
+                                                            className={"btn text-danger btn-sm"}>Delete
                                                     </button>
 
                                                 </div>

@@ -134,8 +134,8 @@ export function OrganisationHome() {
                             </select>
                         </div>
                     </div>
-                    <div className="form-group col ms-auto">
-                        <button onClick={() => handleAddOrganisation()} className={"btn btn-primary"}>+ Add New
+                    <div className="form-group ms-auto">
+                        <button onClick={() => handleAddOrganisation()} className={"btn btn-primary text-nowrap"}>+ Add New
                         Organisation
                     </button>
                     </div>
@@ -167,24 +167,24 @@ export function OrganisationHome() {
                                         {item.enabled ? "yes" : "no"}
                                     </td>
                                     <td>
-                                        <button className={"btn btn-outline-primary"}
+                                        <button className={"btn text-primary btn-sm"}
                                                 title={"view organisation id" + item.name}
                                                 onClick={() => handleViewOrganisationID(item.id)}>View ID
-                                        </button>&nbsp;
+                                        </button>
 
-                                        <button className={"btn btn-outline-primary"}
-                                                title={"edit organisation " + item.name}
-                                                onClick={() => handleEditOrganisation(item.id)}>Edit
-                                        </button>&nbsp;
-
-                                        <button className={"btn btn-outline-primary"}
-                                                title={"remove organisation " + item.name}
-                                                onClick={() => handleRemoveOrganisation(item.id)}>Remove
-                                        </button>&nbsp;
-
-                                        <button className={"btn btn-outline-primary"}
+                                        <button className={"btn text-primary btn-sm"}
                                                 title={"backup organisation " + item.name}
                                                 onClick={() => handleBackupOrganisation(item.id)}>Backup
+                                        </button>
+
+                                        <button className={"btn text-primary btn-sm"}
+                                                title={"edit organisation " + item.name}
+                                                onClick={() => handleEditOrganisation(item.id)}>Edit
+                                        </button>
+
+                                        <button className={"btn text-danger btn-sm"}
+                                                title={"remove organisation " + item.name}
+                                                onClick={() => handleRemoveOrganisation(item.id)}>Remove
                                         </button>
                                     </td>
                                 </tr>

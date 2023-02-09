@@ -26,7 +26,7 @@ export default function SynonymsHome() {
 
 
     return (
-        <div className="section px-5 pt-4">
+        <div className="">
 
             {status === null &&
                 <GroupIntro />
