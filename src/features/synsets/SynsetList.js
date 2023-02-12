@@ -197,19 +197,19 @@ export default function SynsetList() {
                                                 <div className="synset-label">{synSet.word}</div>
                                             </td>
                                             <td className="pt-3 px-4 pb-0">
-
-                                                <button onClick={() => handleEdit(synSet)}
-                                                        className="btn text-primary btn-sm" title="edit syn-set">Edit
-                                                </button>
-                                                &nbsp;
-                                                <button
-                                                        className="btn text-danger btn-sm"
-                                                        title="remove syn-set"
-                                                        onClick={() => deleteSynSetAsk(synSet)}
-                                                >
-                                                    Delete
-                                                </button>
-
+                                                <div className="d-flex  justify-content-end">
+                                                    <button onClick={() => handleEdit(synSet)}
+                                                            className="btn text-primary btn-sm" title="edit syn-set">Edit
+                                                    </button>
+                                                    &nbsp;
+                                                    <button
+                                                            className="btn text-danger btn-sm"
+                                                            title="remove syn-set"
+                                                            onClick={() => deleteSynSetAsk(synSet)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     )

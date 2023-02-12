@@ -157,12 +157,14 @@ export default function SemanticsHome(props) {
                                                 <div>{semantic.semantic}</div>
                                             </td>
                                             <td className="pt-3 px-4 pb-0">
-                                                <button className="btn text-primary btn-sm" title="edit semantic"
-                                                        onClick={() => handleEditSemantic(semantic)}>Edit
-                                                </button> &nbsp;
-                                                <button className="btn text-danger btn-sm"  title="remove semantic"
-                                                        onClick={() => deleteSemanticAsk(semantic)}>Delete
-                                                </button>
+                                                <div className="d-flex  justify-content-end">
+                                                    <button className="btn text-primary btn-sm" title="edit semantic"
+                                                            onClick={() => handleEditSemantic(semantic)}>Edit
+                                                    </button> &nbsp;
+                                                    <button className="btn text-danger btn-sm"  title="remove semantic"
+                                                            onClick={() => deleteSemanticAsk(semantic)}>Delete
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     )

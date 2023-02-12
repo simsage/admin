@@ -190,13 +190,13 @@ export default function DocumentsHome(props) {
                         <table className="table">
 
                             <thead>
-                            <tr className='table-header'>
-                                <th className='table-header'>url</th>
-                                <th className='table-header'>source</th>
-                                <th className='table-header'>last modified</th>
-                                <th className='table-header'>status</th>
+                            <tr className=''>
+                                <td className='small text-black-50 px-4'>URL</td>
+                                <td className='small text-black-50 px-4'>Source</td>
+                                <td className='small text-black-50 px-4'>Last modified</td>
+                                <td className='small text-black-50 px-4'>Status</td>
                                 {isAdmin &&
-                                    <th className='table-header'>actions</th>
+                                    <td className='small text-black-50 px-4'></td>
                                 }
                             </tr>
                             </thead>
@@ -206,7 +206,7 @@ export default function DocumentsHome(props) {
                                 getDocuments().map((document) => {
                                     return (
                                         <tr key={document.url}>
-                                            <td className="urlLabel">
+                                            <td className="urlLabel pt-3 px-4 pb-3">
                                                 {
                                                     isWeb(document.url) &&
                                                     <div className="urlLabel">
@@ -221,14 +221,14 @@ export default function DocumentsHome(props) {
                                                          title={document.url}>{adjustUrl(document.url)}</div>
                                                 }
                                             </td>
-                                            <td className="sourceLabel">
+                                            <td className="sourceLabel pt-3 px-4 pb-3">
                                                 {document.origin}
                                             </td>
-                                            <td>
+                                            <td className="pt-3 px-4 pb-3">
                                                 <div
                                                     className="timeLabel">{Api.unixTimeConvert(document.lastModified)}</div>
                                             </td>
-                                            <td>
+                                            <td className="pt-3 px-4 pb-3">
                                                 <div className="status-label">
                                                     <img src={getStatus(document, "crawled")}
                                                          className="statusImage" alt="crawler"

@@ -172,9 +172,11 @@ export default function SynonymsHome(props) {
                                         <td className="pt-3 px-4 pb-3">
                                             <div>{synonym.words}</div>
                                         </td>
-                                        <td className="pt-3 px-4 pb-3">
-                                            <button className="btn text-primary btn-sm" title="edit synonym" onClick={() => editSynonym(synonym)}>Edit</button> &nbsp;
-                                            <button className="btn text-danger btn-sm" title="remove synonym" onClick={() => deleteSynonymAsk(synonym)}>Delete</button>
+                                        <td className="pt-3 px-4 pb-0">
+                                            <div className="d-flex  justify-content-end">
+                                                <button className="btn text-primary btn-sm" title="edit synonym" onClick={() => editSynonym(synonym)}>Edit</button> &nbsp;
+                                                <button className="btn text-danger btn-sm" title="remove synonym" onClick={() => deleteSynonymAsk(synonym)}>Delete</button>
+                                            </div>
                                         </td>
                                     </tr>
                                 )

@@ -214,8 +214,10 @@ export function UsersHome(){
                                     </div>
                                 </td>
                                 <td className="pt-2 px-4 pb-0">
-                                    <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit</button>
-                                    <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteUserAsk(user)}>Delete</button>
+                                    <div className="d-flex  justify-content-end">
+                                        <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit</button>
+                                        <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteUserAsk(user)}>Delete</button>
+                                    </div>
                                 </td>
                             </tr>
                         })

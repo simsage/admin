@@ -142,7 +142,7 @@ export default function KnowledgeBaseList() {
                                             </td>
 
                                             <td className="pt-3 px-4 pb-0">
-                                                <div className="link-button">
+                                                <div className="link-button d-flex justify-content-end">
 
                                                     <button title="view knowledge base ids"
                                                             onClick={() => handleViewIds(knowledge_base.kbId)}

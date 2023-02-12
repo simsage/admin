@@ -39,9 +39,9 @@ export default function BkOrganisationBackupHome() {
             <table className="table">
                 <thead>
                 <tr className="secondary-table-header">
-                    <th className="table-header table-width-70">backup date and time</th>
-                    <th className="table-header table-width-70">organisation name</th>
-                    <th className="table-header">actions</th>
+                    <td className="small text-black-50 px-4">Backup date/time</td>
+                    <td className="small text-black-50 px-4">Organisation</td>
+                    <td className="small text-black-50 px-4"></td>
                 </tr>
                 </thead>
 
@@ -61,17 +61,18 @@ export default function BkOrganisationBackupHome() {
                                 </td>
 
                                 <td>
-                                    <button className={"btn btn-outline-primary"}
-                                            title="download backup"
-                                            onClick={() => handleDownloadBackup(item.backupId)}>Download Backup
-                                    </button>
-                                    &nbsp;
+                                    <div className="d-flex  justify-content-end">
+                                        <button className={"btn text-primary btn-sm"}
+                                                title="download backup"
+                                                onClick={() => handleDownloadBackup(item.backupId)}>Download
+                                        </button>
+                                        &nbsp;
 
-                                    <button className={"btn btn-outline-primary"}
-                                            title="delete backup"
-                                            onClick={() => handleDeleteBackup(item)}>Delete Backup
-                                    </button>
-
+                                        <button className={"btn text-danger btn-sm"}
+                                                title="delete backup"
+                                                onClick={() => handleDeleteBackup(item)}>Delete
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
 

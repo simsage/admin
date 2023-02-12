@@ -179,13 +179,15 @@ export default function CategorizationHome() {
                                                 <div className="synset-label">{category.rule}</div>
                                             </td>
                                             <td className="pt-3 px-4 pb-0">
-                                                <button className="btn text-primary btn-sm" title="edit syn-set"
-                                                        onClick={() => editCategory(category)}>Edit
-                                                </button>&nbsp;
-                                                <button className="btn text-danger btn-sm" title="remove syn-set"
-                                                        onClick={() => deleteCategoryAsk(category)}>
-                                                    Delete
-                                                </button>
+                                                <div className="d-flex  justify-content-end">
+                                                    <button className="btn text-primary btn-sm" title="edit syn-set"
+                                                            onClick={() => editCategory(category)}>Edit
+                                                    </button>&nbsp;
+                                                    <button className="btn text-danger btn-sm" title="remove syn-set"
+                                                            onClick={() => deleteCategoryAsk(category)}>
+                                                        Delete
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     )

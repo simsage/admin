@@ -396,7 +396,7 @@ export default function SourceHome(props) {
                                             {/*         title="crawler running" alt="start"/>*/}
                                             {/*</div>*/}
                                             {/*}*/}
-                                            <div className="d-flex">
+                                            <div className="d-flex justify-content-end">
                                                 {!is_running && <>
                                                     <button title="start crawler"
                                                             onClick={() => handleStartCrawler(crawler)}
@@ -468,6 +468,7 @@ export default function SourceHome(props) {
                                         <button onClick={() => handleImportCrawler()} className={"btn btn-primary"}>Upload Crawler [JSON]</button>
                                     </div>
                                 }
+                                <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Could someone please move next to the 'Add Source'? Then I'll style</span>
                             </td>
                         </tr>
                         </tbody>
