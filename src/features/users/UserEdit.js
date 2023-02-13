@@ -46,6 +46,8 @@ export function UserEdit( {filter} ){
     const [groups, setGroups] = useState([]);
     const [kbs, setKBs] = useState([]);
     const [showKbs, setShowKBs] = useState(false);
+    const [password, setPassword] = useState('');
+    const [confPassword, setConfPassword] = useState('');
 
 
     // Grab user details if editing
@@ -92,6 +94,8 @@ export function UserEdit( {filter} ){
         setGroups([])
         setKBs([])
         setShowKBs(false)
+        setPassword('');
+        setConfPassword('');
     }
 
     //Valid email check --##Need to add in validation here.
@@ -106,6 +110,7 @@ export function UserEdit( {filter} ){
         if( !firstName ) { alert('Invalid Name') }
         if( !lastName ) { alert('Invalid Last Name') }
         if( showKbs && kbs.length < 1) {alert("A knowledge operator must have at least 1 Knowledge base assigned")}
+        if( password != confPassword){ return alert("Please ensure the passwords match")}
         //begin updating user
         const session_id = session.id;
         const data = {
@@ -114,6 +119,7 @@ export function UserEdit( {filter} ){
             groupList: groups,
             id: user_id,
             operatorKBList: kbs,
+            password: password,
             roles: roles,
             surname: lastName
         }
@@ -300,6 +306,34 @@ export function UserEdit( {filter} ){
                                                        value={email}
                                                        onBlur={() => fillNames()}
                                                        onChange={(event) => setEmail(event.target.value)}
+                                                />
+                                                </form>
+                                        </span>
+                                </div>
+
+                                <div className="control-row">
+                                    <span className="label-2">Password</span>
+                                    <span className="text">
+                                            <form>
+                                                <input type="password" className="form-control"
+                                                       autoFocus={true}
+                                                       autoComplete="false"
+                                                       placeholder="password"
+                                                       value={password}
+                                                       onChange={(event) => setPassword(event.target.value)}
+                                                />
+                                                </form>
+                                        </span>
+                                </div>
+                                <div className="control-row">
+                                    <span className="text">
+                                            <form>
+                                                <input type="password" className="form-control"
+                                                       autoFocus={true}
+                                                       autoComplete="false"
+                                                       placeholder="confirm password"
+                                                       value={confPassword}
+                                                       onChange={(event) => setConfPassword(event.target.value)}
                                                 />
                                                 </form>
                                         </span>
