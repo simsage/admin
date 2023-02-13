@@ -37,6 +37,9 @@ const initialState = {
     show_delete_backup_form: false,
     show_download_backup_form: false,
     selected_backup: {},
+    downloaded_backup: null
+
+
 }
 
 const reducers = {
@@ -121,6 +124,19 @@ const reducers = {
         state.show_delete_backup_form = false;
         state.selected_backup = null;
     },
+
+    showDownloadBackupForm: (state, action) => {
+        console.log("showDeleteBackupForm in Slice")
+        state.show_download_backup_form = action.payload.show_form;
+        state.selected_backup = action.payload.selected_backup;
+    },
+
+    closeBackupDownloadMessage: (state) => {
+        state.show_download_backup_form = false;
+        state.selected_backup = null;
+    },
+
+
 }
 
 const extraReducers = (builder) => {
@@ -182,6 +198,12 @@ const extraReducers = (builder) => {
         .addCase(deleteBackup.fulfilled, (state, action) => {
             state.backup_data_status = 'load_now';
         })
+
+        .addCase(downloadBackup.fulfilled, (state, action) => {
+            state.show_download_backup_form = false;
+            state.downloaded_backup = action.payload;
+        })
+
 
 }
 
@@ -285,6 +307,30 @@ export const getOrganisationBackupList = createAsyncThunk(
     }
 );
 
+
+export const downloadBackup = createAsyncThunk(
+    'organisations/downloadBackup',
+    async ({session, organisation_id,backup_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
+        const {id} = session
+
+        if (url !== '/stats/stats/os') {
+            console.log('GET ' + api_base + url);
+        }
+
+        return axios.get(api_base + url, Comms.getHeaders(id))
+            .then((response) => {
+                console.log("downloadBackup", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    }
+);
+
 // /api/auth/organisation/{organisationId}
 // https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific
 export const backupOrganisation = createAsyncThunk(
@@ -361,9 +407,7 @@ export const deleteBackup = createAsyncThunk(
 )
 
 
-
 //https://adminux.simsage.ai/api/backup/c276f883-e0c8-43ae-9119-df8b7df9c574/1675160719696
-
 
 
 const organisationSlice = createSlice({
@@ -377,6 +421,6 @@ export const {
     showAddOrganisationForm, showEditOrganisationForm,
     closeOrganisationForm, setOrganisationList, search, orderBy,
     showBackupForm, closeBackupForm, closeBackupProgressMessage,
-    showDeleteBackupForm, closeBackupDeleteMessage
+    showDeleteBackupForm, closeBackupDeleteMessage, showDownloadBackupForm, closeBackupDownloadMessage
 } = organisationSlice.actions
 export default organisationSlice.reducer;

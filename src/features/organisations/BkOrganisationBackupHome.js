@@ -3,8 +3,9 @@ import React from "react";
 import Api from "../../common/api";
 import {hasRole} from "../../common/helpers";
 import BkOrganisationRestore from "./BkOrganisationRestore";
-import {showDeleteBackupForm} from "./organisationSlice";
+import {showDeleteBackupForm, showDownloadBackupForm} from "./organisationSlice";
 import BkOrganisationBackupDeleteDialog from "./BkOrganisationBackupDeleteDialog";
+import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDialog";
 
 export default function BkOrganisationBackupHome() {
     const organisation_backup_list = useSelector((state) => state.organisationReducer.organisation_backup_list)
@@ -19,9 +20,9 @@ export default function BkOrganisationBackupHome() {
         return organisation_backup_list;
     }
 
-    function handleDownloadBackup(backup_id) {
+    function handleDownloadBackup(backup) {
         console.log("handleDownloadBackup")
-        return "handleDownloadBackup"
+        dispatch(showDownloadBackupForm({show_form: true, selected_backup:backup}))
     }
 
     function handleDeleteBackup(backup) {
@@ -62,16 +63,26 @@ export default function BkOrganisationBackupHome() {
 
                                 <td>
                                     <div className="d-flex  justify-content-end">
-                                        <button className={"btn text-primary btn-sm"}
-                                                title="download backup"
-                                                onClick={() => handleDownloadBackup(item.backupId)}>Download
-                                        </button>
+                                        {/*<button className={"btn text-primary btn-sm"}*/}
+                                        {/*        title="download backup"*/}
+                                        {/*        onClick={() => handleDownloadBackup(item.backupId)}>Download*/}
+                                        {/*</button>*/}
                                         &nbsp;
+                                    <button className={"btn btn-outline-primary"}
+                                            title="download backup"
+                                            onClick={() => handleDownloadBackup(item)}>Download Backup
+                                    </button>
+                                    &nbsp;
 
-                                        <button className={"btn text-danger btn-sm"}
-                                                title="delete backup"
-                                                onClick={() => handleDeleteBackup(item)}>Delete
-                                        </button>
+                                    <button className={"btn btn-outline-primary"}
+                                            title="delete backup"
+                                            onClick={() => handleDeleteBackup(item)}>Delete Backup
+                                    </button>
+
+                                        {/*<button className={"btn text-danger btn-sm"}*/}
+                                        {/*        title="delete backup"*/}
+                                        {/*        onClick={() => handleDeleteBackup(item)}>Delete*/}
+                                        {/*</button>*/}
                                     </div>
                                 </td>
                             </tr>
@@ -88,6 +99,8 @@ export default function BkOrganisationBackupHome() {
                 </tbody>
             </table>
             <BkOrganisationBackupDeleteDialog />
+
+            <BkOrganisationBackupDownloadDialog />
         </div>
     );
 
