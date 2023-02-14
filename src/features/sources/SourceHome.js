@@ -386,12 +386,12 @@ export default function SourceHome(props) {
                     </div>
                 </div>
 
-                <div className="form-group col ms-auto">
+                <div className="form-group ms-auto">
                     {selected_knowledge_base_id.length > 0 &&
-                        <div>
-                            <button className="btn btn-primary text-nowrap" onClick={() => handleAddForm()}> + Add Source</button>
-                            <button className="btn btn-primary text-nowrap" onClick={() => handleResetCrawlers()} >Reset Crawlers </button>
-                            <button className="btn btn-primary text-nowrap" onClick={() => handleImportCrawler()} >Upload Crawler [JSON]</button>
+                        <div className="d-flex">
+                            <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleResetCrawlers()} >Reset Crawlers </button>
+                            <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleImportCrawler()} >Upload Crawler [JSON]</button>
+                            <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddForm()}> + Add Source</button>
                         </div>
                     }
 
@@ -498,22 +498,6 @@ export default function SourceHome(props) {
                                 )
                             })
                         }
-                        <tr>
-                            <td/>
-                            <td/>
-                            <td/>
-                            <td/>
-                            <td/>
-                            <td style={{display:'grid', gridTemplateColumns:'auto auto auto', justifyContent:"start", gap:"1em"}}>
-                                {/* {selected_organisation_id.length > 0 &&
-                                    <div className="image-button">
-                                        <button onClick={() => handleAddCrawler()} className={"btn btn-primary"}>+ Add Source</button>
-                                    </div>
-                                } */}
-
-                                <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Could someone please move next to the 'Add Source'? Then I'll style -- DONE!</span>
-                            </td>
-                        </tr>
                         </tbody>
                     </table>
 
