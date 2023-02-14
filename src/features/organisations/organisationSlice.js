@@ -37,8 +37,10 @@ const initialState = {
     show_delete_backup_form: false,
     show_download_backup_form: false,
     selected_backup: {},
-    downloaded_backup: null
+    downloaded_backup: null,
 
+    //restore
+    restore_status:null, //uploading, uploaded, ready_to_upload
 
 }
 
@@ -205,6 +207,14 @@ const extraReducers = (builder) => {
         })
 
 
+        //restore
+        .addCase(restoreOrganisation.pending, (state) => {
+            state.restore_status = 'uploading';
+        })
+        .addCase(restoreOrganisation.fulfilled, (state) => {
+            state.restore_status = 'uploaded';
+            state.data_status = "load_now";
+        })
 }
 
 
@@ -360,15 +370,15 @@ export const backupOrganisation = createAsyncThunk(
 // /api/auth/organisation/{organisationId}
 // https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific
 export const restoreOrganisation = createAsyncThunk(
-    'organisations/backupOrganisation',
+    'organisations/restoreOrganisation',
     async ({session_id, data}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/restore/';
 
         if (url !== '/stats/stats/os') {
-            console.log('POST ' + api_base + url);
+            console.log('POST ' + url);
         }
-        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+        return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("backupOrganisation", response.data)
                 return response.data

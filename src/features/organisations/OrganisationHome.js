@@ -15,6 +15,8 @@ import {showErrorAlert} from "../alerts/alertSlice";
 import BkOrganisationBackupHome from "./BkOrganisationBackupHome";
 import BkOrganisationBackupDialog from "./BkOrganisationBackupDialog";
 import BkOrganisationBackupProgressDialog from "./BkOrganisationBackupProgressDialog";
+import BkOrganisationBackupDeleteDialog from "./BkOrganisationBackupDeleteDialog";
+import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDialog";
 
 
 export function OrganisationHome() {
@@ -51,7 +53,7 @@ export function OrganisationHome() {
 
     useEffect(() => {
         dispatch(getOrganisationList({session: session, filter: filter}))
-    }, [load_data === 'load_now'])
+    }, [load_data === 'load_now', organisation_list === null])
 
     useEffect(()=>{
         dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
@@ -219,6 +221,10 @@ export function OrganisationHome() {
                 <BkOrganisationBackupDialog />
 
                 <BkOrganisationBackupProgressDialog />
+
+                <BkOrganisationBackupDeleteDialog />
+
+                <BkOrganisationBackupDownloadDialog />
             </div>
         </div>);
 }

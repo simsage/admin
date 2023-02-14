@@ -110,7 +110,7 @@ export function UserEdit( {filter} ){
         if( !firstName ) { alert('Invalid Name') }
         if( !lastName ) { alert('Invalid Last Name') }
         if( showKbs && kbs.length < 1) {alert("A knowledge operator must have at least 1 Knowledge base assigned")}
-        if( password != confPassword){ return alert("Please ensure the passwords match")}
+        if( password !== confPassword){ return alert("Please ensure the passwords match")}
         //begin updating user
         const session_id = session.id;
         const data = {
@@ -192,7 +192,7 @@ export function UserEdit( {filter} ){
 
     //Knowledge base functions
     function getKbName(kbID) {
-        const temp_list = available_KBs.filter( (obj) => {return obj.kbId == kbID})
+        const temp_list = available_KBs.filter( (obj) => {return obj.kbId === kbID})
         if(temp_list.length < 1) return "No KBs"
         return temp_list[0].name
     }
@@ -211,7 +211,7 @@ export function UserEdit( {filter} ){
 
     function addKbToUser(kb){
         const kbObj = available_KBs.filter( k => {
-            return k.name == kb;
+            return k.name === kb;
         })
         setKBs([...(kbs || []), {
             userId: user_id,
