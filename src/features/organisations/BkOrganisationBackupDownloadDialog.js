@@ -12,6 +12,7 @@ export default function BkOrganisationBackupDownloadDialog(props) {
     const show_download_backup_form = useSelector((state) => state.organisationReducer.show_download_backup_form)
     const selected_backup = useSelector((state) => state.organisationReducer.selected_backup)
     const session = useSelector((state) => state.authReducer.session)
+    const downloaded_backup = useSelector((state) => state.organisationReducer.downloaded_backup)
 
     //handle form close or cancel
     const handleClose = () => {
@@ -22,7 +23,58 @@ export default function BkOrganisationBackupDownloadDialog(props) {
         console.log("selected_backup", selected_backup.name)
         console.log("selected_backup", selected_backup.backupId)
         dispatch(downloadBackup({session:session, organisation_id: selected_backup.organisationId, backup_id:selected_backup.backupId}))
+
         dispatch(closeBackupDownloadMessage());
+
+        if(downloaded_backup && downloaded_backup.backupId && downloaded_backup.data){
+            var element = document.createElement('a');
+            // let dateStr = Api.unixTimeForFilename(downloaded_backup.backupId);
+            let dateStr = 'org'
+            const filename = "backup-" +  dateStr + ".txt"
+
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(downloaded_backup.data));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+    }
+
+    //
+    // function download(filename, text) {
+    //     var element = document.createElement('a');
+    //     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    //     element.setAttribute('download', filename);
+    //
+    //     element.style.display = 'none';
+    //     document.body.appendChild(element);
+    //
+    //     element.click();
+    //
+    //     document.body.removeChild(element);
+    // }
+
+
+    function download(){
+
+    }
+    function getBackup(backup) {
+        if (backup && backup.backupId) {
+            let dateStr = Api.unixTimeForFilename(backup.backupId);
+            const filename = "backup-" +  dateStr + ".txt"
+            this.props.getBackup(backup.backupId, (backup_response) => {
+                if (backup_response && backup_response.data) {
+                    var element = document.createElement('a');
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(backup_response.data));
+                    element.setAttribute('download', filename);
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+                    element.click();
+                    document.body.removeChild(element);
+                }
+            });
+        }
     }
 
 

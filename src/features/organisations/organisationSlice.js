@@ -59,6 +59,10 @@ const reducers = {
         state.edit_organisation_id = null;
     },
 
+    clearDownloadedBackup: (state) => {
+        state.downloaded_backup = null;
+    },
+
     setOrganisationList: (state, action) => {
         state.organisation_list = action.payload.organisationList
         state.organisation_original_list = action.payload.organisationList
