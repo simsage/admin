@@ -312,14 +312,14 @@ export const downloadBackup = createAsyncThunk(
     'organisations/downloadBackup',
     async ({session, organisation_id,backup_id}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
+        const url = api_base + '/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
         const {id} = session
 
         if (url !== '/stats/stats/os') {
             console.log('GET ' + api_base + url);
         }
 
-        return axios.get(api_base + url, Comms.getHeaders(id))
+        return axios.get(url, Comms.getHeaders(id))
             .then((response) => {
                 console.log("downloadBackup", response.data)
                 return response.data

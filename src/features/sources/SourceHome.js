@@ -1,8 +1,7 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
-import SourceFilter from "./SourceFilter";
 import CrawlerImportExport from "./crawler-import-export";
 import SourceEdit from "./SourceEdit";
 import {closeAlert, showDeleteAlert} from "../alerts/alertSlice";
@@ -41,6 +40,11 @@ export default function SourceHome(props) {
 
     const [page, setPage] = useState(0)
     const [page_size, setPageSize] = useState(10)
+
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [searchFilter,setSearchFilter] = useState('');
+    const [orderFilter,setOrderFilter] = useState('');
+    const [sourceFilter,setSourceFilter] = useState('');
 
 
     const default_specific_json = '{"metadata_list":[' +
@@ -168,14 +172,7 @@ export default function SourceHome(props) {
         //     "Start Crawler", (action) => { this.startCrawler(action) });
     }
 
-    function handleResetCrawlers() {
 
-        setButtonClicked('reset_crawlers')
-        this.props.openDialog("Are you sure you want to reset all crawlers?  This will clear crawler schedules, and mark their files as out-of-date.",
-            "Reset Crawlers", (action) => {
-                this.resetCrawlers(action)
-            });
-    }
 
     function getCrawlerStatus(crawler) {
         if (crawler) {
@@ -301,6 +298,28 @@ export default function SourceHome(props) {
         dispatch(closeForm);
     }
 
+    function handleAddForm(){
+        console.log("handleAddNew")
+        dispatch(showAddForm(true));
+    }
+
+
+    function handleSearchTextKeydown(e) {
+        console.log("handleSearchTextKeydown")
+
+        // if (e.key === "Enter" && this.props.selected_organisation_id) {
+        //     this.props.getUsers(this.props.selected_organisation_id);
+        // }
+    }
+
+    function handleResetCrawlers() {
+
+        setButtonClicked('reset_crawlers')
+        this.props.openDialog("Are you sure you want to reset all crawlers?  This will clear crawler schedules, and mark their files as out-of-date.",
+            "Reset Crawlers", (action) => {
+                this.resetCrawlers(action)
+            });
+    }
 
     function setError(title, errStr) {
     }
@@ -344,7 +363,40 @@ export default function SourceHome(props) {
             {/*               message={message}*/}
             {/*               title={message_title}/>*/}
 
-            <SourceFilter/>
+            <div className="d-flex justify-content-beteween w-100 mb-4">
+                <div className="d-flex w-100">
+                    <div className="form-group me-2">
+                        <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control " + theme}
+                               onKeyPress={(e) => handleSearchTextKeydown(e)}
+                               onChange={(e) => setSearchFilter(e.target.value)}/>
+                    </div>
+                    <div className="form-group me-2">
+                        <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}
+                                 onChange={(e) => setOrderFilter(e.target.value)}>
+                            <option value="alphabetical">Alphabetical</option>
+                            <option value="">Join</option>
+                        </select>
+
+                    </div>
+                    <div className="form-group me-2">
+                        <select type="text" placeholder={"Filter"} value={sourceFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
+                                onChange={(e) => setSourceFilter(e.target.value)}>
+                            <option value="all-users">All Sources</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className="form-group col ms-auto">
+                    {selected_knowledge_base_id.length > 0 &&
+                        <div>
+                            <button className="btn btn-primary text-nowrap" onClick={() => handleAddForm()}> + Add Source</button>
+                            <button className="btn btn-primary text-nowrap" onClick={() => handleResetCrawlers()} >Reset Crawlers </button>
+                            <button className="btn btn-primary text-nowrap" onClick={() => handleImportCrawler()} >Upload Crawler [JSON]</button>
+                        </div>
+                    }
+
+                </div>
+            </div>
             {source_list_status !== undefined && source_list && source_list.length > 0 &&
                 <div className="source-page">
                     <table className="table">
@@ -458,17 +510,8 @@ export default function SourceHome(props) {
                                         <button onClick={() => handleAddCrawler()} className={"btn btn-primary"}>+ Add Source</button>
                                     </div>
                                 } */}
-                                {selected_knowledge_base_id.length > 0 &&
-                                    <div className="image-button">
-                                        <button onClick={() => handleResetCrawlers()} className={"btn btn-primary"}>Reset Crawlers </button>
-                                    </div>
-                                }
-                                {selected_organisation_id.length > 0 &&
-                                    <div className="image-button">
-                                        <button onClick={() => handleImportCrawler()} className={"btn btn-primary"}>Upload Crawler [JSON]</button>
-                                    </div>
-                                }
-                                <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Could someone please move next to the 'Add Source'? Then I'll style</span>
+
+                                <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Could someone please move next to the 'Add Source'? Then I'll style -- DONE!</span>
                             </td>
                         </tr>
                         </tbody>
