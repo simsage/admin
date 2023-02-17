@@ -7,6 +7,7 @@ import {formatRoles, hasRole} from "../../common/helpers";
 import Api from '../../common/api'
 import {getGroupList} from "../groups/groupSlice";
 import UserDeleteAsk from "./UserDeleteAsk";
+import UserBulk from "./UserBulk";
 
 export function UsersHome(){
 
@@ -174,6 +175,9 @@ export function UsersHome(){
                         + Add User
                         {/*<img className="add-image" src="/images/add.svg" title="add new user" alt="add new user"/>*/}
                     </button>
+                </div>
+                <div>
+                    <UserBulk/>
                 </div>
             </div>
 

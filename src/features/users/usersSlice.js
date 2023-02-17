@@ -87,6 +87,23 @@ export const updateUser = createAsyncThunk(
     }
 )
 
+export const bulkUpdateUser = createAsyncThunk(
+        'user/bulk',
+        async ({session_id, payload}) => {
+
+            const api_base = window.ENV.api_base;
+            const url = api_base + '/auth/user/import/';
+
+            return axios.put(url, payload, Comms.getHeaders(session_id))
+                .then((response) => {
+                    console.log("bulk update", response.data);
+                    return response.data;
+                }).catch(
+                    (error) => {return error}
+                )
+        }
+)
+
 export const deleteUser = createAsyncThunk (
     'users/delete',
     async ({session_id,user_id, organisation_id}) => {
@@ -130,6 +147,21 @@ const extraReducers = (builder) => {
             state.data_status = "load_now"
         })
         .addCase(updateUser.rejected, (state, action) => {
+            state.status = "rejected";
+            state.data_status = "rejected";
+        })
+
+        //Bulk update
+        .addCase(bulkUpdateUser.pending, (state, action) => {
+            state.status = "Loading"
+            state.data_status = "loading"
+        })
+        .addCase(bulkUpdateUser.fulfilled, (state, action) => {
+            console.log("users/update ", action);
+            state.status = "fulfilled";
+            state.data_status = "load_now"
+        })
+        .addCase(bulkUpdateUser.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
