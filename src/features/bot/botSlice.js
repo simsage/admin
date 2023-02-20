@@ -12,7 +12,6 @@ const initialState = {
     show_memory_form: false,
     edit: undefined,
     data_status: 'load_now',
-
     show_delete_form: false,
 
 }
@@ -81,6 +80,8 @@ export const deleteAllMindItems = createAsyncThunk(
             )
     }
 )
+
+
 
 
 const extraReducers = (builder) => {

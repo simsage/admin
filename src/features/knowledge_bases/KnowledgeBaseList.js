@@ -85,6 +85,7 @@ export default function KnowledgeBaseList() {
         dispatch(orderBy({order_by: val}))
     }
 
+    console.log("session_id",session_id)
     return (
         <div className="kb-page">
             {isVisible() &&
