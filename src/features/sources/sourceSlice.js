@@ -274,18 +274,14 @@ export const deleteSource = createAsyncThunk(
 // POST
 export const zipSource = createAsyncThunk(
     'sources/zipSource',
-    async ({session_id, organisation_id, kb_id, source_id}) => {
+    async ({session_id, data}) => {
 
         console.log("sources/zipSource");
 
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/zip/source/';
 
-        const data = {
-            "kbId": kb_id,
-            "organisationId": organisation_id,
-            "sourceId": source_id
-        }
+
 
         if (url !== '/stats/stats/os') {
             console.log('POST ' + url);

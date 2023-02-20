@@ -158,28 +158,17 @@ export default function SourceHome(props) {
         dispatch(showImportForm())
     }
 
-
     function handleZipSource(source) {
         dispatch(showZipCrawlerAlert({source:source}))
     }
-
 
     function handleProcessFiles(source) {
         dispatch(showProcessFilesAlert({source:source}))
     }
 
-
-
     function handleStartCrawler(source) {
-
         console.log("handleStartCrawler",source.name)
         dispatch(showStartCrawlerAlert({source:source}))
-        // setSelectedSource(crawler)
-        // setButtonClicked('start_crawler')
-
-        // this.setState({crawler_ask: crawler});
-        // this.props.openDialog("are you sure you want to start <b>" + crawler.name + "</b>?",
-        //     "Start Crawler", (action) => { this.startCrawler(action) });
     }
 
 
@@ -554,6 +543,9 @@ export default function SourceHome(props) {
                 <SourceExport/>
             }
 
+            {show_import_form &&
+                <SourceImport/>
+            }
 
         </div>
     )
