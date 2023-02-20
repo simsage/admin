@@ -33,7 +33,7 @@ const initialState = {
     //_crawler warning
     show_start_crawler_prompt: false,
     show_zip_crawler_prompt: false,
-    show_re_crawl_prompt: false,
+    show_process_files_prompt: false,
 }
 
 const reducers = {
@@ -69,7 +69,7 @@ const reducers = {
     },
 
     showProcessFilesAlert: (state, action) => {
-        state.show_re_crawl_prompt = true
+        state.show_process_files_prompt = true
         state.selected_source = action.payload.source
         state.selected_source_id = state.selected_source.sourceId
     },

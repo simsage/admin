@@ -14,11 +14,12 @@ import {
     getSources,
     showAddForm,
     showEditForm,
-    showExportForm, showImportForm, showStartCrawlerAlert, showZipCrawlerAlert,
+    showExportForm, showImportForm, showProcessFilesAlert, showStartCrawlerAlert, showZipCrawlerAlert,
     updateSources
 } from "./sourceSlice";
 import {SourceStartDialog} from "./SourceStartDialog";
 import {SourceZipDialog} from "./SourceZipDialog";
+import {SourceProcessFilesDialog} from "./SourceProcessFilesDialog";
 
 
 //TODO:: No need to list documents anymore.
@@ -33,6 +34,7 @@ export default function SourceHome(props) {
 
     const show_start_crawler_prompt = useSelector((state) => state.sourceReducer.show_start_crawler_prompt)
     const show_zip_crawler_prompt = useSelector((state) => state.sourceReducer.show_zip_crawler_prompt)
+    const show_process_files_prompt = useSelector((state) => state.sourceReducer.show_process_files_prompt)
 
     let source_list = useSelector((state) => state.sourceReducer.source_list);
     const source_list_status = useSelector((state) => state.sourceReducer.status);
@@ -159,14 +161,14 @@ export default function SourceHome(props) {
 
     function handleZipSource(source) {
         dispatch(showZipCrawlerAlert({source:source}))
-        // console.log("handleStartCrawler")
-        // setSelectedSource(crawler)
-        // setButtonClicked('zip_source')
-
-        // this.setState({crawler_ask: crawler});
-        // this.props.openDialog("are you sure you want to zip the content of <b>" + crawler.name + "</b>?",
-        //     "Zip Source", (action) => { this.zipSource(action) });
     }
+
+
+    function handleProcessFiles(source) {
+        dispatch(showProcessFilesAlert({source:source}))
+    }
+
+
 
     function handleStartCrawler(source) {
 
@@ -479,7 +481,7 @@ export default function SourceHome(props) {
                                                 &nbsp; &nbsp;
 
                                                 <button title="process all files for a source"
-                                                        onClick={() => handleDeleteCrawler(crawler)}
+                                                        onClick={() => handleProcessFiles(crawler)}
                                                         className={"btn text-primary btn-sm"}>Process files
                                                 </button>
                                                 &nbsp; &nbsp;
@@ -538,6 +540,11 @@ export default function SourceHome(props) {
             {show_zip_crawler_prompt &&
                 <SourceZipDialog />
             }
+
+            {show_process_files_prompt &&
+                <SourceProcessFilesDialog />
+            }
+
 
             <SourceEdit/>
 
