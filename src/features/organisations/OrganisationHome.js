@@ -4,7 +4,7 @@ import {
     deleteOrganisation, getOrganisationBackupList,
     getOrganisationList,
     showAddOrganisationForm, showBackupForm,
-    showEditOrganisationForm
+    showEditOrganisationForm, showOrganisationId
 } from "./organisationSlice";
 import {setSelectedKB, setSelectedOrganisation} from "../auth/authSlice";
 import {Pagination} from "../../common/pagination";
@@ -17,6 +17,7 @@ import BkOrganisationBackupDialog from "./BkOrganisationBackupDialog";
 import BkOrganisationBackupProgressDialog from "./BkOrganisationBackupProgressDialog";
 import BkOrganisationBackupDeleteDialog from "./BkOrganisationBackupDeleteDialog";
 import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDialog";
+import {OrganisationViewId} from "./OrganisationViewId";
 
 
 export function OrganisationHome() {
@@ -69,6 +70,10 @@ export function OrganisationHome() {
         dispatch(selectTab('home'))
     }
 
+    function handleViewOrganisationID(org_id) {
+        dispatch(showOrganisationId({org_id: org_id}))
+    }
+
     function handleAddOrganisation() {
         dispatch(showAddOrganisationForm({show_form: true}))
     }
@@ -77,10 +82,6 @@ export function OrganisationHome() {
         dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
     }
 
-    function handleViewOrganisationID(org_id) {
-        console.log("handleViewOrganisationID")
-        // dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
-    }
 
     function handleRemoveOrganisation(org_id) {
         dispatch(deleteOrganisation({session_id: session.id, organisation_id: org_id}))
@@ -218,6 +219,8 @@ export function OrganisationHome() {
 
             {/*Show backups*/}
             <div>
+                <OrganisationViewId />
+
                 <BkOrganisationBackupHome/>
 
                 <BkOrganisationBackupDialog />

@@ -17,6 +17,7 @@ const initialState = {
     show_organisation_form: false,
     edit_organisation_id: null,
     data_status: 'load_now',//load_now,loading,loaded
+    show_organisation_id: false,
 
     //for backups
     organisation_original_backup_list: [],
@@ -50,13 +51,14 @@ const reducers = {
     },
 
     showEditOrganisationForm: (state, action) => {
-        state.show_organisation_form = action.payload.show_form;
+        state.show_organisation_form = true;
         state.edit_organisation_id = action.payload.org_id;
     },
 
     closeOrganisationForm: (state) => {
         state.show_organisation_form = false;
         state.edit_organisation_id = null;
+        state.show_organisation_id = false;
     },
 
     clearDownloadedBackup: (state) => {
@@ -68,6 +70,11 @@ const reducers = {
         state.organisation_original_list = action.payload.organisationList
         state.status = "fulfilled";
         state.data_status = 'loaded';
+    },
+
+    showOrganisationId: (state, action) => {
+        state.show_organisation_id = true;
+        state.edit_organisation_id = action.payload.org_id;
     },
 
     //
@@ -436,6 +443,6 @@ export const {
     showAddOrganisationForm, showEditOrganisationForm,
     closeOrganisationForm, setOrganisationList, search, orderBy,
     showBackupForm, closeBackupForm, closeBackupProgressMessage,
-    showDeleteBackupForm, closeBackupDeleteMessage, showDownloadBackupForm, closeBackupDownloadMessage
+    showDeleteBackupForm, closeBackupDeleteMessage, showDownloadBackupForm, closeBackupDownloadMessage, showOrganisationId
 } = organisationSlice.actions
 export default organisationSlice.reducer;
