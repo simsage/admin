@@ -20,6 +20,7 @@ import {
 import {SourceStartDialog} from "./SourceStartDialog";
 import {SourceZipDialog} from "./SourceZipDialog";
 import {SourceProcessFilesDialog} from "./SourceProcessFilesDialog";
+import {SourceErrorDialog} from "./SourceErrorDialog";
 
 
 //TODO:: No need to list documents anymore.
@@ -35,6 +36,9 @@ export default function SourceHome(props) {
     const show_start_crawler_prompt = useSelector((state) => state.sourceReducer.show_start_crawler_prompt)
     const show_zip_crawler_prompt = useSelector((state) => state.sourceReducer.show_zip_crawler_prompt)
     const show_process_files_prompt = useSelector((state) => state.sourceReducer.show_process_files_prompt)
+    const show_error_form = useSelector((state) => state.sourceReducer.show_error_form)
+
+
 
     let source_list = useSelector((state) => state.sourceReducer.source_list);
     const source_list_status = useSelector((state) => state.sourceReducer.status);
@@ -532,6 +536,10 @@ export default function SourceHome(props) {
 
             {show_process_files_prompt &&
                 <SourceProcessFilesDialog />
+            }
+
+            {show_error_form &&
+                <SourceErrorDialog />
             }
 
 

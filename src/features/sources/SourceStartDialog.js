@@ -1,12 +1,18 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeForm} from "./sourceSlice";
+import {closeForm, startSource} from "./sourceSlice";
 
 export function SourceStartDialog() {
     const dispatch = useDispatch();
 
     const selected_source = useSelector((state) => state.sourceReducer.selected_source)
     const show_start_crawler_prompt = useSelector((state) => state.sourceReducer.show_start_crawler_prompt)
+
+    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
+    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    const session = useSelector((state) => state.authReducer.session)
+
+    const session_id = session.id;
 
     if(!selected_source){
         console.error("Missing source")
@@ -17,6 +23,11 @@ export function SourceStartDialog() {
     const source_name = (selected_source)?selected_source.name:'';
     const message = `Are you sure you want to start '${source_name}'? `;
 
+    const data = {
+        "organisationId": selected_organisation_id,
+        "kbId": selected_knowledge_base_id,
+        "sourceId": selected_source.sourceId
+    }
 
     const handleClose = () => {
         console.log("BkOrganisationBackupDialog handleClose")
@@ -26,6 +37,7 @@ export function SourceStartDialog() {
 
     const handleOk = () => {
         console.log("BkOrganisationBackupDialog handleClose")
+        dispatch(startSource({session_id:session_id, data:data}))
         dispatch(closeForm());
     }
 

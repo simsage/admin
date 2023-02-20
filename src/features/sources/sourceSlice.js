@@ -34,6 +34,8 @@ const initialState = {
     show_start_crawler_prompt: false,
     show_zip_crawler_prompt: false,
     show_process_files_prompt: false,
+
+    //error
 }
 
 const reducers = {
@@ -135,7 +137,8 @@ const extraReducers = (builder) => {
 
         .addCase(updateSources.fulfilled, (state, action) => {
 
-            if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
+            if(action.payload.code === "ERR_BAD_RESPONSE"){
+            // if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
                 console.log("updateSources fulfilled ", action.payload.response.data.error)
                 state.show_error_form = true
                 state.error_title = "Error"
@@ -175,6 +178,34 @@ const extraReducers = (builder) => {
             console.log("source/processFiles ", action)
             state.status = "fulfilled"
             state.data_status = 'load_now';
+        })
+        .addCase(processFiles.rejected, (state) => {
+            state.status = "rejected"
+            state.show_error_form = false
+            state.error_title = ""
+            state.error_message = ""
+        })
+
+        //startSource
+        .addCase(startSource.fulfilled, (state, action) => {
+            console.log("source/startSource ", action)
+
+            if(action.payload.code === "ERR_BAD_RESPONSE"){
+                state.show_error_form = true
+                state.error_title = "Error"
+                state.error_message = action.payload.response.data.error
+                console.log("source/startSource error_message", state.error_message )
+            }else{
+                state.status = "fulfilled"
+                state.data_status = 'load_now';
+            }
+        })
+        .addCase(startSource.rejected, (state,action) => {
+            console.log("source/startSource rejected", action)
+            state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = action.payload
+            state.error_message = action.payload.data
         })
 
 }
@@ -241,6 +272,33 @@ export const updateSources = createAsyncThunk(
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("updateSources data", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("error", error)
+                    return error
+                }
+            )
+
+    });
+
+
+// https://adminux.simsage.ai/api/crawler/start/
+export const startSource = createAsyncThunk(
+    'sources/startSource',
+    async ({session_id, data}) => {
+
+        console.log("sources/startSource");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/crawler/start';
+
+        if (url !== '/stats/stats/os') {
+            console.log('POST ' + url);
+        }
+        return axios.post(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("startSource data", response.data)
                 return response.data
             }).catch(
                 (error) => {
