@@ -21,7 +21,7 @@ const initialState = {
     show_import_form: false,
 
     //error
-    show_error_form:false,
+    show_error_form: false,
     error_title: undefined,
     error_message: undefined,
 
@@ -37,62 +37,62 @@ const initialState = {
 }
 
 const reducers = {
-    showAddForm:(state) => {
+    showAddForm: (state) => {
         state.show_data_form = true
     },
 
-    showEditForm:(state,action) => {
+    showEditForm: (state, action) => {
         state.show_data_form = true
         state.selected_source = action.payload.source
         state.selected_source_id = state.selected_source.sourceId
     },
 
-    showExportForm:(state,action) => {
+    showExportForm: (state, action) => {
         state.show_export_form = true
         state.selected_source = action.payload.source
     },
 
-    showImportForm:(state) => {
+    showImportForm: (state) => {
         state.show_import_form = true
     },
 
-    showStartCrawlerAlert:(state,action) => {
+    showStartCrawlerAlert: (state, action) => {
         state.show_start_crawler_prompt = true
         state.selected_source = action.payload.source
         state.selected_source_id = state.selected_source.sourceId
     },
 
-    showZipCrawlerAlert:(state,action) => {
+    showZipCrawlerAlert: (state, action) => {
         state.show_zip_crawler_prompt = true
         state.selected_source = action.payload.source
         state.selected_source_id = state.selected_source.sourceId
     },
 
-    showReCrawlAlert:(state,action) => {
+    showProcessFilesAlert: (state, action) => {
         state.show_re_crawl_prompt = true
         state.selected_source = action.payload.source
         state.selected_source_id = state.selected_source.sourceId
     },
 
 
-    closeForm:(state) => {
+    closeForm: (state) => {
         console.log("closeForm sourceSlice")
         state.show_data_form = false
-        state.show_export_form =false
+        state.show_export_form = false
         state.selected_source = null
         state.selected_source_id = null
         state.show_import_form = false
 
-        state.show_error_form=false
-        state.error_title= undefined
-        state.error_message= undefined
+        state.show_error_form = false
+        state.error_title = undefined
+        state.error_message = undefined
 
-        state.how_start_crawler_prompt = false
+        state.show_start_crawler_prompt = false
         state.show_zip_crawler_prompt = false
-        state.show_re_crawl_prompt = false
+        state.show_process_files_prompt = false
     },
 
-    setSelectedSourceTab:(state,action) => {
+    setSelectedSourceTab: (state, action) => {
         state.selected_source_tab = action.payload
     },
 
@@ -135,18 +135,18 @@ const extraReducers = (builder) => {
 
         .addCase(updateSources.fulfilled, (state, action) => {
 
-            if(action.payload.response && action.payload.response.data && action.payload.response.data.error){
-                console.log("updateSources fulfilled ",action.payload.response.data.error)
+            if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
+                console.log("updateSources fulfilled ", action.payload.response.data.error)
                 state.show_error_form = true
                 state.error_title = "Error"
                 state.error_message = action.payload.response.data.error
 
-            }else{
+            } else {
                 state.show_import_form = false
                 state.show_data_form = false;
                 state.selected_source = null;
                 state.data_status = 'load_now';
-                console.log("updateSources fulfilled ",action.payload)
+                console.log("updateSources fulfilled ", action.payload)
             }
         })
 
@@ -185,10 +185,12 @@ export const getSources = createAsyncThunk(
         }
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("sources/getSources",response.data);
+                console.log("sources/getSources", response.data);
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error
+                }
             )
     }
 );
@@ -196,30 +198,31 @@ export const getSources = createAsyncThunk(
 
 export const getSource = createAsyncThunk(
     'sources/getSource',
-    async ({session_id, organisation_id, kb_id,source_id}) => {
+    async ({session_id, organisation_id, kb_id, source_id}) => {
         const api_base = window.ENV.api_base;
-        const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(source_id);
+        const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
 
         if (url !== '/stats/stats/os') {
             console.log('GET ' + api_base + url);
         }
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("sources/getSource",response.data);
+                console.log("sources/getSource", response.data);
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error
+                }
             )
     }
 );
-
 
 
 // https://uat.simsage.ai/api/crawler/crawler
 // POST
 export const updateSources = createAsyncThunk(
     'sources/updateSources',
-    async ({session_id,data}) => {
+    async ({session_id, data}) => {
 
         console.log("sources/updateSources");
 
@@ -231,23 +234,23 @@ export const updateSources = createAsyncThunk(
         }
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("updateSources data",response.data)
+                console.log("updateSources data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error",error)
+                    console.log("error", error)
                     return error
                 }
             )
 
-});
+    });
 
 
 export const deleteSource = createAsyncThunk(
     'sources/deleteSource',
-    async ({session_id, organisation_id, kb_id,source_id}) => {
+    async ({session_id, organisation_id, kb_id, source_id}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/crawler/crawler/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(source_id);
+        const url = api_base + '/crawler/crawler/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
 
         if (url !== '/stats/stats/os') {
             console.log('DELETE ' + api_base + url);
@@ -267,13 +270,11 @@ export const deleteSource = createAsyncThunk(
 )
 
 
-
-
 // https://uat.simsage.ai/api/document/zip/source/
 // POST
 export const zipSource = createAsyncThunk(
     'sources/zipSource',
-    async ({session_id, organisation_id, kb_id,source_id}) => {
+    async ({session_id, organisation_id, kb_id, source_id}) => {
 
         console.log("sources/zipSource");
 
@@ -291,17 +292,16 @@ export const zipSource = createAsyncThunk(
         }
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("zipSource data",response.data)
+                console.log("zipSource data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error",error)
+                    console.log("error", error)
                     return error
                 }
             )
 
     });
-
 
 
 const sourceSlice = createSlice({
@@ -311,5 +311,8 @@ const sourceSlice = createSlice({
     extraReducers
 });
 
-export const { showAddForm, showEditForm, closeForm, setSelectedSourceTab, showExportForm, showImportForm } = sourceSlice.actions
+export const {
+    showAddForm, showEditForm, closeForm, setSelectedSourceTab, showExportForm, showImportForm,
+    showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert
+} = sourceSlice.actions
 export default sourceSlice.reducer;

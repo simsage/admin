@@ -14,9 +14,11 @@ import {
     getSources,
     showAddForm,
     showEditForm,
-    showExportForm, showImportForm,
+    showExportForm, showImportForm, showStartCrawlerAlert, showZipCrawlerAlert,
     updateSources
 } from "./sourceSlice";
+import {SourceStartDialog} from "./SourceStartDialog";
+import {SourceZipDialog} from "./SourceZipDialog";
 
 
 //TODO:: No need to list documents anymore.
@@ -28,6 +30,9 @@ export default function SourceHome(props) {
     const session = useSelector((state) => state.authReducer.session);
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+
+    const show_start_crawler_prompt = useSelector((state) => state.sourceReducer.show_start_crawler_prompt)
+    const show_zip_crawler_prompt = useSelector((state) => state.sourceReducer.show_zip_crawler_prompt)
 
     let source_list = useSelector((state) => state.sourceReducer.source_list);
     const source_list_status = useSelector((state) => state.sourceReducer.status);
@@ -152,20 +157,23 @@ export default function SourceHome(props) {
     }
 
 
-    function handleZipSource(crawler) {
-        console.log("handleStartCrawler")
-        setSelectedSource(crawler)
-        setButtonClicked('zip_source')
+    function handleZipSource(source) {
+        dispatch(showZipCrawlerAlert({source:source}))
+        // console.log("handleStartCrawler")
+        // setSelectedSource(crawler)
+        // setButtonClicked('zip_source')
 
         // this.setState({crawler_ask: crawler});
         // this.props.openDialog("are you sure you want to zip the content of <b>" + crawler.name + "</b>?",
         //     "Zip Source", (action) => { this.zipSource(action) });
     }
 
-    function handleStartCrawler(crawler) {
-        console.log("handleStartCrawler")
-        setSelectedSource(crawler)
-        setButtonClicked('start_crawler')
+    function handleStartCrawler(source) {
+
+        console.log("handleStartCrawler",source.name)
+        dispatch(showStartCrawlerAlert({source:source}))
+        // setSelectedSource(crawler)
+        // setButtonClicked('start_crawler')
 
         // this.setState({crawler_ask: crawler});
         // this.props.openDialog("are you sure you want to start <b>" + crawler.name + "</b>?",
@@ -524,6 +532,13 @@ export default function SourceHome(props) {
                 </div>
             }
 
+            {show_start_crawler_prompt &&
+                <SourceStartDialog />
+            }
+            {show_zip_crawler_prompt &&
+                <SourceZipDialog />
+            }
+
             <SourceEdit/>
 
             <AlertDialogHome onOk={alertHandler}/>
@@ -532,9 +547,7 @@ export default function SourceHome(props) {
                 <SourceExport/>
             }
 
-            {show_import_form &&
-                <SourceImport/>
-            }
+
         </div>
     )
 }
