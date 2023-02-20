@@ -51,15 +51,15 @@ export function OrganisationHome() {
         dispatch(closeForm());
     }
 
-    useEffect(() => {
-        console.log("getOrganisationList useEffect")
-        console.log("getOrganisationList session",session)
-        dispatch(getOrganisationList({session: session, filter: filter}))
-    }, [load_data === 'load_now', organisation_list === null])
+    // useEffect(() => {
+    //     console.log("getOrganisationList useEffect")
+    //     console.log("getOrganisationList session",session)
+    //     dispatch(getOrganisationList({session: session, filter: filter}))
+    // }, [load_data === 'load_now'])
 
-    // useEffect(()=>{
-    //     dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
-    // }, [backup_data_status === 'load_now',org_id != null])
+    useEffect(()=>{
+        dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
+    }, [backup_data_status === 'load_now',org_id != null])
 
 
     function handleSelectOrganisation(session_id, org) {

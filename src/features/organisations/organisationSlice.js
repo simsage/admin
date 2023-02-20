@@ -67,6 +67,7 @@ const reducers = {
         state.organisation_list = action.payload.organisationList
         state.organisation_original_list = action.payload.organisationList
         state.status = "fulfilled";
+        state.data_status = 'loaded';
     },
 
     //

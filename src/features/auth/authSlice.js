@@ -11,10 +11,10 @@ const initialState = {
     user: {},
     session: {},
 
-    selected_organisation: {},
-    selected_organisation_id: null,
-    selected_knowledge_base: {},
-    selected_knowledge_base_id: null,
+    // selected_organisation: {},
+    // selected_organisation_id: null,
+    // selected_knowledge_base: {},
+    // selected_knowledge_base_id: null,
 
     isSuccess: false,
     isLoading: false,
@@ -38,14 +38,14 @@ const authSlice = createSlice({
     //not async function : sync functions
     reducers: {
 
-        setSelectedOrganisation: (state,action) => {
-            if(state.selected_organisation_id !== action.payload.id){
-                state.selected_organisation = action.payload;
-                state.selected_organisation_id = action.payload.id;
-                state.selected_knowledge_base = {};
-                state.selected_knowledge_base_id = null
-            }
-        },
+        // setSelectedOrganisation: (state,action) => {
+        //     if(state.selected_organisation_id !== action.payload.id){
+        //         state.selected_organisation = action.payload;
+        //         state.selected_organisation_id = action.payload.id;
+        //         state.selected_knowledge_base = {};
+        //         state.selected_knowledge_base_id = null
+        //     }
+        // },
 
         setSelectedKB: (state,action) => {
             state.selected_knowledge_base_id = action.payload;
