@@ -1,12 +1,17 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeForm} from "./sourceSlice";
+import {closeForm, processFiles} from "./sourceSlice";
 
 export function SourceProcessFilesDialog() {
     const dispatch = useDispatch();
 
     const selected_source = useSelector((state) => state.sourceReducer.selected_source)
     const show_process_files_prompt = useSelector((state) => state.sourceReducer.show_process_files_prompt)
+    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
+    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    const session = useSelector((state) => state.authReducer.session)
+
+    const session_id = session.id;
 
     if(!selected_source){
         console.error("Missing source")
@@ -18,6 +23,12 @@ export function SourceProcessFilesDialog() {
     let message1 = `Are you sure you want to process all files for '${source_name}'? `;
     let message2 = "NB. Please stop any crawling activity first to keep your counters up-to-date.";
 
+    const data = {
+        "organisationId": selected_organisation_id,
+        "kbId": selected_knowledge_base_id,
+        "sourceId": selected_source.sourceId
+    }
+
     const handleClose = () => {
         console.log("SourceProcessFilesDialog handleClose")
         dispatch(closeForm());
@@ -26,6 +37,7 @@ export function SourceProcessFilesDialog() {
 
     const handleOk = () => {
         console.log("SourceProcessFilesDialog handleClose")
+        dispatch(processFiles({session_id:session_id, data:data}))
         dispatch(closeForm());
     }
 

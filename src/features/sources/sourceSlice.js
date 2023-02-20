@@ -170,6 +170,12 @@ const extraReducers = (builder) => {
             state.status = "rejected"
         })
 
+        //processFiles
+        .addCase(processFiles.fulfilled, (state, action) => {
+            console.log("source/processFiles ", action)
+            state.status = "fulfilled"
+            state.data_status = 'load_now';
+        })
 
 }
 
@@ -282,13 +288,39 @@ export const zipSource = createAsyncThunk(
         const url = api_base + '/document/zip/source/';
 
 
-
         if (url !== '/stats/stats/os') {
             console.log('POST ' + url);
         }
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("zipSource data", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("error", error)
+                    return error
+                }
+            )
+
+    });
+
+
+//crawler/process-all-files
+export const processFiles = createAsyncThunk(
+    'sources/processFiles',
+    async ({session_id, data}) => {
+
+        console.log("sources/processFiles");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/crawler/process-all-files';
+
+        if (url !== '/stats/stats/os') {
+            console.log('POST ' + url);
+        }
+        return axios.post(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("processFiles data", response.data)
                 return response.data
             }).catch(
                 (error) => {
