@@ -1,6 +1,7 @@
 import React, {useState,useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {loadTextToSearch} from "./TextToSearchSlice";
+import {Pagination} from "../../common/pagination";
 
 
 const TextToSearchList = () => {
@@ -12,7 +13,6 @@ const TextToSearchList = () => {
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const session = useSelector((state) => state.authReducer.session)
     const session_id = session.id
-    const status = useSelector((state) => state.textToSearchReducer.status)
     const load_data = useSelector((state) => state.textToSearchReducer.data_status)
 
     const text_to_search_list = useSelector( (state) => state.textToSearchReducer.text_to_search_list)
@@ -20,18 +20,26 @@ const TextToSearchList = () => {
 
 
     const [filter, setFilter] = useState('');
+    const [pageSize, setPageSize] = useState(useSelector((state) => state.textToSearchReducer.page_size));
+    const [page, setPage] = useState(useSelector((state) => state.textToSearchReducer.page))
+
+    let prev_obj = text_to_search_list.slice(-1)[0]
+    // console.log('firt one', prev_word)
+    let prev_word = page !== 0 ? prev_obj['searchPart']:""
+    // console.log('seccond', prev_id)
 
     let data = {
         "filter": filter,
         "kbId": selected_knowledge_base_id,
         "organisationId": selected_organisation_id,
-        "pageSize": 10,
-        "prevWord": ""
+        "pageSize": pageSize,
+        "prevWord": prev_word
     };
 
     useEffect( () => {
         dispatch(loadTextToSearch({session_id, data}))
-    }, [load_data === "load_now"])
+        console.log("list",prev_word)
+    }, [load_data === "load_now", page, pageSize])
 
     function isVisible() {
         return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
@@ -43,6 +51,12 @@ const TextToSearchList = () => {
         return text_to_search_list ? text_to_search_list : [];
     }
 
+    function handleFilter(e) {
+        e.preventDefault()
+        console.log('filtering', data)
+        dispatch(loadTextToSearch({session_id, data}))
+    }
+
 
     return (
         <div className="section px-5 pt-4">
@@ -50,9 +64,16 @@ const TextToSearchList = () => {
                 <div className="d-flex justify-content-between w-100 mb-4">
                     <div className="d-flex w-100">
                         <div className="d-flex form-group me-2">
-                            <input type="text" placeholder={"Find Search Part..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
+                            <input
+                                type="text"
+                                placeholder={"Find Search Part..."}
+                                autoFocus={true}
+                                className={"form-control me-2 filter-search-input " + theme}
+                                value={filter}
+                                onChange={(e) => {setFilter(e.target.value)}}
+                                onKeyDown={(e) => {if(e.key === 'Enter') handleFilter(e)} }
                             />
-                            <button className="btn btn-secondary" title="search">
+                            <button className="btn btn-secondary" title="search" onClick={(e)=>handleFilter(e)}>
                                 Search
                             </button>
                         </div>
@@ -115,16 +136,16 @@ const TextToSearchList = () => {
 
                         </table>
 
-                        {/*<Pagination*/}
-                        {/*    rowsPerPageOptions={[5, 10, 25]}*/}
-                        {/*    theme={theme}*/}
-                        {/*    component="div"*/}
-                        {/*    count={synset_total_size}*/}
-                        {/*    rowsPerPage={synset_page_size}*/}
-                        {/*    page={synset_page}*/}
-                        {/*    onChangePage={(page) => setSynSetPage(page)}*/}
-                        {/*    onChangeRowsPerPage={(rows) => setSynSetPageSize(rows)}*/}
-                        {/*/>*/}
+                        <Pagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            theme={theme}
+                            component="div"
+                            count={num_of_text_to_search}
+                            rowsPerPage={pageSize}
+                            page={page}
+                            onChangePage={(page) => setPage(page)}
+                            onChangeRowsPerPage={(rows) => setPageSize(rows)}
+                        />
 
                     </div>
                 }

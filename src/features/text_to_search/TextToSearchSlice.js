@@ -6,6 +6,8 @@ import Comms from "../../common/comms";
 const initialState = {
   text_to_search_list: [],
   num_of_text_to_search: 0,
+  page_size: 10,
+  page: 0,
   status: true,
   data_status: 'load_now',
   show_tts_form: undefined,
@@ -13,7 +15,6 @@ const initialState = {
 
 export const loadTextToSearch = createAsyncThunk( "TextToSearch/load",
     async ({ session_id, data}) => {
-    console.log('running')
     console.log(data)
     const api_base = window.ENV.api_base;
     const url = api_base + '/semantic/text-to-search';
