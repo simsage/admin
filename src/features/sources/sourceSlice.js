@@ -25,13 +25,15 @@ const initialState = {
     error_title: undefined,
     error_message: undefined,
 
-    //start_crawler warning
-    show_start_crawler_form: false,
-
     //selected source tab
     selected_source_tab: null,
     //selected source type in form
     selected_source_type: null,
+
+    //_crawler warning
+    show_start_crawler_prompt: false,
+    show_zip_crawler_prompt: false,
+    show_re_crawl_prompt: false,
 }
 
 const reducers = {
@@ -54,6 +56,25 @@ const reducers = {
         state.show_import_form = true
     },
 
+    showStartCrawlerAlert:(state,action) => {
+        state.show_start_crawler_prompt = true
+        state.selected_source = action.payload.source
+        state.selected_source_id = state.selected_source.sourceId
+    },
+
+    showZipCrawlerAlert:(state,action) => {
+        state.show_zip_crawler_prompt = true
+        state.selected_source = action.payload.source
+        state.selected_source_id = state.selected_source.sourceId
+    },
+
+    showReCrawlAlert:(state,action) => {
+        state.show_re_crawl_prompt = true
+        state.selected_source = action.payload.source
+        state.selected_source_id = state.selected_source.sourceId
+    },
+
+
     closeForm:(state) => {
         console.log("closeForm sourceSlice")
         state.show_data_form = false
@@ -66,6 +87,9 @@ const reducers = {
         state.error_title= undefined
         state.error_message= undefined
 
+        state.how_start_crawler_prompt = false
+        state.show_zip_crawler_prompt = false
+        state.show_re_crawl_prompt = false
     },
 
     setSelectedSourceTab:(state,action) => {
