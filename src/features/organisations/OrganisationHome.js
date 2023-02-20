@@ -52,11 +52,11 @@ export function OrganisationHome() {
         dispatch(closeForm());
     }
 
-    // useEffect(() => {
-    //     console.log("getOrganisationList useEffect")
-    //     console.log("getOrganisationList session",session)
-    //     dispatch(getOrganisationList({session: session, filter: filter}))
-    // }, [load_data === 'load_now'])
+    useEffect(() => {
+        console.log("getOrganisationList useEffect")
+        console.log("getOrganisationList session",session)
+        dispatch(getOrganisationList({session: session, filter: filter}))
+    }, [load_data === 'load_now'])
 
     useEffect(()=>{
         dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
