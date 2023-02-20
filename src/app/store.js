@@ -16,6 +16,7 @@ import semanticSlice from "../features/semantics/semanticSlice";
 import synsetSlice from "../features/synsets/synsetSlice";
 import categorizationSlice from "../features/categorization/categorizationSlice";
 import alertSlice from "../features/alerts/alertSlice"
+import textToSearchSlice from "../features/text_to_search/TextToSearchSlice";
 /**
  * Logs all actions and states after they are dispatched.
  */
@@ -39,6 +40,7 @@ export const store = configureStore({
     synsetReducer:synsetSlice,
     categorizationReducer:categorizationSlice,
     alertReducer:alertSlice,
+    textToSearchReducer: textToSearchSlice,
 
   },
   middleware:(getDefaultMiddleware => getDefaultMiddleware().concat(logger))

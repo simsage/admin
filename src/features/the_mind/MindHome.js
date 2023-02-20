@@ -7,6 +7,7 @@ import SynonymsHome from "../synonyms/SynonymsHome";
 import SemanticsHome from "../semantics/SemanticsHome";
 import SynsetsHome from "../synsets/SynsetsHome";
 import CategorizationHome from "../categorization/CategorizationHome";
+import TextToSearchHome from "../text_to_search/TextToSearchHome";
 
 export default function MindHome(){
     const title = "The Mind";
@@ -18,6 +19,7 @@ export default function MindHome(){
         {label: "Semantics", slug:"semantics" },
         {label: "Synsets", slug:"synsets" },
         {label: "Categorization", slug:"categorization" },
+        {label: "Text to Search", slug:"textToSearch"},
     ]
 
 
@@ -45,6 +47,9 @@ export default function MindHome(){
             }
             {selected_sub_nav === 'categorization' &&
                 <CategorizationHome tab={selected_sub_nav} />
+            }
+            {selected_sub_nav === 'textToSearch' &&
+                <TextToSearchHome/>
             }
         </div>
     )
