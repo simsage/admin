@@ -53,8 +53,6 @@ export function OrganisationHome() {
     }
 
     useEffect(() => {
-        console.log("getOrganisationList useEffect")
-        console.log("getOrganisationList session",session)
         dispatch(getOrganisationList({session: session, filter: filter}))
     }, [load_data === 'load_now'])
 
