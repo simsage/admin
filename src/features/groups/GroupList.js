@@ -98,7 +98,7 @@ export default function GroupList(){
             <div className="d-flex justify-content-between w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
+                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control filter-search-input " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
                         />
                     </div>
                 </div>

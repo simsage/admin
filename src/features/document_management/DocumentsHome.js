@@ -162,7 +162,7 @@ export default function DocumentsHome(props) {
 
             <div className="document-display">
 
-                {
+                {/* {
                     isVisible() &&
                     <div className="filter-find-box">
                         <span className="filter-label">filter</span>
@@ -181,12 +181,22 @@ export default function DocumentsHome(props) {
                                     alt="filter">filter</button>
                             </span>
                     </div>
-                }
+                } */}
 
+                <div className="d-flex justify-content-between w-100 mb-4">
+                    <div className="d-flex w-100">
+                        <div className="d-flex form-group me-2">
+                            <input type="text" placeholder={"Search Documents..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} onKeyPress={(event) => handleSearchTextKeydown(event)} onChange={(event) => { setDocFilter(event.target.value) }}/>
+                            <button className="btn btn-secondary" onClick={() => getDocuments()} title="Search">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 {
                     isVisible() &&
-                    <div className="table-style">
+                    <div>
                         <table className="table">
 
                             <thead>

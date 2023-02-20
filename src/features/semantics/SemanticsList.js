@@ -95,7 +95,7 @@ export default function SemanticsHome(props) {
     return (
         <div className="section px-5 pt-4">
             <div>
-                {
+                {/* {
                     isVisible() &&
                     <div className="filter-find-box">
                         <span className="filter-label">find </span>
@@ -110,18 +110,19 @@ export default function SemanticsHome(props) {
                         <span className="filter-find-image">
                             <button className="btn btn-secondary"
                                     onClick={() => filterSemantic()}
-                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
+                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">Search</button>
                         </span>
-                        <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Couldn't get the filter below to work without a button</span>
                 </div>
-            }
-            <br/><br/><br/>
+            } */}
 
                 <div className="d-flex justify-content-between w-100 mb-4">
                     <div className="d-flex w-100">
-                        <div className="form-group me-2">
-                            <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={semantic_filter} onChange={(e) => {setSemanticFilter(e.target.value)}}
+                        <div className="d-flex form-group me-2">
+                            <input type="text" placeholder={"Search Semantic..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} value={semantic_filter} onChange={(e) => {setSemanticFilter(e.target.value)}}
                             />
+                            <button className="btn btn-secondary"
+                                    onClick={() => filterSemantic()}
+                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">Search</button>
                         </div>
                     </div>
 

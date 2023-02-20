@@ -141,7 +141,7 @@ export function UsersHome(){
             <div className="d-flex justify-content-beteween w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control " + theme}
+                        <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control filter-search-input " + theme}
                             onKeyDown={(e) => handleSearchTextKeydown(e)}
                             onChange={(e) => handleSearchTextChange(e)}
                         />
@@ -149,13 +149,13 @@ export function UsersHome(){
 
 
                     {/*todo Max: implementing the order by; Please see KB - Orderby*/}
-                    <div className="form-group me-2">
+                    {/* <div className="form-group me-2">
                         <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}
                                 onChange={(e) => handleOrderBy(e)}>
                             <option value="first_name">Order by: First Name</option>
                             <option value="last_name">Order by: Last Name</option>
                         </select>
-                    </div>
+                    </div> */}
 
                     {/*todo:: Max - implementing the filter by role, similar to order by; Also load the roles from the slice*/}
                     <div className="form-group me-2">

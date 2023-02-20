@@ -354,6 +354,11 @@ html, body, #root, .App, .dms {
 }
 
 
+/* Filter */
+.filter-search-input {
+    min-width: 300px;
+}
+
 
 /* Modal */
 .modal-content {

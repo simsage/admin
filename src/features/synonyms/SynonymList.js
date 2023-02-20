@@ -112,7 +112,7 @@ export default function SynonymsHome(props) {
 
     return (
         <div className="section px-5 pt-4">
-            {
+            {/* {
                 isVisible() &&
                 <div className="filter-find-box">
                     <span className="filter-label">find </span>
@@ -129,16 +129,17 @@ export default function SynonymsHome(props) {
                                 onClick={() => filterRecords()}
                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
                     </span>
-                    <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Couldn't get the filter below to work without a button</span>
                 </div>
-            }
-            <br/><br/><br/>
+            } */}
 
             <div className="d-flex justify-content-between w-100 mb-4">
                 <div className="d-flex w-100">
-                    <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
+                    <div className="d-flex form-group me-2">
+                        <input type="text" placeholder={"Search Synonym..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
                         />
+                        <button className="btn btn-secondary"
+                                onClick={() => filterRecords()}
+                                src="../images/dark-magnifying-glass.svg" title="search" alt="search">Search</button>
                     </div>
                 </div>
 

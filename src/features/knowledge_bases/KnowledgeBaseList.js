@@ -94,14 +94,14 @@ export default function KnowledgeBaseList() {
                         <div className="d-flex w-100">
                             <div className="form-group me-2">
                                 <input onKeyUp={(event) => handleSearchFilter(event)} type="text"
-                                       placeholder={"Filter..."} className="form-control"/>
+                                       placeholder={"Filter..."} className="form-control filter-search-input"/>
                             </div>
-                            <div className="form-group me-2">
+                            {/* <div className="form-group me-2">
                                 <select placeholder={"Filter"} className="form-select filter-text-width" onChange={(e)=>handleOrderBy(e)}>
                                     <option value="alphabetical">Alphabetical</option>
                                     <option value="recently_added">Recently added</option>
                                 </select>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="form-group ms-auto">

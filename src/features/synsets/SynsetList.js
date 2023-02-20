@@ -132,7 +132,7 @@ export default function SynsetList() {
 
             <div className="synset-page">
 
-                {
+                {/* {
                     isVisible() &&
                     <div className="filter-find-box">
                         <span className="filter-label">find </span>
@@ -148,7 +148,7 @@ export default function SynsetList() {
                             </button>
                         </span>
                         <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Couldn't get the filter below to work without a button</span>
-                    {/* <div className="form-group ms-auto w-20">
+                    <div className="form-group ms-auto w-20">
                         <button className="btn btn-primary text-nowrap m-1"  onClick={() => handleAddSynSet()}>
                             + Add SynSet
                         </button>
@@ -156,21 +156,28 @@ export default function SynsetList() {
                                 onClick={() => handleAddDefaultSynSet()}
                                 title="add all default syn-sets">+ Defaults
                         </button>
-                    </div> */}
+                    </div>
                 </div>
             }
-            <br/><br/><br/>
+            <br/><br/><br/> */}
             
             <div className="d-flex justify-content-between w-100 mb-4">
                 <div className="d-flex w-100">
-                    <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={synset_filter} onChange={(e) => {setSynSetFilter(e.target.value)}}
+                    <div className="d-flex form-group me-2">
+                        <input type="text" placeholder={"Search Synset..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} value={synset_filter} onChange={(e) => {setSynSetFilter(e.target.value)}}
                         />
+                        <button className="btn btn-secondary" onClick={() => filterRecords()} title="search">
+                            Search
+                        </button>
                     </div>
                 </div>
 
-                <div className="form-group col ms-auto">
-                    <button className="btn btn-primary text-nowrap" onClick={() => handleAddSynSet()}>
+                <div className="form-group d-flex ms-auto">
+                    <button className="btn btn-outline-primary text-nowrap ms-2"
+                        onClick={() => handleAddDefaultSynSet()}
+                        title="add all default syn-sets">+ Defaults
+                    </button>
+                    <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddSynSet()}>
                         + Add Syn-set
                     </button>
                 </div>
