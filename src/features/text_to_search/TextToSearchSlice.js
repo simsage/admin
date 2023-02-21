@@ -11,6 +11,7 @@ const initialState = {
   status: true,
   data_status: 'load_now',
   show_test_to_search_form: false,
+  show_delete_form: false,
   edit: undefined,
 };
 
@@ -34,9 +35,25 @@ export const addOrUpdateTextToSearch = createAsyncThunk( "TextToSearch/update",
     async({session_id, organisation_id, kb_id, data}) => {
 
         const api_base = window.ENV.api_base;
-        const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${kb_id}`
+        const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}`
 
         return axios.put( url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    })
+
+export const deleteTextToSearch = createAsyncThunk( "TextToSearch/delete",
+    async({session_id, organisation_id, kb_id, word}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}/${encodeURIComponent(word)}`
+
+        return axios.delete( url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch(
@@ -74,6 +91,18 @@ const extraReducers = (builder) => {
       .addCase(addOrUpdateTextToSearch.rejected, (state, action) => {
           state.status = "rejected"
       })
+
+      //deleteRecord
+      .addCase(deleteTextToSearch.pending, (state, action) => {
+          state.status = "loading"
+      })
+      .addCase(deleteTextToSearch.fulfilled, (state, action) => {
+          state.status = "fulfilled"
+          state.data_status = 'load_now';
+      })
+      .addCase(deleteTextToSearch.rejected, (state, action) => {
+          state.status = "rejected"
+      })
 };
 
 const textToSearchSlice = createSlice({
@@ -90,10 +119,19 @@ const textToSearchSlice = createSlice({
     closeEditForm:(state, action) => {
         state.show_test_to_search_form = false;
         state.edit = undefined;
-    }
+    },
+      showDeleteForm:(state, action) => {
+          state.show_delete_form = true;
+          state.edit = action.payload;
+      },
+
+      closeDeleteForm:(state) => {
+          state.show_delete_form = false;
+          state.edit = undefined;
+      }
   },
   extraReducers
 });
 
-export const {showAddForm, showEditForm, closeEditForm} = textToSearchSlice.actions;
+export const {showAddForm, showEditForm, closeEditForm, showDeleteForm, closeDeleteForm} = textToSearchSlice.actions;
 export default textToSearchSlice.reducer;

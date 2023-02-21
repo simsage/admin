@@ -1,8 +1,9 @@
 import React, {useState,useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {loadTextToSearch, showAddForm, showEditForm} from "./TextToSearchSlice";
+import {loadTextToSearch, showAddForm, showDeleteForm, showEditForm} from "./TextToSearchSlice";
 import {Pagination} from "../../common/pagination";
 import {TextToSearchEdit} from "./TextToSearchEdit";
+import TextToSearchDeleteAsk from "./TextToSearchDeleteAsk";
 
 
 const TextToSearchList = () => {
@@ -62,6 +63,12 @@ const TextToSearchList = () => {
 
     function handleAdd(e) {
         dispatch(showAddForm());
+    }
+
+    function handleDelete(obj) {
+        console.log('deleting: ', obj);
+        dispatch(showDeleteForm(obj));
+        setFilter('');
     }
 
 
@@ -132,6 +139,7 @@ const TextToSearchList = () => {
                                                     <button
                                                         className="btn text-danger btn-sm"
                                                         title="remove syn-set"
+                                                        onClick={() => handleDelete(obj)}
                                                     >
                                                         Delete
                                                     </button>
@@ -162,6 +170,7 @@ const TextToSearchList = () => {
 
             </div>
             <TextToSearchEdit/>
+            <TextToSearchDeleteAsk/>
         </div>
     );
 };
