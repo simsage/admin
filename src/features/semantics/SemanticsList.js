@@ -59,10 +59,11 @@ export default function SemanticsHome(props) {
         return semantic_list;
     }
 
-    function filterSemantic() {
-            data.filter = semantic_filter
-            data.pageSize = page_size
-            dispatch(loadSemantics({ session_id, data }));
+    function filterSemantic(e) {
+        e.preventDefault()
+        data.filter = semantic_filter
+        data.pageSize = page_size
+        dispatch(loadSemantics({ session_id, data }));
     }
 
     function handleSearchTextKeydown(event)
@@ -118,7 +119,14 @@ export default function SemanticsHome(props) {
                 <div className="d-flex justify-content-between w-100 mb-4">
                     <div className="d-flex w-100">
                         <div className="d-flex form-group me-2">
-                            <input type="text" placeholder={"Search Semantic..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} value={semantic_filter} onChange={(e) => {setSemanticFilter(e.target.value)}}
+                            <input
+                                type="text"
+                                placeholder={"Search Semantic..."}
+                                autoFocus={true}
+                                className={"form-control me-2 filter-search-input " + theme}
+                                value={semantic_filter}
+                                onChange={(e) => {setSemanticFilter(e.target.value)}}
+                                onKeyDown={(e) => {if(e.key === 'Enter') filterSemantic(e)}}
                             />
                             <button className="btn btn-secondary"
                                     onClick={() => filterSemantic()}
