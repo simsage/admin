@@ -11,7 +11,7 @@ export default function DocumentManagementHome(){
     const sub_nav = [
         {label: "Sources", slug:"sources" },
         {label: "Inventory", slug:"inventory" },
-        {label: "Documents", slug:"documents" },
+        // {label: "Documents", slug:"documents" },
     ]
 
     function changeNav(slug){
@@ -31,9 +31,9 @@ export default function DocumentManagementHome(){
             {selected_sub_nav === 'inventory' &&
             <InventoryHome tab={selected_sub_nav}/>
             }
-            {selected_sub_nav === 'documents' &&
-            <DocumentsHome tab={selected_sub_nav}/>
-            }
+            {/*{selected_sub_nav === 'documents' &&*/}
+            {/*<DocumentsHome tab={selected_sub_nav}/>*/}
+            {/*}*/}
         </div>
     )
 }
