@@ -2,6 +2,7 @@ import {useForm} from "react-hook-form";
 import {restoreOrganisation} from "../organisations/organisationSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
+import {importBotItems} from "./botSlice";
 
 export function BotImport() {
 
@@ -10,7 +11,6 @@ export function BotImport() {
     const session = useSelector((state) => state.authReducer.session)
 
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-    const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
 
     const show_import_form = useSelector((state) => state.botReducer.show_import_form)
@@ -42,12 +42,14 @@ export function BotImport() {
         console.log("BotImport onSubmit")
 
         if (file_data && file_name && file_type==='text/plain') {
-            const payload = {
+            const data = {
                 organisationId: selected_organisation_id,
                 fileType: file_type,
-                base64Text: file_data
+                kbId:selected_knowledge_base_id,
+                base64Text: file_data,
             };
-        //     dispatch(restoreOrganisation({session_id:session.id,data:payload}));
+
+            dispatch(importBotItems({session_id:session.id,data:data}));
         }
 
     };

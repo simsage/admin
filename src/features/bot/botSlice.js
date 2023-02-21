@@ -33,8 +33,6 @@ export const loadMindItems = createAsyncThunk(
                     return error
                 }
             )
-
-
     }
 )
 
@@ -89,6 +87,25 @@ export const deleteAllMindItems = createAsyncThunk(
     }
 )
 
+
+///api/knowledgebase/upload
+export const importBotItems = createAsyncThunk(
+    'bot/importBotItems',
+    async ({session_id,data}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + `knowledgebase/upload`
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+
+    }
+)
 
 const extraReducers = (builder) => {
     builder
@@ -153,6 +170,14 @@ const extraReducers = (builder) => {
         })
         .addCase(deleteAllMindItems.rejected, (state, action) => {
             console.log("memories/delete", action)
+            state.status = "rejected"
+        })
+    //importBotItems
+        .addCase(importBotItems.fulfilled, (state, action) => {
+            state.status = "fulfilled";
+            state.data_status = 'load_now';
+        })
+        .addCase(importBotItems.rejected, (state, action) => {
             state.status = "rejected"
         })
 }
