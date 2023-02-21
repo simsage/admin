@@ -27,7 +27,7 @@ export default function BotHome() {
 
     useEffect(()=>{
             dispatch(loadMindItems({ session_id, data }))
-    },[load_data === 'load_now'])
+    },[load_data === 'load_now', selected_knowledge_base_id])
 
     return (
 
