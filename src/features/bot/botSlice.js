@@ -93,7 +93,7 @@ export const importBotItems = createAsyncThunk(
     'bot/importBotItems',
     async ({session_id,data}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + `knowledgebase/upload`
+        const url = api_base + '/knowledgebase/upload';
 
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
@@ -223,6 +223,6 @@ const botSlice = createSlice({
 
 export const {
     showEditMemoryForm, showAddMemoryForm, closeMemoryForm, showDeleteMemoryForm,
-    closeDeleteForm, showImportBotForm
+    closeDeleteForm, showImportBotForm, closeForm
 } = botSlice.actions
 export default botSlice.reducer

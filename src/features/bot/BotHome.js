@@ -46,7 +46,6 @@ export default function BotHome() {
             {status !== null && mind_item_list.length > 0 && num_mind_items > 0 &&
                 <BotList />
             }
-
         </div>
     )
 

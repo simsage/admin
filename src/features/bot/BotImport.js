@@ -2,7 +2,7 @@ import {useForm} from "react-hook-form";
 import {restoreOrganisation} from "../organisations/organisationSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
-import {importBotItems} from "./botSlice";
+import {importBotItems, closeForm} from "./botSlice";
 
 export function BotImport() {
 
@@ -41,7 +41,7 @@ export function BotImport() {
         console.log("file_data", file_data)
         console.log("BotImport onSubmit")
 
-        if (file_data && file_name && file_type==='text/plain') {
+        if (file_data && file_name) {
             const data = {
                 organisationId: selected_organisation_id,
                 fileType: file_type,
@@ -50,6 +50,7 @@ export function BotImport() {
             };
 
             dispatch(importBotItems({session_id:session.id,data:data}));
+            dispatch(closeForm())
         }
 
     };
