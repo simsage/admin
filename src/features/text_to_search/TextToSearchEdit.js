@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeEditForm} from "./TextToSearchSlice";
+import {addOrUpdateTextToSearch, closeEditForm} from "./TextToSearchSlice";
 
 
 export function TextToSearchEdit(props){
@@ -16,21 +16,21 @@ export function TextToSearchEdit(props){
     //Synonym details
 
     const [searchPart, setSearchPart] = useState('');
-    const [type, setType] = useState('');
+    const [searchType, setSearchType] = useState('');
     const [matchWords, setMatchWords] = useState('');
 
     // Grab synonym details if editing
     useEffect(()=> {
         if ( edit ) {
             setSearchPart(edit.searchPart);
-            setType(edit.type);
+            setSearchType(edit.type);
             setMatchWords(edit.matchWords);
         }
     }, [show_test_to_search_form])
 
     function resetData () {
         setSearchPart('');
-        setType('');
+        setSearchType('');
         setMatchWords('');
     }
 
@@ -46,12 +46,13 @@ export function TextToSearchEdit(props){
         const session_id = session.id;
         console.log(`Editing...`, edit)
         const data = {
-            "id": edit ? edit : "",
-            "words": matchWords
+            "matchWordCsv": matchWords,
+            "searchPart": searchPart,
+            "searchType": searchType
         }
         console.log(`Saving...`, data);
-        //dispatch(updateSynonyms({session_id, organisation_id, knowledge_base_id, data}));
-        //dispatch(closeSynonymForm());
+        dispatch(addOrUpdateTextToSearch({session_id:session_id, organisation_id: organisation_id, kb_id: knowledge_base_id, data}));
+        dispatch(closeEditForm());
         resetData();
     }
 
@@ -86,8 +87,8 @@ export function TextToSearchEdit(props){
                                                 <input type="text" className="form-control"
                                                        autoComplete="false"
                                                        placeholder="e.g. Law..."
-                                                       value= {type}
-                                                       onChange={(e) => setType(e.target.value)}
+                                                       value= {searchType}
+                                                       onChange={(e) => setSearchType(e.target.value)}
                                                 />
                                             </form>
                                         </span>

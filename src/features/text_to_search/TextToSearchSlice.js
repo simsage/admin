@@ -30,8 +30,25 @@ export const loadTextToSearch = createAsyncThunk( "TextToSearch/load",
         )
 })
 
+export const addOrUpdateTextToSearch = createAsyncThunk( "TextToSearch/update",
+    async({session_id, organisation_id, kb_id, data}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${kb_id}`
+
+        return axios.put( url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    })
+
 const extraReducers = (builder) => {
   builder
+      //Load data
       .addCase(loadTextToSearch.pending, (state, action) => {
         state.status = "pending";
         state.data_status = "loading";
@@ -44,6 +61,18 @@ const extraReducers = (builder) => {
       })
       .addCase(loadTextToSearch.rejected, (state, action) => {
         state.status = "rejected"
+      })
+
+    //update data
+      .addCase(addOrUpdateTextToSearch.pending, (state, action) => {
+          state.status = "pending";
+          state.data_status = "loading";
+      })
+      .addCase(addOrUpdateTextToSearch.fulfilled, (state, action) => {
+          state.status = "fulfilled";
+          state.data_status = "load_now";})
+      .addCase(addOrUpdateTextToSearch.rejected, (state, action) => {
+          state.status = "rejected"
       })
 };
 
