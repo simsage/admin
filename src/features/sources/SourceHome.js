@@ -542,7 +542,6 @@ export default function SourceHome(props) {
                 <SourceErrorDialog />
             }
 
-
             <SourceEdit/>
 
             <AlertDialogHome onOk={alertHandler}/>

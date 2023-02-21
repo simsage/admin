@@ -4,6 +4,7 @@ import {Pagination} from "../../common/pagination";
 import {showEditMemoryForm, showAddMemoryForm, showDeleteMemoryForm, loadMindItems} from "./botSlice";
 import {BotEdit} from "./BotEdit";
 import BotDeleteAsk from "./BotDeleteAsk";
+import Comms from "../../common/comms";
 
 export default function BotHome() {
 
@@ -18,6 +19,7 @@ export default function BotHome() {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
+
 
     const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
     const num_mind_items = useSelector((state) => state.botReducer.num_mind_items);
@@ -84,6 +86,10 @@ export default function BotHome() {
         }
         str += ' => ' + memory.information;
         return str;
+    }
+
+    function handleExport(){
+       Comms.download_mind_dump(selected_organisation_id,selected_knowledge_base_id,session_id)
     }
 
     return (
@@ -160,7 +166,7 @@ export default function BotHome() {
                                     {selected_knowledge_base_id.length > 0 &&
                                         <div className="export">
                                             <button className="btn btn-outline-primary btn-block"
-                                            >Export
+                                                    onClick={() => handleExport()}>Export
                                             </button>
                                             &nbsp;
                                             <button className="btn btn-outline-primary btn-block" title="new mind item"
