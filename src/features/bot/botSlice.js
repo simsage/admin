@@ -4,15 +4,17 @@ import Comms from "../../common/comms";
 import axios from "axios";
 
 const initialState = {
-    mind_item_list:[],
-    num_mind_items:0,
-    page_size:10,
-    mind_item_page:0,
+    mind_item_list: [],
+    num_mind_items: 0,
+    page_size: 10,
+    mind_item_page: 0,
     status: null,
     show_memory_form: false,
     edit: undefined,
     data_status: 'load_now',
     show_delete_form: false,
+
+    show_import_form: false,
 
 }
 
@@ -27,7 +29,9 @@ export const loadMindItems = createAsyncThunk(
             .then((response) => {
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error
+                }
             )
 
 
@@ -36,7 +40,7 @@ export const loadMindItems = createAsyncThunk(
 
 export const updateMindItem = createAsyncThunk(
     'bot/updateMindItem',
-    async ({session_id, organisation_id, knowledge_base_id , data}) => {
+    async ({session_id, organisation_id, knowledge_base_id, data}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/mind/memory/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}`
@@ -45,43 +49,45 @@ export const updateMindItem = createAsyncThunk(
             .then((response) => {
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error
+                }
             )
     }
 )
 
 export const deleteMindItem = createAsyncThunk(
     'bot/deleteMindItem',
-    async ({session_id,organisation_id,knowledge_base_id, id})=>{
+    async ({session_id, organisation_id, knowledge_base_id, id}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + `/mind/memory/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(id)}`;
 
-        return axios.delete(url,Comms.getHeaders(session_id))
+        return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch(
                 (error) => {
-                    return error}
+                    return error
+                }
             )
     }
 )
 export const deleteAllMindItems = createAsyncThunk(
     'bot/deleteAllMindItem',
-    async ({session_id,organisation_id,knowledgeBase_id})=>{
+    async ({session_id, organisation_id, knowledgeBase_id}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + `/mind/delete-all/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}`;
 
-        return axios.delete(url,Comms.getHeaders(session_id))
+        return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch(
                 (error) => {
-                    return error}
+                    return error
+                }
             )
     }
 )
-
-
 
 
 const extraReducers = (builder) => {
@@ -152,32 +158,46 @@ const extraReducers = (builder) => {
 }
 
 const botSlice = createSlice({
-    name:"bot",
+    name: "bot",
     initialState,
     reducers: {
-        showEditMemoryForm:(state, action) => {
+        showEditMemoryForm: (state, action) => {
             state.show_memory_form = action.payload.show
             state.edit = action.payload.memory
         },
-        showAddMemoryForm:(state, action) => {
+        showAddMemoryForm: (state, action) => {
             state.show_memory_form = action.payload
         },
-        closeMemoryForm:(state) => {
+        closeMemoryForm: (state) => {
             state.show_memory_form = false;
             state.edit = undefined;
         },
-        showDeleteMemoryForm:(state, action) => {
+        showDeleteMemoryForm: (state, action) => {
             state.show_delete_form = action.payload.show
             state.edit = action.payload.memory
         },
-        closeDeleteForm:(state) => {
+        closeDeleteForm: (state) => {
             state.show_delete_form = false;
             state.edit = undefined;
+        },
+
+        showImportBotForm: (state,action) => {
+            state.show_import_form = action.payload;
+        },
+
+        closeForm: (state) => {
+            state.show_memory_form = false;
+            state.show_delete_form = false;
+            state.edit = undefined;
+            state.show_import_form = false;
         }
     },
     extraReducers
 })
 
 
-export const {showEditMemoryForm, showAddMemoryForm, closeMemoryForm, showDeleteMemoryForm, closeDeleteForm} = botSlice.actions
+export const {
+    showEditMemoryForm, showAddMemoryForm, closeMemoryForm, showDeleteMemoryForm,
+    closeDeleteForm, showImportBotForm
+} = botSlice.actions
 export default botSlice.reducer

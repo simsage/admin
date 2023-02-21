@@ -1,10 +1,17 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState, useEffect} from "react";
 import {Pagination} from "../../common/pagination";
-import {showEditMemoryForm, showAddMemoryForm, showDeleteMemoryForm, loadMindItems} from "./botSlice";
+import {
+    showEditMemoryForm,
+    showAddMemoryForm,
+    showDeleteMemoryForm,
+    loadMindItems,
+    showImportBotForm
+} from "./botSlice";
 import {BotEdit} from "./BotEdit";
 import BotDeleteAsk from "./BotDeleteAsk";
 import Comms from "../../common/comms";
+import {BotImport} from "./BotImport";
 
 export default function BotHome() {
 
@@ -14,12 +21,11 @@ export default function BotHome() {
     const session_id = session.id;
     const load_data = useSelector( (state) => state.botReducer.data_status)
 
-
-
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
 
+    const show_import_form = useSelector((state) => state.botReducer.show_import_form)
 
     const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
     const num_mind_items = useSelector((state) => state.botReducer.num_mind_items);
@@ -90,6 +96,10 @@ export default function BotHome() {
 
     function handleExport(){
        Comms.download_mind_dump(selected_organisation_id,selected_knowledge_base_id,session_id)
+    }
+
+    function handleImport(show){
+        dispatch(showImportBotForm(show));
     }
 
     return (
@@ -169,6 +179,10 @@ export default function BotHome() {
                                                     onClick={() => handleExport()}>Export
                                             </button>
                                             &nbsp;
+                                            <button className="btn btn-outline-primary btn-block"
+                                                    onClick={() => handleImport(!show_import_form)}>Import
+                                            </button>
+                                            &nbsp;
                                             <button className="btn btn-outline-primary btn-block" title="new mind item"
                                                     onClick={() => handleAddMemory()}>new mind item
                                             </button>
@@ -179,7 +193,11 @@ export default function BotHome() {
                                             >remove all mind items
                                             </button>
                                         </div>
-
+                                    }
+                                    {show_import_form &&
+                                        <div className="export">
+                                        <BotImport/>
+                                        </div>
                                     }
                                 </td>
                             </tr>
@@ -198,6 +216,9 @@ export default function BotHome() {
                             onChangePage={(page) => setMindItemPage(page)}
                             onChangeRowsPerPage={(rows) => setPageSize(rows)}
                         />
+
+
+
 
                     </div>
                 }

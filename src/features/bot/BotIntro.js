@@ -1,6 +1,7 @@
 import {useDispatch} from "react-redux";
-import {showAddMemoryForm} from "./botSlice";
+import {showAddMemoryForm, showImportBotForm} from "./botSlice";
 import {BotEdit} from "./BotEdit";
+import {BotImport} from "./BotImport";
 
 export default function BotIntro(){
 
@@ -9,6 +10,10 @@ export default function BotIntro(){
     function handleAddNewMemory(){
         console.log("handleAddNewMemory")
         dispatch(showAddMemoryForm(true))
+    }
+
+    function handleImport(show){
+        dispatch(showImportBotForm(show));
     }
 
     return(
@@ -24,6 +29,10 @@ export default function BotIntro(){
                 <button onClick={() => {handleAddNewMemory()} } type="button" className="btn btn-primary" >
                     + Add
                 </button>
+
+                <button onClick={() => {handleImport()} } type="button" className="btn btn-primary" >
+                    + Import
+                </button>
                 <br />
                 <br />
                 <br />
@@ -32,6 +41,7 @@ export default function BotIntro(){
 
             </div>
             <BotEdit />
+            {/*<BotImport />*/}
         </div>
     );
 }

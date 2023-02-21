@@ -172,6 +172,9 @@ export default function SynonymsHome(props) {
                                         </td>
                                         <td className="pt-3 px-4 pb-3">
                                             <div>{synonym.words}</div>
+                                            <spam className={""}>word1</spam>
+                                            <spam className={""}>word2</spam>
+                                            <spam className={""}>word3</spam>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
                                             <div className="d-flex  justify-content-end">
