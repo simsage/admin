@@ -29,17 +29,22 @@ export default function BotHome() {
             dispatch(loadMindItems({ session_id, data }))
     },[load_data === 'load_now', selected_knowledge_base_id])
 
+
+    console.log("mind_item_list",mind_item_list)
+    console.log("status",status)
+    console.log("mind_item_list length",mind_item_list.length)
+    console.log("num_mind_items",num_mind_items)
     return (
 
-        <div className="section px-5 pt-4">
+        <div className="">
 
             {status === null &&
                 <BotIntro />
 
             }
             {/*Intro message when there are no bot items loaded*/}
-            {status !== null && mind_item_list.length === 0 && num_mind_items == 0 &&
-                <BotIntro />
+            {status !== null && mind_item_list.length === 0 && num_mind_items > 0 &&
+                <BotList />
 
             }
             {/*show bot list*/}

@@ -113,26 +113,6 @@ export default function SynonymsHome(props) {
 
     return (
         <div className="section px-5 pt-4">
-            {/* {
-                isVisible() &&
-                <div className="filter-find-box">
-                    <span className="filter-label">find </span>
-                    <span className="filter-find-text">
-                        <input type="text" value={filter} autoFocus={true}
-                                className={"filter-text-width " + theme}
-                                onKeyDown={(event) => handleSearchTextKeydown(event)}
-                                onChange={(event) => {
-                                    setFilter(event.target.value);
-                                }}/>
-                    </span> &nbsp;
-                    <span className="filter-find-image">
-                        <button className="btn btn-secondary"
-                                onClick={() => filterRecords()}
-                                src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
-                    </span>
-                </div>
-            } */}
-
             <div className="d-flex justify-content-between w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="d-flex form-group me-2">

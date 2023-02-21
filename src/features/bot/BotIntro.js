@@ -30,9 +30,6 @@ export default function BotIntro(){
                     + Add
                 </button>
 
-                <button onClick={() => {handleImport()} } type="button" className="btn btn-primary" >
-                    + Import
-                </button>
                 <br />
                 <br />
                 <br />
