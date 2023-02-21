@@ -433,8 +433,15 @@ export default function SourceHome(props) {
                                                  title={description}>{description}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-3 fw-light">
-                                            <div
-                                                className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>
+                                            {/*<div className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>*/}
+                                            <div>
+                                                <div>{`collected: ${crawler.numCrawledDocuments}`}</div>
+                                                <div>{`converted: ${crawler.numConvertedDocuments}`}</div>
+                                                <div>{`analyzed: ${crawler.numParsedDocuments}`}</div>
+                                                <div>{`indexed: ${crawler.numIndexedDocuments}`}</div>
+                                                <div>{`completed: ${crawler.numFinishedDocuments}`}</div>
+                                                <div>{`total documnets: ${crawler.numTotalDocuments}`}</div>
+                                            </div>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
                                             {/*{!is_running &&*/}
