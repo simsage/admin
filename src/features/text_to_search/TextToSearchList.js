@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {loadTextToSearch, showEditForm} from "./TextToSearchSlice";
+import {loadTextToSearch, showAddForm, showEditForm} from "./TextToSearchSlice";
 import {Pagination} from "../../common/pagination";
 import {TextToSearchEdit} from "./TextToSearchEdit";
 
@@ -60,6 +60,10 @@ const TextToSearchList = () => {
         dispatch(showEditForm(obj));
     }
 
+    function handleAdd(e) {
+        dispatch(showAddForm());
+    }
+
 
     return (
         <div className="section px-5 pt-4">
@@ -83,7 +87,7 @@ const TextToSearchList = () => {
                     </div>
 
                     <div className="form-group d-flex ms-auto">
-                        <button className="btn btn-primary text-nowrap ms-2">
+                        <button className="btn btn-primary text-nowrap ms-2" onClick={(e) => handleAdd(e)}>
                             + Add Search Part
                         </button>
                     </div>
