@@ -103,7 +103,8 @@ export default function SynonymsHome(props) {
         }
     }
 
-    function filterRecords() {
+    function filterRecords(e) {
+        e.preventDefault()
         data.filter = filter
         data.pageSize = synonym_page_size
         dispatch(loadSynonyms({ session_id, data }));
@@ -135,10 +136,17 @@ export default function SynonymsHome(props) {
             <div className="d-flex justify-content-between w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="d-flex form-group me-2">
-                        <input type="text" placeholder={"Search Synonym..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
+                        <input
+                            type="text"
+                            placeholder={"Search Synonym..."}
+                            autoFocus={true}
+                            className={"form-control me-2 filter-search-input " + theme}
+                            value={filter}
+                            onChange={(e) => {setFilter(e.target.value)}}
+                            onKeyDown={(e) => {if(e.key === 'Enter') filterRecords(e)}}
                         />
                         <button className="btn btn-secondary"
-                                onClick={() => filterRecords()}
+                                onClick={(e) => filterRecords(e)}
                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search">Search</button>
                     </div>
                 </div>
