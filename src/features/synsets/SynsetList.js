@@ -73,12 +73,11 @@ export default function SynsetList() {
     //     }
     // }
 
-    function filterRecords() {
-        //todo::findSynSets
-        console.log("findSynSets clicked");
+    function filterRecords(e) {
+        e.preventDefault()
         dispatch(loadSynsets(data));
-        // filterRecords();
-
+        dispatch(noResultsMessage(true))
+        setSynSetFilter('');
     }
 
     const handleEdit = (synset) => {
@@ -164,9 +163,16 @@ export default function SynsetList() {
             <div className="d-flex justify-content-between w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="d-flex form-group me-2">
-                        <input type="text" placeholder={"Search Synset..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} value={synset_filter} onChange={(e) => {setSynSetFilter(e.target.value)}}
+                        <input
+                            type="text"
+                            placeholder={"Search Synset..."}
+                            autoFocus={true}
+                            className={"form-control me-2 filter-search-input " + theme}
+                            value={synset_filter}
+                            onChange={(e) => {setSynSetFilter(e.target.value)}}
+                            onKeyDown={(e) => {if(e.key === 'Enter') filterRecords(e)}}
                         />
-                        <button className="btn btn-secondary" onClick={() => filterRecords()} title="search">
+                        <button className="btn btn-secondary" onClick={(e) => filterRecords(e)} title="search">
                             Search
                         </button>
                     </div>
