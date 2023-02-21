@@ -47,24 +47,24 @@ export default function SynsetList() {
         dispatch(loadSynsets(data));
     }, [load_data === 'load_now', synset_page, synset_page_size])
 
-    const handleFilterTextChange = (e) => {
-        setSynSetFilter(e.target.value);
-    }
-
-    const handleSearchTextKeydown = (e) => {
-        if( e.key === "Enter") {
-            dispatch(loadSynsets({
-                session_id: session_id,
-                organisation_id: selected_organisation_id,
-                kb_id: selected_knowledge_base_id,
-                page: synset_page,
-                filter: synset_filter,
-                page_size: synset_page_size
-            }))
-            dispatch(noResultsMessage(true))
-            setSynSetFilter('');
-        }
-    }
+    // const handleFilterTextChange = (e) => {
+    //     setSynSetFilter(e.target.value);
+    // }
+    //
+    // const handleSearchTextKeydown = (e) => {
+    //     if( e.key === "Enter") {
+    //         dispatch(loadSynsets({
+    //             session_id: session_id,
+    //             organisation_id: selected_organisation_id,
+    //             kb_id: selected_knowledge_base_id,
+    //             page: synset_page,
+    //             filter: synset_filter,
+    //             page_size: synset_page_size
+    //         }))
+    //         dispatch(noResultsMessage(true))
+    //         setSynSetFilter('');
+    //     }
+    // }
 
     // function handleSearchTextKeydown(event)
     // {
@@ -105,22 +105,22 @@ export default function SynsetList() {
         console.log("handleAddSynSet")
         dispatch(showAddDefaultAskForm());
     }
-    function handleSynSetFilterKeydown(event) {
-        //TODO: Add in filtering.
-    }
+    // function handleSynSetFilterKeydown(event) {
+    //     //TODO: Add in filtering.
+    // }
 
-    function findSynSets() {
-        dispatch(loadSynsets({
-            session_id: session_id,
-            organisation_id: selected_organisation_id,
-            kb_id: selected_knowledge_base_id,
-            page: synset_page,
-            filter: synset_filter,
-            page_size: synset_page_size
-        }))
-        dispatch(noResultsMessage(true))
-        setSynSetFilter('');
-    }
+    // function findSynSets() {
+    //     dispatch(loadSynsets({
+    //         session_id: session_id,
+    //         organisation_id: selected_organisation_id,
+    //         kb_id: selected_knowledge_base_id,
+    //         page: synset_page,
+    //         filter: synset_filter,
+    //         page_size: synset_page_size
+    //     }))
+    //     dispatch(noResultsMessage(true))
+    //     setSynSetFilter('');
+    // }
 
     function getSynSets() {
         return synset_list ? synset_list : [];
@@ -198,6 +198,7 @@ export default function SynsetList() {
                             <thead>
                             <tr className=''>
                                 <td className='small text-black-50 px-4'>Syn-set</td>
+                                <td className='small text-black-50 px-4'>Word Clouds</td>
                                 <td className='small text-black-50 px-4'></td>
                             </tr>
                             </thead>
@@ -208,6 +209,34 @@ export default function SynsetList() {
                                         <tr key={synSet.word}>
                                             <td className="pt-3 px-4 pb-3">
                                                 <div className="synset-label">{synSet.word}</div>
+                                            </td>
+                                            <td className="pt-3 px-4 pb-3">
+                                                <div className="synset-label">
+                                                    {synSet.wordCloudCsvList.map((wc,i) => {
+                                                        console.log('testing', wc.split(','))
+                                                        //  wc.split(',').slice(0,3).map(item => {
+                                                        //     console.log('test', item)
+                                                        //      return <div>hello</div>
+                                                        // })
+                                                        return (
+                                                            <div>
+                                                            <div className="my-3">
+                                                                {   <span>{
+                                                                    wc.split(',').slice(0,3).map(word => {
+                                                                        return (
+                                                                            <span className={`border m-1 p-1 ${i%2 === 0 ? 'text-danger' : 'text-secondary'}`}>{word}</span>
+                                                                        )
+                                                                    })}
+                                                                    <span className="m-1 p-1 text-secondary pointer-cursor" title={wc}>{wc.split(',').length > 3 ? `+${wc.split(',').length - 3}` : ""}</span>
+                                                                </span>
+                                                                }
+
+                                                            </div>
+
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
                                             </td>
                                             <td className="pt-3 px-4 pb-0">
                                                 <div className="d-flex  justify-content-end">
