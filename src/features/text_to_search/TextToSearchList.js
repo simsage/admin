@@ -1,7 +1,8 @@
 import React, {useState,useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {loadTextToSearch} from "./TextToSearchSlice";
+import {loadTextToSearch, showEditForm} from "./TextToSearchSlice";
 import {Pagination} from "../../common/pagination";
+import {TextToSearchEdit} from "./TextToSearchEdit";
 
 
 const TextToSearchList = () => {
@@ -24,9 +25,7 @@ const TextToSearchList = () => {
     const [page, setPage] = useState(useSelector((state) => state.textToSearchReducer.page))
 
     let prev_obj = text_to_search_list.slice(-1)[0]
-    // console.log('firt one', prev_word)
     let prev_word = page !== 0 ? prev_obj['searchPart']:""
-    // console.log('seccond', prev_id)
 
     let data = {
         "filter": filter,
@@ -38,7 +37,6 @@ const TextToSearchList = () => {
 
     useEffect( () => {
         dispatch(loadTextToSearch({session_id, data}))
-        console.log("list",prev_word)
     }, [load_data === "load_now", page, pageSize])
 
     function isVisible() {
@@ -55,6 +53,11 @@ const TextToSearchList = () => {
         e.preventDefault()
         console.log('filtering', data)
         dispatch(loadTextToSearch({session_id, data}))
+    }
+
+    function handleEdit(obj) {
+        console.log('edit', obj);
+        dispatch(showEditForm(obj));
     }
 
 
@@ -116,7 +119,10 @@ const TextToSearchList = () => {
                                             <td className="pt-3 px-4 pb-0">
                                                 <div className="d-flex  justify-content-end">
                                                     <button
-                                                            className="btn text-primary btn-sm" title="edit syn-set">Edit
+                                                            className="btn text-primary btn-sm"
+                                                            title="edit syn-set"
+                                                            onClick={() => handleEdit(obj)}
+                                                    >Edit
                                                     </button>
                                                     &nbsp;
                                                     <button
@@ -151,6 +157,7 @@ const TextToSearchList = () => {
                 }
 
             </div>
+            <TextToSearchEdit/>
         </div>
     );
 };

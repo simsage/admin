@@ -10,7 +10,8 @@ const initialState = {
   page: 0,
   status: true,
   data_status: 'load_now',
-  show_tts_form: undefined,
+  show_test_to_search_form: false,
+  edit: undefined,
 };
 
 export const loadTextToSearch = createAsyncThunk( "TextToSearch/load",
@@ -50,12 +51,20 @@ const textToSearchSlice = createSlice({
   name: "textToSearch",
   initialState,
   reducers: {
-    showAddTTSForm:(state) => {
-      state.show_tts_form = true
+    showAddForm:(state) => {
+      state.show_test_to_search_form = true
     },
+    showEditForm:(state, action) => {
+        state.show_test_to_search_form = true;
+        state.edit = action.payload;
+    },
+    closeEditForm:(state, action) => {
+        state.show_test_to_search_form = false;
+        state.edit = undefined;
+    }
   },
   extraReducers
 });
 
-export const {showAddTTSForm} = textToSearchSlice.actions;
+export const {showAddForm, showEditForm, closeEditForm} = textToSearchSlice.actions;
 export default textToSearchSlice.reducer;
