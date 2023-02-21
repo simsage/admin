@@ -1,9 +1,10 @@
 import React, {useState,useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {loadTextToSearch, showAddForm, showDeleteForm, showEditForm} from "./TextToSearchSlice";
+import {loadTextToSearch, showAddForm, showDeleteForm, showEditForm, showTestForm} from "./TextToSearchSlice";
 import {Pagination} from "../../common/pagination";
 import {TextToSearchEdit} from "./TextToSearchEdit";
 import TextToSearchDeleteAsk from "./TextToSearchDeleteAsk";
+import TextToSearchTest from "./TextToSearchTest";
 
 
 const TextToSearchList = () => {
@@ -65,6 +66,10 @@ const TextToSearchList = () => {
         dispatch(showAddForm());
     }
 
+    function handleTest() {
+        dispatch(showTestForm());
+    }
+
     function handleDelete(obj) {
         console.log('deleting: ', obj);
         dispatch(showDeleteForm(obj));
@@ -96,6 +101,11 @@ const TextToSearchList = () => {
                     <div className="form-group d-flex ms-auto">
                         <button className="btn btn-primary text-nowrap ms-2" onClick={(e) => handleAdd(e)}>
                             + Add Search Part
+                        </button>
+                    </div>
+                    <div className="form-group d-flex ms-auto">
+                        <button className="btn btn-primary text-nowrap ms-2" onClick={(e) => handleTest()}>
+                            Test Search Parts
                         </button>
                     </div>
                 </div>
@@ -171,6 +181,7 @@ const TextToSearchList = () => {
             </div>
             <TextToSearchEdit/>
             <TextToSearchDeleteAsk/>
+            <TextToSearchTest/>
         </div>
     );
 };

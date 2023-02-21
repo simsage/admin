@@ -10,7 +10,7 @@ export function TextToSearchEdit(props){
     const session = useSelector((state) => state.authReducer.session);
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
-    const show_test_to_search_form = useSelector( (state) => state.textToSearchReducer.show_test_to_search_form)
+    const show_text_to_search_form = useSelector( (state) => state.textToSearchReducer.show_text_to_search_form)
     const edit = useSelector( (state) => state.textToSearchReducer.edit);
 
     //Synonym details
@@ -26,7 +26,7 @@ export function TextToSearchEdit(props){
             setSearchType(edit.type);
             setMatchWords(edit.matchWords);
         }
-    }, [show_test_to_search_form])
+    }, [show_text_to_search_form])
 
     function resetData () {
         setSearchPart('');
@@ -57,7 +57,7 @@ export function TextToSearchEdit(props){
     }
 
 
-    if (show_test_to_search_form === false)
+    if (show_text_to_search_form === false)
         return (<div/>);
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
