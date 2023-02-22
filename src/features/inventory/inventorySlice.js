@@ -9,8 +9,8 @@ const initialState = {
     status: null,
     error: null,
     show_form: false,
-    edit_id: null,
-    view_id: null,
+    // edit_id: null,
+    // view_id: null,
     selected_inventory: {},
     data_status: 'load_now',//load_now,loading,loaded
 
@@ -30,12 +30,6 @@ const reducers = {
         state.selected_inventory = action.payload.selected_inventory
     },
 
-    showDeleteForm(state, action) {
-        state.show_form = true
-        state.edit_id = action.payload.edit_id
-        state.selected_inventory = action.payload.selected_inventory
-    },
-
     showDocumentSnapshotForm(state) {
         state.show_document_snapshot_form = true
     },
@@ -46,7 +40,7 @@ const reducers = {
 
     showDeleteInventoryForm(state,action) {
         state.show_delete_form = true
-        state.selected_inventory = action.payload
+        state.selected_inventory = action.payload.inventory
     },
 
     closeForm(state) {
@@ -94,6 +88,12 @@ const extraReducers = (builder) => {
         })
         .addCase(createIndexSnapshot.rejected, (state, action) => {
             state.status = "rejected"
+        })
+
+    //deleteRecord
+        .addCase(deleteRecord.fulfilled, (state, action) => {
+            state.status = "fulfilled";
+            state.data_status = 'load_now';
         })
 
 }
@@ -184,6 +184,31 @@ export const createIndexSnapshot = createAsyncThunk(
     });
 
 
+//document/parquet/01866e90-94c4-34bc-4fdd-56c20770b2d7/018674f9-8b4e-7a9f-577d-33a6726913a8/1677053053812
+///document/parquet/{organisationId}/{kbId}/{dateTime}
+export const deleteRecord = createAsyncThunk(
+    'inventories/deleteRecord',
+    async ({session_id, organisation_id, kb_id, inventory_date_time}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/document/parquet/' +
+            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(inventory_date_time);
+
+        if (url !== '/stats/stats/os') {
+            console.log('DELETE ' + api_base + url);
+        }
+
+        return axios.delete(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("deleteRecord data", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("deleteRecord error", error)
+                    return error
+                }
+            )
+    }
+)
 
 export const {
     showAddForm,

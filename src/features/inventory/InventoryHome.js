@@ -206,7 +206,7 @@ export default function InventoryHome(props) {
                                     </td>
                                     <td>
                                         <div className="d-flex justify-content-end">
-                                        {(item.name === "content parquet" || item.name === "indexes parquet") &&
+                                        {(item.name === "content parquet" || item.name === "index parquet") &&
                                             <div className="link-button">
                                                 <button className="btn text-primary btn-sm"
                                                         onClick={() => inventorizeDump(item.time)}

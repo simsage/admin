@@ -1,11 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeForm, createDocumentSnapshot} from "./inventorySlice";
+import {closeForm, createDocumentSnapshot, deleteRecord} from "./inventorySlice";
+import Api from "../../common/api";
 
 export function InventoryDeleteDialog() {
     const dispatch = useDispatch();
 
     const show_delete_form = useSelector((state) => state.inventoryReducer.show_delete_form)
+    const selected_inventory = useSelector((state) => state.inventoryReducer.selected_inventory)
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const session = useSelector((state) => state.authReducer.session)
@@ -13,8 +15,9 @@ export function InventoryDeleteDialog() {
     const session_id = session.id;
 
 
+    console.log("selected_inventory",selected_inventory)
     const title = "Remove Inventory Report";
-    let message = 'Are you sure you want to remove the report [report name] created on [date]?';
+    let message = 'Are you sure you want to remove the report dated ' + Api.unixTimeConvert(selected_inventory.time) + ' ?';
 
 
 
@@ -25,13 +28,15 @@ export function InventoryDeleteDialog() {
 
 
     const handleOk = () => {
-        const data = {
-            organisationId: selected_organisation_id,
-            kbId: selected_knowledge_base_id,
-        }
 
         console.log("InventoryDeleteDialog handleOk")
-        // dispatch(createDocumentSnapshot({session_id:session_id, data:data}))
+        const data = {
+            session_id: session_id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id,
+            inventory_date_time: selected_inventory.time}
+
+        dispatch(deleteRecord(data))
         dispatch(closeForm());
     }
 
