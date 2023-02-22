@@ -66,6 +66,7 @@ export default function BotHome() {
     }
 
     function filterRecords(event) {
+        console.log(`Editing... `);
         if (event.key === "Enter") {
             data.filter = filter
             dispatch(loadMindItems({session_id, data}));
