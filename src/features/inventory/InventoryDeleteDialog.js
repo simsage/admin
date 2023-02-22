@@ -1,11 +1,11 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeForm, createIndexSnapshot} from "./inventorySlice";
+import {closeForm, createDocumentSnapshot} from "./inventorySlice";
 
-export function InventoryIndexSnapshotPrompt() {
+export function InventoryDeleteDialog() {
     const dispatch = useDispatch();
 
-    const show_index_snapshot_form = useSelector((state) => state.inventoryReducer.show_index_snapshot_form)
+    const show_delete_form = useSelector((state) => state.inventoryReducer.show_delete_form)
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const session = useSelector((state) => state.authReducer.session)
@@ -13,14 +13,13 @@ export function InventoryIndexSnapshotPrompt() {
     const session_id = session.id;
 
 
-    const title = "Create new index snapshot";
-    let message = 'Are you sure you want to create a new index snapshot?';
-
+    const title = "Remove Inventory Report";
+    let message = 'Are you sure you want to remove the report [report name] created on [date]?';
 
 
 
     const handleClose = () => {
-        console.log("InventoryDocumentSnapshotPrompt handleClose")
+        console.log("InventoryDeleteDialog handleClose")
         dispatch(closeForm());
     }
 
@@ -31,13 +30,13 @@ export function InventoryIndexSnapshotPrompt() {
             kbId: selected_knowledge_base_id,
         }
 
-        console.log("InventoryDocumentSnapshotPrompt handleOk")
-        dispatch(createIndexSnapshot({session_id:session_id, data:data}))
+        console.log("InventoryDeleteDialog handleOk")
+        // dispatch(createDocumentSnapshot({session_id:session_id, data:data}))
         dispatch(closeForm());
     }
 
 
-    if (!show_index_snapshot_form)
+    if (!show_delete_form)
         return (<div/>);
 
     return (<div>
@@ -59,7 +58,7 @@ export function InventoryIndexSnapshotPrompt() {
                         <button onClick={handleClose} type="button" className="btn btn-secondary"
                                 data-bs-dismiss="modal">Cancel
                         </button>
-                        <button onClick={handleOk} type="button" className="btn btn-primary">Start</button>
+                        <button onClick={handleOk} type="button" className="btn btn-primary">Yes</button>
                     </div>
                 </div>
             </div>

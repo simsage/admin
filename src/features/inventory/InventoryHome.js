@@ -2,9 +2,15 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import Comms from "../../common/comms";
-import {loadInventoryList, showDocumentSnapshotForm, showIndexSnapshotForm} from "./inventorySlice";
+import {
+    loadInventoryList,
+    showDeleteInventoryForm,
+    showDocumentSnapshotForm,
+    showIndexSnapshotForm
+} from "./inventorySlice";
 import {InventoryDocumentSnapshotPrompt} from "./InventoryDocumentSnapshotPrompt";
 import {InventoryIndexSnapshotPrompt} from "./InventoryIndexSnapshotPrompt";
+import {InventoryDeleteDialog} from "./InventoryDeleteDialog";
 
 
 export default function InventoryHome(props) {
@@ -18,8 +24,10 @@ export default function InventoryHome(props) {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
 
-    const show_document_snapshot_prompt = useSelector((state) => state.inventoryReducer.show_document_snapshot_prompt)
-    const show_index_snapshot_prompt = useSelector((state) => state.inventoryReducer.show_index_snapshot_prompt)
+    const show_document_snapshot_form = useSelector((state) => state.inventoryReducer.show_document_snapshot_form)
+    const show_index_snapshot_form = useSelector((state) => state.inventoryReducer.show_index_snapshot_form)
+    const show_delete_form = useSelector((state) => state.inventoryReducer.show_delete_form)
+
 
     const inventory_list = useSelector((state) => state.inventoryReducer.inventory_list);
     const data_status = useSelector((state) => state.inventoryReducer.data_status);
@@ -142,6 +150,12 @@ export default function InventoryHome(props) {
         dispatch(showIndexSnapshotForm())
     }
 
+    function handleDelete(inventory) {
+        console.log("handleDelete")
+        dispatch(showDeleteInventoryForm({inventory}))
+    }
+
+
     return (
         <div className="section px-5 pt-4">
             {isVisible() &&
@@ -212,7 +226,7 @@ export default function InventoryHome(props) {
                                             </div>
                                         }
                                         <div className="link-button">
-                                            <button onClick={() => deleteInventorizeAsk(item.time)}
+                                            <button onClick={() => handleDelete(item)}
                                                     className="btn text-danger btn-sm" title="remove report"
                                                     alt="remove">Remove
                                                 report
@@ -261,13 +275,18 @@ export default function InventoryHome(props) {
                 </div>
             }
             {
-                show_document_snapshot_prompt &&
+                show_delete_form &&
+                <InventoryDeleteDialog />
+            }
+
+            {
+                show_document_snapshot_form &&
                 <InventoryDocumentSnapshotPrompt/>
 
             }
 
             {
-                show_index_snapshot_prompt &&
+                show_index_snapshot_form &&
                 <InventoryIndexSnapshotPrompt />
             }
         </div>

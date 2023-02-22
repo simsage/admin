@@ -14,8 +14,9 @@ const initialState = {
     selected_inventory: {},
     data_status: 'load_now',//load_now,loading,loaded
 
-    show_document_snapshot_prompt: false,
-    show_index_snapshot_prompt: false,
+    show_document_snapshot_form: false,
+    show_index_snapshot_form: false,
+    show_delete_form: false,
 };
 
 const reducers = {
@@ -36,19 +37,25 @@ const reducers = {
     },
 
     showDocumentSnapshotForm(state) {
-        state.show_document_snapshot_prompt = true
+        state.show_document_snapshot_form = true
     },
 
     showIndexSnapshotForm(state) {
-        state.show_index_snapshot_prompt = true
+        state.show_index_snapshot_form = true
+    },
+
+    showDeleteInventoryForm(state,action) {
+        state.show_delete_form = true
+        state.selected_inventory = action.payload
     },
 
     closeForm(state) {
         state.show_form = false;
         state.edit_id = null;
         state.selected_inventory = {};
-        state.show_document_snapshot_prompt = false;
-        state.show_index_snapshot_prompt = false;
+        state.show_document_snapshot_form = false;
+        state.show_index_snapshot_form = false;
+        state.show_delete_form = false;
     }
 };
 
@@ -183,7 +190,8 @@ export const {
     showEditForm,
     closeForm,
     showDocumentSnapshotForm,
-    showIndexSnapshotForm
+    showIndexSnapshotForm,
+    showDeleteInventoryForm
 } = inventorySlice.actions;
 export default inventorySlice.reducer;
 

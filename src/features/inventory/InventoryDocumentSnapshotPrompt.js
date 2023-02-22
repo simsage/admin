@@ -5,7 +5,7 @@ import {closeForm, createDocumentSnapshot} from "./inventorySlice";
 export function InventoryDocumentSnapshotPrompt() {
     const dispatch = useDispatch();
 
-    const show_document_snapshot_prompt = useSelector((state) => state.inventoryReducer.show_document_snapshot_prompt)
+    const show_document_snapshot_form = useSelector((state) => state.inventoryReducer.show_document_snapshot_form)
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const session = useSelector((state) => state.authReducer.session)
@@ -36,7 +36,7 @@ export function InventoryDocumentSnapshotPrompt() {
     }
 
 
-    if (!show_document_snapshot_prompt)
+    if (!show_document_snapshot_form)
         return (<div/>);
 
     return (<div>
