@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
-import {Pagination} from "../../common/pagination";
-import db from "../../notes/db.json";
 import Comms from "../../common/comms";
 import {loadInventoryList, showDocumentSnapshotPrompt, showIndexSnapshotPrompt} from "./inventorySlice";
 import {InventoryDocumentSnapshotPrompt} from "./InventoryDocumentSnapshotPrompt";
@@ -10,7 +8,7 @@ import {InventoryIndexSnapshotPrompt} from "./InventoryIndexSnapshotPrompt";
 
 
 export default function InventoryHome(props) {
-    const title = "Inventory";
+    // const title = "Inventory";
     const theme = '';
     const selected_organisation = "ORg1"
 
@@ -42,11 +40,11 @@ export default function InventoryHome(props) {
     const inventorize_busy = false;
 
 
-    function programConverted(program) {
-        if (program) {
-            window.open().document.body.innerHTML += program.replace(/\n/g, "<br />");
-        }
-    }
+    // function programConverted(program) {
+    //     if (program) {
+    //         window.open().document.body.innerHTML += program.replace(/\n/g, "<br />");
+    //     }
+    // }
 
     function inventorizeDump(dateTime) {
         if (session && session.id)
@@ -106,10 +104,11 @@ export default function InventoryHome(props) {
             return "Content analysis SpreadSheet";
         else if (name === "content parquet")
             return "Content analysis Parquet file";
-        else if (name === "indexes parquet")
+        else if (name === "indexes parquet" || name === 'index parquet')
             return "Index analysis Parquet file";
         else if (name === "indexes spreadsheet")
             return "Index analysis SpreadSheet";
+        else return name;
     }
 
     //todo::getInventoryList
@@ -149,32 +148,32 @@ export default function InventoryHome(props) {
                 <div className={theme === 'light' ? "hr" : "hr_dark"}/>
             }
 
-            {isVisible() &&
+            {/*{isVisible() &&*/}
 
-                <div className="inventory-label">Manage snapshots of your document inventory.
-                    {inventorize_busy &&
-                        <span>  SimSage is busy creating a new snapshot.</span>
-                    }
-                    {selected_organisation_id.length > 0 &&
-                        <img src="../images/refresh.svg" alt="refresh"
-                             title="refresh the inventory list"
-                             onClick={() => {
-                                 getInventoryList();
-                                 getInventoryBusy();
-                             }}
-                             className="refresh-image sb-logo "/>
-                    }
-                </div>
-            }
+            {/*    <div className="inventory-label">Manage snapshots of your document inventory.*/}
+            {/*        {inventorize_busy &&*/}
+            {/*            <span>  SimSage is busy creating a new snapshot.</span>*/}
+            {/*        }*/}
+            {/*        {selected_organisation_id.length > 0 &&*/}
+            {/*            <img src="../images/refresh.svg" alt="refresh"*/}
+            {/*                 title="refresh the inventory list"*/}
+            {/*                 onClick={() => {*/}
+            {/*                     getInventoryList();*/}
+            {/*                     getInventoryBusy();*/}
+            {/*                 }}*/}
+            {/*                 className="refresh-image sb-logo "/>*/}
+            {/*        }*/}
+            {/*    </div>*/}
+            {/*}*/}
 
             {isVisible() &&
                 <div>
                     <table className="table">
                         <thead>
                         <tr className='table-header'>
-                            <th className='table-header table-width-25'>type</th>
-                            <th className='table-header table-width-33'>created</th>
-                            <th className='table-header'>action</th>
+                            <th className='table-header table-width-25'>Type</th>
+                            <th className='table-header table-width-33'>Created</th>
+                            <th className='table-header'>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -192,11 +191,12 @@ export default function InventoryHome(props) {
                                         </div>
                                     </td>
                                     <td>
+                                        <div className="d-flex justify-content-end">
                                         {(item.name === "content parquet" || item.name === "indexes parquet") &&
                                             <div className="link-button">
-                                                <button className="btu btn-outline-secondary"
+                                                <button className="btn text-primary btn-sm"
                                                         onClick={() => inventorizeDump(item.time)}
-                                                        title="download as parquet-file" alt="download parquet">download
+                                                        title="download as parquet-file" alt="download parquet">Download
                                                     parquet
                                                 </button>
 
@@ -204,19 +204,20 @@ export default function InventoryHome(props) {
                                         }
                                         {(item.name === "content spreadsheet" || item.name === "indexes spreadsheet") &&
                                             <div className="link-button">
-                                                <button className="btu btn-outline-secondary"
+                                                <button className="btn text-primary btn-sm"
                                                         onClick={() => inventorizeDumpSpreadsheet(item.time)}
                                                         title="download as spreadsheet-xlsx"
-                                                        alt="download spreadsheet">download spreadsheet
+                                                        alt="download spreadsheet">Download spreadsheet
                                                 </button>
                                             </div>
                                         }
                                         <div className="link-button">
                                             <button onClick={() => deleteInventorizeAsk(item.time)}
-                                                    className="btu btn-outline-secondary" title="remove report"
-                                                    alt="remove">remove
+                                                    className="btn text-danger btn-sm" title="remove report"
+                                                    alt="remove">Remove
                                                 report
                                             </button>
+                                        </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -225,11 +226,11 @@ export default function InventoryHome(props) {
                         <tr>
                             <td/>
                             <td/>
-                            <td>
-                                <div className="">
+                            <td className={"pt-3 px-4 pb-0"}>
+                                <div className="d-flex justify-content-end ">
 
                                     {selected_organisation_id.length > 0 && !inventorize_busy &&
-                                        <button className="btu btn-outline-secondary" onClick={() => {
+                                        <button className="btn btn-primary text-nowrap" onClick={() => {
                                             handleCreateDocumentSnapshot();
                                             // forceInventoryBusy();
                                         }}
@@ -237,7 +238,7 @@ export default function InventoryHome(props) {
                                         </button>
                                     }
                                     {selected_organisation_id.length > 0 && !inventorize_busy &&
-                                        <button className="btu btn-outline-secondary" onClick={() => {
+                                        <button className="btn btn-primary text-nowrap" onClick={() => {
                                             handleCreateIndexSnapshot();
                                             // forceInventoryBusy();
                                         }} title="create a new index snapshot">create a new
@@ -245,7 +246,7 @@ export default function InventoryHome(props) {
                                         </button>
                                     }
                                     {selected_organisation_id.length > 0 && inventorize_busy &&
-                                        <button className="btu btn-outline-secondary disabled"
+                                        <button className="btu btn-secondary disabled"
                                                 title="SimSage is currently busy processing an inventory.  Please try again later.">create
                                             new snapshot
                                         </button>
