@@ -29,11 +29,17 @@ const reducers = {
         state.selected_inventory = action.payload.selected_inventory
     },
 
-    showDocumentSnapshotPrompt(state) {
+    showDeleteForm(state, action) {
+        state.show_form = true
+        state.edit_id = action.payload.edit_id
+        state.selected_inventory = action.payload.selected_inventory
+    },
+
+    showDocumentSnapshotForm(state) {
         state.show_document_snapshot_prompt = true
     },
 
-    showIndexSnapshotPrompt(state) {
+    showIndexSnapshotForm(state) {
         state.show_index_snapshot_prompt = true
     },
 
@@ -176,8 +182,8 @@ export const {
     showAddForm,
     showEditForm,
     closeForm,
-    showDocumentSnapshotPrompt,
-    showIndexSnapshotPrompt
+    showDocumentSnapshotForm,
+    showIndexSnapshotForm
 } = inventorySlice.actions;
 export default inventorySlice.reducer;
 

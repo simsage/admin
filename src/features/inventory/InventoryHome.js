@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import Comms from "../../common/comms";
-import {loadInventoryList, showDocumentSnapshotPrompt, showIndexSnapshotPrompt} from "./inventorySlice";
+import {loadInventoryList, showDocumentSnapshotForm, showIndexSnapshotForm} from "./inventorySlice";
 import {InventoryDocumentSnapshotPrompt} from "./InventoryDocumentSnapshotPrompt";
 import {InventoryIndexSnapshotPrompt} from "./InventoryIndexSnapshotPrompt";
 
@@ -135,11 +135,11 @@ export default function InventoryHome(props) {
 
 
     function handleCreateDocumentSnapshot() {
-        dispatch(showDocumentSnapshotPrompt())
+        dispatch(showDocumentSnapshotForm())
     }
 
     function handleCreateIndexSnapshot() {
-        dispatch(showIndexSnapshotPrompt())
+        dispatch(showIndexSnapshotForm())
     }
 
     return (
@@ -173,7 +173,7 @@ export default function InventoryHome(props) {
                         <tr className='table-header'>
                             <th className='table-header table-width-25'>Type</th>
                             <th className='table-header table-width-33'>Created</th>
-                            <th className='table-header'>Action</th>
+                            <th className='table-header'></th>
                         </tr>
                         </thead>
                         <tbody>
