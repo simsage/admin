@@ -213,7 +213,7 @@ export function UsersHome(){
                                 <td className="pt-3 px-4 pb-2">
                                     <div className="d-flex flex-wrap">
                                         { user.roles.map((role,key) => {
-                                            return <p key={key} className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">{role.role}</p>
+                                            return <div key={key} className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">{role.role}</div>
                                         })}
                                     </div>
                                 </td>

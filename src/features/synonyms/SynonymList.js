@@ -145,7 +145,7 @@ export default function SynonymsHome(props) {
                     <table className="table">
                         <thead>
                         <tr className=''>
-                            <td className='small text-black-50 px-4'>ID</td>
+                            {/* <td className='small text-black-50 px-4'>ID</td> */}
                             <td className='small text-black-50 px-4 synonym-column-width'>Synonyms</td>
                             <td className='small text-black-50 px-4'></td>
                         </tr>
@@ -155,14 +155,14 @@ export default function SynonymsHome(props) {
                             getSynonymList().map((synonym) => {
                                 return (
                                     <tr key={synonym.id}>
-                                        <td className="pt-3 px-4 pb-3">
+                                        {/* <td className="pt-3 px-4 pb-3">
                                             <div>{synonym.id}</div>
-                                        </td>
-                                        <td className="pt-3 px-4 pb-3">
-                                            <div>{synonym.words}</div>
-                                            <spam className={""}>word1</spam>
-                                            <spam className={""}>word2</spam>
-                                            <spam className={""}>word3</spam>
+                                        </td> */}
+                                        <td className="pt-3 px-4 pb-2 d-flex">
+                                            <div className="me-2">{synonym.words}</div>
+                                            <div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word1</div>
+                                            <div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word2</div>
+                                            <div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word3</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
                                             <div className="d-flex  justify-content-end">

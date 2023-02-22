@@ -134,7 +134,7 @@ export default function KnowledgeBaseList() {
                                         <tr key={knowledge_base.kbId}>
                                             {/* <td className="pt-3 ps-4 pe-0 pb-3"></td> */}
                                             <td className="pt-3 px-4 pb-3">
-                                                <div className="kb-label"
+                                                <div className="kb-label fw-500"
                                                      onClick={() => dispatch(setSelectedKB(knowledge_base.kbId))}>{knowledge_base.name}</div>
                                             </td>
                                             <td className="pt-3 px-4 pb-3 fw-light">

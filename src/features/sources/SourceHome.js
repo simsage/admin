@@ -422,7 +422,7 @@ export default function SourceHome(props) {
                                         <td className="pt-3 px-4 pb-3 fw-light">
                                             <div className="source-label">{crawler.sourceId}</div>
                                         </td>
-                                        <td className="pt-3 px-4 pb-3">
+                                        <td className="pt-3 px-4 pb-3 fw-500">
                                             <div className="source-label">{crawler.name}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-3">

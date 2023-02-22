@@ -226,7 +226,7 @@ export default function SynsetList() {
                                                                     {
                                                                     wc.split(',').slice(0,3).map(word => {
                                                                         return (
-                                                                            <p className={`small text-capitalize px-3 py-2 mb-0 wc-divider ${i%2 === 0 ? '' : ''}`}>{word}</p>
+                                                                            <div className={`small text-capitalize px-3 py-2 wc-divider ${i%2 === 0 ? '' : ''}`}>{word}</div>
                                                                         )
                                                                     })}
 
