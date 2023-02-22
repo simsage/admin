@@ -13,7 +13,6 @@ const initialState = {
     edit: undefined,
     data_status: 'load_now',
     show_delete_form: false,
-
     show_import_form: false,
 
 }

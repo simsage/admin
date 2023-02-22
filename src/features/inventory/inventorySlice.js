@@ -11,7 +11,11 @@ const initialState = {
     show_form: false,
     edit_id: null,
     view_id: null,
-    selected_inventory:{}
+    selected_inventory: {},
+    data_status: 'load_now',//load_now,loading,loaded
+
+    show_document_snapshot_prompt: false,
+    show_index_snapshot_prompt: false,
 };
 
 const reducers = {
@@ -19,16 +23,26 @@ const reducers = {
         state.show_form = true
     },
 
-    showEditForm(state,action) {
+    showEditForm(state, action) {
         state.show_form = true
         state.edit_id = action.payload.edit_id
         state.selected_inventory = action.payload.selected_inventory
     },
 
+    showDocumentSnapshotPrompt(state) {
+        state.show_document_snapshot_prompt = true
+    },
+
+    showIndexSnapshotPrompt(state) {
+        state.show_index_snapshot_prompt = true
+    },
+
     closeForm(state) {
-        state.show_form = false
-        state.edit_id = null
-        state.selected_inventory = {}
+        state.show_form = false;
+        state.edit_id = null;
+        state.selected_inventory = {};
+        state.show_document_snapshot_prompt = false;
+        state.show_index_snapshot_prompt = false;
     }
 };
 
@@ -43,13 +57,34 @@ const extraReducers = (builder) => {
             // console.log("addCase getInventoryList fulfilled ", action);
             state.status = "fulfilled";
             state.inventory_list = action.payload;
+            state.data_status = 'loaded';
             console.log('action.payload', action.payload);
         })
         .addCase(loadInventoryList.rejected, (state, action) => {
             console.log("addCase getInventoryList rejected ", action)
             state.status = "rejected"
         })
+
+    //Document Snapshot
+        .addCase(createDocumentSnapshot.fulfilled, (state, action) => {
+            state.status = "fulfilled";
+            state.data_status = 'load_now';
+        })
+        .addCase(createDocumentSnapshot.rejected, (state, action) => {
+            state.status = "rejected"
+        })
+
+    //Index Snapshot
+        .addCase(createIndexSnapshot.fulfilled, (state, action) => {
+            state.status = "fulfilled";
+            state.data_status = 'load_now';
+        })
+        .addCase(createIndexSnapshot.rejected, (state, action) => {
+            state.status = "rejected"
+        })
+
 }
+
 
 const inventorySlice = createSlice({
     name: 'inventories',
@@ -61,7 +96,7 @@ const inventorySlice = createSlice({
 
 export const loadInventoryList = createAsyncThunk(
     'inventories/getInventoryList',
-    async ({session_id,organisation_id,kb_id}) => {
+    async ({session_id, organisation_id, kb_id}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/parquets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/0/10';
         // return "Hello";
@@ -71,11 +106,11 @@ export const loadInventoryList = createAsyncThunk(
 
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("inventoriesgetInventoryList",response.data)
+                console.log("loadInventoryList", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("inventoriesgetInventoryList error",error)
+                    console.log("loadInventoryList error", error)
                     return error
 
                 }
@@ -84,9 +119,66 @@ export const loadInventoryList = createAsyncThunk(
 );
 
 
+export const createDocumentSnapshot = createAsyncThunk(
+    'inventories/createDocumentSnapshot',
+    async ({session_id, data}) => {
+
+        console.log("inventories/createDocumentSnapshot");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/document/inventorize';
+
+        if (url !== '/stats/stats/os') {
+            console.log('POST ' + url);
+        }
+        return axios.post(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("createDocumentSnapshot data", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("error", error)
+                    return error
+                }
+            )
+
+    });
+
+//api/document/inventorize-indexes
+export const createIndexSnapshot = createAsyncThunk(
+    'inventories/createIndexSnapshot',
+    async ({session_id, data}) => {
+
+        console.log("inventories/createIndexSnapshot");
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/document/inventorize-indexes';
+
+        if (url !== '/stats/stats/os') {
+            console.log('POST ' + url);
+        }
+        return axios.post(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("createIndexSnapshot data", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("error", error)
+                    return error
+                }
+            )
+
+    });
 
 
-export const {showAddForm, showEditForm, closeForm} = inventorySlice.actions;
+
+export const {
+    showAddForm,
+    showEditForm,
+    closeForm,
+    showDocumentSnapshotPrompt,
+    showIndexSnapshotPrompt
+} = inventorySlice.actions;
 export default inventorySlice.reducer;
 
 

@@ -4,7 +4,9 @@ import Api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import db from "../../notes/db.json";
 import Comms from "../../common/comms";
-import {loadInventoryList} from "./inventorySlice";
+import {loadInventoryList, showDocumentSnapshotPrompt, showIndexSnapshotPrompt} from "./inventorySlice";
+import {InventoryDocumentSnapshotPrompt} from "./InventoryDocumentSnapshotPrompt";
+import {InventoryIndexSnapshotPrompt} from "./InventoryIndexSnapshotPrompt";
 
 
 export default function InventoryHome(props) {
@@ -18,36 +20,27 @@ export default function InventoryHome(props) {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
 
-    console.log("session_id: ",session_id)
-    console.log("selected_organisation_id: ",selected_organisation_id)
-    console.log("selected_knowledge_base_id: ",selected_knowledge_base_id)
+    const show_document_snapshot_prompt = useSelector((state) => state.inventoryReducer.show_document_snapshot_prompt)
+    const show_index_snapshot_prompt = useSelector((state) => state.inventoryReducer.show_index_snapshot_prompt)
+
     const inventory_list = useSelector((state) => state.inventoryReducer.inventory_list);
+    const data_status = useSelector((state) => state.inventoryReducer.data_status);
     const [error, setError] = useState('')
 
-    console.log("Inventory useEffect selected_organisation_id",selected_organisation_id)
-    console.log("tab",props.tab)
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log("Inventory useEffect")
-        dispatch(loadInventoryList({session_id:session_id,organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id}))
+        dispatch(loadInventoryList({
+            session_id: session_id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id
+        }))
 
-    },[props.tab])
+    }, [data_status === 'load_now', props.tab])
 
     //TODO::inventorize_busy
     const inventorize_busy = false;
 
-    // //TODO::
-    // function isVisible() {
-    //     return true;
-    // }
-
-    // function componentDidCatch(error, info) {
-    //     this.props.setError(error, info);
-    //     console.log(error, info);
-    // }
-    //
-    // function componentDidMount() {
-    // }
 
     function programConverted(program) {
         if (program) {
@@ -129,12 +122,6 @@ export default function InventoryHome(props) {
         console.log("refresh the inventory list")
     }
 
-
-    //todo::createInventory
-    function createInventory() {
-        console.log("createInventory list")
-    }
-
     //todo::forceInventoryBusy
     function forceInventoryBusy() {
         console.log("forceInventoryBusy")
@@ -145,6 +132,16 @@ export default function InventoryHome(props) {
         console.log("createIndexInventory")
     }
 
+//-------------------------------
+
+
+    function handleCreateDocumentSnapshot() {
+        dispatch(showDocumentSnapshotPrompt())
+    }
+
+    function handleCreateIndexSnapshot() {
+        dispatch(showIndexSnapshotPrompt())
+    }
 
     return (
         <div className="section px-5 pt-4">
@@ -216,7 +213,8 @@ export default function InventoryHome(props) {
                                         }
                                         <div className="link-button">
                                             <button onClick={() => deleteInventorizeAsk(item.time)}
-                                                    className="btu btn-outline-secondary"  title="remove report" alt="remove">remove
+                                                    className="btu btn-outline-secondary" title="remove report"
+                                                    alt="remove">remove
                                                 report
                                             </button>
                                         </div>
@@ -228,30 +226,30 @@ export default function InventoryHome(props) {
                             <td/>
                             <td/>
                             <td>
-                                <div className="" >
+                                <div className="">
 
-                                {selected_organisation_id.length > 0 && !inventorize_busy &&
+                                    {selected_organisation_id.length > 0 && !inventorize_busy &&
                                         <button className="btu btn-outline-secondary" onClick={() => {
-                                            createInventory();
-                                            forceInventoryBusy();
+                                            handleCreateDocumentSnapshot();
+                                            // forceInventoryBusy();
                                         }}
                                                 title="create a new document snapshot">create new document snapshot
                                         </button>
-                                }
-                                {selected_organisation_id.length > 0 && !inventorize_busy &&
+                                    }
+                                    {selected_organisation_id.length > 0 && !inventorize_busy &&
                                         <button className="btu btn-outline-secondary" onClick={() => {
-                                            createIndexInventory();
-                                            forceInventoryBusy();
+                                            handleCreateIndexSnapshot();
+                                            // forceInventoryBusy();
                                         }} title="create a new index snapshot">create a new
                                             index snapshot
                                         </button>
-                                }
-                                {selected_organisation_id.length > 0 && inventorize_busy &&
+                                    }
+                                    {selected_organisation_id.length > 0 && inventorize_busy &&
                                         <button className="btu btn-outline-secondary disabled"
                                                 title="SimSage is currently busy processing an inventory.  Please try again later.">create
                                             new snapshot
                                         </button>
-                                }
+                                    }
                                 </div>
 
                             </td>
@@ -261,7 +259,16 @@ export default function InventoryHome(props) {
 
                 </div>
             }
+            {
+                show_document_snapshot_prompt &&
+                <InventoryDocumentSnapshotPrompt/>
 
+            }
+
+            {
+                show_index_snapshot_prompt &&
+                <InventoryIndexSnapshotPrompt />
+            }
         </div>
     )
 }
