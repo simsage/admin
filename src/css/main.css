@@ -38,6 +38,9 @@ html, body, #root, .App, .dms {
     -ms-user-select: none;
     user-select: none;
 }
+.fw-500 {
+    font-weight: 500;
+}
 
 
 
@@ -351,6 +354,22 @@ html, body, #root, .App, .dms {
 }
 .active-marker {
     width: 12px;
+}
+.table-pill {
+    background-color: #f8f9fa;
+    border: 1px solid #e1e1e1;
+}
+.table tbody tr:hover .table-pill {
+    background-color: #fff;
+}
+.wc-divider {
+    border: 1px dashed #dfdfdf;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+}
+.table-pill .wc-divider:last-child {
+    border-right: none; 
 }
 
 

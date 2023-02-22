@@ -208,12 +208,12 @@ export function UsersHome(){
 
                             return <tr key={user.id} >
 
-                                <td className="pt-3 px-4 pb-3">{user.firstName} {user.surname} <span className="fw-light pt-2">{user.email === user_account.email ? '(you)' : ""}</span> </td>
+                                <td className="pt-3 px-4 pb-3 fw-500">{user.firstName} {user.surname} <span className="fw-light pt-2">{user.email === user_account.email ? '(you)' : ""}</span> </td>
                                 <td className="pt-3 px-4 pb-3 fw-light">{user.email}</td>
-                                <td className="pt-3 px-4 pb-0" style={{width:"250px"}}>
+                                <td className="pt-3 px-4 pb-2">
                                     <div className="d-flex flex-wrap">
                                         { user.roles.map((role,key) => {
-                                            return <span key={key} className="small bg-light px-3 py-1 me-2 mb-2 rounded-pill">{role.role}</span>
+                                            return <p key={key} className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">{role.role}</p>
                                         })}
                                     </div>
                                 </td>

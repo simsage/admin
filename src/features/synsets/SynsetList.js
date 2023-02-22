@@ -208,10 +208,9 @@ export default function SynsetList() {
                                     return (
                                         <tr key={synSet.word}>
                                             <td className="pt-3 px-4 pb-3">
-                                                <div className="synset-label">{synSet.word}</div>
+                                                <div className="synset-label text-capitalize fw-500">{synSet.word}</div>
                                             </td>
-                                            <td className="pt-3 px-4 pb-3">
-                                                <div className="synset-label">
+                                            <td className="pt-3 px-4 pb-2">
                                                     {synSet.wordCloudCsvList.map((wc,i) => {
                                                         console.log('testing', wc.split(','))
                                                         //  wc.split(',').slice(0,3).map(item => {
@@ -219,24 +218,26 @@ export default function SynsetList() {
                                                         //      return <div>hello</div>
                                                         // })
                                                         return (
-                                                            <div>
-                                                            <div className="my-3">
-                                                                {   <span>{
+                                                            <div className="synset-label">
+                                                                {   
+                                                                <div className="d-flex flex-wrap">
+                                                                    <div className="table-pill rounded-pill d-flex mb-2">
+                                                                    {/* <span className="small px-3 py-1 mb-2">&bull;</span> */}
+                                                                    {
                                                                     wc.split(',').slice(0,3).map(word => {
                                                                         return (
-                                                                            <span className={`border m-1 p-1 ${i%2 === 0 ? 'text-danger' : 'text-secondary'}`}>{word}</span>
+                                                                            <p className={`small text-capitalize px-3 py-2 mb-0 wc-divider ${i%2 === 0 ? '' : ''}`}>{word}</p>
                                                                         )
                                                                     })}
-                                                                    <span className="m-1 p-1 text-secondary pointer-cursor" title={wc}>{wc.split(',').length > 3 ? `+${wc.split(',').length - 3}` : ""}</span>
-                                                                </span>
-                                                                }
 
-                                                            </div>
+                                                                    </div>
+                                                                    <span className="small fw-light fst-italic px-2 py-2 text-secondary pointer-cursor" title={wc}>{wc.split(',').length > 3 ? `+${wc.split(',').length - 3}` : ""}</span>
+                                                                </div>
+                                                                }
 
                                                             </div>
                                                         )
                                                     })}
-                                                </div>
                                             </td>
                                             <td className="pt-3 px-4 pb-0">
                                                 <div className="d-flex  justify-content-end">

@@ -132,7 +132,7 @@ export default function GroupList(){
                             return (
                                 //console.log(group)
                                 <tr key={group.name} >
-                                    <td className="pt-3 px-4 pb-3"> {group.name}</td>
+                                    <td className="pt-3 px-4 pb-3 fw-500"> {group.name}</td>
                                     {/* <td>
                                         <button
                                             className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"}
