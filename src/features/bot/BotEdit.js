@@ -83,7 +83,7 @@ export function BotEdit(){
         const session_id = session.id;
         const data = {
             created: 0,
-            id : id ? id : 1 ,
+            id : id ? id : "" ,
             imageList : imageList ? imageList : [],
             information:answer ? answer : '',
             mid: mId,
