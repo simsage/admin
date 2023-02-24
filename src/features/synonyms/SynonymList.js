@@ -159,10 +159,15 @@ export default function SynonymsHome(props) {
                                             <div>{synonym.id}</div>
                                         </td> */}
                                         <td className="pt-3 px-4 pb-2 d-flex">
-                                            <div className="me-2">{synonym.words}</div>
-                                            <div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word1</div>
-                                            <div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word2</div>
-                                            <div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word3</div>
+                                            {/*<div className="me-2">{synonym.words}</div>*/}
+                                            {synonym.words && synonym.words.split(',').map((word)=>{
+                                                return <div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">{word}</div>
+                                            })
+
+                                            }
+                                            {/*<div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word1</div>*/}
+                                            {/*<div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word2</div>*/}
+                                            {/*<div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word3</div>*/}
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
                                             <div className="d-flex  justify-content-end">
