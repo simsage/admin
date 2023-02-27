@@ -99,13 +99,13 @@ const AccountDropdown = (props) => {
                 <hr />
 
                 {/*{window.ENV.use_experimental &&*/}
-                <li className="acc-item px-4 py-3 " onClick={() => editAccount()}>
-                    <label>Account</label>
+                {/*<li className="acc-item px-4 py-3 " onClick={() => editAccount()}>*/}
+                {/*    <label>Account</label>*/}
 
-                </li>
-                <li className="acc-item px-4 py-3" onClick={() => getHelp()}>
-                    <label>Help</label>
-                </li>
+                {/*</li>*/}
+                {/*<li className="acc-item px-4 py-3" onClick={() => getHelp()}>*/}
+                {/*    <label>Help</label>*/}
+                {/*</li>*/}
                 <li className="acc-item px-4 py-3"
                     onClick={() => {
                         handleSignOut()
