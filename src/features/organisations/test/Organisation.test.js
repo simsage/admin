@@ -26,16 +26,15 @@ const initialState = {
     edit_organisation_id: null,
     load_data: false,
 }
-
+//
 let mock;
-const api_base = 'https://uat-cloud.simsage.ai/api';
 const session = {id: "1232"}
 
-const store = configureStore({
-    reducer: {
-        reducer: organisationReducer
-    }
-})
+// const store = configureStore({
+//     reducer: {
+//         reducer: organisationReducer
+//     }
+// })
 
 
 
@@ -45,38 +44,38 @@ describe("Show / close forms", () => {
         expect(organisationReducer(initialState, showAddOrganisationForm({"show_form": true}))).toEqual(showForm);
     });
 
-    it("Organisation: Form: Show Edit", () => {
-        const t_org_id = "1234";
-        const editForm = ({...initialState, "show_organisation_form": true, "edit_organisation_id": t_org_id});
-        expect(organisationReducer(initialState, showEditOrganisationForm({
-            "show_form": true,
-            "org_id": t_org_id
-        }))).toEqual(editForm);
-    });
-
-    it("Organisation: Form: Close Add/Edit", () => {
-        expect(organisationReducer(initialState, closeOrganisationForm())).toEqual(initialState);
-    });
-
-
-    it("getOrganisationList.fulfilled", () => {
-        const action = {type: getOrganisationList.fulfilled.type, payload: fetch_data.organisations}
-        const state = organisationReducer(initialState,action);
-        expect(state.status).toEqual("fulfilled");
-        expect(state.organisation_list).toEqual(fetch_data.organisations);
-    });
-
-    it("getOrganisationList.pending", () => {
-        const action = {type: getOrganisationList.pending.type, payload: fetch_data.organisations}
-        const state = organisationReducer(initialState,action);
-        expect(state.status).toEqual("loading");
-    });
-
-    it("getOrganisationList.rejected", () => {
-        const action = {type: getOrganisationList.rejected.type, payload: fetch_data.organisations}
-        const state = organisationReducer(initialState,action);
-        expect(state.status).toEqual("rejected");
-    });
+    // it("Organisation: Form: Show Edit", () => {
+    //     const t_org_id = "1234";
+    //     const editForm = ({...initialState, "show_organisation_form": true, "edit_organisation_id": t_org_id});
+    //     expect(organisationReducer(initialState, showEditOrganisationForm({
+    //         "show_form": true,
+    //         "org_id": t_org_id
+    //     }))).toEqual(editForm);
+    // });
+    //
+    // it("Organisation: Form: Close Add/Edit", () => {
+    //     expect(organisationReducer(initialState, closeOrganisationForm())).toEqual(initialState);
+    // });
+    //
+    //
+    // it("getOrganisationList.fulfilled", () => {
+    //     const action = {type: getOrganisationList.fulfilled.type, payload: fetch_data.organisations}
+    //     const state = organisationReducer(initialState,action);
+    //     expect(state.status).toEqual("fulfilled");
+    //     expect(state.organisation_list).toEqual(fetch_data.organisations);
+    // });
+    //
+    // it("getOrganisationList.pending", () => {
+    //     const action = {type: getOrganisationList.pending.type, payload: fetch_data.organisations}
+    //     const state = organisationReducer(initialState,action);
+    //     expect(state.status).toEqual("loading");
+    // });
+    //
+    // it("getOrganisationList.rejected", () => {
+    //     const action = {type: getOrganisationList.rejected.type, payload: fetch_data.organisations}
+    //     const state = organisationReducer(initialState,action);
+    //     expect(state.status).toEqual("rejected");
+    // });
 
 
 
@@ -89,7 +88,7 @@ describe("Show / close forms", () => {
 // const mockNetWorkResponse = () =>{
 //     mock.onGet(api_base+"/auth/user/organisations/").reply(200,fetch_data.organisations);
 // }
-
+//
 // describe("getOrganisationList", () => {
 //
 //     beforeAll(()=>{

@@ -42,7 +42,6 @@ const initialState = {
 
     //restore
     restore_status:null, //uploading, uploaded, ready_to_upload
-
 }
 
 const reducers = {
