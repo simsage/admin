@@ -21,10 +21,22 @@ export default function CategorizationHome() {
 
     let prev_cat_label = null;
 
+    // useEffect(()=>{
+    //     // console.log('data...', session_id, selected_organisation_id, selected_knowledge_base_id)
+    //     dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel: prev_cat_label, pageSize: page_size}))
+    // },[load_data === 'load_now'])
+
+    let data = {
+        session_id: session_id,
+        organisation_id:selected_organisation_id,
+        kb_id:selected_knowledge_base_id,
+        prevCategorizationLabel: prev_cat_label,
+        pageSize: page_size};
+
     useEffect(()=>{
-        // console.log('data...', session_id, selected_organisation_id, selected_knowledge_base_id)
-        dispatch(loadCategorizations({session_id: session_id, organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id, prevCategorizationLabel: prev_cat_label, pageSize: page_size}))
-    },[load_data === 'load_now'])
+        // console.log("category_list",load_data)
+        dispatch(loadCategorizations(data))
+    },[load_data === "load_now",selected_knowledge_base_id])
 
 
     return (

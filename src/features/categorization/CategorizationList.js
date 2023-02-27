@@ -44,10 +44,10 @@ export default function CategorizationHome() {
         prevCategorizationLabel: prev_cat_label,
         pageSize: page_size};
 
-    // useEffect(()=>{
-    //     // console.log("category_list",load_data)
-    //     dispatch(loadCategorizations(data))
-    // },[load_data === "load_now",page_size,page])
+    useEffect(()=>{
+        // console.log("category_list",load_data)
+        dispatch(loadCategorizations(data))
+    },[load_data === "load_now",selected_knowledge_base_id,page_size,page])
 
     function filterCategories() {
         let filteredGroup = []
