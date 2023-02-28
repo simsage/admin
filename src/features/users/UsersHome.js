@@ -208,7 +208,7 @@ export function UsersHome(){
 
                             return <tr key={user.id} >
 
-                                <td className="pt-3 px-4 pb-3 fw-500">{user.firstName} {user.surname} <span className="fw-light pt-2">{user.email === user_account.email ? '(you)' : ""}</span> </td>
+                                <td className="pt-3 px-4 pb-3 fw-500">{user.firstName} {user.surname} <span className="fw-light fst-italic pt-2 text-black-50">{user.email === user_account.email ? '(you)' : ""}</span> </td>
                                 <td className="pt-3 px-4 pb-3 fw-light">{user.email}</td>
                                 <td className="pt-3 px-4 pb-2">
                                     <div className="d-flex flex-wrap">
@@ -217,7 +217,7 @@ export function UsersHome(){
                                         })}
                                     </div>
                                 </td>
-                                <td className="pt-2 px-4 pb-0">
+                                <td className="pt-3 px-4 pb-0">
                                     <div className="d-flex  justify-content-end">
                                         <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit</button>
                                         <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteUserAsk(user)}>Delete</button>

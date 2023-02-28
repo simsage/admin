@@ -117,7 +117,7 @@ export default function LogHome(){
     }, 100);
 
     return(
-        <div className="section px-5 pt-4">
+        <div className="section px-5 pt-4 pb-4 d-flex flex-column">
             <div className="logger-service-selector">
                 <select className="form-select" onChange={(event) => setLogServiceLocal(event.target.value)} defaultValue={log_service}>
                     {
@@ -167,7 +167,7 @@ export default function LogHome(){
                       onClick={() => setLogRefresh(10)}>10 seconds</span>
             </div>
             <br />
-            <div className="log-list-overflow">
+            <div className="log-list-overflow overflow-auto h-100">
                 {
                     log_list && log_list.map((line, j) => {
                         return (<div key={j} className="log-line" id={line.created}>

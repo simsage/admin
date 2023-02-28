@@ -46,19 +46,20 @@ html, body, #root, .App, .dms {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px; 
+    width: 8px;
+    height: 8px; 
 }
 ::-webkit-scrollbar-track {
-    background: transparent;
+    background: #f2f2f2;
+    border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb {
     background: #ccc;
-    border: 4px solid #fff;
+    /* border: 2px solid #fff; */
     border-radius: 6px;
-    visibility: hidden;
+    visibility: visible;
 }
-.tog-preview::-webkit-scrollbar-thumb {
+/* .tog-preview::-webkit-scrollbar-thumb {
     background: #bbb;
     border-color: #f2f2f2;
 }
@@ -67,9 +68,10 @@ html, body, #root, .App, .dms {
 .tog-comments:hover .comments-inner::-webkit-scrollbar-thumb,
 .tile-container:hover::-webkit-scrollbar-thumb,
 .table-responsive:hover::-webkit-scrollbar-thumb,
-.permissions-scroll:hover::-webkit-scrollbar-thumb {
+.permissions-scroll:hover::-webkit-scrollbar-thumb,
+.log-list-overflow::-webkit-scrollbar-thumb {
     visibility: visible;
-}
+} */
 
 
 

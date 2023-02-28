@@ -132,7 +132,9 @@ export default function GroupList(){
                             return (
                                 //console.log(group)
                                 <tr key={group.name} >
-                                    <td className="pt-3 px-4 pb-3 fw-500"> {group.name}</td>
+                                    <td className="pt-3 px-4 pb-2 d-flex">
+                                        <div className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{group.name}</div>
+                                    </td>
                                     {/* <td>
                                         <button
                                             className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"}
@@ -141,7 +143,7 @@ export default function GroupList(){
                                     </td>
                                     <td><button className={(deleteYes) ? "btn btn-outline-danger" :"btn btn-secondary" }  disabled={!deleteYes} onClick={() => deleteGroupAsk(group)}> Delete icon </button></td> */}
 
-                                    <td className="pt-2 px-4 pb-0">
+                                    <td className="pt-3 px-4 pb-0">
                                         <div className="d-flex  justify-content-end">
                                             <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditGroup(group)}>Edit</button>
                                             <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteGroupAsk(group)}>Delete</button>

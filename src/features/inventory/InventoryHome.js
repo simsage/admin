@@ -185,26 +185,26 @@ export default function InventoryHome(props) {
                     <table className="table">
                         <thead>
                         <tr className='table-header'>
-                            <th className='table-header table-width-25'>Type</th>
-                            <th className='table-header table-width-33'>Created</th>
-                            <th className='table-header'></th>
+                            <td className='small text-black-50 px-4'>Type</td>
+                            <td className='small text-black-50 px-4'>Created</td>
+                            <td className='small text-black-50 px-4'></td>
                         </tr>
                         </thead>
                         <tbody>
                         {inventory_list && inventory_list.timeList && inventory_list.timeList.map((item, i) => {
                             return (
                                 <tr key={i}>
-                                    <td>
+                                    <td className="pt-3 px-4 pb-3">
                                         <div className="snapshot-item">
                                             {itemNameToDescription(item.name)}
                                         </div>
                                     </td>
-                                    <td>
+                                    <td className="pt-3 px-4 pb-3 fw-light">
                                         <div className="snapshot-item">
                                             {Api.unixTimeConvert(item.time)}
                                         </div>
                                     </td>
-                                    <td>
+                                    <td className="pt-3 px-4 pb-0">
                                         <div className="d-flex justify-content-end">
                                         {(item.name === "content parquet" || item.name === "index parquet") &&
                                             <div className="link-button">

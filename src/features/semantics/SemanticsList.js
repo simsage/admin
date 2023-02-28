@@ -159,11 +159,13 @@ export default function SemanticsHome(props) {
                                 getSemanticList().map((semantic) => {
                                     return (
                                         <tr key={semantic.word + ":" + semantic.semantic}>
-                                            <td className="pt-3 px-4 pb-3">
+                                            <td className="pt-3 px-4 pb-2">
                                                 <div>{semantic.word}</div>
                                             </td>
-                                            <td className="pt-3 px-4 pb-2 d-flex">
-                                                <div className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{semantic.semantic}</div>
+                                            <td className="pt-3 px-4 pb-2">
+                                                <div className="d-flex">
+                                                    <div className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{semantic.semantic}</div>
+                                                </div>
                                             </td>
                                             <td className="pt-3 px-4 pb-0">
                                                 <div className="d-flex  justify-content-end">
