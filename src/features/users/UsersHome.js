@@ -1,13 +1,19 @@
 import React, {useEffect, useState} from "react";
 import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
-import {getUserList, showAddUserForm, showDeleteUserAsk, showEditUserForm, orderBy} from "./usersSlice";
+import {
+    getUserList,
+    showAddUserForm,
+    showDeleteUserAsk,
+    showEditUserForm,
+    orderBy,
+    showUserBulkForm
+} from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import {formatRoles, hasRole} from "../../common/helpers";
-import Api from '../../common/api'
 import {getGroupList} from "../groups/groupSlice";
 import UserDeleteAsk from "./UserDeleteAsk";
-import UserBulk from "./UserBulk";
+import {UserBulkForm} from "./UserBulkForm";
 
 export function UsersHome(){
 
@@ -65,6 +71,10 @@ export function UsersHome(){
     function handleEditUser(u) {
         dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         dispatch(showEditUserForm({show:true, user_id: u.id}));
+    }
+
+    function handleUserBulk(){
+        dispatch(showUserBulkForm());
     }
 
     function handleOrderBy(e) {
@@ -177,7 +187,10 @@ export function UsersHome(){
                     </button>
                 </div>
                 <div>
-                    <UserBulk/>
+                    <button className="btn btn-primary text-nowrap" onClick={() => handleUserBulk()}>
+                        + User Bulk
+                    </button>
+                    {/*<UserBulk/>*/}
                 </div>
             </div>
 
@@ -245,6 +258,7 @@ export function UsersHome(){
             </div>
             <UserEdit user={selectedUser} setSelectedUser={setSelectedUser} filter={searchFilter}/>
             <UserDeleteAsk />
+            <UserBulkForm />
         </div>
     )
 }

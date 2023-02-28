@@ -14,6 +14,7 @@ const initialState = {
     status: undefined,
     error: undefined,
     show_user_form: false,
+    show_user_bulk_form: true,
     show_delete_form: false,
     edit_id: undefined,
     roles: ['admin','operator','dms','manager','discover'],
@@ -219,12 +220,20 @@ const usersSlice = createSlice({
                     state.status = "fulfilled";
                     break;
             }
+        },
+        showUserBulkForm:(state, action) => {
+            state.show_user_bulk_form = true;
+        },
+        closeUserBulkForm:(state, action) => {
+            state.show_user_bulk_form = false;
         }
 
         },
+
+
     extraReducers
 });
 
 
-export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm, orderBy} = usersSlice.actions
+export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm, orderBy, closeUserBulkForm,showUserBulkForm} = usersSlice.actions
 export default usersSlice.reducer;
