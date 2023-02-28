@@ -226,12 +226,12 @@ export default function SynsetList() {
                                                                     {
                                                                     wc.split(',').slice(0,3).map(word => {
                                                                         return (
-                                                                            <div className={`small text-capitalize px-3 py-2 wc-divider ${i%2 === 0 ? '' : ''}`}>{word}</div>
+                                                                            <div className={`small text-capitalize px-3 py-1 wc-divider ${i%2 === 0 ? '' : ''}`}>{word}</div>
                                                                         )
                                                                     })}
 
                                                                     </div>
-                                                                    <span className="small fw-light fst-italic px-2 py-2 text-secondary pointer-cursor" title={wc}>{wc.split(',').length > 3 ? `+${wc.split(',').length - 3}` : ""}</span>
+                                                                    <span className="small fw-light fst-italic px-2 py-1 text-secondary pointer-cursor" title={wc}>{wc.split(',').length > 3 ? `+${wc.split(',').length - 3}` : ""}</span>
                                                                 </div>
                                                                 }
 

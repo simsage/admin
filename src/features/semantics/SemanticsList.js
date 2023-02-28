@@ -162,8 +162,8 @@ export default function SemanticsHome(props) {
                                             <td className="pt-3 px-4 pb-3">
                                                 <div>{semantic.word}</div>
                                             </td>
-                                            <td className="pt-3 px-4 pb-3">
-                                                <div>{semantic.semantic}</div>
+                                            <td className="pt-3 px-4 pb-2 d-flex">
+                                                <div className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{semantic.semantic}</div>
                                             </td>
                                             <td className="pt-3 px-4 pb-0">
                                                 <div className="d-flex  justify-content-end">
