@@ -28,28 +28,39 @@ export default function BotHome() {
     const show_import_form = useSelector((state) => state.botReducer.show_import_form)
 
     const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
-    const num_mind_items = useSelector((state) => state.botReducer.num_mind_items);
+    const total_mind_items = useSelector((state) => state.botReducer.total_mind_items);
 
     const [page_size, setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
-    const [mind_item_page, setMindItemPage] = useState(useSelector((state) => state.botReducer.mind_item_page))
+    const [page, setPage] = useState(useSelector((state) => state.botReducer.mind_current_page_number))
     const [mind_item_filter, setMindItemFilter] = useState();
 
     const [filter, setFilter] = useState('')
 
+    let prev_list = mind_item_list.slice(-1)[0]
+    let prev_id = page !== 0 ? prev_list['id']:0
+
+    console.log("page", page)
 
     let data = {
         filter: "",
         kbId: selected_knowledge_base_id,
         organisationId: selected_organisation_id,
-        pageSize: 10,
-        prevId: 0
+        pageSize: page_size,
+        prevId: prev_id,
     }
 
     useEffect(() => {
-        console.log("session useEffect", session_id)
-        console.log("selected_organisation", data)
+        console.log("BotHome page number changes selected_organisation", data)
+        console.log("BotHome page number", page)
         dispatch(loadMindItems({session_id, data}))
-    }, [load_data === "load_now", selected_knowledge_base_id])
+    }, [page])
+
+
+    useEffect(() => {
+        console.log("BotHome selected_organisation", data)
+        console.log("BotHome page", page)
+        dispatch(loadMindItems({session_id, data}))
+    }, [load_data === "load_now", selected_knowledge_base_id,page_size])
 
     function isVisible() {
         return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
@@ -64,6 +75,8 @@ export default function BotHome() {
         }
         return [];
     }
+
+
 
     function filterRecords(event) {
         console.log(`Editing... `);
@@ -244,12 +257,12 @@ export default function BotHome() {
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
                         component="div"
-                        count={num_mind_items}
+                        count={total_mind_items}
                         rowsPerPage={page_size}
-                        page={mind_item_page}
+                        page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
                         nextIconButtonProps={{'aria-label': 'Next Page',}}
-                        onChangePage={(page) => setMindItemPage(page)}
+                        onChangePage={(page) => setPage(page)}
                         onChangeRowsPerPage={(rows) => setPageSize(rows)}
                     />
 

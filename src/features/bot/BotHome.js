@@ -15,7 +15,7 @@ export default function BotHome() {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
-    const num_mind_items = useSelector((state) => state.botReducer.num_mind_items);
+    const total_mind_items = useSelector((state) => state.botReducer.total_mind_items);
 
     let data = {
         filter: "",
@@ -33,7 +33,7 @@ export default function BotHome() {
     console.log("mind_item_list",mind_item_list)
     console.log("status",status)
     console.log("mind_item_list length",mind_item_list.length)
-    console.log("num_mind_items",num_mind_items)
+    console.log("total_mind_items",total_mind_items)
     return (
 
         <div className="">
@@ -43,12 +43,12 @@ export default function BotHome() {
 
             }
             {/*Intro message when there are no bot items loaded*/}
-            {status !== null && mind_item_list.length === 0 && num_mind_items > 0 &&
+            {status !== null && mind_item_list.length === 0 && total_mind_items > 0 &&
                 <BotList />
 
             }
             {/*show bot list*/}
-            {status !== null && mind_item_list.length > 0 && num_mind_items > 0 &&
+            {status !== null && mind_item_list.length > 0 && total_mind_items > 0 &&
                 <BotList />
             }
         </div>

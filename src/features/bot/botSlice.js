@@ -5,9 +5,9 @@ import axios from "axios";
 
 const initialState = {
     mind_item_list: [],
-    num_mind_items: 0,
+    total_mind_items: 0,
     page_size: 10,
-    mind_item_page: 0,
+    mind_current_page_number: 0,
     status: null,
     show_memory_form: false,
     edit: undefined,
@@ -117,7 +117,7 @@ const extraReducers = (builder) => {
             console.log("addCase getDocuments fulfilled ", action);
             state.status = "fulfilled";
             state.mind_item_list = action.payload.memoryList;
-            state.num_mind_items = action.payload.numMemories;
+            state.total_mind_items = action.payload.numMemories;
             state.data_status = 'loaded';
         })
         .addCase(loadMindItems.rejected, (state, action) => {
