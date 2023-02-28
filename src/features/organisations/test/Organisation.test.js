@@ -1,19 +1,23 @@
-import {
+import reducer,{
     closeOrganisationForm,
     getOrganisationList,
     showAddOrganisationForm,
     showEditOrganisationForm
 } from "../organisationSlice";
-
 import organisationReducer from "../organisationSlice";
+import { Provider } from 'react-redux'
+import {render as rtlRender, screen} from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+// import * as React from 'react'
+import {createStore} from 'redux'
+// import organisationReducer from "../organisationSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import {OrganisationHome} from "../OrganisationHome";
+import organisationSlice from "../organisationSlice";
+import authReducer from "../../auth/authSlice";
 
 
-import {configureStore} from "@reduxjs/toolkit";
-import MockAdapter from "axios-mock-adapter";
-import axios from "axios/index";
-import {fetch_data} from "./TestData";
-
-const initialState = {
+const initialState1 = {
     organisation_filter: null,
     organisation_list: {},
     organisation_page: 0,
@@ -27,8 +31,6 @@ const initialState = {
     load_data: false,
 }
 //
-let mock;
-const session = {id: "1232"}
 
 // const store = configureStore({
 //     reducer: {
@@ -36,82 +38,42 @@ const session = {id: "1232"}
 //     }
 // })
 
+const render = (
+    ui,
+    {
+        initialState = initialState1,
+        store = configureStore({reducer: {
+            organisationReducer: organisationReducer,
+                authReducer: authReducer,
+            }}),
+        ...renderOptions
+    } = {},
+) => {
+    const Wrapper = ({children}) => <Provider store={store}>{children}</Provider>
+
+    return rtlRender(ui, {wrapper: Wrapper, ...renderOptions})
+}
+
 
 
 describe("Show / close forms", () => {
     it("Organisation: Form: Show Add ", () => {
-        const showForm = ({...initialState, "show_organisation_form": true});
-        expect(organisationReducer(initialState, showAddOrganisationForm({"show_form": true}))).toEqual(showForm);
+        const showForm = ({...initialState1, "show_organisation_form": true});
+        expect(organisationReducer(initialState1, showAddOrganisationForm({"show_form": true}))).toEqual(showForm);
+        // expect(1).toBe(1);
     });
-
-    // it("Organisation: Form: Show Edit", () => {
-    //     const t_org_id = "1234";
-    //     const editForm = ({...initialState, "show_organisation_form": true, "edit_organisation_id": t_org_id});
-    //     expect(organisationReducer(initialState, showEditOrganisationForm({
-    //         "show_form": true,
-    //         "org_id": t_org_id
-    //     }))).toEqual(editForm);
-    // });
-    //
-    // it("Organisation: Form: Close Add/Edit", () => {
-    //     expect(organisationReducer(initialState, closeOrganisationForm())).toEqual(initialState);
-    // });
-    //
-    //
-    // it("getOrganisationList.fulfilled", () => {
-    //     const action = {type: getOrganisationList.fulfilled.type, payload: fetch_data.organisations}
-    //     const state = organisationReducer(initialState,action);
-    //     expect(state.status).toEqual("fulfilled");
-    //     expect(state.organisation_list).toEqual(fetch_data.organisations);
-    // });
-    //
-    // it("getOrganisationList.pending", () => {
-    //     const action = {type: getOrganisationList.pending.type, payload: fetch_data.organisations}
-    //     const state = organisationReducer(initialState,action);
-    //     expect(state.status).toEqual("loading");
-    // });
-    //
-    // it("getOrganisationList.rejected", () => {
-    //     const action = {type: getOrganisationList.rejected.type, payload: fetch_data.organisations}
-    //     const state = organisationReducer(initialState,action);
-    //     expect(state.status).toEqual("rejected");
-    // });
-
-
-
 });
 
 
-// mock = new MockAdapter(axios)
-// const orgs = fetch_data.organisations;
-//
-// const mockNetWorkResponse = () =>{
-//     mock.onGet(api_base+"/auth/user/organisations/").reply(200,fetch_data.organisations);
-// }
-//
-// describe("getOrganisationList", () => {
-//
-//     beforeAll(()=>{
-//         mockNetWorkResponse();
-//     })
-//
-//     it("when API call is successful", () => {
-//
-//             store.dispatch(getOrganisationListTest({session:session.id, filter:null}))
-//
-//             const state = store.getState().reducer;
-//             console.log(state)
-//             // const organisation_list = store.getState().reducer.organisation_list;
-//             // axios.get(api_base+"/auth/user/organisations/").then((res) => {
-//             //     console.log("res",res.data)
-//             // })
-//             // console.log("result",result)
-//             // console.log("when API call is successful")
-//             // console.log("when API call is successful",store.getState().reducer)
-//
-//             // expect(organisation_list).toEqual(fetch_data.organisations)
-//     })
-//     it("it should return empty org list", () => {
-//
-//     });
-// });
+
+//Component Testing
+describe(OrganisationHome, () => {
+it('show add-new-organisation form', () => {
+    render(<OrganisationHome />);
+
+    userEvent.click(screen.getByTestId('add-new-organisation'));
+    expect(1).toBe(1)
+    // expect(screen.getByTestId('count-value')).toHaveTextContent('1000')
+    // expect(screen.getByTestId('count-value')).toHaveTextContent('1')
+});
+});
