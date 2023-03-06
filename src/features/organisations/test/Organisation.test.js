@@ -6,7 +6,7 @@ import reducer,{
 } from "../organisationSlice";
 import organisationReducer from "../organisationSlice";
 import { Provider } from 'react-redux'
-import {render as rtlRender, screen} from '@testing-library/react'
+import {fireEvent, render as rtlRender, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 // import * as React from 'react'
 import {createStore} from 'redux'
@@ -15,6 +15,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import {OrganisationHome} from "../OrganisationHome";
 import organisationSlice from "../organisationSlice";
 import authReducer from "../../auth/authSlice";
+import OrganisationEdit from "../OraganisationEdit";
+import OrganisationFormV2 from "../OrganisationFormV2";
 
 
 const initialState1 = {
@@ -30,13 +32,13 @@ const initialState1 = {
     edit_organisation_id: null,
     load_data: false,
 }
-//
 
-// const store = configureStore({
-//     reducer: {
-//         reducer: organisationReducer
-//     }
-// })
+
+const store = configureStore({
+    reducer: {
+        reducer: organisationReducer
+    }
+})
 
 const render = (
     ui,
@@ -71,9 +73,10 @@ describe(OrganisationHome, () => {
 it('show add-new-organisation form', () => {
     render(<OrganisationHome />);
 
-    userEvent.click(screen.getByTestId('add-new-organisation'));
-    expect(1).toBe(1)
-    // expect(screen.getByTestId('count-value')).toHaveTextContent('1000')
+    let x = fireEvent.click(screen.getByTestId('add-new-organisation'));
+    console.log("rr",store.getState());
+    // expect(1).toBe(1);
+    // expect(screen.getByTestId('add-new-organisation-form')).toHaveTextContent('1000')
     // expect(screen.getByTestId('count-value')).toHaveTextContent('1')
 });
 });
