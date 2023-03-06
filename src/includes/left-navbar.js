@@ -10,6 +10,7 @@ export default function LeftNavbar(){
     const nav1 = [
         {label: "Overview", slug:"home", logo:"../images/icon/icon_overview.svg", separator:true, sub:[] },
         {label: "User Management", slug:"user-management", logo:"../images/icon/icon_user_management.svg", separator:false, sub:[] },
+        // {label: "Organisations", slug:"organisation", logo:"../images/icon/icon_user_management.svg", separator:false, sub:[] },
     ]
 
     const nav2 = [
@@ -23,11 +24,14 @@ export default function LeftNavbar(){
 
 
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
+    // const kb_list_status = useSelector((state) => state.kbReducer.status);
     const selected_tab = useSelector((state) => state.homeReducer.selected_tab);
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
-    const [selected_kb_id, setSelectedKbId] = useState(useSelector((state) => state.authReducer.selected_knowledge_base_id));
+    let selected_kb_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    // const [selected_kb_id, setSelectedKbId] = useState(useSelector((state) => state.authReducer.selected_knowledge_base_id));
     const session = useSelector((state) => state.authReducer.session);
 
+    // const [kb_option,setKBOption] = useState(kb_list);
 
     function handleSelectKB(e){
         let kb_id = e.target.value;
@@ -42,8 +46,6 @@ export default function LeftNavbar(){
                 case "document-management" :
                     dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:kb_id}))
                     break;
-                default:
-                    break
             }
         }
 
@@ -51,7 +53,8 @@ export default function LeftNavbar(){
 
     useEffect(()=>{
         console.log("LeftSidebarNavItem Left Nav")
-        setSelectedKbId("");
+        selected_kb_id = "";
+        // setSelectedKbId("");
     },[selected_organisation_id])
 
     return (
