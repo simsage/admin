@@ -1,8 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
-import {loadDocumentList} from "../document_management/documentSlice";
-import {deleteMindItem} from "../bot/botSlice";
 
 const initialState = {
     synonym_list: [],
