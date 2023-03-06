@@ -1,9 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 
 import {useDispatch, useSelector} from "react-redux";
 import {useMsal} from "@azure/msal-react";
 import {
-    getOrganisationList,
     showAddOrganisationForm,
     showEditOrganisationForm
 } from "../features/organisations/organisationSlice";
@@ -27,8 +26,6 @@ const AccountDropdown = (props) => {
 
     console.log("session",session)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
-
-    const data_status = useSelector((state) => state.organisationReducer.data_status)
 
 
     // menu selects a different organisation
@@ -54,14 +51,14 @@ const AccountDropdown = (props) => {
         dispatch(showEditOrganisationForm({show_form:true,org_id:org_id}))
     }
 
-
-    function editAccount(){
-        console.log("edit Account")
-    }
-
-    function getHelp(){
-        console.log("getHelp")
-    }
+    //
+    // function editAccount(){
+    //     console.log("edit Account")
+    // }
+    //
+    // function getHelp(){
+    //     console.log("getHelp")
+    // }
 
     function handleSignOut(){
         instance.logoutRedirect({

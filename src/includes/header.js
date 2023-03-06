@@ -6,7 +6,7 @@ const Header = (props) => {
 
     const dispatch = useDispatch();
 
-    const {user, session, accounts_dropdown} = useSelector((state) => state.authReducer);
+    const {user, accounts_dropdown} = useSelector((state) => state.authReducer);
     let organisation = useSelector((state) => state.authReducer.selected_organisation);
 
     organisation = (organisation)?organisation:{name:"not set",id:"10"}

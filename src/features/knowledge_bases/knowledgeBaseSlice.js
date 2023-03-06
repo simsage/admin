@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import axios from "axios";
-import ErrorAlert from "../alerts/ErrorAlert";
+// import ErrorAlert from "../alerts/ErrorAlert";
 
 const initialState = {
     kb_original_list: [],

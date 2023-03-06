@@ -10,7 +10,6 @@ import CategorizationHome from "../categorization/CategorizationHome";
 import TextToSearchHome from "../text_to_search/TextToSearchHome";
 
 export default function MindHome(){
-    const title = "The Mind";
     const [selected_sub_nav, setSelectedSubNav] = useState('bot')
 
     const sub_nav = [

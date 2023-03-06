@@ -1,9 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
-import db from "../../notes/db.json"
 import axios from "axios";
-import {useSelector} from "react-redux";
-import {deleteRecord} from "../knowledge_bases/knowledgeBaseSlice";
 
 const initialState = {
     organisation_original_list: [],

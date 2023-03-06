@@ -141,12 +141,6 @@ export function UsersHome(){
         return reducedRoleArray.includes(role);
     }
 
-    roles.map((role) => {
-        // let [v1,v2] = role
-        console.log(role.key)
-        // console.log(v2)
-    })
-
     return(
         <div className="section px-5 pt-4">
             <div className="d-flex justify-content-beteween w-100 mb-4">
