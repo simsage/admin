@@ -230,14 +230,14 @@ export const getOrganisationList = createAsyncThunk(
     'organisations/getOrganisationList',
     async ({session, filter}) => {
         const api_base = window.ENV.api_base;
-        const url = '/auth/user/organisations/' + encodeURIComponent(filter);
+        const url = api_base + '/auth/user/organisations/' + encodeURIComponent(filter);
         const {id} = session
 
         if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
+            console.log('GET ' + url);
         }
 
-        return axios.get(api_base + url, Comms.getHeaders(id))
+        return axios.get(url, Comms.getHeaders(id))
             .then((response) => {
                 return response.data
             }).catch(

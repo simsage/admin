@@ -196,6 +196,11 @@ export function OrganisationHome() {
                             )
                         })
                     }
+                    {!organisation_list &&
+                        <tr>
+                            <td className="small text-black-50 px-4" colSpan={3}>No records found.</td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
 
