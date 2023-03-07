@@ -144,8 +144,19 @@ export default function BotHome() {
                     </div>
                 </div>
 
-                <div className="form-group col ms-auto">
-                    <button className="btn btn-primary text-nowrap" onClick={() => handleAddMemory()}>
+                <div className="form-group d-flex ms-auto">
+                    <button className="btn btn-outline-primary text-nowrap ms-2"
+                            onClick={() => handleImport(!show_import_form)}>Import
+                    </button>
+                    <button className="btn btn-outline-primary text-nowrap ms-2"
+                            onClick={() => handleExport()}>Export
+                    </button>
+                    <button className="btn btn-outline-danger text-nowrap ms-2"
+                            title="remove all mind items of this knowledgebase"
+                            onClick={() => deleteMemoryAsk("all")}
+                    >Remove all
+                    </button>
+                    <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddMemory()}>
                         + Add Bot Item
                     </button>
                 </div>
@@ -178,10 +189,10 @@ export default function BotHome() {
                 <div>
                     <table className="table">
                         <thead>
-                        <tr className='table-header'>
-                            <th className='table-header'>id</th>
-                            <th className='table-header'>memory</th>
-                            <th className='table-header'>actions</th>
+                        <tr className=''>
+                            {/* <td className='small text-black-50 px-4'>id</td> */}
+                            <td className='small text-black-50 px-4'>Memory</td>
+                            <td className='small text-black-50 px-4'></td>
                         </tr>
                         </thead>
                         <tbody>
@@ -189,22 +200,24 @@ export default function BotHome() {
                             getMemoryList().map((memory) => {
                                 return (
                                     <tr key={memory.id}>
-                                        <td>
+                                        {/* <td>
                                             <div>{memory.id}</div>
-                                        </td>
-                                        <td>
+                                        </td> */}
+                                        <td className="pt-3 px-4 pb-3">
                                             <div className="mind-text-column"
                                                  title={getDisplayText(memory)}>{getDisplayText(memory)}</div>
                                         </td>
-                                        <td>
-                                            <button onClick={() => handleEditMemory(memory)}
-                                                    className="btn btn-secondary" title="edit memory">edit
-                                            </button>
-                                            &nbsp;
-                                            <button onClick={() => deleteMemoryAsk(memory)}
-                                                    className="btn btn-secondary"
-                                                    title="remove memory">remove
-                                            </button>
+                                        <td className="pt-3 px-4 pb-0">
+                                            <div className="d-flex  justify-content-end">
+                                                <button onClick={() => handleEditMemory(memory)}
+                                                        className="btn text-primary btn-sm" title="edit memory">Edit
+                                                </button>
+                                                &nbsp;
+                                                <button onClick={() => deleteMemoryAsk(memory)}
+                                                        className="btn text-danger btn-sm"
+                                                        title="remove memory">Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 )
