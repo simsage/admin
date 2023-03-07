@@ -40,6 +40,8 @@ export const UPLOADING_PROGRAM_FINISHED = "uploading program finished";
 export const UPLOADING_WP_ARCHIVE = "uploading wp archive";
 export const UPLOADING_WP_ARCHIVE_FINISHED = "uploading wp archive finished";
 
+export const SET_SOURCE_PAGE = "set source page";
+export const SET_SOURCE_PAGE_SIZE = "set source page size";
 export const GET_CRAWLERS = "get crawlers";
 export const GET_DOMAINS = "get domains";
 

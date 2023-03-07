@@ -17,12 +17,17 @@ export class CrawlerWeb extends Component {
             // web specific
             baseUrlList: Api.defined(props.baseUrlList) ? props.baseUrlList : '',
             webCss: Api.defined(props.webCss) ? props.webCss : '',
-            webCssIgnore: Api.defined(props.webCssIgnore) ? props.webCssIgnore : '',
+            webCssIgnore: Api.defined(props.webCssIgnore) ? props.webCssIgnore : 'header, footer',
             validExtensions: Api.defined(props.validExtensions) ? props.validExtensions : '',
             validExtensionsIgnore: Api.defined(props.validExtensionsIgnore) ? props.validExtensionsIgnore : '',
             articleIncludeWordsCsv: Api.defined(props.articleIncludeWordsCsv) ? props.articleIncludeWordsCsv : '',
             articleExcludeWordsCsv: Api.defined(props.articleExcludeWordsCsv) ? props.articleExcludeWordsCsv : '',
+            pagePrefixesToIgnore: Api.defined(props.pagePrefixesToIgnore) ? props.pagePrefixesToIgnore : '',
+            bearerToken: Api.defined(props.bearerToken) ? props.bearerToken : '',
+            basicUsername: Api.defined(props.basicUsername) ? props.basicUsername : '',
+            password: Api.defined(props.password) ? props.password : '',
             specific_json: props.specific_json,
+            userAgent: Api.defined(props.userAgent) ? props.userAgent : '',
         };
 
     }
@@ -44,6 +49,11 @@ export class CrawlerWeb extends Component {
                 validExtensionsIgnore: Api.defined(nextProps.validExtensionsIgnore) ? nextProps.validExtensionsIgnore : '',
                 articleIncludeWordsCsv: Api.defined(nextProps.articleIncludeWordsCsv) ? nextProps.articleIncludeWordsCsv : '',
                 articleExcludeWordsCsv: Api.defined(nextProps.articleExcludeWordsCsv) ? nextProps.articleExcludeWordsCsv : '',
+                pagePrefixesToIgnore: Api.defined(nextProps.pagePrefixesToIgnore) ? nextProps.pagePrefixesToIgnore : '',
+                bearerToken: Api.defined(nextProps.bearerToken) ? nextProps.bearerToken : '',
+                basicUsername: Api.defined(nextProps.basicUsername) ? nextProps.basicUsername : '',
+                password: Api.defined(nextProps.password) ? nextProps.password : '',
+                userAgent: Api.defined(nextProps.userAgent) ? nextProps.userAgent : '',
                 specific_json: nextProps.specific_json,
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
@@ -60,6 +70,11 @@ export class CrawlerWeb extends Component {
             validExtensionsIgnore: Api.defined(data.validExtensionsIgnore) ? data.validExtensionsIgnore : this.state.validExtensionsIgnore ,
             articleIncludeWordsCsv: Api.defined(data.articleIncludeWordsCsv) ? data.articleIncludeWordsCsv : this.state.articleIncludeWordsCsv ,
             articleExcludeWordsCsv: Api.defined(data.articleExcludeWordsCsv) ? data.articleExcludeWordsCsv : this.state.articleExcludeWordsCsv ,
+            pagePrefixesToIgnore: Api.defined(data.pagePrefixesToIgnore) ? data.pagePrefixesToIgnore : this.state.pagePrefixesToIgnore ,
+            bearerToken: Api.defined(data.bearerToken) ? data.bearerToken : this.state.bearerToken ,
+            basicUsername: Api.defined(data.basicUsername) ? data.basicUsername : this.state.basicUsername ,
+            password: Api.defined(data.password) ? data.password : this.state.password ,
+            userAgent: Api.defined(data.userAgent) ? data.userAgent : this.state.userAgent ,
         };
     }
     change_callback(data) {
@@ -110,6 +125,57 @@ export class CrawlerWeb extends Component {
                 </div>
 
                 <div className="form-group">
+                    <span className="left-column">
+                        <div>
+                            <span className="small-label-right">bearer token</span>
+                            <span className="big-text">
+                                <input type="text" className="form-control"
+                                       value={this.state.bearerToken}
+                                       placeholder="an optional bearer token if available"
+                                       title="(optional) bearer token"
+                                       onChange={(event) => {this.change_callback({bearerToken: event.target.value})}}
+                                />
+                            </span>
+                        </div>
+                        <div>
+                            <span className="small-label-right">user-agent</span>
+                            <span className="big-text">
+                            <input type="text" className="form-control"
+                                   placeholder="web-crawler's user-agent (blank to leave default)"
+                                   title="(optional) web-crawler's user-agent"
+                                   value={this.state.userAgent}
+                                   onChange={(event) => {this.change_callback({userAgent: event.target.value})}}
+                            />
+                            </span>
+                        </div>
+                    </span>
+                    <span className="left-column">
+                        <div>
+                            <span className="small-label-right">username</span>
+                            <span className="big-text">
+                            <input type="text" className="form-control"
+                                   value={this.state.basicUsername}
+                                   placeholder="optional basic auth username"
+                                   title="(optional) basic auth username"
+                                   onChange={(event) => {this.change_callback({basicUsername: event.target.value})}}
+                            />
+                            </span>
+                        </div>
+                        <div>
+                            <span className="small-label-right">password</span>
+                            <span className="big-text">
+                            <input type="password" className="form-control"
+                                   placeholder="basic auth password (leave blank to keep previous)"
+                                   title="(optional) basic auth password (leave blank to keep previous)"
+                                   value={this.state.password}
+                                   onChange={(event) => {this.change_callback({password: event.target.value})}}
+                            />
+                            </span>
+                        </div>
+                    </span>
+                </div>
+
+                <div className="form-group">
                     <span className="label-right-top">include css csv</span>
                     <span className="full-column">
                         <textarea className="textarea-width"
@@ -153,6 +219,18 @@ export class CrawlerWeb extends Component {
                             rows="3"
                             value={this.state.articleExcludeWordsCsv}
                             onChange={(event) => {this.change_callback({articleExcludeWordsCsv: event.target.value})}}
+                        />
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <span className="label-right-top">csv exclude prefixes</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
+                                  placeholder="csv urls (starting with https://), exclude pages by prefix starts [optional]"
+                                  rows="3"
+                                  value={this.state.pagePrefixesToIgnore}
+                                  onChange={(event) => {this.change_callback({pagePrefixesToIgnore: event.target.value})}}
                         />
                     </span>
                 </div>

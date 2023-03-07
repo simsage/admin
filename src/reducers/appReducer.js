@@ -8,6 +8,8 @@ import {
     CLEAR_PREVIOUS_ANSWER,
     CLOSE_ERROR,
     ERROR,
+    SET_SOURCE_PAGE,
+    SET_SOURCE_PAGE_SIZE,
     GET_CRAWLERS,
     GET_DOMAINS,
     GET_DOCUMENTS_PAGINATED,
@@ -531,6 +533,21 @@ export const reducer = (state, action) => {
                 ...state,
                 user: action.user,
                 busy: false,
+            };
+        }
+
+        case SET_SOURCE_PAGE: {
+            return {
+                ...state,
+                source_page: action.page,
+            };
+        }
+
+        case SET_SOURCE_PAGE_SIZE: {
+            return {
+                ...state,
+                source_page: 0,
+                source_page_size: action.page_size,
             };
         }
 
@@ -1364,6 +1381,7 @@ export const reducer = (state, action) => {
                 ...state,
                 group_list: action.group_list,
                 group_count: action.num_groups,
+                all_user_list: action.all_user_list,
                 busy: false,
             };
         }

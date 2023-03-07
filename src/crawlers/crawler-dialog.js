@@ -29,6 +29,8 @@ import CrawlerExternal from "./crawler-external";
 import CrawlerSharepoint365 from "./crawler-sharepoint365";
 import CrawlerServiceNow from "./crawler-service-now";
 import CrawlerSearch from "./crawler-search";
+import ProcessorSetup from "../common/processor-setup";
+import CrawlerConfluence from "./crawler-confluence";
 
 
 export class CrawlerDialog extends Component {
@@ -275,18 +277,16 @@ export class CrawlerDialog extends Component {
         } else if (crawler.crawlerType === 'exchange365' && (
             !sj.tenantId || sj.tenantId.length === 0 ||
             !sj.clientId || sj.clientId.length === 0 ||
-            !sj.redirectUrl || sj.redirectUrl.length === 0 ||
             !sj.clientSecret || sj.clientSecret.length === 0)) {
 
-            this.setError('invalid parameters', 'you must supply tenant-id, client-id, client-secret, and redirect-url as a minimum.');
+            this.setError('invalid parameters', 'you must supply tenant-id, client-id, and client-secret as a minimum.');
 
         } else if (crawler.crawlerType === 'sharepoint365' && (
             !sj.tenantId || sj.tenantId.length === 0 ||
             !sj.clientId || sj.clientId.length === 0 ||
-            !sj.redirectUrl || sj.redirectUrl.length === 0 ||
             !sj.clientSecret || sj.clientSecret.length === 0)) {
 
-            this.setError('invalid parameters', 'you must supply tenant-id, client-id, client-secret, and redirect-url as a minimum.');
+            this.setError('invalid parameters', 'you must supply tenant-id, client-id, and client-secret as a minimum.');
 
         } else if (crawler.crawlerType === 'onedrive' && (
             !sj.tenantId || sj.tenantId.length === 0 ||
@@ -317,8 +317,8 @@ export class CrawlerDialog extends Component {
             this.setError('invalid parameters', 'iManage crawler: you have invalid values in your start folder.');
 
         } else if (crawler.crawlerType === 'box' && (!sj.clientId || sj.clientId.length === 0 ||
-            !sj.clientSecret || sj.clientSecret.length === 0 || !sj.enterpriseId || sj.enterpriseId.length === 0 ||
-            sj.timeToCheckFrom.length === 0)) {
+                    !sj.clientSecret || sj.clientSecret.length === 0 || !sj.enterpriseId || sj.enterpriseId.length === 0 ||
+                     sj.deltaIndicator.length === 0)) {
 
             this.setError('invalid parameters', 'box crawler: you have invalid values for clientId / clientSecret / enterpriseId / time-to-check-from.');
 
@@ -330,7 +330,7 @@ export class CrawlerDialog extends Component {
             this.setError('invalid parameters', 'iManage crawler: you have invalid values for server / username / clientId / clientSecret / libraryId / cursor.');
 
         } else if (crawler.crawlerType === 'gdrive' && (!sj.drive_user_csv || sj.drive_user_csv.length === 0 ||
-            !sj.timeToCheckFrom || sj.timeToCheckFrom.length === 0)) {
+                                                        !sj.deltaIndicator || sj.deltaIndicator.length === 0)) {
 
             this.setError('invalid parameters', 'you must supply values for all fields, and select one user as a minimum.');
 
@@ -349,7 +349,7 @@ export class CrawlerDialog extends Component {
             crawler.crawlerType !== 'restfull' && crawler.crawlerType !== 'rss' && crawler.crawlerType !== 'external' &&
             crawler.crawlerType !== 'box' && crawler.crawlerType !== 'imanage' && crawler.crawlerType !== 'discourse' &&
             crawler.crawlerType !== 'googlesite' && crawler.crawlerType !== 'servicenow' &&
-            crawler.crawlerType !== 'search') {
+            crawler.crawlerType !== 'search' && crawler.crawlerType !== 'confluence') {
 
             this.setError('invalid parameters', 'you must select a crawler-type first.');
 
@@ -395,6 +395,15 @@ export class CrawlerDialog extends Component {
     update_acl_list(acl_list) {
         const crawler = this.state.crawler;
         crawler.acls = acl_list;
+        this.setState({crawler: crawler});
+        if (this.state.onUpdate) {
+            this.state.onUpdate(crawler);
+        }
+    }
+
+    update_processorConfig(processorConfig) {
+        const crawler = this.state.crawler;
+        crawler.processorConfig = processorConfig;
         this.setState({crawler: crawler});
         if (this.state.onUpdate) {
             this.state.onUpdate(crawler);
@@ -565,6 +574,13 @@ export class CrawlerDialog extends Component {
                                             crawler
                                         </div>
                                     </li>}
+                                    {c_type === "confluence" && <li className="nav-item nav-cursor">
+                                        <div
+                                            className={"nav-link " + (this.state.selectedTab === 'confluence crawler' ? 'active' : '')}
+                                            onClick={() => this.setState({selectedTab: 'confluence crawler'})}>confluence
+                                            crawler
+                                        </div>
+                                    </li>}
 
                                     {c_type !== "wordpress" && <li className="nav-item nav-cursor">
                                         <div
@@ -576,6 +592,12 @@ export class CrawlerDialog extends Component {
                                         <div
                                             className={"nav-link " + (this.state.selectedTab === 'acls' ? 'active' : '')}
                                             onClick={() => this.setState({selectedTab: 'acls'})}>ACLs
+                                        </div>
+                                    </li>
+                                    <li className="nav-item nav-cursor">
+                                        <div
+                                            className={"nav-link " + (this.state.selectedTab === 'processors' ? 'active' : '')}
+                                            onClick={() => this.setState({selectedTab: 'processors'})}>processors
                                         </div>
                                     </li>
                                     {c_type !== "wordpress" && <li className="nav-item nav-cursor">
@@ -620,6 +642,9 @@ export class CrawlerDialog extends Component {
                                             storeBinary={crawler.storeBinary}
                                             versioned={crawler.versioned}
                                             writeToCassandra={crawler.writeToCassandra}
+                                            enableDocumentSimilarity={crawler.enableDocumentSimilarity}
+                                            documentSimilarityThreshold={crawler.documentSimilarityThreshold}
+                                            isExternal={crawler.isExternal}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(crawler) => this.update_general_data(crawler)}/>
                                     }
@@ -657,6 +682,11 @@ export class CrawlerDialog extends Component {
                                             validExtensionsIgnore={sj.validExtensionsIgnore}
                                             articleIncludeWordsCsv={sj.articleIncludeWordsCsv}
                                             articleExcludeWordsCsv={sj.articleExcludeWordsCsv}
+                                            pagePrefixesToIgnore={sj.pagePrefixesToIgnore}
+                                            bearerToken={sj.bearerToken}
+                                            basicUsername={sj.basicUsername}
+                                            password={sj.password}
+                                            userAgent={sj.userAgent}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
@@ -718,7 +748,6 @@ export class CrawlerDialog extends Component {
                                             tenantId={sj.tenantId}
                                             clientId={sj.clientId}
                                             clientSecret={sj.clientSecret}
-                                            redirectUrl={sj.redirectUrl}
                                             crawlAllOfExchange={sj.crawlAllOfExchange}
                                             exchangeUsersToCrawl={sj.exchangeUsersToCrawl}
                                             specific_json={sj}
@@ -731,8 +760,7 @@ export class CrawlerDialog extends Component {
                                             tenantId={sj.tenantId}
                                             clientId={sj.clientId}
                                             clientSecret={sj.clientSecret}
-                                            redirectUrl={sj.redirectUrl}
-                                            crawlRootSite={sj.crawlRootSite}
+                                            crawlAllSites={sj.crawlAllSites}
                                             sharePointSitesToCrawl={sj.sharePointSitesToCrawl}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}
@@ -776,7 +804,7 @@ export class CrawlerDialog extends Component {
                                             clientSecret={sj.clientSecret}
                                             enterpriseId={sj.enterpriseId}
                                             folderList={sj.folderList}
-                                            timeToCheckFrom={sj.timeToCheckFrom}
+                                            deltaIndicator={sj.deltaIndicator}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
@@ -801,7 +829,9 @@ export class CrawlerDialog extends Component {
                                             theme={theme}
                                             json_key_file={sj.json_key_file}
                                             drive_user_csv={sj.drive_user_csv}
-                                            timeToCheckFrom={sj.timeToCheckFrom}
+                                            deltaIndicator={sj.deltaIndicator}
+                                            sites_only={sj.sites_only}
+                                            drive_id={sj.drive_id}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
@@ -858,7 +888,23 @@ export class CrawlerDialog extends Component {
                                             target_kb_id={sj.target_kb_id}
                                             userId={sj.userId}
                                             target_organisation_id={sj.target_organisation_id}
-                                            query={sj.query}
+                                            queryList={sj.queryList ? sj.queryList.concat([""]) : [""]}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
+                                    {t_value === 'confluence crawler' &&
+                                        <CrawlerConfluence
+                                            theme={theme}
+                                            source_id={crawler.sourceId}
+                                            organisation_id={this.props.organisation_id}
+                                            kb_id={this.props.kb_id}
+                                            userId={sj.userId}
+                                            baseUrl={sj.baseUrl}
+                                            accessToken={sj.accessToken}
+                                            includeSpaces={sj.includeSpaces}
+                                            excludeSpaces={sj.excludeSpaces}
+                                            categories={sj.categories}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
@@ -876,11 +922,20 @@ export class CrawlerDialog extends Component {
                                                 this source
                                             </div>
                                             <AclSetup
+                                                source_id={crawler.sourceId}
                                                 organisation_id={this.props.organisation_id}
                                                 acl_list={crawler.acls}
                                                 onChange={(acl_list) => this.update_acl_list(acl_list)}
                                                 user_list={this.props.user_list}
-                                                group_list={this.props.group_list}/>
+                                                group_list={this.props.group_list} />
+                                        </div>
+                                    }
+                                    {t_value === 'processors' &&
+                                        <div>
+
+                                            <ProcessorSetup
+                                                processorConfig={crawler.processorConfig}
+                                                onSave={(processorConfig) => this.update_processorConfig(processorConfig)}/>
                                         </div>
                                     }
                                     {t_value === 'schedule' && c_type !== "wordpress" &&

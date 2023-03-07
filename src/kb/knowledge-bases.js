@@ -22,6 +22,7 @@ export class KnowledgeBases extends Component {
             edit_knowledgebase: false,
             edit_knowledgebase_id: "",
             knowledgeBase: null,
+            optimize_all_indexes: false,
 
             edit_kb_id: "",
             edit_name: "",
@@ -32,8 +33,6 @@ export class KnowledgeBases extends Component {
             edit_analytics_window_size_in_months: "0",
             edit_operator_enabled: true,
             edit_capacity_warnings: true,
-            edit_enable_document_similarity: true,
-            edit_document_similarity_threshold: 0.9,
             edit_created: 0,
             edit_dms_index_schedule: defaultDmsIndexSchedule,
 
@@ -63,8 +62,6 @@ export class KnowledgeBases extends Component {
             edit_analytics_window_size_in_months: "0",
             edit_operator_enabled: true,
             edit_capacity_warnings: true,
-            edit_enable_document_similarity: true,
-            edit_document_similarity_threshold: 0.9,
             edit_created: 0,
             edit_security_id: Api.createGuid(),
             edit_dms_index_schedule: defaultDmsIndexSchedule,
@@ -86,8 +83,6 @@ export class KnowledgeBases extends Component {
                 edit_operator_enabled: knowledgeBase.operatorEnabled,
                 edit_capacity_warnings: knowledgeBase.capacityWarnings,
                 edit_dms_index_schedule: '', // no longer used
-                edit_enable_document_similarity: knowledgeBase.enableDocumentSimilarity ? knowledgeBase.enableDocumentSimilarity : false,
-                edit_document_similarity_threshold: knowledgeBase.documentSimilarityThreshold ? knowledgeBase.documentSimilarityThreshold : 0.9,
                 edit_created: knowledgeBase.created,
             })
         }
@@ -118,8 +113,6 @@ export class KnowledgeBases extends Component {
                                            this.state.edit_enabled, this.state.edit_max_queries_per_day,
                                            this.state.edit_analytics_window_size_in_months, this.state.edit_operator_enabled,
                                            this.state.edit_capacity_warnings, this.state.edit_created,
-                                           '', this.state.edit_enable_document_similarity,
-                                           this.state.edit_document_similarity_threshold,
                 () => {
                     this.setState({edit_knowledgebase: false, knowledgeBase: null});
                 });
@@ -141,11 +134,6 @@ export class KnowledgeBases extends Component {
         }
         return paginated_list;
     }
-    updateDMSIndexSchedule(time) {
-        if (time !== null) {
-            this.setState({edit_dms_index_schedule: time});
-        }
-    }
     isVisible() {
         return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0 &&
             this.props.selected_organisation && this.props.selected_organisation.length > 0;
@@ -154,15 +142,17 @@ export class KnowledgeBases extends Component {
         this.setState({copied_visible: org_id});
         window.setTimeout(() => { this.setState({copied_visible: ""})}, 1000);
     }
-    optimizeIndexesAsk(knowledgeBase) {
+    optimizeIndexesAsk(knowledgeBase, optimize_all_indexes) {
         if (knowledgeBase) {
-            this.props.openDialog("are you sure you want to optimize the indexes for \"" + knowledgeBase.name + "\" ?", "Optimize Knowledge base", (action) => { this.optimizeIndexes(action) });
-            this.setState({knowledgeBase: knowledgeBase});
+            const index_text = optimize_all_indexes ? "ALL INDEXES (full optimization)" : "the changed indexes";
+            this.props.openDialog("are you sure you want to optimize " + index_text + " for \"" + knowledgeBase.name + "\" ?", "Optimize Knowledge base", (action) => { this.optimizeIndexes(action) });
+            this.setState({knowledgeBase: knowledgeBase, optimize_all_indexes: optimize_all_indexes});
         }
     }
     optimizeIndexes(action) {
         if (action) {
-            this.props.optimizeIndexes(this.props.selected_organisation_id, this.state.knowledgeBase.kbId);
+            this.props.optimizeIndexes(this.props.selected_organisation_id, this.state.knowledgeBase.kbId,
+                                       this.state.optimize_all_indexes);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();
@@ -213,9 +203,9 @@ export class KnowledgeBases extends Component {
                                                                  title="remove knowledge base" alt="remove"/>
                                                         </div>
                                                         <div className="link-button"
-                                                                onClick={() => this.optimizeIndexesAsk(knowledge_base)}>
+                                                                onClick={() => this.optimizeIndexesAsk(knowledge_base, true)}>
                                                             <img src="../images/optimize-indexes.svg" className="image-size"
-                                                                 title="optimize indexes" alt="optimize"/>
+                                                                 title="optimize indexes" alt="optimize indexes"/>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -352,20 +342,6 @@ export class KnowledgeBases extends Component {
 
 
                                                 <div className="control-row">
-                                                    <span className="checkbox-only">
-                                                        <input type="checkbox"
-                                                               checked={this.state.edit_enable_document_similarity}
-                                                               onChange={(event) => {
-                                                                   this.setState({edit_enable_document_similarity: event.target.checked});
-                                                               }}
-                                                               value="enable document similarity?"
-                                                        />
-                                                    </span>
-                                                    <span>enable document similarity?</span>
-                                                </div>
-
-
-                                                <div className="control-row">
                                                     <span className="label-wide">maximum number of queries per day (0 is no limits)</span>
                                                     <span className="text">
                                                         <input type="text"
@@ -387,19 +363,6 @@ export class KnowledgeBases extends Component {
                                                         />
                                                     </span>
                                                 </div>
-
-
-                                                {/*<div className="control-row">*/}
-                                                {/*    <span className="label-wide">document similarity (a number between 0.75 and 1.0)</span>*/}
-                                                {/*    <span className="text">*/}
-                                                {/*        <input type="text"*/}
-                                                {/*               onChange={(event) => this.setState({edit_document_similarity_threshold: event.target.value})}*/}
-                                                {/*               placeholder="document similarity threshold"*/}
-                                                {/*               value={this.state.edit_document_similarity_threshold}*/}
-                                                {/*        />*/}
-                                                {/*    </span>*/}
-                                                {/*</div>*/}
-
 
                                             </div>
 

@@ -484,7 +484,12 @@ a:visited {
     border-radius: 10px;
     opacity: 0.8;
     background-size: 100px;
-    background: url('../images/busy.gif') 50% 50% no-repeat rgb(255,255,255);
+    background: url('../images/busy.gif') 50% 50% no-repeat rgb(255, 255, 255);
+}
+
+
+.password_hide_show img {
+    cursor: pointer;
 }
 
 .busy-dark {

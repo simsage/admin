@@ -17,7 +17,6 @@ export class CrawlerExchange365 extends Component {
             tenantId: props.tenantId ? props.tenantId : '',
             clientId: props.clientId ? props.clientId : '',
             clientSecret: props.clientSecret ? props.clientSecret : '',
-            redirectUrl: props.redirectUrl ? props.redirectUrl : '',
 
             crawlAllOfExchange: Api.defined(props.crawlAllOfExchange) ? props.crawlAllOfExchange : false,
             exchangeUsersToCrawl: props.exchangeUsersToCrawl ? props.exchangeUsersToCrawl : '',
@@ -41,7 +40,6 @@ export class CrawlerExchange365 extends Component {
                 tenantId: nextProps.tenantId,
                 clientId: nextProps.clientId,
                 clientSecret: nextProps.clientSecret,
-                redirectUrl: nextProps.redirectUrl,
 
                 crawlAllOfExchange: nextProps.crawlAllOfExchange,
                 exchangeUsersToCrawl: nextProps.exchangeUsersToCrawl,
@@ -60,7 +58,6 @@ export class CrawlerExchange365 extends Component {
             tenantId: Api.defined(data.tenantId) ? data.tenantId : this.state.tenantId,
             clientId: Api.defined(data.clientId) ? data.clientId : this.state.clientId,
             clientSecret: Api.defined(data.clientSecret) ? data.clientSecret : this.state.clientSecret,
-            redirectUrl: Api.defined(data.redirectUrl) ? data.redirectUrl : this.state.redirectUrl,
 
             crawlAllOfExchange: Api.defined(data.crawlAllOfExchange) ? data.crawlAllOfExchange : this.state.crawlAllOfExchange,
             exchangeUsersToCrawl: Api.defined(data.exchangeUsersToCrawl) ? data.exchangeUsersToCrawl : this.state.exchangeUsersToCrawl,
@@ -78,72 +75,67 @@ export class CrawlerExchange365 extends Component {
         }
         return (
             <div className="crawler-page">
-
+                <div className="form-group">
+                    <span className="office-manual-box">
+                        <a href="resources/simsage-exchange365-setup.pdf" id="dlexchange" target="_blank"
+                           title="download the SimSage Exchange365 setup guide">
+                            <span className="instructions-label">instructions</span>
+                            <img src="../images/pdf-icon.png" alt="Exchange365 setup guide" className="image-size"/>
+                        </a>
+                    </span>
+                </div>
                 <div className="form-group">
                     <div className="full-column-2">
-                        <span className="small-label-right">domain name</span>
+                        <span className="small-label-right">tenant id</span>
                         <span className="bigger-text">
                             <form>
                                 <input type="text" className="form-control"
-                                    placeholder="tenant id"
-                                    autoFocus={true}
-                                    value={this.state.tenantId}
-                                    onChange={(event) => {this.change_callback({tenantId: event.target.value})}}
+                                       placeholder="tenant id"
+                                       autoFocus={true}
+                                       value={this.state.tenantId}
+                                       onChange={(event) => {
+                                           this.change_callback({tenantId: event.target.value})
+                                       }}
                                 />
                             </form>
-                        </span>
-                        <span className="office-manual-box">
-                            <a href="resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank" title="download the SimSage Exchange 365 setup guide">
-                                <span className="instructions-label">instructions</span>
-                                <img src="../images/pdf-icon.png" alt="exchange 365 setup guide" className="image-size" />
-                            </a>
                         </span>
                     </div>
                 </div>
 
 
                 <div className="form-group">
-                    <span className="left-column">
+                    <span className="full-column-2">
                         <span className="small-label-right">client id</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="text" className="form-control"
-                                    placeholder="client id"
-                                    value={this.state.clientId}
-                                    onChange={(event) => {this.change_callback({clientId: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
-                    <span className="right-column">
-                        <span className="small-label-right">client secret</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="text" className="form-control"
-                                    placeholder="client secret"
-                                    value={this.state.clientSecret}
-                                    onChange={(event) => {this.change_callback({clientSecret: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
-                </div>
-
-
-                <div className="form-group">
-                    <span className="full-column">
-                        <span className="small-label-right">redirect url</span>
                         <span className="bigger-text">
                             <form>
                                 <input type="text" className="form-control"
-                                    placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."
-                                    value={this.state.redirectUrl}
-                                    onChange={(event) => {this.change_callback({redirectUrl: event.target.value})}}
+                                       placeholder="client id"
+                                       value={this.state.clientId}
+                                       onChange={(event) => {
+                                           this.change_callback({clientId: event.target.value})
+                                       }}
                                 />
                             </form>
                         </span>
                     </span>
                 </div>
+                <div>
+                    <span className="full-column-2">
+                        <span className="small-label-right">client secret</span>
+                        <span className="bigger-text">
+                            <form>
+                                <input type="text" className="form-control"
+                                       placeholder="client secret"
+                                       value={this.state.clientSecret}
+                                       onChange={(event) => {
+                                           this.change_callback({clientSecret: event.target.value})
+                                       }}
+                                />
+                            </form>
+                        </span>
+                    </span>
+                </div>
+
 
                 <br/>
 

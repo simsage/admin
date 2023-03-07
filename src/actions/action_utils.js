@@ -284,13 +284,11 @@ export async function _getLogList(organisation_id, hours, dispatch, getState) {
         dispatch({type: BUSY, busy: true});
 
         let gmtDate = Api.getGMTDate();
-        let date = new Date(gmtDate.valueOf() - ((hours - 1) * 3600_000));
-        console.log(date.valueOf(), gmtDate.valueOf());
+        let date = new Date(gmtDate.valueOf()); // get now
         let year = date.getFullYear();
         const month = date.getMonth() + 1;
         const day = date.getDate();
-        const hour = date.getHours();
-        console.log("hour:" + hour);
+        const hour = date.getHours(); // time/hour now 0..23
 
         await Comms.http_get('/stats/system-logs/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(year) + '/' +
             encodeURIComponent(month) + '/' + encodeURIComponent(day) + '/' + encodeURIComponent(hour) + '/' + encodeURIComponent(hours), session_id,
@@ -371,7 +369,8 @@ export async function _getGroups(organisation_id, dispatch, getState) {
         dispatch({type: BUSY, busy: true});
         await Comms.http_get('/auth/groups/' + encodeURIComponent(organisation_id), session_id,
             (response) => {
-                dispatch({type: SET_GROUPS_PAGINATED, group_list: response.data.groupList});
+                dispatch({type: SET_GROUPS_PAGINATED, group_list: response.data.groupList,
+                          all_user_list: response.data.userList});
             },
             (errStr) => {
                 dispatch({type: ERROR, title: "Error", error: errStr})

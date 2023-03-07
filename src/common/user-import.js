@@ -53,26 +53,24 @@ export class UserImport extends Component {
     render() {
         return (
             <div className="spreadsheet-upload">
-                <form onSubmit={(e) => this._handleSubmit(e)} className="upload-container">
-                    <div>
-                        <input className="upload-control-position"
-                               type="file"
-                               onChange={(e) => this._handleImageChange(e)}/>
-                        <div className="upload-button">
-                            <div className="upload-input" title={"user-import csv format:\nfirstname,surname,email,\"group1,group2\",\"simsage-role1,simsage-role2\""}>
-                                <button className="btn btn-primary btn-block"
-                                        disabled={this.state.binary_data === null || this.props.uploading}
-                                        onClick={this.upload.bind(this)}>import csv</button>
-                                {this.props.uploading &&
-                                <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>
-                                }
-                                <span className="help-button">
-                                    <img className="help-button-img" src="images/help.svg" alt="help" />
-                                </span>
-                            </div>
+                <div>
+                    <input className="upload-control-position"
+                           type="file"
+                           onChange={(e) => this._handleImageChange(e)}/>
+                    <div className="upload-button">
+                        <div className="upload-input" title={"user-import csv (with header) format:\nfirstname,surname,email,\"group1,group2\",\"DMS,ADMIN\""}>
+                            <button className="btn btn-primary btn-block"
+                                    disabled={this.state.binary_data === null || this.props.uploading}
+                                    onClick={this.upload.bind(this)}>import csv</button>
+                            {this.props.uploading &&
+                            <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>
+                            }
+                            <span className="help-button">
+                                <img className="help-button-img" src="images/help.svg" alt="help" />
+                            </span>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         )
     }

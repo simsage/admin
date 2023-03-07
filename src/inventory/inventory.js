@@ -103,7 +103,7 @@ export class Inventory extends React.Component {
             return "Content analysis SpreadSheet";
         else if (name === "content parquet")
             return "Content analysis Parquet file";
-        else if (name === "indexes parquet")
+        else if (name === "index parquet")
             return "Index analysis Parquet file";
         else if (name === "indexes spreadsheet")
             return "Index analysis SpreadSheet";
@@ -161,7 +161,7 @@ export class Inventory extends React.Component {
                                             </div>
                                         </td>
                                         <td>
-                                            {(item.name === "content parquet" || item.name === "indexes parquet") &&
+                                            {(item.name === "content parquet" || item.name === "index parquet") &&
                                                 <div className="link-button"
                                                      onClick={() => this.inventorizeDump(item.time)}>
                                                     <img src="../images/parquet.png" className="image-size"
@@ -181,6 +181,14 @@ export class Inventory extends React.Component {
                                 <td/>
                                 <td/>
                                 <td>
+                                    {this.props.selected_organisation_id.length > 0 && !this.props.inventorize_busy &&
+                                        <div className="image-button" onClick={() => {
+                                            this.props.createIndexInventory();
+                                            this.props.forceInventoryBusy();
+                                        }}><img className="image-size" src="../images/add.svg"
+                                                title="create entity statistics"
+                                                alt="create entity statistics"/>&nbsp;entity graph</div>
+                                    }
                                     {this.props.selected_organisation_id.length > 0 && !this.props.inventorize_busy &&
                                         <div className="image-button" onClick={() => {
                                             this.props.createInventory();

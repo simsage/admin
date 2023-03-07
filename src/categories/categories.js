@@ -63,7 +63,7 @@ export class Categories extends React.Component {
     }
     saveCategorizationRule(category) {
         if (category) {
-            if (category.categorizationLabel.trim().length > 1 && category.rule.trim().length > 2) {
+            if (category.categorizationLabel.trim().length > 1 && (category.rule.trim().length > 2 || category.rule.trim() === "()")) {
                 this.props.saveCategorizationRule(category);
                 this.setState({category_edit: false, category: create_empty_category()});
             } else {

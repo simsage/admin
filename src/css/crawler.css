@@ -269,6 +269,8 @@
 
 .crawler-page .delete-box {
     margin-top: -14px;
+    width: 20px;
+    display: inline-block;
     color: #888;
     float: left;
     cursor: pointer;
@@ -276,6 +278,8 @@
 
 .crawler-page .up-arrow {
     float: left;
+    display: inline-block;
+    width: 20px;
     margin-top: -16px;
     padding: 2px;
     font-size: 26px;

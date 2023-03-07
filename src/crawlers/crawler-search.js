@@ -17,7 +17,7 @@ export class CrawlerSearch extends Component {
             // Search properties
             target_organisation_id: props.target_organisation_id ? props.target_organisation_id : '',
             target_kb_id: props.target_kb_id ? props.target_kb_id : '',
-            query: props.query ? props.query : '',
+            queryList: props.queryList ? props.queryList : [""],
             userId: props.userId ? props.userId : '',
             specific_json: props.specific_json,
         };
@@ -38,7 +38,7 @@ export class CrawlerSearch extends Component {
             this.setState(this.construct_data({
                 target_organisation_id: Api.defined(nextProps.target_organisation_id) ? nextProps.target_organisation_id : '',
                 target_kb_id: Api.defined(nextProps.target_kb_id) ? nextProps.target_kb_id : '',
-                query: Api.defined(nextProps.query) ? nextProps.query : '',
+                queryList: Api.defined(nextProps.queryList) ? nextProps.queryList : '',
                 userId: Api.defined(nextProps.userId) ? nextProps.userId : '',
                 specific_json: nextProps.specific_json,
                 onSave: nextProps.onSave,
@@ -52,19 +52,67 @@ export class CrawlerSearch extends Component {
             ...this.state.specific_json,
             target_organisation_id: Api.defined(data.target_organisation_id) ? data.target_organisation_id : this.state.target_organisation_id,
             target_kb_id: Api.defined(data.target_kb_id) ? data.target_kb_id : this.state.target_kb_id,
-            query: Api.defined(data.query) ? data.query : this.state.query,
+            queryList: Api.defined(data.queryList) ? data.queryList : this.state.queryList,
             userId: Api.defined(data.userId) ? data.userId : this.state.userId
         };
     }
 
     change_callback(data) {
+        let result = [].concat(Api.defined(data.queryList) ? data.queryList : this.state.queryList)
+        result.pop()
         this.setState(data);
         if (this.state.onSave) {
-            const c_data = this.construct_data(data);
+            const c_data = this.construct_data({...data, queryList: result});
             this.state.onSave(c_data);
         }
     }
 
+    renderQueryInputs() {
+        const rows = []
+        const self = this
+
+        function removeRow(orgList, idx) {
+            const numProps = orgList.length
+            if (numProps !== idx) {
+
+                for (let i = idx; i < (numProps); i++) {
+                    orgList[(i)] = orgList[i+1]
+                }
+                orgList.pop()
+            }
+        }
+
+        function getChangedMap(targetValue, idx) {
+            let orgList = [].concat(self.state.queryList)
+            if (targetValue.trim().length === 0) {
+                removeRow(orgList, idx)
+            } else {
+                if (idx === orgList.length-1) {
+                    orgList.push("")
+                }
+                orgList[idx] = targetValue
+            }
+            return orgList
+        }
+
+        for (let i = 0; i < this.state.queryList.length; i++) {
+            rows.push(<tr key={"qr_" + i}>
+                <td>
+                    <input type="text" className="form-control dropbox-text-width"
+                           spellCheck={false}
+                           style={{width: "500px", marginRight: "10px"}}
+                           placeholder="Query text to run"
+                           value={this.state.queryList[i]}
+                           onChange={(event) => {
+                               this.change_callback({queryList: getChangedMap(event.target.value, i)})
+                           }}
+                    />
+                </td>
+
+            </tr>)
+        }
+        return rows
+    }
 
     render() {
         if (this.state.has_error) {
@@ -146,20 +194,7 @@ export class CrawlerSearch extends Component {
                             <form>
                             <table>
                                 <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" className="form-control dropbox-text-width"
-                                               spellCheck={false}
-                                               style={{width: "500px", marginRight: "10px"}}
-                                               placeholder="Query text to run"
-                                               value={this.state.query}
-                                               onChange={(event) => {
-                                                   this.change_callback({query: event.target.value})
-                                               }}
-                                        />
-                                    </td>
-
-                                </tr>
+                                {this.renderQueryInputs()}
                                 </tbody>
                             </table>
                             </form>

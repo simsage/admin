@@ -219,7 +219,7 @@ const mapStateToProps = function(state) {
         group_page: state.appReducer.group_page,
         group_page_size: state.appReducer.group_page_size,
 
-        user_list: state.appReducer.user_list,
+        user_list: state.appReducer.all_user_list,
 
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_organisation: state.appReducer.selected_organisation,

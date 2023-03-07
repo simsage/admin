@@ -36,7 +36,7 @@ export class CategoryEdit extends Component {
 
     handleSave() {
         if (this.props.onSave) {
-            if (this.state.categorizationLabel.trim().length > 1 && this.state.rule.trim().length > 2) {
+            if (this.state.categorizationLabel.trim().length > 1 && (this.state.rule.trim().length > 2 || this.state.rule.trim() === "()")) {
                 if (!this.isValidLabel(this.state.categorizationLabel)) {
                     this.props.onError("Invalid characters in metadata label.  A label can only contain numbers (0..9), letters (a..z, A..Z) or underscore (_) or hyphen (-).");
                 } else {
@@ -93,7 +93,7 @@ export class CategoryEdit extends Component {
                                     <span className="text">
                                         <textarea className="input-area category-text-area-width"
                                                   onChange={(event) => this.setState({rule: event.target.value})}
-                                                  placeholder={"SimSage rule defining the matching criteria"}
+                                                  placeholder={"SimSage rule defining the matching criteria (or () for catch-all if nothing else matches rule)"}
                                                   rows={4}
                                                   value={this.state.rule}
                                         />

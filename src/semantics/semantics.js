@@ -52,7 +52,7 @@ export class Semantics extends React.Component {
     }
     deleteSemantic(action) {
         if (action && this.state.semantic) {
-            this.props.deleteSemantic(this.state.semantic.word);
+            this.props.deleteSemantic(this.state.semantic.word, this.state.semantic.semantic);
         }
         if (this.props.closeDialog) {
             this.props.closeDialog();

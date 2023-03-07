@@ -10,6 +10,8 @@ import {
     GET_KNOWLEDGE_BASES,
     SET_KB_PAGE,
     SET_KB_PAGE_SIZE,
+    SET_SOURCE_PAGE,
+    SET_SOURCE_PAGE_SIZE,
     GET_LICENSE,
     SET_ORGANISATION_FILTER,
     SET_ORGANISATION_PAGE,
@@ -356,9 +358,9 @@ export const appCreators = {
     setKbPage: (page) => ({type: SET_KB_PAGE, page}),
     setKbPageSize: (page_size) => ({type: SET_KB_PAGE_SIZE, page_size}),
 
-    optimizeIndexes: (organisation_id, kb_id) => async (dispatch, getState) => {
+    optimizeIndexes: (organisation_id, kb_id, optimize_all_indexes) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
-        const data = {'organisationId': organisation_id, 'kbId': kb_id};
+        const data = {'organisationId': organisation_id, 'kbId': kb_id, 'optimizeAllIndexes': optimize_all_indexes};
         const session_id = get_session_id(getState);
         await Comms.http_put('/language/optimize-indexes', session_id, data,
             () => {
@@ -406,13 +408,12 @@ export const appCreators = {
 
     updateKnowledgeBase: (organisation_id, kb_id, name, email, security_id, enabled, max_queries_per_day,
                           analytics_window_size_in_months, operator_enabled, capacity_warnings,
-                          created, dms_index_schedule, enable_similarity, similarity_threshold, success) => async (dispatch, getState) => {
+                          created, success) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const payload = {"kbId": kb_id, "organisationId": organisation_id, "name": name, "email": email,
             "securityId": security_id, "maxQueriesPerDay": max_queries_per_day, "enabled": enabled,
             "analyticsWindowInMonths": analytics_window_size_in_months, "operatorEnabled": operator_enabled,
-            "capacityWarnings": capacity_warnings, "created": created, "dmsIndexSchedule": dms_index_schedule,
-            "enableDocumentSimilarity": enable_similarity, "documentSimilarityThreshold": similarity_threshold};
+            "capacityWarnings": capacity_warnings, "created": created};
         await Comms.http_put('/knowledgebase/', get_session_id(getState), payload,
             () => {
                 _getKnowledgeBases(organisation_id, dispatch, getState);
@@ -429,6 +430,22 @@ export const appCreators = {
         const kb_id = getState().appReducer.selected_knowledgebase_id;
         const session_id = get_session_id(getState);
         await Comms.http_post('/document/inventorize', session_id,
+            {"kbId": kb_id, "organisationId": organisation_id},
+            () => {
+                _getInventorizeList(organisation_id, kb_id, dispatch, getState);
+            },
+            (errStr) => {
+                dispatch({type: ERROR, title: "Error", error: errStr})
+            }
+        )
+    },
+
+    createIndexInventory: () => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const session_id = get_session_id(getState);
+        await Comms.http_post('/document/inventorize-indexes', session_id,
             {"kbId": kb_id, "organisationId": organisation_id},
             () => {
                 _getInventorizeList(organisation_id, kb_id, dispatch, getState);
@@ -621,22 +638,23 @@ export const appCreators = {
     // restore a text-backup to SimSage
     uploadBackup: (payload, on_success) => async (dispatch, getState) => {
         if (payload && payload.fileType && payload.base64Text) {
-            dispatch({type: BUSY, busy: true});
             dispatch(({type: UPLOADING_PROGRAM}));
             const session_id = get_session_id(getState);
             const organisation_id = getState().appReducer.selected_organisation_id;
-            await Comms.http_post('/backup/restore', session_id, {
-                    "organisationId": organisation_id,
-                    "base64Text": payload.base64Text,
-                    "fileType": payload.fileType
-                },
+            const data = {
+                "organisationId": organisation_id,
+                "base64Text": payload.base64Text,
+                "fileType": payload.fileType
+            };
+            await Comms.http_post('/backup/restore', session_id, data,
                 () => {
-                    dispatch(({type: UPLOADING_PROGRAM_FINISHED}));
                     if (on_success) {
                         on_success()
                     }
+                    dispatch(({type: UPLOADING_PROGRAM_FINISHED}));
                 },
                 (errStr) => {
+                    console.log(errStr);
                     dispatch({type: ERROR, title: "Error", error: errStr})
                 }
             );
@@ -675,6 +693,14 @@ export const appCreators = {
 
     getCrawlers: (organisation_id, kb_id) => async (dispatch, getState) => {
         await _getCrawlers(organisation_id, kb_id, dispatch, getState)
+    },
+
+    setSourcePage: (page) => async (dispatch) => {
+        dispatch({type: SET_SOURCE_PAGE, page});
+    },
+
+    setSourcePageSize: (page_size) => async (dispatch) => {
+        dispatch({type: SET_SOURCE_PAGE_SIZE, page_size});
     },
 
     updateCrawler: (crawler, on_success) => async (dispatch, getState) => {
@@ -1157,7 +1183,7 @@ export const appCreators = {
         await _getSemantics(organisation_id, kb_id, null, semantic_filter, page_size, dispatch, getState);
     },
 
-    deleteSemantic: (word) => async (dispatch, getState) => {
+    deleteSemantic: (word, semantic) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const organisation_id = getState().appReducer.selected_organisation_id;
         const kb_id = getState().appReducer.selected_knowledgebase_id;
@@ -1166,7 +1192,8 @@ export const appCreators = {
         const page_size = getState().appReducer.semantic_page_size;
         const session_id = get_session_id(getState);
         await Comms.http_delete('/language/delete-semantic/' + encodeURIComponent(organisation_id) + '/' +
-                                    encodeURIComponent(kb_id) + '/' + encodeURIComponent(word), session_id,
+                                    encodeURIComponent(kb_id) + '/' + encodeURIComponent(word) + '/' +
+                                    encodeURIComponent(semantic), session_id,
             () => {
                 _getSemantics(organisation_id, kb_id, prev_word, filter, page_size, dispatch, getState);
             },

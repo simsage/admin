@@ -51,6 +51,8 @@ export function initializeState() {
 
         // crawlers
         crawler_list: [],
+        source_page: 0,
+        source_page_size: 5,
         theme: window.ENV.theme,
 
         // system busy
@@ -159,11 +161,12 @@ export function initializeState() {
 
         // groups
         group_list: [],
+        all_user_list: [],
         group_filter: "",
         prev_group_filter: "",
         group_count: 0,
         group_page: 0,
-        group_page_size: 10,
+        group_page_size: 5,
 
         // system logs
         log_list: [],

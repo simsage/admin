@@ -17,6 +17,7 @@ const default_qna_threshold = 0.8125;
 const crawler_list = [
     {"key": "none", "value": "please select crawler type"},
     {"key": "box", "value": "Box crawler"},
+    {"key": "confluence", "value": "Confluence crawler"},
     {"key": "database", "value": "Database crawler"},
     {"key": "discourse", "value": "Discourse crawler"},
     {"key": "dropbox", "value": "Dropbox crawler"},
@@ -24,7 +25,6 @@ const crawler_list = [
     {"key": "external", "value": "External crawler"},
     {"key": "file", "value": "File (SMB) crawler"},
     {"key": "gdrive", "value": "Google-drive crawler"},
-    {"key": "googlesite", "value": "Google-site crawler"},
     {"key": "imanage", "value": "iManage crawler"},
     {"key": "nfs", "value": "NFS external crawler"},
     {"key": "onedrive", "value": "One-drive crawler"},
@@ -80,6 +80,9 @@ export class CrawlerGeneral extends Component {
             storeBinary: props.storeBinary,
             versioned: props.versioned,
             writeToCassandra: props.writeToCassandra,
+            enableDocumentSimilarity: props.enableDocumentSimilarity,
+            documentSimilarityThreshold: props.documentSimilarityThreshold,
+            isExternal: props.isExternal
         };
 
     }
@@ -123,6 +126,9 @@ export class CrawlerGeneral extends Component {
                 storeBinary: Api.defined(nextProps.storeBinary) ? nextProps.storeBinary : true,
                 versioned: Api.defined(nextProps.versioned) ? nextProps.versioned : true,
                 writeToCassandra: Api.defined(nextProps.writeToCassandra) ? nextProps.writeToCassandra : true,
+                enableDocumentSimilarity: Api.defined(nextProps.enableDocumentSimilarity) ? nextProps.enableDocumentSimilarity : true,
+                documentSimilarityThreshold: Api.defined(nextProps.documentSimilarityThreshold) ? nextProps.documentSimilarityThreshold : true,
+                isExternal: Api.defined(nextProps.isExternal) ? nextProps.isExternal : false,
 
                 name: nextProps.name,
                 onSave: nextProps.onSave,
@@ -172,6 +178,9 @@ export class CrawlerGeneral extends Component {
             storeBinary: Api.defined(data.storeBinary) ? data.storeBinary : this.state.storeBinary,
             versioned: Api.defined(data.versioned) ? data.versioned : this.state.versioned,
             writeToCassandra: Api.defined(data.writeToCassandra) ? data.writeToCassandra : this.state.writeToCassandra,
+            enableDocumentSimilarity: Api.defined(data.enableDocumentSimilarity) ? data.enableDocumentSimilarity : this.state.enableDocumentSimilarity,
+            documentSimilarityThreshold: Api.defined(data.documentSimilarityThreshold) ? data.documentSimilarityThreshold : this.state.documentSimilarityThreshold,
+            isExternal: Api.defined(data.isExternal) ? data.isExternal : this.state.isExternal,
         };
     }
 
@@ -406,6 +415,36 @@ export class CrawlerGeneral extends Component {
                     <div className="form-group">
                         <span className="left-column">
                             <div style={{float: 'left'}}
+                                 title="If checked, SimSage perform similarity calculations on all items in this source against all other enabled sources and itself.">
+                                <input type="checkbox"
+                                       checked={this.state.enableDocumentSimilarity}
+                                       onChange={(event) => {
+                                           this.change_callback({enableDocumentSimilarity: event.target.checked});
+                                       }}
+                                       value="Enable similarity checking for documents?"
+                                />
+                                <span className="label-left">enable similarity checking for documents?</span>
+                            </div>
+                        </span>
+                        <span className="right-column">
+                            <span className="label-right">similarity threshold</span>
+                            <span className="number-textbox">
+                                <input type="text" className="form-control"
+                                       placeholder="a number betwene 0.75 and 1.0"
+                                       value={this.state.documentSimilarityThreshold}
+                                       onChange={(event) => {
+                                           this.change_callback({documentSimilarityThreshold: event.target.value})
+                                       }}
+                                />
+                            </span>
+                        </span>
+                    </div>
+
+                    <br/>
+
+                    <div className="form-group">
+                        <span className="left-column">
+                            <div style={{float: 'left'}}
                                  title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
                                 <input type="checkbox"
                                        checked={this.state.deleteFiles && this.state.crawlerType !== 'rss'}
@@ -519,6 +558,24 @@ export class CrawlerGeneral extends Component {
                                 />
                                 <span className="label-left">write indexes direct to Cassandra?</span>
                             </div>
+                        </span>
+                    </div>
+
+                    <div className="form-group">
+                        <span className="left-column">
+                            <div style={{float: 'left'}}
+                                 title="is this a source that needs an external crawler to operate?">
+                                <input type="checkbox"
+                                       checked={this.state.isExternal}
+                                       onChange={(event) => {
+                                           this.change_callback({isExternal: event.target.checked});
+                                       }}
+                                       value="external source?"
+                                />
+                                <span className="label-left">external source?</span>
+                            </div>
+                        </span>
+                        <span className="right-column">
                         </span>
                     </div>
 

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 import '../css/acl-setup.css';
+import Api from "./api";
 
 
 // create acls from groups
@@ -9,7 +10,7 @@ export class AclSetup extends Component {
         super(props);
         this.state = {
             has_error: false,
-            acl_list: props.acl_list ? props.acl_list: [],
+            acl_list: Api.defined(props.acl_list) ? props.acl_list: [],
             selectedFilter: '',
             availableFilter: '',
         };
@@ -106,7 +107,8 @@ export class AclSetup extends Component {
         for (const acl of acl_list) {
             if (acl && acl.acl) {
                 if (filter.length === 0 || acl.acl.toLowerCase().indexOf(filter) >= 0) {
-                    if (!seen_set.hasOwnProperty(acl.acl)) {
+                    let found = false;
+                    if (!seen_set.hasOwnProperty(acl.acl) || found) {
                         seen_set[acl.acl] = true;
                         selected_acl_list.push(acl);
                     }

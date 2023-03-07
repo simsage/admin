@@ -51,23 +51,21 @@ export class BackupUpload extends Component {
     render() {
         return (
             <div className="backup-upload">
-                <form onSubmit={(e) => this._handleSubmit(e)} className="upload-container">
-                    <div>
-                        <input className="upload-control-position"
-                               type="file"
-                               onChange={(e) => this._handleImageChange(e)}/>
-                        <div className="upload-button">
-                            <div className="upload-input">
-                                <button className="btn btn-primary btn-block"
-                                        disabled={this.state.binary_data === null || this.props.uploading}
-                                        onClick={this.upload.bind(this)}>restore</button>
-                                {this.props.uploading &&
-                                <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>
-                                }
-                            </div>
+                <div>
+                    <input className="upload-control-position"
+                           type="file"
+                           onChange={(e) => this._handleImageChange(e)}/>
+                    <div className="upload-button">
+                        <div className="upload-input">
+                            <button className="btn btn-primary btn-block"
+                                    disabled={this.state.binary_data === null || this.props.uploading}
+                                    onClick={this.upload.bind(this)}>restore</button>
+                            {this.props.uploading &&
+                            <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>
+                            }
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         )
     }
