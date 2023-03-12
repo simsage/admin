@@ -25,13 +25,17 @@ export default function SynonymsHome(props) {
         "filter": "",
         "pageSize": 10
     };
+
     console.log("synonym_list",synonym_list)
+
 
     useEffect(() => {
         dispatch(loadSynonyms({ session_id, data }));
         console.log("useEffect load_data",load_data)
 
     }, [selected_knowledge_base_id, session, props.tab, load_data === 'load_now'])
+
+
 
     // console.log("useEffect out load_data",load_data)
     return (

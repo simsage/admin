@@ -26,14 +26,16 @@ export default function SynonymsHome(props) {
 
     const synonym_list = useSelector((state)=>state.synonymReducer.synonym_list)
     const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
-    const [synonym_page_size,setSynonymPageSize] = useState(useSelector((state)=>state.synonymReducer.synonym_page_size))
-    const [synonym_page,setSynonymPage] = useState(useSelector((state)=>state.synonymReducer.synonym_page))
+
+    const [synonym_page_size,setPageSize] = useState(useSelector((state)=>state.synonymReducer.synonym_page_size))
+    const [synonym_page,setPage] = useState(useSelector((state)=>state.synonymReducer.synonym_page))
+
     const [filter,setFilter] = useState('')
 
-    const dispatch = useDispatch();
+    const [page_history,setPageHistory] = useState([])
+    const [prev_id,setPrevID] = useState(0)
 
-    let prev_synonym_set = synonym_list.slice(-1)[0]
-    let prev_id = synonym_page != 0 ? prev_synonym_set['id']:0
+    const dispatch = useDispatch();
 
     let data = {
         "organisationId": selected_organisation_id,
@@ -43,15 +45,48 @@ export default function SynonymsHome(props) {
         "pageSize": synonym_page_size
     };
 
+
     useEffect(() => {
         dispatch(loadSynonyms({session_id, data }));
-    }, [load_data === "load_now", synonym_page_size,synonym_page])
+    }, [load_data === "load_now",synonym_page, synonym_page_size])
 
 
+    function handlePageChange(next_page){
+        if(next_page > synonym_page){
+
+            // last list item is used for next page
+            const last_row = synonym_list.slice(-1)[0]
+            const temp_last_id = last_row['id']
+            setPrevID(temp_last_id);
+
+            //first item -1 is used for previous page
+            const first_row = synonym_list.slice(0)[0];
+            const temp_first_id = first_row['id']-1;
+            setPageHistory([...page_history,{page:next_page,id:temp_first_id}]);
+
+        }else{
+            const previous_page = next_page;
+            const temp_prev_row = page_history.slice(-1)
+            const temp_id = temp_prev_row && temp_prev_row.length === 1?temp_prev_row[0]["id"]:0
+            setPrevID(temp_id);
+
+            setPageHistory([...page_history.slice(0,-1)]);
+        }
+        setPage(next_page);
+    }
+
+
+    function handlePageSizeChange(row){
+        setPageHistory([])
+        setPrevID(0)
+        setPage(0)
+        setPageSize(row)
+    }
 
     function getSynonymList() {
         return synonym_list ? synonym_list : [];
     }
+
     //
     // function handleKeyDown(event) {
     //     if (event.key === "Enter") {
@@ -82,9 +117,7 @@ export default function SynonymsHome(props) {
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
-    function handleAddNew(){
-        dispatch(showAddSynonymForm(true));
-    }
+
 
     // function handleSearchFilter(event) {
     //     let filter = event.target.value;
@@ -145,7 +178,7 @@ export default function SynonymsHome(props) {
                     <table className="table">
                         <thead>
                         <tr className=''>
-                            {/* <td className='small text-black-50 px-4'>ID</td> */}
+                             <td className='small text-black-50 px-4'>ID</td>
                             <td className='small text-black-50 px-4 synonym-column-width'>Synonyms</td>
                             <td className='small text-black-50 px-4'></td>
                         </tr>
@@ -155,9 +188,9 @@ export default function SynonymsHome(props) {
                             getSynonymList().map((synonym) => {
                                 return (
                                     <tr key={synonym.id}>
-                                        {/* <td className="pt-3 px-4 pb-3">
+                                        { <td className="pt-3 px-4 pb-3">
                                             <div>{synonym.id}</div>
-                                        </td> */}
+                                        </td> }
                                         <td className="pt-3 px-4 pb-2">
                                             <div className="d-flex">
                                             {/*<div className="me-2">{synonym.words}</div>*/}
@@ -205,8 +238,8 @@ export default function SynonymsHome(props) {
                         page={synonym_page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
                         nextIconButtonProps={{'aria-label': 'Next Page',}}
-                        onChangePage={(page) => setSynonymPage(page)}
-                        onChangeRowsPerPage={(rows) => setSynonymPageSize(rows)}
+                        onChangePage={(page) => handlePageChange(page)}
+                        onChangeRowsPerPage={(rows) => handlePageSizeChange(rows)}
                     />
 
                 </div>
