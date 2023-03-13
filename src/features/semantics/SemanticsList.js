@@ -19,8 +19,8 @@ export default function SemanticsHome(props) {
     const semantic_list = useSelector((state) => state.semanticReducer.semantic_list);
     const num_semantics = useSelector((state) => state.semanticReducer.num_semantics);
 
-    const [page_size, setPageSize] = useState(useSelector((state) => state.semanticReducer.semantic_page_size));
-    const [page, setPage] = useState(useSelector((state) => state.semanticReducer.semantic_page));
+    const [semantic_page_size, setPageSize] = useState(useSelector((state) => state.semanticReducer.semantic_page_size));
+    const [semantic_page, setPage] = useState(useSelector((state) => state.semanticReducer.semantic_page));
     const [semantic_filter,setSemanticFilter] = useState();
     // let [prev_word, setPrevWord] = useState('');
 
@@ -29,20 +29,20 @@ export default function SemanticsHome(props) {
 
 
     let prev_semantic_set = semantic_list.slice(-1)[0]
-    let prev_word = page != 0 ? prev_semantic_set['word']:0
+    let prev_word = semantic_page != 0 ? prev_semantic_set['word']:0
     // useEffect(() => {
-    //     console.log("Page",page)
+    //     console.log("semantic_page",semantic_page)
     //     console.log("prev_semantic_set1",prev_semantic_set)
     //
-    // },[page,page!=0])
+    // },[semantic_page,semantic_page!=0])
 
 
-    console.log("page num",page,prev_word)
+    console.log("semantic_page num",semantic_page,prev_word)
     let data = {
         "filter": "",
         "kbId": selected_knowledge_base_id,
         "organisationId": selected_organisation_id,
-        "pageSize": page_size,
+        "pageSize": semantic_page_size,
         "prevWord": prev_word
     };
 
@@ -50,7 +50,7 @@ export default function SemanticsHome(props) {
     useEffect(() => {
         console.log("useEffect dataload", data)
         dispatch(loadSemantics({ session_id, data }));
-    }, [load_data === "load_now" ,page, page_size ,selected_organisation_id, selected_knowledge_base_id])
+    }, [load_data === "load_now" ,semantic_page, semantic_page_size ,selected_organisation_id, selected_knowledge_base_id])
 
 
 
@@ -62,7 +62,7 @@ export default function SemanticsHome(props) {
     function filterSemantic(e) {
         e.preventDefault()
         data.filter = semantic_filter
-        data.pageSize = page_size
+        data.pageSize = semantic_page_size
         dispatch(loadSemantics({ session_id, data }));
     }
 
@@ -200,8 +200,8 @@ export default function SemanticsHome(props) {
                             theme={theme}
                             component="div"
                             count={num_semantics}
-                            rowsPerPage={page_size}
-                            page={page}
+                            rowsPerPage={semantic_page_size}
+                            page={semantic_page}
                             backIconButtonProps={{'aria-label': 'Previous Page',}}
                             nextIconButtonProps={{'aria-label': 'Next Page',}}
                             onChangePage={(page) => setPage(page)}
