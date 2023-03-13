@@ -22,14 +22,17 @@ export default function SemanticsHome(props) {
     const [semantic_page_size, setPageSize] = useState(useSelector((state) => state.semanticReducer.semantic_page_size));
     const [semantic_page, setPage] = useState(useSelector((state) => state.semanticReducer.semantic_page));
     const [semantic_filter,setSemanticFilter] = useState();
-    // let [prev_word, setPrevWord] = useState('');
+
+    const [page_history,setPageHistory] = useState([])
+    const [prev_word,setPrevWord] = useState(0)
 
     const dispatch = useDispatch();
 
+console.log("semantic_page",page_history)
+console.log("semantic_page",prev_word)
 
-
-    let prev_semantic_set = semantic_list.slice(-1)[0]
-    let prev_word = semantic_page != 0 ? prev_semantic_set['word']:0
+    // let prev_semantic_set = semantic_list.slice(-1)[0]
+    // let prev_word = semantic_page != 0 ? prev_semantic_set['word']:0
     // useEffect(() => {
     //     console.log("semantic_page",semantic_page)
     //     console.log("prev_semantic_set1",prev_semantic_set)
@@ -37,13 +40,13 @@ export default function SemanticsHome(props) {
     // },[semantic_page,semantic_page!=0])
 
 
-    console.log("semantic_page num",semantic_page,prev_word)
+    // console.log("semantic_page num",semantic_page,prev_word)
     let data = {
-        "filter": "",
         "kbId": selected_knowledge_base_id,
         "organisationId": selected_organisation_id,
         "pageSize": semantic_page_size,
-        "prevWord": prev_word
+        "prevWord": prev_word,
+        "filter": "",
     };
 
 //load semantics
@@ -52,6 +55,31 @@ export default function SemanticsHome(props) {
         dispatch(loadSemantics({ session_id, data }));
     }, [load_data === "load_now" ,semantic_page, semantic_page_size ,selected_organisation_id, selected_knowledge_base_id])
 
+
+
+    function handlePageChange(next_page){
+        if(next_page > semantic_page){
+            // last list item is used for next page
+            const last_row = semantic_list.slice(-1)[0]
+            const temp_last_word = last_row['word']
+            setPrevWord(temp_last_word);
+            setPageHistory([...page_history, {page: next_page, word: prev_word}]);
+        }else{
+            const temp_prev_row = page_history.slice(-1)
+            const temp_word = temp_prev_row && temp_prev_row.length === 1?temp_prev_row[0]["word"]:0
+            setPrevWord(temp_word);
+            setPageHistory([...page_history.slice(0,-1)]);
+        }
+        setPage(next_page);
+    }
+
+
+    function handlePageSizeChange(row){
+        setPageHistory([])
+        setPrevWord(0)
+        setPage(0)
+        setPageSize(row)
+    }
 
 
     function getSemanticList()
@@ -204,8 +232,8 @@ export default function SemanticsHome(props) {
                             page={semantic_page}
                             backIconButtonProps={{'aria-label': 'Previous Page',}}
                             nextIconButtonProps={{'aria-label': 'Next Page',}}
-                            onChangePage={(page) => setPage(page)}
-                            onChangeRowsPerPage={(rows) => setPageSize(rows)}
+                            onChangePage={(page) => handlePageChange(page)}
+                            onChangeRowsPerPage={(rows) => handlePageSizeChange(rows)}
                         />
                     </div>
                 }
