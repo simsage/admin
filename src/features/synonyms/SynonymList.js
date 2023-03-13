@@ -53,23 +53,16 @@ export default function SynonymsHome(props) {
 
     function handlePageChange(next_page){
         if(next_page > synonym_page){
-
             // last list item is used for next page
             const last_row = synonym_list.slice(-1)[0]
             const temp_last_id = last_row['id']
             setPrevID(temp_last_id);
-
-            //first item -1 is used for previous page
-            const first_row = synonym_list.slice(0)[0];
-            const temp_first_id = first_row['id']-1;
-            setPageHistory([...page_history,{page:next_page,id:temp_first_id}]);
+            setPageHistory([...page_history,{page:next_page,id:prev_id}]);
 
         }else{
-            const previous_page = next_page;
             const temp_prev_row = page_history.slice(-1)
             const temp_id = temp_prev_row && temp_prev_row.length === 1?temp_prev_row[0]["id"]:0
             setPrevID(temp_id);
-
             setPageHistory([...page_history.slice(0,-1)]);
         }
         setPage(next_page);
