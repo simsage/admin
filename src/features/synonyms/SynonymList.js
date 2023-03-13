@@ -171,7 +171,7 @@ export default function SynonymsHome(props) {
                     <table className="table">
                         <thead>
                         <tr className=''>
-                             <td className='small text-black-50 px-4'>ID</td>
+                             {/*<td className='small text-black-50 px-4'>ID</td>*/}
                             <td className='small text-black-50 px-4 synonym-column-width'>Synonyms</td>
                             <td className='small text-black-50 px-4'></td>
                         </tr>
@@ -181,9 +181,9 @@ export default function SynonymsHome(props) {
                             getSynonymList().map((synonym) => {
                                 return (
                                     <tr key={synonym.id}>
-                                        { <td className="pt-3 px-4 pb-3">
-                                            <div>{synonym.id}</div>
-                                        </td> }
+                                        {/*<td className="pt-3 px-4 pb-3">*/}
+                                        {/*    <div>{synonym.id}</div>*/}
+                                        {/*</td>*/}
                                         <td className="pt-3 px-4 pb-2">
                                             <div className="d-flex">
                                             {/*<div className="me-2">{synonym.words}</div>*/}
