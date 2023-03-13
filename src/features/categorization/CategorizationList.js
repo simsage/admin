@@ -30,27 +30,56 @@ export default function CategorizationHome() {
     const [filter, setFilter] = useState('');
 
     const [page_history,setPageHistory] = useState([])
-    const [prev_label,setPrevWord] = useState(0)
+    const [prev_label,setPrevLabel] = useState(null)
 
     const dispatch = useDispatch();
-        // console.log("category_list",load_data)
 
-    let prev_set = category_list.slice(-1)[0]
+    console.log("semantic_page",page_history)
+    console.log("semantic_page",prev_label)
+
+    // let prev_set = category_list.slice(-1)[0]
     // console.log("prev_set",prev_set)
-    let prev_cat_label = cat_page != 0 ? prev_set['categorizationLabel']:null
+    // let prev_cat_label = cat_page != 0 ? prev_set['categorizationLabel']:null
     // console.log("prev_cat_label",prev_cat_label)
 
     let data = {
         session_id: session_id,
         organisation_id:selected_organisation_id,
         kb_id:selected_knowledge_base_id,
-        prevCategorizationLabel: prev_cat_label,
+        prevCategorizationLabel: prev_label,
         pageSize: cat_page_size};
 
     useEffect(()=>{
-        // console.log("category_list",load_data)
         dispatch(loadCategorizations(data))
     },[load_data === "load_now",selected_knowledge_base_id,cat_page_size,cat_page])
+
+
+
+    function handlePageChange(next_page){
+        if(next_page > cat_page){
+            // last list item is used for next page
+            const last_row = category_list.slice(-1)[0]
+            const temp_last_word = last_row['categorizationLabel']
+            setPrevLabel(temp_last_word);
+            setPageHistory([...page_history, {page: next_page, label: prev_label}]);
+        }else{
+            const temp_prev_row = page_history.slice(-1)
+            const temp_word = temp_prev_row && temp_prev_row.length === 1?temp_prev_row[0]["label"]:0
+            setPrevLabel(temp_word);
+            setPageHistory([...page_history.slice(0,-1)]);
+        }
+        setPage(next_page);
+    }
+
+
+    function handlePageSizeChange(row){
+        setPageHistory([])
+        setPrevLabel(null)
+        setPage(0)
+        setPageSize(row)
+    }
+
+
 
     function filterCategories() {
         let filteredGroup = []
@@ -222,8 +251,8 @@ export default function CategorizationHome() {
                             page={cat_page}
                             backIconButtonProps={{'aria-label': 'Previous Page',}}
                             nextIconButtonProps={{'aria-label': 'Next Page',}}
-                            onChangePage={(page) => setPage(page)}
-                            onChangeRowsPerPage={(rows) => setPageSize(rows)}
+                            onChangePage={(page) => handlePageChange(page)}
+                            onChangeRowsPerPage={(rows) => handlePageSizeChange(rows)}
                         />
                     </div>
                 }
