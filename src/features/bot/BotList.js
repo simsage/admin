@@ -31,11 +31,8 @@ export default function BotHome() {
     const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
     const total_mind_items = useSelector((state) => state.botReducer.total_mind_items);
 
-    // const [bot_page_size, setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
-    const [bot_page_size, setPageSize] = useState(10);
-    // const [bot_page, setBotPage] = useState(useSelector((state) => state.botReducer.mind_current_page_number))
-    const [bot_page, setBotPage] = useState(0);
-    const [mind_item_filter, setMindItemFilter] = useState();
+    const [bot_page_size, setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
+    const [bot_page, setBotPage] = useState(useSelector((state) => state.botReducer.mind_current_page_number))
 
     const [filter, setFilter] = useState('')
 
@@ -57,15 +54,10 @@ export default function BotHome() {
         prevId: prev_id,
     }
 
-    useEffect(() => {
-        console.log("BotHome page number changes selected_organisation", data)
-        console.log("BotHome page number", bot_page)
-        dispatch(loadMindItems({session_id, data}))
-    }, [bot_page])
 
     useEffect(() => {
         dispatch(loadMindItems({session_id, data}))
-    }, [load_data === "load_now", selected_knowledge_base_id, bot_page_size])
+    }, [load_data === "load_now", selected_knowledge_base_id, bot_page_size, bot_page])
 
 
     function handlePageChange(next_page){
