@@ -25,16 +25,19 @@ export default function CategorizationHome() {
 
     const category_list = useSelector((state) => state.categorizationReducer.category_list);
     const total_count = useSelector((state) => state.categorizationReducer.total_count);
-    const [page_size,setPageSize] = useState(useSelector((state)=>state.categorizationReducer.page_size))
-    const [page,setPage] = useState(useSelector((state)=>state.categorizationReducer.page))
+    const [cat_page_size,setPageSize] = useState(useSelector((state)=>state.categorizationReducer.page_size))
+    const [cat_page,setPage] = useState(useSelector((state)=>state.categorizationReducer.page))
     const [filter, setFilter] = useState('');
+
+    const [page_history,setPageHistory] = useState([])
+    const [prev_label,setPrevWord] = useState(0)
 
     const dispatch = useDispatch();
         // console.log("category_list",load_data)
 
     let prev_set = category_list.slice(-1)[0]
     // console.log("prev_set",prev_set)
-    let prev_cat_label = page != 0 ? prev_set['categorizationLabel']:null
+    let prev_cat_label = cat_page != 0 ? prev_set['categorizationLabel']:null
     // console.log("prev_cat_label",prev_cat_label)
 
     let data = {
@@ -42,12 +45,12 @@ export default function CategorizationHome() {
         organisation_id:selected_organisation_id,
         kb_id:selected_knowledge_base_id,
         prevCategorizationLabel: prev_cat_label,
-        pageSize: page_size};
+        pageSize: cat_page_size};
 
     useEffect(()=>{
         // console.log("category_list",load_data)
         dispatch(loadCategorizations(data))
-    },[load_data === "load_now",selected_knowledge_base_id,page_size,page])
+    },[load_data === "load_now",selected_knowledge_base_id,cat_page_size,cat_page])
 
     function filterCategories() {
         let filteredGroup = []
@@ -96,7 +99,7 @@ export default function CategorizationHome() {
 
     function filterRecords() {
         data.filter = filter
-        // data.pageSize = page_size
+        // data.pageSize = cat_page_size
         dispatch(loadCategorizations(data))
     }
 
@@ -104,7 +107,7 @@ export default function CategorizationHome() {
     return (
         <div className="section px-5 pt-4">
 
-            {/*<div className="synset-page">*/}
+            {/*<div className="synset-cat_page">*/}
             {/*    <div className="d-flex w-100">*/}
             {/*        <div className="form-group me-2">*/}
             {/*            <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => setFilter(e.target.value)}*/}
@@ -215,8 +218,8 @@ export default function CategorizationHome() {
                             theme={theme}
                             component="div"
                             count={total_count}
-                            rowsPerPage={page_size}
-                            page={page}
+                            rowsPerPage={cat_page_size}
+                            page={cat_page}
                             backIconButtonProps={{'aria-label': 'Previous Page',}}
                             nextIconButtonProps={{'aria-label': 'Next Page',}}
                             onChangePage={(page) => setPage(page)}
