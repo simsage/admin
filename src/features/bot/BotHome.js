@@ -43,14 +43,14 @@ export default function BotHome() {
 
             }
             {/*Intro message when there are no bot items loaded*/}
-            {status !== null && mind_item_list.length === 0 && total_mind_items > 0 &&
+            {status !== null && mind_item_list.length >= 0 && total_mind_items > 0 &&
                 <BotList />
 
             }
-            {/*show bot list*/}
-            {status !== null && mind_item_list.length > 0 && total_mind_items > 0 &&
-                <BotList />
-            }
+            {/*/!*show bot list*!/*/}
+            {/*{status !== null && mind_item_list.length > 0 && total_mind_items > 0 &&*/}
+            {/*    <BotList />*/}
+            {/*}*/}
         </div>
     )
 

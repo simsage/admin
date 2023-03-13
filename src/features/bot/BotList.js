@@ -25,13 +25,16 @@ export default function BotHome() {
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
 
+    const show_memory_form = useSelector((state) => state.botReducer.show_memory_form);
     const show_import_form = useSelector((state) => state.botReducer.show_import_form)
 
     const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
     const total_mind_items = useSelector((state) => state.botReducer.total_mind_items);
 
-    const [bot_page_size, setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
-    const [bot_page, setPage] = useState(useSelector((state) => state.botReducer.mind_current_page_number))
+    // const [bot_page_size, setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
+    const [bot_page_size, setPageSize] = useState(10);
+    // const [bot_page, setBotPage] = useState(useSelector((state) => state.botReducer.mind_current_page_number))
+    const [bot_page, setBotPage] = useState(0);
     const [mind_item_filter, setMindItemFilter] = useState();
 
     const [filter, setFilter] = useState('')
@@ -42,8 +45,9 @@ export default function BotHome() {
     //
     // let prev_list = mind_item_list.slice(-1)[0]
     // let prev_id = bot_page !== 0 ? prev_list['id']:0
-    console.log("semantic_page",page_history)
-    console.log("semantic_page",prev_id)
+    console.log("bot_page",page_history)
+    console.log("bot_page",prev_id)
+    console.log("bot_page",bot_page)
 
     let data = {
         filter: "",
@@ -54,13 +58,18 @@ export default function BotHome() {
     }
 
     useEffect(() => {
+        console.log("BotHome page number changes selected_organisation", data)
+        console.log("BotHome page number", bot_page)
         dispatch(loadMindItems({session_id, data}))
-    }, [load_data === "load_now", bot_page, selected_knowledge_base_id,bot_page_size])
+    }, [bot_page])
 
-
+    useEffect(() => {
+        dispatch(loadMindItems({session_id, data}))
+    }, [load_data === "load_now", selected_knowledge_base_id, bot_page_size])
 
 
     function handlePageChange(next_page){
+        console.log("bot_page next_page",next_page)
         if(next_page > bot_page){
             // last list item is used for next page
             const last_row = mind_item_list.slice(-1)[0]
@@ -74,14 +83,14 @@ export default function BotHome() {
             setPrevID(temp_id);
             setPageHistory([...page_history.slice(0,-1)]);
         }
-        setPage(next_page);
+        setBotPage(next_page);
     }
 
 
     function handlePageSizeChange(row){
         setPageHistory([])
         setPrevID(0)
-        setPage(0)
+        setBotPage(0)
         setPageSize(row)
     }
 
@@ -308,7 +317,9 @@ export default function BotHome() {
 
                 </div>
             }
+            {show_memory_form &&
             <BotEdit/>
+            }
             <BotDeleteAsk/>
         </div>
     )
