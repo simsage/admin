@@ -21,25 +21,26 @@ const TextToSearchList = () => {
     const text_to_search_list = useSelector( (state) => state.textToSearchReducer.text_to_search_list)
     const num_of_text_to_search = useSelector((state) => state.textToSearchReducer.num_of_text_to_search)
 
-
     const [filter, setFilter] = useState('');
-    const [pageSize, setPageSize] = useState(useSelector((state) => state.textToSearchReducer.page_size));
-    const [page, setPage] = useState(useSelector((state) => state.textToSearchReducer.page))
+    const [ts_page_size, setPageSize] = useState(useSelector((state) => state.textToSearchReducer.page_size));
+    const [ts_page, setPage] = useState(useSelector((state) => state.textToSearchReducer.page))
 
     let prev_obj = text_to_search_list.slice(-1)[0]
-    let prev_word = page !== 0 ? prev_obj['searchPart']:""
+    let prev_word = ts_page !== 0 ? prev_obj['searchPart']:""
+
+
 
     let data = {
         "filter": filter,
         "kbId": selected_knowledge_base_id,
         "organisationId": selected_organisation_id,
-        "pageSize": pageSize,
+        "pageSize": ts_page_size,
         "prevWord": prev_word
     };
 
     useEffect( () => {
         dispatch(loadTextToSearch({session_id, data}))
-    }, [load_data === "load_now", page, pageSize])
+    }, [load_data === "load_now", ts_page, ts_page_size])
 
     function isVisible() {
         return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
@@ -169,8 +170,8 @@ const TextToSearchList = () => {
                             theme={theme}
                             component="div"
                             count={num_of_text_to_search}
-                            rowsPerPage={pageSize}
-                            page={page}
+                            rowsPerPage={ts_page_size}
+                            page={ts_page}
                             onChangePage={(page) => setPage(page)}
                             onChangeRowsPerPage={(rows) => setPageSize(rows)}
                         />
