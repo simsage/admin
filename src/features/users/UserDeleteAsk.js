@@ -28,7 +28,6 @@ export default function UserDeleteAsk(){
     const handleDelete = () => {
         dispatch(deleteUser({session_id:session_id, user_id: user_id, organisation_id: organisation_id}))
         dispatch(closeDeleteForm());
-        dispatch(getUserList({session_id:session.id, organization_id:organisation_id,filter:null}))
     }
 
 

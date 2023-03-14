@@ -126,7 +126,6 @@ export function UserEdit( {filter} ){
         console.log('Saving...', data);
         dispatch(updateUser({session_id,organisation_id, data}));
         dispatch(closeUserForm());
-        dispatch(getUserList({session_id:session.id, organization_id:organisation_id,filter:filter === '' ? null : filter}))
     }
 
 
