@@ -14,7 +14,7 @@ const initialState = {
     status: undefined,
     error: undefined,
     show_user_form: false,
-    show_user_bulk_form: true,
+    show_user_bulk_form: false,
     show_delete_form: false,
     edit_id: undefined,
     roles: ['admin','operator','dms','manager','discover'],
@@ -161,6 +161,7 @@ const extraReducers = (builder) => {
             console.log("users/update ", action);
             state.status = "fulfilled";
             state.data_status = "load_now"
+            state.show_user_bulk_form = false;
         })
         .addCase(bulkUpdateUser.rejected, (state, action) => {
             state.status = "rejected";
