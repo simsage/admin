@@ -9,6 +9,7 @@ const initialState = {
     filter: undefined,
     page: 0,
     page_size: 5,
+    count: 0,
 
     //new states
     status: undefined,
@@ -53,6 +54,29 @@ export const getUserList = createAsyncThunk(
         const api_base = window.ENV.api_base;
         console.log("organization_id",organization_id)
         const url = api_base + '/auth/users/'+ encodeURIComponent(organization_id)+ '/' + encodeURIComponent(filter);
+
+        // return "Hello";
+        if (url !== '/stats/stats/os') {
+            console.log('GET ' + url);
+        }
+
+        return axios.get(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("users",response.data)
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    }
+);
+
+
+export const getUserListPaginated = createAsyncThunk(
+    'users/getUserListPaginated',
+    async ({session_id,organization_id,page,page_size,filter}) => {
+        const api_base = window.ENV.api_base;
+        console.log("getUserListPaginated",organization_id,page,page_size)
+        const url = api_base + '/auth/users-paginated/'+ encodeURIComponent(organization_id)+ '/' + encodeURIComponent(page)+ '/' + encodeURIComponent(page_size)+ '/' + encodeURIComponent(filter);
 
         // return "Hello";
         if (url !== '/stats/stats/os') {
@@ -133,6 +157,24 @@ const extraReducers = (builder) => {
             state.data_status = "loaded"
         })
         .addCase(getUserList.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = "rejected"
+        })
+
+        //Get Users Paginated
+        .addCase(getUserListPaginated.pending, (state, action) => {
+            state.status = "loading";
+            state.data_status = "loading";
+        })
+        .addCase(getUserListPaginated.fulfilled, (state, action) => {
+            console.log("users/getUserListPaginated 111",action.payload)
+            state.status = "fulfilled"
+            state.user_list = action.payload.userList
+            state.user_original_list = action.payload.userList
+            state.count = action.payload.userCount
+            state.data_status = "loaded"
+        })
+        .addCase(getUserListPaginated.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected"
         })

@@ -7,7 +7,7 @@ import {
     showDeleteUserAsk,
     showEditUserForm,
     orderBy,
-    showUserBulkForm
+    showUserBulkForm, getUserListPaginated
 } from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import {formatRoles, hasRole} from "../../common/helpers";
@@ -36,6 +36,7 @@ export function UsersHome(){
     const session = useSelector((state)=>state.authReducer.session)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
     const load_data = useSelector((state) => state.usersReducer.data_status)
+    const count = useSelector((state) => state.usersReducer.count)
 
     const isAdmin = hasRole(user_account, ['admin']);
     const isManager = hasRole(user_account, ['manager']);
@@ -44,17 +45,17 @@ export function UsersHome(){
     console.log("isManager:",(isManager)?" Yes":"No")
 
     useEffect(()=>{
-        if(user_list_status === undefined && user_list === undefined){
             console.log("session useEffect",session)
             console.log("selected_organisation",selected_organisation_id)
-            dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:null}))
-        }
-    },[load_data === "load_now"])
+            // dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:null}))
+            dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:null}))
+    },[load_data === "load_now",page,page_size])
 
     function handleSearchTextKeydown(e) {
         if (e.key === "Enter"  && selected_organisation_id) {
             // console.log(session, selected_organisation_id, searchFilter);
-            dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:searchFilter === '' ? null : searchFilter}));
+            // dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:searchFilter === '' ? null : searchFilter}));
+            dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:null}))
             setSearchFilter('');
         }
     }
@@ -114,22 +115,23 @@ export function UsersHome(){
     }
 
     function getUsers(isAdmin) {
-        const paginated_list = [];
-        const first = page * page_size;
-        const last = first + parseInt(page_size);
-        let index = 0;
-        for (const i in user_list) {
-            // paginate all users - but only those that have roles in this organisation
-            const user = user_list[i];
-            const roleStr = formatRoles(selected_organisation_id, user.roles);
-            if (isAdmin || roleStr.length > 0) { // has a role or is admin?
-                if (index >= first && index < last) {
-                    paginated_list.push(user);
-                }
-                index += 1; // one more user in this set of roles
-            }
-        }
-        return paginated_list;
+        // const paginated_list = [];
+        // const first = page * page_size;
+        // const last = first + parseInt(page_size);
+        // let index = 0;
+        // for (const i in user_list) {
+        //     // paginate all users - but only those that have roles in this organisation
+        //     const user = user_list[i];
+        //     const roleStr = formatRoles(selected_organisation_id, user.roles);
+        //     if (isAdmin || roleStr.length > 0) { // has a role or is admin?
+        //         if (index >= first && index < last) {
+        //             paginated_list.push(user);
+        //         }
+        //         index += 1; // one more user in this set of roles
+        //     }
+        // }
+        // return paginated_list;
+        return user_list;
     }
 
     //Filtering out users according to 'Role' drop down.
@@ -240,7 +242,7 @@ export function UsersHome(){
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
                         component="div"
-                        count={user_list.length}
+                        count={count}
                         rowsPerPage={page_size}
                         page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
