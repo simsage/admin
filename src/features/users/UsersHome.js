@@ -56,7 +56,7 @@ export function UsersHome(){
         if (e.key === "Enter"  && selected_organisation_id) {
             // console.log(session, selected_organisation_id, searchFilter);
             // dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:searchFilter === '' ? null : searchFilter}));
-            dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:null}))
+            dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:searchFilter === '' ? null : searchFilter}))
             setSearchFilter('');
         }
     }
@@ -66,12 +66,12 @@ export function UsersHome(){
     }
 
     function handleAddNewUser(){
-        dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
+        // dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         dispatch(showAddUserForm(true))
     }
 
     function handleEditUser(u) {
-        dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
+        // dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         dispatch(showEditUserForm({show:true, user_id: u.id}));
     }
 
@@ -116,10 +116,10 @@ export function UsersHome(){
     }
 
     function getUsers(isAdmin) {
-        const paginated_list = [];
+        // const paginated_list = [];
         // const first = page * page_size;
         // const last = first + parseInt(page_size);
-        let index = 0;
+        // let index = 0;
         // for (const i in user_list) {
         //     // paginate all users - but only those that have roles in this organisation
         //     const user = user_list[i];
@@ -197,11 +197,6 @@ export function UsersHome(){
                 {!user_list &&
                 <div>Loading...</div>
                 }
-
-                {user_list &&
-                    <div>{user_list.length}</div>
-                }
-
                 <table className="table">
                     <thead>
                         <tr>
