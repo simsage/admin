@@ -5,10 +5,10 @@ import axios from "axios";
 
 const initialState = {
     user_original_list: [],
-    user_list: undefined,
+    user_list: [],
     filter: undefined,
     page: 0,
-    page_size: 5,
+    page_size: 10,
     count: 0,
 
     //new states

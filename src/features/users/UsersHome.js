@@ -43,6 +43,7 @@ export function UsersHome(){
 
     console.log("isAdmin:",(isAdmin)?" Yes":"No",session)
     console.log("isManager:",(isManager)?" Yes":"No")
+    console.log("dddd",user_list)
 
     useEffect(()=>{
             console.log("session useEffect",session)
@@ -115,10 +116,10 @@ export function UsersHome(){
     }
 
     function getUsers(isAdmin) {
-        // const paginated_list = [];
+        const paginated_list = [];
         // const first = page * page_size;
         // const last = first + parseInt(page_size);
-        // let index = 0;
+        let index = 0;
         // for (const i in user_list) {
         //     // paginate all users - but only those that have roles in this organisation
         //     const user = user_list[i];
@@ -131,6 +132,7 @@ export function UsersHome(){
         //     }
         // }
         // return paginated_list;
+
         return user_list;
     }
 
@@ -194,6 +196,10 @@ export function UsersHome(){
             <div className="">
                 {!user_list &&
                 <div>Loading...</div>
+                }
+
+                {user_list &&
+                    <div>{user_list.length}</div>
                 }
 
                 <table className="table">
