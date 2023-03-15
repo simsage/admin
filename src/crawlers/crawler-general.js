@@ -141,7 +141,7 @@ export class CrawlerGeneral extends Component {
 
     construct_data(data) {
         const crawlerType = Api.defined(data.crawlerType) ? data.crawlerType : this.state.crawlerType;
-        const allowAnonymous = (Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous) || (crawlerType === 'web') || (crawlerType === 'rss') || (crawlerType === 'googlesite');
+        const allowAnonymous = (Api.defined(data.allowAnonymous) ? data.allowAnonymous : this.state.allowAnonymous);
         let edgeDeviceId = Api.defined(data.edgeDeviceId) ? data.edgeDeviceId : this.state.edgeDeviceId;
         if (edgeDeviceId === 'none' || !this.canHaveEdgeDevice()) edgeDeviceId = '';
         let deleteFiles = Api.defined(data.deleteFiles) ? data.deleteFiles : this.state.deleteFiles;
@@ -461,8 +461,7 @@ export class CrawlerGeneral extends Component {
                             <div style={{float: 'left'}}
                                  title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
                                 <input type="checkbox"
-                                       checked={this.state.allowAnonymous || this.state.crawlerType === 'web' || this.state.crawlerType === 'rss' || this.state.crawlerType === 'googlesite'}
-                                       disabled={this.state.crawlerType === 'web' || this.state.crawlerType === 'rss' || this.state.crawlerType === 'googlesite'}
+                                       checked={this.state.allowAnonymous}
                                        onChange={(event) => {
                                            this.change_callback({allowAnonymous: event.target.checked});
                                        }}

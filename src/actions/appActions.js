@@ -408,12 +408,13 @@ export const appCreators = {
 
     updateKnowledgeBase: (organisation_id, kb_id, name, email, security_id, enabled, max_queries_per_day,
                           analytics_window_size_in_months, operator_enabled, capacity_warnings,
-                          created, success) => async (dispatch, getState) => {
+                          created, index_schedule, last_optimization_time, success) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const payload = {"kbId": kb_id, "organisationId": organisation_id, "name": name, "email": email,
             "securityId": security_id, "maxQueriesPerDay": max_queries_per_day, "enabled": enabled,
             "analyticsWindowInMonths": analytics_window_size_in_months, "operatorEnabled": operator_enabled,
-            "capacityWarnings": capacity_warnings, "created": created};
+            "capacityWarnings": capacity_warnings, "created": created, "indexSchedule": index_schedule,
+            "lastIndexOptimizationTime": last_optimization_time};
         await Comms.http_put('/knowledgebase/', get_session_id(getState), payload,
             () => {
                 _getKnowledgeBases(organisation_id, dispatch, getState);

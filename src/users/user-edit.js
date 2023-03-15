@@ -8,7 +8,7 @@ import Api from "../common/api";
 import '../css/users.css';
 
 
-const roles = ['admin', 'operator', 'dms', 'manager', 'discover'];
+const roles = ['admin', 'operator', 'dms', 'manager', 'discover', 'search'];
 
 // props:  theme, open, edit_user_id, edit_email, edit_first_name, edit_surname, edit_password, edit_roles, edit_groups, edit_kb_list
 // fns: onClose(save:boolean)

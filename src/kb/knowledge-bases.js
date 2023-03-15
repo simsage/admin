@@ -5,12 +5,13 @@ import {Api} from '../common/api'
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
+import TimeSelect from "../common/time-select";
 import {Pagination} from "../common/pagination";
 
 import '../css/kb.css';
 
-// document management system indexer default schedule (none)
-const defaultDmsIndexSchedule = '';
+// indexer optimizer default schedule (none)
+const defaultIndexSchedule = '';
 
 
 export class KnowledgeBases extends Component {
@@ -34,7 +35,8 @@ export class KnowledgeBases extends Component {
             edit_operator_enabled: true,
             edit_capacity_warnings: true,
             edit_created: 0,
-            edit_dms_index_schedule: defaultDmsIndexSchedule,
+            edit_index_schedule: defaultIndexSchedule,
+            edit_last_optimization_time: 0,
 
             // view ids
             view_ids: false,
@@ -64,7 +66,8 @@ export class KnowledgeBases extends Component {
             edit_capacity_warnings: true,
             edit_created: 0,
             edit_security_id: Api.createGuid(),
-            edit_dms_index_schedule: defaultDmsIndexSchedule,
+            edit_index_schedule: defaultIndexSchedule,
+            edit_last_optimization_time: 0,
         })
     }
     refreshSecurityId() {
@@ -82,8 +85,9 @@ export class KnowledgeBases extends Component {
                 edit_analytics_window_size_in_months: knowledgeBase.analyticsWindowInMonths,
                 edit_operator_enabled: knowledgeBase.operatorEnabled,
                 edit_capacity_warnings: knowledgeBase.capacityWarnings,
-                edit_dms_index_schedule: '', // no longer used
+                edit_index_schedule: knowledgeBase.indexSchedule,
                 edit_created: knowledgeBase.created,
+                edit_last_optimization_time: knowledgeBase.lastIndexOptimizationTime,
             })
         }
     }
@@ -113,6 +117,7 @@ export class KnowledgeBases extends Component {
                                            this.state.edit_enabled, this.state.edit_max_queries_per_day,
                                            this.state.edit_analytics_window_size_in_months, this.state.edit_operator_enabled,
                                            this.state.edit_capacity_warnings, this.state.edit_created,
+                                           this.state.edit_index_schedule, this.state.edit_last_optimization_time,
                 () => {
                     this.setState({edit_knowledgebase: false, knowledgeBase: null});
                 });
@@ -122,6 +127,11 @@ export class KnowledgeBases extends Component {
     }
     viewIds(knowledge_base) {
         this.setState({view_ids: true, kb: knowledge_base});
+    }
+    updateIndexSchedule(time) {
+        if (time !== null) {
+            this.setState({edit_index_schedule: time});
+        }
     }
     getKnowledgeBases() {
         const paginated_list = [];
@@ -160,6 +170,7 @@ export class KnowledgeBases extends Component {
     }
     render() {
         const theme = this.props.theme;
+        const t_value = this.state.selectedTab;
         return (
                 <div className="kb-page">
                     { this.isVisible() &&
@@ -255,116 +266,151 @@ export class KnowledgeBases extends Component {
                                         <div
                                             className="modal-header">{this.state.edit_knowledgebase_id ? "Edit Knowledge Base" : "Add New Knowledge Base"}</div>
                                         <div className="modal-body">
-                                            <div>
 
-                                                <div className="control-row">
-                                                    <span className="label-2">name</span>
-                                                    <span className="text">
+                                            <ul className="nav nav-tabs">
+                                                <li className="nav-item nav-cursor">
+                                                    <div className={"nav-link " + (this.state.selectedTab === 'general' ? 'active' : '')}
+                                                         onClick={() => this.setState({selectedTab: 'general'})}>general</div>
+                                                </li>
+                                                <li className="nav-item nav-cursor">
+                                                    <div className={"nav-link " + (this.state.selectedTab === 'index schedule' ? 'active' : '')}
+                                                         onClick={() => this.setState({selectedTab: 'index schedule'})}>Index optimization schedule</div>
+                                                </li>
+                                            </ul>
+
+                                            {t_value === 'general' &&
+                                                <div>
+                                                    <br />
+
+                                                    <div className="control-row">
+                                                        <span className="label-2">name</span>
+                                                        <span className="text">
+                                                            <input type="text"
+                                                                   autoFocus={true}
+                                                                   className="edit-box"
+                                                                   placeholder="knowledge base name"
+                                                                   value={this.state.edit_name}
+                                                                   onChange={(event) => this.setState({edit_name: event.target.value})}
+                                                            />
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="control-row">
+                                                        <span className="label-2">email questions to</span>
+                                                        <span className="text">
+                                                            <input type="text"
+                                                                   className="edit-box"
+                                                                   placeholder="email questions to"
+                                                                   value={this.state.edit_email}
+                                                                   onChange={(event) => this.setState({edit_email: event.target.value})}
+                                                            />
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="control-row">
+                                                        <span className="label-2">security id</span>
+                                                        <span className="text">
                                                         <input type="text"
-                                                               autoFocus={true}
-                                                               className="edit-box"
-                                                               placeholder="knowledge base name"
-                                                               value={this.state.edit_name}
-                                                               onChange={(event) => this.setState({edit_name: event.target.value})}
+                                                               className="sid-box"
+                                                               disabled={true}
+                                                               placeholder="security id"
+                                                               value={this.state.edit_security_id}
+                                                               onChange={(event) => this.setState({edit_security_id: event.target.value})}
                                                         />
-                                                    </span>
+                                                        </span>
+                                                        <img title="generate new security id" alt="refresh"
+                                                             src={theme === 'light' ? "../images/refresh.svg" : "../images/refresh-dark.svg"}
+                                                             onClick={() => this.refreshSecurityId()}
+                                                             className="image-size" />
+                                                    </div>
+
+                                                    <div className="control-row">
+                                                        <span className="checkbox-only">
+                                                            <input type="checkbox"
+                                                                   checked={this.state.edit_enabled}
+                                                                   onChange={(event) => {
+                                                                       this.setState({edit_enabled: event.target.checked});
+                                                                   }}
+                                                                   value="enable this knowledge-base?"
+                                                            />
+                                                        </span>
+                                                        <span>knowledge-base enabled?</span>
+                                                    </div>
+
+
+                                                    <div className="control-row">
+                                                        <span className="checkbox-only">
+                                                            <input type="checkbox"
+                                                                   checked={this.state.edit_operator_enabled}
+                                                                   onChange={(event) => {
+                                                                       this.setState({edit_operator_enabled: event.target.checked});
+                                                                   }}
+                                                                   value="enable operator access?"
+                                                            />
+                                                        </span>
+                                                        <span>operator enabled?</span>
+                                                    </div>
+
+
+                                                    <div className="control-row">
+                                                        <span className="checkbox-only">
+                                                            <input type="checkbox"
+                                                                   checked={this.state.edit_capacity_warnings}
+                                                                   onChange={(event) => {
+                                                                       this.setState({edit_capacity_warnings: event.target.checked});
+                                                                   }}
+                                                                   value="enable capacity warnings?"
+                                                            />
+                                                        </span>
+                                                        <span>capacity-warnings on?</span>
+                                                    </div>
+
+
+                                                    <div className="control-row">
+                                                        <span className="label-wide">maximum number of queries per day (0 is no limits)</span>
+                                                        <span className="text">
+                                                            <input type="text"
+                                                                   onChange={(event) => this.setState({edit_max_queries_per_day: event.target.value})}
+                                                                   placeholder="max transactions per month"
+                                                                   value={this.state.edit_max_queries_per_day}
+                                                            />
+                                                        </span>
+                                                    </div>
+
+
+                                                    <div className="control-row">
+                                                        <span className="label-wide">maximum analytics retention period in months (0 is no limits)</span>
+                                                        <span className="text">
+                                                            <input type="text"
+                                                                   onChange={(event) => this.setState({edit_analytics_window_size_in_months: event.target.value})}
+                                                                   placeholder="max analytics retention period in months"
+                                                                   value={this.state.edit_analytics_window_size_in_months}
+                                                            />
+                                                        </span>
+                                                    </div>
+
                                                 </div>
+                                            }
 
-                                                <div className="control-row">
-                                                    <span className="label-2">email questions to</span>
-                                                    <span className="text">
-                                                        <input type="text"
-                                                               className="edit-box"
-                                                               placeholder="email questions to"
-                                                               value={this.state.edit_email}
-                                                               onChange={(event) => this.setState({edit_email: event.target.value})}
-                                                        />
-                                                    </span>
+                                            {t_value === 'index schedule' &&
+                                                <div className="time-tab-content">
+                                                    <br />
+                                                    <div className="small-text-optimizer">We strongly advice to allocate only one hour per day for index optimizations.  Unlike the crawler, each selected slot will cause the indexer to start again.</div>
+                                                    <TimeSelect time={this.state.edit_index_schedule}
+                                                                onSave={(time) => this.updateIndexSchedule(time)}/>
+
+                                                    { this.state.edit_last_optimization_time > 0 &&
+                                                        <div>
+                                                            <br />
+                                                            <br />
+                                                            <br />
+                                                            this knowledge-base was last optimized on&nbsp;
+                                                            <i>{Api.unixTimeConvert(this.state.edit_last_optimization_time)}</i>
+                                                        </div>
+                                                    }
                                                 </div>
+                                            }
 
-                                                <div className="control-row">
-                                                    <span className="label-2">security id</span>
-                                                    <span className="text">
-                                                    <input type="text"
-                                                           className="sid-box"
-                                                           disabled={true}
-                                                           placeholder="security id"
-                                                           value={this.state.edit_security_id}
-                                                           onChange={(event) => this.setState({edit_security_id: event.target.value})}
-                                                    />
-                                                    </span>
-                                                    <img title="generate new security id" alt="refresh"
-                                                         src={theme === 'light' ? "../images/refresh.svg" : "../images/refresh-dark.svg"}
-                                                         onClick={() => this.refreshSecurityId()}
-                                                         className="image-size" />
-                                                </div>
-
-                                                <div className="control-row">
-                                                    <span className="checkbox-only">
-                                                        <input type="checkbox"
-                                                               checked={this.state.edit_enabled}
-                                                               onChange={(event) => {
-                                                                   this.setState({edit_enabled: event.target.checked});
-                                                               }}
-                                                               value="enable this knowledge-base?"
-                                                        />
-                                                    </span>
-                                                    <span>knowledge-base enabled?</span>
-                                                </div>
-
-
-                                                <div className="control-row">
-                                                    <span className="checkbox-only">
-                                                        <input type="checkbox"
-                                                               checked={this.state.edit_operator_enabled}
-                                                               onChange={(event) => {
-                                                                   this.setState({edit_operator_enabled: event.target.checked});
-                                                               }}
-                                                               value="enable operator access?"
-                                                        />
-                                                    </span>
-                                                    <span>operator enabled?</span>
-                                                </div>
-
-
-                                                <div className="control-row">
-                                                    <span className="checkbox-only">
-                                                        <input type="checkbox"
-                                                               checked={this.state.edit_capacity_warnings}
-                                                               onChange={(event) => {
-                                                                   this.setState({edit_capacity_warnings: event.target.checked});
-                                                               }}
-                                                               value="enable capacity warnings?"
-                                                        />
-                                                    </span>
-                                                    <span>capacity-warnings on?</span>
-                                                </div>
-
-
-                                                <div className="control-row">
-                                                    <span className="label-wide">maximum number of queries per day (0 is no limits)</span>
-                                                    <span className="text">
-                                                        <input type="text"
-                                                               onChange={(event) => this.setState({edit_max_queries_per_day: event.target.value})}
-                                                               placeholder="max transactions per month"
-                                                               value={this.state.edit_max_queries_per_day}
-                                                        />
-                                                    </span>
-                                                </div>
-
-
-                                                <div className="control-row">
-                                                    <span className="label-wide">maximum analytics retention period in months (0 is no limits)</span>
-                                                    <span className="text">
-                                                        <input type="text"
-                                                               onChange={(event) => this.setState({edit_analytics_window_size_in_months: event.target.value})}
-                                                               placeholder="max analytics retention period in months"
-                                                               value={this.state.edit_analytics_window_size_in_months}
-                                                        />
-                                                    </span>
-                                                </div>
-
-                                            </div>
 
                                         </div>
                                         <div className="modal-footer">
@@ -387,6 +433,9 @@ export class KnowledgeBases extends Component {
 
                                 <div className="modal-header">{this.state.kb != null ? this.state.kb.name : ""} IDS</div>
                                 <div className="modal-body">
+
+                                    <br/>
+
                                     <div>
                                         <div className="dialog-line-height">
                                             <div className="organisation-id-label">
@@ -446,10 +495,14 @@ export class KnowledgeBases extends Component {
                                                             <div className="copied-style">copied</div>
                                                             }
                                             </span>
+
                                             <br clear='both'/>
+
+
                                         </div>
 
                                     </div>
+
                                 </div>
                                 <div className="modal-footer">
                                     <button className="btn btn-primary btn-block" onClick={() => this.setState({view_ids: false})}>Close</button>

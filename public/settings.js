@@ -1,7 +1,7 @@
 
 window.ENV = {
     // SimSage platform version (used for display only in UI)
-    version: '7.6.5',
+    version: '7.6.6',
     // api version of api_base
     api_version: 1,
     // use password sign-in or single-sign-on? (value: "password" or "single-sign-on")

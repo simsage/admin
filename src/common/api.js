@@ -271,6 +271,7 @@ export class Api {
         else if (role === 'dms') return "DMS User";
         else if (role === 'manager') return "Organisational Manager";
         else if (role === 'discover') return "Discover User";
+        else if (role === 'search') return "Search User";
         else return role;
     }
 
