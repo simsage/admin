@@ -3,8 +3,9 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {useForm} from "react-hook-form";
 import Api from "../../common/api";
-import {addOrUpdate, closeForm} from "./knowledgeBaseSlice";
+import {addOrUpdate, closeForm, setSelectedTab} from "./knowledgeBaseSlice";
 import {showErrorAlert} from "../alerts/alertSlice";
+import {KnowledgeBaseFormTab} from "./KnowledgeBaseFormTab";
 
 export default function KnowledgeBaseForm(props) {
 
@@ -23,6 +24,7 @@ export default function KnowledgeBaseForm(props) {
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const [security_id, setSecurityId] = useState('');
 
+    const [selected_tab, setSelectedTab] = useState('general')
 
     function showMissingOrganisationError() {
         if (!organisation_id) {
@@ -105,6 +107,10 @@ export default function KnowledgeBaseForm(props) {
         handleClose()
     };
 
+    function handleTabChange(slug) {
+        setSelectedTab(slug);
+    }
+
 
     if (!show_kb_form)
         return (<div/>);
@@ -121,6 +127,8 @@ export default function KnowledgeBaseForm(props) {
                         </div>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="modal-body">
+                                <KnowledgeBaseFormTab selected_tab={selected_tab} onTabChange={handleTabChange} />
+
                                 <div>
                                     <div className="control-row">
                                         <span className="label-3">name</span>
