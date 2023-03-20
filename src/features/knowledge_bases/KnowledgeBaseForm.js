@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import {useForm} from "react-hook-form";
@@ -6,6 +6,7 @@ import Api from "../../common/api";
 import {addOrUpdate, closeForm, setSelectedTab} from "./knowledgeBaseSlice";
 import {showErrorAlert} from "../alerts/alertSlice";
 import {KnowledgeBaseFormTab} from "./KnowledgeBaseFormTab";
+import TimeSelect from "../../common/time-select";
 
 export default function KnowledgeBaseForm(props) {
 
@@ -26,6 +27,8 @@ export default function KnowledgeBaseForm(props) {
 
     const [selected_tab, setSelectedTab] = useState('general')
 
+
+
     function showMissingOrganisationError() {
         if (!organisation_id) {
             dispatch(showErrorAlert({"message": "Organisation-id missing, please select an organisation first.", "title": "error"}));
@@ -45,6 +48,7 @@ export default function KnowledgeBaseForm(props) {
         }
     }
 
+    const [edit_index_schedule, setIndexSchedule] = useState(kb? kb.indexSchedule:'');
 
     const refreshSecurityId = () => {
         const id = Api.createGuid();
@@ -101,7 +105,11 @@ export default function KnowledgeBaseForm(props) {
 
     //on submit store or update
     const onSubmit = data => {
-        data = {...data, organisationId: organisation_id}
+        data = {...data,
+            organisationId: organisation_id,
+            // lastIndexOptimizationTime:0,
+            indexSchedule:edit_index_schedule,
+        }
         console.log("data", data)
         dispatch(addOrUpdate({session_id: session.id, data: data}))
         handleClose()
@@ -111,17 +119,26 @@ export default function KnowledgeBaseForm(props) {
         setSelectedTab(slug);
     }
 
+    function updateSchedule(time) {
+        console.log(time)
+        setIndexSchedule(time)
+        console.log("edit_index_schedule", edit_index_schedule)
+        // if (time !== null) {
+        //     setFormData({...form_data, schedule: time})
+        // }
+    }
+
 
     if (!show_kb_form)
         return (<div/>);
     return (
         <div>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
-                <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                    <div className="modal-content shadow p-3 mb-5 bg-white rounded crawler-page w-100">
 
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">{title} {kb_id}</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
                             <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
@@ -129,6 +146,8 @@ export default function KnowledgeBaseForm(props) {
                             <div className="modal-body">
                                 <KnowledgeBaseFormTab selected_tab={selected_tab} onTabChange={handleTabChange} />
 
+
+                                {selected_tab === 'general' &&
                                 <div>
                                     <div className="control-row">
                                         <span className="label-3">name</span>
@@ -192,6 +211,32 @@ export default function KnowledgeBaseForm(props) {
                                     </div>
 
                                 </div>
+                                }
+                                {selected_tab === 'index_schedule' &&
+
+                                    <div className="time-tab-content">
+                                        <br />
+                                        <div className="small-text-optimizer">We strongly advice to allocate only one hour per day for index optimizations.  Unlike the crawler, each selected slot will cause the indexer to start again.</div>
+                                        {/*<TimeSelect time={this.state.edit_index_schedule}*/}
+                                        {/*            onSave={(time) => this.updateIndexSchedule(time)}/>*/}
+
+
+                                        <TimeSelect time={edit_index_schedule}
+                                                    onSave={(time) => updateSchedule(time)}/>
+
+
+                                        { kb && kb.lastIndexOptimizationTime > 0 &&
+                                            <div>
+                                                <br />
+                                                <br />
+                                                <br />
+                                                this knowledge-base was last optimized on&nbsp;
+                                                <i>{Api.unixTimeConvert(kb.lastIndexOptimizationTime)}</i>
+                                            </div>
+                                        }
+                                    </div>
+
+                                }
 
                             </div>
                             <div className="modal-footer">

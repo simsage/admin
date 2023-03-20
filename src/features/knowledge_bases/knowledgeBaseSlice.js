@@ -26,9 +26,6 @@ const initialState = {
     show_optimize_form: false,
     optimize_data: null,            // {session and kb}
 
-    //
-    selected_tab:'general' //general, index_schedule
-
 }
 
 
@@ -208,10 +205,6 @@ const knowledgeBaseSlice = createSlice({
             state.show_optimize_form = false;
             state.optimize_data = null;
         },
-        setSelectedTab: (state, action) => {
-            state.selected_tab = action.payload
-        },
-
         //
         search: (state, action) => {
 
@@ -256,6 +249,6 @@ const knowledgeBaseSlice = createSlice({
 
 export const {
     showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
-    setViewIds, showOptimizeAskDialog, closeOptimize, updateKB, search, orderBy, setSelectedTab
+    setViewIds, showOptimizeAskDialog, closeOptimize, updateKB, search, orderBy
 } = knowledgeBaseSlice.actions
 export default knowledgeBaseSlice.reducer;
