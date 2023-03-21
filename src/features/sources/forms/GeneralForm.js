@@ -10,23 +10,34 @@ export default function GeneralForm(props) {
     const default_num_results = 5;
     const default_num_fragments = 3;
     const default_qna_threshold = 0.8125;
+
     const crawler_list = [
         {"key": "none", "value": "please select crawler type"},
-        {"key": "file", "value": "file crawler"},
-        {"key": "web", "value": "web crawler"},
-        {"key": "exchange365", "value": "exchange 365 crawler"},
-        {"key": "onedrive", "value": "one-drive crawler"},
-        {"key": "sharepoint365", "value": "sharepoint 365 crawler"},
-        {"key": "box", "value": "box crawler"},
+        {"key": "box", "value": "Box crawler"},
+        {"key": "confluence", "value": "Confluence crawler"},
+        {"key": "database", "value": "Database crawler"},
+
+        {"key": "discourse", "value": "Discourse crawler"},
+        {"key": "dropbox", "value": "Dropbox crawler"},
+
+        {"key": "exchange365", "value": "Exchange 365 crawler"},
+        {"key": "external", "value": "External crawler"},
+
+        {"key": "file", "value": "File (SMB) crawler"},
+        {"key": "gdrive", "value": "Google-drive crawler"},
         {"key": "imanage", "value": "iManage crawler"},
-        {"key": "dropbox", "value": "dropbox crawler"},
-        {"key": "wordpress", "value": "wordpress external crawler"},
-        {"key": "gdrive", "value": "google-drive crawler"},
-        {"key": "nfs", "value": "nfs external crawler"},
-        {"key": "database", "value": "database crawler"},
-        {"key": "restfull", "value": "rest-full crawler"},
-        {"key": "rss", "value": "rss crawler"},
-        {"key": "external", "value": "external crawler"},
+
+        {"key": "nfs", "value": "NFS external crawler"},
+        {"key": "onedrive", "value": "One-drive crawler"},
+
+        {"key": "restfull", "value": "REST-full crawler"},
+        {"key": "rss", "value": "RSS crawler"},
+
+        {"key": "servicenow", "value": "Service-now crawler"},
+        {"key": "sharepoint365", "value": "Sharepoint 365 crawler"},
+        {"key": "web", "value": "Web crawler"},
+        {"key": "wordpress", "value": "WordPress external crawler"},
+        {"key": "search", "value": "Search crawler"},
     ];
 
 

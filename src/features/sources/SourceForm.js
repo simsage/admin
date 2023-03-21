@@ -27,6 +27,9 @@ import CrawlerWordPressForm from "./forms/CrawlerWordPressForm";
 import CrawlerMetaMapperForm from "./forms/CrawlerMetaMapperForm";
 import {showErrorAlert} from "../alerts/alertSlice";
 import Api from "../../common/api";
+import CrawlerConfluenceForm from "./forms/CrawlerConfluenceForm";
+import {CrawlerDiscourseForm} from "./forms/CrawlerDiscourseForm.js ";
+import {CrawlerSearchForm} from "./forms/CrawlerSearchForm.js ";
 
 
 export default function SourceForm(props) {
@@ -108,6 +111,10 @@ export default function SourceForm(props) {
     const [form_data, setFormData] = useState(selected_source);
 
 
+
+
+
+
     /**
      Menu/Tabs for the Form
      */
@@ -115,21 +122,32 @@ export default function SourceForm(props) {
         {label: "general", slug: "general", type: "core"},
 
         //crawlers
-        {label: "file crawler", slug: "file", type: "optional"},
-        {label: "web crawler", slug: "web", type: "optional"},
-        {label: "database crawler", slug: "database", type: "optional"},
-        {label: "RESTful crawler", slug: "restfull", type: "optional"},
-        {label: "exchange365 crawler", slug: "exchange365", type: "optional"},
-        {label: "sharepoint365 crawler", slug: "sharepoint365", type: "optional"},
-        {label: "dropbox crawler", slug: "dropbox", type: "optional"},
-        {label: "box crawler", slug: "box", type: "optional"},
+        {label: "Box crawler", slug: "box", type: "optional"},
+        {label: "Confluence crawler", slug: "confluence", type: "optional"},
+        {label: "Database crawler", slug: "database", type: "optional"},
+
+        {label: "Dropbox crawler", slug: "dropbox", type: "optional"},
+        {label: "Discourse crawler", slug: "discourse", type: "optional"},
+
+        {label: "Exchange365 crawler", slug: "exchange365", type: "optional"},
+        {label: "External crawler", slug: "external", type: "optional"},
+
+        {label: "File (SMB) crawler", slug: "file", type: "optional"},
+        {label: "Google-drive crawler", slug: "gdrive", type: "optional"},
         {label: "iManage crawler", slug: "imanage", type: "optional"},
-        {label: "google drive crawler", slug: "gdrive", type: "optional"},
+
+        {label: "NFS crawler", slug: "nfs", type: "optional"},
+        {label: "One-drive crawler", slug: "onedrive", type: "optional"},
+
+        {label: "REST-full crawler", slug: "restfull", type: "optional"},
+        {label: "RSS crawler", slug: "rss", type: "optional"},
+
+        {label: "Sharepoint 365 crawler", slug: "sharepoint365", type: "optional"},
+        {label: "Web crawler", slug: "web", type: "optional"},
         {label: "wordpress crawler", slug: "wordpress", type: "optional"},
-        {label: "nfs crawler", slug: "nfs", type: "optional"},
-        {label: "rss crawler", slug: "rss", type: "optional"},
-        {label: "external crawler", slug: "external", type: "optional"},
-        {label: "onedrive crawler", slug: "onedrive", type: "optional"},
+
+        {label: "Search crawler", slug: "search", type: "optional"},
+        //crawlers
 
         //metadata
         {label: "metadata", slug: "metadata", type: "meta"},
@@ -683,6 +701,35 @@ export default function SourceForm(props) {
                                 }
 
 
+                                {selected_source_tab === 'confluence' &&
+                                    // console.log("selected_source_tab",selected_source_tab)
+                                    <CrawlerConfluenceForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+                                {selected_source_tab === 'discourse' &&
+                                    console.log("selected_source_tab",selected_source_tab)
+
+                                    // <CrawlerDiscourseForm
+                                    //     source={selected_source}
+                                    //     form_data={form_data}
+                                    //     setFormData={setFormData}/>
+
+                                }
+
+                                {selected_source_tab === 'search' &&
+                                    console.log("selected_source_tab",selected_source_tab)
+
+                                    // <CrawlerSearchForm
+                                    //     source={selected_source}
+                                    //     form_data={form_data}
+                                    //     setFormData={setFormData}/>
+
+                                }
+
                                 {selected_source_tab === 'wordpress' &&
                                     <CrawlerWordPressForm
                                         source={selected_source}
@@ -714,6 +761,8 @@ export default function SourceForm(props) {
 
                                     // onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                 }
+
+
 
 
                                 {/* Page 4: AclSetup  */}
