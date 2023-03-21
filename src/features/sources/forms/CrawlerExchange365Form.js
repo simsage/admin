@@ -63,9 +63,9 @@ export default function CrawlerExchange365Form(props) {
 
 
             <div className="form-group">
-                    <span className="left-column">
+                    <span className="full-column-2">
                         <span className="small-label-right">client id</span>
-                        <span className="big-text">
+                        <span className="bigger-text">
                             <form>
                                 <input type="text" className="form-control"
                                        placeholder="client id"
@@ -75,9 +75,11 @@ export default function CrawlerExchange365Form(props) {
                             </form>
                         </span>
                     </span>
-                <span className="right-column">
+            </div>
+            <div className="form-group">
+                <span className="full-column-2">
                         <span className="small-label-right">client secret</span>
-                        <span className="big-text">
+                        <span className="bigger-text">
                             <form>
                                 <input type="text" className="form-control"
                                        placeholder="client secret"
@@ -90,20 +92,20 @@ export default function CrawlerExchange365Form(props) {
             </div>
 
 
-            <div className="form-group">
-                    <span className="full-column">
-                        <span className="small-label-right">redirect url</span>
-                        <span className="bigger-text">
-                            <form>
-                                <input type="text" className="form-control"
-                                       placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."
-                                       value={specific_json.redirectUrl}
-                                       onChange={(event) => {setData({redirectUrl: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
-            </div>
+            {/*<div className="form-group">*/}
+            {/*        <span className="full-column">*/}
+            {/*            <span className="small-label-right">redirect url</span>*/}
+            {/*            <span className="bigger-text">*/}
+            {/*                <form>*/}
+            {/*                    <input type="text" className="form-control"*/}
+            {/*                           placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."*/}
+            {/*                           value={specific_json.redirectUrl}*/}
+            {/*                           onChange={(event) => {setData({redirectUrl: event.target.value})}}*/}
+            {/*                    />*/}
+            {/*                </form>*/}
+            {/*            </span>*/}
+            {/*        </span>*/}
+            {/*</div>*/}
 
             <br/>
 
