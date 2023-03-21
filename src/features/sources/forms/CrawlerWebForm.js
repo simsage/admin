@@ -14,19 +14,19 @@ export default function CrawlerWebForm(props) {
     const theme = props.theme;
     const l_form_data = props.form_data;
 
-    const [has_error,setError] = useState()
+    const [has_error, setError] = useState()
 
 
     //update local variable specific_json when data is changed
     function setData(data) {
-        setSpecificJson({...specific_json,...data})
+        setSpecificJson({...specific_json, ...data})
     }
 
 
     //update setFormData when specific_json is changed
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
-        props.setFormData({...l_form_data, specificJson:specific_json_stringify})
+        props.setFormData({...l_form_data, specificJson: specific_json_stringify})
         console.log("specific_json in rss", specific_json)
     }, [specific_json])
 
@@ -46,7 +46,9 @@ export default function CrawlerWebForm(props) {
                                autoFocus={true}
                                className="form-control"
                                value={specific_json.baseUrlList}
-                               onChange={(event) => {setData({baseUrlList: event.target.value})}}
+                               onChange={(event) => {
+                                   setData({baseUrlList: event.target.value})
+                               }}
                         />
                     </span>
             </div>
@@ -57,7 +59,9 @@ export default function CrawlerWebForm(props) {
                         <span className="big-text">
                             <input type="text" className="form-control"
                                    value={specific_json.validExtensions}
-                                   onChange={(event) => {setData({validExtensions: event.target.value})}}
+                                   onChange={(event) => {
+                                       setData({validExtensions: event.target.value})
+                                   }}
                             />
                         </span>
                     </span>
@@ -66,11 +70,72 @@ export default function CrawlerWebForm(props) {
                             <span className="big-text">
                             <input type="text" className="form-control"
                                    value={specific_json.validExtensionsIgnore}
-                                   onChange={(event) => {setData({validExtensionsIgnore: event.target.value})}}
+                                   onChange={(event) => {
+                                       setData({validExtensionsIgnore: event.target.value})
+                                   }}
                             />
                             </span>
                     </span>
             </div>
+
+            <div className="form-group">
+                    <span className="left-column">
+                            <span className="small-label-right">bearer token</span>
+                            <span className="big-text">
+                                <input type="text" className="form-control"
+                                       value={specific_json.bearerToken}
+                                       placeholder="an optional bearer token if available"
+                                       title="(optional) bearer token"
+                                       onChange={(event) => {
+                                           setData({bearerToken: event.target.value})
+                                       }}
+                                />
+                            </span>
+                    </span>
+                    <span className="left-column">
+                             <span className="small-label-right">user-agent</span>
+                            <span className="big-text">
+                            <input type="text" className="form-control"
+                                   placeholder="web-crawler's user-agent (blank to leave default)"
+                                   title="(optional) web-crawler's user-agent"
+                                   value={specific_json.userAgent}
+                                   onChange={(event) => {
+                                       setData({userAgent: event.target.value})
+                                   }}
+                            />
+                            </span>
+                    </span>
+            </div>
+
+            <div className="form-group">
+                    <span className="left-column">
+                            <span className="small-label-right">username</span>
+                            <span className="big-text">
+                            <input type="text" className="form-control"
+                                   value={specific_json.basicUsername}
+                                   placeholder="optional basic auth username"
+                                   title="(optional) basic auth username"
+                                   onChange={(event) => {
+                                       setData({basicUsername: event.target.value})
+                                   }}
+                            />
+                            </span>
+                    </span>
+                    <span className="left-column">
+                             <span className="small-label-right">password</span>
+                            <span className="big-text">
+                            <input type="password" className="form-control"
+                                   placeholder="basic auth password (leave blank to keep previous)"
+                                   title="(optional) basic auth password (leave blank to keep previous)"
+                                   value={specific_json.password}
+                                   onChange={(event) => {
+                                       setData({password: event.target.value})
+                                   }}
+                            />
+                            </span>
+                    </span>
+            </div>
+
 
             <div className="form-group">
                 <span className="label-right-top">include css csv</span>
@@ -79,7 +144,9 @@ export default function CrawlerWebForm(props) {
                                   placeholder="css/html root fragments to include csv"
                                   rows="3"
                                   value={specific_json.webCss}
-                                  onChange={(event) => {setData({webCss: event.target.value})}}
+                                  onChange={(event) => {
+                                      setData({webCss: event.target.value})
+                                  }}
                         />
                     </span>
             </div>
@@ -91,7 +158,9 @@ export default function CrawlerWebForm(props) {
                                   placeholder="css/html root fragments to exclude csv"
                                   rows="3"
                                   value={specific_json.webCssIgnore}
-                                  onChange={(event) => {setData({webCssIgnore: event.target.value})}}
+                                  onChange={(event) => {
+                                      setData({webCssIgnore: event.target.value})
+                                  }}
                         />
                     </span>
             </div>
@@ -103,7 +172,9 @@ export default function CrawlerWebForm(props) {
                                   placeholder="csv words, include articles by words [optional]"
                                   rows="3"
                                   value={specific_json.articleIncludeWordsCsv}
-                                  onChange={(event) => {setData({articleIncludeWordsCsv: event.target.value})}}
+                                  onChange={(event) => {
+                                      setData({articleIncludeWordsCsv: event.target.value})
+                                  }}
                         />
                     </span>
             </div>
@@ -115,7 +186,9 @@ export default function CrawlerWebForm(props) {
                                   placeholder="csv words, exclude articles by words [optional]"
                                   rows="3"
                                   value={specific_json.articleExcludeWordsCsv}
-                                  onChange={(event) => {setData({articleExcludeWordsCsv: event.target.value})}}
+                                  onChange={(event) => {
+                                      setData({articleExcludeWordsCsv: event.target.value})
+                                  }}
                         />
                     </span>
             </div>
