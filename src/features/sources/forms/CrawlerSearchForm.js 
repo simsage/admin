@@ -1,5 +1,0 @@
-export function CrawlerSearchForm({}){
-    return(<div>
-        CrawlerSearchForm
-    </div>)
-}
