@@ -20,6 +20,28 @@ export default function CrawlerDatabaseForm(props) {
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
 
+    //form defaults
+    const default_template_val = '<div class="ms-3 w-100">\n' +
+        '  <div class="d-flex align-items-center text-align-end mb-1">\n' +
+        '    <p class="mb-0 result-breadcrumb me-2">BREADCRUMB</p>\n' +
+        '  </div>\n' +
+        '    <span class="mb-2 results-filename text-break pointer-cursor" title="URL">TITLE</span>\n' +
+        '    <div class="d-flex align-items-center mb-1">\n' +
+        '      <span class="mb-0 result-details-title">URL</span>\n' +
+        '    </div>\n' +
+        '  <div class="d-flex align-items-center mb-1">\n' +
+        '    <span class="mb-0 result-details">LAST_MODIFIED</span>\n' +
+        '    <span class="d-flex align-items-center">\n' +
+        '      <span class="mb-0 result-details mx-2">|</span>\n' +
+        '      <span class="mb-0 result-details">AUTHOR</span>\n' +
+        '    </span>\n' +
+        '  </div>\n' +
+        '  <div>\n' +
+        '    <p class="small fw-light mb-2">RESULT_TEXT</p>\n' +
+        '  </div>\n' +
+        '  <div class="d-flex align-items-center flex-wrap"></div>\n' +
+        '</div>\n';
+
     const self = this;
     const theme = props.theme;
     const l_form_data = props.form_data;
@@ -181,7 +203,7 @@ export default function CrawlerDatabaseForm(props) {
                                   placeholder="sql html render template, an html template referencing SQL fields in square brackets [FIELD-NAME]"
                                   disabled={!specific_json.customRender}
                                   rows={4}
-                                  value={specific_json.template}
+                                  value={specific_json.template?specific_json.template:default_template_val}
                                   onChange={(event) => {setData({template: event.target.value})}}
                         />
                     </span>
