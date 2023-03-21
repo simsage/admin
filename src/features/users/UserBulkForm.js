@@ -32,7 +32,7 @@ export function UserBulkForm( ){
         e.preventDefault()
 
         // Headers for each column
-        let headers = ['firstname,surname,email,Roles-csv,SimSage-roles-csv']
+        let headers = ['firstname,surname,email,groups,roles']
 
         downloadFile({
             data: [...headers].join('\n'),
