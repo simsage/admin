@@ -55,20 +55,18 @@ export class RestoreUpload extends React.Component {
     render() {
         return (
             <div className="restore-upload">
-                <form onSubmit={(e) => this._handleSubmit(e)} className="upload-container">
-                    <div className="form-offset">
-                        {
-                            this.state.data && this.state.data.length > 0 && this.state.fileType === "text/plain" &&
-                            <div className="restore-image-button" onClick={() => this.upload()}><img
-                                className="image-size" src="../images/restore.svg"
-                                title={"Click here to restore data from \"" + this.state.filename + "\""}
-                                alt="restore data from file"/></div>
-                        }
-                        <input className="upload-margin"
-                               type="file"
-                               onChange={(e) => this._handleImageChange(e)}/>
-                    </div>
-                </form>
+                <div className="form-offset">
+                    {
+                        this.state.data && this.state.data.length > 0 && this.state.fileType === "text/plain" &&
+                        <div className="restore-image-button" onClick={() => this.upload()}><img
+                            className="image-size" src="../images/restore.svg"
+                            title={"Click here to restore data from \"" + this.state.filename + "\""}
+                            alt="restore data from file"/></div>
+                    }
+                    <input className="upload-margin"
+                           type="file"
+                           onChange={(e) => this._handleImageChange(e)}/>
+                </div>
             </div>
         )
     }

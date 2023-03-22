@@ -7,7 +7,7 @@ import {appCreators} from "../actions/appActions";
 import '../css/spreadsheet-upload.css';
 
 
-export class SpreadsheetUpload extends Component {
+export class UserImport extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -38,14 +38,12 @@ export class SpreadsheetUpload extends Component {
     }
 
     upload() {
-        if (this.state.binary_data) {
+        if (this.state.binary_data && this.props.uploadUsers) {
             const payload = {
                 base64Text: this.state.binary_data,
                 fileType: this.state.file_type,
-                kbId: this.props.selected_knowledgebase_id,
-                organisationId: this.props.selected_organisation_id,
             };
-            this.props.uploadProgram(payload);
+            this.props.uploadUsers(payload);
             if (this.props.onUploadDone) {
                 this.props.onUploadDone();
             }
@@ -60,13 +58,16 @@ export class SpreadsheetUpload extends Component {
                            type="file"
                            onChange={(e) => this._handleImageChange(e)}/>
                     <div className="upload-button">
-                        <div className="upload-input">
+                        <div className="upload-input" title={"user-import csv (with header) format:\nfirstname,surname,email,\"group1,group2\",\"DMS,ADMIN\""}>
                             <button className="btn btn-primary btn-block"
                                     disabled={this.state.binary_data === null || this.props.uploading}
-                                    onClick={this.upload.bind(this)}>upload</button>
+                                    onClick={this.upload.bind(this)}>import csv</button>
                             {this.props.uploading &&
                             <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>
                             }
+                            <span className="help-button">
+                                <img className="help-button-img" src="images/help.svg" alt="help" />
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -86,5 +87,5 @@ const mapStateToProps = function(state) {
 export default connect(
     mapStateToProps,
     dispatch => bindActionCreators(appCreators, dispatch)
-)(SpreadsheetUpload);
+)(UserImport);
 

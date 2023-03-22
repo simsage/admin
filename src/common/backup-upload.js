@@ -4,10 +4,10 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
-import '../css/spreadsheet-upload.css';
+import '../css/backup-upload.css';
 
 
-export class SpreadsheetUpload extends Component {
+export class BackupUpload extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -42,19 +42,15 @@ export class SpreadsheetUpload extends Component {
             const payload = {
                 base64Text: this.state.binary_data,
                 fileType: this.state.file_type,
-                kbId: this.props.selected_knowledgebase_id,
                 organisationId: this.props.selected_organisation_id,
             };
-            this.props.uploadProgram(payload);
-            if (this.props.onUploadDone) {
-                this.props.onUploadDone();
-            }
+            this.props.uploadBackup(payload, this.props.onUploadDone);
         }
     }
 
     render() {
         return (
-            <div className="spreadsheet-upload">
+            <div className="backup-upload">
                 <div>
                     <input className="upload-control-position"
                            type="file"
@@ -63,7 +59,7 @@ export class SpreadsheetUpload extends Component {
                         <div className="upload-input">
                             <button className="btn btn-primary btn-block"
                                     disabled={this.state.binary_data === null || this.props.uploading}
-                                    onClick={this.upload.bind(this)}>upload</button>
+                                    onClick={this.upload.bind(this)}>restore</button>
                             {this.props.uploading &&
                             <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>
                             }
@@ -86,5 +82,5 @@ const mapStateToProps = function(state) {
 export default connect(
     mapStateToProps,
     dispatch => bindActionCreators(appCreators, dispatch)
-)(SpreadsheetUpload);
+)(BackupUpload);
 
