@@ -907,15 +907,6 @@ export default function SourceForm(props) {
                                 }
 
 
-                                {selected_source_tab === 'nfs' &&
-                                    <CrawlerNfsForm
-                                        source={selected_source}
-                                        form_data={form_data}
-                                        setFormData={setFormData}/>
-
-                                }
-
-
                                 {selected_source_tab === 'onedrive' &&
                                     <CrawlerOnedriveForm
                                         source={selected_source}
