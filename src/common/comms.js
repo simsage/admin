@@ -1,10 +1,30 @@
 import axios from "axios/index";
+import {loadState} from "./helpers";
 
-import {loadState} from '../reducers/stateLoader'
+// import {loadState} from '../state/stateLoader'
 
 
 // communications common to all components
 export class Comms {
+
+    /**
+     * New set of Api functions
+     */
+
+    static http_get2(url, session_id) {
+        const api_base = window.ENV.api_base;
+        if (url !== '/stats/stats/os') {
+            console.log('GET ' + api_base + url);
+        }
+
+        return axios.get(api_base + url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    };
+
 
     static http_post(url, session_id, payload, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
@@ -46,6 +66,8 @@ export class Comms {
             });
     };
 
+
+
     static http_get(url, session_id, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
         if (url !== '/stats/stats/os') {
@@ -70,9 +92,9 @@ export class Comms {
 
     static http_get_jwt(url, jwt, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
-        }
+        // if (url !== '/stats/stats/os') {
+        //     console.log('GET ' + api_base + url);
+        // }
         return axios.get(api_base + url,{
                 headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": jwt,}
             })
@@ -111,31 +133,6 @@ export class Comms {
                 }
             });
     };
-
-
-    /**
-     * sign in the admin user using a username and password
-     *
-     * @param username   the email address of the user
-     * @param password   the password of said user
-     * @param on_success success callback
-     * @param on_fail    fail callback
-     */
-    static usernamePasswordSignIn(username, password, on_success, on_fail) {
-        Comms.http_post('/auth/sign-in', null, {"email": username, "password": password},
-            (response) => {
-                // const organisation_list = response.data.organisationList ? response.data.organisationList : [];
-                // _getBackupList(organisation_list && organisation_list.length > 0 ? organisation_list[0].id : '', dispatch, getState);
-                if (on_success)
-                    on_success(response.data);
-            },
-            (errStr) => {
-                console.error(errStr);
-                if (on_fail) {
-                    on_fail(errStr);
-                }
-            });
-    }
 
     // get a url that can be used to backup the system, regime e {all (backup all orgs), specific (backup specified org)}
     static download_backup(organisation_id, regime, session_id) {
@@ -240,6 +237,8 @@ export class Comms {
 
     static getSession() {
         const state = loadState();
+        console.log("loadstate",state)
+        return state;
         if (state && state.appReducer && state.appReducer.session && state.appReducer.session.id) {
             return state.appReducer.session;
         }
@@ -248,9 +247,11 @@ export class Comms {
 
     static getHeaders(session_id) {
         if (session_id) {
+            // const api_version = 1;
+            const api_version = window.ENV.api_version
             return {
                 headers: {
-                    "API-Version": window.ENV.api_version,
+                    "API-Version": api_version,
                     "Content-Type": "application/json",
                     "session-id": session_id,
                 }
@@ -265,5 +266,4 @@ export class Comms {
     }
 
 }
-
 export default Comms;
