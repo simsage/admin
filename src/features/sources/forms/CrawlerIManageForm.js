@@ -116,12 +116,12 @@ export default function CrawlerIManageForm(props) {
 
             <div className="form-group">
                     <span className="left-column">
-                        <span className="small-label-right">client secret</span>
+                        <span className="small-label-right">client secret / api secret</span>
                         <span className="big-text">
                             <form>
                                 <input type="text" className="form-control dropbox-text-width"
                                        spellCheck={false}
-                                       placeholder="client secret"
+                                       placeholder="client secret aka. api secret"
                                        value={specific_json.clientSecret}
                                        onChange={(event) => {setData({clientSecret: event.target.value})}}
                                 />
