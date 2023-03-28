@@ -41,7 +41,7 @@ export default function SourceForm(props) {
         "deleteFiles": false,
         "allowAnonymous": true,
         "enablePreview": true,
-        "processingLevel": "NLU",
+        "processingLevel": "INDEX",
         "name": "",
         "sourceId": '0',
         "nodeId": 0,
@@ -59,7 +59,21 @@ export default function SourceForm(props) {
         "schedule": "mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3,mon-4,tue-4,wed-4,thu-4,fri-4,sat-4,sun-4,mon-5,tue-5,wed-5,thu-5,fri-5,sat-5,sun-5,mon-6,tue-6,wed-6,thu-6,fri-6,sat-6,sun-6,mon-8,tue-8,wed-8,thu-8,fri-8,sat-8,sun-8,mon-9,tue-9,wed-9,thu-9,fri-9,sat-9,sun-9,mon-10,tue-10,wed-10,thu-10,fri-10,sat-10,sun-10,mon-11,tue-11,wed-11,thu-11,fri-11,sat-11,sun-11,mon-12,tue-12,wed-12,thu-12,fri-12,sat-12,sun-12,mon-13,tue-13,wed-13,thu-13,fri-13,sat-13,sun-13,mon-14,tue-14,wed-14,thu-14,fri-14,sat-14,sun-14,mon-15,tue-15,wed-15,thu-15,fri-15,sat-15,sun-15,mon-16,tue-16,wed-16,thu-16,fri-16,sat-16,sun-16,mon-17,tue-17,wed-17,thu-17,fri-17,sat-17,sun-17,mon-18,tue-18,wed-18,thu-18,fri-18,sat-18,sun-18,mon-19,tue-19,wed-19,thu-19,fri-19,sat-19,sun-19,mon-20,tue-20,wed-20,thu-20,fri-20,sat-20,sun-20,mon-21,tue-21,wed-21,thu-21,fri-21,sat-21,sun-21,mon-22,tue-22,wed-22,thu-22,fri-22,sat-22,sun-22,mon-23,tue-23,wed-23,thu-23,fri-23,sat-23,sun-23",
         "acls": [],
         "kbId": "",
-        "internalCrawler": ""
+        "internalCrawler": "",
+
+        "storeBinary":"",
+        "versioned":"",
+        writeToCassandra:"",
+        enableDocumentSimilarity:"",
+        documentSimilarityThreshold:"",
+        isExternal:""
+
+        // storeBinary: props.storeBinary,
+        // versioned: props.versioned,
+        // writeToCassandra: props.writeToCassandra,
+        // enableDocumentSimilarity: props.enableDocumentSimilarity,
+        // documentSimilarityThreshold: props.documentSimilarityThreshold,
+        // isExternal: props.isExternal
     }
 
     const dispatch = useDispatch();
@@ -207,12 +221,20 @@ export default function SourceForm(props) {
         //
         defaultValues.sourceId = selected_source ? selected_source.sourceId : 0;
 
+        defaultValues.storeBinary = "";
+        defaultValues.versioned = "";
+        defaultValues.writeToCassandra = "";
+        defaultValues.enableDocumentSimilarity = "";
+        defaultValues.documentSimilarityThreshold = "";
+        defaultValues.isExternal = "";
+
         reset({...defaultValues});
     }, [show_form]);
 
 
     const [has_error, setError] = useState();
     useEffect(() => {
+        console.log("has_error",has_error)
         if (has_error) dispatch(showErrorAlert(has_error))
     }, [has_error])
 
@@ -580,56 +602,42 @@ export default function SourceForm(props) {
 
         if (new_data.qaMatchStrength < 0.0 || new_data.qaMatchStrength > 1.0) {
 
-            this.setError('invalid parameters', 'Q&A threshold must be between 0.0 and 1.0.');
-
+            setError({title: 'invalid parameters', message: 'Q&A threshold must be between 0.0 and 1.0.'});
         } else if (new_data.name.length === 0) {
-
-            this.setError('invalid parameters', 'you must supply a crawler name.');
-
+            setError({title: 'invalid parameters', message: 'you must supply a crawler name.'});
         } else if (new_data.crawlerType === 'none') {
-
-            this.setError('invalid parameters', 'you must select a crawler-type.');
-
+            setError({title: 'invalid parameters', message: 'you must select a crawler-type.'});
         } else if (!sj) {
-
-            this.setError('invalid parameters', 'crawler specific data not set');
-
+            setError({title: 'invalid parameters', message: 'crawler specific data not set'});
         } else if (!validAcls && !new_data.crawlerType === 'discourse') {
-
-            this.setError('invalid parameters', 'This source does not have valid ACLs.\nThis source won\'t be usable.  Please add ACLs to this source.');
-
+            setError({title: 'invalid parameters', message:  'This source does not have valid ACLs.\nThis source won\'t be usable.  Please add ACLs to this source.'});
         } else if (new_data.crawlerType === 'file' && (
             (!sj.username || sj.username.length === 0) ||
             (!sj.server || sj.server.length === 0) ||
             !this.validFQDN(sj.fqdn) ||
             (!sj.shareName || sj.shareName.length === 0))) {
-
-            this.setError('invalid parameters', 'file crawler: you must supply a name, username, server, valid FQDN and share path as a minimum.');
-
+            setError({title: 'invalid parameters', message: 'file crawler: you must supply a name, username, server, valid FQDN and share path as a minimum.'});
         } else if (new_data.crawlerType === 'servicenow' && (
             (!sj.username || sj.username.length === 0) ||
             (!sj.server || sj.server.length === 0))) {
-
-            this.setError('invalid parameters', 'service-now crawler: you must supply a username, password, and service-now instance name.');
+            setError({title: 'invalid parameters', message: 'service-now crawler: you must supply a username, password, and service-now instance name.'});
+            // this.setError('invalid parameters', 'service-now crawler: you must supply a username, password, and service-now instance name.');
 
         } else if (new_data.crawlerType === 'web' && (
             !sj.baseUrlList || sj.baseUrlList.length === 0 ||
             (!sj.baseUrlList || (!sj.baseUrlList.startsWith("http://") && !sj.baseUrlList.startsWith("https://"))))) {
-
-            this.setError('invalid parameters', 'you must supply a base url of type http:// or https://');
+            setError({title: 'invalid parameters', message: 'you must supply a base url of type http:// or https://'});
 
         } else if (new_data.crawlerType === 'googlesite' && (
             !sj.baseUrlList || sj.baseUrlList.length === 0 || !sj.baseUrlList.trim().startsWith("https://sites.google.com/"))) {
-
-            this.setError('invalid parameters', 'you must supply a base-url starting with https://sites.google.com/');
+            setError({title: 'invalid parameters', message: 'you must supply a base-url starting with https://sites.google.com/'});
 
         } else if (new_data.crawlerType === 'database' && (
             !sj.jdbc || sj.jdbc.length === 0 ||
             !sj.type || sj.type.length === 0 || !sj.type || sj.type === 'none' ||
             !sj.query || sj.query.length === 0 || !sj.pk || sj.pk.length === 0 ||
             !sj.template || sj.template.length === 0 || !sj.text || sj.text.length === 0)) {
-
-            this.setError('invalid parameters', 'you must supply a jdbc connection string, database-type, a query, a primary-key, a text-template, and a SQL-template as a minimum.');
+            setError({title: 'invalid parameters', message: 'you must supply a jdbc connection string, database-type, a query, a primary-key, a text-template, and a SQL-template as a minimum.'});
 
         } else if (new_data.crawlerType === 'restfull' && (
             !sj.url || sj.url.length === 0 ||
@@ -638,9 +646,9 @@ export default function SourceForm(props) {
             (!new_data.customRender && (!sj.content_url || sj.content_url.length === 0)))
         ) {
             if (new_data.customRender && (!sj.template || sj.template.length === 0 || !sj.text || sj.text.length === 0))
-                this.setError('invalid parameters', 'you must supply a primary-key, a url, a text-template, and an HTML-template as a minimum.');
+                setError({title: 'invalid parameters', message: 'you must supply a primary-key, a url, a text-template, and an HTML-template as a minimum.'});
             else
-                this.setError('invalid parameters', 'you must supply a primary-key, a url, and a content-url as a minimum.');
+                setError({title: 'invalid parameters', message: 'you must supply a primary-key, a url, and a content-url as a minimum.'});
 
         } else if (new_data.crawlerType === 'database' && sj.metadata_list && sj.metadata_list.length > 0 &&
             !this.isValidMetadata(sj.metadata_list, true)) {
@@ -651,69 +659,56 @@ export default function SourceForm(props) {
             !sj.tenantId || sj.tenantId.length === 0 ||
             !sj.clientId || sj.clientId.length === 0 ||
             !sj.clientSecret || sj.clientSecret.length === 0)) {
-
-            this.setError('invalid parameters', 'you must supply tenant-id, client-id, and client-secret as a minimum.');
+            setError({title: 'invalid parameters', message: 'you must supply tenant-id, client-id, and client-secret as a minimum.'});
 
         } else if (new_data.crawlerType === 'sharepoint365' && (
             !sj.tenantId || sj.tenantId.length === 0 ||
             !sj.clientId || sj.clientId.length === 0 ||
             !sj.clientSecret || sj.clientSecret.length === 0)) {
-
-            this.setError('invalid parameters', 'you must supply tenant-id, client-id, and client-secret as a minimum.');
+            setError({title: 'invalid parameters', message: 'you must supply tenant-id, client-id, and client-secret as a minimum.'});
 
         } else if (new_data.crawlerType === 'onedrive' && (
             !sj.tenantId || sj.tenantId.length === 0 ||
             !sj.clientId || sj.clientId.length === 0 ||
             !sj.redirectUrl || sj.redirectUrl.length === 0 ||
             !sj.clientSecret || sj.clientSecret.length === 0)) {
-
-            this.setError('invalid parameters', 'you must supply tenant-id, client-id, client-secret, and redirect-url as a minimum.');
+            setError({title: 'invalid parameters', message: 'you must supply tenant-id, client-id, client-secret, and redirect-url as a minimum.'});
 
         } else if (new_data.crawlerType === 'dropbox' && (!sj.clientToken || sj.clientToken.length === 0)) {
-
-            this.setError('invalid parameters', 'dropbox crawler: you must supply a client-token, and select a user as a minimum.');
+            setError({title: 'invalid parameters', message: 'dropbox crawler: you must supply a client-token, and select a user as a minimum.'});
 
         } else if (new_data.crawlerType === 'discourse' && (!sj.apiToken || sj.apiToken.length === 0 || !sj.server || sj.server.length === 0)) {
-
-            this.setError('invalid parameters', 'discourse crawler: you must supply an api-token, and a server name.');
+            setError({title: 'invalid parameters', message: 'discourse crawler: you must supply an api-token, and a server name.'});
 
         } else if (new_data.crawlerType === 'dropbox' && !this.validDropBoxFolderList(sj.folderList)) {
-
-            this.setError('invalid parameters', 'dropbox crawler: you have invalid values in your start folder.');
+            setError({title: 'invalid parameters', message: 'dropbox crawler: you have invalid values in your start folder.'});
 
         } else if (new_data.crawlerType === 'box' && !this.validDropBoxFolderList(sj.folderList)) {
-
-            this.setError('invalid parameters', 'box crawler: you have invalid values in your start folder.');
+            setError({title: 'invalid parameters', message: 'box crawler: you have invalid values in your start folder.'});
 
         } else if (new_data.crawlerType === 'imanage' && !this.validDropBoxFolderList(sj.folderList)) {
-
-            this.setError('invalid parameters', 'iManage crawler: you have invalid values in your start folder.');
+            setError({title: 'invalid parameters', message: 'iManage crawler: you have invalid values in your start folder.'});
 
         } else if (new_data.crawlerType === 'box' && (!sj.clientId || sj.clientId.length === 0 ||
             !sj.clientSecret || sj.clientSecret.length === 0 || !sj.enterpriseId || sj.enterpriseId.length === 0 ||
             sj.deltaIndicator.length === 0)) {
-
-            this.setError('invalid parameters', 'box crawler: you have invalid values for clientId / clientSecret / enterpriseId / time-to-check-from.');
+            setError({title: 'invalid parameters', message: 'box crawler: you have invalid values for clientId / clientSecret / enterpriseId / time-to-check-from.'});
 
         } else if (new_data.crawlerType === 'imanage' && (!sj.clientId || sj.clientId.length === 0 ||
             !sj.clientSecret || sj.clientSecret.length === 0 || !sj.libraryId || sj.libraryId.length === 0 ||
             !sj.server || sj.server.length === 0 || !sj.username || sj.username.length === 0 ||
             !sj.cursor || sj.cursor.length === 0)) {
-
-            this.setError('invalid parameters', 'iManage crawler: you have invalid values for server / username / clientId / clientSecret / libraryId / cursor.');
+            setError({title: 'invalid parameters', message: 'iManage crawler: you have invalid values for server / username / clientId / clientSecret / libraryId / cursor.'});
 
         } else if (new_data.crawlerType === 'gdrive' && (!sj.drive_user_csv || sj.drive_user_csv.length === 0 ||
             !sj.deltaIndicator || sj.deltaIndicator.length === 0)) {
+            setError({title: 'invalid parameters', message: 'you must supply values for all fields, and select one user as a minimum.'});
 
-            this.setError('invalid parameters', 'you must supply values for all fields, and select one user as a minimum.');
+        } else if (new_data.crawlerType === 'nfs' && (!sj.nfs_local_folder || sj.nfs_local_folder.length === 0)) {
+            setError({title: 'invalid parameters', message: 'nfs: you must set a local folder.'});
 
-        } else if (new_data.crawlerType === 'nfs' && (sj.nfs_local_folder.length === 0)) {
-
-            this.setError('invalid parameters', 'nfs: you must set a local folder.');
-
-        } else if (new_data.crawlerType === 'rss' && (sj.endpoint.length < 5)) {
-
-            this.setError('invalid parameters', 'RSS: you must supply a value for endpoint.');
+        } else if (new_data.crawlerType === 'rss' && (!sj.endpoint || sj.endpoint.length < 5)) {
+            setError({title: 'invalid parameters', message: 'RSS: you must supply a value for endpoint.'});
 
         } else if (new_data.crawlerType !== 'web' && new_data.crawlerType !== 'file' && new_data.crawlerType !== 'database' &&
             new_data.crawlerType !== 'exchange365' && new_data.crawlerType !== 'dropbox' &&
@@ -723,12 +718,11 @@ export default function SourceForm(props) {
             new_data.crawlerType !== 'box' && new_data.crawlerType !== 'imanage' && new_data.crawlerType !== 'discourse' &&
             new_data.crawlerType !== 'googlesite' && new_data.crawlerType !== 'servicenow' &&
             new_data.crawlerType !== 'search' && new_data.crawlerType !== 'confluence') {
-
-            this.setError('invalid parameters', 'you must select a crawler-type first.');
+            setError({title: 'invalid parameters', message: 'you must select a crawler-type first.'});
+            // this.setError('invalid parameters', 'you must select a crawler-type first.');
 
         } else if (isNaN(new_data.filesPerSecond)) {
-
-            this.setError("invalid parameters", "files-per-second must be a number");
+            setError({title: 'invalid parameters', message: 'files-per-second must be a number'});
 
         } else if (!isValidMetadata(sj.metadata_list, false)) {
             // takes care of itself

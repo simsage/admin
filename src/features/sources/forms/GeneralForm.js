@@ -147,13 +147,13 @@ export default function GeneralForm(props) {
 
                         <span className="label-left">Files per second throttle</span>
                         <input {...props.register("filesPerSecond", {required: true})} disabled={false}/>
-                        {props.errors.name && <span className="">This field is required <br/></span>}
+                        {props.errors.filesPerSecond && <span className="">This field is required <br/></span>}
                     </div>
 
                     <div className="right-column">
                         <span className="label-left">Maximum number of files</span>
                         <input {...props.register("maxItems", {required: true})} disabled={false}/>
-                        {props.errors.name && <span className="">This field is required <br/></span>}
+                        {props.errors.maxItems && <span className="">This field is required <br/></span>}
                     </div>
                 </div>
 
@@ -163,7 +163,7 @@ export default function GeneralForm(props) {
                     <div className="left-column">
                         <span className="label-left">maximum number of QA</span>
                         <input {...props.register("maxQNAItems", {required: true})} disabled={false}/>
-                        {props.errors.name && <span className="">This field is required <br/></span>}
+                        {props.errors.maxQNAItems && <span className="">This field is required <br/></span>}
                     </div>
 
 
@@ -189,7 +189,7 @@ export default function GeneralForm(props) {
                             <span className="label-right">similarity threshold</span>
                             <span className="number-textbox">
                                 <input
-                                    type="text" {...props.register("documentSimilarityThreshold", {required: true})} />
+                                    type="text" {...props.register("documentSimilarityThreshold")} />
 
                             </span>
                         </span>
