@@ -73,7 +73,7 @@ export const getUserList = createAsyncThunk(
 
 export const getUserListPaginated = createAsyncThunk(
     'users/getUserListPaginated',
-    async ({session_id,organization_id,page,page_size,filter}) => {
+    async ({session_id,organization_id,page=0,page_size=100,filter}) => {
         const api_base = window.ENV.api_base;
         console.log("getUserListPaginated",organization_id,page,page_size)
         const url = api_base + '/auth/users-paginated/'+ encodeURIComponent(organization_id)+ '/' + encodeURIComponent(page)+ '/' + encodeURIComponent(page_size)+ '/' + encodeURIComponent(filter);

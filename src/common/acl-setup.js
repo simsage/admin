@@ -65,7 +65,7 @@ export class AclSetup extends Component {
         console.log("getAllUsers")
         const list = [];
         const filter = this.state.availableFilter.trim().toLowerCase();
-        for (const group of this.getAllGroups()) {
+        for (let group of this.getAllGroups()) {
             let found = false;
             for (const s_acl of this.state.acl_list) {
                 if (group.name === s_acl.acl) {
@@ -74,7 +74,8 @@ export class AclSetup extends Component {
             }
             if (!found) { // still available (ie. not found)?
                 if (filter.length === 0 || group.name.toLowerCase().indexOf(filter) >= 0) {
-                    group.isUser = false;
+                    //todo: Cannot add property isUser - check this with rock
+                    // group.isUser = false;
                     list.push(group);
                 }
             }

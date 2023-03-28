@@ -7,7 +7,7 @@ import GeneralForm from "./forms/GeneralForm";
 import CrawlerMetadataForm from "./forms/CrawlerMetadataForm";
 import AclSetup from "../../common/acl-setup";
 import {getGroupList} from "../groups/groupSlice";
-import {getUserList} from "../users/usersSlice";
+import {getUserList, getUserListPaginated} from "../users/usersSlice";
 import TimeSelect from "../../common/time-select";
 import CrawlerRssForm from "./forms/CrawlerRssForm";
 import CrawlerBoxForm from "./forms/CrawlerBoxForm";
@@ -96,13 +96,19 @@ export default function SourceForm(props) {
     const show_form = useSelector((state) => state.sourceReducer.show_data_form);
 
     useEffect(() => {
+        const page = 0;
+        const page_size = 100;
         dispatch(getGroupList({session_id: session_id, organization_id: selected_organisation_id}))
-        dispatch(getUserList({session_id: session_id, organization_id: selected_organisation_id, filter: null}))
+        // session_id,organization_id,page,page_size,filter
+        dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:null}))
+        dispatch(getUserListPaginated({session_id: session_id, organization_id: selected_organisation_id, filter: null}))
     }, [show_form]);
+
 
     const user_list = useSelector((state) => state.usersReducer.user_list);
     const group_list = useSelector((state) => state.groupReducer.group_list);
-
+    console.log("user_list",user_list)
+    console.log("group_list",group_list)
 
     /**
      Set Form Data
