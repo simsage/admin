@@ -687,6 +687,7 @@ export class CrawlerDialog extends Component {
                                             basicUsername={sj.basicUsername}
                                             password={sj.password}
                                             userAgent={sj.userAgent}
+                                            validDomainCSV={sj.validDomainCSV}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>

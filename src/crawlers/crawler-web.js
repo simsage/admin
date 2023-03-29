@@ -28,6 +28,7 @@ export class CrawlerWeb extends Component {
             password: Api.defined(props.password) ? props.password : '',
             specific_json: props.specific_json,
             userAgent: Api.defined(props.userAgent) ? props.userAgent : '',
+            validDomainCSV: Api.defined(props.validDomainCSV) ? props.validDomainCSV : '',
         };
 
     }
@@ -54,6 +55,7 @@ export class CrawlerWeb extends Component {
                 basicUsername: Api.defined(nextProps.basicUsername) ? nextProps.basicUsername : '',
                 password: Api.defined(nextProps.password) ? nextProps.password : '',
                 userAgent: Api.defined(nextProps.userAgent) ? nextProps.userAgent : '',
+                validDomainCSV: Api.defined(nextProps.validDomainCSV) ? nextProps.validDomainCSV : '',
                 specific_json: nextProps.specific_json,
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
@@ -75,6 +77,7 @@ export class CrawlerWeb extends Component {
             basicUsername: Api.defined(data.basicUsername) ? data.basicUsername : this.state.basicUsername ,
             password: Api.defined(data.password) ? data.password : this.state.password ,
             userAgent: Api.defined(data.userAgent) ? data.userAgent : this.state.userAgent ,
+            validDomainCSV: Api.defined(data.validDomainCSV) ? data.validDomainCSV : this.state.validDomainCSV ,
         };
     }
     change_callback(data) {
@@ -91,10 +94,10 @@ export class CrawlerWeb extends Component {
             <div className="crawler-page">
 
                 <div className="form-group">
-                    <span className="label-right-top">http/s base url</span>
+                    <span className="label-right-top">http/s base url csv</span>
                     <span className="full-column">
                         <input type="text"
-                            placeholder="single http/s base url path (e.g. https://simsage.ai)"
+                            placeholder="csv of http/s base url paths (e.g. https://simsage.ai/folder1, https://simsage.ai/folder2)"
                             autoFocus={true}
                             className="form-control"
                             value={this.state.baseUrlList}
@@ -231,6 +234,18 @@ export class CrawlerWeb extends Component {
                                   rows="3"
                                   value={this.state.pagePrefixesToIgnore}
                                   onChange={(event) => {this.change_callback({pagePrefixesToIgnore: event.target.value})}}
+                        />
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <span className="label-right-top">csv allowed domains</span>
+                    <span className="full-column">
+                        <textarea className="textarea-width"
+                                  placeholder="csv urls (starting with https://), of additional allowed domains by prefix starts [optional]"
+                                  rows="3"
+                                  value={this.state.validDomainCSV}
+                                  onChange={(event) => {this.change_callback({validDomainCSV: event.target.value})}}
                         />
                     </span>
                 </div>
