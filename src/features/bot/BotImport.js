@@ -55,11 +55,40 @@ export function BotImport() {
 
     };
 
+    const downloadFile = ({ data, fileName, fileType }) => {
+        const blob = new Blob([data], { type: fileType })
+
+        const a = document.createElement('a')
+        a.download = fileName
+        a.href = window.URL.createObjectURL(blob)
+        const clickEvt = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+        })
+        a.dispatchEvent(clickEvt)
+        a.remove()
+    }
+
+    const exportToCsv = e => {
+        e.preventDefault()
+
+        // Headers for each column
+        let headers = ['id,question,answer,link,image,metadata']
+
+        downloadFile({
+            data: [...headers].join('\n'),
+            fileName: 'Import Bot Items.xlsx',
+            fileType: 'text/xlsx',
+        })
+    }
+
     if (!show_import_form)
         return (<div/>);
     return (
         <div className="backup-upload">
             <br />
+            <p className="link-primary text-decoration-underline pointer-cursor" onClick={exportToCsv}>Download Bot import template</p>
             <form onSubmit={handleSubmit(onSubmit)} className="upload-container">
                 <div>
                     <input type="file" {...register("file", {required: true})}  />
