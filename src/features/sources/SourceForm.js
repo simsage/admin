@@ -30,6 +30,7 @@ import Api from "../../common/api";
 import CrawlerConfluenceForm from "./forms/CrawlerConfluenceForm";
 import CrawlerDiscourseForm2 from "./forms/CrawlerDiscourseForm2";
 import CrawlerSearchForm2 from "./forms/CrawlerSearchForm2";
+import CrawlerServiceNow from "./forms/CrawlerServiceNow";
 
 
 export default function SourceForm(props) {
@@ -159,6 +160,7 @@ export default function SourceForm(props) {
         {label: "rss crawler", slug: "rss", type: "optional"},
 
         {label: "sharepoint 365 crawler", slug: "sharepoint365", type: "optional"},
+        {label: "service-now crawler", slug: "servicenow", type: "optional"},
         {label: "web crawler", slug: "web", type: "optional"},
         {label: "wordpress crawler", slug: "wordpress", type: "optional"},
 
@@ -971,6 +973,13 @@ export default function SourceForm(props) {
                                         form_data={form_data}
                                         setFormData={setFormData}/>
 
+                                }
+
+                                {selected_source_tab === 'servicenow' &&
+                                    <CrawlerServiceNow
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
                                 }
 
 
