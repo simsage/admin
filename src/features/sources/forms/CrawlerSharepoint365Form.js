@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {BsFilePdf} from 'react-icons/bs'
 
 export default function CrawlerSharepoint365Form(props) {
 
@@ -52,10 +53,11 @@ export default function CrawlerSharepoint365Form(props) {
                             </form>
                         </span>
                     <span className="office-manual-box">
-                            <a href="../resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank" title="download the SimSage Exchange 365 setup guide">
-                                <span className="instructions-label">instructions</span>
-                                <img src="../images/pdf-icon.png" alt="exchange 365 setup guide" className="image-size" />
-                            </a>
+                            <a href="resources/simsage-sharepoint365-setup.pdf" id="dlsharepoint" target="_blank"
+                               title="View the SimSage Sharepoint365 setup guide">
+                            <BsFilePdf size={25}/>
+                        </a>
+
                         </span>
                 </div>
             </div>
@@ -88,33 +90,17 @@ export default function CrawlerSharepoint365Form(props) {
                     </span>
             </div>
 
-
-            <div className="form-group">
-                    <span className="full-column">
-                        <span className="small-label-right">redirect url</span>
-                        <span className="bigger-text">
-                            <form>
-                                <input type="text" className="form-control"
-                                       placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."
-                                       value={specific_json.redirectUrl}
-                                       onChange={(event) => {setData({redirectUrl: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
-            </div>
-
             <br/>
 
             <div className="form-group">
                         <span className="full-column">
-                            <div style={{float: 'left'}} title="Check this box if you want the root SharePoint site to be indexed">
+                            <div style={{float: 'left'}} title="Check this box if you want all SharePoint sites to be indexed">
                                 <input type="checkbox"
-                                       checked={specific_json.crawlRootSite}
-                                       onChange={(event) => { setData({crawlRootSite: event.target.checked}); }}
-                                       value="crawl all of Exchange?"
+                                       checked={specific_json.crawlAllSites}
+                                       onChange={(event) => { setData({crawlAllSites: event.target.checked}); }}
+                                       value="crawl all Sites?"
                                 />
-                                <span className="label-left">crawl all of Exchange?</span>
+                                <span className="label-left">crawl all Sites?</span>
                             </div>
                         </span>
             </div>
@@ -122,15 +108,16 @@ export default function CrawlerSharepoint365Form(props) {
             <br/>
 
             <div className="form-group">
-                <div className="ull-column">crawl specific sharepoint site-ids</div>
+                <div className="ull-column">crawl specific sharepoint sites by name</div>
             </div>
             <div className="form-group">
                 <div className="full-column">
                         <textarea className="textarea-width"
-                                  placeholder="specific exchange accounts (comma separated email addresses)"
+                                  disabled={specific_json.crawlAllSites}
+                                  placeholder="specific sharepoint sites (comma separated sharepoint site names)"
                                   rows={2}
-                                  value={specific_json.crawlSharePoint}
-                                  onChange={(event) => {setData({crawlSharePoint: event.target.value})}}
+                                  value={specific_json.sharePointSitesToCrawl}
+                                  onChange={(event) => {setData({sharePointSitesToCrawl: event.target.value})}}
                         />
                 </div>
             </div>
