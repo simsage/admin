@@ -15,6 +15,7 @@ const initialState = {
     edit_organisation_id: null,
     data_status: 'load_now',//load_now,loading,loaded
     show_organisation_id: false,
+    show_delete_form:false,
 
     //for backups
     organisation_original_backup_list: [],
@@ -145,7 +146,14 @@ const reducers = {
         state.show_download_backup_form = false;
         state.selected_backup = null;
     },
-
+    showDeleteForm: (state, action) => {
+        state.show_delete_form = true;
+        state.edit_organisation_id = action.payload.org_id;
+    },
+    closeDeleteForm: (state) => {
+        state.show_delete_form = false;
+        state.edit_organisation_id = null;
+    },
 
 }
 
@@ -183,6 +191,7 @@ const extraReducers = (builder) => {
         .addCase(deleteOrganisation.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
+            state.error = action.payload
         })
 
         //load backup list
@@ -290,7 +299,7 @@ export const deleteOrganisation = createAsyncThunk(
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("deleteOrganisation error", error)
+                    console.log("deleteOrganisation error", error.response.data.error)
                     return error
                 }
             )
@@ -439,6 +448,6 @@ export const {
     showAddOrganisationForm, showEditOrganisationForm,
     closeOrganisationForm, setOrganisationList, search, orderBy,
     showBackupForm, closeBackupForm, closeBackupProgressMessage,
-    showDeleteBackupForm, closeBackupDeleteMessage, showDownloadBackupForm, closeBackupDownloadMessage, showOrganisationId
+    showDeleteBackupForm, closeBackupDeleteMessage, showDownloadBackupForm, closeBackupDownloadMessage, showOrganisationId, showDeleteForm, closeDeleteForm
 } = organisationSlice.actions
 export default organisationSlice.reducer;

@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {
     deleteOrganisation, getOrganisationBackupList,
     getOrganisationList,
-    showAddOrganisationForm, showBackupForm,
+    showAddOrganisationForm, showBackupForm, showDeleteForm,
     showEditOrganisationForm, showOrganisationId
 } from "./organisationSlice";
 import {setSelectedKB, setSelectedOrganisation} from "../auth/authSlice";
@@ -18,6 +18,7 @@ import BkOrganisationBackupProgressDialog from "./BkOrganisationBackupProgressDi
 import BkOrganisationBackupDeleteDialog from "./BkOrganisationBackupDeleteDialog";
 import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDialog";
 import {OrganisationViewId} from "./OrganisationViewId";
+import OrganisationDeleteAsk from "./OrganisationDeleteAsk";
 
 
 export function OrganisationHome() {
@@ -82,9 +83,7 @@ export function OrganisationHome() {
 
 
     function handleRemoveOrganisation(org_id) {
-        dispatch(deleteOrganisation({session_id: session.id, organisation_id: org_id}))
-        console.log("handleRemoveOrganisation")
-        // dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
+       dispatch(showDeleteForm({org_id}))
     }
 
     function handleBackupOrganisation(org_id) {
@@ -188,7 +187,7 @@ export function OrganisationHome() {
 
                                             <button className={"btn text-danger btn-sm"}
                                                     title={"remove organisation " + item.name}
-                                                    onClick={() => handleRemoveOrganisation(item.id)}>Delete
+                                                    onClick={() => handleRemoveOrganisation(item)}>Delete
                                             </button>
                                         </div>
                                     </td>
@@ -223,6 +222,8 @@ export function OrganisationHome() {
             {/*Show backups*/}
             <div>
                 <OrganisationViewId />
+
+                <OrganisationDeleteAsk />
 
                 <BkOrganisationBackupHome/>
 
