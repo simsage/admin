@@ -19,6 +19,7 @@ import BkOrganisationBackupDeleteDialog from "./BkOrganisationBackupDeleteDialog
 import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDialog";
 import {OrganisationViewId} from "./OrganisationViewId";
 import OrganisationDeleteAsk from "./OrganisationDeleteAsk";
+import OrganisationError from "./OrganisationError";
 
 
 export function OrganisationHome() {
@@ -224,6 +225,8 @@ export function OrganisationHome() {
                 <OrganisationViewId />
 
                 <OrganisationDeleteAsk />
+
+                <OrganisationError />
 
                 <BkOrganisationBackupHome/>
 

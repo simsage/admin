@@ -11,6 +11,7 @@ const initialState = {
 
     status: null,
     error: null,
+    show_error_form: false,
     show_organisation_form: false,
     edit_organisation_id: null,
     data_status: 'load_now',//load_now,loading,loaded
@@ -154,6 +155,11 @@ const reducers = {
         state.show_delete_form = false;
         state.edit_organisation_id = null;
     },
+    clearErrorMessage:(state) => {
+        state.error =  null;
+        state.show_error_form = false;
+    }
+
 
 }
 
@@ -192,6 +198,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
             state.error = action.payload
+            state.show_error_form = action.payload.response
         })
 
         //load backup list
@@ -448,6 +455,6 @@ export const {
     showAddOrganisationForm, showEditOrganisationForm,
     closeOrganisationForm, setOrganisationList, search, orderBy,
     showBackupForm, closeBackupForm, closeBackupProgressMessage,
-    showDeleteBackupForm, closeBackupDeleteMessage, showDownloadBackupForm, closeBackupDownloadMessage, showOrganisationId, showDeleteForm, closeDeleteForm
+    showDeleteBackupForm, closeBackupDeleteMessage, showDownloadBackupForm, closeBackupDownloadMessage, showOrganisationId, showDeleteForm, closeDeleteForm, clearErrorMessage
 } = organisationSlice.actions
 export default organisationSlice.reducer;
