@@ -42,7 +42,9 @@ export default function CrawlerGDriveForm(props) {
 
 
     function handleSetTimeNow() {
-        setTimeNow(Math.floor(Date.now()))
+        const temp_time_now = Math.floor(Date.now())
+        setTimeNow(temp_time_now)
+        console.log("handleSetTimeNow",time_now)
     }
 
     if (has_error) {
@@ -140,7 +142,7 @@ export default function CrawlerGDriveForm(props) {
                                     {/*    />*/}
                                     {/*</td>*/}
                                     <td>
-                                        <button className="btn bt-sm btn-primary" onClick={() => handleSetTimeNow()}>now</button>
+                                        <a className="btn bt-sm btn-primary" onClick={() => handleSetTimeNow()}>now</a>
                                     </td>
                                     <td>
                                         <div style={{width: "200px", marginLeft: "30px"}}>{date_time_str}</div>
