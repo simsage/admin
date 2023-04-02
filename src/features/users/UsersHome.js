@@ -178,14 +178,12 @@ export function UsersHome(){
                     </div>
                 </div>
 
-                <div className="form-group col ms-auto">
-                    <button className="btn btn-primary text-nowrap" onClick={() => handleAddNewUser()}>
+                <div className="d-flex">
+                    <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddNewUser()}>
                         + Add User
                         {/*<img className="add-image" src="/images/add.svg" title="add new user" alt="add new user"/>*/}
                     </button>
-                </div>
-                <div>
-                    <button className="btn btn-primary text-nowrap" onClick={() => handleUserBulk()}>
+                    <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleUserBulk()}>
                         + User Bulk
                     </button>
                     {/*<UserBulk/>*/}
