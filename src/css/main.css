@@ -343,10 +343,12 @@ html, body, #root, .App, .dms {
 .table > :not(:first-child) {
     border-top: 1px solid #ddd;
 }
-.table tbody tr {
+.table tbody tr,
+.log-line {
     transition: all .4s ease;
 }
-.table tbody tr:hover {
+.table tbody tr:hover,
+.log-line:hover {
     background-color: #f8f9fa;
     transition: all .4s ease;
 }
