@@ -27,7 +27,6 @@ export const getUserListPaginated = createAsyncThunk(
     'users/getUserListPaginated',
     async ({session_id,organization_id,page=0,page_size=100,filter}) => {
         const api_base = window.ENV.api_base;
-        console.log("getUserListPaginated",organization_id,page,page_size)
         const url = api_base + '/auth/users-paginated/'+ encodeURIComponent(organization_id)+ '/' + encodeURIComponent(page)+ '/' + encodeURIComponent(page_size)+ '/' + encodeURIComponent(filter);
 
         // return "Hello";
@@ -37,7 +36,6 @@ export const getUserListPaginated = createAsyncThunk(
 
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("users",response.data)
                 return response.data
             }).catch(
                 (error) => {return error}
@@ -102,7 +100,6 @@ const extraReducers = (builder) => {
             state.data_status = "loading";
         })
         .addCase(getUserListPaginated.fulfilled, (state, action) => {
-            console.log("users/getUserListPaginated 111",action.payload)
             state.status = "fulfilled"
             state.user_list = action.payload.userList
             state.user_original_list = action.payload.userList

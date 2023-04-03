@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeUserForm, getUserList, updateUser} from "./usersSlice";
+import {closeUserForm,updateUser} from "./usersSlice";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import {hasRole} from "../../common/helpers";

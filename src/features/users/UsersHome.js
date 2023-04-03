@@ -170,7 +170,6 @@ export function UsersHome(){
 
                     {
                         user_list && user_list.map((user) => {
-                            console.log('testing', user)
                             //user does not have chosen role then skip.
                             if(!filterRoles(user.roles, userFilter)){return null}
 
