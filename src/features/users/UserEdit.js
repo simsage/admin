@@ -63,7 +63,7 @@ export function UserEdit( {filter} ){
             }
         }
         //Populate form if necessary
-        if(selectedUser){
+        if(Object.keys(selectedUser).length){
             setEmail(selectedUser.email)
             setFirstName(selectedUser.firstName)
             setLastName(selectedUser.surname)
@@ -74,7 +74,9 @@ export function UserEdit( {filter} ){
             setKBs(!selectedUser.operatorKBList ? [] : selectedUser.operatorKBList.filter( KBObj => {
                 return KBObj.organisationId === organisation_id
             }))
-            setShowKBs(hasRole(selectedUser, ['operator']))
+            setShowKBs(!selectedUser.roles ? [] : selectedUser.roles.filter( roleObj => {
+                return roleObj.organisationId === organisation_id
+            }).map(r => r.role).includes('operator'))
         }
     }, [show_user_form])
 
