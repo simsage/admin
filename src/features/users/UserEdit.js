@@ -10,6 +10,7 @@ import SubNav from "../../includes/sub-nav";
 
 export function UserEdit( {filter} ){
 
+    const mockUserContainerStyles = {display: "inline-block", background: "whitesmoke", border: "2px solid black" ,minHeight:"300px", minWidth:"300px", padding:"1rem"}
 
 
     const dispatch = useDispatch();
@@ -347,10 +348,10 @@ export function UserEdit( {filter} ){
                         {
                             selectedTab === 'roles' &&
                             <div className="tab-content">
-                                <div>
+                                <div style={{display:"flex", justifyContent:"space-between", margin: "1rem"}}>
                                     <div className="role-block">
-                                        <div className="role-label">SimSage roles</div>
-                                        <div className="role-area">
+                                        <div className="role-label text-uppercase text-center fw-bold">SimSage roles</div>
+                                        <div className="role-area text-center" style={mockUserContainerStyles}>
                                             {
                                                 roles && roles.map((role, i) => {
                                                     return (<Chip key={i} color="secondary"
@@ -361,8 +362,8 @@ export function UserEdit( {filter} ){
                                         </div>
                                     </div>
                                     <div className="role-block">
-                                        <div className="role-label">available SimSage Roles</div>
-                                        <div className="role-area">
+                                        <div className="role-label text-uppercase text-center fw-bold" >available SimSage Roles</div>
+                                        <div className="role-area text-center" style={mockUserContainerStyles}>
                                             {
                                                 getAvailableRoles().map((role, i) => {
                                                     return (<Chip key={i} color="primary"
@@ -376,10 +377,10 @@ export function UserEdit( {filter} ){
 
                                     <br style={{clear: 'both'}}/>
                                 {showKbs &&
-                                    <div>
+                                    <div style={{display:"flex", justifyContent:"space-between", margin: "1rem"}}>
                                         <div className="role-block">
-                                            <div className="role-label">operator's knowledge bases</div>
-                                            <div className="role-area">
+                                            <div className="role-label text-uppercase text-center fw-bold">operator's knowledge bases</div>
+                                            <div className="role-area text-center" style={mockUserContainerStyles}>
                                                 {
                                                     kbs && kbs.map((kb, i) => {
                                                         return (<Chip key={i} color="secondary"
@@ -390,8 +391,8 @@ export function UserEdit( {filter} ){
                                             </div>
                                         </div>
                                         <div className="role-block">
-                                            <div className="role-label">operator available knowledge bases</div>
-                                            <div className="role-area">
+                                            <div className="role-label text-uppercase text-center fw-bold">operator available knowledge bases</div>
+                                            <div className="role-area text-center" style={mockUserContainerStyles}>
                                                 {
                                                     getAvailableKnowledgeBases().map((kb, i) => {
                                                         return (<Chip key={i} color="primary"
@@ -411,10 +412,10 @@ export function UserEdit( {filter} ){
                         {
                             selectedTab === 'groups' &&
                             <div className="tab-content">
-                                <div>
+                                <div style={{display:"flex", justifyContent:"space-between", margin: "1rem"}}>
                                     <div className="role-block">
-                                        <div className="role-label">SimSage Groups</div>
-                                        <div className="role-area">
+                                        <div className="role-label text-uppercase text-center fw-bold ">SimSage Groups</div>
+                                        <div className="role-area text-center" style={mockUserContainerStyles}>
                                             {
                                                 groups && groups.map((grp, i) => {
                                                     return (
@@ -428,8 +429,8 @@ export function UserEdit( {filter} ){
                                         </div>
                                     </div>
                                     <div className="role-block">
-                                        <div className="role-label">available SimSage groups</div>
-                                        <div className="role-area">
+                                        <div className="role-label text-uppercase text-center fw-bold">available SimSage groups</div>
+                                        <div className="role-area text-center" style={mockUserContainerStyles}>
                                             {
                                                 getAvailableGroups().map((grp, i) => {
                                                     return (<Chip key={i} color="primary"
