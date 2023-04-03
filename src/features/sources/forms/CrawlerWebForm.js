@@ -92,6 +92,25 @@ export default function CrawlerWebForm(props) {
                                 />
                             </span>
                     </span>
+
+                <span className="left-column">
+                            <span className="small-label-right">username</span>
+                            <span className="big-text">
+                            <input type="text" className="form-control"
+                                   value={specific_json.basicUsername}
+                                   placeholder="optional basic auth username"
+                                   title="(optional) basic auth username"
+                                   onChange={(event) => {
+                                       setData({basicUsername: event.target.value})
+                                   }}
+                            />
+                            </span>
+                    </span>
+
+
+            </div>
+
+            <div className="form-group">
                     <span className="left-column">
                              <span className="small-label-right">user-agent</span>
                             <span className="big-text">
@@ -101,22 +120,6 @@ export default function CrawlerWebForm(props) {
                                    value={specific_json.userAgent}
                                    onChange={(event) => {
                                        setData({userAgent: event.target.value})
-                                   }}
-                            />
-                            </span>
-                    </span>
-            </div>
-
-            <div className="form-group">
-                    <span className="left-column">
-                            <span className="small-label-right">username</span>
-                            <span className="big-text">
-                            <input type="text" className="form-control"
-                                   value={specific_json.basicUsername}
-                                   placeholder="optional basic auth username"
-                                   title="(optional) basic auth username"
-                                   onChange={(event) => {
-                                       setData({basicUsername: event.target.value})
                                    }}
                             />
                             </span>
@@ -189,6 +192,31 @@ export default function CrawlerWebForm(props) {
                                   onChange={(event) => {
                                       setData({articleExcludeWordsCsv: event.target.value})
                                   }}
+                        />
+                    </span>
+            </div>
+
+
+            <div className="form-group">
+                <span className="label-right-top">csv exclude words</span>
+                <span className="full-column">
+                        <textarea className="textarea-width"
+                                  placeholder="csv words, exclude articles by words [optional]"
+                                  rows="3"
+                                  value={specific_json.articleExcludeWordsCsv}
+                                  onChange={(event) => {setData({articleExcludeWordsCsv: event.target.value})}}
+                        />
+                    </span>
+            </div>
+
+            <div className="form-group">
+                <span className="label-right-top">csv exclude prefixes</span>
+                <span className="full-column">
+                        <textarea className="textarea-width"
+                                  placeholder="csv urls (starting with https://), exclude pages by prefix starts [optional]"
+                                  rows="3"
+                                  value={specific_json.pagePrefixesToIgnore}
+                                  onChange={(event) => {setData({pagePrefixesToIgnore: event.target.value})}}
                         />
                     </span>
             </div>
