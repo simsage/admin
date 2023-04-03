@@ -15,13 +15,13 @@ export default function CrawlerGDriveForm(props) {
     const theme = props.theme;
     const l_form_data = props.form_data;
 
-    const [has_error,setError] = useState()
-    const [time_now, setTimeNow] = useState(specific_json.deltaIndicator)
+    const [has_error,setError] = useState(false)
+    const [time_now, setTimeNow] = useState(specific_json.deltaIndicator?specific_json.deltaIndicator:0)
 
     const time2020 = 1577836800;
     let date_time_str = "complete crawl";
 
-    if (specific_json.deltaIndicator > time2020){
+    if (time_now > time2020){
         date_time_str = Api.toPrettyDateTime(new Date(time_now * 1));
     }
 
@@ -44,7 +44,9 @@ export default function CrawlerGDriveForm(props) {
     function handleSetTimeNow() {
         const temp_time_now = Math.floor(Date.now())
         setTimeNow(temp_time_now)
-        console.log("handleSetTimeNow",time_now)
+        setData({deltaIndicator:temp_time_now});
+
+        console.log("handleSetTimeNow",time_now,'--',specific_json.deltaIndicator)
     }
 
     if (has_error) {
@@ -132,15 +134,15 @@ export default function CrawlerGDriveForm(props) {
                             <table>
                                 <tbody>
                                 <tr>
-                                    {/*<td>*/}
-                                    {/*    <input type="text" className="form-control dropbox-text-width"*/}
-                                    {/*           spellCheck={false}*/}
-                                    {/*           style={{width: "200px", marginRight: "10px"}}*/}
-                                    {/*           placeholder="time to check from"*/}
-                                    {/*           value={time_now}*/}
-                                    {/*           onChange={(event) => {setData({deltaIndicator: event.target.value})}}*/}
-                                    {/*    />*/}
-                                    {/*</td>*/}
+                                    <td>
+                                        <input type="text" className="form-control dropbox-text-width"
+                                               spellCheck={false}
+                                               style={{width: "200px", marginRight: "10px"}}
+                                               placeholder="time to check from"
+                                               value={time_now}
+                                               onChange={(event) => {setData({deltaIndicator: event.target.value})}}
+                                        />
+                                    </td>
                                     <td>
                                         <a className="btn bt-sm btn-primary" onClick={() => handleSetTimeNow()}>now</a>
                                     </td>
