@@ -64,22 +64,22 @@ export function UserEdit( {filter} ){
         }
         //Populate form if necessary
         if(selectedUser){
-
             setEmail(selectedUser.email)
             setFirstName(selectedUser.firstName)
             setLastName(selectedUser.surname)
-            setRoles(selectedUser.roles)
+            setRoles(!selectedUser.roles ? [] : selectedUser.roles.filter( roleObj => {
+                return roleObj.organisationId === organisation_id
+            }))
             setGroups(selectedUser.groupList)
-            setKBs(selectedUser.operatorKBList)
+            setKBs(!selectedUser.operatorKBList ? [] : selectedUser.operatorKBList.filter( KBObj => {
+                return KBObj.organisationId === organisation_id
+            }))
             setShowKBs(hasRole(selectedUser, ['operator']))
         }
     }, [show_user_form])
 
     //[details,roles, groups]
     const [selectedTab, setSelectedTab] = useState('details');
-
-
-
 
     function handleClose(e){
         defaultValues()
