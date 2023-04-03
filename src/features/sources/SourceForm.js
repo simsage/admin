@@ -31,6 +31,7 @@ import CrawlerConfluenceForm from "./forms/CrawlerConfluenceForm";
 import CrawlerDiscourseForm2 from "./forms/CrawlerDiscourseForm2";
 import CrawlerSearchForm2 from "./forms/CrawlerSearchForm2";
 import CrawlerServiceNow from "./forms/CrawlerServiceNow";
+import ProcessorSetup from "../../common/processor-setup";
 
 
 export default function SourceForm(props) {
@@ -67,15 +68,27 @@ export default function SourceForm(props) {
         writeToCassandra:"",
         enableDocumentSimilarity:"",
         documentSimilarityThreshold:"",
-        isExternal:""
+        isExternal:"",
 
-        // storeBinary: props.storeBinary,
-        // versioned: props.versioned,
-        // writeToCassandra: props.writeToCassandra,
-        // enableDocumentSimilarity: props.enableDocumentSimilarity,
-        // documentSimilarityThreshold: props.documentSimilarityThreshold,
-        // isExternal: props.isExternal
+        "processorConfig": "",
+
+        //todo::need check these fields with Rock
+
+        "maxBotItems": 0,
+        "numErrors": 0,
+        "startTime": 0,
+        "endTime": 0,
+        "isCrawling": false,
+
+        "numCrawledDocuments": 0,
+        "numConvertedDocuments": 0,
+        "numParsedDocuments": 0,
+        "numIndexedDocuments": 0,
+        "numFinishedDocuments": 0,
+        "numTotalDocuments": 0,
+        "isBusy": false
     }
+
 
     const dispatch = useDispatch();
     const theme = '';
@@ -128,6 +141,7 @@ export default function SourceForm(props) {
         }
     }
 
+    console.log("processorConfig", selected_source)
     //set the selected source as the form_data
     const [form_data, setFormData] = useState(selected_source);
 
@@ -172,6 +186,7 @@ export default function SourceForm(props) {
 
         //rest
         {label: "ACLs", slug: "acls", type: "core"},
+        {label: "Processors", slug: "processors", type: "core"},
         {label: "schedule", slug: "schedule", type: "schedule"},
 
     ]
@@ -780,6 +795,15 @@ export default function SourceForm(props) {
         }
     }
 
+    function updateProcessorConfig(processors) {
+        console.log(processors)
+        if (processors !== null) {
+            setFormData({...form_data, processorConfig: processors})
+        }
+    }
+
+
+
 
     //consoles
     console.log("elected_source.crawlerType", selected_source.crawlerType)
@@ -1029,7 +1053,18 @@ export default function SourceForm(props) {
                                 }
 
 
-                                {/* Page 5: schedule TimeSelect  */}
+
+                                {/* Page 5: processors TimeSelect  */}
+                                {selected_source_tab === 'processors' &&
+                                    <div className="time-tab-content">
+                                        <ProcessorSetup
+                                            processorConfig={form_data.processorConfig}
+                                            onSave={(processorConfig) => updateProcessorConfig(processorConfig)}/>
+                                    </div>
+                                }
+
+
+                                {/* Page 6: schedule TimeSelect  */}
                                 {selected_source_tab === 'schedule' &&
                                     // {selected_source_tab === 'schedule' && c_type !== "wordpress" &&
                                     <div className="time-tab-content">
