@@ -23,54 +23,6 @@ const initialState = {
     data_status: "load_now"
 }
 
-
-// admin - edit /delete not ow record
-// manager - admin for a specific org - edit
-// operator - // not to worry now
-// dms - // for dms access only
-
-// export async function _getUsers(organisation_id, filter, dispatch, getState) {
-//     const session_id = get_session_id(getState)
-//     dispatch({type: BUSY, busy: true});
-//     if (!filter || filter.trim() === '') {
-//         filter = 'null';
-//     }
-//     await Comms.http_get('/auth/users/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(filter), session_id,
-//         (response) => {
-//             dispatch({type: SET_USER_LIST, user_list: response.data});
-//         },
-//         (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
-//     )
-// }
-
-//
-// export const fetchUsers = _getUsers('users/get', async () => {
-//     const response = Comms.http_get()
-// })
-
-export const getUserList = createAsyncThunk(
-    'users/getUserList',
-    async ({session_id,organization_id,filter}) => {
-        const api_base = window.ENV.api_base;
-        console.log("organization_id",organization_id)
-        const url = api_base + '/auth/users/'+ encodeURIComponent(organization_id)+ '/' + encodeURIComponent(filter);
-
-        // return "Hello";
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + url);
-        }
-
-        return axios.get(url, Comms.getHeaders(session_id))
-            .then((response) => {
-                console.log("users",response.data)
-                return response.data
-            }).catch(
-                (error) => {return error}
-            )
-    }
-);
-
-
 export const getUserListPaginated = createAsyncThunk(
     'users/getUserListPaginated',
     async ({session_id,organization_id,page=0,page_size=100,filter}) => {
@@ -113,20 +65,20 @@ export const updateUser = createAsyncThunk(
 )
 
 export const bulkUpdateUser = createAsyncThunk(
-        'user/bulk',
-        async ({session_id, payload}) => {
+    'user/bulk',
+    async ({session_id, payload}) => {
 
-            const api_base = window.ENV.api_base;
-            const url = api_base + '/auth/user/import/';
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/auth/user/import/';
 
-            return axios.put(url, payload, Comms.getHeaders(session_id))
-                .then((response) => {
-                    console.log("bulk update", response.data);
-                    return response.data;
-                }).catch(
-                    (error) => {return error}
-                )
-        }
+        return axios.put(url, payload, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("bulk update", response.data);
+                return response.data;
+            }).catch(
+                (error) => {return error}
+            )
+    }
 )
 
 export const deleteUser = createAsyncThunk (
@@ -144,23 +96,6 @@ export const deleteUser = createAsyncThunk (
 )
 const extraReducers = (builder) => {
     builder
-        //Get Users
-        .addCase(getUserList.pending, (state, action) => {
-            state.status = "loading";
-            state.data_status = "loading";
-        })
-        .addCase(getUserList.fulfilled, (state, action) => {
-            console.log("users/getUserList 111",action.payload)
-            state.status = "fulfilled"
-            state.user_list = action.payload.userList
-            state.user_original_list = action.payload.userList
-            state.data_status = "loaded"
-        })
-        .addCase(getUserList.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = "rejected"
-        })
-
         //Get Users Paginated
         .addCase(getUserListPaginated.pending, (state, action) => {
             state.status = "loading";
@@ -271,7 +206,7 @@ const usersSlice = createSlice({
             state.show_user_bulk_form = false;
         }
 
-        },
+    },
 
 
     extraReducers

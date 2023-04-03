@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    getUserList,
     showAddUserForm,
     showDeleteUserAsk,
     showEditUserForm,
@@ -11,7 +10,6 @@ import {
 } from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import {formatRoles, hasRole} from "../../common/helpers";
-import {getGroupList} from "../groups/groupSlice";
 import UserDeleteAsk from "./UserDeleteAsk";
 import {UserBulkForm} from "./UserBulkForm";
 
@@ -41,21 +39,12 @@ export function UsersHome(){
     const isAdmin = hasRole(user_account, ['admin']);
     const isManager = hasRole(user_account, ['manager']);
 
-    console.log("isAdmin:",(isAdmin)?" Yes":"No",session)
-    console.log("isManager:",(isManager)?" Yes":"No")
-    console.log("dddd",user_list)
-
     useEffect(()=>{
-            console.log("session useEffect",session)
-            console.log("selected_organisation",selected_organisation_id)
-            // dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:null}))
-            dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:null}))
+        dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:null}))
     },[load_data === "load_now",page,page_size])
 
     function handleSearchTextKeydown(e) {
         if (e.key === "Enter"  && selected_organisation_id) {
-            // console.log(session, selected_organisation_id, searchFilter);
-            // dispatch(getUserList({session_id:session.id, organization_id:selected_organisation_id,filter:searchFilter === '' ? null : searchFilter}));
             dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:searchFilter === '' ? null : searchFilter}))
             setSearchFilter('');
         }
@@ -66,12 +55,10 @@ export function UsersHome(){
     }
 
     function handleAddNewUser(){
-        // dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         dispatch(showAddUserForm(true))
     }
 
     function handleEditUser(u) {
-        // dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         dispatch(showEditUserForm({show:true, user_id: u.id}));
     }
 
@@ -81,13 +68,11 @@ export function UsersHome(){
 
     function handleOrderBy(e) {
         const val = e.target.value;
-        console.log("handleOrderBy: ", val)
         dispatch(orderBy({order_by: val}))
     }
 
     function deleteUserAsk(u){
-        console.log('deleting', u)
-       dispatch(showDeleteUserAsk({show:true, user_id:u.id}))
+        dispatch(showDeleteUserAsk({show:true, user_id:u.id}))
     }
 
 
@@ -115,27 +100,6 @@ export function UsersHome(){
         return isManager;
     }
 
-    function getUsers(isAdmin) {
-        // const paginated_list = [];
-        // const first = page * page_size;
-        // const last = first + parseInt(page_size);
-        // let index = 0;
-        // for (const i in user_list) {
-        //     // paginate all users - but only those that have roles in this organisation
-        //     const user = user_list[i];
-        //     const roleStr = formatRoles(selected_organisation_id, user.roles);
-        //     if (isAdmin || roleStr.length > 0) { // has a role or is admin?
-        //         if (index >= first && index < last) {
-        //             paginated_list.push(user);
-        //         }
-        //         index += 1; // one more user in this set of roles
-        //     }
-        // }
-        // return paginated_list;
-
-        return user_list;
-    }
-
     //Filtering out users according to 'Role' drop down.
     function filterRoles(userRoles, role) {
         if(role === 'all-users'){return true}
@@ -151,8 +115,8 @@ export function UsersHome(){
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
                         <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control filter-search-input " + theme}
-                            onKeyDown={(e) => handleSearchTextKeydown(e)}
-                            onChange={(e) => handleSearchTextChange(e)}
+                               onKeyDown={(e) => handleSearchTextKeydown(e)}
+                               onChange={(e) => handleSearchTextChange(e)}
                         />
                     </div>
 
@@ -181,47 +145,49 @@ export function UsersHome(){
                 <div className="d-flex">
                     <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddNewUser()}>
                         + Add User
-                        {/*<img className="add-image" src="/images/add.svg" title="add new user" alt="add new user"/>*/}
                     </button>
                     <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleUserBulk()}>
                         + User Bulk
                     </button>
-                    {/*<UserBulk/>*/}
                 </div>
             </div>
 
 
             <div className="">
                 {!user_list &&
-                <div>Loading...</div>
+                    <div>Loading...</div>
                 }
                 <table className="table">
                     <thead>
-                        <tr>
-                            <td className="small text-black-50 px-4">Name</td>
-                            <td className="small text-black-50 px-4">Email</td>
-                            <td className="small text-black-50 px-4">Roles</td>
-                            <td></td>
-                        </tr>
+                    <tr>
+                        <td className="small text-black-50 px-4">Name</td>
+                        <td className="small text-black-50 px-4">Email</td>
+                        <td className="small text-black-50 px-4">Roles</td>
+                        <td></td>
+                    </tr>
                     </thead>
                     <tbody>
 
                     {
-                        getUsers().map((user) => {
+                        user_list && user_list.map((user) => {
+                            console.log('testing', user)
                             //user does not have chosen role then skip.
                             if(!filterRoles(user.roles, userFilter)){return null}
+
                             const editYes = canEdit(user, isAdmin, isManager);
-                            // const editYes = true;
                             const deleteYes = canDelete(user, session, isAdmin, isManager);
 
                             return <tr key={user.id} >
-
                                 <td className="pt-3 px-4 pb-3 fw-500">{user.firstName} {user.surname} <span className="fw-light fst-italic pt-2 text-black-50">{user.email === user_account.email ? '(you)' : ""}</span> </td>
                                 <td className="pt-3 px-4 pb-3 fw-light">{user.email}</td>
                                 <td className="pt-3 px-4 pb-2">
                                     <div className="d-flex flex-wrap">
-                                        { user.roles.map((role,key) => {
-                                            return <div key={key} className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{role.role}</div>
+                                        { user.roles.map((r,key) => {
+                                            if(r.organisationId !== selected_organisation_id){return null}
+                                            else {
+                                                return <div key={key}
+                                                            className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{r.role}</div>
+                                            }
                                         })}
                                     </div>
                                 </td>
@@ -236,7 +202,7 @@ export function UsersHome(){
                     }
                     </tbody>
                 </table>
-                    { user_list &&
+                { user_list &&
                     <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
@@ -249,7 +215,7 @@ export function UsersHome(){
                         onChangePage={(page) => setPage(page)}
                         onChangeRowsPerPage={(rows) => setPageSize(rows)}
                     />
-                    }
+                }
             </div>
             <UserEdit user={selectedUser} setSelectedUser={setSelectedUser} filter={searchFilter}/>
             <UserDeleteAsk />
