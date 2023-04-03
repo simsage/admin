@@ -8,7 +8,7 @@ export default function CrawlerSearchForm2(props){
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
     const l_form_data = props.form_data;
 
-    const [query_list, setQueryList] = useState(specific_json.queryList?specific_json.queryList:[])
+    const [query_list, setQueryList] = useState(specific_json.queryList?specific_json.queryList:[''])
     //update local variable specific_json when data is changed
 
     function setData(data) {
