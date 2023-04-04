@@ -103,10 +103,7 @@ export function UsersHome(){
     //Filtering out users according to 'Role' drop down.
     function filterRoles(userRoles, role) {
         if(role === 'all-users'){return true}
-        const reducedRoleArray = userRoles.map( el => {
-            return el.role
-        })
-        return reducedRoleArray.includes(role);
+         return userRoles.some( role_obj => role_obj.organisationId === selected_organisation_id && role_obj.role === role)
     }
 
     return(
@@ -119,18 +116,6 @@ export function UsersHome(){
                                onChange={(e) => handleSearchTextChange(e)}
                         />
                     </div>
-
-
-                    {/*todo Max: implementing the order by; Please see KB - Orderby*/}
-                    {/* <div className="form-group me-2">
-                        <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}
-                                onChange={(e) => handleOrderBy(e)}>
-                            <option value="first_name">Order by: First Name</option>
-                            <option value="last_name">Order by: Last Name</option>
-                        </select>
-                    </div> */}
-
-                    {/*todo:: Max - implementing the filter by role, similar to order by; Also load the roles from the slice*/}
                     <div className="form-group me-2">
                         <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
                                 onChange={(e) => {setUserFilter(e.target.value);}}>
@@ -139,8 +124,7 @@ export function UsersHome(){
                                 return (
                                     <option value={r}>{Api.getPrettyRole(r)}</option>
                                 )
-                            })
-                            }
+                            })}
                         </select>
                     </div>
                 </div>
