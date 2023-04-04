@@ -9,6 +9,7 @@ import {
     showUserBulkForm, getUserListPaginated
 } from "./usersSlice";
 import {Pagination} from "../../common/pagination";
+import Api from "../../common/api";
 import {formatRoles, hasRole} from "../../common/helpers";
 import UserDeleteAsk from "./UserDeleteAsk";
 import {UserBulkForm} from "./UserBulkForm";
@@ -16,8 +17,7 @@ import {UserBulkForm} from "./UserBulkForm";
 export function UsersHome(){
 
     const [page, setPage] = useState(useSelector((state) => state.usersReducer.page))
-    const roles = useState(useSelector((state) => state.usersReducer.roles))
-
+    const user_roles = useSelector((state) => state.usersReducer.roles)
     const [page_size, setPageSize] = useState(useSelector((state) => state.usersReducer.page_size))
     const [selectedUser, setSelectedUser] = useState()
     const [searchFilter,setSearchFilter] = useState('')
@@ -135,11 +135,12 @@ export function UsersHome(){
                         <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
                                 onChange={(e) => {setUserFilter(e.target.value);}}>
                             <option value="all-users">All Users</option>
-                            <option value="admin">System Administrator</option>
-                            <option value="operator">Knowledgebase Operator</option>
-                            <option value="dms">DMS User</option>
-                            <option value="manager">Organisational Manager</option>
-                            <option value="search">Search User</option>
+                            { user_roles && user_roles.map( r => {
+                                return (
+                                    <option value={r}>{Api.getPrettyRole(r)}</option>
+                                )
+                            })
+                            }
                         </select>
                     </div>
                 </div>
