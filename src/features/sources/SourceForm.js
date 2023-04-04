@@ -73,13 +73,12 @@ export default function SourceForm(props) {
         "processorConfig": "",
 
         //todo::need check these fields with Rock
-
+        //are these for crawler stats?
         "maxBotItems": 0,
         "numErrors": 0,
         "startTime": 0,
         "endTime": 0,
         "isCrawling": false,
-
         "numCrawledDocuments": 0,
         "numConvertedDocuments": 0,
         "numParsedDocuments": 0,
