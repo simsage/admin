@@ -48,7 +48,7 @@ export function SourceImport(props) {
     return (
         <div>
             <div id={"error_alert"} className="modal alert-warning" tabIndex="-1" role="dialog"
-                 style={{display: "inline", 'zIndex': 8000}}>
+                 style={{display: "inline", 'zIndex': 8000, background: "#202731bb"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
