@@ -42,9 +42,9 @@ function MainSection(){
                 <MindHome />
             }
 
-            { selected_tab === 'reports' &&
-                <ReportsHome />
-            }
+            {/*{ selected_tab === 'reports' &&*/}
+            {/*    <ReportsHome />*/}
+            {/*}*/}
 
 
             {/* Account dropdown*/}

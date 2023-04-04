@@ -15,8 +15,8 @@ export default function LeftNavbar(){
 
     const nav2 = [
         {label: "Document Management", slug:"document-management", logo:"../images/icon/icon_document_sources.svg", separator:false, sub:[] },
-        {label: "The Mind", slug:"the-mind", logo:"../images/icon/icon_the_mind.svg", separator:false, sub:[] },
-        {label: "Reports", slug:"reports", logo:"../images/icon/icon_reports.svg", separator:false, sub:[] }
+        {label: "The Mind", slug:"the-mind", logo:"../images/icon/icon_the_mind.svg", separator:false, sub:[] }
+        // {label: "Reports", slug:"reports", logo:"../images/icon/icon_reports.svg", separator:false, sub:[] }
     ]
 
     const dispatch = useDispatch();
