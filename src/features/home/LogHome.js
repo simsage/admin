@@ -131,7 +131,7 @@ export default function LogHome(){
                 
                 <div className="d-flex">
                     <div className="me-3">
-                        <span className="small text-black-50">"LABEL???"</span>
+                        <span className="small text-black-50">Logs</span>
                         <br/>
                         <div className="btn-group">
                             <span title={getHourTitle(1)} className={getSelectedHourStyle(log_hours === 1) + " btn-sm text-nowrap"}

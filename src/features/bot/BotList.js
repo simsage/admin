@@ -260,7 +260,8 @@ export default function BotHome() {
                                         {/*                   onError={(errStr) => this.props.setError("Error", errStr)}/>*/}
                                     </div>
                                 }
-                                {selected_knowledge_base_id.length > 0 &&
+                                {/* {
+                                selected_knowledge_base_id.length > 0 &&
                                     <div className="d-flex justify-content-between w-100 mb-4">
                                         <div className="form-group col">
                                             <button className="btn btn-outline-primary btn-block"
@@ -270,10 +271,6 @@ export default function BotHome() {
                                             <button className="btn btn-outline-primary btn-block"
                                                     onClick={() => handleImport(!show_import_form)}>Import
                                             </button>
-                                            {/*&nbsp;*/}
-                                            {/*<button className="btn btn-outline-primary btn-block" title="new mind item"*/}
-                                            {/*        onClick={() => handleAddMemory()}>new mind item*/}
-                                            {/*</button>*/}
                                             &nbsp;
                                             <button className="btn btn-outline-primary btn-block"
                                                     title="remove all mind items of this knowledgebase"
@@ -282,7 +279,7 @@ export default function BotHome() {
                                             </button>
                                         </div>
                                     </div>
-                                }
+                                } */}
                                 {show_import_form &&
                                     <div className="export">
                                         <BotImport/>

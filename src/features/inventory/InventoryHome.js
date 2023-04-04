@@ -179,8 +179,50 @@ export default function InventoryHome(props) {
             {/*        }*/}
             {/*    </div>*/}
             {/*}*/}
+            <div className="d-flex justify-content-beteween w-100 mb-4">
+                <div className="d-flex w-100">
 
-            {isVisible() &&
+
+                    {/* TAKEN FROM SOURCES */}
+
+                    {/* <div className="form-group me-2">
+                        <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control filter-search-input " + theme}
+                               onKeyPress={(e) => handleSearchTextKeydown(e)}
+                               onChange={(e) => setSearchFilter(e.target.value)}/>
+                    </div> */}
+
+                </div>
+                <div className="form-group ms-auto">
+                    {selected_knowledge_base_id.length > 0 &&
+                        <div className="d-flex">
+                            {selected_organisation_id.length > 0 && !inventorize_busy &&
+                                <button className="btn btn-primary text-nowrap ms-2" onClick={() => {
+                                    handleCreateDocumentSnapshot();
+                                    // forceInventoryBusy();
+                                }}
+                                        title="create a new document snapshot">Create new document snapshot
+                                </button>
+                            }
+                            {selected_organisation_id.length > 0 && !inventorize_busy &&
+                                <button className="btn btn-primary text-nowrap ms-2" onClick={() => {
+                                    handleCreateIndexSnapshot();
+                                    // forceInventoryBusy();
+                                }} title="create a new index snapshot">Create a new
+                                    index snapshot
+                                </button>
+                            }
+                            {selected_organisation_id.length > 0 && inventorize_busy &&
+                                <button className="btu btn-secondary disabled ms-2"
+                                        title="SimSage is currently busy processing an inventory.  Please try again later.">Create
+                                    new snapshot
+                                </button>
+                            }
+                        </div>
+                    }
+
+                </div>
+            </div>
+            {isVisible() && 
                 <div>
                     <table className="table">
                         <thead>
@@ -229,7 +271,6 @@ export default function InventoryHome(props) {
                                             <button onClick={() => handleDelete(item)}
                                                     className="btn text-danger btn-sm" title="remove report"
                                                     alt="remove">Remove
-                                                report
                                             </button>
                                         </div>
                                         </div>
@@ -237,7 +278,7 @@ export default function InventoryHome(props) {
                                 </tr>
                             )
                         })}
-                        <tr>
+                        {/* <tr>
                             <td/>
                             <td/>
                             <td className={"pt-3 px-4 pb-0"}>
@@ -268,7 +309,7 @@ export default function InventoryHome(props) {
                                 </div>
 
                             </td>
-                        </tr>
+                        </tr> */}
                         </tbody>
                     </table>
 
