@@ -171,17 +171,30 @@ export function UserEdit( {filter} ){
 
 
     //Roles functions
+
     const getAvailableRoles = () => {
         const roleNames = roles ? roles.map( r => r.role) :  [];
         let tempRoleList = [];
-
         available_roles.forEach( ar => {
             if(!roleNames.includes(ar)){
                 tempRoleList.push(ar);
             }
         })
-        console.log('here', tempRoleList)
-        return tempRoleList;
+
+        return availableRoleFilter.length > 0 ? tempRoleList.filter( role => {
+            return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
+        })
+            :
+        tempRoleList;
+    }
+
+    function getUserRoles(){
+        console.log('here', roles)
+        return roleFilter.length > 0 ? roles.filter( role => {
+                return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
+            })
+            :
+            roles
     }
 
     function addRoleToUser(roleToAdd){
@@ -240,16 +253,6 @@ export function UserEdit( {filter} ){
 
     //Groups functions
 
-    function filterList(list) {
-        let filtered_list = []
-        list.forEach( itm => {
-            if(itm.name.toLowerCase().includes(filter.toLowerCase())) {
-                filtered_list.push(itm)
-            }
-        })
-        return filtered_list
-    }
-
     const getAvailableGroups = () => {
         const groupNames = groups ? groups.map( g => g.name) : []
         const availableGroups = group_list_full.filter( grp => {
@@ -263,7 +266,7 @@ export function UserEdit( {filter} ){
     }
 
     function getGroups(){
-        return groupFilter ? groups.filter( grp => {
+        return groupFilter.length > 0 ? groups.filter( grp => {
             return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
         })
             :
@@ -392,7 +395,7 @@ export function UserEdit( {filter} ){
                                         <h6 className="role-label text-center">SimSage Roles</h6>
                                         <div className="role-area bg-light border rounded h-100">
                                             {
-                                                roles && roles.map((role, i) => {
+                                                roles && getUserRoles().map((role, i) => {
                                                     return (<Chip key={i} color="secondary"
                                                                   onClick={() => removeRoleFromUser(role)}
                                                                   label={Api.getPrettyRole(role.role)} variant="outlined"/>)
