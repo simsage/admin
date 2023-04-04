@@ -135,9 +135,11 @@ export function UsersHome(){
                         <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
                                 onChange={(e) => {setUserFilter(e.target.value);}}>
                             <option value="all-users">All Users</option>
-                            <option value="admin">Admin</option>
-                            <option value="system administrator">System Administrator</option>
-                            <option value="DMS">DMS</option>
+                            <option value="admin">System Administrator</option>
+                            <option value="operator">Knowledgebase Operator</option>
+                            <option value="dms">DMS User</option>
+                            <option value="manager">Organisational Manager</option>
+                            <option value="search">Search User</option>
                         </select>
                     </div>
                 </div>
