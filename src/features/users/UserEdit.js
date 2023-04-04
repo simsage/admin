@@ -51,6 +51,12 @@ export function UserEdit( {filter} ){
     const [confPassword, setConfPassword] = useState('');
 
 
+    //filters
+    const [roleFilter, setRoleFilter] = useState('');
+    const [availableRoleFilter, setAvailableRoleFilter] = useState('');
+    const [availableGroupFilter, setAvailableGroupFilter] = useState('');
+    const [groupFilter, setGroupFilter] = useState('');
+
     // Grab user details if editing
     let selectedUser = {}
     useEffect(()=> {
@@ -161,6 +167,9 @@ export function UserEdit( {filter} ){
         }
     }
 
+
+
+
     //Roles functions
     const getAvailableRoles = () => {
         const roleNames = roles ? roles.map( r => r.role) :  [];
@@ -231,12 +240,34 @@ export function UserEdit( {filter} ){
 
     //Groups functions
 
+    function filterList(list) {
+        let filtered_list = []
+        list.forEach( itm => {
+            if(itm.name.toLowerCase().includes(filter.toLowerCase())) {
+                filtered_list.push(itm)
+            }
+        })
+        return filtered_list
+    }
+
     const getAvailableGroups = () => {
         const groupNames = groups ? groups.map( g => g.name) : []
         const availableGroups = group_list_full.filter( grp => {
             return !groupNames.includes(grp.name)
         })
-        return availableGroups
+        return availableGroupFilter.length > 0 ? availableGroups.filter( grp => {
+            return grp.name.toLowerCase().includes(availableGroupFilter.toLowerCase())
+        })
+            :
+        availableGroups
+    }
+
+    function getGroups(){
+        return groupFilter ? groups.filter( grp => {
+            return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
+        })
+            :
+        groups
     }
 
     function addGroupToUser(groupToAdd){
@@ -416,8 +447,9 @@ export function UserEdit( {filter} ){
                                     <div className="role-block">
                                         <div className="role-label text-uppercase text-center fw-bold ">SimSage Groups</div>
                                         <div className="role-area text-center" style={mockUserContainerStyles}>
+                                            <input className="mb-3 text-uppercase text-center" placeholder="filter..." value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}/>
                                             {
-                                                groups && groups.map((grp, i) => {
+                                                groups && getGroups().map((grp, i) => {
                                                     return (
 
                                                         <Chip key={i} color="secondary"
@@ -428,9 +460,10 @@ export function UserEdit( {filter} ){
                                             }
                                         </div>
                                     </div>
-                                    <div className="role-block">
+                                    <div className="role-block flex-column">
                                         <div className="role-label text-uppercase text-center fw-bold">available SimSage groups</div>
                                         <div className="role-area text-center" style={mockUserContainerStyles}>
+                                            <input className="mb-3 text-center" placeholder="filter..." value={availableGroupFilter} onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
                                             {
                                                 getAvailableGroups().map((grp, i) => {
                                                     return (<Chip key={i} color="primary"
