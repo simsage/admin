@@ -160,7 +160,7 @@ export default function CrawlerWebForm(props) {
                         <textarea className="textarea-width"
                                   placeholder="css/html root fragments to exclude csv"
                                   rows="3"
-                                  value={specific_json.webCssIgnore}
+                                  value={specific_json.webCssIgnore?specific_json.webCssIgnore:'header, footer'}
                                   onChange={(event) => {
                                       setData({webCssIgnore: event.target.value})
                                   }}
