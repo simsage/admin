@@ -4,7 +4,7 @@ export function KnowledgeBaseFormTab({selected_tab, onTabChange}){
 
     const tabs = [
         {slug:'general', label:'General'},
-        {slug:'index_schedule', label:'Index Schedule'},
+        {slug:'index_schedule', label:'Index optimization schedule'},
     ];
 
     return(

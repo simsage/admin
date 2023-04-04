@@ -54,9 +54,9 @@ export function OrganisationHome() {
         dispatch(closeForm());
     }
 
-    // useEffect(() => {
-    //     dispatch(getOrganisationList({session: session, filter: filter}))
-    // }, [load_data === 'load_now'])
+    useEffect(() => {
+        dispatch(getOrganisationList({session: session, filter: filter}))
+    }, [load_data === 'load_now'])
 
     useEffect(()=>{
         dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
