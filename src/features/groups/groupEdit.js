@@ -82,59 +82,72 @@ export default function GroupEdit(){
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header">{edit_group_id ? "Edit Group" : "Add New Group"}</div>
-                    <div className="modal-body">
-                            <div className="tab-content">
-                                <div className="control-row">
-                                    <span className="label-2">Group Name</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="Group Name"
-                                                       value={editName}
-                                                       onChange={(event) => setEditName(event.target.value)}
-                                                />
-                                                </form>
-                                        </span>
+                    <div className="modal-header px-5 pt-4 bg-light">
+                        <h4>{edit_group_id ? "Edit Group" : "Add Group"}</h4>
+                        </div>
+                    <div className="modal-body p-0">
+                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                                {/* <div className="row mb-3">
+                                    <div className="control-row col-6">
+                                        <span className="label-2">Group Name</span>
+                                        
+                                    </div>
+                                </div> */}
+                                <div className="row pb-5">
+                                    <div className="role-block col-6">
+                                        <h6 className="role-label text-center">Group</h6>
+                                        
+                                        <div  className="role-area bg-light border rounded h-100">
+                                        <span className="text">
+                                                <form>
+                                                    <input type="text" className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                        autoFocus={true}
+                                                        autoComplete="false"
+                                                        placeholder="Add a Group Name..."
+                                                        value={editName}
+                                                        onChange={(event) => setEditName(event.target.value)}
+                                                    />
+                                                    </form>
+                                            </span>
+                                            {activeUsers.map(user => {
+                                                return (
+                                                <div className="role-chip"
+                                                    key={user.id}
+                                                    onClick ={()=> {
+                                                        setAvailableUsers([...availableUsers, user])
+                                                        setActiveUsers(activeUsers.filter( u => u.id !== user.id))
+                                                    }}
+                                                        >
+                                                    {`${user.firstName} ${user.surname} (${user.email})`}
+                                                </div>)
+                                            })}
+                                        </div>
+                                    </div>
+                                    <div className="role-block col-6">
+                                        <h6 className="role-label text-center">Available</h6>
+                                        <div  className="role-area bg-light border rounded h-100">
+                                            {availableUsers.map(user => {
+                                                return (
+                                                    <div className="role-chip"
+                                                        key={user.id}
+                                                        onClick ={()=> {
+                                                            setActiveUsers([...activeUsers, user])
+                                                            setAvailableUsers(availableUsers.filter( u => u.id !== user.id))
+                                                        }}
+                                                    >
+                                                        {`${user.firstName} ${user.surname} (${user.email})`}
+                                                    </div>)
+                                            })}
+                                        </div>
+                                    </div>
                                 </div>
 
-                            </div>
-                            <div style={{display:"flex", justifyContent:"space-around", margin: "1rem"}}>
-                                <div style={mockUserContainerStyles}>
-                                    {activeUsers.map(user => {
-                                        return (
-                                        <li
-                                            key={user.id}
-                                            onClick ={()=> {
-                                                setAvailableUsers([...availableUsers, user])
-                                                setActiveUsers(activeUsers.filter( u => u.id !== user.id))
-                                            }}
-                                                >
-                                            {`${user.firstName} ${user.surname} (${user.email})`}
-                                        </li>)
-                                    })}
-                                </div>
-                                <div style={mockUserContainerStyles}>
-                                    {availableUsers.map(user => {
-                                        return (
-                                            <li
-                                                key={user.id}
-                                                onClick ={()=> {
-                                                    setActiveUsers([...activeUsers, user])
-                                                    setAvailableUsers(availableUsers.filter( u => u.id !== user.id))
-                                                }}
-                                            >
-                                                {`${user.firstName} ${user.surname} (${user.email})`}
-                                            </li>)
-                                    })}
-                                </div>
+
                             </div>
                     </div>
-                    <div className="modal-footer">
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleSave(e)}>Save</button>
+                    <div className="modal-footer px-5 pb-4">
+                        <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
+                        <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
                     </div>
 
                 </div>

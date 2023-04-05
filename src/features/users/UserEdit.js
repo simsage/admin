@@ -293,13 +293,13 @@ export function UserEdit( {filter} ){
                     </div>
                     <div className="modal-body p-0">
 
-                        <div className="nav nav-tabs mb-3 overflow-auto">
+                        <div className="nav nav-tabs overflow-auto">
                             <SubNav sub_nav={sub_nav} active_item={selectedTab} onClick={changeNav} />
                         </div>
 
                         {
                             selectedTab === 'details' &&
-                            <div className="tab-content px-5 pb-4">
+                            <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
 
                                 <div className="row mb-3">
                                     <div className="control-row col-6">
@@ -386,7 +386,7 @@ export function UserEdit( {filter} ){
 
                         {
                             selectedTab === 'roles' &&
-                            <div className="tab-content container px-5 pb-4 pt-3">
+                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
                                 <div className="row pb-5">
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">SimSage Roles</h6>
@@ -448,7 +448,7 @@ export function UserEdit( {filter} ){
 
                         {
                             selectedTab === 'groups' &&
-                            <div className="tab-content container px-5 pb-4 pt-3">
+                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
                                 <div className="row pb-5">
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">SimSage Groups</h6>
