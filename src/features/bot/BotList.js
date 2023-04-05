@@ -126,7 +126,18 @@ export default function BotHome() {
         dispatch(showDeleteMemoryForm({show: true, memory: memory}))
     }
 
-    function getDisplayText(memory) {
+    function displayQuestions(memory) {
+        let str = "";
+        for (const question of memory.questionList) {
+            if (str.length > 0) {
+                str += " | ";
+            }
+            str += question;
+        }
+        return str;
+    }
+
+    function displayLinks(memory) {
         let str = "";
         for (const question of memory.questionList) {
             if (str.length > 0) {
@@ -189,27 +200,6 @@ export default function BotHome() {
                 </div>
             </div>
 
-
-            {/*{*/}
-            {/*    isVisible() &&*/}
-
-            {/*    <div className="filter-find-box">*/}
-            {/*        <span className="filter-label">filter</span>*/}
-            {/*        <span className="filter-find-text">*/}
-            {/*            <input type="text"*/}
-            {/*                   placeholder={"Filter"}*/}
-            {/*                   value={mind_item_filter}*/}
-            {/*                   autoFocus={true} className={"filter-text-width " + theme}*/}
-            {/*                   onKeyDown={(event) => filterMemories(event)}*/}
-            {/*                   onChange={(event) => {*/}
-            {/*                       setMindItemFilter(event.target.value)*/}
-            {/*                   }}*/}
-            {/*            />*/}
-            {/*        </span>*/}
-            {/*    </div>*/}
-            {/*}*/}
-            {/*<br clear="both"/>*/}
-
             {
                 isVisible() &&
 
@@ -219,20 +209,28 @@ export default function BotHome() {
                         <tr className=''>
                             {/* <td className='small text-black-50 px-4'>id</td> */}
                             <td className='small text-black-50 px-4'>Memory</td>
+                            <td className='small text-black-50 px-4'>Answer</td>
+                            <td className='small text-black-50 px-4'>Links</td>
                             <td className='small text-black-50 px-4'></td>
                         </tr>
                         </thead>
                         <tbody>
                         {
                             getMemoryList().map((memory) => {
+                                console.log('testing bot output', memory )
                                 return (
                                     <tr key={memory.id}>
-                                        {/* <td>
-                                            <div>{memory.id}</div>
-                                        </td> */}
                                         <td className="pt-3 px-4 pb-3">
                                             <div className="mind-text-column"
-                                                 title={getDisplayText(memory)}>{getDisplayText(memory)}</div>
+                                                 title={displayQuestions(memory)}>{displayQuestions(memory)}</div>
+                                        </td>
+                                        <td className="pt-3 px-4 pb-3">
+                                            <div className="mind-text-column"
+                                                 title={memory.information}>{memory.information}</div>
+                                        </td>
+                                        <td className="pt-3 px-4 pb-3">
+                                            <div className="mind-text-column"
+                                                 title={memory.urlList}>{memory.urlList}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
                                             <div className="d-flex  justify-content-end">
