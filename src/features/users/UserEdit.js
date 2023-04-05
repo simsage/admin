@@ -56,6 +56,8 @@ export function UserEdit( {filter} ){
     const [availableRoleFilter, setAvailableRoleFilter] = useState('');
     const [availableGroupFilter, setAvailableGroupFilter] = useState('');
     const [groupFilter, setGroupFilter] = useState('');
+    const [availableKbFilter, setAvailableKbFilter] = useState('');
+    const [kbFilter, setKbFilter] = useState('');
 
     // Grab user details if editing
     let selectedUser = {}
@@ -189,7 +191,6 @@ export function UserEdit( {filter} ){
     }
 
     function getUserRoles(){
-        console.log('here', roles)
         return roleFilter.length > 0 ? roles.filter( role => {
                 return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
             })
@@ -216,10 +217,25 @@ export function UserEdit( {filter} ){
 
     //Knowledge base functions
     function getKbName(kbID) {
+        console.log('test2', kbID)
+        console.log('tets3', available_KBs)
         const temp_list = available_KBs.filter( (obj) => {return obj.kbId === kbID})
+        console.log('test4', temp_list)
         if(temp_list.length < 1) return "No KBs"
         return temp_list[0].name
     }
+
+    function getKbs(){
+        return kbFilter.length > 0 ? kbs.filter( kb => {
+            console.log('pre-test', kb)
+            console.log('testing', getKbName(kb.kbId))
+                return getKbName(kb.kbId).toLowerCase().includes(kbFilter.toLowerCase())
+            })
+            :
+            kbs
+    }
+
+
 
     const getAvailableKnowledgeBases = () => {
         const userKbName = kbs ? kbs.map(kb => getKbName(kb.kbId)) : [];
@@ -230,8 +246,13 @@ export function UserEdit( {filter} ){
                 tempKBsList.push(kb);
             }
         })
-        return tempKBsList;
+        return availableKbFilter.length > 0 ? tempKBsList.filter( kb => {
+            return kb.toLowerCase().includes(availableKbFilter.toLowerCase())
+        })
+            :
+        tempKBsList
     }
+
 
     function addKbToUser(kb){
         const kbObj = available_KBs.filter( k => {
@@ -423,8 +444,9 @@ export function UserEdit( {filter} ){
                                         <div className="role-block col-6">
                                             <h6 className="role-label text-center">Operator's Knowledge Bases</h6>
                                             <div className="role-area bg-light border rounded h-100">
+                                                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={kbFilter} onChange={(e) => setKbFilter(e.target.value)}/>
                                                 {
-                                                    kbs && kbs.map((kb, i) => {
+                                                    kbs && getKbs().map((kb, i) => {
                                                         return (<Chip key={i} color="secondary"
                                                                       onClick={() => removeKbFromUser(kb.kbId)}
                                                                       label={getKbName(kb.kbId)} variant="outlined"/>)
@@ -435,6 +457,7 @@ export function UserEdit( {filter} ){
                                         <div className="role-block col-6">
                                             <h6 className="role-label text-center">Available</h6>
                                             <div className="role-area bg-light border rounded h-100">
+                                                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableKbFilter} onChange={(e) => setAvailableKbFilter(e.target.value)}/>
                                                 {
                                                     getAvailableKnowledgeBases().map((kb, i) => {
                                                         return (<Chip key={i} color="primary"
