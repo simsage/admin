@@ -17,28 +17,32 @@ export function SourceExport(props) {
     return (
         <div>
             <div id={"error_alert"} className="modal alert-warning" tabIndex="-1" role="dialog"
-                 style={{display: "inline", 'zIndex': 8000}}>
+                 style={{display: "inline", 'zIndex': 8000, background: "#202731bb"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div className="modal-content">
 
-                        <div className="modal-header">
+                    <div className="modal-header px-5 pt-4 bg-light">
                             <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
-                            <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                            {/* <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button> */}
                         </div>
-                        <div className="modal-body">
-                            <div className="control-row">
-                                <div>
-                                    <div>data</div>
-                                    <div>
-                                        <textarea placeholder="crawler data" spellCheck="true" rows="10"
-                                                  style={{width: '100%'}} defaultValue={JSON.stringify(selected_source)} />
+                        <div className="modal-body p-0">
+                            <div className="tab-content px-5 py-4 overflow-auto">
+                                <div className="row mb-3">
+                                    <div className="control-row col-12">
+                                        <div>
+                                        <label className="label-2 small">Data</label>
+                                            <div>
+                                                <textarea className="form-control" placeholder="Crawler data..." spellCheck="true" rows="10"
+                                                        style={{width: '100%'}} defaultValue={JSON.stringify(selected_source)} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="modal-footer">
-                            <button onClick={handleClose} type="button" className="btn btn-secondary"
+                        <div className="modal-footer px-5 pb-4">
+                            <button onClick={handleClose} type="button" className="btn btn-white px-4"
                                     data-bs-dismiss="modal">Close
                             </button>
                         </div>

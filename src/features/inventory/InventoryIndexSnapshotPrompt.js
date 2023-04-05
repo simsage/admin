@@ -43,7 +43,7 @@ export function InventoryIndexSnapshotPrompt() {
     return (<div>
         <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered"} role="document">
-                <div className="modal-content py-4">
+                <div className="modal-content p-4">
 
                     {/* <div className="modal-header">
                         <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>

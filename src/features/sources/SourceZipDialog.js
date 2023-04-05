@@ -47,26 +47,27 @@ export function SourceZipDialog() {
         return (<div/>);
 
     return (<div>
-        <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
-            <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+        <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
+            <div className={"modal-dialog modal-dialog-centered"} role="document">
+                <div className="modal-content p-4">
 
-                    <div className="modal-header">
+                    {/* <div className="modal-header">
                         <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
                         <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
-                    </div>
-                    <div className="modal-body">
-                        <div className="control-row">
+                    </div> */}
+                    <div className="modal-body text-center">
+                        <div className="control-row mb-4">
                                 <span
                                     className="label-wide">{message}</span>
                         </div>
-                    </div>
-                    <div className="modal-footer">
-                        <button onClick={handleClose} type="button" className="btn btn-secondary"
-                                data-bs-dismiss="modal">Cancel
-                        </button>
-                        <button onClick={handleOk} type="button" className="btn btn-primary">Start</button>
+
+                        <div className="control-row">
+                            <button onClick={handleClose} type="button" className="btn btn-white px-4"
+                                    data-bs-dismiss="modal">Cancel
+                            </button>
+                            <button onClick={handleOk} type="button" className="btn btn-primary px-4">Start</button>
+                        </div>
                     </div>
                 </div>
             </div>
