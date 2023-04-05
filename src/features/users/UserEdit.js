@@ -288,8 +288,10 @@ export function UserEdit( {filter} ){
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header">{user_id ? "Edit User" : "Add New User"}</div>
-                    <div className="modal-body">
+                    <div className="modal-header px-5 pt-4 bg-light">
+                        <h4 className="mb-0">{user_id ? "Edit User" : "Add User"}</h4>
+                    </div>
+                    <div className="modal-body p-0">
 
                         <div className="nav nav-tabs mb-3 overflow-auto">
                             <SubNav sub_nav={sub_nav} active_item={selectedTab} onClick={changeNav} />
@@ -297,79 +299,85 @@ export function UserEdit( {filter} ){
 
                         {
                             selectedTab === 'details' &&
-                            <div className="tab-content">
+                            <div className="tab-content px-5 pb-4">
 
-                                <div className="control-row">
-                                    <span className="label-2">first name</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="first name"
-                                                       value={firstName}
-                                                       onChange={(e) => setFirstName(e.target.value)}
-                                                />
-                                            </form>
-                                        </span>
-                                </div>
-
-                                <div className="control-row">
-                                    <span className="label-2">surname</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="surname"
-                                                       value={lastName}
-                                                       onChange={(event) => setLastName(event.target.value)}
-                                                />
-                                            </form>
-                                        </span>
-                                </div>
-
-
-                                <div className="control-row">
-                                    <span className="label-2">email</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="email"
-                                                       value={email}
-                                                       onBlur={() => fillNames()}
-                                                       onChange={(event) => setEmail(event.target.value)}
-                                                />
+                                <div className="row mb-3">
+                                    <div className="control-row col-6">
+                                        <span className="label-2 small">First Name</span>
+                                        <span className="text">
+                                                <form>
+                                                    <input type="text" className="form-control"
+                                                        autoComplete="false"
+                                                        placeholder=""
+                                                        value={firstName}
+                                                        onChange={(e) => setFirstName(e.target.value)}
+                                                    />
                                                 </form>
-                                        </span>
+                                            </span>
+                                    </div>
+
+                                    <div className="control-row col-6">
+                                        <span className="label-2 small">Last Name</span>
+                                        <span className="text">
+                                                <form>
+                                                    <input type="text" className="form-control"
+                                                        autoComplete="false"
+                                                        placeholder=""
+                                                        value={lastName}
+                                                        onChange={(event) => setLastName(event.target.value)}
+                                                    />
+                                                </form>
+                                            </span>
+                                    </div>
                                 </div>
 
-                                <div className="control-row">
-                                    <span className="label-2">Password</span>
-                                    <span className="text">
-                                            <form>
-                                                <input type="password" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="password"
-                                                       value={password}
-                                                       onChange={(event) => setPassword(event.target.value)}
-                                                />
-                                                </form>
-                                        </span>
+                                <div className="row mb-3">
+                                    <div className="control-row col-6">
+                                        <span className="label-2 small">Email</span>
+                                        <span className="text">
+                                                <form>
+                                                    <input type="text" className="form-control"
+                                                        autoFocus={true}
+                                                        autoComplete="false"
+                                                        placeholder="example@email.com"
+                                                        value={email}
+                                                        onBlur={() => fillNames()}
+                                                        onChange={(event) => setEmail(event.target.value)}
+                                                    />
+                                                    </form>
+                                            </span>
+                                    </div>
                                 </div>
-                                <div className="control-row">
-                                    <span className="text">
-                                            <form>
-                                                <input type="password" className="form-control"
-                                                       autoFocus={true}
-                                                       autoComplete="false"
-                                                       placeholder="confirm password"
-                                                       value={confPassword}
-                                                       onChange={(event) => setConfPassword(event.target.value)}
-                                                />
-                                                </form>
-                                        </span>
+
+                                <div className="row mb-3">
+                                    <div className="control-row col-6">
+                                        <span className="label-2 small">Password</span>
+                                        <span className="text">
+                                                <form>
+                                                    <input type="password" className="form-control"
+                                                        autoFocus={true}
+                                                        autoComplete="false"
+                                                        placeholder="********"
+                                                        value={password}
+                                                        onChange={(event) => setPassword(event.target.value)}
+                                                    />
+                                                    </form>
+                                            </span>
+                                    </div>
+                                    <div className="control-row col-6">
+                                        <span className="label-2 small">Confirm Password</span>
+                                        <span className="text">
+                                                <form>
+                                                    <input type="password" className="form-control"
+                                                        autoFocus={true}
+                                                        autoComplete="false"
+                                                        placeholder="********"
+                                                        value={confPassword}
+                                                        onChange={(event) => setConfPassword(event.target.value)}
+                                                    />
+                                                    </form>
+                                            </span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -378,11 +386,11 @@ export function UserEdit( {filter} ){
 
                         {
                             selectedTab === 'roles' &&
-                            <div className="tab-content">
-                                <div style={{display:"flex", justifyContent:"space-between", margin: "1rem"}}>
-                                    <div className="role-block">
-                                        <div className="role-label text-uppercase text-center fw-bold">SimSage roles</div>
-                                        <div className="role-area text-center" style={mockUserContainerStyles}>
+                            <div className="tab-content container px-5 pb-4 pt-3">
+                                <div className="row pb-5">
+                                    <div className="role-block col-6">
+                                        <h6 className="role-label text-center">SimSage Roles</h6>
+                                        <div className="role-area bg-light border rounded h-100">
                                             {
                                                 roles && roles.map((role, i) => {
                                                     return (<Chip key={i} color="secondary"
@@ -392,9 +400,9 @@ export function UserEdit( {filter} ){
                                             }
                                         </div>
                                     </div>
-                                    <div className="role-block">
-                                        <div className="role-label text-uppercase text-center fw-bold" >available SimSage Roles</div>
-                                        <div className="role-area text-center" style={mockUserContainerStyles}>
+                                    <div className="role-block col-6">
+                                        <h6 className="role-label text-center" >Available</h6>
+                                        <div className="role-area bg-light border rounded h-100">
                                             {
                                                 getAvailableRoles().map((role, i) => {
                                                     return (<Chip key={i} color="primary"
@@ -405,13 +413,11 @@ export function UserEdit( {filter} ){
                                         </div>
                                     </div>
                                 </div>
-
-                                    <br style={{clear: 'both'}}/>
                                 {showKbs &&
-                                    <div style={{display:"flex", justifyContent:"space-between", margin: "1rem"}}>
-                                        <div className="role-block">
-                                            <div className="role-label text-uppercase text-center fw-bold">operator's knowledge bases</div>
-                                            <div className="role-area text-center" style={mockUserContainerStyles}>
+                                    <div className="row pb-5">
+                                        <div className="role-block col-6">
+                                            <h6 className="role-label text-center">Operator's Knowledge Bases</h6>
+                                            <div className="role-area bg-light border rounded h-100">
                                                 {
                                                     kbs && kbs.map((kb, i) => {
                                                         return (<Chip key={i} color="secondary"
@@ -421,9 +427,9 @@ export function UserEdit( {filter} ){
                                                 }
                                             </div>
                                         </div>
-                                        <div className="role-block">
-                                            <div className="role-label text-uppercase text-center fw-bold">operator available knowledge bases</div>
-                                            <div className="role-area text-center" style={mockUserContainerStyles}>
+                                        <div className="role-block col-6">
+                                            <h6 className="role-label text-center">Available</h6>
+                                            <div className="role-area bg-light border rounded h-100">
                                                 {
                                                     getAvailableKnowledgeBases().map((kb, i) => {
                                                         return (<Chip key={i} color="primary"
@@ -442,12 +448,12 @@ export function UserEdit( {filter} ){
 
                         {
                             selectedTab === 'groups' &&
-                            <div className="tab-content">
-                                <div style={{display:"flex", justifyContent:"space-between", margin: "1rem"}}>
-                                    <div className="role-block">
-                                        <div className="role-label text-uppercase text-center fw-bold ">SimSage Groups</div>
-                                        <div className="role-area text-center" style={mockUserContainerStyles}>
-                                            <input className="mb-3 text-uppercase text-center" placeholder="filter..." value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}/>
+                            <div className="tab-content container px-5 pb-4 pt-3">
+                                <div className="row pb-5">
+                                    <div className="role-block col-6">
+                                        <h6 className="role-label text-center">SimSage Groups</h6>
+                                        <div className="role-area bg-light border rounded h-100">
+                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}/>
                                             {
                                                 groups && getGroups().map((grp, i) => {
                                                     return (
@@ -460,10 +466,10 @@ export function UserEdit( {filter} ){
                                             }
                                         </div>
                                     </div>
-                                    <div className="role-block flex-column">
-                                        <div className="role-label text-uppercase text-center fw-bold">available SimSage groups</div>
-                                        <div className="role-area text-center" style={mockUserContainerStyles}>
-                                            <input className="mb-3 text-center" placeholder="filter..." value={availableGroupFilter} onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
+                                    <div className="role-block col-6">
+                                        <h6 className="role-label text-center">Available</h6>
+                                        <div className="role-area bg-light border rounded h-100">
+                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableGroupFilter} onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
                                             {
                                                 getAvailableGroups().map((grp, i) => {
                                                     return (<Chip key={i} color="primary"
@@ -481,9 +487,9 @@ export function UserEdit( {filter} ){
                     </div>
 
 
-                    <div className="modal-footer">
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleSave(e)}>Save</button>
+                    <div className="modal-footer px-5 pb-4">
+                        <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
+                        <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
                     </div>
 
                 </div>

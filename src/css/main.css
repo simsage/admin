@@ -403,6 +403,22 @@ html, body, #root, .App, .dms {
 
 
 
+/* Role Container */
+
+.role-area {
+    padding: 0 !important;
+    overflow: hidden;
+}
+.role-chip {
+    padding: .5rem 1rem;
+    transition: all .1s ease;
+}
+.role-chip:hover {
+    background-color: #0d6efd;
+    color: #fff;
+}
+
+
 
 
 
