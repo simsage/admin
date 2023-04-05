@@ -63,55 +63,59 @@ export function TextToSearchEdit(props){
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header fw-bold">{edit ? "Edit" : "Add New"}</div>
-                    <div className="modal-body">
-                        <div className="tab-content">
+                    <div className="modal-header px-5 pt-4 bg-light"><h4 className="mb-0">{edit ? "Edit Text to Search" : "New Text to Search"}</h4></div>
+                    <div className="modal-body p-0">
+                        <div className="tab-content px-5 py-4 overflow-auto">
+                            <div className="row mb-3">
+                                <div className="control-row col-8">
+                                    <span className="label-2 small">Search Part</span>
+                                    <span className="text">
+                                        <form>
+                                            <input type="text" className="form-control"
+                                                autoComplete="false"
+                                                placeholder="e.g. Example here..."
+                                                value= {searchPart}
+                                                onChange={(e) => setSearchPart(e.target.value)}
+                                            />
+                                        </form>
+                                    </span>
+                                </div>
+                                <div className="control-row col-4">
+                                    <span className="label-2 small">Type</span>
+                                    <span className="text">
+                                        <form>
+                                            <input type="text" className="form-control"
+                                                autoComplete="false"
+                                                placeholder="e.g. and"
+                                                value= {searchType}
+                                                onChange={(e) => setSearchType(e.target.value)}
+                                            />
+                                        </form>
+                                    </span>
+                                </div>
+                            </div>
 
-                            <div className="control-row">
-                                <span className="label-2">Search Part</span>
-                                <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="e.g. Law..."
-                                                       value= {searchPart}
-                                                       onChange={(e) => setSearchPart(e.target.value)}
-                                                />
-                                            </form>
-                                        </span>
-                            </div>
-                            <div className="control-row">
-                                <span className="label-2">Type</span>
-                                <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="e.g. Law..."
-                                                       value= {searchType}
-                                                       onChange={(e) => setSearchType(e.target.value)}
-                                                />
-                                            </form>
-                                        </span>
-                            </div>
-                            <div className="control-row">
-                                <span className="label-2 py-4">Match Words (csv)</span>
-                                <span className="text">
-                                            <form>
-                                                <textarea type="text" className="form-control"
-                                                          autoComplete="false"
-                                                          placeholder="words"
-                                                          value={matchWords}
-                                                          rows={10}
-                                                          onChange={(event) => setMatchWords(event.target.value)}
-                                                />
-                                            </form>
-                                        </span>
+                            <div className="row mb-3">
+                                <div className="control-row col-12">
+                                    <span className="label-2 small">Match Words <span className="small text-black-50 fst-italic fw-light">(Separate by comma) (csv) </span></span>
+                                    <span className="text">
+                                        <form>
+                                            <textarea type="text" className="form-control"
+                                                    autoComplete="false"
+                                                    placeholder="e.g. Example here..."
+                                                    value={matchWords}
+                                                    rows={10}
+                                                    onChange={(event) => setMatchWords(event.target.value)}
+                                            />
+                                        </form>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="modal-footer">
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleSave(e)}>Save</button>
+                    <div className="modal-footer px-5 pb-4">
+                        <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
+                        <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
                     </div>
 
                 </div>
