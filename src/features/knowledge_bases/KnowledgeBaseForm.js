@@ -73,7 +73,7 @@ export default function KnowledgeBaseForm(props) {
 
 
     // set title
-    const title = (kb_id) ? "Edit Knowledge Base" : "Add new Knowledge Base";
+    const title = (kb_id) ? "Edit Knowledge Base" : "Add Knowledge Base";
 
     console.log(security_id)
     //Form Hook
@@ -135,95 +135,123 @@ export default function KnowledgeBaseForm(props) {
         <div>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
-                    <div className="modal-content shadow p-3 mb-5 bg-white rounded crawler-page w-100">
+                    <div className="modal-content">
 
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
-                            <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                        <div className="modal-header px-5 pt-4 bg-light">
+                            <h4 className="mb-0" id="staticBackdropLabel">{title}</h4>
+                            {/* <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button> */}
                         </div>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className="modal-body">
-                                <KnowledgeBaseFormTab selected_tab={selected_tab} onTabChange={handleTabChange} />
+                            <div className="modal-body p-0">
+
+                                <div className="nav nav-tabs overflow-auto">
+                                    <KnowledgeBaseFormTab selected_tab={selected_tab} onTabChange={handleTabChange} />
+                                </div>
 
 
                                 {selected_tab === 'general' &&
-                                <div>
-                                    <div className="control-row">
-                                        <span className="label-3">name</span>
-                                        <input {...register("name", {required: true})} />
-                                        {errors.name && <span className=""> Name is required <br/></span>}
+                                <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                                    <div className="row mb-5">
+                                        <div className="control-row col-4">
+                                            <label className="label-2 small">Name</label>
+                                                <input className="form-control" {...register("name", {required: true})} />
+                                                {errors.name && <span className=""> Name is required</span>}
+                                        </div>
+                                        <div className="control-row col-4">
+                                            <label className="label-2 small">Email Queries</label>
+                                            <input className="form-control" placeholder="example@email.com" {...register("email", {required: true, pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i})} />
+                                            {errors.email && <span> Email is required</span>}
+                                        </div>
+                                        <div className="control-row col-4">
+                                            <label className="label-2 small">Security ID</label>
+                                                
+                                            <div className="form-control d-flex">
+                                                <input className="border-0 p-0 w-100 sid-box" value={security_id}
+                                                readOnly="readonly" {...register("securityId", {required: true})} />
+                                                <img title="generate new security id" alt="refresh"
+                                                src={theme === 'light' ? "../images/refresh.svg" : "../images/refresh.svg"}
+                                                onClick={() => refreshSecurityId()}
+                                                className="image-size form-icon"/>
+                                            </div>
+                                            {errors.securityId && <span> Security id is required</span>}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="row mb-5">
+                                        <div className="control-row col-4">
+                                            <span className="label-2 small">Max number of queries (per day) </span>
+                                            <div className="form-control d-flex">
+                                                <input className="border-0 p-0 w-100" {...register("maxQueriesPerDay", {required: true})} />
+                                                <span className="text-nowrap small text-black-50">(0 = no limits)</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="control-row col-4">
+                                            <span className="label-2 small">Max analytics retention period (months) </span>
+                                            <div className="form-control d-flex">
+                                                <input className="border-0 p-0 w-100" {...register("analyticsWindowInMonths", {required: true})} /> 
+                                                <span className="text-nowrap small text-black-50">(0 = no limits)</span>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div className="control-row">
-                                        <span className="label-3">email questions to</span>
-                                        <input {...register("email", {required: true, pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i})} />
-                                        {errors.email && <span> Email is required <br/></span>}
-                                    </div>
+                                    <div className="row mb-3">
+                                        <div className="control-row col-4">
+                                            {/* <span className="label-3">knowledge-base enabled?</span>
+                                            <input type="checkbox" {...register('enabled')}  /> */}
+                                            <div className="form-check form-switch">
+                                                <input className="form-check-input" type="checkbox" id="enableKnowledgeBase"
+                                                {...register('enabled')}/>
+                                                <label className="form-check-label" for="enableKnowledgeBase">Knowledge Base</label>
+                                            </div>
 
-                                    <div className="control-row">
-                                        <span className="label-3">security id</span>
-                                        <input value={security_id} className="sid-box"
-                                               readOnly="readonly" {...register("securityId", {required: true})} />&nbsp;
-                                        <img title="generate new security id" alt="refresh"
-                                             src={theme === 'light' ? "../images/refresh.svg" : "../images/refresh.svg"}
-                                             onClick={() => refreshSecurityId()}
-                                             className="image-size form-icon"/>
-                                        {errors.securityId && <span> Security id is required <br/></span>}
-                                    </div>
+                                            {/* <span className="label-3">operator enabled?</span>
+                                            <input type="checkbox" {...register('operatorEnabled')}  /> */}
+                                            <div className="form-check form-switch">
+                                                <input className="form-check-input" type="checkbox" id="enableOperator"
+                                                {...register('operatorEnabled')}/>
+                                                <label className="form-check-label" for="enableOperator">Operator</label>
+                                            </div>
 
-                                    <div className="control-row">
-                                        <span className="label-3">knowledge-base enabled?</span>
-                                        <input type="checkbox" {...register('enabled')}  />
+                                            {/* <span className="label-3">capacity-warnings on?</span>
+                                            <input type="checkbox" {...register('capacityWarnings')}  /> */}
+                                            <div className="form-check form-switch">
+                                                <input className="form-check-input" type="checkbox" id="enableCapacityWarnings"
+                                                {...register('capacityWarnings')}/>
+                                                <label className="form-check-label" for="enableCapacityWarnings">Capacity Warnings</label>
+                                            </div>
 
-                                    </div>
-
-
-                                    <div className="control-row">
-                                        <span className="label-3">operator enabled?</span>
-                                        <input type="checkbox" {...register('operatorEnabled')}  />
-                                    </div>
-
-
-                                    <div className="control-row">
-                                        <span className="label-3">capacity-warnings on?</span>
-                                        <input type="checkbox" {...register('capacityWarnings')}  />
-
-                                    </div>
-
-                                    <div className="control-row">
-                                        <span className="label-3">enable document similarity?</span>
-                                        <input type="checkbox" {...register('enableDocumentSimilarity')}  />
+                                            {/* <span className="label-3">enable document similarity?</span>
+                                            <input type="checkbox" {...register('enableDocumentSimilarity')}  /> */}
+                                            <div className="form-check form-switch">
+                                                <input className="form-check-input" type="checkbox" id="enableDocumentSimilarity"
+                                                {...register('enableDocumentSimilarity')}/>
+                                                <label className="form-check-label" for="enableDocumentSimilarity">Document Similarity</label>
+                                            </div>
+                                        </div>
 
                                     </div>
-
-                                    <div className="control-row">
-                                        <span className="label-3">maximum number of queries per day </span>
-                                        <input {...register("maxQueriesPerDay", {required: true})} /> (0 is no
-                                        limits)<br/>
-
-                                    </div>
-
-                                    <div className="control-row">
-                                        <span className="label-3">maximum analytics retention period in months </span>
-                                        <input {...register("analyticsWindowInMonths", {required: true})} /> (0 is no
-                                        limits)<br/>
-                                    </div>
-
                                 </div>
                                 }
                                 {selected_tab === 'index_schedule' &&
 
-                                    <div className="time-tab-content">
-                                        <br />
-                                        <div className="small-text-optimizer">We strongly advice to allocate only one hour per day for index optimizations.  Unlike the crawler, each selected slot will cause the indexer to start again.</div>
+                                    <div className="time-tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                                        <div className="row justify-content-center">
+                                            <div className="col-6">
+                                                <div class="alert alert-warning small py-2" role="alert">
+                                                We strongly advice to allocate only one hour per day for index optimizations.  Unlike the crawler, each selected slot will cause the indexer to start again.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         {/*<TimeSelect time={this.state.edit_index_schedule}*/}
                                         {/*            onSave={(time) => this.updateIndexSchedule(time)}/>*/}
 
-
+                                        <div className="w-100">
                                         <TimeSelect time={edit_index_schedule}
                                                     onSave={(time) => updateSchedule(time)}/>
-
+                                        </div>
 
                                         { kb && kb.lastIndexOptimizationTime > 0 &&
                                             <div>
@@ -239,12 +267,12 @@ export default function KnowledgeBaseForm(props) {
                                 }
 
                             </div>
-                            <div className="modal-footer">
+                            <div className="modal-footer px-5">
                                 <input type="hidden" {...register("kbId")} />
-                                <button onClick={handleClose} type="button" className="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close
+                                <button onClick={handleClose} type="button" className="btn btn-white px-4"
+                                        data-bs-dismiss="modal">Cancel
                                 </button>
-                                <input type="submit" className={"btn btn-outline-primary"}/>
+                                <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
                             </div>
                         </form>
                     </div>

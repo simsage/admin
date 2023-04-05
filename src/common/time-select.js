@@ -145,7 +145,9 @@ export class TimeSelect extends Component {
         }
         return (
             <div className="time-select">
-                <div className="labelTop">all times in GMT (now {this.timeStr()})</div>
+                <div className="labelTop text-center">
+                    <h6>All times in GMT (now {this.timeStr()})</h6>
+                </div>
                 <table className="tableStyle">
                     <tbody>
                     <tr>
@@ -199,20 +201,15 @@ export class TimeSelect extends Component {
                     </tbody>
                 </table>
 
-                <br />
-                <div className="legenda">
-                    <div className="activeText">active</div>
-                    <div className="inactiveText">inactive</div>
-                    <div className="button1">
-                        <button className="btn btn-primary btn-block" onClick={(e) => this.clearAll(e)}>
-                            clear all
-                        </button>
-                    </div>
-                    <div className="button2">
-                        <button className="btn btn-primary btn-block" onClick={(e) => this.selectAll(e)}>
-                            select all
-                        </button>
-                    </div>
+                <div className="legenda d-flex justify-content-center w-100">
+                    {/* <div className="activeText">Active</div>
+                    <div className="inactiveText">Inactive</div> */}
+                    <button className="inactiveText btn-sm" onClick={(e) => this.clearAll(e)}>
+                        Clear All
+                    </button>
+                    <button className="activeText btn-sm" onClick={(e) => this.selectAll(e)}>
+                        Select All
+                    </button>
                 </div>
             </div>
         );

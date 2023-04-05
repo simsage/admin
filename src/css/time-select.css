@@ -2,15 +2,23 @@
 .time-select .tableStyle {
     margin-top: 10px;
     font-size: 12px;
-    width: 90%;
+    width: 100%;
 }
 
 .time-select .active {
-    background-color: #eed000;
+    background-color: #0d6efd50;
+    border: 1px solid #fff;
+}
+.time-select .active:hover {
+    background-color: #0d6efd60;
 }
 
 .time-select .inactive {
-    background-color: #c0c0c0;
+    background-color: #eee;
+    border: 1px solid #fff;
+}
+.time-select .inactive:hover {
+    background-color: #e8e8e8;
 }
 
 .time-select .tHeader {
@@ -33,28 +41,29 @@
 }
 
 .time-select .activeText {
-    background-color: #eed000;
-    color: #444;
-    float: left;
+    background-color: #0d6efd50;
+    color: #0d6efd;
     width: 100px;
     font-size: 12px;
-    font-weight: 900;
-    border-radius: 2px;
-    text-align: center;
+    border-radius: 0px 4px 4px 0px;
     padding: 5px;
+    border: none;
+}
+.time-select .activeText:hover {
+    background-color: #0d6efd60;
 }
 
 .time-select .inactiveText {
-    background-color: #c0c0c0;
+    background-color: #eee;
     color: #444;
-    float: left;
     width: 100px;
     font-size: 12px;
-    font-weight: 900;
-    border-radius: 2px;
-    text-align: center;
+    border-radius: 4px 0px 0px 4px;
     padding: 5px;
-    margin-left: 10px;
+    border: none;
+}
+.time-select .inactiveText:hover {
+    background-color: #e8e8e8;
 }
 
 .time-select .button1 {
