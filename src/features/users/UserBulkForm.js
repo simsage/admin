@@ -47,8 +47,10 @@ export function UserBulkForm( ){
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header">Add bulk users</div>
-                    <div className="modal-body">
+                    <div className="modal-header px-5 pt-4 bg-light">
+                        <h4 className="mb-0">Add Bulk Users</h4>
+                        </div>
+                    <div className="modal-body px-5 py-4">
                         <div className="control-row">
                             <a  className="pointer-cursor" onClick={exportToCsv}>
                                 Download Bulk user template
@@ -60,7 +62,7 @@ export function UserBulkForm( ){
                         </div>
                     </div>
                     <div className="modal-footer">
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
+                        <button className="btn btn-white px-4 btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
                     </div>
 
                 </div>
