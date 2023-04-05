@@ -73,7 +73,7 @@ export default function KnowledgeBaseForm(props) {
 
 
     // set title
-    const title = (kb_id) ? "Edit Knowledge Base" : "Add Knowledge Base";
+    const title = (kb_id) ? "Edit Knowledge Base" : "New Knowledge Base";
 
     console.log(security_id)
     //Form Hook

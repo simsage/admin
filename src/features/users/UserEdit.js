@@ -289,7 +289,7 @@ export function UserEdit( {filter} ){
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
                     <div className="modal-header px-5 pt-4 bg-light">
-                        <h4 className="mb-0">{user_id ? "Edit User" : "Add User"}</h4>
+                        <h4 className="mb-0">{user_id ? "Edit User" : "New User"}</h4>
                     </div>
                     <div className="modal-body p-0">
 
