@@ -50,40 +50,43 @@ export function SourceImport(props) {
             <div id={"error_alert"} className="modal alert-warning" tabIndex="-1" role="dialog"
                  style={{display: "inline", 'zIndex': 8000, background: "#202731bb"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div className="modal-content">
 
                         <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
-                            <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                        <div className="modal-header px-5 pt-4 bg-light">
+                            <h4 className="mb-0" id="staticBackdropLabel">{title}</h4>
+                            {/* <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button> */}
                         </div>
 
-                        <div className="modal-body">
-                            <div className="control-row">
-                                <div>
-                                    <div>data</div>
-                                    <div>
-                                        <textarea placeholder="crawler data" spellCheck="true" rows="10"
-                                                  style={{width: '100%'}} {...register("source_str", {required: true})} />
+                        <div className="modal-body p-0">
+                            <div className="tab-content px-5 py-4 overflow-auto">
+                                <div className="row mb-3">
+                                    <div className="control-row col-12">
+                                        <div>
+                                            <label className="label-2 small">Data</label>
+                                            <div>
+                                                <textarea className="form-control" placeholder="Crawler data..." spellCheck="true" rows="10"
+                                                        style={{width: '100%'}} {...register("source_str", {required: true})} />
+                                            </div>
+                                        </div>
                                     </div>
+
+                                {show_error_form && error_message.length > 2 &&
+                                    <div className="control-row alert-danger">
+                                        <p className={"alert alert-danger"}>{error_message}</p>
+                                    </div>
+                                }
+
                                 </div>
                             </div>
-
-                            {show_error_form && error_message.length > 2 &&
-                                <div className="control-row alert-danger">
-                                    <p className={"alert alert-danger"}>{error_message}</p>
-                                </div>
-                            }
-
-
                         </div>
-                        <div className="modal-footer">
-                            <button onClick={handleClose} type="button" className="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal">Close
+                        <div className="modal-footer px-5 pb-4">
+                            <button onClick={handleClose} type="button" className="btn btn-white px-4"
+                                    data-bs-dismiss="modal">Cancel
                             </button>
 
-                            <input type="submit" value={"Import"} className={"btn btn-primary"}/>
+                            <input type="submit" value={"Import"} className={"btn btn-primary px-4"}/>
 
                         </div>
                         </form>
