@@ -394,6 +394,7 @@ export function UserEdit( {filter} ){
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">SimSage Roles</h6>
                                         <div className="role-area bg-light border rounded h-100">
+                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}/>
                                             {
                                                 roles && getUserRoles().map((role, i) => {
                                                     return (<Chip key={i} color="secondary"
@@ -406,6 +407,7 @@ export function UserEdit( {filter} ){
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center" >Available</h6>
                                         <div className="role-area bg-light border rounded h-100">
+                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableRoleFilter} onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
                                             {
                                                 getAvailableRoles().map((role, i) => {
                                                     return (<Chip key={i} color="primary"
