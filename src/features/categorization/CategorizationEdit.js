@@ -78,42 +78,46 @@ export function CategorizationEdit(){
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header">{selectedCategory ? "Edit Category" : "Add New Category"}</div>
-                    <div className="modal-body">
-                        <div className="tab-content">
-                            <div className="control-row">
-                                <span className="label-2">Category Label</span>
-                                <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="Display Name"
-                                                       value={categoryLabel}
-                                                       onChange={(event) => setCategoryLabel(event.target.value)}
-                                                       onKeyDown={(e) => {handleKeyDown(e)}}
-                                                />
-                                            </form>
-                                        </span>
-                            </div>
-                            <div className="control-row">
-                                <span className="label-2">Rule</span>
-                                <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
-                                                       autoComplete="false"
-                                                       placeholder="SimSage rule defining the matching criteria"
-                                                       value={rule}
-                                                       onChange={(event) => setRule(event.target.value)}
-                                                       onKeyDown={(e) => {handleKeyDown(e)}}
-                                                />
-                                            </form>
-                                        </span>
+                    <div className="modal-header px-5 pt-4 bg-light">
+                        <h4 className="mb-0">{selectedCategory ? "Edit Category" : "New Category"}</h4>
+                    </div>
+                    <div className="modal-body p-0">
+                        <div className="tab-content px-5 py-4 overflow-auto">
+                            <div className="row mb-3">
+                                <div className="control-row col-4">
+                                    <span className="label-2 small">Category</span>
+                                    <span className="text">
+                                        <form>
+                                            <input type="text" className="form-control"
+                                                    autoComplete="false"
+                                                    placeholder=""
+                                                    value={categoryLabel}
+                                                    onChange={(event) => setCategoryLabel(event.target.value)}
+                                                    onKeyDown={(e) => {handleKeyDown(e)}}
+                                            />
+                                        </form>
+                                    </span>
+                                </div>
+                                <div className="control-row col-8 mb-3">
+                                    <span className="label-2 small">Rule</span>
+                                    <span className="text">
+                                        <form>
+                                            <input type="text" className="form-control"
+                                                    autoComplete="false"
+                                                    placeholder="SimSage rule defining the matching criteria"
+                                                    value={rule}
+                                                    onChange={(event) => setRule(event.target.value)}
+                                                    onKeyDown={(e) => {handleKeyDown(e)}}
+                                            />
+                                        </form>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="modal-footer">
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleSave(e)}>Save</button>
+                    <div className="modal-footer px-5 pb-4">
+                        <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
+                        <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
                     </div>
 
                 </div>
