@@ -6,12 +6,12 @@ import {
     showAddMemoryForm,
     showDeleteMemoryForm,
     loadMindItems,
-    showImportBotForm
+    showBotImportForm
 } from "./botSlice";
 import {BotEdit} from "./BotEdit";
 import BotDeleteAsk from "./BotDeleteAsk";
 import Comms from "../../common/comms";
-import {BotImport} from "./BotImport";
+import BotImportForm from "./BotImportForm";
 
 export default function BotHome() {
 
@@ -142,8 +142,8 @@ export default function BotHome() {
         Comms.download_mind_dump(selected_organisation_id, selected_knowledge_base_id, session_id)
     }
 
-    function handleImport(show) {
-        dispatch(showImportBotForm(show));
+    function handleImport() {
+        dispatch(showBotImportForm());
     }
 
     return (
@@ -280,11 +280,6 @@ export default function BotHome() {
                                         </div>
                                     </div>
                                 } */}
-                                {show_import_form &&
-                                    <div className="export">
-                                        <BotImport/>
-                                    </div>
-                                }
                             </td>
                         </tr>
                         </tbody>
@@ -310,6 +305,7 @@ export default function BotHome() {
             <BotEdit/>
             }
             <BotDeleteAsk/>
+            <BotImportForm/>
         </div>
     )
 }

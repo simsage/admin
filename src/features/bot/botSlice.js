@@ -14,6 +14,7 @@ const initialState = {
     data_status: 'load_now',
     show_delete_form: false,
     show_import_form: false,
+    show_bot_import_form: false,
 
 }
 
@@ -204,16 +205,17 @@ const botSlice = createSlice({
             state.show_delete_form = false;
             state.edit = undefined;
         },
-
-        showImportBotForm: (state,action) => {
-            state.show_import_form = action.payload;
-        },
-
         closeForm: (state) => {
             state.show_memory_form = false;
             state.show_delete_form = false;
             state.edit = undefined;
             state.show_import_form = false;
+        },
+        showBotImportForm:(state, action) => {
+            state.show_bot_import_form = true;
+        },
+        closeBotImportForm:(state, action) => {
+            state.show_bot_import_form = false;
         }
     },
     extraReducers
@@ -222,6 +224,6 @@ const botSlice = createSlice({
 
 export const {
     showEditMemoryForm, showAddMemoryForm, closeMemoryForm, showDeleteMemoryForm,
-    closeDeleteForm, showImportBotForm, closeForm
+    closeDeleteForm, closeForm, showBotImportForm, closeBotImportForm
 } = botSlice.actions
 export default botSlice.reducer

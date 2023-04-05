@@ -12,9 +12,9 @@ export default function BotIntro(){
         dispatch(showAddMemoryForm(true))
     }
 
-    function handleImport(show){
-        dispatch(showImportBotForm(show));
-    }
+    // function handleImport(show){
+    //     dispatch(showImportBotForm(show));
+    // }
 
     return(
         <div className="col-6">
