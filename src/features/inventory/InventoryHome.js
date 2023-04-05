@@ -200,15 +200,15 @@ export default function InventoryHome(props) {
                                     handleCreateDocumentSnapshot();
                                     // forceInventoryBusy();
                                 }}
-                                        title="create a new document snapshot">Create new document snapshot
+                                        title="create a new document snapshot">New Document Snapshot
                                 </button>
                             }
                             {selected_organisation_id.length > 0 && !inventorize_busy &&
                                 <button className="btn btn-primary text-nowrap ms-2" onClick={() => {
                                     handleCreateIndexSnapshot();
                                     // forceInventoryBusy();
-                                }} title="create a new index snapshot">Create a new
-                                    index snapshot
+                                }} title="create a new index snapshot">New
+                                    Index Snapshot
                                 </button>
                             }
                             {selected_organisation_id.length > 0 && inventorize_busy &&

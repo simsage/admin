@@ -13,7 +13,7 @@ export function InventoryDocumentSnapshotPrompt() {
     const session_id = session.id;
 
 
-    const title = "Create new document snapshot";
+    const title = "New Document Snapshot";
     let message = 'Are you sure you want to create a new document snapshot?';
 
 
@@ -41,24 +41,24 @@ export function InventoryDocumentSnapshotPrompt() {
 
     return (<div>
         <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
-            <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+            <div className={"modal-dialog modal-dialog-centered modal"} role="document">
+                <div className="modal-content py-4">
 
-                    <div className="modal-header">
-                        <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
+                    {/* <div className="modal-header px-5 pt-4 bg-light">
+                        <h4 className="modal-title mb-0" id="staticBackdropLabel">{title}</h4>
                         <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
-                    </div>
-                    <div className="modal-body">
-                        <div className="control-row">
+                    </div> */}
+                    <div className="modal-body text-center">
+                        <div className="control-row mb-4">
                             <span className="label-wide">{message}</span>
                         </div>
-                    </div>
-                    <div className="modal-footer">
-                        <button onClick={handleClose} type="button" className="btn btn-secondary"
-                                data-bs-dismiss="modal">Cancel
-                        </button>
-                        <button onClick={handleOk} type="button" className="btn btn-primary">Start</button>
+                        <div className="control-row">
+                            <button onClick={handleClose} type="button" className="btn btn-white btn-block px-4"
+                                    data-bs-dismiss="modal">Cancel
+                            </button>
+                            <button onClick={handleOk} type="button" className="btn btn-primary px-4">Start</button>
+                        </div>
                     </div>
                 </div>
             </div>

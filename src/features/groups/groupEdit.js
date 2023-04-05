@@ -83,7 +83,7 @@ export default function GroupEdit(){
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
                     <div className="modal-header px-5 pt-4 bg-light">
-                        <h4>{edit_group_id ? "Edit Group" : "Add Group"}</h4>
+                        <h4 className="mb-0">{edit_group_id ? "Edit Group" : "Add Group"}</h4>
                         </div>
                     <div className="modal-body p-0">
                             <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
