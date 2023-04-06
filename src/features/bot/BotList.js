@@ -210,7 +210,7 @@ export default function BotHome() {
                             {/* <td className='small text-black-50 px-4'>id</td> */}
                             <td className='small text-black-50 px-4'>Memory</td>
                             <td className='small text-black-50 px-4'>Answer</td>
-                            <td className='small text-black-50 px-4'>Links</td>
+                            <td className='small text-black-50 px-4 text-truncate' style={{width: "100px"}}>Links</td>
                             <td className='small text-black-50 px-4'></td>
                         </tr>
                         </thead>
@@ -220,16 +220,20 @@ export default function BotHome() {
                                 console.log('testing bot output', memory )
                                 return (
                                     <tr key={memory.id}>
-                                        <td className="pt-3 px-4 pb-3">
-                                            <div className="mind-text-column"
-                                                 title={displayQuestions(memory)}>{displayQuestions(memory)}</div>
+                                        <td className="pt-3 px-4 pb-2">
+                                            <div className="d-flex flex-nowrap">
+                                                <div className="mind-text-column small text-capitalize table-pill px-3 py-1 mb-2" style={{borderRadius: "12px"}}
+                                                 title={displayQuestions(memory)}>{displayQuestions(memory)}
+                                                </div>
+                                                <span className="small fw-light fst-italic px-2 py-1 text-secondary pointer-cursor">+1</span>
+                                            </div>
                                         </td>
                                         <td className="pt-3 px-4 pb-3">
                                             <div className="mind-text-column"
                                                  title={memory.information}>{memory.information}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-3">
-                                            <div className="mind-text-column"
+                                            <div className="mind-text-column text-black-50 small text-truncate" style={{width: "200px"}}
                                                  title={memory.urlList}>{memory.urlList}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
@@ -248,38 +252,7 @@ export default function BotHome() {
                                 )
                             })
                         }
-                        <tr>
-                            <td colSpan={3} className="bottom-td-margin">
-                                {selected_knowledge_base_id.length > 0 &&
-                                    <div className="uploader">
-                                        {/*<SpreadsheetUpload kbId={selected_knowledge_base_id}*/}
-                                        {/*                   organisationId={selected_organisation_id}*/}
-                                        {/*                   onUploadDone={() => programUploaded()}*/}
-                                        {/*                   onError={(errStr) => this.props.setError("Error", errStr)}/>*/}
-                                    </div>
-                                }
-                                {/* {
-                                selected_knowledge_base_id.length > 0 &&
-                                    <div className="d-flex justify-content-between w-100 mb-4">
-                                        <div className="form-group col">
-                                            <button className="btn btn-outline-primary btn-block"
-                                                    onClick={() => handleExport()}>Export
-                                            </button>
-                                            &nbsp;
-                                            <button className="btn btn-outline-primary btn-block"
-                                                    onClick={() => handleImport(!show_import_form)}>Import
-                                            </button>
-                                            &nbsp;
-                                            <button className="btn btn-outline-primary btn-block"
-                                                    title="remove all mind items of this knowledgebase"
-                                                    onClick={() => deleteMemoryAsk("all")}
-                                            >remove all mind items
-                                            </button>
-                                        </div>
-                                    </div>
-                                } */}
-                            </td>
-                        </tr>
+                        
                         </tbody>
                     </table>
 
