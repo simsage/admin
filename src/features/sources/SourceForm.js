@@ -814,23 +814,27 @@ export default function SourceForm(props) {
         <div>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", 'zIndex': 8000, background: "#202731bb"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
-                    <div className="modal-content shadow p-3 mb-5 bg-white rounded crawler-page w-100">
+                    <div className="modal-content">
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
-                                <button onClick={handleClose} type="button" className="btn-close"
+                            <div className="modal-header px-5 pt-4 bg-light">
+                                <h4 className="mb-0" id="staticBackdropLabel">{title}</h4>
+                                {/* <button onClick={handleClose} type="button" className="btn-close"
                                         data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                        aria-label="Close"></button> */}
                             </div>
 
 
-                            <div className="modal-body">
+                            <div className="modal-body p-0">
 
                                 {/* Menu */}
-                                <SourceTabs
+                                
+
+                                <div className="nav nav-tabs overflow-auto">
+                                    <SourceTabs
                                     source_tabs={source_tabs}
                                     onClick={changeNav}
                                     crawler_type={form_data ? form_data.crawlerType : null}/>
+                                </div>
 
 
                                 {/* Page 1: GeneralForm */}
@@ -1032,8 +1036,8 @@ export default function SourceForm(props) {
 
                                 {/* Page 4: AclSetup  */}
                                 {selected_source_tab === 'acls' &&
-                                    <div>
-                                        <div className="acl-text">this list sets a default set of Access Control for
+                                    <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                                        <div className="acl-text w-100 mb-3">This list sets a default set of Access Control for
                                             this source
                                         </div>
                                         {/*<AclSetupForm*/}
@@ -1066,7 +1070,7 @@ export default function SourceForm(props) {
                                 {/* Page 6: schedule TimeSelect  */}
                                 {selected_source_tab === 'schedule' &&
                                     // {selected_source_tab === 'schedule' && c_type !== "wordpress" &&
-                                    <div className="time-tab-content">
+                                    <div className="time-tab-content px-5 py-4">
                                         <TimeSelect time={form_data.schedule}
                                                     onSave={(time) => updateSchedule(time)}/>
                                     </div>
@@ -1074,13 +1078,12 @@ export default function SourceForm(props) {
 
 
                             </div>
-                            <div className="modal-footer">
+                            <div className="modal-footer px-5 pb-4">
 
-                                <input type="submit" className={"btn btn-outline-primary"}/>
-
-                                <button onClick={handleClose} type="button" className="btn btn-secondary"
+                                <button onClick={handleClose} type="button" className="btn btn-white px-4"
                                         data-bs-dismiss="modal">Close
                                 </button>
+                                <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
 
 
                             </div>
