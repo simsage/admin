@@ -223,9 +223,9 @@ export default function BotHome() {
                                         <td className="pt-3 px-4 pb-2">
                                             <div className="d-flex flex-nowrap">
                                                 <div className="mind-text-column small text-capitalize table-pill px-3 py-1 mb-2" style={{borderRadius: "12px"}}
-                                                 title={displayQuestions(memory)}>{displayQuestions(memory)}
+                                                 title={displayQuestions(memory)}>{memory.questionList[0]}
                                                 </div>
-                                                <span className="small fw-light fst-italic px-2 py-1 text-secondary pointer-cursor">+1</span>
+                                                <span className="small fw-light fst-italic px-2 py-1 text-secondary pointer-cursor">{memory.questionList.length > 1 ? `+${memory.questionList.length -1}` : ''}</span>
                                             </div>
                                         </td>
                                         <td className="pt-3 px-4 pb-3">
@@ -233,8 +233,14 @@ export default function BotHome() {
                                                  title={memory.information}>{memory.information}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-3">
-                                            <div className="mind-text-column text-black-50 small text-truncate" style={{width: "200px"}}
-                                                 title={memory.urlList}>{memory.urlList}</div>
+                                            { memory.urlList.map( url => {
+                                                return (
+                                                    <div className="mind-text-column text-black-50 small text-truncate" style={{width: "200px"}}
+                                                         title={url}>{url}
+                                                    </div>
+                                                )
+                                            })
+                                            }
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
                                             <div className="d-flex  justify-content-end">
