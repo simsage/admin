@@ -42,8 +42,8 @@ export function SourceExport(props) {
                             </div>
                         </div>
                         <div className="modal-footer px-5 pb-4">
-                            <button onClick={handleClose} type="button" className="btn btn-white px-4"
-                                    data-bs-dismiss="modal">Close
+                            <button onClick={handleClose} type="button" className="btn btn-primary px-4"
+                                    data-bs-dismiss="modal">Done
                             </button>
                         </div>
                     </div>

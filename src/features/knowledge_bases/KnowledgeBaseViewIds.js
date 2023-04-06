@@ -46,65 +46,71 @@ export default function KnowledgeBaseViewIds() {
 
     return (
         <div>
-            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                    <div className="modal-content">
 
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">{kb && kb.name ? kb.name : ""} </h5>
-                            <button onClick={handleClose} type="button" className="btn-close"
+                        <div className="modal-header px-5 pt-4 bg-light">
+                            <h4 className="mb-0" id="staticBackdropLabel">{kb && kb.name ? kb.name : ""} </h4>
+                            {/* <button onClick={handleClose} type="button" className="btn-close"
                                     data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                                    aria-label="Close"></button> */}
                         </div>
-                        <div className="modal-body">
-                            <div>
+                        <div className="modal-body p-0">
+                            <div className="px-5 py-4">
                                 <table>
                                     <tbody>
 
                                     <tr>
-                                        <td>organisation id</td>
-                                        <td className="id-width">{organisationId}</td>
-                                        <td>
+                                        <td className="text-nowrap pe-4 fw-500">Organisation ID</td>
+                                        <td className="w-100 text-nowrap">{organisationId}</td>
+                                        <td className="px-4 position-relative">
                                             <button onClick={() => handleCopyIds(organisationId)}
-                                                    className={"btn btn-outline-primary"}>copy
+                                                    className={"btn text-primary btn-sm"}>Copy
                                             </button>
-
+                                            {(copied_id === organisationId) &&
+                                                <div className="copied-style small position-absolute top-50 start-50 translate-middle text-white bg-dark px-2 py-1 rounded">Copied!</div>
+                                            }
                                         </td>
-                                        <td>
+                                        {/* <td>
                                             {(copied_id === organisationId) &&
                                                 <div className="copied-style">copied</div>
                                             }
-                                        </td>
+                                        </td> */}
                                     </tr>
                                     <tr>
-                                        <td>knowledge id</td>
-                                        <td className="id-width">{kbId}</td>
-                                        <td>
+                                        <td className="text-nowrap pe-4 fw-500">Knowledge ID</td>
+                                        <td className="w-100 text-nowrap">{kbId}</td>
+                                        <td className="px-4 position-relative">
                                             <button onClick={() => handleCopyIds(kbId)}
-                                                    className={"btn btn-outline-primary"}>copy
+                                                    className={"btn text-primary btn-sm"}>Copy
                                             </button>
-
+                                            {(copied_id === kbId) &&
+                                                <div className="copied-style small position-absolute top-50 start-50 translate-middle text-white bg-dark px-2 py-1 rounded">Copied!</div>
+                                            }
                                         </td>
-                                        <td>
+                                        {/* <td>
                                             {(copied_id === kbId) &&
                                                 <div className="copied-style">copied</div>
                                             }
-                                        </td>
+                                        </td> */}
                                     </tr>
                                     <tr>
-                                        <td>security id</td>
-                                        <td className="id-width">{securityId}</td>
-                                        <td>
+                                        <td className="text-nowrap pe-4 fw-500">Security ID</td>
+                                        <td className="w-100 text-nowrap">{securityId}</td>
+                                        <td className="px-4 position-relative">
                                             <button onClick={() => handleCopyIds(securityId)}
-                                                    className={"btn btn-outline-primary"}>copy
+                                                    className={"btn text-primary btn-sm"}>Copy
                                             </button>
-
+                                            {(copied_id === securityId) &&
+                                                <div className="copied-style small position-absolute top-50 start-50 translate-middle text-white bg-dark px-2 py-1 rounded">Copied!</div>
+                                            }
                                         </td>
-                                        <td>
+                                        {/* <td>
                                             {(copied_id === securityId) &&
                                                 <div className="copied-style">copied</div>
                                             }
-                                        </td>
+                                        </td> */}
                                     </tr>
                                     </tbody>
 
@@ -112,9 +118,9 @@ export default function KnowledgeBaseViewIds() {
                             </div>
 
                         </div>
-                        <div className="modal-footer">
-                            <button onClick={handleClose} type="button" className="btn btn-secondary"
-                                    data-bs-dismiss="modal">Close
+                        <div className="modal-footer px-5 pb-4">
+                            <button onClick={handleClose} type="button" className="btn btn-primary px-4"
+                                    data-bs-dismiss="modal">Done
                             </button>
                         </div>
                     </div>
