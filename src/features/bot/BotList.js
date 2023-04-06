@@ -221,7 +221,7 @@ export default function BotHome() {
                                 return (
                                     <tr key={memory.id}>
                                         <td className="pt-3 px-4 pb-2">
-                                            <div className="d-flex flex-nowrap">
+                                            <div className="d-flex flex-nowrap" style={{minWidth: "300px"}}>
                                                 <div className="mind-text-column small text-capitalize table-pill px-3 py-1 mb-2" style={{borderRadius: "12px"}}
                                                  title={displayQuestions(memory)}>{memory.questionList[0]}
                                                 </div>
@@ -235,8 +235,8 @@ export default function BotHome() {
                                         <td className="pt-3 px-4 pb-3">
                                             { memory.urlList.map( url => {
                                                 return (
-                                                    <div className="mind-text-column text-black-50 small text-truncate" style={{width: "200px"}}
-                                                         title={url}>{url}
+                                                    <div className="mind-text-column text-black-50 small text-truncate mb-1" style={{maxWidth: "300px"}}> 
+                                                        <a href={url} className="text-black-50" title={url}>{url}</a>
                                                     </div>
                                                 )
                                             })
