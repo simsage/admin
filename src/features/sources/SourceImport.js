@@ -66,7 +66,7 @@ export function SourceImport(props) {
                                         <div>
                                             <label className="label-2 small">Data</label>
                                             <div>
-                                                <textarea className="form-control" placeholder="Crawler data..." spellCheck="true" rows="10"
+                                                <textarea className="form-control" placeholder="Crawler data JSON..." spellCheck="true" rows="10"
                                                         style={{width: '100%'}} {...register("source_str", {required: true})} />
                                             </div>
                                         </div>

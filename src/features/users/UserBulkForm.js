@@ -52,7 +52,7 @@ export function UserBulkForm( ){
                     </div> */}
                     <div className="modal-body text-center">
                         <div className="control-row mb-4">
-                            <span className="label-wide me-2">Import Bulk Users.</span>
+                            <span className="label-wide me-2">Import Bulk Users</span>
                             <a  className="link-primary text-decoration-underline pointer-cursor small fst-italic" onClick={exportToCsv}>
                                 (Download Bulk User template)
                             </a>

@@ -131,13 +131,12 @@ const TextToSearchList = () => {
                     </div>
 
                     <div className="form-group d-flex ms-auto">
+                        <button className="btn btn-outline-primary text-nowrap ms-2" onClick={(e) => handleTest()}>
+                            Test Search Parts
+                        </button>
+
                         <button className="btn btn-primary text-nowrap ms-2" onClick={(e) => handleAdd(e)}>
                             + Add Search Part
-                        </button>
-                    </div>
-                    <div className="form-group d-flex ms-auto">
-                        <button className="btn btn-primary text-nowrap ms-2" onClick={(e) => handleTest()}>
-                            Test Search Parts
                         </button>
                     </div>
                 </div>

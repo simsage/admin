@@ -181,7 +181,7 @@ export default function SynsetList() {
                 <div className="form-group d-flex ms-auto">
                     <button className="btn btn-outline-primary text-nowrap ms-2"
                         onClick={() => handleAddDefaultSynSet()}
-                        title="add all default syn-sets">+ Defaults
+                        title="add all default syn-sets">Defaults
                     </button>
                     <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddSynSet()}>
                         + Add Syn-set

@@ -392,7 +392,7 @@ export default function SourceHome(props) {
                     {selected_knowledge_base_id.length > 0 &&
                         <div className="d-flex">
                             {/*<button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleResetCrawlers()} >Reset Crawlers </button>*/}
-                            <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleImportCrawler()} >Upload Crawler [JSON]</button>
+                            <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleImportCrawler()} >Upload Crawler</button>
                             <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddForm()}> + Add Source</button>
                         </div>
                     }
