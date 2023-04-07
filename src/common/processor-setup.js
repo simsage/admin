@@ -38,26 +38,22 @@ export class ProcessorSetup extends Component {
             return <h1>acl-setup.js: Something went wrong.</h1>;
         }
         return (
-            <div>
+            <div className="row mb-3">
 
                 <div className="form-group">
-                    <div className="full-column-2">
-                        <span >Processor config</span>
-                    </div>
-                    <div className="full-column-2">
-                        <span className="bigger-text">
-                            <form>
-                                <textarea className="textarea-width"
-                                       spellCheck={false}
-                                       rows={15}
-                                       placeholder="Json for the processor configuration"
-                                       value={this.state.processorConfig}
-                                       onChange={(event) => {
-                                           this.change_callback({processorConfig: event.target.value})
-                                       }}
-                                />
-                            </form>
-                        </span>
+                    <div className="">
+                        <label className="label-2 small">Processor Configuration</label>
+                        <form>
+                            <textarea className="form-control"
+                                    spellCheck={false}
+                                    rows={10}
+                                    placeholder="Processor Configuration JSON..."
+                                    value={this.state.processorConfig}
+                                    onChange={(event) => {
+                                        this.change_callback({processorConfig: event.target.value})
+                                    }}
+                            />
+                        </form>
                     </div>
                 </div>
 

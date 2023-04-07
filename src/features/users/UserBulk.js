@@ -93,10 +93,10 @@ export default function UserBulk() {
                     {/*       type="file"*/}
                     {/*       onChange={(e) => handleImageChange(e)}/>*/}
 
-                    <input type="file" {...register("file",{required: true})}  />
+                    <input className="mb-4 bg-light p-4 w-100 border rounded" type="file" {...register("file",{required: true})}  />
                     {errors.file && <span>Please select a backup file <br/></span>}
                     <div className="upload-button">
-                        <div className="upload-input">
+                        <div className="control-row upload-input">
                             {/*<button className="btn btn-primary btn-block"*/}
                             {/*        disabled={this.state.binary_data === null || this.props.uploading}*/}
                             {/*        onClick={this.upload.bind(this)}>restore</button>*/}
@@ -104,7 +104,10 @@ export default function UserBulk() {
                             {/*    <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>*/}
                             {/*}*/}
 
-                            <input type="submit" className={"btn btn-outline-primary"}/>
+                            <button type="button" className="btn btn-white px-4"
+                                    data-bs-dismiss="modal">Cancel
+                            </button>
+                            <input type="submit" className={"btn btn-primary px-4"}/>
                         </div>
                     </div>
                 </div>

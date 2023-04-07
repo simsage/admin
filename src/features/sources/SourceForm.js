@@ -1037,8 +1037,12 @@ export default function SourceForm(props) {
                                 {/* Page 4: AclSetup  */}
                                 {selected_source_tab === 'acls' &&
                                     <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
-                                        <div className="acl-text w-100 mb-3">This list sets a default set of Access Control for
-                                            this source
+                                        <div className="row mb-3">
+                                            <div className="col-6 d-flex">
+                                                <div class="alert alert-warning small py-2" role="alert">
+                                                This list sets a default set of Access Control for this source
+                                                </div>
+                                            </div>
                                         </div>
                                         {/*<AclSetupForm*/}
                                         {/*    source={selected_source}*/}
@@ -1059,7 +1063,7 @@ export default function SourceForm(props) {
 
                                 {/* Page 5: processors TimeSelect  */}
                                 {selected_source_tab === 'processors' &&
-                                    <div className="time-tab-content">
+                                    <div className="time-tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
                                         <ProcessorSetup
                                             processorConfig={form_data.processorConfig}
                                             onSave={(processorConfig) => updateProcessorConfig(processorConfig)}/>

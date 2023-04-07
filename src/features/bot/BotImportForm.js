@@ -23,23 +23,28 @@ const BotImportForm = () => {
         return (<div/>);
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
-            <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                <div className="modal-content">
-                    <div className="modal-header px-5 pt-4 bg-light">
+            <div className={"modal-dialog modal-dialog-centered"} role="document">
+                <div className="modal-content p-4">
+                    {/* <div className="modal-header px-5 pt-4 bg-light">
                         <h4 className="mb-0">Import Bulk Bot Items</h4>
-                    </div>
-                    <div className="modal-body px-5 py-4">
-                        <div className="control-row">
-                            <a className="link-primary text-decoration-underline pointer-cursor" download="Import Bot Items.xlsx" onClick={downloadFile}>Download Bot import template</a>
+                    </div> */}
+                    <div className="modal-body text-center">
+                        <div className="control-row mb-4">
+                            <span className="label-wide me-2">Import Bulk Bot items.</span>
+                            <a className="link-primary text-decoration-underline pointer-cursor small fst-italic" download="Import Bot Items.xlsx" onClick={downloadFile}>(Download Bulk Bot template)</a>
                         </div>
-                        <br/>
                         <div className="control-row">
                             <BotImport/>
                         </div>
+
+                        {/* Delete */}
+                        <div className="control-row">
+                            <button className="btn btn-danger btn-sm px-4 btn-block mt-3" onClick={(e) => handleClose(e)}>Cancel <span className="small">(Remove this 'Cancel' button. I couldn't get the above to work...)</span></button>
+                        </div>
+                        {/* Delete */}
+
                     </div>
-                    <div className="modal-footer">
-                        <button className="btn btn-white px-4 btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
-                    </div>
+                    
 
                 </div>
             </div>

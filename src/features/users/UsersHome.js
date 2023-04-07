@@ -130,11 +130,12 @@ export function UsersHome(){
                 </div>
 
                 <div className="d-flex">
+
+                    <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleUserBulk()}>
+                        Import
+                    </button>
                     <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddNewUser()}>
                         + Add User
-                    </button>
-                    <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleUserBulk()}>
-                        + User Bulk
                     </button>
                 </div>
             </div>

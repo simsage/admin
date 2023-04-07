@@ -214,7 +214,7 @@ export class AclSetup extends Component {
                         </div>
                         {
                             this.getAvailableGroupsOrUsers().map((u_group, i) => {
-                                return (<div key={i} className="user-name role-chip" onClick={() => this.addAcl(u_group)} title={(u_group.isUser ? "user " : "group ") + u_group.name}>
+                                return (<div key={i} className="role-chip" onClick={() => this.addAcl(u_group)} title={(u_group.isUser ? "user " : "group ") + u_group.name}>
                                     <span className="user-group-image-box me-3"><img className="user-group-image" src={u_group.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{u_group.name}</span>
                                 </div>)
                             })

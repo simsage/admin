@@ -303,35 +303,50 @@ export default function CrawlerMetadataForm(props) {
         return <h1>crawler metadata: Something went wrong.</h1>;
     } else {
         return (
-            <div className="crawler-page">
+            <div className="crawler-page px-5 pb-4">
 
-                <div className="instructions-label">All rows in order of UI. Use 'actions' arrows to re-arrange existing
+                {/* <div className="instructions-label">All rows in order of UI. Use 'actions' arrows to re-arrange existing
                     rows.
+                </div> */}
+                <div className="row mb-3">
+                    <div className="col-6 d-flex">
+                        <div class="alert alert-warning small py-2" role="alert">
+                            All rows in order of UI. Use 'actions' arrows to re-arrange existing rows.
+                        </div>
+                    </div>
+                    <div className="col-6 d-flex justify-content-end">
+                        <div>
+                            <button onClick={addNewMetadataMapping} type="button" className="btn btn-primary btn-small"
+                                    title="+ Add Metadata Mapping"
+                                    data-bs-dismiss="modal">+ Add Metadata Mapping
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <table className="table">
+                <table className="table w-100">
 
                     <thead>
                     <tr className='table-header'>
-                        <th className="table-header metadata-column">data-type</th>
-                        <th className="table-header display-column">UI display-name</th>
-                        <th className="table-header metadata-field-column">metadata name</th>
-                        <th className="table-header sort-field-column">sortable</th>
-                        <th className="table-header action-field-column">actions</th>
+                        <td className="small text-black-50 px-4 metadata-column">Data-type</td>
+                        <td className="small text-black-50 px-4 display-column">UI Display-name</td>
+                        <td className="small text-black-50 px-4 metadata-field-column">Metadata name</td>
+                        <td className="small text-black-50 px-4 sort-field-column">Sortable</td>
+                        <td className="small text-black-50 px-4 action-field-column"></td>
                     </tr>
                     </thead>
 
                     <tbody>
-                    <tr>
+                    {/* <tr>
                         <td colSpan={5}>&nbsp;</td>
-                    </tr>
+                    </tr> */}
 
                     {
                         get_md_list().map(function (md, index) {
                             return (<tr key={index}>
 
-                                <td className="selector-column">
-                                    <select className="form-select" onChange={(event) => {
+                                <td className="pt-3 ps-4 pe-0 pb-3">
+                                    <select className="form-select text-capitalize" onChange={(event) => {
                                         set_md_type(md, index, event.target.value)
                                     }}
                                             defaultValue={md.key}
@@ -344,12 +359,12 @@ export default function CrawlerMetadataForm(props) {
                                     </select>
                                 </td>
 
-                                <td className="td-display-column">
+                                <td className="pt-3 ps-4 pe-0 pb-3">
                                     {
                                         md.display !== null &&
                                         <span>
                                             <input type="text"
-                                                   className="theme metadata-text"
+                                                   className="theme form-control"
                                                    placeholder="UI display-name"
                                                    title="name displayed in the UI for this item"
                                                    value={md.display}
@@ -361,13 +376,13 @@ export default function CrawlerMetadataForm(props) {
                                 </td>
 
 
-                                <td className="td-align-top">
+                                <td className="pt-3 ps-4 pe-0 pb-3">
                                     {
                                         needs_metadata_field(md) &&
-                                        <div className="td-md-field-width">
+                                        <div className="">
                                             <input type="text"
-                                                   className="theme metadata-text"
-                                                   placeholder="metadata name"
+                                                   className="theme form-control"
+                                                   placeholder="Metadata name"
                                                    value={md.metadata}
                                                    title="metadata names should only contain 0..9, a..z, and A..Z"
                                                    onKeyDown={(event) => {
@@ -379,51 +394,74 @@ export default function CrawlerMetadataForm(props) {
                                         </div>
                                     }
                                     {md.sort === "true" &&
-                                        <div>
+                                        <div className="d-flex align-items-center mt-1">
                                             <input type="text"
-                                                   placeholder="sort descending UI text"
-                                                   className="theme metadata-text"
+                                                   placeholder="Sort descending UI text"
+                                                   className="theme form-control"
                                                    value={md.sortDescText}
                                                    title="The text to display for this field if a descending sort is selected of this type"
                                                    onChange={(event) => {
                                                        setValue(md, index, "sortDescText", event.target.value)
                                                    }}/>
+                                            {/* <div className=""
+                                                title="Set this descending field as the default sort field for the UI">
+                                                <input type="checkbox"
+                                                    checked={md.sortDefault === "desc"}
+                                                    onChange={(event) => {
+                                                        setDefaultSort(md, index, "desc", event.target.checked);
+                                                    }}
+                                                />
+                                            </div> */}
                                         </div>
                                     }
                                     {md.sort === "true" &&
-                                        <div>
+                                        <div className="d-flex align-items-center mt-1">
                                             <input type="text"
-                                                   className="theme metadata-text"
-                                                   placeholder="sort ascending UI text"
+                                                   className="theme form-control"
+                                                   placeholder="Sort ascending UI text"
                                                    value={md.sortAscText}
                                                    title="The text to display for this field if an ascending sort is selected of this type"
                                                    onChange={(event) => {
                                                        setValue(md, index, "sortAscText", event.target.value)
                                                    }}/>
+                                            {/* <div className=""
+                                                title="Set this ascending field as the default sort field for the UI">
+                                                <input type="checkbox"
+                                                   checked={md.sortDefault === "asc"}
+                                                   onChange={(event) => {
+                                                       setDefaultSort(md, index, "asc", event.target.checked);
+                                                   }}
+                                            />
+                                            </div>        */}
                                         </div>
-                                    }
-                                    {md.sort === "true" &&
-                                        <br/>
                                     }
                                 </td>
 
-                                <td className="td-align-top">
+                                <td className="pt-3 ps-4 pe-0 pb-3">
                                     {md.sort !== "" &&
-                                        <div className="td-sort-2"
-                                             title="enable this category as an item used for sorting in the UI">
-                                            <input type="checkbox"
-                                                   checked={md.sort === "true"}
+                                        // <div className=""
+                                        //      title="enable this category as an item used for sorting in the UI">
+                                        //     <input type="checkbox"
+                                        //            checked={md.sort === "true"}
+                                        //            onChange={(event) => {
+                                        //                setSort(md, index, event.target.checked);
+                                        //            }}
+                                        //            value="enable result sorting over this field?"
+                                        //     />
+                                        //     <span className="sort-label"> sort</span>
+                                        // </div>
+
+                                        <div className="form-check form-switch">
+                                            <input className="form-check-input" title="Enable this category as an item used for sorting in the UI" value="Enable result sorting over this field?" type="checkbox" checked={md.sort === "true"}
                                                    onChange={(event) => {
                                                        setSort(md, index, event.target.checked);
-                                                   }}
-                                                   value="enable result sorting over this field?"
-                                            />
-                                            <span className="sort-label"> sort</span>
+                                                   }}/>
+                                            {/* <label className="form-check-label" for="enableKnowledgeBase">Knowledge Base</label> */}
                                         </div>
                                     }
                                     {md.sort === "true" &&
-                                        <div className="td-sort-2"
-                                             title="set this descending field as the default sort field for the UI">
+                                        <div className=""
+                                             title="Set this descending field as the default sort field for the UI">
                                             {'\u2190'}
                                             <input type="checkbox"
                                                    checked={md.sortDefault === "desc"}
@@ -435,8 +473,8 @@ export default function CrawlerMetadataForm(props) {
                                     }
 
                                     {md.sort === "true" &&
-                                        <div className="td-sort-2"
-                                             title="set this ascending field as the default sort field for the UI">
+                                        <div className=""
+                                             title="Set this ascending field as the default sort field for the UI">
                                             {'\u2190'}
                                             <input type="checkbox"
                                                    checked={md.sortDefault === "asc"}
@@ -448,11 +486,13 @@ export default function CrawlerMetadataForm(props) {
                                     }
                                 </td>
 
-                                <td className="td-action">
-                                    <button onClick={() => deleteMetadataItem(index)} type="button"
-                                            className="btn btn-secondary" title="remove this metadata mapping"
-                                            data-bs-dismiss="modal">remove
-                                    </button>
+                                <td className="pt-3 px-4 pb-0">
+                                    <div className="link-button d-flex justify-content-end">
+                                        <button onClick={() => deleteMetadataItem(index)} type="button"
+                                                className="btn text-danger btn-sm" title="remove this metadata mapping"
+                                                data-bs-dismiss="modal">Delete
+                                        </button>
+                                    </div>
 
                                     {/*<span className="delete-box" onClick={() => deleteMetadataItem(index)} title="remove this metadata item">*/}
                                     {/*    <img src={theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>*/}
@@ -477,19 +517,19 @@ export default function CrawlerMetadataForm(props) {
                     }
 
 
-                    <tr>
-                        <td colSpan={5} align={"right"}>
+                    {/* <tr>
+                        <td colSpan={5} align={"right"}> */}
                             {/*<div className="image-button" onClick={() => this.addNewMetadataMapping()}><img*/}
                             {/*    className="image-size" src={theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add new metadata mapping"*/}
                             {/*    alt="add new metadata mapping"/></div>*/}
 
-                            <button onClick={addNewMetadataMapping} type="button" className="btn btn-secondary"
+                            {/* <button onClick={addNewMetadataMapping} type="button" className="btn btn-secondary"
                                     title="add new metadata mapping"
                                     data-bs-dismiss="modal">add new metadata mapping
-                            </button>
+                            </button> */}
 
-                        </td>
-                    </tr>
+                        {/* </td>
+                    </tr> */}
 
 
                     </tbody>
