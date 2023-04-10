@@ -1,7 +1,7 @@
 import {useForm} from "react-hook-form";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
-import {closeForm, importBotItems} from "./botSlice";
+import {closeBotImportForm, closeForm, importBotItems} from "./botSlice";
 
 export function BotImport() {
 
@@ -53,6 +53,9 @@ export function BotImport() {
 
     };
 
+    function handleClose(e){
+        dispatch(closeBotImportForm())
+    }
 
 
 
@@ -65,7 +68,7 @@ export function BotImport() {
                     {errors.file && <span>Please select a file </span>}
                     <div className="upload-button">
                         <div className="control-row upload-input">
-                            <button type="button" className="btn btn-white px-4"
+                            <button type="button" className="btn btn-white px-4" onClick={()=>handleClose()}
                                     data-bs-dismiss="modal">Cancel
                             </button>
                             <input type="submit" className={"btn btn-primary px-4"}/>

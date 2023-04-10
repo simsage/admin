@@ -9,9 +9,7 @@ const BotImportForm = () => {
 
     const show_bot_import_form = useSelector((state) => state.botReducer.show_bot_import_form)
 
-    function handleClose(e){
-        dispatch(closeBotImportForm())
-    }
+
 
     const downloadFile = (e) => {
         let a = e.target
@@ -37,11 +35,6 @@ const BotImportForm = () => {
                             <BotImport/>
                         </div>
 
-                        {/* Delete */}
-                        <div className="control-row">
-                            <button className="btn btn-danger btn-sm px-4 btn-block mt-3" onClick={(e) => handleClose(e)}>Cancel <span className="small">(Remove this 'Cancel' button. I couldn't get the above to work...)</span></button>
-                        </div>
-                        {/* Delete */}
 
                     </div>
                     
