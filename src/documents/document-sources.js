@@ -423,7 +423,7 @@ const mapStateToProps = function (state) {
         selected_organisation_id: state.appReducer.selected_organisation_id,
         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
         selected_knowledgebase: state.appReducer.selected_knowledgebase,            // the name
-        user_list: state.appReducer.user_list,
+        user_list: state.appReducer.all_user_list,
         user_filter: state.appReducer.user_filter,
 
         source_page: state.appReducer.source_page,

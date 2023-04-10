@@ -434,7 +434,7 @@ export class CrawlerDialog extends Component {
         }
         return (
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
-                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                <div className={"modal-dialog modal-dialog-centered modal-xl crawler-min-width"} role="document">
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded crawler-page">
 
                         <div className="modal-header">{this.state.title}</div>

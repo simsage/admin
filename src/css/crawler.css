@@ -1,4 +1,8 @@
 
+.crawler-min-width {
+    min-width: 1110px;
+}
+
 .crawler-page {
     margin-top: 20px;
     width: 98%;

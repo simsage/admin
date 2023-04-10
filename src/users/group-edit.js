@@ -65,11 +65,12 @@ export class GroupEdit extends Component {
         if (this.state.has_error) {
             return <h1>group-edit.js: Something went wrong.</h1>;
         }
+        console.log(this.props.user_list);
         if (!this.state.open)
             return (<div />);
         return (
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
-                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                <div className={"modal-dialog modal-dialog-centered modal-xl min-width"} role="document">
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
                         <div className="modal-header">Edit Group</div>
@@ -87,7 +88,6 @@ export class GroupEdit extends Component {
                                         />
                                     </span>
                                 </div>
-
 
                                 <UserSelector
                                     user_list={this.props.user_list}
