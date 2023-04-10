@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {useForm} from "react-hook-form";
 import Api from "../../common/api";
-import {addOrUpdate, closeForm, setSelectedTab} from "./knowledgeBaseSlice";
+import {addOrUpdate, closeForm} from "./knowledgeBaseSlice";
 import {showErrorAlert} from "../alerts/alertSlice";
 import {KnowledgeBaseFormTab} from "./KnowledgeBaseFormTab";
 import TimeSelect from "../../common/time-select";
@@ -93,7 +93,7 @@ export default function KnowledgeBaseForm(props) {
         defaultValues.enabled = kb ? kb.enabled : false;
         defaultValues.operatorEnabled = kb ? kb.operatorEnabled : false;
         defaultValues.capacityWarnings = kb ? kb.capacityWarnings : false;
-        defaultValues.enableDocumentSimilarity = kb ? kb.enableDocumentSimilarity : false;
+        // defaultValues.enableDocumentSimilarity = kb ? kb.enableDocumentSimilarity : false;
 
         defaultValues.dmsIndexSchedule = kb ? kb.dmsIndexSchedule : '';
         defaultValues.documentSimilarityThreshold = kb ? kb.documentSimilarityThreshold : 0.9;
@@ -151,7 +151,7 @@ export default function KnowledgeBaseForm(props) {
 
 
                                 {selected_tab === 'general' &&
-                                <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                                <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
                                     <div className="row mb-5">
                                         <div className="control-row col-4">
                                             <label className="label-2 small">Name</label>
@@ -224,11 +224,11 @@ export default function KnowledgeBaseForm(props) {
 
                                             {/* <span className="label-3">enable document similarity?</span>
                                             <input type="checkbox" {...register('enableDocumentSimilarity')}  /> */}
-                                            <div className="form-check form-switch">
-                                                <input className="form-check-input" type="checkbox" id="enableDocumentSimilarity"
-                                                {...register('enableDocumentSimilarity')}/>
-                                                <label className="form-check-label" for="enableDocumentSimilarity">Document Similarity</label>
-                                            </div>
+                                            {/*<div className="form-check form-switch">*/}
+                                            {/*    <input className="form-check-input" type="checkbox" id="enableDocumentSimilarity"*/}
+                                            {/*    {...register('enableDocumentSimilarity')}/>*/}
+                                            {/*    <label className="form-check-label" for="enableDocumentSimilarity">Document Similarity</label>*/}
+                                            {/*</div>*/}
                                         </div>
 
                                     </div>
@@ -236,7 +236,7 @@ export default function KnowledgeBaseForm(props) {
                                 }
                                 {selected_tab === 'index_schedule' &&
 
-                                    <div className="time-tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                                    <div className="time-tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
                                         <div className="row justify-content-center">
                                             <div className="col-6">
                                                 <div class="alert alert-warning small py-2" role="alert">

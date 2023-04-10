@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {selectTab} from "../features/home/homeSlice";
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {setSelectedKB} from "../features/auth/authSlice";
 import {getSources} from "../features/sources/sourceSlice";
 

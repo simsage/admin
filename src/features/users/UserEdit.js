@@ -410,7 +410,7 @@ export function UserEdit( {filter} ){
 
                         {
                             selectedTab === 'roles' &&
-                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
                                 <div className="row pb-5">
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">SimSage Roles</h6>
@@ -476,7 +476,7 @@ export function UserEdit( {filter} ){
 
                         {
                             selectedTab === 'groups' &&
-                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
                                 <div className="row pb-5">
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">SimSage Groups</h6>
