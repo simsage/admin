@@ -62,9 +62,12 @@ export function UserBulkForm( ){
                         </div>
 
                         {/* Delete */}
-                        <div className="control-row">
-                            <button className="btn btn-danger btn-sm px-4 btn-block mt-3" onClick={(e) => handleClose(e)}>Cancel <span className="small">(Remove this 'Cancel' button. I couldn't get the above to work...)</span></button>
-                        </div>
+                        {/*<div className="control-row">*/}
+                        {/*    <button className="btn btn-danger btn-sm px-4 btn-block mt-3"*/}
+                        {/*            onClick={(e) => handleClose(e)}>Cancel*/}
+                        {/*        <span className="small">(Remove this 'Cancel' button. I couldn't get the above to work...)</span>*/}
+                        {/*    </button>*/}
+                        {/*</div>*/}
                         {/* Delete */}
 
                     </div>

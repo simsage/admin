@@ -1,7 +1,7 @@
 import {useForm} from "react-hook-form";
 import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {bulkUpdateUser} from "./usersSlice";
+import {bulkUpdateUser, closeUserBulkForm} from "./usersSlice";
 
 export default function UserBulk() {
     const [file_name, setFilename] = useState();
@@ -53,20 +53,23 @@ export default function UserBulk() {
     };
 
 
-    function handleImageChange(e) {
-        e.preventDefault();
-
-        const self = this;
-        const reader = new FileReader();
-        const file = e.target.files[0];
-
-        reader.onloadend = () => {
-            setFilename(file['name'])
-            setFileType(file['type'])
-            setFileData(reader.result)
-        };
-        reader.readAsDataURL(file)
+    const handleFormClose = () => {
+        dispatch(closeUserBulkForm())
     }
+    // function handleImageChange(e) {
+    //     e.preventDefault();
+    //
+    //     const self = this;
+    //     const reader = new FileReader();
+    //     const file = e.target.files[0];
+    //
+    //     reader.onloadend = () => {
+    //         setFilename(file['name'])
+    //         setFileType(file['type'])
+    //         setFileData(reader.result)
+    //     };
+    //     reader.readAsDataURL(file)
+    // }
 
 
     // upload() {
@@ -104,7 +107,7 @@ export default function UserBulk() {
                             {/*    <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>*/}
                             {/*}*/}
 
-                            <button type="button" className="btn btn-white px-4"
+                            <button type="button" className="btn btn-white px-4" onClick={()=> handleFormClose()}
                                     data-bs-dismiss="modal">Cancel
                             </button>
                             <input type="submit" className={"btn btn-primary px-4"}/>
