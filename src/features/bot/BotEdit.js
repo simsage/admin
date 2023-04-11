@@ -174,6 +174,7 @@ export function BotEdit(){
                     <div className="modal-header">{memory ? "Edit Memory" : "Add New Memory"}</div>
                     <div className="modal-body">
                         <div className="tab-content">
+                            <span className="label-2">Question </span>
 
                             {
                                 questions && questions.map( (question,i) => {
@@ -181,7 +182,7 @@ export function BotEdit(){
                                     if (question === '') {return;}
                                     return (
                                         <div className="control-row" key={i}>
-                                            <span className="label-2">Question </span>
+
                                             <span className="text">
                                                     <form>
                                                         <input type="text" className="form-control"
@@ -192,13 +193,12 @@ export function BotEdit(){
                                                         />
                                                     </form>
                                                 </span>
-                                            <button className="btn-danger btn-block" onClick={() => removeQuestionBtn(question, i)}>-</button>
+                                            <p className="text-danger pointer-cursor" onClick={() => removeQuestionBtn(question, i)}>Remove</p>
                                         </div>
                                     )
                                 })
                             }
                             <div className="control-row">
-                                <span className="label-2">Add new question </span>
                                 <span className="text">
                                         <form>
                                             <input type="text"
@@ -211,7 +211,7 @@ export function BotEdit(){
                                             />
                                         </form>
                                     </span>
-                                <button className="btn-primary btn-block" onClick={(e) => addNewQuestionBtn(e, newQuestion)}>+</button>
+                                <p className="text-primary pointer-cursor" onClick={(e) => addNewQuestionBtn(e, newQuestion)}>+ Question</p>
                             </div>
                         </div>
                         <div className="control-row">
@@ -227,13 +227,14 @@ export function BotEdit(){
                                         </form>
                                     </span>
                         </div>
+                        <span className="label-2">Link </span>
                         {
                             links && links.map( (link,i) => {
                                 console.log(link)
                                 if (link === '') {return;}
                                 return (
                                     <div className="control-row" key={i}>
-                                        <span className="label-2">Link </span>
+
                                         <span className="text">
                                                     <form>
                                                         <input type="text" className="form-control"
@@ -244,13 +245,12 @@ export function BotEdit(){
                                                         />
                                                     </form>
                                                 </span>
-                                        <button className="btn-danger btn-block" onClick={() => removeLinkBtn(link, i)}>-</button>
+                                        <p className="text-danger pointer-cursor" onClick={() => removeLinkBtn(link, i)}>Remove</p>
                                     </div>
                                 )
                             })
                         }
                         <div className="control-row">
-                            <span className="label-2">Add new link </span>
                             <span className="text">
                                         <form>
                                             <input type="text"
@@ -263,7 +263,7 @@ export function BotEdit(){
                                             />
                                         </form>
                                     </span>
-                            <button className="btn-primary btn-block" onClick={(e) => addNewLinkBtn(e, newQuestion)}>+</button>
+                            <p className="text-primary pointer-cursor" onClick={(e) => addNewLinkBtn(e, newQuestion)}>+ Link</p>
                         </div>
                     </div>
 
