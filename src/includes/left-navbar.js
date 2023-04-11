@@ -41,13 +41,13 @@ export default function LeftNavbar(){
         }
         dispatch(setSelectedKB(kb_id))
 
-        if(kb_id !== undefined){
-            switch (selected_tab) {
-                case "document-management" :
-                    dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:kb_id}))
-                    break;
-            }
-        }
+        // if(kb_id !== undefined){
+        //     switch (selected_tab) {
+        //         case "document-management" :
+        //             dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:kb_id}))
+        //             break;
+        //     }
+        // }
 
     }
 

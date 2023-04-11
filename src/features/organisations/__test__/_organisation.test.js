@@ -8,7 +8,7 @@ import authReducer from "../../auth/authSlice";
 import OrganisationEdit from "../OraganisationEdit";
 import { setupServer } from 'msw/node'
 import { rest } from 'msw'
-import {fetch_data} from "./TestData";
+import {fetch_data} from "./_test_data";
 
 const filter = null;
 const api_base = 'https://adminux.simsage.ai/api';
@@ -63,18 +63,10 @@ describe(OrganisationHome, () => {
         expect(screen.getByText(/no data/i)).toBeInTheDocument();
     });
 
-    it('organisation home with data', () => {
-        console.log(app_store.dispatch(getOrganisationList()));
-        console.log(app_store.getState());
-        // render(<OrganisationHome/>);
-        // expect(screen.getByText(/Global Legal Post/i)).toBeInTheDocument();
-    });
-
     it('show add-new-organisation form', () => {
         render(<OrganisationHome/>);
         fireEvent.click(screen.getByTestId('add-new-organisation'));
         expect(app_store.getState().organisationReducer.show_organisation_form).toBe(true)
     });
-
 
 });
