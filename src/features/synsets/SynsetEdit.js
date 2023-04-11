@@ -120,13 +120,12 @@ export default function SynsetEdit(){
                                 </div>
                             </div>
                             <div className="row mb-3">
+                                <label className="label-2 small">Word Cloud <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span></label>
                                 {
                                     wordCloud && wordCloud.map( (cloud, i) => {
                                         if(cloud === ''){return;}
                                         return (
                                         <div className="control-row" key={i}>
-                                            <label className="label-2 small">Word Cloud <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span>
-                                            </label>
                                             <span className="text">
                                                 <form>
                                                     <textarea type="text" className="form-control"
@@ -137,14 +136,12 @@ export default function SynsetEdit(){
                                                     />
                                                 </form>
                                             </span>
-                                            <button className="btn-danger btn-block" onClick={() => removeNewWordCloudBtn(cloud, i)}>-</button>
+                                            <p className="text-danger pointer-cursor" onClick={() => removeNewWordCloudBtn(cloud, i)}>Remove</p>
                                         </div>
                                         )
                                     })
                                 }
                                 <div className="control-row">
-                                    <label className="label-2 small">Word Cloud <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span>
-                                    </label>
                                     <span className="text">
                                                 <form>
                                                     <textarea type="text" className="form-control"
@@ -156,7 +153,7 @@ export default function SynsetEdit(){
                                                     />
                                                 </form>
                                             </span>
-                                    <button className="btn-primary btn-block" onClick={(e) => addNewWordCloudBtn(e, newWordCloud)}>+</button>
+                                    <p className="text-primary pointer-cursor" onClick={(e) => addNewWordCloudBtn(e, newWordCloud)}>+ Word Cloud</p>
                                 </div>
                             </div>
                         </div>
