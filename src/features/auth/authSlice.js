@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Comms from "../../common/comms";
+import axios from "axios";
 // import {useMsal} from "@azure/msal-react";
 // import axios from "axios";
 // import {getOrganisationList} from "../organisations/organisationSlice";
@@ -131,6 +132,25 @@ export const simSageSignIn = createAsyncThunk(
     }
 );
 
+export const simsageLogOut = createAsyncThunk(
+    'auth/Logout',
+    async ({session_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/auth/sign-out/'
+
+        return axios.delete(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("Logging out", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("Logging out error", error.response.data.error)
+                    return error
+                }
+            )
+    }
+)
+
 export const {reset, login, showAccount, closeAllMenus, setSelectedOrganisation, closeError,
-              logout, setJwt, setSelectedKB } = authSlice.actions
+     setJwt, setSelectedKB } = authSlice.actions
 export default authSlice.reducer;

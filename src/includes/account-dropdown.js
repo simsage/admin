@@ -6,7 +6,7 @@ import {
     showAddOrganisationForm,
     showEditOrganisationForm
 } from "../features/organisations/organisationSlice";
-import {setSelectedKB, setSelectedOrganisation} from "../features/auth/authSlice";
+import {setSelectedKB, setSelectedOrganisation, simsageLogOut} from "../features/auth/authSlice";
 import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
 import {selectTab} from "../features/home/homeSlice";
 
@@ -61,6 +61,7 @@ const AccountDropdown = (props) => {
     // }
 
     function handleSignOut(){
+        dispatch(simsageLogOut({session_id:session.id}))
         instance.logoutRedirect({
             postLogoutRedirectUri: "/",
         });
