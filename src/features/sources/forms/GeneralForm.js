@@ -12,7 +12,7 @@ export default function GeneralForm(props) {
     const default_qna_threshold = 0.8125;
 
     const crawler_list = [
-        {"key": "none", "value": "please select crawler type"},
+        {"key": "none", "value": "Select Crawler Type..."},
         {"key": "box", "value": "Box crawler"},
         {"key": "confluence", "value": "Confluence crawler"},
         {"key": "database", "value": "Database crawler"},
@@ -90,260 +90,235 @@ export default function GeneralForm(props) {
 
 
     return (
-        <div className="crawler-page w-100 tab-content px-5 py-4 overflow-auto"  style={{maxHeight: "600px", minHeight: "400px"}}>
-
-            {/* crawlerType */}
-            <div className="control-row">
-                <span className="label-left">Crawler type</span>
-
-                <select
-                    className="form-select w-50"  {...props.register("crawlerType", {disabled: (selected_source && selected_source.sourceId !== '0')})}>
-                    {
-                        crawler_list.map((value) => {
-                            return (<option key={value.key} value={value.key}>{value.value}</option>)
-                        })
-                    }
-                </select>
-
-            </div>
-
-            {/* processingLevel */}
-            <div className="control-row my-lg-2">
-                <span className="label-left">processing level</span>
-                <div className={"flex space-x-3"}>
-                    {[
-                        // {label: "discovery", value: "FILES"},
-                        // {label: "GDPR", value: "GDPR"},
-                        // {label: "search", value: "SEARCH"},
-                        // {label: "NLU", value: "NLU"},
-                        {value: "CONVERT", label: "convert to text"},
-                        {value: "PARSE", label: "process text"},
-                        {value: "INDEX", label: "create indexes"},
-
-
-                    ].map((item, i) => {
-                        return <label key={i} className={"mx-1"}><input {...props.register("processingLevel")}
-                                                                        type="radio"
-                                                                        value={item.value}/> {item.label} &nbsp; &nbsp;
-                        </label>
-                    })
-                    }
+        <div className="w-100 tab-content px-5 py-4 overflow-auto"  style={{maxHeight: "600px", minHeight: "400px"}}>
+            <div className="row mb-4">
+                {/* crawlerType */}
+                <div className="control-row col-3">
+                    <label className="label-left small">Crawler Type</label>
+                    <select
+                        className="form-select"  {...props.register("crawlerType", {disabled: (selected_source && selected_source.sourceId !== '0')})}>
+                        {
+                            crawler_list.map((value) => {
+                                return (<option key={value.key} value={value.key}>{value.value}</option>)
+                            })
+                        }
+                    </select>
+                </div>
+                <div className="control-row col-3">
+                    <label className="label-left small">Crawler Name</label>
+                    <input className="form-control" {...props.register("name", {required: true})} disabled={false}
+                        placeholder={"Crawler Name..."}/>
+                    {props.errors.name && <span className=""> Name is required <br/></span>}
                 </div>
             </div>
 
-            {/*  */}
-            <div className="form-group my-lg-2">
-                <span className="label-left">Crawler name</span>
-                <input className={"w-50"} {...props.register("name", {required: true})} disabled={false}
-                       placeholder={"Crawler Name"}/>
-                {props.errors.name && <span className=""> Name is required <br/></span>}
+
+            <div className="row mb-4 pt-3 border-top">
+                <div className="col-6">
+                    <label className="label-left small">Processing Level</label>
+                    <div className="d-flex btn-group" role="group" aria-label="Basic radio toggle button group">
+                        {/* <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked/>
+                        <label className="btn btn-outline-primary" for="btnradio1">Radio 1</label>
+                    </div>
+                    <div className={"flex space-x-3"}> */}
+                        {[
+                            // {label: "discovery", value: "FILES"},
+                            // {label: "GDPR", value: "GDPR"},
+                            // {label: "search", value: "SEARCH"},
+                            // {label: "NLU", value: "NLU"},
+                            {value: "CONVERT", label: "Convert to Text"},
+                            {value: "PARSE", label: "Process Text"},
+                            {value: "INDEX", label: "Create Indexes"},
+                        ].map((item, i) => {
+                            return <label key={i} className="w-100 px-3 btn btn-light align-items-center d-flex" ><input className="me-2" {...props.register("processingLevel")}
+                                        type="radio"
+                                        value={item.value}/> {item.label}
+                            </label>
+                        })
+                        }
+                    </div>
+                </div>
             </div>
 
-            {/*  */}
-
-            <div className="my-lg-2">
-                <div className="form-group">
-                    <div className="left-column">
-
-                        <span className="label-left">Files per second throttle</span>
-                        <input {...props.register("filesPerSecond", {required: true})} disabled={false}/>
+            
+            <div className="row mb-4 pt-3 border-top">
+                <div className="col-2">
+                    <div className="form-group">
+                        <label className="label-left small">Files per second throttle</label>
+                        <input className="form-control" {...props.register("filesPerSecond", {required: true})} disabled={false}/>
                         {props.errors.filesPerSecond && <span className="">This field is required <br/></span>}
                     </div>
-
-                    <div className="right-column">
-                        <span className="label-left">Maximum number of files</span>
-                        <input {...props.register("maxItems", {required: true})} disabled={false}/>
-                        {props.errors.maxItems && <span className="">This field is required <br/></span>}
+                </div>
+                <div className="col-2">
+                    <div className="form-group">
+                            <label className="label-left small">Maximum number of files</label>
+                            <input className="form-control" {...props.register("maxItems", {required: true})} disabled={false}/>
+                            {props.errors.maxItems && <span className="">This field is required <br/></span>}
                     </div>
                 </div>
-
-
-                <div className="form-group">
-                    {/*  */}
-                    <div className="left-column">
-                        <span className="label-left">maximum number of QA</span>
-                        <input {...props.register("maxQNAItems", {required: true})} disabled={false}/>
+                <div className="col-2">
+                    <div className="form-group">
+                        <label className="label-left small">maximum number of QA</label>
+                        <input className="form-control" {...props.register("maxQNAItems", {required: true})} disabled={false}/>
                         {props.errors.maxQNAItems && <span className="">This field is required <br/></span>}
                     </div>
-
-
+                </div>
+                <div className="col-2">
                     {/*    */}
                     {(internal_crawler || selected_source_type !== 'restfull') &&
-                        <div className="right-column">
-                            <span className="label-left">k8s pod id (e.g. 0, 1, 2)</span>
-                            <input {...props.register("nodeId", {required: true})}
+                        <div className="form-group">
+                            <label className="label-left small">k8s pod id (e.g. 0, 1, 2)</label>
+                            <input className="form-control" {...props.register("nodeId", {required: true})}
                                    placeholder="k8s pod id (e.g. 0, 1, 2)"/>
                         </div>
                     }
                 </div>
+            </div>
 
-                <div className="form-group">
-                        <span className="left-column">
-                            <div style={{float: 'left'}}
-                                 title="If checked, SimSage perform similarity calculations on all items in this source against all other enabled sources and itself.">
-                                <input type="checkbox" {...props.register("enableDocumentSimilarity")} />
-                                <span className="label-left">enable similarity checking for documents?</span>
-                            </div>
-                        </span>
-                    <span className="right-column">
-                            <span className="label-right">similarity threshold</span>
-                            <span className="number-textbox">
-                                <input
-                                    type="text" {...props.register("documentSimilarityThreshold")} />
-
-                            </span>
-                        </span>
+            <div className="row mb-4 pt-3 border-top"> 
+                <div className="col-4">
+                    <div className="form-check form-switch" title="If checked, SimSage perform similarity calculations on all items in this source against all other enabled sources and itself.">
+                        <input className="form-check-input" type="checkbox" {...props.register("enableDocumentSimilarity")} />
+                        <label className="form-check-label small">Enable similarity checking for documents</label>
+                    </div>
                 </div>
+                <div className="col-2">
+                    <label className="small">Similarity Threshold</label>
+                    <input className="form-control"
+                        type="text" {...props.register("documentSimilarityThreshold")} />
 
-
-                <div className="form-group">
-                    {/*  */}
-                    {(selected_source_type === 'database' || selected_source_type === 'restfull') &&
-                        <div className="left-column"
-                             title="Restful and DB crawlers have optional custom-rendering flags.">
-                            <input type="checkbox" {...props.register("customRender")}  />
-                            <span className="label-left">custom render?</span>
-
-                        </div>
-                    }
-
-                    {/*  */}
-                    {(selected_source_type === 'restfull') &&
-                        <div className="right-column" title="Restful crawlers can be internal to the platform.">
-                            <input type="checkbox" {...props.register("internalCrawler")}  />
-                            <span className="label-left">internal crawler?</span>
-
-                        </div>
-                    }
                 </div>
             </div>
 
-            <div className="my-lg-4">
-                <div className="form-group">
-                    <div className="left-column"
-                         title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
-                        <input type="checkbox" {...props.register("deleteFiles")}  />
-                        <span className="label-left">remove un-seen files?</span>
+            <div className="row mb-3 pt-3 border-top">
+                {(selected_source_type === 'database' || selected_source_type === 'restfull') &&
+                    <div className="col-4">
+                        <div className="form-check form-switch"
+                            title="Restful and DB crawlers have optional custom-rendering flags.">
+                            <input className="form-check-input" type="checkbox" {...props.register("customRender")}  />
+                            <label className="form-check-label small">Custom render</label>
+                        </div>
+
                     </div>
+                }
+                {(selected_source_type === 'restfull') &&
+                    <div className="col-4">
+                        <div className="form-check form-switch" title="Restful crawlers can be internal to the platform.">
+                            <input className="form-check-input" type="checkbox" {...props.register("internalCrawler")}  />
+                            <label className="form-check-label small">Internal crawler</label>
 
-                    <div className="right-column"
-                         title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
+                        </div>
+                    </div>
+                }
 
-                        <input
-                            type="checkbox"
-                            {...props.register(
+            
+                <div className="col-4">
+                    <div className="form-check form-switch" title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
+                        <input className="form-check-input" type="checkbox" {...props.register("deleteFiles")}/>
+                        <label className="form-check-label small">Remove Un-seen Files</label>
+                    </div>
+                </div>
+                <div className="col-4">
+                    <div className="form-check form-switch" title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
+                        <input className="form-check-input" type="checkbox" {...props.register(
                                 "allowAnonymous",
                                 {disabled: ['web', 'rss', 'googlesite'].includes(props.getValues("crawlerType"))}
                             )} />
-                        <span className="label-left">allow anonymous access to these files?</span>
+                        <label className="form-check-label small">Allow anonymous access to these files</label>
                     </div>
                 </div>
-
-
-                <div className="form-group">
-                    <div className="left-column"
-                         title="Check this box if you preview images generated for each document.  Document search must be enabled for this to work.">
-                        <input type="checkbox" {...props.register("enablePreview")} />
+                <div className="col-4">  
+                    <div className="form-check form-switch" title="Check this box if you preview images generated for each document.  Document search must be enabled for this to work.">
+                        <input className="form-check-input" type="checkbox" {...props.register("enablePreview")} />
                         {/*checked={this.state.enablePreview && (this.state.processingLevel === "SEARCH" || this.state.processingLevel === "NLU")}*/}
                         {/*disabled={this.state.processingLevel !== "SEARCH" && this.state.processingLevel !== "NLU"}*/}
-                        <span className="label-left">enable document image previews?</span>
+                        <label className="form-check-label small">Enable document image previews</label>
                     </div>
+                </div>
+                <div className="col-4">
+                    <div className="form-check form-switch" title="Use our default built-in relationships">
+                        <input className="form-check-input" type="checkbox" {...props.register("useDefaultRelationships")} />
+                        <label className="form-check-label small">Use default built-in relationships</label>
+                    </div>
+                </div>
+                <div className="col-4">
+                    <div className="form-check form-switch" title="If checked, SimSage will auto-optimize the indexes after this source finishes crawling.">
+                        <input className="form-check-input" type="checkbox" {...props.register("autoOptimize")} />
+                        <span className="form-check-label small">Auto optimize after crawling</span>
+                    </div>
+                </div>
+                <div className="col-4">
+                    <div className="form-check form-switch" title="If checked, SimSage will store the document binaries locally (default true).">
+                        <input className="form-check-input" type="checkbox" {...props.register("storeBinary")}
+                            value="Store the binaries of each document inside the SimSage platform?"/>
+                        <label className="form-check-label small">Store the binaries of each document</label>
+                    </div>
+                </div>
+                <div className="col-4">
+                    <div className="form-check form-switch" title="If checked, SimSage will keep older versions of the document, unchecked it will only keep the latest">
+                        <input className="form-check-input" type="checkbox" {...props.register("versioned")}
+                            value="Store older versions of the document?"/>
+                        <label className="form-check-label small">Store older versions of the Document</label>
+                    </div>
+                </div>
+                <div className="col-4">
+                    <div className="form-check form-switch" title="If checked (default) we write all index-data direct to Cassandra">
+                        <input className="form-check-input" type="checkbox" {...props.register("writeToCassandra")}
+                            value={"write indexes direct to Cassandra?"}/>
+                        <label className="form-check-label small">Write indexes direct to Cassandra</label>
+                    </div>
+                </div>
+                <div className="col-4">
+                    <div className="form-check form-switch" title="is this a source that needs an external crawler to operate?">
+                        <input className="form-check-input" type="checkbox" {...props.register("isExternal")} value={"external source?"}/>
+                        <label className="form-check-label small">External source</label>
+                    </div>
+                </div>
+            </div>
 
-                    <div className="right-column" title="Use our default built-in relationships">
-                        <input type="checkbox" {...props.register("useDefaultRelationships")} />
-                        <span className="label-left">use default built-in relationships?</span>
+            <div className="row mb-4 pt-3 border-top">
+                <div className="col-2">
+                    <div className="left-column">
+                        <label className="small">number of fragments</label>
+                        <input className="form-control" {...props.register("numFragments", {required: true})}
+                            placeholder="number of fragments per search result"/>
                     </div>
                 </div>
 
-                <div className="form-group">
-
-                    <div className="left-column"
-                         title="If checked, SimSage will auto-optimize the indexes after this source finishes crawling.">
-                        <input type="checkbox" {...props.register("autoOptimize")} />
-                        <span className="label-left">auto optimize after crawling?</span>
-                    </div>
-
-                    <span className="right-column">
-                            <div
-                                 title="If checked, SimSage will store the document binaries locally (default true).">
-                                <input type="checkbox" {...props.register("storeBinary")}
-                                       value="Store the binaries of each document inside the SimSage platform?"/>
-                                <span className="label-left">store the binaries of each document?</span>
-                            </div>
-                        </span>
-                </div>
-
-                <div className="form-group">
-                        <span className="left-column">
-                            <div
-                                 title="If checked, SimSage will keep older versions of the document, unchecked it will only keep the latest">
-                                <input type="checkbox" {...props.register("versioned")}
-                                       value="Store older versions of the document?"/>
-                                <span className="label-left">store older versions of the document?</span>
-                            </div>
-                        </span>
-                    <span className="right-column">
-                            <div
-                                 title="If checked (default) we write all index-data direct to Cassandra">
-                                <input type="checkbox" {...props.register("writeToCassandra")}
-                                       value={"write indexes direct to Cassandra?"}/>
-                                <span className="label-left">write indexes direct to Cassandra?</span>
-                            </div>
-                        </span>
-                </div>
-
-                <div className="form-group">
-                        <span className="left-column">
-                            <div style={{float: 'left'}}
-                                 title="is this a source that needs an external crawler to operate?">
-                                <input type="checkbox" {...props.register("isExternal")} value={"external source?"}/>
-                                <span className="label-left">external source?</span>
-                            </div>
-                        </span>
-                    <span className="right-column">
-                        </span>
-                </div>
-
-
-                <div className="my-lg-4">
-                    <div className="form-group">
-                        <div className="left-column">
-                            <span className="label-left">number of fragments</span>
-                            <input {...props.register("numFragments", {required: true})}
-                                   placeholder="number of fragments per search result"/>
-                        </div>
-
-                        <div className="right-column">
-                            <span className="label-left">Q&A threshold</span>
-                            <input {...props.register("qaMatchStrength", {required: true})}
-                                   placeholder={"Q&A threshold (" + default_qna_threshold + " default)"}/>
-                        </div>
-                    </div>
-
-
-                    <div className="form-group">
-                        <div className="left-column">
-                            <span className="label-left">error threshold</span>
-                            <input {...props.register("errorThreshold", {required: true})}
-                                   placeholder="the maximum number of errors allowed before failing"/>
-                        </div>
-
-                        <div className="right-column">
-                            <span className="label-left">number of search results</span>
-                            <input {...props.register("numResults", {required: true})}
-                                   placeholder="number of search results"/>
-                        </div>
+                <div className="col-2">
+                    <div className="right-column">
+                        <label className="small">Q&A threshold</label>
+                        <input className="form-control" {...props.register("qaMatchStrength", {required: true})}
+                            placeholder={"Q&A threshold (" + default_qna_threshold + " default)"}/>
                     </div>
                 </div>
 
 
-                {canHaveEdgeDevice() &&
-                    <div className="form-group ">
-                        <div className="left-column">
-                            <span className="label-left"
-                                  title="you can connect this source to a SimSage Edge device if you have one.  Select it here.">
+                <div className="col-2">
+                    <div className="left-column">
+                        <label className="small">Error threshold</label>
+                        <input className="form-control" {...props.register("errorThreshold", {required: true})}
+                            placeholder="the maximum number of errors allowed before failing"/>
+                    </div>
+                </div>
+                <div className="col-2">
+                    <div className="right-column">
+                        <label className="small">Number of search results</label>
+                        <input className="form-control" {...props.register("numResults", {required: true})}
+                            placeholder="number of search results"/>
+                    </div>
+                </div>
+            </div>
+
+
+            {canHaveEdgeDevice() &&
+                <div className="row border-top pt-3">
+                    <div className="col-3">
+                        <div className="form-group ">
+                            <label className="small"
+                                title="you can connect this source to a SimSage Edge device if you have one.  Select it here.">
                                 Edge device
-                            </span>
+                            </label>
                             <span className="select-box-after-label">
                                 <select className="form-select" {...props.register("edgeDeviceId", {
                                     required: true,
@@ -357,23 +332,23 @@ export default function GeneralForm(props) {
                             </span>
                         </div>
                     </div>
+                </div>
+            }
+
+
+            <div className="form-group">
+                {selected_source && selected_source.id > 0 && selected_source_type !== 'nfs' &&
+                    selected_source_type !== 'database' && selected_source_type !== 'restfull' &&
+                    <div>
+                        <button className="btn btn-primary btn-block"
+                                onClick={() => handleTestCrawler()}>Test Connection
+                        </button>
+                    </div>
                 }
 
 
-                <div className="form-group">
-                    {selected_source && selected_source.id > 0 && selected_source_type !== 'nfs' &&
-                        selected_source_type !== 'database' && selected_source_type !== 'restfull' &&
-                        <div>
-                            <button className="btn btn-primary btn-block"
-                                    onClick={() => handleTestCrawler()}>Test Connection
-                            </button>
-                        </div>
-                    }
-
-
-                </div>
-
             </div>
+
         </div>
                 );
 
