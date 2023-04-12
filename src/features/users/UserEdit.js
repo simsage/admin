@@ -310,7 +310,7 @@ export function UserEdit( {filter} ){
         return (<div/>);
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
-            <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
+            <div className={"modal-dialog modal-lg"} role="document">
                 <div className="modal-content">
                     <div className="modal-header px-5 pt-4 bg-light">
                         <h4 className="mb-0">{user_id ? "Edit User" : "New User"}</h4>
@@ -410,7 +410,7 @@ export function UserEdit( {filter} ){
 
                         {
                             selectedTab === 'roles' &&
-                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
+                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
                                 <div className="row pb-5">
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">SimSage Roles</h6>
@@ -476,7 +476,7 @@ export function UserEdit( {filter} ){
 
                         {
                             selectedTab === 'groups' &&
-                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
+                            <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
                                 <div className="row pb-5">
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">SimSage Groups</h6>
@@ -515,7 +515,7 @@ export function UserEdit( {filter} ){
                     </div>
 
 
-                    <div className="modal-footer px-5 pb-4">
+                    <div className="modal-footer px-5 pb-3">
                         <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
                         <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
                     </div>

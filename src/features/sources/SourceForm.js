@@ -813,7 +813,7 @@ export default function SourceForm(props) {
     return (
         <div>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", 'zIndex': 8000, background: "#202731bb"}}>
-                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                <div className={"modal-dialog modal-xl"} role="document">
                     <div className="modal-content">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="modal-header px-5 pt-4 bg-light">
@@ -1036,7 +1036,7 @@ export default function SourceForm(props) {
 
                                 {/* Page 4: AclSetup  */}
                                 {selected_source_tab === 'acls' &&
-                                    <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                                    <div className="tab-content px-5 py-4 overflow-auto"  style={{maxHeight: "600px", minHeight: "400px"}}>
                                         <div className="row mb-3">
                                             <div className="col-6 d-flex">
                                                 <div class="alert alert-warning small py-2" role="alert">
@@ -1063,7 +1063,7 @@ export default function SourceForm(props) {
 
                                 {/* Page 5: processors TimeSelect  */}
                                 {selected_source_tab === 'processors' &&
-                                    <div className="time-tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                                    <div className="time-tab-content px-5 py-4 overflow-auto">
                                         <ProcessorSetup
                                             processorConfig={form_data.processorConfig}
                                             onSave={(processorConfig) => updateProcessorConfig(processorConfig)}/>
@@ -1082,7 +1082,7 @@ export default function SourceForm(props) {
 
 
                             </div>
-                            <div className="modal-footer px-5 pb-4">
+                            <div className="modal-footer px-5 pb-3">
 
                                 <button onClick={handleClose} type="button" className="btn btn-white px-4"
                                         data-bs-dismiss="modal">Close

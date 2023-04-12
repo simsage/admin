@@ -303,7 +303,7 @@ export default function CrawlerMetadataForm(props) {
         return <h1>crawler metadata: Something went wrong.</h1>;
     } else {
         return (
-            <div className="crawler-page px-5 pb-4">
+            <div className="px-5 py-4" style={{maxHeight: "600px"}}>
 
                 {/* <div className="instructions-label">All rows in order of UI. Use 'actions' arrows to re-arrange existing
                     rows.

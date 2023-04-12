@@ -171,106 +171,121 @@ export function BotEdit(){
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header">{memory ? "Edit Memory" : "Add New Memory"}</div>
-                    <div className="modal-body">
-                        <div className="tab-content">
-                            <span className="label-2">Question </span>
+                    <div className="modal-header px-5 pt-4 bg-light">
+                        <h4 className="mb-0">{memory ? "Edit Memory" : "New Memory"}</h4>
+                    </div>
+                    <div className="modal-body p-0">
+                        <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                            <div className="row">
 
-                            {
-                                questions && questions.map( (question,i) => {
-                                    console.log(question)
-                                    if (question === '') {return;}
-                                    return (
-                                        <div className="control-row" key={i}>
+                                <div className="d-flex justify-content-between small">
+                                    <label className="label-2">Question</label>
+                                    <span className="small text-black-50 fst-italic fw-light ms-2">(Type &amp; press enter to add another)</span>
+                                </div>
+                                {
+                                    questions && questions.map( (question,i) => {
+                                        console.log(question)
+                                        if (question === '') {return;}
+                                        return (
+                                            <div className="control-row col-12 mb-2" key={i}>
 
-                                            <span className="text">
+                                                <span className="text">
                                                     <form>
-                                                        <input type="text" className="form-control"
-                                                               autoComplete="false"
-                                                               placeholder="Question"
-                                                               value={questions[i]}
-                                                               onChange={updateQuestion(i)}
-                                                        />
+                                                        <div className="form-control d-flex p-0 overflow-hidden">
+                                                            <input type="text" className="border-0 w-100 me-2" style={{padding: "0.375rem 0.75rem"}}
+                                                                autoComplete="false"
+                                                                placeholder="Question..."
+                                                                value={questions[i]}
+                                                                onChange={updateQuestion(i)}
+                                                            />
+                                                            <button className="btn pointer-cursor mb-0 px-3 py-0" onClick={() => removeQuestionBtn(question, i)}>&times;</button>
+                                                        </div>
                                                     </form>
                                                 </span>
-                                            <p className="text-danger pointer-cursor" onClick={() => removeQuestionBtn(question, i)}>Remove</p>
-                                        </div>
-                                    )
-                                })
-                            }
-                            <div className="control-row">
-                                <span className="text">
-                                        <form>
+                                                
+                                            </div>
+                                        )
+                                    })
+                                }
+                                <div className="control-row col-12 mb-3">
+                                    <span className="text d-flex">
+                                            <form className="w-100 me-2">
+                                                <input type="text"
+                                                    className="form-control"
+                                                    autoComplete="false"
+                                                    placeholder="Question..."
+                                                    value={newQuestion}
+                                                    onChange={(e) => {setNewQuestion(e.target.value)}}
+                                                    onKeyDown={(e) => addNewQuestion(e)}
+                                                />
+                                            </form>
+                                            <button className="btn-secondary btn pointer-cursor px-3" onClick={(e) => addNewQuestionBtn(e, newQuestion)}>+</button>
+                                        </span>
+                                </div>
+                                <div className="control-row col-12 mb-4">
+                                    <label className="label-2 small">Answer</label>
+                                    <span className="text">
+                                                <form>
+                                                    <textarea type="text" className="form-control"
+                                                        autoComplete="false"
+                                                        placeholder="Answer..."
+                                                        value={answer}
+                                                        onChange={(e) => setAnswer(e.target.value)}
+                                                    />
+                                                </form>
+                                            </span>
+                                </div>
+                                <div className="d-flex justify-content-between small">
+                                    <label className="label-2">Link</label>
+                                    <span className="small text-black-50 fst-italic fw-light ms-2">(Type &amp; press enter to add another)</span>
+                                </div>
+                                {
+                                    links && links.map( (link,i) => {
+                                        console.log(link)
+                                        if (link === '') {return;}
+                                        return (
+                                            <div className="control-row col-12 mb-2" key={i}>
+
+                                                <span className="text">
+                                                    <form>
+                                                        <div className="form-control d-flex p-0 me-2 overflow-hidden">
+                                                            <input type="text" className="border-0 w-100" style={{padding: "0.375rem 0.75rem"}}
+                                                                autoComplete="false"
+                                                                placeholder="URL..."
+                                                                value={links[i]}
+                                                                onChange={updateLink(i)}
+                                                            />
+                                                            <button className="btn pointer-cursor mb-0 px-3 py-0" onClick={() => removeLinkBtn(link, i)}>&times;</button>
+                                                        </div>
+                                                    </form>
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                }
+                                <div className="control-row col-12 mb-4">
+                                    <span className="text d-flex">
+                                        <form className="w-100 me-2">
                                             <input type="text"
-                                                   className="form-control"
-                                                   autoComplete="false"
-                                                   placeholder="Type and press enter to submit"
-                                                   value={newQuestion}
-                                                   onChange={(e) => {setNewQuestion(e.target.value)}}
-                                                   onKeyDown={(e) => addNewQuestion(e)}
+                                                className="form-control"
+                                                autoComplete="false"
+                                                placeholder="URL..."
+                                                value={newLink}
+                                                onChange={(e) => {setNewLink(e.target.value)}}
+                                                onKeyDown={(e) => addNewLink(e)}
                                             />
                                         </form>
+
+                                        <button className="btn-secondary btn pointer-cursor px-3" onClick={(e) => addNewLinkBtn(e, newQuestion)}>+</button>
                                     </span>
-                                <p className="text-primary pointer-cursor" onClick={(e) => addNewQuestionBtn(e, newQuestion)}>+ Question</p>
+                                </div>
                             </div>
-                        </div>
-                        <div className="control-row">
-                            <span className="label-2">Answer</span>
-                            <span className="text">
-                                        <form>
-                                            <input type="text" className="form-control"
-                                                   autoComplete="false"
-                                                   placeholder="Answer"
-                                                   value={answer}
-                                                   onChange={(e) => setAnswer(e.target.value)}
-                                            />
-                                        </form>
-                                    </span>
-                        </div>
-                        <span className="label-2">Link </span>
-                        {
-                            links && links.map( (link,i) => {
-                                console.log(link)
-                                if (link === '') {return;}
-                                return (
-                                    <div className="control-row" key={i}>
-
-                                        <span className="text">
-                                                    <form>
-                                                        <input type="text" className="form-control"
-                                                               autoComplete="false"
-                                                               placeholder="Links"
-                                                               value={links[i]}
-                                                               onChange={updateLink(i)}
-                                                        />
-                                                    </form>
-                                                </span>
-                                        <p className="text-danger pointer-cursor" onClick={() => removeLinkBtn(link, i)}>Remove</p>
-                                    </div>
-                                )
-                            })
-                        }
-                        <div className="control-row">
-                            <span className="text">
-                                        <form>
-                                            <input type="text"
-                                                   className="form-control"
-                                                   autoComplete="false"
-                                                   placeholder="Type and press enter to submit"
-                                                   value={newLink}
-                                                   onChange={(e) => {setNewLink(e.target.value)}}
-                                                   onKeyDown={(e) => addNewLink(e)}
-                                            />
-                                        </form>
-                                    </span>
-                            <p className="text-primary pointer-cursor" onClick={(e) => addNewLinkBtn(e, newQuestion)}>+ Link</p>
                         </div>
                     </div>
 
-
-                    <div className="modal-footer">
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleSave(e)}>Save</button>
+                    <div className="modal-footer px-5 pb-3">
+                        <button className="btn btn-white px-4" onClick={(e) => handleClose(e)}>Cancel</button>
+                        <button className="btn btn-primary px-4" onClick={(e) => handleSave(e)}>Save</button>
                     </div>
 
                 </div>

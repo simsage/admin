@@ -90,7 +90,7 @@ export default function GeneralForm(props) {
 
 
     return (
-        <div className="crawler-page w-100 tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+        <div className="crawler-page w-100 tab-content px-5 py-4 overflow-auto"  style={{maxHeight: "600px", minHeight: "400px"}}>
 
             {/* crawlerType */}
             <div className="control-row">

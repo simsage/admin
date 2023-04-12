@@ -455,7 +455,7 @@ a {
 .transition {
     transition: all .5s ease;
 }
-input, button {
+input, button, textarea {
     outline: none !important;
     box-shadow: none !important;
 }

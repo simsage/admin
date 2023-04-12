@@ -113,7 +113,7 @@ export function TextToSearchEdit(props){
                             </div>
                         </div>
                     </div>
-                    <div className="modal-footer px-5 pb-4">
+                    <div className="modal-footer px-5 pb-3">
                         <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
                         <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
                     </div>

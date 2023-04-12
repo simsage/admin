@@ -134,7 +134,7 @@ export default function KnowledgeBaseForm(props) {
     return (
         <div>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
-                <div className={"modal-dialog modal-dialog-centered modal-xl"} role="document">
+                <div className={"modal-dialog modal-xl"} role="document">
                     <div className="modal-content">
 
                         <div className="modal-header px-5 pt-4 bg-light">
@@ -267,7 +267,7 @@ export default function KnowledgeBaseForm(props) {
                                 }
 
                             </div>
-                            <div className="modal-footer px-5">
+                            <div className="modal-footer px-5 pb-3">
                                 <input type="hidden" {...register("kbId")} />
                                 <button onClick={handleClose} type="button" className="btn btn-white px-4"
                                         data-bs-dismiss="modal">Cancel

@@ -104,7 +104,7 @@ export default function SynsetEdit(){
                     <div className="modal-body p-0">
                         <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
 
-                            <div className="row mb-3">
+                            <div className="row mb-4">
                                 <div className="control-row col-6">
                                     <span className="label-2">SynSet</span>
                                     <span className="text">
@@ -120,47 +120,56 @@ export default function SynsetEdit(){
                                 </div>
                             </div>
                             <div className="row mb-3">
-                                <label className="label-2 small">Word Cloud <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span></label>
+                                <div className="d-flex justify-content-between small">
+                                    <label className="label-2">Word Cloud <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span></label>
+                                    <span className="small text-black-50 fst-italic fw-light ms-2">(Type &amp; press enter to add another)</span>
+                                </div>
                                 {
                                     wordCloud && wordCloud.map( (cloud, i) => {
                                         if(cloud === ''){return;}
                                         return (
-                                        <div className="control-row" key={i}>
+                                        <div className="control-row col-12 mb-2" key={i}>
                                             <span className="text">
                                                 <form>
-                                                    <textarea type="text" className="form-control"
-                                                            autoComplete="false"
-                                                            placeholder="e.g. Family, Divorce, Custody..."
-                                                            value={cloud}
-                                                            onChange={updateWordCloud(i)}
-                                                    />
+                                                    <div className="form-control d-flex p-0 overflow-hidden align-items-start">
+                                                        <textarea type="text" className="border-0 w-100 mb-0 me-2 d-block" style={{padding: "0.375rem 0.75rem"}}
+                                                                autoComplete="false"
+                                                                rows="1"
+                                                                placeholder="e.g. Family, Divorce, Custody..."
+                                                                value={cloud}
+                                                                onChange={updateWordCloud(i)}
+                                                        />
+                                                        <button className="btn pointer-cursor mb-0 px-3 py-1" onClick={() => removeNewWordCloudBtn(cloud, i)}>&times;</button>
+                                                    </div>
                                                 </form>
                                             </span>
-                                            <p className="text-danger pointer-cursor" onClick={() => removeNewWordCloudBtn(cloud, i)}>Remove</p>
+                                            
                                         </div>
                                         )
                                     })
                                 }
-                                <div className="control-row">
-                                    <span className="text">
-                                                <form>
-                                                    <textarea type="text" className="form-control"
-                                                        autoComplete="false"
-                                                        placeholder="e.g. Family, Divorce, Custody..."
-                                                        value={newWordCloud}
-                                                        onChange={(e) => {setNewWordCloud(e.target.value)} }
-                                                        onKeyDown={(e) => addNewWordCloud(e)}
-                                                    />
-                                                </form>
-                                            </span>
-                                    <p className="text-primary pointer-cursor" onClick={(e) => addNewWordCloudBtn(e, newWordCloud)}>+ Word Cloud</p>
+                                <div className="control-row col-12 mb-3">
+                                    <span className="text d-flex">
+                                        <form className="w-100 me-2">
+                                            <textarea type="text" className="form-control"
+                                                autoComplete="false"
+                                                rows="1"
+                                                placeholder="e.g. Family, Divorce, Custody..."
+                                                value={newWordCloud}
+                                                onChange={(e) => {setNewWordCloud(e.target.value)} }
+                                                onKeyDown={(e) => addNewWordCloud(e)}
+                                            />
+                                        </form>
+
+                                        <button className="btn-secondary btn pointer-cursor px-3" onClick={(e) => addNewWordCloudBtn(e, newWordCloud)}>+</button>
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
 
-                    <div className="modal-footer px-5 pb-4">
+                    <div className="modal-footer px-5 pb-3">
                         <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
                         <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
                     </div>
