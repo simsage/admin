@@ -130,7 +130,7 @@ export default function GeneralForm(props) {
                             {value: "PARSE", label: "Process Text"},
                             {value: "INDEX", label: "Create Indexes"},
                         ].map((item, i) => {
-                            return <label key={i} className="w-100 px-3 btn btn-light align-items-center d-flex" ><input className="me-2" {...props.register("processingLevel")}
+                            return <label key={i} className="w-100 px-3 btn btn-light" ><input className="form-check-input me-1" {...props.register("processingLevel")}
                                         type="radio"
                                         value={item.value}/> {item.label}
                             </label>
