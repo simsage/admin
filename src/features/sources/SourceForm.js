@@ -192,6 +192,7 @@ export default function SourceForm(props) {
     const [selected_source_tab, setSelectedSourceTab] = useState('general')
 
     function changeNav(slug) {
+        console.log("slug", slug)
         setSelectedSourceTab(slug);
     }
 
@@ -832,6 +833,7 @@ export default function SourceForm(props) {
                                 <div className="nav nav-tabs overflow-auto">
                                     <SourceTabs
                                     source_tabs={source_tabs}
+                                    selected_source_tab={selected_source_tab}
                                     onClick={changeNav}
                                     crawler_type={form_data ? form_data.crawlerType : null}/>
                                 </div>

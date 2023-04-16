@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 export default function SourceTabs(props) {
 
-    const selected_tab = useSelector((state) => state.sourceReducer.selected_source_tab)
+    const selected_tab = props.selected_source_tab
 
     return (
         <ul className="nav px-5">

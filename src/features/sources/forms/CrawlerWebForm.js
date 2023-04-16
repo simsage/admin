@@ -183,7 +183,7 @@ export default function CrawlerWebForm(props) {
 
             <div className="row mb-3">
                 <div className="form-group col-6">
-                    <label className="small">csv exclude words</label>
+                    <label className="small">csv allowed domains</label>
                     <textarea className="form-control"
                             placeholder="csv words, exclude articles by words [optional]"
                             rows="3"
