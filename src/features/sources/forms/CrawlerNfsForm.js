@@ -38,21 +38,18 @@ export default function CrawlerNfsForm(props) {
 
     return (
 
-        <div className="crawler-page">
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">local folder</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="text" className="form-control nfs-width"
-                                       placeholder="local folder"
-                                       value={specific_json.nfs_local_folder}
-                                       onChange={(event) => {setData({nfs_local_folder: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-4">
+                <div className="form-group col-3">
+                    <label className="small">Local folder</label>
+                    <form>
+                        <input type="text" className="form-control nfs-width"
+                                placeholder="local folder"
+                                value={specific_json.nfs_local_folder}
+                                onChange={(event) => {setData({nfs_local_folder: event.target.value})}}
+                        />
+                    </form>
+                </div>
             </div>
 
         </div>
