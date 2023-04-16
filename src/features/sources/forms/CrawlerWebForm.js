@@ -36,191 +36,172 @@ export default function CrawlerWebForm(props) {
     }
 
     return (
-        <div className="crawler-page">
-
-            <div className="form-group">
-                <span className="label-right-top">http/s base url</span>
-                <span className="full-column">
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-3">
+                <div className="form-group col-6">
+                    
+                    <label className="small">http/s base url</label>
                         <input type="text"
-                               placeholder="single http/s base url path (e.g. https://simsage.ai)"
-                               autoFocus={true}
-                               className="form-control"
-                               value={specific_json.baseUrlList}
-                               onChange={(event) => {
-                                   setData({baseUrlList: event.target.value})
-                               }}
+                                placeholder="(e.g. https://simsage.ai)"
+                                autoFocus={true}
+                                className="form-control"
+                                value={specific_json.baseUrlList}
+                                onChange={(event) => {
+                                    setData({baseUrlList: event.target.value})
+                                }}
                         />
-                    </span>
+                </div>
             </div>
 
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">valid extensions</span>
-                        <span className="big-text">
-                            <input type="text" className="form-control"
-                                   value={specific_json.validExtensions}
-                                   onChange={(event) => {
-                                       setData({validExtensions: event.target.value})
-                                   }}
-                            />
-                        </span>
-                    </span>
-                <span className="left-column">
-                            <span className="small-label-right">ignore extensions</span>
-                            <span className="big-text">
-                            <input type="text" className="form-control"
-                                   value={specific_json.validExtensionsIgnore}
-                                   onChange={(event) => {
-                                       setData({validExtensionsIgnore: event.target.value})
-                                   }}
-                            />
-                            </span>
-                    </span>
+            <div className="row mb-3">
+                <div className="form-group col-3">
+                    <label className="small">Valid extensions</label>
+                    <input type="text" className="form-control"
+                            value={specific_json.validExtensions}
+                            onChange={(event) => {
+                                setData({validExtensions: event.target.value})
+                            }}
+                    />
+                </div>
+                
+                <div className="form-group col-3">
+                    <label className="small">Ignore extensions</label>
+                    <input type="text" className="form-control"
+                            value={specific_json.validExtensionsIgnore}
+                            onChange={(event) => {
+                                setData({validExtensionsIgnore: event.target.value})
+                            }}
+                    />
+                </div>
+
+                <div className="form-group col-3">
+                    <label className="small">Bearer token</label>
+                    <input type="text" className="form-control"
+                            value={specific_json.bearerToken}
+                            placeholder="an optional bearer token if available"
+                            title="(optional) bearer token"
+                            onChange={(event) => {
+                                setData({bearerToken: event.target.value})
+                            }}
+                    />
+                </div>
             </div>
 
-            <div className="form-group">
-                    <span className="left-column">
-                            <span className="small-label-right">bearer token</span>
-                            <span className="big-text">
-                                <input type="text" className="form-control"
-                                       value={specific_json.bearerToken}
-                                       placeholder="an optional bearer token if available"
-                                       title="(optional) bearer token"
-                                       onChange={(event) => {
-                                           setData({bearerToken: event.target.value})
-                                       }}
-                                />
-                            </span>
-                    </span>
+            <div className="row mb-5">
+                <div className="form-group col-3">
+                    <label className="small">Username</label>
+                    <input type="text" className="form-control"
+                            value={specific_json.basicUsername}
+                            placeholder="optional basic auth username"
+                            title="(optional) basic auth username"
+                            onChange={(event) => {
+                                setData({basicUsername: event.target.value})
+                            }}
+                    />
+                </div>
+                <div className="form-group col-3">
+                    <label className="small d-flex justify-content-between">
+                        User-agent 
+                        <span className="fst-italic fw-light small">(leave blank for default)</span>
+                    </label>
+                    <input type="text" className="form-control"
+                        placeholder="web-crawler's user-agent"
+                        title="(optional) web-crawler's user-agent"
+                        value={specific_json.userAgent}
+                        onChange={(event) => {
+                            setData({userAgent: event.target.value})
+                        }}
+                    />
+                </div>
+                <div className="form-group col-3">
+                    <label className="small d-flex justify-content-between">
+                        Password
+                        <span className="fst-italic fw-light small">(leave blank to keep previous)</span>
+                    </label>
+                    <input type="password" className="form-control"
+                        placeholder="basic auth password"
+                        title="(optional) basic auth password (leave blank to keep previous)"
+                        value={specific_json.password}
+                        onChange={(event) => {
+                            setData({password: event.target.value})
+                        }}
+                    />
+                </div>
+            </div>
+                
+            <div className="row mb-3 pt-5 border-top">
+                <div className="form-group col-6">
+                    <label className="small">Include css csv</label>
+                    <textarea className="form-control"
+                            placeholder="css/html root fragments to include csv"
+                            rows="3"
+                            value={specific_json.webCss}
+                            onChange={(event) => {
+                                setData({webCss: event.target.value})
+                            }}
+                    />
+                </div>
 
-                <span className="left-column">
-                            <span className="small-label-right">username</span>
-                            <span className="big-text">
-                            <input type="text" className="form-control"
-                                   value={specific_json.basicUsername}
-                                   placeholder="optional basic auth username"
-                                   title="(optional) basic auth username"
-                                   onChange={(event) => {
-                                       setData({basicUsername: event.target.value})
-                                   }}
-                            />
-                            </span>
-                    </span>
-
-
+                <div className="form-group col-6">
+                    <label className="small">Exclude css csv</label>
+                    <textarea className="form-control"
+                            placeholder="css/html root fragments to exclude csv"
+                            rows="3"
+                            value={specific_json.webCssIgnore?specific_json.webCssIgnore:'header, footer'}
+                            onChange={(event) => {
+                                setData({webCssIgnore: event.target.value})
+                            }}
+                    />
+                </div>
             </div>
 
-            <div className="form-group">
-                    <span className="left-column">
-                             <span className="small-label-right">user-agent</span>
-                            <span className="big-text">
-                            <input type="text" className="form-control"
-                                   placeholder="web-crawler's user-agent (blank to leave default)"
-                                   title="(optional) web-crawler's user-agent"
-                                   value={specific_json.userAgent}
-                                   onChange={(event) => {
-                                       setData({userAgent: event.target.value})
-                                   }}
-                            />
-                            </span>
-                    </span>
-                    <span className="left-column">
-                             <span className="small-label-right">password</span>
-                            <span className="big-text">
-                            <input type="password" className="form-control"
-                                   placeholder="basic auth password (leave blank to keep previous)"
-                                   title="(optional) basic auth password (leave blank to keep previous)"
-                                   value={specific_json.password}
-                                   onChange={(event) => {
-                                       setData({password: event.target.value})
-                                   }}
-                            />
-                            </span>
-                    </span>
+            <div className="row mb-3">
+                <div className="form-group col-6">
+                    <label className="small">csv include words</label>
+                    <textarea className="form-control"
+                            placeholder="csv words, include articles by words [optional]"
+                            rows="3"
+                            value={specific_json.articleIncludeWordsCsv}
+                            onChange={(event) => {
+                                setData({articleIncludeWordsCsv: event.target.value})
+                            }}
+                    />
+                </div>
+
+                <div className="form-group col-6">
+                    <label className="small">csv exclude words</label>
+                    <textarea className="form-control"
+                            placeholder="csv words, exclude articles by words [optional]"
+                            rows="3"
+                            value={specific_json.articleExcludeWordsCsv}
+                            onChange={(event) => {
+                                setData({articleExcludeWordsCsv: event.target.value})
+                            }}
+                    />
+                </div>
             </div>
 
+            <div className="row mb-3">
+                <div className="form-group col-6">
+                    <label className="small">csv exclude words</label>
+                    <textarea className="form-control"
+                            placeholder="csv words, exclude articles by words [optional]"
+                            rows="3"
+                            value={specific_json.articleExcludeWordsCsv}
+                            onChange={(event) => {setData({articleExcludeWordsCsv: event.target.value})}}
+                    />
+                </div>
 
-            <div className="form-group">
-                <span className="label-right-top">include css csv</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="css/html root fragments to include csv"
-                                  rows="3"
-                                  value={specific_json.webCss}
-                                  onChange={(event) => {
-                                      setData({webCss: event.target.value})
-                                  }}
-                        />
-                    </span>
+                <div className="form-group col-6">
+                    <label className="small">csv exclude prefixes</label>
+                    <textarea className="form-control"
+                            placeholder="csv urls (starting with https://), exclude pages by prefix starts [optional]"
+                            rows="3"
+                            value={specific_json.pagePrefixesToIgnore}
+                            onChange={(event) => {setData({pagePrefixesToIgnore: event.target.value})}}
+                    />
+                </div>
             </div>
-
-            <div className="form-group">
-                <span className="label-right-top">exclude css csv</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="css/html root fragments to exclude csv"
-                                  rows="3"
-                                  value={specific_json.webCssIgnore?specific_json.webCssIgnore:'header, footer'}
-                                  onChange={(event) => {
-                                      setData({webCssIgnore: event.target.value})
-                                  }}
-                        />
-                    </span>
-            </div>
-
-            <div className="form-group">
-                <span className="label-right-top">csv include words</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="csv words, include articles by words [optional]"
-                                  rows="3"
-                                  value={specific_json.articleIncludeWordsCsv}
-                                  onChange={(event) => {
-                                      setData({articleIncludeWordsCsv: event.target.value})
-                                  }}
-                        />
-                    </span>
-            </div>
-
-            <div className="form-group">
-                <span className="label-right-top">csv exclude words</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="csv words, exclude articles by words [optional]"
-                                  rows="3"
-                                  value={specific_json.articleExcludeWordsCsv}
-                                  onChange={(event) => {
-                                      setData({articleExcludeWordsCsv: event.target.value})
-                                  }}
-                        />
-                    </span>
-            </div>
-
-
-            <div className="form-group">
-                <span className="label-right-top">csv exclude words</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="csv words, exclude articles by words [optional]"
-                                  rows="3"
-                                  value={specific_json.articleExcludeWordsCsv}
-                                  onChange={(event) => {setData({articleExcludeWordsCsv: event.target.value})}}
-                        />
-                    </span>
-            </div>
-
-            <div className="form-group">
-                <span className="label-right-top">csv exclude prefixes</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="csv urls (starting with https://), exclude pages by prefix starts [optional]"
-                                  rows="3"
-                                  value={specific_json.pagePrefixesToIgnore}
-                                  onChange={(event) => {setData({pagePrefixesToIgnore: event.target.value})}}
-                        />
-                    </span>
-            </div>
-
         </div>
     )
 }
