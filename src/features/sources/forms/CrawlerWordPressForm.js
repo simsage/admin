@@ -54,10 +54,17 @@ export default function CrawlerWordPressForm(props) {
     }
 
     return (
-        <div className="crawler-page">
-            <div className="wp-form">
-                The WordPress crawler is an external entity controlled by the SimSage WordPress plugin.<br/>
-                As such there are no properties to configure here, nor is there a schedule for SimSage to work to.<br/><br/>
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row justify-content-center">
+                <div className="col-6">
+                    <div class="alert alert-warning small py-2" role="alert">
+                    The WordPress crawler is an external entity controlled by the SimSage WordPress plugin.<br/><br/>
+                    As such there are no properties to configure here, nor is there a schedule for SimSage to work to.
+                    </div>
+                </div>
+            </div>
+            <div className="col-6 wp-form">
+                
 
                 {specific_json.source_id > 0 &&
                     <div className="export-wp">
