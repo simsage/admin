@@ -36,49 +36,38 @@ const CrawlerServiceNow = (props) => {
     }
 
     return (
-        <div className="crawler-page">
-
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="small-label-right">UserName</span>
-                    <span className="bigger-text">
-                            <form>
-                                <input type="text" className="form-control"
-                                       placeholder="Username"
-                                       autoFocus={true}
-                                       value={specific_json.username}
-                                       onChange={(event) => {setData({username: event.target.value})}}
-                                />
-                            </form>
-                        </span>
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-4">
+                <div className="form-group col-3">
+                    <label className="small">Username</label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder=""
+                            autoFocus={true}
+                            value={specific_json.username}
+                            onChange={(event) => {setData({username: event.target.value})}}
+                        />
+                    </form>
                 </div>
-            </div>
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="small-label-right">Password</span>
-                    <span className="bigger-text">
-                            <form>
-                                <input type="password" className="form-control"
-                                       placeholder="Password"
-                                       value={specific_json.password}
-                                onChange={(event) => {setData({password: event.target.value})}}
-                                />
-                            </form>
-                        </span>
+                <div className="form-group col-3">
+                    <label className="small">Password</label>
+                    <form>
+                        <input type="password" className="form-control"
+                            placeholder="********"
+                            value={specific_json.password}
+                        onChange={(event) => {setData({password: event.target.value})}}
+                        />
+                    </form>
                 </div>
-            </div>
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="small-label-right">Instance Name</span>
-                    <span className="bigger-text">
-                            <form>
-                                <input type="text" className="form-control"
-                                       placeholder="Service Now Instance Name"
-                                       value={specific_json.server}
-                                       onChange={(event) => {setData({server: event.target.value})}}
-                                />
-                            </form>
-                        </span>
+                <div className="form-group col-3">
+                    <label className="small">Instance Name</label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder=""
+                            value={specific_json.server}
+                            onChange={(event) => {setData({server: event.target.value})}}
+                        />
+                    </form>
                 </div>
             </div>
         </div>
