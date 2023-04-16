@@ -90,7 +90,7 @@ export default function GeneralForm(props) {
 
 
     return (
-        <div className="w-100 tab-content px-5 py-4 overflow-auto"  style={{maxHeight: "600px", minHeight: "400px"}}>
+        <div className="w-100 tab-content px-5 pt-4 pb-5 overflow-auto"  style={{maxHeight: "600px", minHeight: "400px"}}>
             <div className="row mb-4">
                 {/* crawlerType */}
                 <div className="control-row col-3">
@@ -108,7 +108,7 @@ export default function GeneralForm(props) {
                     <label className="label-left small">Crawler Name</label>
                     <input className="form-control" {...props.register("name", {required: true})} disabled={false}
                         placeholder={"Crawler Name..."}/>
-                    {props.errors.name && <span className=""> Name is required <br/></span>}
+                    {props.errors.name && <span className="text-danger small fw-light fst-italic"> Name is required <br/></span>}
                 </div>
             </div>
 
@@ -130,7 +130,7 @@ export default function GeneralForm(props) {
                             {value: "PARSE", label: "Process Text"},
                             {value: "INDEX", label: "Create Indexes"},
                         ].map((item, i) => {
-                            return <label key={i} className="w-100 px-3 btn btn-light" ><input className="form-check-input me-1" {...props.register("processingLevel")}
+                            return <label key={i} style={{borderColor: "#ced4da"}} className="w-100 px-3 py-2 btn btn-sm" ><input className="form-check-input me-1" {...props.register("processingLevel")}
                                         type="radio"
                                         value={item.value}/> {item.label}
                             </label>
@@ -146,21 +146,21 @@ export default function GeneralForm(props) {
                     <div className="form-group">
                         <label className="label-left small">Files per second throttle</label>
                         <input className="form-control" {...props.register("filesPerSecond", {required: true})} disabled={false}/>
-                        {props.errors.filesPerSecond && <span className="">This field is required <br/></span>}
+                        {props.errors.filesPerSecond && <span className="text-danger small fw-light fst-italic">This field is required <br/></span>}
                     </div>
                 </div>
                 <div className="col-2">
                     <div className="form-group">
                             <label className="label-left small">Maximum number of files</label>
                             <input className="form-control" {...props.register("maxItems", {required: true})} disabled={false}/>
-                            {props.errors.maxItems && <span className="">This field is required <br/></span>}
+                            {props.errors.maxItems && <span className="text-danger small fw-light fst-italic">This field is required <br/></span>}
                     </div>
                 </div>
                 <div className="col-2">
                     <div className="form-group">
                         <label className="label-left small">maximum number of QA</label>
                         <input className="form-control" {...props.register("maxQNAItems", {required: true})} disabled={false}/>
-                        {props.errors.maxQNAItems && <span className="">This field is required <br/></span>}
+                        {props.errors.maxQNAItems && <span className="text-danger small fw-light fst-italic">This field is required <br/></span>}
                     </div>
                 </div>
                 <div className="col-2">
@@ -279,7 +279,7 @@ export default function GeneralForm(props) {
             <div className="row mb-4 pt-3 border-top">
                 <div className="col-2">
                     <div className="left-column">
-                        <label className="small">number of fragments</label>
+                        <label className="small">Number of fragments</label>
                         <input className="form-control" {...props.register("numFragments", {required: true})}
                             placeholder="number of fragments per search result"/>
                     </div>
