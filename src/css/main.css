@@ -435,7 +435,7 @@ html, body, #root, .App, .dms {
     color: #f04444 !important;
 }
 a {
-    color: #1c9bd2 !important;
+    /* color: #1c9bd2 !important; */
 }
 .wait-cursor {
     cursor: wait !important;

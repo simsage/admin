@@ -37,88 +37,94 @@ export default function CrawlerSharepoint365Form(props) {
     }
 
     return (
-        <div className="crawler-page">
-
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="small-label-right">tenant id</span>
-                    <span className="bigger-text">
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-4">
+                <div className="col-9">
+                    <div className="row mb-4">
+                        <div className="form-group col-4">
+                            <label className="small">Tenant id</label>
                             <form>
                                 <input type="text" className="form-control"
-                                       placeholder="tenant id"
-                                       autoFocus={true}
-                                       value={specific_json.tenantId}
-                                       onChange={(event) => {setData({tenantId: event.target.value})}}
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.tenantId}
+                                    onChange={(event) => {setData({tenantId: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    <span className="office-manual-box">
-                            <a href="resources/simsage-sharepoint365-setup.pdf" id="dlsharepoint" target="_blank"
-                               title="View the SimSage Sharepoint365 setup guide">
-                            <BsFilePdf size={25}/>
-                        </a>
-
-                        </span>
-                </div>
-            </div>
-
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">client id</span>
-                        <span className="big-text">
+                        </div>
+                        <div className="form-group col-4">
+                            <label className="small">Client ID</label>
                             <form>
                                 <input type="text" className="form-control"
-                                       placeholder="client id"
-                                       value={specific_json.clientId}
-                                       onChange={(event) => {setData({clientId: event.target.value})}}
+                                    placeholder=""
+                                    value={specific_json.clientId}
+                                    onChange={(event) => {setData({clientId: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-                <span className="right-column">
-                        <span className="small-label-right">client secret</span>
-                        <span className="big-text">
+                        </div>
+                        <div className="form-group col-4">
+                            <label className="small">Client secret</label>
                             <form>
                                 <input type="text" className="form-control"
-                                       placeholder="client secret"
-                                       value={specific_json.clientSecret}
-                                       onChange={(event) => {setData({clientSecret: event.target.value})}}
+                                    placeholder=""
+                                    value={specific_json.clientSecret}
+                                    onChange={(event) => {setData({clientSecret: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-            </div>
-
-            <br/>
-
-            <div className="form-group">
-                        <span className="full-column">
-                            <div style={{float: 'left'}} title="Check this box if you want all SharePoint sites to be indexed">
-                                <input type="checkbox"
-                                       checked={specific_json.crawlAllSites}
-                                       onChange={(event) => { setData({crawlAllSites: event.target.checked}); }}
-                                       value="crawl all Sites?"
-                                />
-                                <span className="label-left">crawl all Sites?</span>
+                        </div>
+                    </div>
+                    <div className="row border-top pt-4">
+                        <div className="col-4">
+                            {/* <div className="form-group">
+                                <span className="full-column">
+                                    <div style={{float: 'left'}} title="Check this box if you want all SharePoint sites to be indexed">
+                                        <input type="checkbox"
+                                                checked={specific_json.crawlAllSites}
+                                                onChange={(event) => { setData({crawlAllSites: event.target.checked}); }}
+                                                value="crawl all Sites?"
+                                        />
+                                        <span className="label-left">crawl all Sites?</span>
+                                    </div>
+                                </span>
+                            </div> */}
+                            <div className="form-check form-switch">
+                                <input className="form-check-input" type="checkbox"     
+                                    checked={specific_json.crawlAllSites}
+                                    onChange={(event) => { setData({crawlAllSites: event.target.checked}); }}
+                                    value="Crawl all sites"/>
+                                <label className="form-check-label small" for="enableOperator">Crawl all SharePoint sites</label>
                             </div>
-                        </span>
-            </div>
 
-            <br/>
-
-            <div className="form-group">
-                <div className="ull-column">crawl specific sharepoint sites by name</div>
-            </div>
-            <div className="form-group">
-                <div className="full-column">
-                        <textarea className="textarea-width"
-                                  disabled={specific_json.crawlAllSites}
-                                  placeholder="specific sharepoint sites (comma separated sharepoint site names)"
-                                  rows={2}
-                                  value={specific_json.sharePointSitesToCrawl}
-                                  onChange={(event) => {setData({sharePointSitesToCrawl: event.target.value})}}
-                        />
+                        </div>
+                        <div className="col-8">
+                            <div className="form-group">
+                                <label className="small d-flex justify-content-between">
+                                    Crawl specific SharePoint sites by name
+                                    <span className="fst-italic fw-light small">(separate sharepoint site names by comma)</span>
+                                </label>
+                                <textarea className="form-control"
+                                    disabled={specific_json.crawlAllSites}
+                                    placeholder="specific sharepoint sites"
+                                    rows={2}
+                                    value={specific_json.sharePointSitesToCrawl}
+                                    onChange={(event) => {setData({sharePointSitesToCrawl: event.target.value})}}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-2 offset-1">
+                    {/* <div class="" role="alert"> */}
+                        <a href="resources/simsage-sharepoint365-setup.pdf" id="dlsharepoint" target="_blank"
+                        title="View the SimSage Sharepoint365 setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                        <BsFilePdf size={25}/>
+                        <span className="me-2 mt-2"></span>Sharepoint 365 <br/>Setup Guide 
+                        </a>
+                    {/* </div> */}
+                    <span className="office-manual-box">
+                        
+                    </span>
+                    
                 </div>
             </div>
 
