@@ -5,7 +5,7 @@ import '../css/pagination.css';
 
 export class Pagination extends Component {
     render() {
-        let num_pages = this.props.count / this.props.rowsPerPage;
+            let num_pages = this.props.count / this.props.rowsPerPage;
         if (num_pages !== parseInt("" + num_pages)) {
             num_pages += 1;
         }

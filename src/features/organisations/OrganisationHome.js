@@ -20,6 +20,8 @@ import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDi
 import {OrganisationViewId} from "./OrganisationViewId";
 import OrganisationDeleteAsk from "./OrganisationDeleteAsk";
 import OrganisationError from "./OrganisationError";
+import BkOrganisationRestore from "./BkOrganisationRestore";
+import {hasRole} from "../../common/helpers";
 
 
 export function OrganisationHome() {
@@ -29,6 +31,12 @@ export function OrganisationHome() {
     const load_data = useSelector((state) => state.organisationReducer.data_status)
     const backup_data_status = useSelector((state) => state.organisationReducer.backup_data_status)
     const organisation_backup_list = useSelector((state) => state.organisationReducer.organisation_backup_list)
+    const restore_status = useSelector((state) => state.organisationReducer.restore_status)
+    const user = useSelector((state) => state.authReducer.user);
+
+    //use one org id to load the backups
+    const org_id = organisation_list[0]?organisation_list[0].id:null;
+
 
     const session = useSelector((state) => state.authReducer.session)
     const dispatch = useDispatch();
@@ -38,10 +46,9 @@ export function OrganisationHome() {
     //pagination
     const [page, setPage] = useState(0);
     const [page_size, setPageSize] = useState(10);
-
-    //use one org id to load the backups
-    const org_id = organisation_list[0]?organisation_list[0].id:null;
-
+    const isAdmin = hasRole(user, ['admin']);
+    //
+    const [show_restore_organisation_form, setShowRestoreOrganisationForm] = useState(false);
     //
     // function showBackupWarning(organisation_id) {
     //     if (!organisation_id) {
@@ -87,10 +94,12 @@ export function OrganisationHome() {
        dispatch(showDeleteForm({org_id}))
     }
 
+
     function handleBackupOrganisation(org_id) {
         console.log("handleBackupOrganisation")
         dispatch(showBackupForm({show_form: true, org_id: org_id}))
     }
+
 
     function getOrganisations() {
         const paginated_list = [];
@@ -137,8 +146,12 @@ export function OrganisationHome() {
                             </select>
                         </div> */}
                     </div>
-                    <div className="form-group ms-auto">
-                        <button data-testid="add-new-organisation" onClick={() => handleAddOrganisation()} className={"btn btn-primary text-nowrap"}>+ Add
+                    <div className="form-group d-flex ms-auto">
+                        <button data-testid="add-new-organisation" onClick={() => setShowRestoreOrganisationForm(!show_restore_organisation_form)}
+                                className="btn btn-outline-primary text-nowrap ms-2">Import</button>
+
+                        <button data-testid="add-new-organisation" onClick={() => handleAddOrganisation()}
+                                className="btn btn-primary text-nowrap ms-2">+ Add
                         Organisation
                     </button>
                     </div>
@@ -237,6 +250,22 @@ export function OrganisationHome() {
                 <BkOrganisationBackupDeleteDialog />
 
                 <BkOrganisationBackupDownloadDialog />
+
+                {isAdmin && show_restore_organisation_form &&
+                    <BkOrganisationRestore
+                        show_form={show_restore_organisation_form}
+                        onClose={(val) => setShowRestoreOrganisationForm(val)}
+                    />
+                    // <div>
+                    //     {restore_status === 'uploading' &&
+                    //         <p>Uploading...</p>
+                    //     }
+                    //     {restore_status != 'uploading' &&
+                    //
+                    //     }
+                    // </div>
+                }
+
             </div>
         </div>);
 }

@@ -93,7 +93,7 @@ export default function BkOrganisationBackupDownloadDialog(props) {
     if (!show_download_backup_form)
         return (<div/>);
     return (
-        <div>
+        <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">

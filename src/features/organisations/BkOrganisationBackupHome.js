@@ -9,9 +9,6 @@ import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDi
 
 export default function BkOrganisationBackupHome() {
     const organisation_backup_list = useSelector((state) => state.organisationReducer.organisation_backup_list)
-    const restore_status = useSelector((state) => state.organisationReducer.restore_status)
-    const user = useSelector((state) => state.authReducer.user);
-    const isAdmin = hasRole(user, ['admin']);
 
     const dispatch = useDispatch();
 
@@ -38,16 +35,7 @@ export default function BkOrganisationBackupHome() {
     return (
         <div>
 
-            {isAdmin &&
-                <div>
-                    {restore_status === 'uploading' &&
-                        <p>Uploading...</p>
-                    }
-                    {restore_status != 'uploading' &&
-                    <BkOrganisationRestore />
-                    }
-                </div>
-            }
+
 
             <table className="table">
                 <thead>
