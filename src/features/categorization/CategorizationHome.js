@@ -41,16 +41,17 @@ export default function CategorizationHome() {
 
     return (
         <div className="">
-            {console.log("category_list",category_list)}
-            {status === null &&
-                <CategorizationIntro />
-            }
-            {status !== null && category_list.length === 0 &&
-                <CategorizationIntro />
-            }
-            {status !== null && category_list.length > 0 &&
-                <CategorizationList />
-            }
+            {/*{console.log("category_list",category_list)}*/}
+            {/*{status === null &&*/}
+            {/*    <CategorizationIntro />*/}
+            {/*}*/}
+            {/*{status !== null && category_list.length === 0 &&*/}
+            {/*    <CategorizationIntro />*/}
+            {/*}*/}
+            {/*{status !== null && category_list.length > 0 &&*/}
+            {/*    <CategorizationList />*/}
+            {/*}*/}
+            <CategorizationList />
         </div>
 
     )

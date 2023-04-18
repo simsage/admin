@@ -164,13 +164,13 @@ console.log("semantic_page",prev_word)
                             </tr>
                             </thead>
                             <tbody>
-                            {getSemanticList().length === 0 &&
-                                <tr>
-                                    <td className="pt-3 px-4 pb-2" colSpan={3}>
-                                        <div>0 items</div>
-                                    </td>
-                                </tr>
-                            }
+                            {/*{getSemanticList().length === 0 &&*/}
+                            {/*    <tr>*/}
+                            {/*        <td className="pt-3 px-4 pb-2" colSpan={3}>*/}
+                            {/*            <div></div>*/}
+                            {/*        </td>*/}
+                            {/*    </tr>*/}
+                            {/*}*/}
                             {
                                 getSemanticList().map((semantic) => {
                                     return (
