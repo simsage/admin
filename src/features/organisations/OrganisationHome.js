@@ -253,17 +253,8 @@ export function OrganisationHome() {
 
                 {isAdmin && show_restore_organisation_form &&
                     <BkOrganisationRestore
-                        show_form={show_restore_organisation_form}
                         onClose={(val) => setShowRestoreOrganisationForm(val)}
                     />
-                    // <div>
-                    //     {restore_status === 'uploading' &&
-                    //         <p>Uploading...</p>
-                    //     }
-                    //     {restore_status != 'uploading' &&
-                    //
-                    //     }
-                    // </div>
                 }
 
             </div>

@@ -66,19 +66,6 @@ export default function BkOrganisationRestore(props) {
         reader.readAsDataURL(file)
     }
 
-
-    // upload() {
-    //     if (this.state.binary_data) {
-    //         const payload = {
-    //             base64Text: this.state.binary_data,
-    //             fileType: this.state.file_type,
-    //             organisationId: this.props.selected_organisation_id,
-    //         };
-    //         this.props.uploadBackup(payload, this.props.onUploadDone);
-    //     }
-    // }
-
-
     return (
 
         <div>

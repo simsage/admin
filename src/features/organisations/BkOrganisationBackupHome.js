@@ -63,10 +63,6 @@ export default function BkOrganisationBackupHome() {
 
                                 <td>
                                     <div className="d-flex  justify-content-end">
-                                        {/*<button className={"btn text-primary btn-sm"}*/}
-                                        {/*        title="download backup"*/}
-                                        {/*        onClick={() => handleDownloadBackup(item.backupId)}>Download*/}
-                                        {/*</button>*/}
                                         &nbsp;
                                     <button className={"btn text-primary btn-sm"}
                                             title="download backup"
@@ -79,10 +75,6 @@ export default function BkOrganisationBackupHome() {
                                             onClick={() => handleDeleteBackup(item)}>Delete
                                     </button>
 
-                                        {/*<button className={"btn text-danger btn-sm"}*/}
-                                        {/*        title="delete backup"*/}
-                                        {/*        onClick={() => handleDeleteBackup(item)}>Delete*/}
-                                        {/*</button>*/}
                                     </div>
                                 </td>
                             </tr>
