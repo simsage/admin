@@ -31,18 +31,19 @@ const TextToSearchHome = () => {
     return (
         <div>
 
-            {status === null &&
-            <TextToSearchIntro/>
-            }
+            {/*{status === null &&*/}
+            {/*<TextToSearchIntro/>*/}
+            {/*}*/}
 
-            {status !== null && text_to_search_list.length === 0 && num_of_text_to_search === 0 &&
-            <TextToSearchIntro/>
-            }
+            {/*{status !== null && text_to_search_list.length === 0 && num_of_text_to_search === 0 &&*/}
+            {/*<TextToSearchIntro/>*/}
+            {/*}*/}
 
-            {status !== null && text_to_search_list.length > 0 && num_of_text_to_search > 0 &&
-             <TextToSearchList/>
-            }
+            {/*{status !== null && text_to_search_list.length > 0 && num_of_text_to_search > 0 &&*/}
+            {/* <TextToSearchList/>*/}
+            {/*}*/}
 
+            <TextToSearchList/>
         </div>
     )
 };
