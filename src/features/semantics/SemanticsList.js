@@ -124,25 +124,6 @@ console.log("semantic_page",prev_word)
     return (
         <div className="section px-5 pt-4">
             <div>
-                {/* {
-                    isVisible() &&
-                    <div className="filter-find-box">
-                        <span className="filter-label">find </span>
-                        <span className="filter-find-text">
-                            <input type="text" value={semantic_filter} autoFocus={true}
-                                   className={"filter-text-width " + theme}
-                                   onKeyDown={(event) => handleSearchTextKeydown(event)}
-                                   onChange={(event) => {
-                                       setSemanticFilter(event.target.value);
-                                   }}/>
-                        </span> &nbsp;
-                        <span className="filter-find-image">
-                            <button className="btn btn-secondary"
-                                    onClick={() => filterSemantic()}
-                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">Search</button>
-                        </span>
-                </div>
-            } */}
 
                 <div className="d-flex justify-content-between w-100 mb-4">
                     <div className="d-flex w-100">
@@ -183,6 +164,13 @@ console.log("semantic_page",prev_word)
                             </tr>
                             </thead>
                             <tbody>
+                            {getSemanticList().length === 0 &&
+                                <tr>
+                                    <td className="pt-3 px-4 pb-2" colSpan={3}>
+                                        <div>0 items</div>
+                                    </td>
+                                </tr>
+                            }
                             {
                                 getSemanticList().map((semantic) => {
                                     return (

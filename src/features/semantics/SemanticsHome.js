@@ -37,19 +37,20 @@ export default function SemanticsHome(props) {
     return (
         <div className="">
 
-            {status === null &&
-                <SemanticsIntro/>
-            }
+            {/*{status === null &&*/}
+            {/*    <SemanticsIntro/>*/}
+            {/*}*/}
 
-            {status !== null && semantic_list.length === 0 && num_semantics === 0 &&
-                <SemanticsIntro />
-            }
+            {/*{status !== null && semantic_list.length === 0 && num_semantics === 0 &&*/}
+            {/*    <SemanticsIntro />*/}
+            {/*}*/}
 
-            {/*show semantic list*/}
-            {status !== null && semantic_list.length > 0 && num_semantics > 0 &&
-                <SemanticList />
-            }
+            {/*/!*show semantic list*!/*/}
+            {/*{status !== null && semantic_list.length > 0 && num_semantics > 0 &&*/}
+            {/*    <SemanticList />*/}
+            {/*}*/}
 
+            <SemanticList />
         </div>
     )
 }
