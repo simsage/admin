@@ -138,7 +138,7 @@ export function OrganisationHome() {
                         </div> */}
                     </div>
                     <div className="form-group ms-auto">
-                        <button data-testid="add-new-organisation" onClick={() => handleAddOrganisation()} className={"btn btn-primary text-nowrap"}>+ Add New
+                        <button data-testid="add-new-organisation" onClick={() => handleAddOrganisation()} className={"btn btn-primary text-nowrap"}>+ Add
                         Organisation
                     </button>
                     </div>

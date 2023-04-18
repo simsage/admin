@@ -80,15 +80,15 @@ export default function BkOrganisationBackupHome() {
                                         {/*        onClick={() => handleDownloadBackup(item.backupId)}>Download*/}
                                         {/*</button>*/}
                                         &nbsp;
-                                    <button className={"btn btn-outline-primary"}
+                                    <button className={"btn text-primary btn-sm"}
                                             title="download backup"
-                                            onClick={() => handleDownloadBackup(item)}>Download Backup
+                                            onClick={() => handleDownloadBackup(item)}>Download
                                     </button>
                                     &nbsp;
 
-                                    <button className={"btn btn-outline-primary"}
+                                    <button className={"btn text-danger btn-sm"}
                                             title="delete backup"
-                                            onClick={() => handleDeleteBackup(item)}>Delete Backup
+                                            onClick={() => handleDeleteBackup(item)}>Delete
                                     </button>
 
                                         {/*<button className={"btn text-danger btn-sm"}*/}

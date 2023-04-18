@@ -29,7 +29,7 @@ export default function OrganisationFormV2(props) {
     }
 
     // set title
-    const title = (organisation === null) ? "Add new Organisation" : "Edit Organisation";
+    const title = (organisation === null) ? "New Organisation" : "Edit Organisation";
 
     //Form Hook
     const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
@@ -56,34 +56,41 @@ export default function OrganisationFormV2(props) {
         <div>
 
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
-                <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                <div className={"modal-dialog modal-dialog-centered"} role="document">
+                    <div className="modal-content">
                         <form onSubmit={handleSubmit(onSubmit)}>
 
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
-                                <button onClick={handleClose} type="button" className="btn-close"
+                            <div className="modal-header px-5 pt-4 bg-light">
+                                <h4 className="modal-title" id="staticBackdropLabel">{title}</h4>
+                                {/* <button onClick={handleClose} type="button" className="btn-close"
                                         data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                        aria-label="Close"></button> */}
                             </div>
-                            <div className="modal-body">
-                                {console.log("error", errors)}
-                                <div className={"name" + (errors.name ? " error " : "")}>
-                                    <span className="label-2">Name</span>
-                                    <input {...register("name", {required: true})} /><br/>
-                                    {errors.name && <span>This field is required <br/></span>}
-                                </div>
-                                <div>
-                                    <label className="label-2">Enabled</label>
-                                    <input name="enabled" type="checkbox" {...register('enabled')}  />
-                                </div>
+                            <div className="modal-body p-0">
+                                <div className="px-5 py-4">
+                                    <div className="mb-4">
+                                        {console.log("error", errors)}
+                                        <div className={"mb-3 name" + (errors.name ? " error " : "")}>
+                                            <label className="label-2 small">Name</label>
+                                            <input className="form-control" {...register("name", {required: true})} />
+                                            {errors.name && <span className="text-danger fst-italic small">This field is required </span>}
+                                        </div>
 
-                                <div>
-                                    <input {...register("id")} type="hidden"/>
-                                </div>
+                                        <div className="form-check form-switch">
+                                            <input className="form-check-input" type="checkbox" {...register('enabled')}/>
+                                            <label className="form-check-label">Enabled</label>
+                                        </div>
 
+                                        <div>
+                                            <input {...register("id")} type="hidden"/>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="modal-footer">
+                            <div className="modal-footer px-5 pb-3">
+                                <button onClick={handleClose} type="button" className="btn btn-white px-4"
+                                        data-bs-dismiss="modal">Cancel
+                                </button>
                                 <input type="submit" className={"btn btn-outline-primary"}/>
 
                                 {organisation !== null &&
