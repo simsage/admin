@@ -41,17 +41,20 @@ export default function KnowledgeBaseHome() {
 
         <div className="section px-5 pt-4">
 
-            {status === null &&
-                <KnowledgeBaseIntro/>
-            }
-            {/*Intro message when there is no kb list*/}
-            {status !== null && kb_list !== {} && kb_list.length === 0 &&
-                <KnowledgeBaseIntro/>
-            }
-            {/*show kb list*/}
-            {status !== null && kb_list !== {} && kb_list.length > 0 &&
-                <KnowledgeBaseList/>
-            }
+            {/*{status === null &&*/}
+            {/*    <KnowledgeBaseIntro/>*/}
+            {/*}*/}
+            {/*/!*Intro message when there is no kb list*!/*/}
+            {/*{status !== null && kb_list !== {} && kb_list.length === 0 &&*/}
+            {/*    <KnowledgeBaseIntro/>*/}
+            {/*}*/}
+            {/*/!*show kb list*!/*/}
+            {/*{status !== null && kb_list !== {} && kb_list.length > 0 &&*/}
+            {/*    <KnowledgeBaseList/>*/}
+            {/*}*/}
+
+            <KnowledgeBaseList/>
+
             {/*show kb add/edit form*/}
             {kb_show_form === true &&
                 <KnowledgeBaseEdit/>
