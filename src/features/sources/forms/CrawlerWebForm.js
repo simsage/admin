@@ -187,8 +187,8 @@ export default function CrawlerWebForm(props) {
                     <textarea className="form-control"
                             placeholder="csv words, exclude articles by words [optional]"
                             rows="3"
-                            value={specific_json.articleExcludeWordsCsv}
-                            onChange={(event) => {setData({articleExcludeWordsCsv: event.target.value})}}
+                            value={specific_json.validDomainCSV}
+                            onChange={(event) => {setData({validDomainCSV: event.target.value})}}
                     />
                 </div>
 
