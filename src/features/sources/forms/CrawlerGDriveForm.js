@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {BsFilePdf} from 'react-icons/bs'
 import Api from "../../../common/api";
 
 export default function CrawlerGDriveForm(props) {
@@ -54,105 +55,84 @@ export default function CrawlerGDriveForm(props) {
     }
 
     return (
-        <div className="crawler-page">
-
-            <div className="form-group">
-                    <span className="office-manual-box">
-                    <a href="resources/simsage-google-drive-setup.pdf" id="dlGDrive" target="_blank" title="download the SimSage Google-drive setup guide">
-                            <span className="instructions-label">instructions</span>
-                            <img src="../images/pdf-icon.png" alt="google-drive setup guide" className="image-size" />
-                        </a>
-                    </span>
-            </div>
-
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="label-right-top">JSON key contents</span>
-                    <span className="bigger-text">
-                            <form>
-                                <textarea className="textarea-width"
-                                          rows="7"
-                                          placeholder="the Google JSON key identifying the service account to use to access and impersonate user-drive data.  Leave empty if you've already set this value previously and don't want to change it."
-                                          value={specific_json.json_key_file}
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-4">
+                <div className="col-9">
+                    <div className="row mb-4">
+                        <div className="form-group col-12">
+                            <label className="small">
+                            JSON key contents
+                            </label>
+                            <textarea className="form-control"
+                                disabled={specific_json.crawlAllSites}
+                                placeholder="The Google JSON key identifying the service account to use to access and impersonate user-drive data.Leave empty if you've already set this value previously and don't want to change it."
+                                rows={5}
+                                value={specific_json.json_key_file}
                                           onChange={(event) => {setData({json_key_file: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                </div>
-            </div>
-
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="label-right-top">user list</span>
-                    <span className="bigger-text">
-                            <form>
-                                <textarea className="textarea-width"
-                                          rows="3"
-                                          placeholder="a list of user email-addresses separated by commas whose drives to crawl (required!)"
-                                          value={specific_json.drive_user_csv}
+                            />
+                        </div>
+                    </div>
+                    <div className="row mb-4">
+                        <div className="form-group col-12">
+                            <label className="small d-flex justify-content-between">
+                                User list
+                                <span className="fst-italic fw-light small">(separate email addresses of the users Drives to crawl by comma).
+                                <span className="text-danger ms-1">Required</span></span>
+                            </label>
+                            <textarea className="form-control"
+                                placeholder=""
+                                rows={3}
+                                value={specific_json.drive_user_csv}
                                           onChange={(event) => {setData({drive_user_csv: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                </div>
-            </div>
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">drive id</span>
-                        <span className="big-text">
+                            />
+                        </div>
+                    </div>
+                    <div className="row mb-4">
+                        <div className="form-group col-6">
+                            <label className="small">Drive ID</label>
                             <form>
                                 <input type="text" className="form-control"
-                                       placeholder="drive id (optional)"
-                                       value={specific_json.drive_id}
+                                    placeholder="Optional"
+                                    autoFocus={true}
+                                    value={specific_json.drive_id}
                                        onChange={(event) => {setData({drive_id: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-                <span className="right-column">
-                    </span>
-            </div>
-
-            <div className="form-group">
-                <div className="full-column-2" style={{marginLeft: '170px', width: '400px'}}>
-                    <div style={{float: 'left'}} title="Check this box if you only want to crawl Google Sites from this drive.">
-                        <input type="checkbox"
-                               checked={specific_json.sites_only}
-                               onChange={(event) => { setData({sites_only: event.target.checked}); }}
-                               value="Crawl only Google site data from these drives?"
-                        />
-                        <span className="label-left">Crawl only Google site data from these drives?</span>
+                        </div>
+                    </div>
+                    <div className="row mb-4">
+                        <div className="col-6">
+                            <div className="form-check form-switch">
+                                <input className="form-check-input" type="checkbox"     
+                                    checked={specific_json.sites_only}
+                                    onChange={(event) => { setData({sites_only: event.target.checked}); }}
+                                    value="Crawl only Google site data from these Drives"/>
+                                <label className="form-check-label small" for="enableOperator">Crawl only Google site data from these Drives</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row border-top pt-4">
+                        <div className="form-group col-6">
+                            <label className="small">Time to check from</label>
+                            <div className="d-flex align-items-center">
+                                <input type="text" className="form-control"
+                                    placeholder="Optional"
+                                    autoFocus={true}
+                                    value={time_now}
+                                               onChange={(event) => {setData({deltaIndicator: event.target.value})}}
+                                />
+                                <a className="btn bt-sm btn-primary ms-2" onClick={() => handleSetTimeNow()}>Now</a>
+                                <span className="small text-nowrap ms-3">{date_time_str}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="label-right-top">time to check from</span>
-                    <span className="big-text">
-                            <table>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" className="form-control dropbox-text-width"
-                                               spellCheck={false}
-                                               style={{width: "200px", marginRight: "10px"}}
-                                               placeholder="time to check from"
-                                               value={time_now}
-                                               onChange={(event) => {setData({deltaIndicator: event.target.value})}}
-                                        />
-                                    </td>
-                                    <td>
-                                        <a className="btn bt-sm btn-primary" onClick={() => handleSetTimeNow()}>now</a>
-                                    </td>
-                                    <td>
-                                        <div style={{width: "200px", marginLeft: "30px"}}>{date_time_str}</div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </span>
+                <div className="col-2 offset-1">
+                    <a href="resources/simsage-google-drive-setup.pdf" id="dlGDrive" target="_blank"
+                    title="Download the SimSage Google Drive setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <BsFilePdf size={25}/>
+                    <span className="me-2 mt-2"></span>Google Drive <br/>Setup Guide 
+                    </a>
                 </div>
             </div>
 
