@@ -105,7 +105,7 @@ export default function CrawlerSharepoint365Form(props) {
                                 <textarea className="form-control"
                                     disabled={specific_json.crawlAllSites}
                                     placeholder="specific sharepoint sites"
-                                    rows={2}
+                                    rows={3}
                                     value={specific_json.sharePointSitesToCrawl}
                                     onChange={(event) => {setData({sharePointSitesToCrawl: event.target.value})}}
                                 />

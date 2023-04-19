@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {BsFilePdf} from 'react-icons/bs'
 
 import Api from "../../../common/api";
 
@@ -33,147 +34,118 @@ export default function CrawlerConfluenceForm(props) {
 
 
     return (
-        <div className="crawler-page">
-            <div className="form-group">
-                    <span className="office-manual-box">
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-4">
+                <div className="col-9">
+                    <div className="row mb-4">
+                        <div className="form-group col-8">
+                            <label className="small">Confluence Base Url</label>
+                            <form>
+                                <input type="text" className="form-control"
+                                    // placeholder="Base Url of the Atlassian installation"
+                                    autoFocus={true}
+                                    value={specific_json.baseUrl}
+                                    onChange={(event) => {
+                                        setData({baseUrl: event.target.value})
+                                    }}
+                                />
+                            </form>
+                        </div>
+                        <div className="form-group col-4">
+                            <label className="small">Confluence User</label>
+                            <form>
+                                <input type="text" className="form-control"
+                                    // placeholder="User id to use to log into Confluence"
+                                    autoFocus={true}
+                                    value={specific_json.userId}
+                                    onChange={(event) => {
+                                        setData({userId: event.target.value})
+                                    }}
+                                />
+                            </form>
+                        </div>
+                    </div>
+                    <div className="row mb-4">
+                        <div className="form-group col-12">
+                            <label className="small">Access Token</label>
+                            <form>
+                                <div className="form-control d-flex align-items-center">
+                                    <input type={form_show_password ? "text" : "password"} className="border-0 p-0 w-100"
+                                        autoFocus={true}
+                                        placeholder="********"
+                                        value={specific_json.accessToken}
+                                        onChange={(event) => {
+                                            setData({accessToken: event.target.value})
+                                        }}
+                                    />
+                                    <span className='small text-primary' onClick={() => setShowPassword(!form_show_password)}>{!form_show_password?'Show':'Hide'}</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div className="row border-top pt-4 mb-4">
+                        <div className="col-6">
+                            <div className="form-group">
+                                <label className="small d-flex justify-content-between">
+                                    Categories to crawl
+                                    <span className="fst-italic fw-light small">(separate categories by comma)</span>
+                                </label>
+                                <textarea className="form-control"
+                                    disabled={specific_json.crawlAllSites}
+                                    placeholder="(leave empty to crawl all categories)"
+                                    rows={3}
+                                    value={specific_json.categories}
+                                    onChange={(event) => {
+                                        setData({categories: event.target.value})
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row mb-4">
+                        <div className="col-6">
+                            <div className="form-group">
+                                <label className="small d-flex justify-content-between">
+                                    Spaces to crawl
+                                    <span className="fst-italic fw-light small">(separate space keys by comma)</span>
+                                </label>
+                                <textarea className="form-control"
+                                    disabled={specific_json.crawlAllSites}
+                                    placeholder="(leave empty to crawl all spaces)"
+                                    rows={3}
+                                    value={specific_json.includeSpaces}
+                                    onChange={(event) => {
+                                        setData({includeSpaces: event.target.value})
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-6">
+                            <div className="form-group">
+                                <label className="small d-flex justify-content-between">
+                                    Spaces to exclude
+                                    <span className="fst-italic fw-light small">(separate space keys by comma)</span>
+                                </label>
+                                <textarea className="form-control"
+                                    disabled={specific_json.crawlAllSites}
+                                    placeholder="(leave empty to not exclude any spaces)"
+                                    rows={3}
+                                    value={specific_json.excludeSpaces}
+                                    onChange={(event) => {
+                                        setData({excludeSpaces: event.target.value})
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-2 offset-1">
                     <a href="resources/simsage-confluence-crawler-setup.pdf" id="dlGDrive" target="_blank"
-                       title="download the SimSage Google-drive setup guide">
-                            <span className="instructions-label">instructions</span>
-                            <img src="../images/pdf-icon.png" alt="google-drive setup guide" className="image-size"/>
-                        </a>
-                    </span>
-            </div>
-
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="label-right-top">Confluence Base Url</span>
-                    <span className="big-text">
-                            <form>
-                            <table>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" className="form-control dropbox-text-width"
-                                               spellCheck={false}
-                                               style={{width: "500px", marginRight: "10px"}}
-                                               placeholder="Base Url of the Atlassian installation"
-                                               value={specific_json.baseUrl}
-                                               onChange={(event) => {
-                                                   setData({baseUrl: event.target.value})
-                                               }}
-                                        />
-                                    </td>
-
-                                </tr>
-                                </tbody>
-                            </table>
-                            </form>
-                        </span>
-                </div>
-                <div className="full-column-2">
-                    <span className="label-right-top">Confluence User</span>
-                    <span className="big-text">
-                            <form>
-                            <table>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" className="form-control dropbox-text-width"
-                                               spellCheck={false}
-                                               style={{width: "500px", marginRight: "10px"}}
-                                               placeholder="User id to use to log into Confluence"
-                                               value={specific_json.userId}
-                                               onChange={(event) => {
-                                                   setData({userId: event.target.value})
-                                               }}
-                                        />
-                                    </td>
-
-                                </tr>
-                                </tbody>
-                            </table>
-                            </form>
-                        </span>
-                </div>
-            </div>
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="label-right-top">Access Token</span>
-                    <span className="big-text">
-                            <form>
-                            <table>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <input type={form_show_password ? "text" : "password"}
-                                               className="form-control dropbox-text-width"
-                                               spellCheck={false}
-                                               style={{width: "500px", marginRight: "10px"}}
-                                               placeholder="Access token for the user"
-                                               value={specific_json.accessToken}
-                                               onChange={(event) => {
-                                                   setData({accessToken: event.target.value})
-                                               }}
-                                        />
-                                    </td>
-                                    <td className={"password_hide_show"}>
-                                        <p onClick={() => setShowPassword(!form_show_password)}>{!form_show_password?'Show':'Hide'}</p>
-                                    </td>
-                                    <td>
-
-                                    </td>
-
-                                </tr>
-                                </tbody>
-                            </table>
-                            </form>
-                        </span>
-                </div>
-
-                <div className="full-column-2">
-                    <span className="label-right-top">Categories to crawl</span>
-                    <span className="bigger-text">
-                            <form>
-                                <textarea className="textarea-width"
-                                          rows="3"
-                                          placeholder="a list of categories separated by commas to crawl (leave empty to crawl all categories)"
-                                          value={specific_json.categories}
-                                          onChange={(event) => {
-                                              setData({categories: event.target.value})
-                                          }}
-                                />
-                            </form>
-                        </span>
-                </div>
-                <div className="full-column-2">
-                    <span className="label-right-top">Spaces to crawl</span>
-                    <span className="bigger-text">
-                            <form>
-                                <textarea className="textarea-width"
-                                          rows="3"
-                                          placeholder="a list of space keys separated by commas to crawl (leave empty to crawl all spaces)"
-                                          value={specific_json.includeSpaces}
-                                          onChange={(event) => {
-                                              setData({includeSpaces: event.target.value})
-                                          }}
-                                />
-                            </form>
-                        </span>
-                </div>
-                <div className="full-column-2">
-                    <span className="label-right-top">Spaces to exclude</span>
-                    <span className="bigger-text">
-                            <form>
-                                <textarea className="textarea-width"
-                                          rows="3"
-                                          placeholder="a list of space keys separated by commas to exclude from crawling (leave empty not to exclude any spaces)"
-                                          value={specific_json.excludeSpaces}
-                                          onChange={(event) => {
-                                              setData({excludeSpaces: event.target.value})
-                                          }}
-                                />
-                            </form>
-                        </span>
+                        title="View the SimSage Sharepoint365 setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                        <BsFilePdf size={25}/>
+                        <span className="me-2 mt-2"></span>Confluence <br/>Setup Guide 
+                    </a>
                 </div>
             </div>
 
