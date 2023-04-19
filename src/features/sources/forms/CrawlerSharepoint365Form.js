@@ -41,7 +41,7 @@ export default function CrawlerSharepoint365Form(props) {
             <div className="row mb-4">
                 <div className="col-9">
                     <div className="row mb-4">
-                        <div className="form-group col-4">
+                        <div className="form-group col-6">
                             <label className="small">Tenant id</label>
                             <form>
                                 <input type="text" className="form-control"
@@ -52,7 +52,7 @@ export default function CrawlerSharepoint365Form(props) {
                                 />
                             </form>
                         </div>
-                        <div className="form-group col-4">
+                        <div className="form-group col-6">
                             <label className="small">Client ID</label>
                             <form>
                                 <input type="text" className="form-control"
@@ -62,7 +62,9 @@ export default function CrawlerSharepoint365Form(props) {
                                 />
                             </form>
                         </div>
-                        <div className="form-group col-4">
+                    </div>
+                    <div className="row mb-4">
+                        <div className="form-group col-12">
                             <label className="small">Client secret</label>
                             <form>
                                 <input type="text" className="form-control"
@@ -99,12 +101,12 @@ export default function CrawlerSharepoint365Form(props) {
                         <div className="col-8">
                             <div className="form-group">
                                 <label className="small d-flex justify-content-between">
-                                    Crawl specific SharePoint sites by name
+                                    or Crawl specific SharePoint sites by name
                                     <span className="fst-italic fw-light small">(separate sharepoint site names by comma)</span>
                                 </label>
                                 <textarea className="form-control"
                                     disabled={specific_json.crawlAllSites}
-                                    placeholder="specific sharepoint sites"
+                                    placeholder="Specific Sharepoint sites"
                                     rows={3}
                                     value={specific_json.sharePointSitesToCrawl}
                                     onChange={(event) => {setData({sharePointSitesToCrawl: event.target.value})}}
