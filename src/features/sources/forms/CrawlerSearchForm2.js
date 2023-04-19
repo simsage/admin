@@ -48,9 +48,8 @@ export default function CrawlerSearchForm2(props){
     function showQueryText(){
         return query_list.map((item,index)=>{
             return <input key={index}
-                type="text" className="form-control dropbox-text-width"
+                type="text" className="form-control"
                 spellCheck={false}
-                style={{width: "500px", marginRight: "10px"}}
                 placeholder="Query text to run"
                 value={item}
                 onChange={(e) => handleQueryInputChange(e.target.value,index)}
@@ -64,84 +63,56 @@ export default function CrawlerSearchForm2(props){
     }
 
     return (
-        <div className="crawler-page">
+        <div className="tab-content px-5 py-4 overflow-auto">
 
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="label-right-top">Target Organisation</span>
-                    <span className="bigger-text">
-                            <form>
-                                <input type="text" className="form-control dropbox-text-width"
-                                       spellCheck={false}
-                                       style={{width: "400px", marginRight: "10px"}}
-                                       placeholder="Organisation id to query"
-                                       value={specific_json.target_organisation_id}
-                                       onChange={(event) => {
-                                           setData({target_organisation_id: event.target.value})
-                                       }}
-                                />
-                            </form>
-                        </span>
+            <div className="row mb-4">
+                <div className="form-group col-4">
+                    <label className="small">Target Organisation</label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder="ID to query"
+                            autoFocus={true}
+                            value={specific_json.target_organisation_id}
+                                onChange={(event) => {
+                                    setData({target_organisation_id: event.target.value})
+                                }}
+                        />
+                    </form>
+                </div>
+                <div className="form-group col-4">
+                    <label className="small">Target Knowledgebase</label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder="ID to search across"
+                            autoFocus={true}
+                            value={specific_json.target_kb_id}
+                                onChange={(event) => {
+                                    setData({target_kb_id: event.target.value})
+                                }}
+                        />
+                    </form>
                 </div>
             </div>
 
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="label-right-top">Target Knowledgebase</span>
-                    <span className="bigger-text">
-                            <form>
-                                <input className="textarea-width"
-                                       spellCheck={false}
-                                       style={{width: "400px", marginRight: "10px"}}
-                                       placeholder="The Knowledgebase id to search across"
-                                       value={specific_json.target_kb_id}
-                                       onChange={(event) => {
-                                           setData({target_kb_id: event.target.value})
-                                       }}
-                                />
-                            </form>
-                        </span>
+            <div className="row mb-4">
+                <div className="form-group col-4">
+                    <label className="small">Search User</label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder="User ID the search will run"
+                            autoFocus={true}
+                            value={specific_json.userId}
+                                        onChange={(event) => {
+                                            setData({userId: event.target.value})
+                                        }}
+                        />
+                    </form>
                 </div>
-            </div>
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="label-right-top">Search User</span>
-                    <span className="big-text">
-                            <form>
-                            <table>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" className="form-control dropbox-text-width"
-                                               spellCheck={false}
-                                               style={{width: "500px", marginRight: "10px"}}
-                                               placeholder="User id under which the search will run"
-                                               value={specific_json.userId}
-                                               onChange={(event) => {
-                                                   setData({userId: event.target.value})
-                                               }}
-                                        />
-                                    </td>
-
-                                </tr>
-                                </tbody>
-                            </table>
-                            </form>
-                        </span>
-                </div>
-            </div>
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="label-right-top">Query text</span>
-                    <span className="big-text">
-                            <form>
-                            <table>
-                                <tbody>
-                                {showQueryText()}
-                                </tbody>
-                            </table>
-                            </form>
-                        </span>
+                <div className="form-group col-4">
+                    <label className="small">Query text</label>
+                    <form>
+                    {showQueryText()}
+                    </form>
                 </div>
             </div>
 
