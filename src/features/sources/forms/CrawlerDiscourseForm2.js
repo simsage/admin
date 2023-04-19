@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {BsFilePdf} from 'react-icons/bs'
 
 export default function CrawlerDiscourseForm2(props){
 
@@ -28,42 +29,41 @@ export default function CrawlerDiscourseForm2(props){
     }
 
     return (
-        <div className="crawler-page">
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">server hostname</span>
-                        <span className="big-text">
-                            <input type="text" className="form-control textarea-width"
-                                   autoFocus={true}
-                                   placeholder="server (e.g. discourse.simsage.ai)"
-                                   value={specific_json.server}
-                                   onChange={(event) => {setData({server: event.target.value})}}
-                            />
-                        </span>
-                    </span>
-            </div>
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">api token</span>
-                        <span className="big-text">
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-4">
+                <div className="col-9">
+                    <div className="row mb-4">
+                        <div className="form-group col-4">
+                            <label className="small">Server hostname</label>
                             <form>
-                                <input type="text" className="form-control dropbox-text-width"
-                                       spellCheck={false}
-                                       placeholder="api token"
-                                       value={specific_json.apiToken}
-                                       onChange={(event) => {setData({apiToken: event.target.value})}}
+                                <input type="text" className="form-control"
+                                    autoFocus={true}
+                                    placeholder="e.g. discourse.simsage.ai"
+                                    value={specific_json.server}
+                                    onChange={(event) => {setData({server: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-                <span className="dropbox-manual-box">
-                        <a href="resources/discourse-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Discourse setup guide">
-                            <span className="instructions-label">instructions</span>
-                            <img src="../images/pdf-icon.png" alt="discourse setup guide" className="image-size" />
-                        </a>
-                    </span>
+                        </div>
+                        <div className="form-group col-8">
+                            <label className="small">API token</label>
+                            <form>
+                                <input type="text" className="form-control"
+                                    autoFocus={true}
+                                    placeholder=""
+                                    value={specific_json.apiToken}
+                                    onChange={(event) => {setData({apiToken: event.target.value})}}
+                                />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-2 offset-1">
+                    <a href="resources/discourse-setup.pdf" id="dlDiscourse" target="_blank"
+                    title="Download the SimSage Discourse setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <BsFilePdf size={25}/>
+                    <span className="me-2 mt-2"></span>Discourse <br/>Setup Guide 
+                    </a>
+                </div>
             </div>
 
         </div>);

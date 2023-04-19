@@ -142,7 +142,7 @@ export default function CrawlerConfluenceForm(props) {
 
                 <div className="col-2 offset-1">
                     <a href="resources/simsage-confluence-crawler-setup.pdf" id="dlGDrive" target="_blank"
-                        title="View the SimSage Sharepoint365 setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                        title="Download the SimSage Confluence setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
                         <span className="me-2 mt-2"></span>Confluence <br/>Setup Guide 
                     </a>

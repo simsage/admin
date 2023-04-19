@@ -114,17 +114,11 @@ export default function CrawlerSharepoint365Form(props) {
                     </div>
                 </div>
                 <div className="col-2 offset-1">
-                    {/* <div class="" role="alert"> */}
-                        <a href="resources/simsage-sharepoint365-setup.pdf" id="dlsharepoint" target="_blank"
-                        title="View the SimSage Sharepoint365 setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
-                        <BsFilePdf size={25}/>
-                        <span className="me-2 mt-2"></span>Sharepoint 365 <br/>Setup Guide 
-                        </a>
-                    {/* </div> */}
-                    <span className="office-manual-box">
-                        
-                    </span>
-                    
+                    <a href="resources/simsage-sharepoint365-setup.pdf" id="dlsharepoint" target="_blank"
+                    title="Download the SimSage Sharepoint365 setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <BsFilePdf size={25}/>
+                    <span className="me-2 mt-2"></span>Sharepoint 365 <br/>Setup Guide 
+                    </a>
                 </div>
             </div>
 
