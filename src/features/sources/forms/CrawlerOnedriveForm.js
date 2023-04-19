@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {BsFilePdf} from 'react-icons/bs'
 import Api from "../../../common/api";
 
 export default function CrawlerOnedriveForm(props) {
@@ -37,103 +38,92 @@ export default function CrawlerOnedriveForm(props) {
 
     return (
 
-        <div className="crawler-page">
-
-            <div className="form-group">
-                <div className="full-column-2">
-                    <span className="small-label-right">domain name</span>
-                    <span className="bigger-text">
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-4">
+                <div className="col-9">
+                    <div className="row mb-4">
+                        <div className="form-group col-6">
+                            <label className="small">Domain name</label>
                             <form>
                                 <input type="text" className="form-control"
-                                       placeholder="tenant id"
-                                       autoFocus={true}
-                                       value={specific_json.tenantId}
-                                       onChange={(event) => {setData({tenantId: event.target.value})}}
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.tenantId}
+                                    onChange={(event) => {setData({tenantId: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    <span className="office-manual-box">
-                            <a href="../resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank" title="download the SimSage Exchange 365 setup guide">
-                                <span className="instructions-label">instructions</span>
-                                <img src="../images/pdf-icon.png" alt="exchange 365 setup guide" className="image-size" />
-                            </a>
-                        </span>
-                </div>
-            </div>
-
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">client id</span>
-                        <span className="big-text">
+                        </div>
+                        <div className="form-group col-6">
+                            <label className="small">Client ID</label>
                             <form>
                                 <input type="text" className="form-control"
-                                       placeholder="client id"
-                                       value={specific_json.clientId}
-                                       onChange={(event) => {setData({clientId: event.target.value})}}
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.clientSecret}
+                                    onChange={(event) => {setData({clientSecret: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-                <span className="right-column">
-                        <span className="small-label-right">client secret</span>
-                        <span className="big-text">
+                        </div>
+                    </div>
+                    <div className="row mb-4">
+                        <div className="form-group col-12">
+                            <label className="small">Client secret</label>
                             <form>
                                 <input type="text" className="form-control"
-                                       placeholder="client secret"
-                                       value={specific_json.clientSecret}
-                                       onChange={(event) => {setData({clientSecret: event.target.value})}}
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.clientSecret}
+                                    onChange={(event) => {setData({clientSecret: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-            </div>
-
-
-            <div className="form-group">
-                    <span className="full-column">
-                        <span className="small-label-right">redirect url</span>
-                        <span className="bigger-text">
+                        </div>
+                    </div>
+                    <div className="row mb-4 border-top pt-4">
+                        <div className="form-group col-12">
+                            <label className="small">Redirect URL</label>
                             <form>
                                 <input type="text" className="form-control"
-                                       placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."
-                                       value={specific_json.redirectUrl}
-                                       onChange={(event) => {setData({redirectUrl: event.target.value})}}
+                                    placeholder="Redirect url: the SimSage interface url to return-to after MS sign-in completes."
+                                    autoFocus={true}
+                                    value={specific_json.redirectUrl}
+                                    onChange={(event) => {setData({redirectUrl: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-            </div>
-
-            <br/>
-
-            <div className="form-group">
-                        <span className="full-column">
-                            <div style={{float: 'left'}} title="Check this box if you want ALL of OneDrive to be included">
-                                <input type="checkbox"
-                                       checked={specific_json.crawlAllOfOneDrive}
-                                       onChange={(event) => { setData({crawlAllOfOneDrive: event.target.checked}); }}
-                                       value="crawl all of Exchange?"
-                                />
-                                <span className="label-left">crawl all of OneDrive?</span>
+                        </div>
+                    </div>
+                    <div className="row border-top pt-4">
+                        <div className="col-4">
+                            <div className="form-check form-switch">
+                                <input className="form-check-input" type="checkbox"     
+                                    checked={specific_json.crawlAllOfOneDrive}
+                                    onChange={(event) => { setData({crawlAllOfOneDrive: event.target.checked}); }}
+                                    value="Crawl all of Exchange"/>
+                                <label className="form-check-label small" for="enableOperator">Crawl all of One Drive</label>
                             </div>
-                        </span>
-            </div>
-
-            <br/>
-
-            <div className="form-group">
-                <span className="label-right-top">or crawl specific one-drive accounts</span>
-            </div>
-            <div className="form-group">
-                <div className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="specific exchange accounts (comma separated email addresses)"
-                                  disabled={specific_json.crawlAllOfOneDrive}
-                                  rows={2}
-                                  value={specific_json.oneDriveUsersToCrawl}
+                        </div>
+                        <div className="col-8">
+                            <div className="form-group">
+                                <label className="small d-flex justify-content-between">
+                                    or Crawl specific One Drive accounts
+                                    <span className="fst-italic fw-light small">(separate email addresses by comma)</span>
+                                </label>
+                                <textarea className="form-control"
+                                    placeholder="Specific One Drive accounts"
+                                    disabled={specific_json.crawlAllOfOneDrive}
+                                    rows={3}
+                                    value={specific_json.oneDriveUsersToCrawl}
                                   onChange={(event) => {setData({oneDriveUsersToCrawl: event.target.value})}}
-                        />
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-2 offset-1">
+                    <a href="../resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank"
+                    title="Download the SimSage Exchange 365 setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <BsFilePdf size={25}/>
+                    <span className="me-2 mt-2"></span>Exchange 365 <br/>Setup Guide 
+                    </a>
                 </div>
             </div>
 
