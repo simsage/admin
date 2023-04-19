@@ -4,7 +4,7 @@ import Api from "../../../common/api";
 export default function CrawlerDatabaseForm(props) {
 
     const type_list = [
-        {"key": "none", "value": "please select database type"},
+        {"key": "none", "value": "Please select database type..."},
         {"key": "mysql", "value": "MySQL"},
         {"key": "postgresql", "value": "Postgresql"},
         {"key": "microsoftsql", "value": "Microsoft SQL"},
@@ -79,134 +79,109 @@ export default function CrawlerDatabaseForm(props) {
 
     return (
 
-        <div className="crawler-page">
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">user name</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="text" className="form-control"
-                                       placeholder="the user name for db access"
-                                       autoFocus={true}
-                                       value={specific_json.username}
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-3">
+                <div className="form-group col-4">
+                    <label className="small">Username</label>
+                        <input type="text"
+                                placeholder="For DB access"
+                                autoFocus={true}
+                                className="form-control"
+                                value={specific_json.username}
                                        onChange={(event) => {setData({username: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
-                <span className="right-column">
-                        <span className="small-label-right">password</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="password" className="form-control"
-                                       placeholder="password"
-                                       value={specific_json.password}
+                        />
+                </div>
+                <div className="form-group col-4">
+                    <label className="small">Password</label>
+                        <input type="password"
+                                placeholder="********"
+                                autoFocus={true}
+                                className="form-control"
+                                value={specific_json.password}
                                        onChange={(event) => {setData({password: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
+                        />
+                </div>
             </div>
-
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">jdbc string</span>
-                        <span className="big-text">
-                            <input type="text" className="form-control jdbc-field-width"
-                                   placeholder="jdbc connection string, e.g. jdbc:microsoft:sqlserver://HOST:1433;DatabaseName=DATABASE"
-                                   value={specific_json.jdbc}
+            <div className="row mb-3">
+                <div className="form-group col-8">
+                    <label className="small">JDBC string</label>
+                        <input type="text"
+                                placeholder="e.g. jdbc:microsoft:sqlserver://HOST:1433;DatabaseName=DATABASEs"
+                                autoFocus={true}
+                                className="form-control"
+                                value={specific_json.jdbc}
                                    onChange={(event) => {setData({jdbc: event.target.value})}}
-                            />
-                        </span>
-                    </span>
+                        />
+                </div>
             </div>
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">database</span>
-                        <span className="big-text">
-                            <select className="form-select" onChange={(event) => {setData({type: event.target.value})}}
-                                    defaultValue={specific_json.type}>
-                                {
-                                    type_list.map((value) => {
-                                        return (<option key={value.key} value={value.key}>{value.value}</option>)
-                                    })
-                                }
-                            </select>
-                        </span>
-                    </span>
-                <span className="right-column">
-                        <span className="small-label-right">pk field</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="text" className="form-control"
-                                       placeholder="primary key field name"
-                                       value={specific_json.pk}
+            <div className="row mb-3">
+                <div className="form-group col-4">
+                    <label className="small">Database</label>
+                    <select className="form-select" onChange={(event) => {setData({type: event.target.value})}}
+                            defaultValue={specific_json.type}>
+                        {
+                            type_list.map((value) => {
+                                return (<option key={value.key} value={value.key}>{value.value}</option>)
+                            })
+                        }
+                    </select>
+                </div>
+                <div className="form-group col-4">
+                    <label className="small">Primary key field</label>
+                        <input type="text"
+                                placeholder=""
+                                autoFocus={true}
+                                className="form-control"
+                                value={specific_json.pk}
                                        onChange={(event) => {setData({pk: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
+                        />
+                </div>
             </div>
-
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">web fields</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="text" className="form-control jdbc-field-width"
-                                       placeholder="document http/https reference SQL fields in square brackets [FIELD-NAME]"
-                                       disabled={specific_json.customRender}
+            <div className="row mb-3">
+                <div className="form-group col-8">
+                    <label className="small">Web fields</label>
+                        <input type="text"
+                                placeholder="Document http/https reference SQL fields in square brackets [FIELD-NAME]"
+                                autoFocus={true}
+                                className="form-control"
+                                disabled={specific_json.customRender}
                                        value={specific_json.content_url}
                                        onChange={(event) => {setData({content_url: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
-            </div>
-
-
-            <div className="form-group">
-                <span className="label-right-top">select</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="SQL query, a valid SELECT statement, no other allowed"
-                                  rows={3}
-                                  value={specific_json.query}
-                                  onChange={(event) => {setData({query: event.target.value})}}
                         />
-                    </span>
+                </div>
             </div>
-
-
-            <div className="form-group">
-                <span className="label-right-top">text index template</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="sql text index template, an text template referencing SQL fields in square brackets [FIELD-NAME]"
-                                  disabled={!specific_json.customRender}
-                                  rows={4}
+            <div className="row mb-3">
+                <div className="form-group col-6">
+                    <label className="small">Select</label>
+                    <textarea className="form-control"
+                            placeholder="SQL query, a valid SELECT statement, no other allowed"
+                            rows="3"
+                            value={specific_json.query}
+                                  onChange={(event) => {setData({query: event.target.value})}}
+                    />
+                </div>
+                <div className="form-group col-6">
+                    <label className="small">Text index template</label>
+                    <textarea className="form-control"
+                            placeholder="SQL text index template, an text template referencing SQL fields in square brackets [FIELD-NAME]"
+                            disabled={!specific_json.customRender}
+                                  rows={3}
                                   value={specific_json.text}
                                   onChange={(event) => {setData({text: event.target.value})}}
-                        />
-                    </span>
+                    />
+                </div>
             </div>
-
-
-            <div className="form-group">
-                <span className="label-right-top">html template</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="sql html render template, an html template referencing SQL fields in square brackets [FIELD-NAME]"
+            <div className="row mb-3">
+                <div className="form-group col-12">
+                    <label className="small">HTML template</label>
+                    <textarea className="form-control"
+                                  placeholder="SQL html render template, an html template referencing SQL fields in square brackets [FIELD-NAME]"
                                   disabled={!specific_json.customRender}
-                                  rows={4}
+                                  rows={10}
                                   value={specific_json.template?specific_json.template:default_template_val}
                                   onChange={(event) => {setData({template: event.target.value})}}
                         />
-                    </span>
+                </div>
             </div>
 
         </div>
