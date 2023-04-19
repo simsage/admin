@@ -36,78 +36,67 @@ export default function CrawlerRestfulForm(props) {
     }
 
     return (
-        <div className="crawler-page">
+        <div className="tab-content px-5 py-4 overflow-auto">
 
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">API url</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="text" className="form-control jdbc-field-width"
-                                       placeholder="JSON url (will grab the first list inside it can find as the source)"
-                                       value={specific_json.url}
+            <div className="row mb-4">
+                <div className="form-group col-6">
+                    <label className="small">API url</label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder="JSON url (will grab the first list inside it can find as the source)"
+                            autoFocus={true}
+                            value={specific_json.url}
                                        onChange={(event) => {setData({url: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
-            </div>
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">record primary key (use [field-name])</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="text" className="form-control jdbc-field-width"
-                                       placeholder="the name of the primary key in the record"
-                                       value={specific_json.pk}
+                        />
+                    </form>
+                </div>
+                <div className="form-group col-6">
+                    <label className="small">Record primary key</label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder="Use [field-name]"
+                            autoFocus={true}
+                            value={specific_json.pk}
                                        onChange={(event) => {setData({pk: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
+                        />
+                    </form>
+                </div>
             </div>
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">JSON fields</span>
-                        <span className="big-text">
-                            <form>
-                                <input type="text" className="form-control jdbc-field-width"
-                                       placeholder="document http/https reference JSON fields in square brackets [FIELD-NAME]"
-                                       disabled={specific_json.customRender}
-                                       value={specific_json.content_url}
+            <div className="row mb-4">
+                <div className="form-group col-6">
+                    <label className="small">JSON fields</label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder="document http/https reference JSON fields in square brackets [FIELD-NAME]"
+                            autoFocus={true}
+                            disabled={specific_json.customRender}
+                            value={specific_json.content_url}
                                        onChange={(event) => {setData({content_url: event.target.value})}}
-                                />
-                            </form>
-                        </span>
-                    </span>
+                        />
+                    </form>
+                </div>
             </div>
-
-            <div className="form-group">
-                <span className="label-right-top">text index template (use [field-name])</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="REST text index template, an text template referencing REST fields in square brackets [FIELD-NAME]"
-                                  disabled={!specific_json.customRender}
-                                  rows={7}
+            <div className="row mb-4">
+                <div className="form-group col-6">
+                    <label className="small">Text index template</label>
+                    <textarea className="form-control"
+                            placeholder="REST text index template, an text template referencing REST fields in square brackets [FIELD-NAME]"
+                            disabled={!specific_json.customRender}
+                                  rows={5}
                                   value={specific_json.text}
                                   onChange={(event) => {setData({text: event.target.value})}}
-                        />
-                    </span>
-            </div>
-
-            <div className="form-group">
-                <span className="label-right-top">html render template (use [field-name])</span>
-                <span className="full-column">
-                        <textarea className="textarea-width"
-                                  placeholder="REST html render template, an html template referencing REST fields in square brackets [FIELD-NAME]"
-                                  disabled={!specific_json.customRender}
-                                  rows={7}
+                    />
+                </div>
+                <div className="form-group col-6">
+                    <label className="small">HTML render template</label>
+                    <textarea className="form-control"
+                            placeholder="REST html render template, an html template referencing REST fields in square brackets [FIELD-NAME]"
+                            disabled={!specific_json.customRender}
+                                  rows={5}
                                   value={specific_json.template}
                                   onChange={(event) => {setData({template: event.target.value})}}
-                        />
-                    </span>
+                    />
+                </div>
             </div>
 
         </div>
