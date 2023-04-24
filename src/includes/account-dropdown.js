@@ -51,14 +51,6 @@ const AccountDropdown = (props) => {
         dispatch(showEditOrganisationForm({show_form:true,org_id:org_id}))
     }
 
-    //
-    // function editAccount(){
-    //     console.log("edit Account")
-    // }
-    //
-    // function getHelp(){
-    //     console.log("getHelp")
-    // }
 
     function handleSignOut(){
         dispatch(simsageLogOut({session_id:session.id}))
