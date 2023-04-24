@@ -43,7 +43,7 @@ export default function CrawlerExchange365Form(props) {
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label className="small">Domain name</label>
+                            <label className="small">Tenant ID</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
