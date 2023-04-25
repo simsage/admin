@@ -35,7 +35,7 @@ export default function BotDeleteAsk(){
     if (!show_delete_form)
         return (<div />);
 
-    const object = memory && memory.id ? ` bot item: ${memory.id}` : ` all of the bot items`;
+    const object = memory && memory.id ? ` Bot item: ${memory.id}` : ` all of the Bot items`;
     const title = `delete ${object}`
     const message = `Are you sure you wish to delete ${object}`;
 

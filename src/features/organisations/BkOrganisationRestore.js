@@ -75,7 +75,7 @@ export default function BkOrganisationRestore(props) {
 
                         <div className="modal-body text-center">
                             <div className="control-row mb-4">
-                                <span className="label-wide me-2 fw-500">Import Backup file</span>
+                                <span className="label-wide me-2 fw-500">Restore Organisation</span>
                             </div>
 
                             <div className="control-row">   
