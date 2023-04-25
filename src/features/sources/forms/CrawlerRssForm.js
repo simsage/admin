@@ -29,29 +29,36 @@ export default function CrawlerRssForm(props) {
 
 
     return (
-        <div className="crawler-page w-100">
+        <div className="tab-content px-5 py-4 overflow-auto">
 
-        <div className="wp-form">
-
-            <div className="form-group my-lg-2">
-                <div className="w-75">The rss-endpoint for an RSS endpoint. This is the main endpoint for any RSS
-                feed. Be sure to uncheck</div>
-
-                <input type="text" className="w-75 nfs-width form-control" placeholder="rss-endpoint" value={specific_json.endpoint}
-                       onChange={(event) => setData({endpoint: event.target.value})} />
+            <div className="row mb-4">
+                <div className="form-group col-6">
+                    <label className="small">Main RSS Feed</label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder="RSS endpoint"
+                            autoFocus={true}
+                            value={specific_json.endpoint}
+                        onChange={(event) => setData({endpoint: event.target.value})} />
+                    </form>
+                    <ul class="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                        <li className="">This is the main endpoint for any RSS
+                            feed. Be sure to uncheck.</li>
+                    </ul>
+                </div>
+                <div className="form-group col-6">
+                    <label className="small">Initial RSS Feed <span className="fst-italic text-black-50">(optional)</span></label>
+                    <form>
+                        <input type="text" className="form-control"
+                            placeholder="RSS endpoint"
+                            autoFocus={true}
+                            value={specific_json.initial_feed}
+                            onChange={(event) => setData({initial_feed: event.target.value})} />
+                    </form>
+                    <ul class="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                        <li className="">The contents of this RSS endpoint will be processed once when the crawler starts and is meant to act as an initial set up..</li>
+                    </ul>
+                </div>
             </div>
-
-
-            <div className="form-group my-lg-2 py-3">
-                <div className={"w-75"}>The initial-feed is an optional field for an RSS endpoint. The contents of
-                this RSS endpoint will be processed once when the crawler starts and
-                is meant to act as an initial set up.</div>
-
-                <input type="text" className="w-75 nfs-width form-control" placeholder="rss-endpoint" value={specific_json.initial_feed}
-                       onChange={(event) => setData({initial_feed: event.target.value})} />
-            </div>
-
-
-        </div>
     </div>)
 }
