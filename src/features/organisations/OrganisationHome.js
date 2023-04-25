@@ -6,7 +6,7 @@ import {
     showAddOrganisationForm, showBackupForm, showDeleteForm,
     showEditOrganisationForm, showOrganisationId
 } from "./organisationSlice";
-import {setSelectedKB, setSelectedOrganisation} from "../auth/authSlice";
+import {setSelectedKB, setSelectedOrganisation, simsageLogOut} from "../auth/authSlice";
 import {Pagination} from "../../common/pagination";
 import {selectTab} from "../home/homeSlice";
 import {search, orderBy} from "./organisationSlice";
@@ -23,9 +23,12 @@ import OrganisationError from "./OrganisationError";
 import BkOrganisationRestore from "./BkOrganisationRestore";
 import {hasRole} from "../../common/helpers";
 import api from "../../common/api";
+import {ShowInvalidSession} from "./ShowInvalidSession";
+import {useMsal} from "@azure/msal-react";
 
 
 export function OrganisationHome() {
+    const {instance} = useMsal();
     const theme = null
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
     const load_data = useSelector((state) => state.organisationReducer.data_status)
@@ -33,7 +36,7 @@ export function OrganisationHome() {
     const user = useSelector((state) => state.authReducer.user);
 
     //use one org id to load the backups
-    const org_id = organisation_list[0]?organisation_list[0].id:null;
+    const org_id = organisation_list[0] ? organisation_list[0].id : null;
 
 
     const session = useSelector((state) => state.authReducer.session)
@@ -49,6 +52,16 @@ export function OrganisationHome() {
     //
     const [show_restore_organisation_form, setShowRestoreOrganisationForm] = useState(false);
 
+    const error = useSelector((state) => state.organisationReducer.error);
+
+
+    function handleSignOut() {
+        dispatch(simsageLogOut({session_id: session.id}))
+        instance.logoutRedirect({
+            postLogoutRedirectUri: "/",
+        });
+    }
+
 
     const handleClose = () => {
         dispatch(closeForm());
@@ -58,9 +71,9 @@ export function OrganisationHome() {
         dispatch(getOrganisationList({session: session, filter: filter}))
     }, [load_data === 'load_now'])
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
-    }, [backup_data_status === 'load_now',org_id != null])
+    }, [backup_data_status === 'load_now', org_id != null])
 
 
     function handleSelectOrganisation(session_id, org) {
@@ -84,7 +97,7 @@ export function OrganisationHome() {
 
 
     function handleRemoveOrganisation(org_id) {
-       dispatch(showDeleteForm({org_id}))
+        dispatch(showDeleteForm({org_id}))
     }
 
 
@@ -109,8 +122,7 @@ export function OrganisationHome() {
     }
 
 
-
-    function handleSearchFilter(event){
+    function handleSearchFilter(event) {
         console.log("handleSearchFilter clicked")
         const val = event.target.value;
         dispatch(search({keyword: val}))
@@ -140,13 +152,15 @@ export function OrganisationHome() {
                         </div> */}
                     </div>
                     <div className="form-group d-flex ms-auto">
-                        <button data-testid="add-new-organisation" onClick={() => setShowRestoreOrganisationForm(!show_restore_organisation_form)}
-                                className="btn btn-outline-primary text-nowrap ms-2">Import</button>
+                        <button data-testid="add-new-organisation"
+                                onClick={() => setShowRestoreOrganisationForm(!show_restore_organisation_form)}
+                                className="btn btn-outline-primary text-nowrap ms-2">Import
+                        </button>
 
                         <button data-testid="add-new-organisation" onClick={() => handleAddOrganisation()}
                                 className="btn btn-primary text-nowrap ms-2">+ Add
-                        Organisation
-                    </button>
+                            Organisation
+                        </button>
                     </div>
                 </div>
             </div>
@@ -228,25 +242,36 @@ export function OrganisationHome() {
 
             {/*Show backups*/}
             <div>
-                <OrganisationViewId />
+                <OrganisationViewId/>
 
-                <OrganisationDeleteAsk />
+                <OrganisationDeleteAsk/>
 
-                <OrganisationError />
+                <OrganisationError/>
 
                 <BkOrganisationBackupHome/>
 
-                <BkOrganisationBackupDialog />
+                <BkOrganisationBackupDialog/>
 
-                <BkOrganisationBackupProgressDialog />
+                <BkOrganisationBackupProgressDialog/>
 
-                <BkOrganisationBackupDeleteDialog />
+                <BkOrganisationBackupDeleteDialog/>
 
-                <BkOrganisationBackupDownloadDialog />
+                <BkOrganisationBackupDownloadDialog/>
 
                 {isAdmin && show_restore_organisation_form &&
                     <BkOrganisationRestore
                         onClose={(val) => setShowRestoreOrganisationForm(val)}
+                    />
+                }
+
+
+                {error === 'invalid session id' &&
+                    <ShowInvalidSession
+                        show_alert={true}
+                        message={"Invalid session id"}
+                        title={"Invalid session id"}
+                        onClick={() => handleSignOut()}
+
                     />
                 }
 

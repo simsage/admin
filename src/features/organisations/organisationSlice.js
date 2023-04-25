@@ -168,11 +168,18 @@ const extraReducers = (builder) => {
             state.data_status = 'loading';
         })
         .addCase(getOrganisationList.fulfilled, (state, action) => {
+
+            if(action.payload.code === "ERR_BAD_RESPONSE") {
+                //todo:: option 1: dispatch logout;
+                state.error = action.payload.response.data.error;
+            }
+            else {
+                state.organisation_list = action.payload;
+                state.organisation_original_list = action.payload;
+            }
             state.status = "fulfilled";
-            state.organisation_list = action.payload;
-            state.organisation_original_list = action.payload;
             state.data_status = 'loaded';
-            // console.log('action.payload', action.payload);
+
         })
         .addCase(getOrganisationList.rejected, (state, action) => {
             state.status = "rejected"
@@ -252,7 +259,6 @@ export const getOrganisationList = createAsyncThunk(
 
         return axios.get(url, Comms.getHeaders(session.id))
             .then((response) => {
-
                 return response.data
             }).catch(
                 (error) => {
