@@ -96,9 +96,10 @@ export default function UserBulk() {
                     {/*       type="file"*/}
                     {/*       onChange={(e) => handleImageChange(e)}/>*/}
 
-                    <input className="mb-4 bg-light p-4 w-100 border rounded" type="file" {...register("file",{required: true})}  />
-                    {errors.file && <span>Please select a backup file <br/></span>}
-                    <div className="upload-button">
+                    <input className="bg-light p-4 w-100 border rounded" type="file" {...register("file",{required: true})}  />
+                    {errors.file && 
+                    <div className="text-end text-danger small fst-italic mb-4 mt-2">Please select a backup file</div>}
+                    <div className="upload-button mt-4">
                         <div className="control-row upload-input">
                             {/*<button className="btn btn-primary btn-block"*/}
                             {/*        disabled={this.state.binary_data === null || this.props.uploading}*/}

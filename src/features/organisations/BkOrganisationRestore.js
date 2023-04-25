@@ -69,32 +69,35 @@ export default function BkOrganisationRestore(props) {
     return (
 
         <div>
-            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
-                <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                    <div className="modal-content shadow p-3 mb-5 bg-white rounded">
-                        <form onSubmit={handleSubmit(onSubmit)} className="upload-container">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="staticBackdropLabel">Import Organisation</h5>
-                                <button onClick={() => props.onClose(false)} type="button" className="btn-close"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
+                <div className={"modal-dialog modal-dialog-centered"} role="document">
+                    <div className="modal-content p-4">
+
+                        <div className="modal-body text-center">
+                            <div className="control-row mb-4">
+                                <span className="label-wide me-2 fw-500">Import Backup file</span>
                             </div>
 
-                            <div className="modal-body">
-                                <div className="control-row">
-                                    <input type="file" {...register("file", {required: true})}  />
-                                    {errors.file && <span>Please select a backup file <br/></span>}
+                            <div className="control-row">   
+                                <div className="backup-upload">
+
+                                    <form onSubmit={handleSubmit(onSubmit)} className="upload-container">
+                                        <input type="file" className="bg-light p-4 w-100 border rounded" {...register("file", {required: true})}  />
+                                        {errors.file && 
+                                        <div className="text-end text-danger small fst-italic mb-4 mt-2">Please select a backup file</div>}
+                                        <div className="upload-button mt-4">
+                                            <div className="control-row upload-input">
+
+                                                <button type="button" className="btn btn-white px-4" onClick={() => props.onClose(false)} 
+                                                        data-bs-dismiss="modal">Cancel
+                                                </button>
+                                                <input type="submit" className={"btn btn-primary px-4"}/>
+                                            </div>
+                                        </div>
+                                    </form>     
                                 </div>
                             </div>
-
-                            <div className="modal-footer">
-                                <button onClick={() => props.onClose(false)} type="button" className="btn btn-secondary"
-                                        data-bs-dismiss="modal">Cancel
-                                </button>
-                                <input type="submit" className={"btn btn-outline-primary"}/>
-                            </div>
-
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

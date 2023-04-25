@@ -64,9 +64,10 @@ export function BotImport() {
         <div className="backup-upload">
             <form onSubmit={handleSubmit(onSubmit)} className="upload-container">
                 <div>
-                    <input className="mb-4 bg-light p-4 w-100 border rounded" type="file" {...register("file", {required: true})}  />
-                    {errors.file && <span>Please select a file </span>}
-                    <div className="upload-button">
+                    <input className="bg-light p-4 w-100 border rounded" type="file" {...register("file", {required: true})}  />
+                    {errors.file && 
+                    <div className="text-end text-danger small fst-italic mb-4 mt-2">Please select a backup file</div>}
+                    <div className="upload-button mt-4">
                         <div className="control-row upload-input">
                             <button type="button" className="btn btn-white px-4" onClick={()=>handleClose()}
                                     data-bs-dismiss="modal">Cancel
