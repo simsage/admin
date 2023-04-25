@@ -131,7 +131,7 @@ export default function CrawlerBoxForm(props) {
                 </div>
                 <div className="col-2 offset-1">
                     <a href="../resources/simsage-box-setup.pdf" id="dlBox" target="_blank"
-                    title="Download the SimSage Bbox setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    title="Download the SimSage Box setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                     <BsFilePdf size={25}/>
                     <span className="me-2 mt-2"></span>Box <br/>Setup Guide 
                     </a>
