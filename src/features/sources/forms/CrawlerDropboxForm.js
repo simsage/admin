@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {BsFilePdf} from 'react-icons/bs'
 import Api from "../../../common/api";
 
 export default function CrawlerDropboxForm(props) {
@@ -37,45 +38,52 @@ export default function CrawlerDropboxForm(props) {
     }
 
     return (
-        <div className="crawler-page">
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">client token</span>
-                        <span className="big-text">
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-4">
+                <div className="col-9">
+                    <div className="row mb-4">
+                        <div className="form-group col-8">
+                            <label label className="small">Client token</label>
                             <form>
-                                <input type="text" className="form-control dropbox-text-width"
-                                       autoFocus={true}
-                                       spellCheck={false}
-                                       placeholder="client token"
-                                       value={specific_json.clientToken}
+                                <input type="text" className="form-control"
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.clientToken}
                                        onChange={(event) => {setData({clientToken: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-                <span className="dropbox-manual-box">
-                        <a href="../resources/simsage-dropbox-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Dropbox setup guide">
-                            <span className="instructions-label">dropbox setup guide / instructions</span>
-                        </a>
-                    </span>
-            </div>
-
-            <div className="form-group small-text-with-width">
-                You can enter multiple folders separated by commas.  Each folder must be part of the root folder and not contain any sub-folders.
-                You can leave this entry empty to crawl all folders.  Each folder name must start with '/'.
-            </div>
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">start folder</span>
-                        <span className="big-text">
-                            <input type="text" className="form-control textarea-width"
-                                   value={specific_json.folderList}
+                        </div>
+                    </div>
+                    <div className="row border-top pt-4">
+                        <div className="form-group col-8">
+                            <label className="small d-flex justify-content-between">
+                                Start folder
+                                <span className="fst-italic fw-light small">(separate folders by comma)</span>
+                            </label>
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.folderList}
                                    onChange={(event) => {setData({folderList: event.target.value})}}
-                            />
-                        </span>
-                    </span>
+                                />
+                            </form>
+                            <div class="alert alert-warning small py-2 mt-3" role="alert">
+                                <p className="mb-2">Each folder must be part of the root folder and not contain any sub-folders.</p>
+                                <p className="mb-0">
+                                Each folder name must start with '/'.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-2 offset-1">
+                    <a href="../resources/simsage-dropbox-setup.pdf" id="dlDropbox" target="_blank"
+                    title="Download the SimSage Dropbox setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <BsFilePdf size={25}/>
+                    <span className="me-2 mt-2"></span>Dropbox <br/>Setup Guide 
+                    </a>
+                </div>
             </div>
 
         </div>

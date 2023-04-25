@@ -59,7 +59,7 @@ export default function CrawlerWordPressForm(props) {
                 <div className="col-6">
                     <div class="alert alert-warning small py-2" role="alert">
                         <p className="mb-2">The WordPress crawler is an external entity controlled by the SimSage WordPress plugin.</p>
-                        <p>
+                        <p className="mb-0">
                         As such there are no properties to configure here, nor is there a schedule for SimSage to work to.
                         </p>
                     </div>
