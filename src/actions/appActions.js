@@ -138,7 +138,11 @@ export const appCreators = {
                 dispatch({type: SIGN_IN, data: response.data})
 
                 const organisation_list = response.data.organisationList ? response.data.organisationList : [];
-                _getBackupList(organisation_list && organisation_list.length > 0 ? organisation_list[0].id : '', dispatch, getState);
+                console.log("getting backup-list");
+                const org_id = organisation_list && organisation_list.length > 0 ? organisation_list[0].id : '';
+                _getBackupList(org_id, dispatch, getState);
+                console.log("getting groups");
+                _getGroups(org_id, dispatch, getState);
 
                 if (on_success)
                     on_success(response.data);
@@ -292,6 +296,7 @@ export const appCreators = {
     updateOrganisation: (organisation) => async (dispatch, getState) => {
         dispatch({type: BUSY, busy: true});
         const session_id = get_session_id(getState);
+        console.log("!!organisation", organisation);
         await Comms.http_put('/auth/organisation', session_id,
             organisation,
             (response) => {

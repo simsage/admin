@@ -54,3 +54,28 @@
     z-index: 99;
 }
 
+.input-area {
+    width: 900px;
+    display: inline-block;
+    padding: 10px;
+}
+
+.form-width {
+    width: 1000px;
+    height: 600px;
+}
+
+.div-width {
+    width: 900px;
+    display: inline-block;
+}
+
+.display-blocking {
+    display: inline-block;
+    overflow-y: scroll;
+}
+
+.label-text {
+    font-size: 12px;
+    font-weight: 600;
+}

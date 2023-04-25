@@ -22,7 +22,7 @@ import OperatorTabs from "./operator/operator_tabs";
 import Domains from "./ad/domains";
 import Groups from "./users/groups";
 
-import SockJsClient from 'react-stomp';
+// import SockJsClient from 'react-stomp';
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -322,12 +322,12 @@ export class Home extends Component {
                                message={this.state.message}
                                title={this.state.message_title} />
 
-                <SockJsClient url={window.ENV.ws_base} topics={operator_id_list}
-                              ref={ (client) => { this.clientRef = client }}
-                              onMessage={(msg) => { this.props.processOperatorMessage(msg) }}
-                              onConnect={() => this.props.setOperatorConnected(true)}
-                              onDisconnect={() => this.props.setOperatorConnected(false)}
-                              onError={(error) => this.connectionError(error)} />
+                {/*<SockJsClient url={window.ENV.ws_base} topics={operator_id_list}*/}
+                {/*              ref={ (client) => { this.clientRef = client }}*/}
+                {/*              onMessage={(msg) => { this.props.processOperatorMessage(msg) }}*/}
+                {/*              onConnect={() => this.props.setOperatorConnected(true)}*/}
+                {/*              onDisconnect={() => this.props.setOperatorConnected(false)}*/}
+                {/*              onError={(error) => this.connectionError(error)} />*/}
 
                  <div>
 
@@ -409,7 +409,7 @@ export class Home extends Component {
                          {/*         onClick={() => this.props.selectTab('active directory')}>active directory</div>*/}
                          {/*}*/}
                          {
-                             Home.hasRole(this.props.user, ['admin', 'manager']) && this.props.enable_vectorizer &&
+                             Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              <div className={this.getStyle('bot', false)}
                                   onClick={() => this.props.selectTab('bot')}>bot</div>
                          }

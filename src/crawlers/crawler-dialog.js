@@ -25,7 +25,6 @@ import CrawlerRss from "./crawler-rss";
 import CrawlerMetadata from "./crawler-metadata";
 import Api from "../common/api";
 import AclSetup from "../common/acl-setup";
-import CrawlerExternal from "./crawler-external";
 import CrawlerSharepoint365 from "./crawler-sharepoint365";
 import CrawlerServiceNow from "./crawler-service-now";
 import CrawlerSearch from "./crawler-search";
@@ -560,13 +559,6 @@ export class CrawlerDialog extends Component {
                                             onClick={() => this.setState({selectedTab: 'rss crawler'})}>rss crawler
                                         </div>
                                     </li>}
-                                    {c_type === "external" && <li className="nav-item nav-cursor">
-                                        <div
-                                            className={"nav-link " + (this.state.selectedTab === 'external crawler' ? 'active' : '')}
-                                            onClick={() => this.setState({selectedTab: 'external crawler'})}>external
-                                            crawler
-                                        </div>
-                                    </li>}
                                     {c_type === "search" && <li className="nav-item nav-cursor">
                                         <div
                                             className={"nav-link " + (this.state.selectedTab === 'search crawler' ? 'active' : '')}
@@ -866,16 +858,6 @@ export class CrawlerDialog extends Component {
                                             kb_id={this.props.kb_id}
                                             endpoint={sj.endpoint}
                                             initial_feed={sj.initial_feed}
-                                            specific_json={sj}
-                                            onError={(title, errStr) => this.setError(title, errStr)}
-                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
-                                    }
-                                    {t_value === 'external crawler' &&
-                                        <CrawlerExternal
-                                            theme={theme}
-                                            source_id={crawler.sourceId}
-                                            organisation_id={this.props.organisation_id}
-                                            kb_id={this.props.kb_id}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>

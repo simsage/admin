@@ -54,6 +54,7 @@ export async function _getOrganisationList(current_org_name, current_org_id, _fi
     if (!_filter || _filter.trim() === "") {
         filter = "null";
     }
+    console.log("getting organisations");
     await Comms.http_get('/auth/user/organisations/' + encodeURIComponent(filter), session_id,
         (response) => {
             const organisation_list = response.data;
@@ -64,7 +65,10 @@ export async function _getOrganisationList(current_org_name, current_org_id, _fi
                 // and get the knowledge bases for this org
                 _getKnowledgeBases(organisation_list[0].id, dispatch, getState);
             }
+            console.log("getting backup-list");
             _getBackupList(current_org_id, dispatch, getState);
+            console.log("getting groups");
+            _getGroups(current_org_id, dispatch, getState);
         },
         (errStr) => {
             dispatch({type: ERROR, title: "Error", error: errStr})
@@ -365,7 +369,7 @@ export async function _getEdgeDeviceCommands(organisation_id, edge_id, dispatch,
 
 export async function _getGroups(organisation_id, dispatch, getState) {
     const session_id = get_session_id(getState)
-    if (session_id && organisation_id.length > 0) {
+    if (session_id && organisation_id && organisation_id.length > 0) {
         dispatch({type: BUSY, busy: true});
         await Comms.http_get('/auth/groups/' + encodeURIComponent(organisation_id), session_id,
             (response) => {

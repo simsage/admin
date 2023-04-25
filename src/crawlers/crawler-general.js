@@ -22,7 +22,6 @@ const crawler_list = [
     {"key": "discourse", "value": "Discourse crawler"},
     {"key": "dropbox", "value": "Dropbox crawler"},
     {"key": "exchange365", "value": "Exchange 365 crawler"},
-    {"key": "external", "value": "External crawler"},
     {"key": "file", "value": "File (SMB) crawler"},
     {"key": "gdrive", "value": "Google-drive crawler"},
     {"key": "imanage", "value": "iManage crawler"},

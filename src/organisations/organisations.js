@@ -29,6 +29,10 @@ export class Organisations extends React.Component {
             analytics_enabled: true,
             operator_enabled: true,
             language_enabled: true,
+            autoCreateSSOUsers: false,
+            autoCreateSSODomainList: [],
+            autoCreateSSOACLList: [],
+            autoCreateSSORoleList: [],
 
             // organisation id view dialog
             copied_visible: '',
@@ -48,10 +52,14 @@ export class Organisations extends React.Component {
     }
     addNewOrganisation() {
         this.setState({edit_organisation: true,
-                             organisation: null,
-                             id: "",
-                             name: "",
-                             enabled: true,
+                            organisation: null,
+                            id: "",
+                            name: "",
+                            enabled: true,
+                            autoCreateSSOUsers: false,
+                            autoCreateSSODomainList: [],
+                            autoCreateSSOACLList: [],
+                            autoCreateSSORoleList: [],
         })
     }
     editOrganisation(organisation) {
@@ -61,6 +69,10 @@ export class Organisations extends React.Component {
                                  id: organisation.id,
                                  name: organisation.name,
                                  enabled: Api.defined(organisation.enabled) ? organisation.enabled : true,
+                                 autoCreateSSOUsers: Api.defined(organisation.autoCreateSSOUsers) ? organisation.autoCreateSSOUsers : false,
+                                 autoCreateSSODomainList: Api.defined(organisation.autoCreateSSODomainList) ? organisation.autoCreateSSODomainList : [],
+                                 autoCreateSSOACLList: Api.defined(organisation.autoCreateSSOACLList) ? organisation.autoCreateSSOACLList : [],
+                                 autoCreateSSORoleList: Api.defined(organisation.autoCreateSSORoleList) ? organisation.autoCreateSSORoleList : [],
             })
         }
     }
@@ -109,6 +121,10 @@ export class Organisations extends React.Component {
                     id: Api.defined(organisation.id) ? organisation.id : '',
                     name: organisation.name,
                     enabled: organisation.enabled,
+                    autoCreateSSOUsers: organisation.autoCreateSSOUsers,
+                    autoCreateSSODomainList: organisation.autoCreateSSODomainList,
+                    autoCreateSSOACLList: organisation.autoCreateSSOACLList,
+                    autoCreateSSORoleList: organisation.autoCreateSSORoleList,
                 });
                 this.setState({edit_organisation: false, organisation: null});
             } else {
@@ -165,6 +181,11 @@ export class Organisations extends React.Component {
                                   theme={theme}
                                   name={this.state.name}
                                   enabled={this.state.enabled}
+                                  autoCreateSSOUsers={this.state.autoCreateSSOUsers}
+                                  autoCreateSSODomainList={this.state.autoCreateSSODomainList}
+                                  autoCreateSSOACLList={this.state.autoCreateSSOACLList}
+                                  autoCreateSSORoleList={this.state.autoCreateSSORoleList}
+                                  all_groups={this.props.group_list}
                                   onError={(title, err) => this.props.showError(title, err)}
                                   onSave={(data) => this.save(data)} />
 
@@ -320,6 +341,7 @@ const mapStateToProps = function(state) {
         organisation_page: state.appReducer.organisation_page,
         organisation_page_size: state.appReducer.organisation_page_size,
         backup_list: state.appReducer.backup_list,
+        group_list: state.appReducer.group_list,
         session: state.appReducer.session,
     };
 };
