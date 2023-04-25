@@ -11,6 +11,7 @@ import {
 import {InventoryDocumentSnapshotPrompt} from "./InventoryDocumentSnapshotPrompt";
 import {InventoryIndexSnapshotPrompt} from "./InventoryIndexSnapshotPrompt";
 import {InventoryDeleteDialog} from "./InventoryDeleteDialog";
+import {Pagination} from "../../common/pagination";
 
 
 export default function InventoryHome(props) {
@@ -33,6 +34,10 @@ export default function InventoryHome(props) {
     const data_status = useSelector((state) => state.inventoryReducer.data_status);
     const [error, setError] = useState('')
 
+    const [page_size,setPageSize] = useState(10);
+    const [page,setPage] = useState(0);
+
+
 
     useEffect(() => {
         console.log("Inventory useEffect")
@@ -42,10 +47,25 @@ export default function InventoryHome(props) {
             kb_id: selected_knowledge_base_id
         }))
 
-    }, [data_status === 'load_now', props.tab])
+    }, [data_status === 'load_now', props.tab, selected_knowledge_base_id])
 
     //TODO::inventorize_busy
     const inventorize_busy = false;
+
+
+    function getList() {
+        const paginated_list = [];
+        const first = page * page_size;
+        const last = first + parseInt(page_size);
+        const list = inventory_list.timeList;
+        // const list = organisation_list != null ? organisation_list : organisation_original_list;
+        for (const i in list) {
+            if (i >= first && i < last) {
+                paginated_list.push(inventory_list.timeList[i]);
+            }
+        }
+        return paginated_list;
+    }
 
 
     // function programConverted(program) {
@@ -162,34 +182,9 @@ export default function InventoryHome(props) {
                 <div className={theme === 'light' ? "hr" : "hr_dark"}/>
             }
 
-            {/*{isVisible() &&*/}
-
-            {/*    <div className="inventory-label">Manage snapshots of your document inventory.*/}
-            {/*        {inventorize_busy &&*/}
-            {/*            <span>  SimSage is busy creating a new snapshot.</span>*/}
-            {/*        }*/}
-            {/*        {selected_organisation_id.length > 0 &&*/}
-            {/*            <img src="../images/refresh.svg" alt="refresh"*/}
-            {/*                 title="refresh the inventory list"*/}
-            {/*                 onClick={() => {*/}
-            {/*                     getInventoryList();*/}
-            {/*                     getInventoryBusy();*/}
-            {/*                 }}*/}
-            {/*                 className="refresh-image sb-logo "/>*/}
-            {/*        }*/}
-            {/*    </div>*/}
-            {/*}*/}
             <div className="d-flex justify-content-beteween w-100 mb-4">
                 <div className="d-flex w-100">
 
-
-                    {/* TAKEN FROM SOURCES */}
-
-                    {/* <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control filter-search-input " + theme}
-                               onKeyPress={(e) => handleSearchTextKeydown(e)}
-                               onChange={(e) => setSearchFilter(e.target.value)}/>
-                    </div> */}
 
                 </div>
                 <div className="form-group ms-auto">
@@ -233,7 +228,8 @@ export default function InventoryHome(props) {
                         </tr>
                         </thead>
                         <tbody>
-                        {inventory_list && inventory_list.timeList && inventory_list.timeList.map((item, i) => {
+                        {/*{inventory_list && inventory_list.timeList && inventory_list.timeList.map((item, i) => {*/}
+                        { inventory_list && inventory_list.timeList && getList().map((item,i) => {
                             return (
                                 <tr key={i}>
                                     <td className="pt-3 px-4 pb-3">
@@ -278,41 +274,20 @@ export default function InventoryHome(props) {
                                 </tr>
                             )
                         })}
-                        {/* <tr>
-                            <td/>
-                            <td/>
-                            <td className={"pt-3 px-4 pb-0"}>
-                                <div className="d-flex justify-content-end ">
-
-                                    {selected_organisation_id.length > 0 && !inventorize_busy &&
-                                        <button className="btn btn-primary text-nowrap" onClick={() => {
-                                            handleCreateDocumentSnapshot();
-                                            // forceInventoryBusy();
-                                        }}
-                                                title="create a new document snapshot">create new document snapshot
-                                        </button>
-                                    }
-                                    {selected_organisation_id.length > 0 && !inventorize_busy &&
-                                        <button className="btn btn-primary text-nowrap" onClick={() => {
-                                            handleCreateIndexSnapshot();
-                                            // forceInventoryBusy();
-                                        }} title="create a new index snapshot">create a new
-                                            index snapshot
-                                        </button>
-                                    }
-                                    {selected_organisation_id.length > 0 && inventorize_busy &&
-                                        <button className="btu btn-secondary disabled"
-                                                title="SimSage is currently busy processing an inventory.  Please try again later.">create
-                                            new snapshot
-                                        </button>
-                                    }
-                                </div>
-
-                            </td>
-                        </tr> */}
                         </tbody>
                     </table>
-
+                    <Pagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        theme={theme}
+                        component="div"
+                        count={inventory_list.timeList.length}
+                        rowsPerPage={page_size}
+                        page={page}
+                        backIconButtonProps={{'aria-label': 'Previous Page',}}
+                        nextIconButtonProps={{'aria-label': 'Next Page',}}
+                        onChangePage={(page) => setPage(page)}
+                        onChangeRowsPerPage={(rows) => setPageSize(rows)}
+                    />
                 </div>
             }
             {
