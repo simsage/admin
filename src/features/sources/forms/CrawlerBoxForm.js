@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {BsFilePdf} from 'react-icons/bs'
 import Api from "../../../common/api";
 
 export default function CrawlerBoxForm(props) {
@@ -50,107 +51,91 @@ export default function CrawlerBoxForm(props) {
 
     return (
 
-        <div className="crawler-page">
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">client id</span>
-                        <span className="big-text">
+        <div className="tab-content px-5 py-4 overflow-auto">
+            <div className="row mb-4">
+                <div className="col-9">
+                    <div className="row mb-4">
+                        <div className="form-group col-6">
+                            <label label className="small">Client ID</label>
                             <form>
-                                <input type="text" className="form-control dropbox-text-width"
-                                       autoFocus={true}
-                                       spellCheck={false}
-                                       placeholder="client id"
-                                       value={specific_json.clientId}
+                                <input type="text" className="form-control"
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.clientId}
                                        onChange={(event) => {setData({clientId: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-                <span className="dropbox-manual-box">
-                        <a href="../resources/simsage-box-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Box setup guide">
-                            <span className="instructions-label">box setup guide/instructions</span>
-                            {/*<img src="/images/icon/icon_fi-pdf.svg" alt="box setup guide" className="image-size" />*/}
-                        </a>
-                    </span>
-            </div>
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">client secret</span>
-                        <span className="big-text">
+                        </div>
+                        <div className="form-group col-6">
+                            <label label className="small">Client secret</label>
                             <form>
-                                <input type="text" className="form-control dropbox-text-width"
-                                       spellCheck={false}
-                                       placeholder="client secret"
-                                       value={specific_json.clientSecret}
+                                <input type="text" className="form-control"
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.clientSecret}
                                        onChange={(event) => {setData({clientSecret: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-            </div>
-
-            <div className="form-group">
-                    <span className="right-column">
-                        <span className="small-label-right">enterprise id</span>
-                        <span className="big-text">
+                        </div>
+                    </div>
+                    <div className="row mb-4">
+                        <div className="form-group col-6">
+                            <label label className="small">Enterprise ID</label>
                             <form>
-                                <input type="text" className="form-control dropbox-text-width"
-                                       spellCheck={false}
-                                       placeholder="enterprise id"
-                                       value={specific_json.enterpriseId}
+                                <input type="text" className="form-control"
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.enterpriseId}
                                        onChange={(event) => {setData({enterpriseId: event.target.value})}}
                                 />
                             </form>
-                        </span>
-                    </span>
-            </div>
-
-            <div className="form-group">
-                    <span className="right-column">
-                        <span className="small-label-right">time to check from</span>
-                        <span className="big-text">
-                            <table>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" className="form-control dropbox-text-width"
-                                               spellCheck={false}
-                                               style={{width: "200px", marginRight: "10px"}}
-                                               placeholder="time to check from"
-                                               value={specific_json.timeToCheckFrom}
+                        </div>
+                    </div>
+                    <div className="row border-top pt-4 mb-4">
+                        <div className="form-group col-6">
+                            <label className="small">Time to check from</label>
+                            <div className="d-flex align-items-center">
+                                <input type="text" className="form-control"
+                                    placeholder=""
+                                    autoFocus={true}
+                                    value={specific_json.timeToCheckFrom}
                                                onChange={(event) => {setData({timeToCheckFrom: event.target.value})}}
-                                        />
-                                    </td>
-                                    <td>
-                                        <button className="btn bt-sm btn-primary" onClick={(e) => setTimeToNow(e)}>now</button>
-                                    </td>
-                                    <td>
-                                        <div style={{width: "200px", marginLeft: "30px"}}>{date_time_str}</div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </span>
-                    </span>
-            </div>
-
-            <div className="form-group py-3">
-                You can enter multiple folders separated by commas.  Each folder must be part of the root folder and not contain any sub-folders.
-                You can leave this entry empty to crawl all folders.  Each folder name must start with '/'.
-            </div>
-
-            <div className="form-group">
-                    <span className="left-column">
-                        <span className="small-label-right">start folder</span>
-                        <span className="big-text">
-                            <input type="text" className="form-control textarea-width"
-                                   value={specific_json.folderList}
+                                />
+                                <a className="btn bt-sm btn-primary ms-2" onClick={(e) => setTimeToNow(e)}>Now</a>
+                                <span className="small text-nowrap ms-3 text-capitalize">{date_time_str}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row border-top pt-4">
+                        <div className="form-group col-8">
+                            <label className="small d-flex justify-content-between">
+                                Start folder
+                                <span className="fst-italic fw-light small">(separate folders by comma)</span>
+                            </label>
+                            <form>
+                                <input type="text" className="form-control"
+                                    placeholder="Leave empty to crawl all folders"
+                                    autoFocus={true}
+                                    value={specific_json.folderList}
                                    onChange={(event) => {setData({folderList: event.target.value})}}
-                            />
-                        </span>
-                    </span>
+                                />
+                            </form>
+                            <ul class="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                                <li className="">Each folder must be part of the root folder and not contain any sub-folders.</li>
+                                <li className="">
+                                Each folder name must start with '/'.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-2 offset-1">
+                    <a href="../resources/simsage-box-setup.pdf" id="dlBox" target="_blank"
+                    title="Download the SimSage Bbox setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <BsFilePdf size={25}/>
+                    <span className="me-2 mt-2"></span>Box <br/>Setup Guide 
+                    </a>
+                </div>
             </div>
 
         </div>

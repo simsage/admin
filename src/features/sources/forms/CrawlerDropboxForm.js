@@ -68,12 +68,12 @@ export default function CrawlerDropboxForm(props) {
                                    onChange={(event) => {setData({folderList: event.target.value})}}
                                 />
                             </form>
-                            <div class="alert alert-warning small py-2 mt-3" role="alert">
-                                <p className="mb-2">Each folder must be part of the root folder and not contain any sub-folders.</p>
-                                <p className="mb-0">
+                            <ul class="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                                <li className="">Each folder must be part of the root folder and not contain any sub-folders.</li>
+                                <li className="">
                                 Each folder name must start with '/'.
-                                </p>
-                            </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

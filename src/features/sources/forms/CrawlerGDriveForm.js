@@ -122,7 +122,7 @@ export default function CrawlerGDriveForm(props) {
                                                onChange={(event) => {setData({deltaIndicator: event.target.value})}}
                                 />
                                 <a className="btn bt-sm btn-primary ms-2" onClick={() => handleSetTimeNow()}>Now</a>
-                                <span className="small text-nowrap ms-3">{date_time_str}</span>
+                                <span className="small text-nowrap ms-3 text-capitalize">{date_time_str}</span>
                             </div>
                         </div>
                     </div>
