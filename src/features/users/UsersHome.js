@@ -13,6 +13,7 @@ import Api from "../../common/api";
 import {formatRoles, hasRole} from "../../common/helpers";
 import UserDeleteAsk from "./UserDeleteAsk";
 import {UserBulkForm} from "./UserBulkForm";
+import api from "../../common/api";
 
 export function UsersHome(){
 
@@ -106,6 +107,8 @@ export function UsersHome(){
          return userRoles.some( role_obj => role_obj.organisationId === selected_organisation_id && role_obj.role === role)
     }
 
+    console.log("user_list",user_list)
+
     return(
         <div className="section px-5 pt-4">
             <div className="d-flex justify-content-beteween w-100 mb-4">
@@ -157,7 +160,9 @@ export function UsersHome(){
                     <tbody>
 
                     {
+
                         user_list && user_list.map((user) => {
+
                             //user does not have chosen role then skip.
                             if(!filterRoles(user.roles, userFilter)){return null}
 
@@ -173,7 +178,7 @@ export function UsersHome(){
                                             if(r.organisationId !== selected_organisation_id){return null}
                                             else {
                                                 return <div key={key}
-                                                            className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{r.role}</div>
+                                                            className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole(r.role)}</div>
                                             }
                                         })}
                                     </div>

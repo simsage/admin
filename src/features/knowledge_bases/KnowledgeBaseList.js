@@ -68,11 +68,9 @@ export default function KnowledgeBaseList() {
         dispatch(setViewIds({kb_id: kb_id}))
     }
 
-
     function handleOptimizeIndexesAsk(knowledge_base) {
         dispatch(showOptimizeAskDialog({session_id, kb: knowledge_base}));
     }
-
 
     function handleSearchFilter(event) {
         const val = event.target.value;
@@ -97,12 +95,7 @@ export default function KnowledgeBaseList() {
                                 <input onKeyUp={(event) => handleSearchFilter(event)} type="text"
                                        placeholder={"Filter..."} className="form-control filter-search-input"/>
                             </div>
-                            {/* <div className="form-group me-2">
-                                <select placeholder={"Filter"} className="form-select filter-text-width" onChange={(e)=>handleOrderBy(e)}>
-                                    <option value="alphabetical">Alphabetical</option>
-                                    <option value="recently_added">Recently added</option>
-                                </select>
-                            </div> */}
+
                         </div>
 
                         <div className="form-group ms-auto">
@@ -185,10 +178,6 @@ export default function KnowledgeBaseList() {
                         />
 
                     </div>
-
-                    {/*//TODO::edit kb - move this to a new file*/}
-                    {
-                    }
 
                 </div>
             }
