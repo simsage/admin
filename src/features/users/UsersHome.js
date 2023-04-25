@@ -16,14 +16,14 @@ import {UserBulkForm} from "./UserBulkForm";
 import api from "../../common/api";
 
 export function UsersHome(){
+    const user_roles = useSelector((state) => state.usersReducer.roles);
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
 
-    const [page, setPage] = useState(useSelector((state) => state.usersReducer.page))
-    const user_roles = useSelector((state) => state.usersReducer.roles)
-    const [page_size, setPageSize] = useState(useSelector((state) => state.usersReducer.page_size))
-    const [selectedUser, setSelectedUser] = useState()
-    const [searchFilter,setSearchFilter] = useState('')
-    const [orderFilter,setOrderFilter] = useState()
-    const [userFilter,setUserFilter] = useState('all-users')
+    const [selectedUser, setSelectedUser] = useState();
+    const [searchFilter,setSearchFilter] = useState('');
+    const [orderFilter,setOrderFilter] = useState();
+    const [userFilter,setUserFilter] = useState('all-users');
 
     const theme = null;
     const dispatch = useDispatch();

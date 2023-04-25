@@ -6,13 +6,17 @@ import {hasRole} from "../../common/helpers";
 import GroupEdit from "./groupEdit";
 import GroupDeleteAsk from "./GroupDeleteAsk";
 import GroupError from "./groupError";
+import api from "../../common/api";
 
 
 
 export default function GroupList(){
 
-    const [page, setPage] = useState(useSelector((state) => state.groupReducer.page))
-    const [page_size, setPageSize] = useState(useSelector((state) => state.groupReducer.page_size))
+    // const [page, setPage] = useState(useSelector((state) => state.groupReducer.page))
+    // const [page_size, setPageSize] = useState(useSelector((state) => state.groupReducer.page_size))
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
+
     const theme = null;
     const dispatch = useDispatch();
     const load_data = useSelector((state) => state.groupReducer.data_status)

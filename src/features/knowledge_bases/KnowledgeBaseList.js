@@ -11,6 +11,7 @@ import {
     search, orderBy
 } from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
+import api from "../../common/api";
 
 export default function KnowledgeBaseList() {
 
@@ -20,8 +21,10 @@ export default function KnowledgeBaseList() {
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const session = useSelector((state) => state).authReducer.session;
     const session_id = session.id;
-    const [kb_page, setKbPage] = useState(0)
-    const [kb_page_size, setKbPageSize] = useState(useSelector((state) => state.kbReducer.kb_page_size))
+
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
+
     const data_status = useSelector((state) => state.kbReducer.data_status)
 
     const dispatch = useDispatch()
@@ -33,8 +36,8 @@ export default function KnowledgeBaseList() {
 
     function getKnowledgeBases() {
         const paginated_list = [];
-        const first = kb_page * kb_page_size;
-        const last = first + parseInt(kb_page_size);
+        const first = page * page_size;
+        const last = first + parseInt(page_size);
         for (const i in kb_list) {
             if (i >= first && i < last) {
                 paginated_list.push(kb_list[i]);
@@ -169,12 +172,12 @@ export default function KnowledgeBaseList() {
                             theme={theme}
                             component="div"
                             count={kb_list.length}
-                            rowsPerPage={kb_page_size}
-                            page={kb_page}
+                            rowsPerPage={page_size}
+                            page={page}
                             backIconButtonProps={{'aria-label': 'Previous Page',}}
                             nextIconButtonProps={{'aria-label': 'Next Page',}}
-                            onChangePage={(page) => setKbPage(page)}
-                            onChangeRowsPerPage={(rows) => setKbPageSize(rows)}
+                            onChangePage={(page) => setPage(page)}
+                            onChangeRowsPerPage={(rows) => setPageSize(rows)}
                         />
 
                     </div>

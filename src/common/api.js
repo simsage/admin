@@ -3,6 +3,9 @@ import {Comms} from "../common/comms";
 // api wrappers
 export class Api {
 
+    static initial_page_size = 10;
+    static initial_page = 0;
+
     static defined(value) {
         return (value !== null && value !== undefined);
     }

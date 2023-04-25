@@ -6,8 +6,6 @@ const initialState = {
     organisation_original_list: [],
     organisation_filter: null,
     organisation_list: [],
-    organisation_page: 0,
-    organisation_page_size: 10,
 
     status: null,
     error: null,

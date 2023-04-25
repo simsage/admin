@@ -22,16 +22,14 @@ import OrganisationDeleteAsk from "./OrganisationDeleteAsk";
 import OrganisationError from "./OrganisationError";
 import BkOrganisationRestore from "./BkOrganisationRestore";
 import {hasRole} from "../../common/helpers";
+import api from "../../common/api";
 
 
 export function OrganisationHome() {
     const theme = null
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
-    const organisation_original_list = useSelector((state) => state.organisationReducer.organisation_original_list)
     const load_data = useSelector((state) => state.organisationReducer.data_status)
     const backup_data_status = useSelector((state) => state.organisationReducer.backup_data_status)
-    const organisation_backup_list = useSelector((state) => state.organisationReducer.organisation_backup_list)
-    const restore_status = useSelector((state) => state.organisationReducer.restore_status)
     const user = useSelector((state) => state.authReducer.user);
 
     //use one org id to load the backups
@@ -44,18 +42,13 @@ export function OrganisationHome() {
     const filter = null;
 
     //pagination
-    const [page, setPage] = useState(0);
-    const [page_size, setPageSize] = useState(10);
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
+
     const isAdmin = hasRole(user, ['admin']);
     //
     const [show_restore_organisation_form, setShowRestoreOrganisationForm] = useState(false);
-    //
-    // function showBackupWarning(organisation_id) {
-    //     if (!organisation_id) {
-    //         dispatch(showErrorAlert({"message": "Organisation-id missing, please select an organisation first.", "title": "error"}));
-    //         handleClose();
-    //     }
-    // }
+
 
     const handleClose = () => {
         dispatch(closeForm());
