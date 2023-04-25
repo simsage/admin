@@ -160,7 +160,7 @@ export default function SourceForm(props) {
         {label: "discourse crawler", slug: "discourse", type: "optional"},
 
         {label: "exchange365 crawler", slug: "exchange365", type: "optional"},
-        {label: "external crawler", slug: "external", type: "optional"},
+        // {label: "external crawler", slug: "external", type: "optional"},
 
         {label: "file (SMB) crawler", slug: "file", type: "optional"},
         {label: "google-drive crawler", slug: "gdrive", type: "optional"},
