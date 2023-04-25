@@ -73,7 +73,7 @@ export function TextToSearchEdit(props){
                                         <form>
                                             <input type="text" className="form-control"
                                                 autoComplete="false"
-                                                placeholder="e.g. Example here..."
+                                                placeholder="e.g. doc(document-type,html)"
                                                 value= {searchPart}
                                                 onChange={(e) => setSearchPart(e.target.value)}
                                             />
@@ -102,7 +102,7 @@ export function TextToSearchEdit(props){
                                         <form>
                                             <textarea type="text" className="form-control"
                                                     autoComplete="false"
-                                                    placeholder="e.g. Example here..."
+                                                    placeholder="e.g. web documents, html file, web file, etc..."
                                                     value={matchWords}
                                                     rows={10}
                                                     onChange={(event) => setMatchWords(event.target.value)}

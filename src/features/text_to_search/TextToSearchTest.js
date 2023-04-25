@@ -48,42 +48,49 @@ const TextToSearchTest = () => {
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header fw-bold">Try Text-To-Search Query </div>
-                    <div className="modal-body">
-                        <div className="tab-content">
+                    <div className="modal-header px-5 pt-4 bg-light">
+                        <h4 className="mb-0">Test Text-To-Search Query</h4>
+                    </div>
+                    <div className="modal-body p-0">
+                        <div className="tab-content px-5 py-4 overflow-aut">
 
                             <div className="control-row">
-                                <span className="label-2">Search Part</span>
+                                <span className="label-2 small">Search Part</span>
                                 <span className="text">
-                                            <form>
-                                                <input type="text" className="form-control"
+                                            <div className="form-control p-0 d-flex overflow-hidden">
+                                                <input type="text" className="border-0 w-100" style={{padding : "0.375rem 0.75rem"}}
                                                        autoComplete="false"
-                                                       placeholder="Search Part"
+                                                       placeholder="Type query..."
                                                        value= {searchPart}
                                                        onChange={(e) => setSearchPart(e.target.value)}
                                                        onKeyDown={(e) => {if(e.key === 'Enter') handleTest(e)}}
                                                 />
-                                            </form>
+                                                { !showAnswer ?
+                                                        <button className="btn px-4 btn-primary btn-sm btn-block" onClick={(e) => handleTest(e)}>Test</button>
+                                                    :
+                                                    <button className="btn btn-secondary btn-sm btn-block px-4" onClick={(e) => handleReset(e)}>Reset</button>
+                                                }
+                                            </div>
                                         </span>
                             </div>
                             <div className="control-row">
-
-                                { !showAnswer ?
-                                    <div className="m-4 d-flex  justify-content-center">
-                                        <button className="btn btn-primary btn-block" onClick={(e) => handleTest(e)}>Test</button>
+                                    
+                                    <div className="mt-4 mb-3 d-flex justify-content-center">
+                                        <h4 className="mb-0">
+                                        { !showAnswer ?
+                                        <span></span>
+                                        :
+                                        <span>{test_response}</span>
+                                        }
+                                        </h4>
                                     </div>
-                                    :
-                                    <div className="m-4 d-flex h4 justify-content-center">
-                                        {test_response}
-                                    </div>
-                                }
-
+                            
                             </div>
                         </div>
                     </div>
-                    <div className="modal-footer">
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleClose(e)}>Cancel</button>
-                        <button className="btn btn-primary btn-block" onClick={(e) => handleReset(e)}>Reset</button>
+                    <div className="modal-footer px-5 pb-3">
+                        <button className="btn btn-primary btn-block px-4" onClick={(e) => handleClose(e)}>Done</button>
+                        {/* <button className="btn btn-primary btn-block px-4" onClick={(e) => handleReset(e)}>Reset</button> */}
                     </div>
 
                 </div>
