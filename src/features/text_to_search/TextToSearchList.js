@@ -5,6 +5,7 @@ import {Pagination} from "../../common/pagination";
 import {TextToSearchEdit} from "./TextToSearchEdit";
 import TextToSearchDeleteAsk from "./TextToSearchDeleteAsk";
 import TextToSearchTest from "./TextToSearchTest";
+import api from "../../common/api";
 
 
 const TextToSearchList = () => {
@@ -22,8 +23,8 @@ const TextToSearchList = () => {
     const num_of_text_to_search = useSelector((state) => state.textToSearchReducer.num_of_text_to_search)
 
     const [filter, setFilter] = useState('');
-    const [ts_page_size, setPageSize] = useState(useSelector((state) => state.textToSearchReducer.page_size));
-    const [ts_page, setPage] = useState(useSelector((state) => state.textToSearchReducer.page))
+    const [ts_page_size, setPageSize] = useState(api.initial_page_size);
+    const [ts_page, setPage] = useState(api.initial_page)
 
     // let prev_obj = text_to_search_list.slice(-1)[0]
     // let prev_word = ts_page !== 0 ? prev_obj['searchPart']:""

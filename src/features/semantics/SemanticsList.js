@@ -4,6 +4,7 @@ import {Pagination} from "../../common/pagination";
 import {loadSemantics, showAddSemanticForm, showDeleteSemanticAsk, showEditSemanticForm} from "./semanticSlice";
 import {SemanticEdit} from "./SemanticEdit";
 import SemanticDeleteAsk from "./SemanticDeleteAsk";
+import api from "../../common/api";
 
 
 export default function SemanticsHome(props) {
@@ -19,8 +20,8 @@ export default function SemanticsHome(props) {
     const semantic_list = useSelector((state) => state.semanticReducer.semantic_list);
     const num_semantics = useSelector((state) => state.semanticReducer.num_semantics);
 
-    const [semantic_page_size, setPageSize] = useState(useSelector((state) => state.semanticReducer.semantic_page_size));
-    const [semantic_page, setPage] = useState(useSelector((state) => state.semanticReducer.semantic_page));
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
     const [semantic_filter,setSemanticFilter] = useState();
 
     const [page_history,setPageHistory] = useState([])
@@ -28,23 +29,23 @@ export default function SemanticsHome(props) {
 
     const dispatch = useDispatch();
 
-console.log("semantic_page",page_history)
-console.log("semantic_page",prev_word)
+console.log("page",page_history)
+console.log("page",prev_word)
 
     // let prev_semantic_set = semantic_list.slice(-1)[0]
-    // let prev_word = semantic_page != 0 ? prev_semantic_set['word']:0
+    // let prev_word = page != 0 ? prev_semantic_set['word']:0
     // useEffect(() => {
-    //     console.log("semantic_page",semantic_page)
+    //     console.log("page",page)
     //     console.log("prev_semantic_set1",prev_semantic_set)
     //
-    // },[semantic_page,semantic_page!=0])
+    // },[page,page!=0])
 
 
-    // console.log("semantic_page num",semantic_page,prev_word)
+    // console.log("page num",page,prev_word)
     let data = {
         "kbId": selected_knowledge_base_id,
         "organisationId": selected_organisation_id,
-        "pageSize": semantic_page_size,
+        "pageSize": page_size,
         "prevWord": prev_word,
         "filter": "",
     };
@@ -53,12 +54,12 @@ console.log("semantic_page",prev_word)
     useEffect(() => {
         console.log("useEffect dataload", data)
         dispatch(loadSemantics({ session_id, data }));
-    }, [load_data === "load_now" ,semantic_page, semantic_page_size ,selected_organisation_id, selected_knowledge_base_id])
+    }, [load_data === "load_now" ,page, page_size ,selected_organisation_id, selected_knowledge_base_id])
 
 
 
     function handlePageChange(next_page){
-        if(next_page > semantic_page){
+        if(next_page > page){
             // last list item is used for next page
             const last_row = semantic_list.slice(-1)[0]
             const temp_last_word = last_row['word']
@@ -90,7 +91,7 @@ console.log("semantic_page",prev_word)
     function filterSemantic(e) {
         e.preventDefault()
         data.filter = semantic_filter
-        data.pageSize = semantic_page_size
+        data.pageSize = page_size
         dispatch(loadSemantics({ session_id, data }));
     }
 
@@ -216,8 +217,8 @@ console.log("semantic_page",prev_word)
                             theme={theme}
                             component="div"
                             count={num_semantics}
-                            rowsPerPage={semantic_page_size}
-                            page={semantic_page}
+                            rowsPerPage={page_size}
+                            page={page}
                             backIconButtonProps={{'aria-label': 'Previous Page',}}
                             nextIconButtonProps={{'aria-label': 'Next Page',}}
                             onChangePage={(page) => handlePageChange(page)}

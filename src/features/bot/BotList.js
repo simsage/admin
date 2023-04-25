@@ -12,6 +12,7 @@ import {BotEdit} from "./BotEdit";
 import BotDeleteAsk from "./BotDeleteAsk";
 import Comms from "../../common/comms";
 import BotImportForm from "./BotImportForm";
+import api from "../../common/api";
 
 export default function BotHome() {
 
@@ -31,38 +32,32 @@ export default function BotHome() {
     const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
     const total_mind_items = useSelector((state) => state.botReducer.total_mind_items);
 
-    const [bot_page_size, setPageSize] = useState(useSelector((state) => state.botReducer.page_size));
-    const [bot_page, setBotPage] = useState(useSelector((state) => state.botReducer.mind_current_page_number))
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
 
     const [filter, setFilter] = useState('')
 
     const [page_history,setPageHistory] = useState([])
     const [prev_id,setPrevID] = useState(0)
 
-    //
-    // let prev_list = mind_item_list.slice(-1)[0]
-    // let prev_id = bot_page !== 0 ? prev_list['id']:0
-    console.log("bot_page",page_history)
-    console.log("bot_page",prev_id)
-    console.log("bot_page",bot_page)
 
     let data = {
         filter: "",
         kbId: selected_knowledge_base_id,
         organisationId: selected_organisation_id,
-        pageSize: bot_page_size,
+        pageSize: page_size,
         prevId: prev_id,
     }
 
 
     useEffect(() => {
         dispatch(loadMindItems({session_id, data}))
-    }, [load_data === "load_now", selected_knowledge_base_id, bot_page_size, bot_page])
+    }, [load_data === "load_now", selected_knowledge_base_id, page_size, page])
 
 
     function handlePageChange(next_page){
-        console.log("bot_page next_page",next_page)
-        if(next_page > bot_page){
+        console.log("page next_page",next_page)
+        if(next_page > page){
             // last list item is used for next page
             const last_row = mind_item_list.slice(-1)[0]
             const temp_last_id = last_row['id']
@@ -75,14 +70,14 @@ export default function BotHome() {
             setPrevID(temp_id);
             setPageHistory([...page_history.slice(0,-1)]);
         }
-        setBotPage(next_page);
+        setPage(next_page);
     }
 
 
     function handlePageSizeChange(row){
         setPageHistory([])
         setPrevID(0)
-        setBotPage(0)
+        setPage(0)
         setPageSize(row)
     }
 
@@ -267,8 +262,8 @@ export default function BotHome() {
                         theme={theme}
                         component="div"
                         count={total_mind_items}
-                        rowsPerPage={bot_page_size}
-                        page={bot_page}
+                        rowsPerPage={page_size}
+                        page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
                         nextIconButtonProps={{'aria-label': 'Next Page',}}
                         onChangePage={(page) => handlePageChange(page)}

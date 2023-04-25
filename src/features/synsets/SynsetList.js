@@ -12,6 +12,7 @@ import {showEditSynSetForm} from "../synsets/synsetSlice"
 import SynsetEdit from "./SynsetEdit";
 import SynsetDelete from "./SynsetDelete";
 import SynsetDefault from "./SynsetDefault";
+import api from "../../common/api";
 
 export default function SynsetList() {
 
@@ -24,8 +25,10 @@ export default function SynsetList() {
 
     const synset_list = useSelector((state) => state.synsetReducer.synset_list)
     const synset_total_size = useSelector((state) => state.synsetReducer.synset_total_size)
-    const [synset_page_size, setSynSetPageSize] = useState(useSelector((state) => state.synsetReducer.synset_page_size));
-    const [synset_page, setSynSetPage] = useState(useSelector((state) => state.synsetReducer.synset_page))
+
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
+
     let [synset_filter, setSynSetFilter] = useState('');
 
     const load_data = useSelector((state) => state.synsetReducer.data_status)
@@ -34,9 +37,9 @@ export default function SynsetList() {
         session_id: session_id,
         organisation_id: selected_organisation_id,
         kb_id: selected_knowledge_base_id,
-        page: synset_page,
+        page: page,
         filter: synset_filter,
-        page_size: synset_page_size
+        page_size: page_size
     };
 
     const dispatch = useDispatch();
@@ -45,7 +48,7 @@ export default function SynsetList() {
         console.log(" useEffect load_data",load_data)
         console.log(" useEffect load_data",load_data)
         dispatch(loadSynsets(data));
-    }, [load_data === 'load_now', synset_page, synset_page_size])
+    }, [load_data === 'load_now', page, page_size])
 
     // const handleFilterTextChange = (e) => {
     //     setSynSetFilter(e.target.value);
@@ -57,9 +60,9 @@ export default function SynsetList() {
     //             session_id: session_id,
     //             organisation_id: selected_organisation_id,
     //             kb_id: selected_knowledge_base_id,
-    //             page: synset_page,
+    //             page: page,
     //             filter: synset_filter,
-    //             page_size: synset_page_size
+    //             page_size: page_size
     //         }))
     //         dispatch(noResultsMessage(true))
     //         setSynSetFilter('');
@@ -114,9 +117,9 @@ export default function SynsetList() {
     //         session_id: session_id,
     //         organisation_id: selected_organisation_id,
     //         kb_id: selected_knowledge_base_id,
-    //         page: synset_page,
+    //         page: page,
     //         filter: synset_filter,
-    //         page_size: synset_page_size
+    //         page_size: page_size
     //     }))
     //     dispatch(noResultsMessage(true))
     //     setSynSetFilter('');
@@ -282,10 +285,10 @@ export default function SynsetList() {
                             theme={theme}
                             component="div"
                             count={synset_total_size}
-                            rowsPerPage={synset_page_size}
-                            page={synset_page}
-                            onChangePage={(page) => setSynSetPage(page)}
-                            onChangeRowsPerPage={(rows) => setSynSetPageSize(rows)}
+                            rowsPerPage={page_size}
+                            page={page}
+                            onChangePage={(page) => setPage(page)}
+                            onChangeRowsPerPage={(rows) => setPageSize(rows)}
                         />
 
                     </div>

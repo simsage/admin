@@ -12,6 +12,7 @@ import {SynonymEdit} from "./SynonymEdit";
 import SynonymDeleteAsk from "./SynonymDeleteAsk";
 import SynonymFilter from "./SynonymFilter";
 import {loadSemantics} from "../semantics/semanticSlice";
+import api from "../../common/api";
 
 export default function SynonymsHome(props) {
 
@@ -27,8 +28,8 @@ export default function SynonymsHome(props) {
     const synonym_list = useSelector((state)=>state.synonymReducer.synonym_list)
     const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
 
-    const [synonym_page_size,setPageSize] = useState(useSelector((state)=>state.synonymReducer.synonym_page_size))
-    const [synonym_page,setPage] = useState(useSelector((state)=>state.synonymReducer.synonym_page))
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
 
     const [filter,setFilter] = useState('')
 
@@ -42,17 +43,17 @@ export default function SynonymsHome(props) {
         "kbId": selected_knowledge_base_id,
         "prevId": prev_id,
         "filter": '',
-        "pageSize": synonym_page_size
+        "pageSize": page_size
     };
 
 
     useEffect(() => {
         dispatch(loadSynonyms({session_id, data }));
-    }, [load_data === "load_now",synonym_page, synonym_page_size])
+    }, [load_data === "load_now",page, page_size])
 
 
     function handlePageChange(next_page){
-        if(next_page > synonym_page){
+        if(next_page > page){
             // last list item is used for next page
             const last_row = synonym_list.slice(-1)[0]
             const temp_last_id = last_row['id']
@@ -132,7 +133,7 @@ export default function SynonymsHome(props) {
     function filterRecords(e) {
         e.preventDefault()
         data.filter = filter
-        data.pageSize = synonym_page_size
+        data.pageSize = page_size
         dispatch(loadSynonyms({ session_id, data }));
     }
 
@@ -227,8 +228,8 @@ export default function SynonymsHome(props) {
                         theme={theme}
                         component="div"
                         count={num_synonyms}
-                        rowsPerPage={synonym_page_size}
-                        page={synonym_page}
+                        rowsPerPage={page_size}
+                        page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
                         nextIconButtonProps={{'aria-label': 'Next Page',}}
                         onChangePage={(page) => handlePageChange(page)}

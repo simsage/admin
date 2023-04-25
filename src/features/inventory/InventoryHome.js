@@ -12,6 +12,7 @@ import {InventoryDocumentSnapshotPrompt} from "./InventoryDocumentSnapshotPrompt
 import {InventoryIndexSnapshotPrompt} from "./InventoryIndexSnapshotPrompt";
 import {InventoryDeleteDialog} from "./InventoryDeleteDialog";
 import {Pagination} from "../../common/pagination";
+import api from "../../common/api";
 
 
 export default function InventoryHome(props) {
@@ -34,9 +35,8 @@ export default function InventoryHome(props) {
     const data_status = useSelector((state) => state.inventoryReducer.data_status);
     const [error, setError] = useState('')
 
-    const [page_size,setPageSize] = useState(10);
-    const [page,setPage] = useState(0);
-
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
 
 
     useEffect(() => {

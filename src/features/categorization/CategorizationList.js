@@ -10,6 +10,7 @@ import {CategorizationEdit} from "./CategorizationEdit";
 import CategorizationDeleteAsk from "./CategorizationDeleteAsk";
 import {Pagination} from "../../common/pagination";
 import {loadSynonyms} from "../synonyms/synonymSlice";
+import api from "../../common/api";
 
 export default function CategorizationHome() {
 
@@ -25,8 +26,8 @@ export default function CategorizationHome() {
 
     const category_list = useSelector((state) => state.categorizationReducer.category_list);
     const total_count = useSelector((state) => state.categorizationReducer.total_count);
-    const [cat_page_size,setPageSize] = useState(useSelector((state)=>state.categorizationReducer.page_size))
-    const [cat_page,setPage] = useState(useSelector((state)=>state.categorizationReducer.page))
+    const [cat_page_size,setPageSize] = useState(api.initial_page_size)
+    const [cat_page,setPage] = useState(api.initial_page)
     const [filter, setFilter] = useState('');
 
     const [page_history,setPageHistory] = useState([])

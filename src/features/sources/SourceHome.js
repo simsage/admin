@@ -21,6 +21,7 @@ import {SourceStartDialog} from "./SourceStartDialog";
 import {SourceZipDialog} from "./SourceZipDialog";
 import {SourceProcessFilesDialog} from "./SourceProcessFilesDialog";
 import {SourceErrorDialog} from "./SourceErrorDialog";
+import api from "../../common/api";
 
 
 //TODO:: No need to list documents anymore.
@@ -49,8 +50,9 @@ export default function SourceHome(props) {
 
     const data_status = useSelector((state) => state.sourceReducer.data_status);
 
-    const [page, setPage] = useState(0)
-    const [page_size, setPageSize] = useState(10)
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
+
 
     const [selectedUser, setSelectedUser] = useState(null);
     const [searchFilter,setSearchFilter] = useState('');
