@@ -143,7 +143,7 @@ export default function KnowledgeBaseList() {
 
                                                     <button title="view knowledge base ids"
                                                             onClick={() => handleViewIds(knowledge_base.kbId)}
-                                                            className={"btn text-primary btn-sm"}>View Ids
+                                                            className={"btn text-primary btn-sm"}>View IDs
                                                     </button>
                                                     <button title="optimize indexes"
                                                             onClick={() => handleOptimizeIndexesAsk(knowledge_base)}

@@ -91,11 +91,11 @@ export default function OrganisationFormV2(props) {
                                 <button onClick={handleClose} type="button" className="btn btn-white px-4"
                                         data-bs-dismiss="modal">Cancel
                                 </button>
-                                <input type="submit" className={"btn btn-outline-primary"}/>
+                                <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
 
                                 {organisation !== null &&
                                     <button onClick={handleDelete} type="button"
-                                            className="btn btn-outline-secondary">Delete</button>
+                                            className="btn btn-danger px-4">Delete</button>
                                 }
                             </div>
                         </form>

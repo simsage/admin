@@ -25,36 +25,31 @@ export function OrganisationViewId(props) {
     if (!show_organisation_id)
         return (<div />);
     return (<div>
-        <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+        <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                <div className="modal-content">
 
-                    <div className="modal-header">
-                        <h5 className="modal-title" id="staticBackdropLabel">View Organisation ID</h5>
-                        <button onClick={handleClose} type="button" className="btn-close"
+                    <div className="modal-header px-5 pt-4 bg-light">
+                        <h4 className="mb-0" id="staticBackdropLabel">View Organisation ID</h4>
+                        {/* <button onClick={handleClose} type="button" className="btn-close"
                                 data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                                aria-label="Close"></button> */}
                     </div>
-                    <div className="modal-body">
-                        <div>
+                    <div className="modal-body p-0">
+                        <div className="px-5 py-4">
                             <table>
                                 <tbody>
 
                                 <tr>
-                                    <td>organisation id: &nbsp;&nbsp;</td>
-                                    <td className="id-width">{organisation_id}</td>
-                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                    <td>
+                                    <td className="text-nowrap pe-4 fw-500">Organisation ID</td>
+                                    <td className="w-100 text-nowrap">{organisation_id}</td>
+                                    <td className="px-4 position-relative">
                                         <button onClick={() => handleCopyIds(organisation_id)}
-                                                className={"btn btn-outline-primary"}>copy
+                                                className={"btn text-primary btn-sm"}>Copy
                                         </button>
-
-                                    </td>
-                                    <td>&nbsp;&nbsp;</td>
-                                    <td>
                                         {(copied_id === organisation_id) &&
-                                            <div className="copied-style">copied</div>
-                                        }
+                                                <div className="copied-style small position-absolute top-50 start-50 translate-middle text-white bg-dark px-2 py-1 rounded">Copied!</div>
+                                            }
                                     </td>
                                 </tr>
                                 </tbody>
@@ -63,11 +58,11 @@ export function OrganisationViewId(props) {
                         </div>
 
                     </div>
-                    <div className="modal-footer">
-                        <button onClick={handleClose} type="button" className="btn btn-secondary"
-                                data-bs-dismiss="modal">Close
-                        </button>
-                    </div>
+                    <div className="modal-footer px-5 pb-4">
+                            <button onClick={handleClose} type="button" className="btn btn-primary px-4"
+                                    data-bs-dismiss="modal">Done
+                            </button>
+                        </div>
                 </div>
             </div>
         </div>

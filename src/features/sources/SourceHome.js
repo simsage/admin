@@ -465,39 +465,32 @@ export default function SourceHome(props) {
                                                             onClick={() => handleStartCrawler(crawler)}
                                                             className={"btn text-primary btn-sm"}>Start
                                                     </button>
-                                                    &nbsp; &nbsp;</>}
+                                                    </>}
                                                 {is_running && <>
                                                     <button title="start crawler" disabled
                                                             className={"btn text-primary btn-sm"}>Start
                                                     </button>
-                                                    &nbsp; &nbsp; </>}
+                                                     </>}
 
                                                 <button title="edit crawler" onClick={() => handleEditCrawler(crawler)}
                                                         className={"btn text-primary btn-sm"}>Edit
                                                 </button>
-                                                &nbsp; &nbsp;
-                                                <button title="remove crawler"
-                                                        onClick={() => handleDeleteCrawler(crawler)}
-                                                        className={"btn text-danger btn-sm"}>Remove
-                                                </button>
-                                                &nbsp; &nbsp;
-
                                                 <button title="process all files for a source"
                                                         onClick={() => handleProcessFiles(crawler)}
-                                                        className={"btn text-primary btn-sm"}>Process files
+                                                        className={"btn text-primary btn-sm text-nowrap"}>Process files
                                                 </button>
-                                                &nbsp; &nbsp;
-
                                                 <button title="get crawler JSON for export"
                                                         onClick={() => handleExportCrawler(crawler)}
                                                         className={"btn text-primary btn-sm"}>Export
                                                 </button>
-                                                &nbsp; &nbsp;
                                                 <button title="zip all files in a source"
                                                         onClick={() => handleZipSource(crawler)}
                                                         className={"btn text-primary btn-sm"}>Zip
                                                 </button>
-                                                &nbsp; &nbsp;
+                                                <button title="remove crawler"
+                                                        onClick={() => handleDeleteCrawler(crawler)}
+                                                        className={"btn text-danger btn-sm"}>Remove
+                                                </button>
                                             </div>
                                             {/*<div className="link-button" onClick={() => editCrawler(crawler)}>*/}
                                             {/*    <img src="../../images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>*/}
