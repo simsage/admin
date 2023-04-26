@@ -55,7 +55,7 @@ export function SourceStartDialog() {
                         <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div> */}
-                    <div className="modal-body">
+                    <div className="modal-body text-center">
                         <div className="control-row mb-4">
                             <span className="label-wide">{message}</span>
                         </div>

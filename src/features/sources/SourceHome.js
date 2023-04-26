@@ -144,7 +144,7 @@ export default function SourceHome(props) {
             setSelectedSource(crawler)
             setButtonClicked('remove_crawler')
             const warning = {
-                message: "are you sure you want to remove the crawler named <b>" + crawler.name + "</b>?",
+                message: "Are you sure you want to remove the crawler named " + crawler.name + "?",
                 title: "Remove Crawler"
             }
             dispatch(showDeleteAlert(warning))
