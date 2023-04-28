@@ -32,6 +32,8 @@ export default function InventoryHome(props) {
 
 
     const inventory_list = useSelector((state) => state.inventoryReducer.inventory_list);
+    const num_inventory_list_items = inventory_list.timeList ? inventory_list.timeList.length : 0
+    console.log('TestingMax', num_inventory_list_items, inventory_list.timeList.length)
     const data_status = useSelector((state) => state.inventoryReducer.data_status);
     const [error, setError] = useState('')
 
@@ -280,7 +282,7 @@ export default function InventoryHome(props) {
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
                         component="div"
-                        count={inventory_list.timeList.length}
+                        count={num_inventory_list_items}
                         rowsPerPage={page_size}
                         page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
