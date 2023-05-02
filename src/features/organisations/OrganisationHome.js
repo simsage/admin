@@ -1,17 +1,16 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {
-    deleteOrganisation, getOrganisationBackupList,
+     getOrganisationBackupList,
     getOrganisationList,
     showAddOrganisationForm, showBackupForm, showDeleteForm,
     showEditOrganisationForm, showOrganisationId
 } from "./organisationSlice";
-import {setSelectedKB, setSelectedOrganisation, simsageLogOut} from "../auth/authSlice";
+import { setSelectedOrganisation, simsageLogOut} from "../auth/authSlice";
 import {Pagination} from "../../common/pagination";
 import {selectTab} from "../home/homeSlice";
-import {search, orderBy} from "./organisationSlice";
-import {closeForm, getKBList} from "../knowledge_bases/knowledgeBaseSlice";
-import {showErrorAlert} from "../alerts/alertSlice";
+import {search} from "./organisationSlice";
+import { getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import BkOrganisationBackupHome from "./BkOrganisationBackupHome";
 import BkOrganisationBackupDialog from "./BkOrganisationBackupDialog";
 import BkOrganisationBackupProgressDialog from "./BkOrganisationBackupProgressDialog";
@@ -55,7 +54,7 @@ export function OrganisationHome() {
     const error = useSelector((state) => state.organisationReducer.error);
 
 
-    function handleSignOut() {
+    function  handleSignOut() {
         dispatch(simsageLogOut({session_id: session.id}))
         instance.logoutRedirect({
             postLogoutRedirectUri: "/",
@@ -63,9 +62,9 @@ export function OrganisationHome() {
     }
 
 
-    const handleClose = () => {
-        dispatch(closeForm());
-    }
+    // const handleClose = () => {
+    //     dispatch(closeForm());
+    // }
 
     useEffect(() => {
         dispatch(getOrganisationList({session: session, filter: filter}))
@@ -111,9 +110,7 @@ export function OrganisationHome() {
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
-        const list = organisation_list;
-        // const list = organisation_list != null ? organisation_list : organisation_original_list;
-        for (const i in list) {
+        for (const i in organisation_list) {
             if (i >= first && i < last) {
                 paginated_list.push(organisation_list[i]);
             }
@@ -128,11 +125,11 @@ export function OrganisationHome() {
         dispatch(search({keyword: val}))
     }
 
-    function handleOrderBy(event) {
-        const val = event.target.value;
-        console.log("handleOrderBy", val)
-        dispatch(orderBy({order_by: val}))
-    }
+    // function handleOrderBy(event) {
+    //     const val = event.target.value;
+    //     console.log("handleOrderBy", val)
+    //     dispatch(orderBy({order_by: val}))
+    // }
 
 
     return (

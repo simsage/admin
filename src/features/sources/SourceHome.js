@@ -304,7 +304,7 @@ export default function SourceHome(props) {
     }
 
 
-    function handleSearchTextKeydown(e) {
+    function handleSearchTextKeydown() {
         console.log("handleSearchTextKeydown")
 
         // if (e.key === "Enter" && this.props.selected_organisation_id) {

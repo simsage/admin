@@ -69,7 +69,7 @@ export default function OrganisationFormV2(props) {
                             <div className="modal-body p-0">
                                 <div className="px-5 py-4">
                                     <div className="mb-4">
-                                        {console.log("error", errors)}
+
                                         <div className={"mb-3 name" + (errors.name ? " error " : "")}>
                                             <label className="label-2 small">Name</label>
                                             <input className="form-control" {...register("name", {required: true})} />

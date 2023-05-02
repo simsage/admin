@@ -1,6 +1,5 @@
 import OrganisationFormV2 from "./OrganisationFormV2";
 import {useSelector} from "react-redux";
-import {useEffect} from "react";
 
 export default function OrganisationEdit() {
 
@@ -11,24 +10,22 @@ export default function OrganisationEdit() {
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
 
 
-
-    useEffect(()=>{
-        if(organisation_id && organisation_list) {
-            let temp_org = organisation_list.filter((org) => {return org.id === organisation_id})
-            if(temp_org.length > 0) {
-                organisation = (temp_org[0])
-            }
+    if (organisation_id && organisation_list) {
+        let temp_org = organisation_list.filter((org) => {
+            return org.id === organisation_id
+        })
+        if (temp_org.length > 0) {
+            organisation = (temp_org[0])
         }
-    },[organisation])
-
+    }
 
 
     return (
         <OrganisationFormV2
-            show_organisation_form = {show_organisation_form}
-            session = {session}
-            organisation = {organisation}
-            organisation_id = {organisation_id}
+            show_organisation_form={show_organisation_form}
+            session={session}
+            organisation={organisation}
+            organisation_id={organisation_id}
         />
     );
 }

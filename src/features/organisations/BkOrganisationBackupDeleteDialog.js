@@ -4,7 +4,7 @@ import {
 } from "./organisationSlice";
 import Api from "../../common/api";
 
-export default function BkOrganisationBackupDeleteDialog(props) {
+export default function BkOrganisationBackupDeleteDialog() {
 
     const dispatch = useDispatch();
 

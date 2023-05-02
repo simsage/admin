@@ -1,14 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
-import {backupOrganisation, closeBackupForm, closeBackupProgressMessage} from "./organisationSlice";
+import {  closeBackupProgressMessage} from "./organisationSlice";
 
-export default function BkOrganisationBackupProgressDialog(props) {
+export default function BkOrganisationBackupProgressDialog() {
 
     const dispatch = useDispatch();
-
     const show_backup_progress_message = useSelector((state) => state.organisationReducer.show_backup_progress_message)
-    const backup_organisation_id = useSelector((state) => state.organisationReducer.backup_organisation_id)
-    const backup_id = useSelector((state) => state.organisationReducer.backup_id)
-    const session = useSelector((state) => state.authReducer.session)
 
     //handle form close or cancel
     const handleClose = () => {

@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import {closeOrganisationForm} from "./organisationSlice";
 import Api from "../../common/api";
 
-export function OrganisationViewId(props) {
+export function OrganisationViewId() {
 
     const organisation_id = useSelector((state) => state.organisationReducer.edit_organisation_id)
     const show_organisation_id = useSelector((state) => state.organisationReducer.show_organisation_id)

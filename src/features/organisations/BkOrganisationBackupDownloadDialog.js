@@ -5,7 +5,7 @@ import {
 } from "./organisationSlice";
 import Api from "../../common/api";
 
-export default function BkOrganisationBackupDownloadDialog(props) {
+export default function BkOrganisationBackupDownloadDialog() {
 
     const dispatch = useDispatch();
 
@@ -24,7 +24,7 @@ export default function BkOrganisationBackupDownloadDialog(props) {
         dispatch(closeBackupDownloadMessage());
 
         if(downloaded_backup && downloaded_backup.backupId && downloaded_backup.data){
-            var element = document.createElement('a');
+            let element = document.createElement('a');
             // let dateStr = Api.unixTimeForFilename(downloaded_backup.backupId);
             let dateStr = 'org'
             const filename = "backup-" +  dateStr + ".txt"

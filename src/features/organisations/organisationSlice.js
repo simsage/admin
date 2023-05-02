@@ -57,9 +57,9 @@ const reducers = {
         state.show_organisation_id = false;
     },
 
-    clearDownloadedBackup: (state) => {
-        state.downloaded_backup = null;
-    },
+    // clearDownloadedBackup: (state) => {
+    //     state.downloaded_backup = null;
+    // },
 
     setOrganisationList: (state, action) => {
         state.organisation_list = action.payload.organisationList
@@ -94,20 +94,20 @@ const reducers = {
         }
     },
 
-    orderBy: (state, action) => {
-
-        switch (action.payload.order_by) {
-            default:
-            case 'alphabetical':
-                state.organisation_list = state.organisation_original_list.sort((a, b) => (a.name > b.name) ? 1 : -1);
-                state.status = "fulfilled";
-                break;
-            case 'recently_added':
-                state.organisation_list = state.organisation_original_list.sort((a, b) => (a.created > b.created) ? 1 : -1);
-                state.status = "fulfilled";
-                break
-        }
-    },
+    // orderBy: (state, action) => {
+    //
+    //     switch (action.payload.order_by) {
+    //         default:
+    //         case 'alphabetical':
+    //             state.organisation_list = state.organisation_original_list.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    //             state.status = "fulfilled";
+    //             break;
+    //         case 'recently_added':
+    //             state.organisation_list = state.organisation_original_list.sort((a, b) => (a.created > b.created) ? 1 : -1);
+    //             state.status = "fulfilled";
+    //             break
+    //     }
+    // },
 
     showBackupForm: (state, action) => {
         state.show_backup_form = action.payload.show_form;
@@ -163,7 +163,7 @@ const reducers = {
 
 const extraReducers = (builder) => {
     builder
-        .addCase(getOrganisationList.pending, (state, action) => {
+        .addCase(getOrganisationList.pending, (state) => {
             state.status = "loading"
             state.data_status = 'loading';
         })
@@ -181,13 +181,13 @@ const extraReducers = (builder) => {
             state.data_status = 'loaded';
 
         })
-        .addCase(getOrganisationList.rejected, (state, action) => {
+        .addCase(getOrganisationList.rejected, (state) => {
             state.status = "rejected"
             state.data_status = 'rejected';
         })
 
         //update Organisation
-        .addCase(updateOrganisation.fulfilled, (state, action) => {
+        .addCase(updateOrganisation.fulfilled, (state) => {
             state.show_organisation_form = false;
             state.edit_organisation_id = undefined;
             state.data_status = 'load_now';
@@ -216,17 +216,17 @@ const extraReducers = (builder) => {
         })
 
         //backup an org
-        .addCase(backupOrganisation.pending, (state, action) => {
+        .addCase(backupOrganisation.pending, (state) => {
             state.show_backup_progress_message = true;
         })
 
-        .addCase(backupOrganisation.fulfilled, (state, action) => {
+        .addCase(backupOrganisation.fulfilled, (state) => {
             state.show_backup_progress_message = true;
             state.backup_data_status = 'load_now';
         })
 
         //delete Record
-        .addCase(deleteBackup.fulfilled, (state, action) => {
+        .addCase(deleteBackup.fulfilled, (state) => {
             state.backup_data_status = 'load_now';
         })
 
@@ -457,7 +457,7 @@ const organisationSlice = createSlice({
 
 export const {
     showAddOrganisationForm, showEditOrganisationForm,
-    closeOrganisationForm, setOrganisationList, search, orderBy,
+    closeOrganisationForm, setOrganisationList, search,
     showBackupForm, closeBackupForm, closeBackupProgressMessage,
     showDeleteBackupForm, closeBackupDeleteMessage, showDownloadBackupForm, closeBackupDownloadMessage, showOrganisationId, showDeleteForm, closeDeleteForm, clearErrorMessage
 } = organisationSlice.actions

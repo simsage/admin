@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {showDeleteForm, closeDeleteForm, deleteOrganisation} from "./organisationSlice";
+import {closeDeleteForm, deleteOrganisation} from "./organisationSlice";
 
 
 export default function OrganisationDeleteAsk(){
@@ -19,7 +19,7 @@ export default function OrganisationDeleteAsk(){
         dispatch(closeDeleteForm());
     }
 
-    function handleDelete(org_id) {
+    function handleDelete() {
         dispatch(deleteOrganisation({session_id: session_id, organisation_id: org_to_delete.id}))
         dispatch(closeDeleteForm());
         console.log("handleRemoveOrganisation")

@@ -19,7 +19,7 @@ export function SourceStartDialog() {
         dispatch(closeForm());
     }
 
-    const title = "Start crawler";
+    // const title = "Start crawler";
     const source_name = (selected_source)?selected_source.name:'';
     const message = `Are you sure you want to start '${source_name}'? `;
 

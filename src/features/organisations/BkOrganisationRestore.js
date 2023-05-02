@@ -1,5 +1,5 @@
 import {useForm} from "react-hook-form";
-import {restoreOrganisation, updateOrganisation} from "./organisationSlice";
+import {restoreOrganisation} from "./organisationSlice";
 import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -8,7 +8,7 @@ export default function BkOrganisationRestore(props) {
     const [file_type, setFileType] = useState();
     const [file_data, setFileData] = useState();
 
-    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
+    const {register, handleSubmit,  formState: {errors}} = useForm();
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
     const session = useSelector((state) => state.authReducer.session)
 
@@ -22,7 +22,6 @@ export default function BkOrganisationRestore(props) {
         console.log("BkOrganisationRestore onSubmit")
         const formData = new FormData();
         formData.append("file", data.file[0]);
-        console.log(data);
 
         const reader = new FileReader();
         const file = data.file[0];
@@ -33,10 +32,6 @@ export default function BkOrganisationRestore(props) {
             setFileData(reader.result)
         };
         reader.readAsDataURL(file)
-
-        console.log("file_name", file_name)
-        console.log("file_type", file_type)
-        console.log("file_data", file_data)
 
 
         if (file_data && file_name && file_type === 'text/plain') {
@@ -51,20 +46,20 @@ export default function BkOrganisationRestore(props) {
     };
 
 
-    function handleImageChange(e) {
-        e.preventDefault();
-
-        const self = this;
-        const reader = new FileReader();
-        const file = e.target.files[0];
-
-        reader.onloadend = () => {
-            setFilename(file['name'])
-            setFileType(file['type'])
-            setFileData(reader.result)
-        };
-        reader.readAsDataURL(file)
-    }
+    // function handleImageChange(e) {
+    //     e.preventDefault();
+    //
+    //     const self = this;
+    //     const reader = new FileReader();
+    //     const file = e.target.files[0];
+    //
+    //     reader.onloadend = () => {
+    //         setFilename(file['name'])
+    //         setFileType(file['type'])
+    //         setFileData(reader.result)
+    //     };
+    //     reader.readAsDataURL(file)
+    // }
 
     return (
 
