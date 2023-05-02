@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import KnowledgeBaseIntro from "./KnowledgeBaseIntro";
 import {useDispatch, useSelector} from "react-redux";
 import KnowledgeBaseList from "./KnowledgeBaseList";
 import KnowledgeBaseEdit from "./KnowledgeBaseEdit";
@@ -8,14 +7,13 @@ import KnowledgeBaseDeleteInfo from "./KnowledgeBaseDeleteInfo";
 import KnowledgeBaseOptimize from "./KnowledgeBaseOptimize";
 import KnowledgeBaseViewIds from "./KnowledgeBaseViewIds";
 import {getKBList} from "./knowledgeBaseSlice";
-import {getOrganisationList} from "../organisations/organisationSlice";
 
 
 export default function KnowledgeBaseHome() {
 
 
-    const kb_list = useSelector((state) => state.kbReducer.kb_list);
-    const status = useSelector((state) => state.kbReducer.status);
+    // const kb_list = useSelector((state) => state.kbReducer.kb_list);
+    // const status = useSelector((state) => state.kbReducer.status);
     const kb_show_form = useSelector((state) => state.kbReducer.show_form)
     const kb_show_delete_form = useSelector((state) => state.kbReducer.show_delete_form)
     const kb_show_delete_info_form = useSelector((state) => state.kbReducer.show_delete_info_form)

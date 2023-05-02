@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeDelete, showDeleteInfo, deleteRecord, getKBList} from "./knowledgeBaseSlice";
+import {closeDelete, showDeleteInfo, deleteRecord} from "./knowledgeBaseSlice";
 
 export default function KnowledgeBaseDelete(){
 

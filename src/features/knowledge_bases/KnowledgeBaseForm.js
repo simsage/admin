@@ -8,7 +8,7 @@ import {showErrorAlert} from "../alerts/alertSlice";
 import {KnowledgeBaseFormTab} from "./KnowledgeBaseFormTab";
 import TimeSelect from "../../common/time-select";
 
-export default function KnowledgeBaseForm(props) {
+export default function KnowledgeBaseForm() {
 
     //TODO: Speak to Cole regarding highlighting the form errors
 
@@ -77,7 +77,7 @@ export default function KnowledgeBaseForm(props) {
 
     console.log(security_id)
     //Form Hook
-    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
+    const {register, handleSubmit, formState: {errors}, reset} = useForm();
 
     //set default value depends on organisation and show_organisation_form
     useEffect(() => {

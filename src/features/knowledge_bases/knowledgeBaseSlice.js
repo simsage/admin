@@ -120,7 +120,7 @@ export const optimizeIndexes = createAsyncThunk(
 const extraReducers = (builder) => {
     builder
         //getKBList
-        .addCase(getKBList.pending, (state, action) => {
+        .addCase(getKBList.pending, (state) => {
             state.status = "loading";
             state.data_status = 'loading';
         })
@@ -131,13 +131,13 @@ const extraReducers = (builder) => {
             state.kb_original_list = action.payload;
             state.data_status = 'loaded';
         })
-        .addCase(getKBList.rejected, (state, action) => {
+        .addCase(getKBList.rejected, (state) => {
             state.status = "rejected";
             state.data_status = 'rejected';
         })
 
         //deleteRecord
-        .addCase(deleteRecord.pending, (state, action) => {
+        .addCase(deleteRecord.pending, (state) => {
             state.status = "loading"
         })
         .addCase(deleteRecord.fulfilled, (state, action) => {
@@ -145,12 +145,12 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(deleteRecord.rejected, (state, action) => {
+        .addCase(deleteRecord.rejected, (state) => {
             state.status = "rejected"
         })
 
         //addOrUpdate
-        .addCase(addOrUpdate.pending, (state, action) => {
+        .addCase(addOrUpdate.pending, (state) => {
             state.status = "loading"
         })
         .addCase(addOrUpdate.fulfilled, (state, action) => {
@@ -158,7 +158,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(addOrUpdate.rejected, (state, action) => {
+        .addCase(addOrUpdate.rejected, (state) => {
             state.status = "rejected"
         })
 }
