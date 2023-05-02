@@ -9,13 +9,11 @@ import AlertDialogHome from "../alerts/AlertDialogHome";
 import {SourceExport} from "./SourceExport";
 import {SourceImport} from "./SourceImport";
 import {
-    closeForm,
     deleteSource,
     getSources,
     showAddForm,
     showEditForm,
     showExportForm, showImportForm, showProcessFilesAlert, showStartCrawlerAlert, showZipCrawlerAlert,
-    updateSources
 } from "./sourceSlice";
 import {SourceStartDialog} from "./SourceStartDialog";
 import {SourceZipDialog} from "./SourceZipDialog";
@@ -44,7 +42,7 @@ export default function SourceHome(props) {
     let source_list = useSelector((state) => state.sourceReducer.source_list);
     const source_list_status = useSelector((state) => state.sourceReducer.status);
 
-    const show_form_source = useSelector((state) => state.sourceReducer.show_data_form);
+    // const show_form_source = useSelector((state) => state.sourceReducer.show_data_form);
     const show_export_form = useSelector((state) => state.sourceReducer.show_export_form);
     const show_import_form = useSelector((state) => state.sourceReducer.show_import_form);
 
@@ -54,23 +52,23 @@ export default function SourceHome(props) {
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
 
-    const [selectedUser, setSelectedUser] = useState(null);
+    // const [selectedUser, setSelectedUser] = useState(null);
     const [searchFilter,setSearchFilter] = useState('');
-    const [orderFilter,setOrderFilter] = useState('');
+    // const [orderFilter,setOrderFilter] = useState('');
     const [sourceFilter,setSourceFilter] = useState('');
 
 
-    const default_specific_json = '{"metadata_list":[' +
-        '{"key":"created date range","display":"created","metadata":"created","db1":"","db2":"","sort":"true","sortDefault":"desc","sortAscText":"oldest documents first","sortDescText":"newest documents first", "fieldOrder": "0"},' +
-        '{"key":"last modified date ranges","display":"last modified","metadata":"last-modified","db1":"","db2":"","sort":"true","sortDefault":"","sortAscText":"least recently modified","sortDescText":"most recently modified", "fieldOrder": "1"},' +
-        '{"key":"document type","display":"document type","metadata":"document-type","db1":"","db2":"","sort":"","sortDefault":"","sortAscText":"","sortDescText":"", "fieldOrder": "2"}' +
-        ']}';
-
-    const empty_crawler = {
-        id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: false,
-        enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: default_specific_json,
-        processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []
-    };
+    // const default_specific_json = '{"metadata_list":[' +
+    //     '{"key":"created date range","display":"created","metadata":"created","db1":"","db2":"","sort":"true","sortDefault":"desc","sortAscText":"oldest documents first","sortDescText":"newest documents first", "fieldOrder": "0"},' +
+    //     '{"key":"last modified date ranges","display":"last modified","metadata":"last-modified","db1":"","db2":"","sort":"true","sortDefault":"","sortAscText":"least recently modified","sortDescText":"most recently modified", "fieldOrder": "1"},' +
+    //     '{"key":"document type","display":"document type","metadata":"document-type","db1":"","db2":"","sort":"","sortDefault":"","sortAscText":"","sortDescText":"", "fieldOrder": "2"}' +
+    //     ']}';
+    //
+    // const empty_crawler = {
+    //     id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: false,
+    //     enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: default_specific_json,
+    //     processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []
+    // };
 
     const [selected_source, setSelectedSource] = useState(undefined)
     const [button_clicked, setButtonClicked] = useState(undefined);
@@ -86,9 +84,9 @@ export default function SourceHome(props) {
 
 
     function getCrawlers() {
-        const paginated_list = [];
-        const first = page * page_size;
-        const last = first + parseInt(page_size);
+        // const paginated_list = [];
+        // const first = page * page_size;
+        // const last = first + parseInt(page_size);
 
         // console.log("source_list",source_list);
         // source_list.sort((a, b) => { return a.sourceId - b.sourceId });
@@ -106,9 +104,6 @@ export default function SourceHome(props) {
         return source_list;
     }
 
-    function handleAddCrawler() {
-        dispatch(showAddForm());
-    }
 
     function handleEditCrawler(source) {
         if (source) {
@@ -226,12 +221,12 @@ export default function SourceHome(props) {
         return false;
     }
 
-    function onUpdate(crawler) {
-        // this.setState({selected_source: crawler});
-        // setSelectedSource(crawler)
-        console.log(crawler)
-        console.log(crawler.url)
-    }
+    // function onUpdate(crawler) {
+    //     // this.setState({selected_source: crawler});
+    //     // setSelectedSource(crawler)
+    //     console.log(crawler)
+    //     console.log(crawler.url)
+    // }
 
     // function deleteCrawler(action) {
     //     if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
@@ -242,21 +237,21 @@ export default function SourceHome(props) {
     //     }
     // }
 
-    function saveCrawler(crawler) {
-        if (crawler) {
-            console.log("crawler.sourceID :", crawler)
-            console.log("crawler.sourceID :", crawler.sourceId)
-            console.log("crawler.organisationId :", crawler.organisationId)
-            console.log("crawler.kbId :", crawler.kbId)
-
-            dispatch(updateSources({session_id: session.id, data: crawler}))
-        }
-
-    }
-
-    function canDeleteDocuments(crawler) {
-        return crawler.crawlerType !== 'wordpress';
-    }
+    // function saveCrawler(crawler) {
+    //     if (crawler) {
+    //         console.log("crawler.sourceID :", crawler)
+    //         console.log("crawler.sourceID :", crawler.sourceId)
+    //         console.log("crawler.organisationId :", crawler.organisationId)
+    //         console.log("crawler.kbId :", crawler.kbId)
+    //
+    //         dispatch(updateSources({session_id: session.id, data: crawler}))
+    //     }
+    //
+    // }
+    //
+    // function canDeleteDocuments(crawler) {
+    //     return crawler.crawlerType !== 'wordpress';
+    // }
 
     function saveExport(crawler_str) {
         if (crawler_str && this.state.export_upload) {
@@ -266,42 +261,42 @@ export default function SourceHome(props) {
         }
         this.setState({export_open: false, selected_source: {}});
     }
-
-    function zipSource(action) {
-        if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
-            const crawler = this.state.crawler_ask;
-            this.props.zipSource(crawler);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-    }
-
-    function startCrawler(action) {
-        if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
-            const crawler = this.state.crawler_ask;
-            this.props.startCrawler(crawler);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-    }
-
-    function resetCrawlers(action) {
-        if (action) {
-            this.props.resetCrawlers(selected_organisation_id, selected_knowledge_base_id);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-    }
-
-    //handle form close or cancel
-    const handleClose = () => {
-        // clearFormData();
-        console.log("handleClose Source Home")
-        dispatch(closeForm);
-    }
+    //
+    // function zipSource(action) {
+    //     if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
+    //         const crawler = this.state.crawler_ask;
+    //         this.props.zipSource(crawler);
+    //     }
+    //     if (this.props.closeDialog) {
+    //         this.props.closeDialog();
+    //     }
+    // }
+    //
+    // function startCrawler(action) {
+    //     if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
+    //         const crawler = this.state.crawler_ask;
+    //         this.props.startCrawler(crawler);
+    //     }
+    //     if (this.props.closeDialog) {
+    //         this.props.closeDialog();
+    //     }
+    // }
+    //
+    // function resetCrawlers(action) {
+    //     if (action) {
+    //         this.props.resetCrawlers(selected_organisation_id, selected_knowledge_base_id);
+    //     }
+    //     if (this.props.closeDialog) {
+    //         this.props.closeDialog();
+    //     }
+    // }
+    //
+    // //handle form close or cancel
+    // const handleClose = () => {
+    //     // clearFormData();
+    //     console.log("handleClose Source Home")
+    //     dispatch(closeForm);
+    // }
 
     function handleAddForm(){
         console.log("handleAddNew")
@@ -317,37 +312,37 @@ export default function SourceHome(props) {
         // }
     }
 
-    function handleResetCrawlers() {
-
-        setButtonClicked('reset_crawlers')
-        this.props.openDialog("Are you sure you want to reset all crawlers?  This will clear crawler schedules, and mark their files as out-of-date.",
-            "Reset Crawlers", (action) => {
-                this.resetCrawlers(action)
-            });
-    }
+    // function handleResetCrawlers() {
+    //
+    //     setButtonClicked('reset_crawlers')
+    //     this.props.openDialog("Are you sure you want to reset all crawlers?  This will clear crawler schedules, and mark their files as out-of-date.",
+    //         "Reset Crawlers", (action) => {
+    //             this.resetCrawlers(action)
+    //         });
+    // }
 
     function setError(title, errStr) {
     }
 
-    function wpUploadArchive(data) {
-    }
+    // function wpUploadArchive(data) {
+    // }
+    //
+    // function message_callback(action) {
+    // }
 
-    function message_callback(action) {
-    }
-
-    const open = show_form_source;
-    const source_title = 'Add/Edit Source';
-    const group_list = [];
-    const edge_device_list = [];
-    // const error_title = ''
-    // const error_msg = ''
-    const testCrawler = null
+    // const open = show_form_source;
+    // const source_title = 'Add/Edit Source';
+    // const group_list = [];
+    // const edge_device_list = [];
+    // // const error_title = ''
+    // // const error_msg = ''
+    // const testCrawler = null
 
     const export_open = false;
     const export_upload = false;
 
-    const message = ""
-    const message_title = "message_title"
+    // const message = ""
+    // const message_title = "message_title"
 
     return (
         <div className="section px-5 pt-4">
