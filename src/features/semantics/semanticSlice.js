@@ -65,7 +65,7 @@ export const deleteSemantic = createAsyncThunk(
 
 const extraReducers = (builder) => {
     builder
-        .addCase(loadSemantics.pending, (state, action) => {
+        .addCase(loadSemantics.pending, (state) => {
             state.status = "loading";
             state.data_status = "loading";
         })
@@ -84,7 +84,7 @@ const extraReducers = (builder) => {
         })
 
         //update semantics
-        .addCase(updateSemantics.pending, (state, action) => {
+        .addCase(updateSemantics.pending, (state) => {
             state.status = "loading";
             state.data_status = "loading";
         })
@@ -99,7 +99,7 @@ const extraReducers = (builder) => {
             state.data_status = "rejected";
         })
         //delete semantic
-        .addCase(deleteSemantic.pending, (state, action) => {
+        .addCase(deleteSemantic.pending, (state) => {
             state.status = "loading";
             state.data_status = "loading";
         })
@@ -108,7 +108,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
-        .addCase(deleteSemantic.rejected, (state, action) => {
+        .addCase(deleteSemantic.rejected, (state) => {
             state.status = "rejected"
             state.data_status = "rejected";
         })
@@ -125,7 +125,7 @@ const semanticSlice = createSlice({
         showAddSemanticForm:(state, action) => {
             state.show_semantic_form = action.payload;
         },
-        closeSemanticForm:(state, action) => {
+        closeSemanticForm:(state) => {
             state.show_semantic_form = false;
             state.edit = undefined;
         },
@@ -133,7 +133,7 @@ const semanticSlice = createSlice({
             state.show_delete_form = action.payload.show;
             state.edit = action.payload.semantic;
         },
-        closeDeleteForm:(state, action) => {
+        closeDeleteForm:(state) => {
             state.show_delete_form = false;
             state.edit = undefined;
         }

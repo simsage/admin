@@ -4,7 +4,7 @@ export default function SemanticsFilter(props) {
 
     const theme = null;
 
-    const [selectedUser, setSelectedUser] = useState(null);
+    // const [selectedUser, setSelectedUser] = useState(null);
     const [searchFilter,setSearchFilter] = useState('');
     const [orderFilter,setOrderFilter] = useState('');
     const [semanticsFilter,setSemanticsFilter] = useState('');

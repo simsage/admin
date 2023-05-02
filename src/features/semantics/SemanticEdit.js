@@ -31,9 +31,9 @@ export function SemanticEdit(){
         setWord('');
         setSemanticType('');
 
-    };
+    }
 
-    function handleClose(e){
+    function handleClose(){
         dispatch(closeSemanticForm())
         resetData()
     }

@@ -19,7 +19,7 @@ export default function SemanticDeleteAsk(){
 
     const handleDelete = () => {
         console.log("delete", semantic);
-        const data = {"session_id": session_id, "organisation_id": organisation_id, "knowledge_base_id": knowledgeBase_id };
+        // const data = {"session_id": session_id, "organisation_id": organisation_id, "knowledge_base_id": knowledgeBase_id };
         console.log("delete data",semantic)
 
         dispatch(deleteSemantic({session_id:session_id, organisation_id: organisation_id, knowledge_base_id: knowledgeBase_id, word: semantic.word}))

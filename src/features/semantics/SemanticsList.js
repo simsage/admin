@@ -7,8 +7,8 @@ import SemanticDeleteAsk from "./SemanticDeleteAsk";
 import api from "../../common/api";
 
 
-export default function SemanticsHome(props) {
-    const title = "Semantics";
+export default function SemanticsHome() {
+    // const title = "Semantics";
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
@@ -95,12 +95,12 @@ console.log("page",prev_word)
         dispatch(loadSemantics({ session_id, data }));
     }
 
-    function handleSearchTextKeydown(event)
-    {
-        if (event.key === "Enter") {
-            filterSemantic();
-        }
-    }
+    // function handleSearchTextKeydown(event)
+    // {
+    //     if (event.key === "Enter") {
+    //         filterSemantic();
+    //     }
+    // }
 
     function handleEditSemantic(semantic)
     {
