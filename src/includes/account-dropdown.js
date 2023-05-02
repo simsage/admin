@@ -35,7 +35,7 @@ const AccountDropdown = (props) => {
             dispatch(setSelectedOrganisation(org));
             dispatch(getKBList({session_id: session_id, organization_id: org_id}));
             dispatch(selectTab('home'))
-            dispatch(setSelectedKB(undefined))
+            //dispatch(setSelectedKB(undefined))
         }
     }
 

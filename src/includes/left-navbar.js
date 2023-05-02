@@ -34,20 +34,12 @@ export default function LeftNavbar(){
         }
         dispatch(setSelectedKB(kb_id))
 
-        // if(kb_id !== undefined){
-        //     switch (selected_tab) {
-        //         case "document-management" :
-        //             dispatch(getSources({session_id:session.id,organisation_id:selected_organisation_id,kb_id:kb_id}))
-        //             break;
-        //     }
-        // }
-
     }
 
-    useEffect(()=>{
-        console.log("LeftSidebarNavItem Left Nav")
-        selected_kb_id = "";
-    },[selected_organisation_id])
+    // useEffect(()=>{
+    //     console.log("LeftSidebarNavItem Left Nav")
+    //     selected_kb_id = "";
+    // },[selected_organisation_id])
 
     return (
         <div className="sidebar no-select">
@@ -65,7 +57,7 @@ export default function LeftNavbar(){
                 {(kb_list !== {} && kb_list.length > 0) &&
                 <>
                     <li className="px-3 pt-3 pb-2 border-top">
-                        <select value={selected_kb_id} className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
+                        <select  className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
                             <option value="">Select Knowledge Base</option>
                             {kb_list.map((item,i) => {
                                 return <option key={i} value={item.kbId}>{item.name}</option>
