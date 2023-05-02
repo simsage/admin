@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeDeleteForm, deleteUser, getUserList} from "./usersSlice";
+import {closeDeleteForm, deleteUser} from "./usersSlice";
 
 
 export default function UserDeleteAsk(){

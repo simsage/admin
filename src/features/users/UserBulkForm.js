@@ -1,17 +1,10 @@
-import {useDispatch, useSelector} from "react-redux";
-import {closeUserBulkForm} from "./usersSlice";
+import {useSelector} from "react-redux";
 
 import UserBulk from "./UserBulk";
 
 export function UserBulkForm( ){
 
-    const dispatch = useDispatch();
-
     const show_user_bulk_form = useSelector((state) => state.usersReducer.show_user_bulk_form)
-
-    function handleClose(e){
-        dispatch(closeUserBulkForm())
-    }
 
     const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType })
@@ -53,9 +46,9 @@ export function UserBulkForm( ){
                     <div className="modal-body text-center">
                         <div className="control-row mb-4">
                             <span className="label-wide me-2 fw-500">Import Bulk Users</span>
-                            <a  className="link-primary text-decoration-underline pointer-cursor small fst-italic" onClick={exportToCsv}>
+                            <div className="link-primary text-decoration-underline pointer-cursor small fst-italic" onClick={exportToCsv}>
                                 (Download Bulk User template)
-                            </a>
+                            </div>
                         </div>
                         <div className="control-row">
                             <UserBulk/>

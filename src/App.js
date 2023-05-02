@@ -4,10 +4,9 @@ import LeftNavbar from "./includes/left-navbar";
 import Header from "./includes/header";
 import {useSelector, useDispatch} from "react-redux";
 import {PageLayout} from "./features/auth/pageLayout";
-import {AuthenticatedTemplate, UnauthenticatedTemplate} from "@azure/msal-react";
+import {AuthenticatedTemplate} from "@azure/msal-react";
 import {closeAllMenus} from "./features/auth/authSlice";
 import MainSection from "./components/MainSection";
-import {getOrganisationList} from "./features/organisations/organisationSlice";
 
 
 function App() {
@@ -19,7 +18,6 @@ function App() {
     }
 
     const busy = false;
-    const {user, session} = useSelector((state) => state.authReducer)
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
     const status = useSelector((state) => state.organisationReducer.status);
 

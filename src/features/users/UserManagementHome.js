@@ -1,12 +1,10 @@
 import React, {useState} from "react";
-import {useSelector} from "react-redux";
 import {UsersHome} from "./UsersHome";
 import SubNav from "../../includes/sub-nav";
 import GroupHome from "../groups/GroupHome";
 
 export function UserManagementHome(){
 
-    const theme = null;
     const [selected_sub_nav, setSelectedSubNav] = useState('users')
 
     const sub_nav = [

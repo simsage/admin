@@ -21,8 +21,8 @@ if (wl.lastIndexOf('/') > 8) {
 export const msalConfig = {
     auth: {
         clientId: window.ENV.client_id,
-        authority: window.ENV.authority,
-        knownAuthorities: ["https://simsageapi.b2clogin.com"],
+        authority: window.ENV.full_authority,
+        knownAuthorities: [window.ENV.known_authority],
         redirectUri: wl
     },
     cache: {

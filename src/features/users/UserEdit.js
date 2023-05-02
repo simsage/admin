@@ -3,22 +3,14 @@ import {useState, useEffect} from "react";
 import {closeUserForm,updateUser} from "./usersSlice";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
-import {hasRole} from "../../common/helpers";
-import {getGroupList} from "../groups/groupSlice";
-import {set} from "react-hook-form";
 import SubNav from "../../includes/sub-nav";
 
-export function UserEdit( {filter} ){
-
-    const mockUserContainerStyles = {display: "inline-block", background: "whitesmoke", border: "2px solid black" ,minHeight:"300px", minWidth:"300px", padding:"1rem"}
-
+export function UserEdit(){
 
     const dispatch = useDispatch();
 
     const session = useSelector((state) => state.authReducer.session);
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-
-    const [selected_sub_nav, setSelectedSubNav] = useState('users')
 
     const sub_nav = [
         {label: "Details", slug:"details" },

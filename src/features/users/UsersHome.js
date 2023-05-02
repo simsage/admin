@@ -5,12 +5,11 @@ import {
     showAddUserForm,
     showDeleteUserAsk,
     showEditUserForm,
-    orderBy,
     showUserBulkForm, getUserListPaginated
 } from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import Api from "../../common/api";
-import {formatRoles, hasRole} from "../../common/helpers";
+import {hasRole} from "../../common/helpers";
 import UserDeleteAsk from "./UserDeleteAsk";
 import {UserBulkForm} from "./UserBulkForm";
 import api from "../../common/api";
@@ -22,7 +21,6 @@ export function UsersHome(){
 
     const [selectedUser, setSelectedUser] = useState();
     const [searchFilter,setSearchFilter] = useState('');
-    const [orderFilter,setOrderFilter] = useState();
     const [userFilter,setUserFilter] = useState('all-users');
 
     const theme = null;
@@ -31,7 +29,6 @@ export function UsersHome(){
 
     const user_account = useSelector((state) => state.authReducer.user)
     const user_list = useSelector((state) => state.usersReducer.user_list)
-    const user_list_status = useSelector((state) => state.usersReducer.status)
     const session = useSelector((state)=>state.authReducer.session)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
     const load_data = useSelector((state) => state.usersReducer.data_status)
@@ -42,7 +39,7 @@ export function UsersHome(){
 
     useEffect(()=>{
         dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:null}))
-    },[load_data === "load_now",page,page_size])
+    },[load_data === "load_now", page, page_size])
 
     function handleSearchTextKeydown(e) {
         if (e.key === "Enter"  && selected_organisation_id) {
@@ -65,11 +62,6 @@ export function UsersHome(){
 
     function handleUserBulk(){
         dispatch(showUserBulkForm());
-    }
-
-    function handleOrderBy(e) {
-        const val = e.target.value;
-        dispatch(orderBy({order_by: val}))
     }
 
     function deleteUserAsk(u){

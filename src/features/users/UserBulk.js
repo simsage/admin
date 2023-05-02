@@ -8,7 +8,7 @@ export default function UserBulk() {
     const [file_type, setFileType] = useState();
     const [file_data, setFileData] = useState();
 
-    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
+    const {register, handleSubmit, formState: {errors}} = useForm();
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
     const session = useSelector((state) => state.authReducer.session)
 
