@@ -1,14 +1,13 @@
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Pagination} from "../../common/pagination";
 import {
-    getKBList,
     setViewIds,
     showAddForm,
     showEditForm,
     showDeleteAskForm,
     showOptimizeAskDialog,
-    search, orderBy
+    search
 } from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
 import api from "../../common/api";
@@ -25,13 +24,9 @@ export default function KnowledgeBaseList() {
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
-    const data_status = useSelector((state) => state.kbReducer.data_status)
+    // const data_status = useSelector((state) => state.kbReducer.data_status)
 
     const dispatch = useDispatch()
-
-
-    const [search_filter, setSearchFilter] = useState(undefined)
-    const [order_by_filter, setOrderByFilter] = useState(undefined)
 
 
     function getKnowledgeBases() {
@@ -80,13 +75,6 @@ export default function KnowledgeBaseList() {
         dispatch(search({keyword: val}))
     }
 
-    function handleOrderBy(event) {
-        const val = event.target.value;
-        console.log("handleOrderBy", val)
-        dispatch(orderBy({order_by: val}))
-    }
-
-    console.log("session_id",session_id)
     return (
         <div className="kb-page">
             {isVisible() &&
