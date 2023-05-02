@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export default function AlertBox( {title, message, handleClose, handleOk} ){
+export default function AlertBox( {message, handleClose, handleOk} ){
 
     return (
         <div>
