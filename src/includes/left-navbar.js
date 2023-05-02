@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {selectTab} from "../features/home/homeSlice";
-import React, {useEffect} from "react";
+import React from "react";
 import {setSelectedKB} from "../features/auth/authSlice";
 
 export default function LeftNavbar(){
@@ -21,10 +21,8 @@ export default function LeftNavbar(){
     const dispatch = useDispatch();
 
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
-    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     let selected_kb_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
 
-    // const [kb_option,setKBOption] = useState(kb_list);
 
     function handleSelectKB(e){
         let kb_id = e.target.value;
@@ -35,11 +33,6 @@ export default function LeftNavbar(){
         dispatch(setSelectedKB(kb_id))
 
     }
-
-    // useEffect(()=>{
-    //     console.log("LeftSidebarNavItem Left Nav")
-    //     selected_kb_id = "";
-    // },[selected_organisation_id])
 
     return (
         <div className="sidebar no-select">

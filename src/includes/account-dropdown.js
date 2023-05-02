@@ -6,7 +6,7 @@ import {
     showAddOrganisationForm,
     showEditOrganisationForm
 } from "../features/organisations/organisationSlice";
-import {setSelectedKB, setSelectedOrganisation, simsageLogOut} from "../features/auth/authSlice";
+import {setSelectedOrganisation, simsageLogOut} from "../features/auth/authSlice";
 import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
 import {selectTab} from "../features/home/homeSlice";
 
@@ -35,7 +35,6 @@ const AccountDropdown = (props) => {
             dispatch(setSelectedOrganisation(org));
             dispatch(getKBList({session_id: session_id, organization_id: org_id}));
             dispatch(selectTab('home'))
-            //dispatch(setSelectedKB(undefined))
         }
     }
 
