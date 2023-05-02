@@ -33,9 +33,9 @@ export default function InventoryHome(props) {
 
     const inventory_list = useSelector((state) => state.inventoryReducer.inventory_list);
     const num_inventory_list_items = inventory_list.timeList ? inventory_list.timeList.length : 0
-    console.log('TestingMax', num_inventory_list_items, inventory_list.timeList.length)
+
     const data_status = useSelector((state) => state.inventoryReducer.data_status);
-    const [error, setError] = useState('')
+    // const [error, setError] = useState('')
 
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
@@ -86,42 +86,42 @@ export default function InventoryHome(props) {
             Comms.download_inventorize_dump_spreadhseet(selected_organisation_id, selected_knowledge_base_id, dateTime, session.id);
     }
 
-    function deleteInventorizeAsk(dateTime) {
-        this.setState({date_time: dateTime});
-        this.props.openDialog("are you sure you want to remove the report dated <b>" + Api.unixTimeConvert(dateTime) + "</b>?",
-            "Remove Inventory Report", (action) => {
-                deleteReport(action)
-            });
-    }
+    // function deleteInventorizeAsk(dateTime) {
+    //     this.setState({date_time: dateTime});
+    //     this.props.openDialog("are you sure you want to remove the report dated <b>" + Api.unixTimeConvert(dateTime) + "</b>?",
+    //         "Remove Inventory Report", (action) => {
+    //             deleteReport(action)
+    //         });
+    // }
+    //
+    // function deleteReport(action) {
+    //     if (action) {
+    //         this.props.deleteInventoryItem(this.state.date_time);
+    //     }
+    //     if (this.props.closeDialog) {
+    //         this.props.closeDialog();
+    //     }
+    // }
 
-    function deleteReport(action) {
-        if (action) {
-            this.props.deleteInventoryItem(this.state.date_time);
-        }
-        if (this.props.closeDialog) {
-            this.props.closeDialog();
-        }
-    }
-
-    function restore(data) {
-        if (data) {
-            this.setState({uploading: true});
-            Api.restore(data,
-                () => {
-                    this.setState({
-                        uploading: false,
-                        message_title: "Success",
-                        message: "data restored",
-                        message_callback: () => {
-                            this.setState({message: "", message_title: ""})
-                        }
-                    });
-                },
-                (errStr) => {
-                    setError("Error", errStr);
-                })
-        }
-    }
+    // function restore(data) {
+    //     if (data) {
+    //         this.setState({uploading: true});
+    //         Api.restore(data,
+    //             () => {
+    //                 this.setState({
+    //                     uploading: false,
+    //                     message_title: "Success",
+    //                     message: "data restored",
+    //                     message_callback: () => {
+    //                         this.setState({message: "", message_title: ""})
+    //                     }
+    //                 });
+    //             },
+    //             (errStr) => {
+    //                 setError("Error", errStr);
+    //             })
+    //     }
+    // }
 
     function isVisible() {
         return selected_organisation_id && selected_organisation_id.length > 0 &&
@@ -141,27 +141,6 @@ export default function InventoryHome(props) {
         else return name;
     }
 
-    //todo::getInventoryList
-    function getInventoryList() {
-        console.log("refresh the inventory list")
-    }
-
-    //todo::getInventoryBusy
-    function getInventoryBusy() {
-        console.log("refresh the inventory list")
-    }
-
-    //todo::forceInventoryBusy
-    function forceInventoryBusy() {
-        console.log("forceInventoryBusy")
-    }
-
-    //todo::createIndexInventory
-    function createIndexInventory() {
-        console.log("createIndexInventory")
-    }
-
-//-------------------------------
 
 
     function handleCreateDocumentSnapshot() {

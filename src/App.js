@@ -1,8 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 
 import LeftNavbar from "./includes/left-navbar";
 import Header from "./includes/header";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import {PageLayout} from "./features/auth/pageLayout";
 import {AuthenticatedTemplate} from "@azure/msal-react";
 import {closeAllMenus} from "./features/auth/authSlice";
@@ -18,19 +18,17 @@ function App() {
     }
 
     const busy = false;
-    const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
-    const status = useSelector((state) => state.organisationReducer.status);
-
-    const org_filter = null;
-
-    useEffect(() => {
-        if (organisation_list === {}) {
-            console.log("getOrganisationList in App")
-            // dispatch(getOrganisationList({session,org_filter}))
-            //    todo show error
-            console.error("organisation_list is empty")
-        }
-    }, [status])
+    // const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
+    // const status = useSelector((state) => state.organisationReducer.status);
+    //
+    // useEffect(() => {
+    //     if (organisation_list === {}) {
+    //         console.log("getOrganisationList in App")
+    //         // dispatch(getOrganisationList({session,org_filter}))
+    //         //    todo show error
+    //         console.error("organisation_list is empty")
+    //     }
+    // }, [status])
 
     // console.log("App organisation_list",organisation_list)
     return (
