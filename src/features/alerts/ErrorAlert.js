@@ -1,12 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeError} from "../auth/authSlice";
 import {closeAlert} from "./alertSlice";
 
 export default function ErrorAlert(props){
 
     console.log("showErrorAlert: load page")
     const show_alert = useSelector((state) => state.alertReducer.show_alert)
-    const alert_type = useSelector((state) => state.alertReducer.alert_type)
     const title = useSelector((state) => state.alertReducer.title)
     const message = useSelector((state) => state.alertReducer.message)
 

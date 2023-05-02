@@ -19,14 +19,14 @@ const initialState = {
 
 
 const reducers = {
-    showAlert: (state, action) => {
-        state.show_alert = true
-        //default alert_type = 'alert-warning'
-        state.alert_type = action.payload.alert_type ? action.payload.alert_type : 'alert-warning'
-        state.title = action.payload.title
-        state.message = action.payload.message
-        console.log("Alert: ", state.alert_type, ' | ', state.title, ' | ', state.message)
-    },
+    // showAlert: (state, action) => {
+    //     state.show_alert = true
+    //     //default alert_type = 'alert-warning'
+    //     state.alert_type = action.payload.alert_type ? action.payload.alert_type : 'alert-warning'
+    //     state.title = action.payload.title
+    //     state.message = action.payload.message
+    //     console.log("Alert: ", state.alert_type, ' | ', state.title, ' | ', state.message)
+    // },
 
     showErrorAlert: (state, action) => {
 
@@ -39,21 +39,21 @@ const reducers = {
         console.log("Error Alert: ", state.title, ' => ', state.message)
     },
 
-    showDangerAlert: (state, action) => {
-        state.show_alert = true
-        state.alert_type = 'alert-danger'
-        state.title = action.payload.title
-        state.message = action.payload.message
-        console.log("Error Alert: ", state.title, ' => ', state.message)
-    },
-
-    showWarningAlert: (state, action) => {
-        state.show_alert = true
-        state.alert_type = 'alert-warning'
-        state.title = action.payload.title
-        state.message = action.payload.message
-        console.log("Error Alert showWarningAlert: ", state.title, ' => ', state.message)
-    },
+    // showDangerAlert: (state, action) => {
+    //     state.show_alert = true
+    //     state.alert_type = 'alert-danger'
+    //     state.title = action.payload.title
+    //     state.message = action.payload.message
+    //     console.log("Error Alert: ", state.title, ' => ', state.message)
+    // },
+    //
+    // showWarningAlert: (state, action) => {
+    //     state.show_alert = true
+    //     state.alert_type = 'alert-warning'
+    //     state.title = action.payload.title
+    //     state.message = action.payload.message
+    //     console.log("Error Alert showWarningAlert: ", state.title, ' => ', state.message)
+    // },
 
     showDeleteAlert: (state, action) => {
         state.show_alert = true
@@ -63,13 +63,13 @@ const reducers = {
         console.log("Error Alert showWarningAlert: ", state.title, ' => ', state.message)
     },
 
-    showSuccessAlert: (state, action) => {
-        state.show_alert = true
-        state.alert_type = 'alert-success'
-        state.title = action.payload.title
-        state.message = action.payload.message
-        console.log("Error Alert: ", state.title, ' => ', state.message)
-    },
+    // showSuccessAlert: (state, action) => {
+    //     state.show_alert = true
+    //     state.alert_type = 'alert-success'
+    //     state.title = action.payload.title
+    //     state.message = action.payload.message
+    //     console.log("Error Alert: ", state.title, ' => ', state.message)
+    // },
 
     closeAlert: (state) => {
         state.show_alert = false
@@ -91,5 +91,5 @@ const alertSlice = createSlice({
     extraReducers
 });
 
-export const {showAlert, showDangerAlert, showErrorAlert, showDeleteAlert, showWarningAlert, closeAlert} = alertSlice.actions
+export const {  showErrorAlert, showDeleteAlert, closeAlert} = alertSlice.actions
 export default alertSlice.reducer;
