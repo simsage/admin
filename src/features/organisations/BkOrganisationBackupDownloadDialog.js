@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {
-    closeBackupDeleteMessage, closeBackupDownloadMessage,
-    deleteBackup, downloadBackup,
+     closeBackupDownloadMessage,
+     downloadBackup,
 } from "./organisationSlice";
 import Api from "../../common/api";
 
@@ -20,10 +20,7 @@ export default function BkOrganisationBackupDownloadDialog(props) {
     }
 
     const handleDownload = () => {
-        console.log("selected_backup", selected_backup.name)
-        console.log("selected_backup", selected_backup.backupId)
         dispatch(downloadBackup({session:session, organisation_id: selected_backup.organisationId, backup_id:selected_backup.backupId}))
-
         dispatch(closeBackupDownloadMessage());
 
         if(downloaded_backup && downloaded_backup.backupId && downloaded_backup.data){
@@ -39,55 +36,6 @@ export default function BkOrganisationBackupDownloadDialog(props) {
             element.click();
             document.body.removeChild(element);
         }
-    }
-
-    //
-    // function download(filename, text) {
-    //     var element = document.createElement('a');
-    //     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    //     element.setAttribute('download', filename);
-    //
-    //     element.style.display = 'none';
-    //     document.body.appendChild(element);
-    //
-    //     element.click();
-    //
-    //     document.body.removeChild(element);
-    // }
-
-
-    function download(){
-
-    }
-    function getBackup(backup) {
-        if (backup && backup.backupId) {
-            let dateStr = Api.unixTimeForFilename(backup.backupId);
-            const filename = "backup-" +  dateStr + ".txt"
-            this.props.getBackup(backup.backupId, (backup_response) => {
-                if (backup_response && backup_response.data) {
-                    var element = document.createElement('a');
-                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(backup_response.data));
-                    element.setAttribute('download', filename);
-                    element.style.display = 'none';
-                    document.body.appendChild(element);
-                    element.click();
-                    document.body.removeChild(element);
-                }
-            });
-        }
-    }
-
-
-    const handleDelete = () => {
-
-        const data = {
-            session_id:session.id,
-            organisation_id:selected_backup.organisationId,
-            backup_id:selected_backup.backupId
-        }
-        console.log("data",data)
-        dispatch(deleteBackup(data))
-        dispatch(closeBackupDeleteMessage());
     }
 
     if (!show_download_backup_form)

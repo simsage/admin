@@ -1,9 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {
-    backupOrganisation,
-    closeBackupDeleteMessage,
-    closeBackupForm,
-    closeBackupProgressMessage, deleteBackup
+    closeBackupDeleteMessage, deleteBackup
 } from "./organisationSlice";
 import Api from "../../common/api";
 
@@ -21,14 +18,11 @@ export default function BkOrganisationBackupDeleteDialog(props) {
     }
 
     const handleDelete = () => {
-        console.log("selected_backup", selected_backup.name)
-        console.log("selected_backup", selected_backup.backupId)
         const data = {
             session_id:session.id,
             organisation_id:selected_backup.organisationId,
             backup_id:selected_backup.backupId
         }
-        console.log("data",data)
         dispatch(deleteBackup(data))
         dispatch(closeBackupDeleteMessage());
     }
