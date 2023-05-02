@@ -1,14 +1,12 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import Api from "../../common/api";
-import DocumentFilter from "./DocumentFilter";
 import {hasRole} from "../../common/helpers";
 import {Pagination} from "../../common/pagination";
-import {loadDocumentList} from "./documentSlice";
 
 
 export default function DocumentsHome(props) {
-    const title = "Documents";
+    // const title = "Documents";
     const maxUrlDisplayLength = 50;
     const document_list = useSelector((state) => state.documentReducer.document_list)
     const theme = '';
@@ -17,7 +15,7 @@ export default function DocumentsHome(props) {
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const session = useSelector((state) => state.authReducer.session);
-    const session_id = session.id;
+    // const session_id = session.id;
     const [document_page, setDocPage] = useState(0)
     const [document_page_size, setDocPageSize] = useState(useSelector((state) => state.documentReducer.document_page_size))
     const [document_count, setDocumentCount] = useState(useSelector((state) => state.documentReducer.document_page_size))

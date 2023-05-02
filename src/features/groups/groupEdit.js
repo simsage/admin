@@ -1,5 +1,3 @@
-import {Chip} from "../../components/Chip";
-import Api from "../../common/api";
 import {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import {closeGroupForm, getGroupList, updateGroup} from "./groupSlice";
@@ -25,7 +23,7 @@ export default function GroupEdit(){
 
     //dummy data
     const edit_group_id = false;
-    const mockUserContainerStyles = {display: "inline-block", background: "whitesmoke", border: "2px solid black" ,minHeight:"400px", minWidth:"300px", padding:"1rem"}
+    // const mockUserContainerStyles = {display: "inline-block", background: "whitesmoke", border: "2px solid black" ,minHeight:"400px", minWidth:"300px", padding:"1rem"}
     //dummydata End
 
     // Grab Group details if editing

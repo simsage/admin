@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
-import {getSimSageStatus} from "../status/statusSlice";
+// import {getSimSageStatus} from "../status/statusSlice";
 
 const initialState = {
     document_list: [],
@@ -20,7 +20,7 @@ const reducers = {
 
 const extraReducers = (builder) => {
     builder
-        .addCase(loadDocumentList.pending, (state, action) => {
+        .addCase(loadDocumentList.pending, (state) => {
             state.status = "loading"
         })
 
@@ -78,7 +78,7 @@ export const loadDocumentList = createAsyncThunk(
 );
 
 
-export const {} = documentSlice.actions;
+// export const {} = documentSlice.actions;
 export default documentSlice.reducer;
 
 

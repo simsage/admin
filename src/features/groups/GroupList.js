@@ -25,7 +25,7 @@ export default function GroupList(){
     const user = useSelector((state) => state.authReducer.user)
     const group_list = useSelector((state) => state.groupReducer.group_list)
     //const group_list = group_list_parent ? group_list_parent.groupList : group_list_parent;
-    const group_list_status = useSelector((state) => state.groupReducer.status)
+    // const group_list_status = useSelector((state) => state.groupReducer.status)
     const session = useSelector((state)=>state.authReducer.session)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
 

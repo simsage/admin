@@ -12,7 +12,6 @@ export default function GroupDeleteAsk(){
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
 
     const group = useSelector( (state) => state.groupReducer.edit_group);
-    const user_list = useSelector((state) => state.usersReducer.user_list)
 
 
     //handle form close or cancel

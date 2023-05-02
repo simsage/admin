@@ -242,7 +242,7 @@ export function BotEdit(){
                                 {
                                     links && links.map( (link,i) => {
                                         console.log(link)
-                                        if (link === '') {return;}
+                                        if (link === '') {return '</div>';}
                                         return (
                                             <div className="control-row col-12 mb-2" key={i}>
 

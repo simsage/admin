@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import SubNav from "../../includes/sub-nav";
 import SourceHome from "../sources/SourceHome";
 import InventoryHome from "../inventory/InventoryHome";
-import DocumentsHome from "./DocumentsHome";
+// import DocumentsHome from "./DocumentsHome";
 
 export default function DocumentManagementHome(){
-    const title = "Document Management";
+    // const title = "Document Management";
     const [selected_sub_nav, setSelectedSubNav] = useState('sources')
 
     const sub_nav = [

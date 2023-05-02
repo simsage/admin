@@ -79,7 +79,7 @@ export const deleteGroup = createAsyncThunk(
 const extraReducers = (builder) => {
     builder
         //GET GROUPS
-        .addCase(getGroupList.pending, (state, action) => {
+        .addCase(getGroupList.pending, (state) => {
             state.status = "loading"
             state.data_status = "loading"
         })
@@ -89,12 +89,12 @@ const extraReducers = (builder) => {
             state.data_status = "loaded"
             state.group_list = action.payload
         })
-        .addCase(getGroupList.rejected, (state, action) => {
+        .addCase(getGroupList.rejected, (state) => {
             state.status = "rejected"
             state.data_status = "rejected"
         })
         //UPDATE GROUPS
-        .addCase(updateGroup.pending, (state, action) => {
+        .addCase(updateGroup.pending, (state) => {
             state.status = "Loading";
             state.data_status = "loading";
         })
@@ -103,12 +103,12 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
-        .addCase(updateGroup.rejected, (state, action) => {
+        .addCase(updateGroup.rejected, (state) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
         //DELETE GROUPS
-        .addCase(deleteGroup.pending, (state, action) => {
+        .addCase(deleteGroup.pending, (state) => {
             state.status = "Loading";
             state.data_status = "loading";
         })
@@ -117,7 +117,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
-        .addCase(deleteGroup.rejected, (state, action) => {
+        .addCase(deleteGroup.rejected, (state) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
@@ -143,7 +143,7 @@ const groupSlice = createSlice({
             state.show_delete_form = action.payload.show;
             state.edit_group = action.payload.group
         },
-        closeDeleteForm: (state, action) => {
+        closeDeleteForm: (state) => {
             state.show_delete_form = false;
             state.edit_group = undefined
         },
@@ -151,7 +151,7 @@ const groupSlice = createSlice({
             state.show_error_message = true;
             state.error_message = action.payload;
         },
-        closeErrorMessage: (state, action) => {
+        closeErrorMessage: (state) => {
             state.show_error_message = false;
             state.error_message = undefined;
         }
