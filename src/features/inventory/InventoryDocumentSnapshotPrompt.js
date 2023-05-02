@@ -13,7 +13,7 @@ export function InventoryDocumentSnapshotPrompt() {
     const session_id = session.id;
 
 
-    const title = "New Document Snapshot";
+    // const title = "New Document Snapshot";
     let message = 'Are you sure you want to create a new document snapshot?';
 
 

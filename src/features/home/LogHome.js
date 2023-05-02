@@ -22,7 +22,7 @@ const service_list = [
 
 
 export default function LogHome(){
-    const title = "Logs";
+    // const title = "Logs";
 
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session)

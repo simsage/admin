@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeForm, createDocumentSnapshot, deleteRecord} from "./inventorySlice";
+import {closeForm, deleteRecord} from "./inventorySlice";
 import Api from "../../common/api";
 
 export function InventoryDeleteDialog() {
@@ -16,7 +16,7 @@ export function InventoryDeleteDialog() {
 
 
     console.log("selected_inventory",selected_inventory)
-    const title = "Remove Inventory Report";
+    // const title = "Remove Inventory Report";
     let message = 'Are you sure you want to remove the report dated ' + Api.unixTimeConvert(selected_inventory.time) + '?';
 
 

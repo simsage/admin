@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useState} from "react";
 import SubNav from "../../includes/sub-nav";
 import KnowledgeBaseHome from "../knowledge_bases/KnowledgeBaseHome";
 import LogHome from "./LogHome";

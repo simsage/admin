@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
-import {getSimSageStatus} from "../status/statusSlice";
 
 const initialState = {
     inventory_list: [],
@@ -56,7 +55,7 @@ const reducers = {
 
 const extraReducers = (builder) => {
     builder
-        .addCase(loadInventoryList.pending, (state, action) => {
+        .addCase(loadInventoryList.pending, (state) => {
             state.status = "loading"
         })
 
@@ -73,25 +72,25 @@ const extraReducers = (builder) => {
         })
 
     //Document Snapshot
-        .addCase(createDocumentSnapshot.fulfilled, (state, action) => {
+        .addCase(createDocumentSnapshot.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(createDocumentSnapshot.rejected, (state, action) => {
+        .addCase(createDocumentSnapshot.rejected, (state) => {
             state.status = "rejected"
         })
 
     //Index Snapshot
-        .addCase(createIndexSnapshot.fulfilled, (state, action) => {
+        .addCase(createIndexSnapshot.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(createIndexSnapshot.rejected, (state, action) => {
+        .addCase(createIndexSnapshot.rejected, (state) => {
             state.status = "rejected"
         })
 
     //deleteRecord
-        .addCase(deleteRecord.fulfilled, (state, action) => {
+        .addCase(deleteRecord.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })

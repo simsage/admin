@@ -13,7 +13,7 @@ export function InventoryIndexSnapshotPrompt() {
     const session_id = session.id;
 
 
-    const title = "Create new index snapshot";
+    // const title = "Create new index snapshot";
     let message = 'Are you sure you want to create a new index snapshot?';
 
 

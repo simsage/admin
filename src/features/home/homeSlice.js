@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import {getSources} from "../sources/sourceSlice";
 import axios from "axios";
 import Comms from "../../common/comms";
 
@@ -88,14 +87,14 @@ export const getLogs = createAsyncThunk(
 
 const extraReducers = (builder) => {
     builder
-        .addCase(getStatus.pending, (state, action) => {
+        .addCase(getStatus.pending, (state) => {
             state.status = "loading"
         })
         .addCase(getStatus.fulfilled, (state, action) => {
             state.status = "fulfilled"
             state.source_list = action.payload
         })
-        .addCase(getStatus.rejected, (state, action) => {
+        .addCase(getStatus.rejected, (state) => {
             state.status = "rejected"
         })
         .addCase(getLogs.fulfilled, (state, action) => {
@@ -127,8 +126,8 @@ export const homeSlice = createSlice({
             state.log_type = action.payload;
         },
 
-        closeAllMenus(){
-        }
+        // closeAllMenus(){
+        // }
 
     },
     extraReducers
