@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {loadTextToSearch} from "./TextToSearchSlice";
-import TextToSearchIntro from "./TextToSearchIntro";
 import TextToSearchList from "./TextToSearchList";
 
 const TextToSearchHome = () => {
@@ -12,10 +11,6 @@ const TextToSearchHome = () => {
         const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
         const session = useSelector((state) => state.authReducer.session)
         const session_id = session.id
-        const status = useSelector((state) => state.textToSearchReducer.status)
-
-        const text_to_search_list = useSelector( (state) => state.textToSearchReducer.text_to_search_list)
-        const num_of_text_to_search = useSelector((state) => state.textToSearchReducer.num_of_text_to_search)
 
         let data = {
             "filter": "",

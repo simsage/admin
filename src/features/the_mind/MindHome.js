@@ -1,6 +1,4 @@
-import {useSelector} from "react-redux";
 import React, {useState} from "react";
-import {LeftSidebarNavItem} from "../../includes/left-navbar";
 import SubNav from "../../includes/sub-nav";
 import BotHome from "../bot/BotHome";
 import SynonymsHome from "../synonyms/SynonymsHome";

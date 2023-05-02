@@ -15,7 +15,7 @@ const TextToSearchTest = () => {
     const show_test_form = useSelector((state) => state.textToSearchReducer.show_test_form)
     const test_response = useSelector((state) => state.textToSearchReducer.test_response)
     const [searchPart, setSearchPart] = useState('')
-    const [filter, setFilter] = useState('');
+    const [filter] = useState('');
 
     const handleClose = () => {
         dispatch(closeTestForm());
