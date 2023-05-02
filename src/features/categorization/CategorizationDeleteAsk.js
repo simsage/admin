@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeDeleteForm, deleteCategorization, loadCategorizations} from "./categorizationSlice"
+import {closeDeleteForm, deleteCategorization} from "./categorizationSlice"
 
 
 export default function CategorizationDeleteAsk(){

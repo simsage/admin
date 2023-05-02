@@ -1,8 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {loadCategorizations} from "./categorizationSlice";
-import CategorizationIntro from "./CategorizationIntro";
 import CategorizationList from "./CategorizationList";
+import api from "../../common/api";
 
 export default function CategorizationHome() {
 
@@ -10,15 +10,16 @@ export default function CategorizationHome() {
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
     const load_data = useSelector( (state) => state.categorizationReducer.data_status)
-    const status = useSelector( (state) => state.categorizationReducer.status)
+    // const status = useSelector( (state) => state.categorizationReducer.status)
 
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
-    const category_list = useSelector((state) => state.categorizationReducer.category_list);
-    const total_count = useSelector((state) => state.categorizationReducer.total_count);
-    const [page_size,setPageSize] = useState(useSelector((state)=>state.categorizationReducer.page_size))
-    const [page,setPage] = useState(useSelector((state)=>state.categorizationReducer.page))
+    // const category_list = useSelector((state) => state.categorizationReducer.category_list);
+    // const total_count = useSelector((state) => state.categorizationReducer.total_count);
+    // const [page_size,setPageSize] = useState(useSelector((state)=>state.categorizationReducer.page_size))
+    // const [page,setPage] = useState(useSelector((state)=>state.categorizationReducer.page))
 
+    const page_size = api.initial_page_size;
     let prev_cat_label = null;
 
     // useEffect(()=>{

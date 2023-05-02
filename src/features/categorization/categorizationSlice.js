@@ -79,7 +79,7 @@ const extraReducers = (builder) => {
     builder
 
 
-        .addCase(loadCategorizations.pending,(state, action) => {
+        .addCase(loadCategorizations.pending,(state) => {
             state.status = "pending";
             state.data_status = "loading";
         })
@@ -90,18 +90,18 @@ const extraReducers = (builder) => {
             state.total_count = action.payload.totalCategorizationCount
             // state.data_status = "loaded";
         })
-        .addCase(loadCategorizations.rejected,(state, action) => {
+        .addCase(loadCategorizations.rejected,(state) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
 
 
         //updates
-        .addCase(updateCategorization.pending,(state, action) => {
+        .addCase(updateCategorization.pending,(state) => {
             state.status = "pending";
             state.data_status = "loading";
         })
-        .addCase(updateCategorization.fulfilled,(state, action) => {
+        .addCase(updateCategorization.fulfilled,(state) => {
             state.status = "fulfilled"
             state.data_status = "load_now";
             state.show_category_form = false;
@@ -117,15 +117,15 @@ const extraReducers = (builder) => {
 
 
     //Delete
-        .addCase(deleteCategorization.pending,(state, action) => {
+        .addCase(deleteCategorization.pending,(state) => {
             state.status = "pending";
             state.data_status = "loading";
         })
-        .addCase(deleteCategorization.fulfilled,(state, action) => {
+        .addCase(deleteCategorization.fulfilled,(state) => {
             state.status = "fulfilled"
             state.data_status = "load_now";
         })
-        .addCase(deleteCategorization.rejected,(state, action) => {
+        .addCase(deleteCategorization.rejected,(state) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
@@ -143,7 +143,7 @@ const categorizationSlice = createSlice({
             state.show_category_form = action.payload.show;
             state.edit = action.payload.category;
         },
-        closeCategoryForm:(state,action) => {
+        closeCategoryForm:(state) => {
             state.show_category_form = false;
             state.edit = undefined;
         },
@@ -155,7 +155,7 @@ const categorizationSlice = createSlice({
             state.show_delete_form = false;
             state.edit = undefined;
         },
-        closeErrorForm:(state, action) => {
+        closeErrorForm:(state) => {
             state.error = undefined;
             state.show_error = false;
         }

@@ -13,7 +13,6 @@ export function CategorizationEdit(){
     const knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const show_category_form = useSelector( (state) => state.categorizationReducer.show_category_form)
     const selectedCategory = useSelector( (state) => state.categorizationReducer.edit);
-    const error = useSelector((state) => state.categorizationReducer.error)
     //Synonym details
     const [categoryLabel, setCategoryLabel] = useState('');
     const [rule, setRule] = useState('');
@@ -39,9 +38,9 @@ export function CategorizationEdit(){
         resetData();
     }
 
-    function handleError(){
-        //Todo: Need to look into presenting response errors
-    }
+    // function handleError(){
+    //     //Todo: Need to look into presenting response errors
+    // }
 
 
     const handleSave = () => {

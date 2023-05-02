@@ -9,7 +9,6 @@ import {
 import {CategorizationEdit} from "./CategorizationEdit";
 import CategorizationDeleteAsk from "./CategorizationDeleteAsk";
 import {Pagination} from "../../common/pagination";
-import {loadSynonyms} from "../synonyms/synonymSlice";
 import api from "../../common/api";
 
 export default function CategorizationHome() {
@@ -22,7 +21,7 @@ export default function CategorizationHome() {
     const session_id = session.id;
     const load_data = useSelector( (state) => state.categorizationReducer.data_status)
 
-    const parent_category_list = useSelector((state) => state.categorizationReducer.category_list);
+    // const parent_category_list = useSelector((state) => state.categorizationReducer.category_list);
 
     const category_list = useSelector((state) => state.categorizationReducer.category_list);
     const total_count = useSelector((state) => state.categorizationReducer.total_count);
@@ -120,12 +119,12 @@ export default function CategorizationHome() {
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
-    function handleSearchTextKeydown(event)
-    {
-        if (event.key === "Enter") {
-            filterRecords();
-        }
-    }
+    // function handleSearchTextKeydown(event)
+    // {
+    //     if (event.key === "Enter") {
+    //         filterRecords();
+    //     }
+    // }
 
     function filterRecords() {
         data.filter = filter
