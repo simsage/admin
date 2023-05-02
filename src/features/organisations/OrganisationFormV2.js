@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {closeOrganisationForm, deleteOrganisation, updateOrganisation} from "./organisationSlice";
 import {useForm} from "react-hook-form";
@@ -32,7 +32,7 @@ export default function OrganisationFormV2(props) {
     const title = (organisation === null) ? "New Organisation" : "Edit Organisation";
 
     //Form Hook
-    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
+    const {register, handleSubmit,  formState: {errors}, reset} = useForm();
 
     //set default value depends on organisation and show_organisation_form
     useEffect(() => {
@@ -41,7 +41,7 @@ export default function OrganisationFormV2(props) {
         defaultValues.enabled = organisation ? organisation.enabled : false;
         defaultValues.id = organisation ? organisation.id : undefined;
         reset({...defaultValues});
-    }, [organisation, props.show_organisation_form]);
+    }, [organisation, props.show_organisation_form, reset]);
 
 
     //on submit store or update
