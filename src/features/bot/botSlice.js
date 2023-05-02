@@ -1,5 +1,4 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {loadDocumentList} from "../document_management/documentSlice";
 import Comms from "../../common/comms";
 import axios from "axios";
 
@@ -109,7 +108,7 @@ export const importBotItems = createAsyncThunk(
 
 const extraReducers = (builder) => {
     builder
-        .addCase(loadMindItems.pending, (state, action) => {
+        .addCase(loadMindItems.pending, (state) => {
             state.status = "loading";
             state.data_status = 'loading';
         })
@@ -128,7 +127,7 @@ const extraReducers = (builder) => {
         })
 
         //update memory
-        .addCase(updateMindItem.pending, (state, action) => {
+        .addCase(updateMindItem.pending, (state) => {
             state.status = "loading"
         })
 
@@ -143,7 +142,7 @@ const extraReducers = (builder) => {
             state.status = "rejected"
         })
         //delete memory
-        .addCase(deleteMindItem.pending, (state, action) => {
+        .addCase(deleteMindItem.pending, (state) => {
             state.status = "loading"
         })
 
@@ -158,7 +157,7 @@ const extraReducers = (builder) => {
             state.status = "rejected"
         })
         //delete all memories
-        .addCase(deleteAllMindItems.pending, (state, action) => {
+        .addCase(deleteAllMindItems.pending, (state) => {
             state.status = "loading"
         })
 
@@ -173,11 +172,11 @@ const extraReducers = (builder) => {
             state.status = "rejected"
         })
     //importBotItems
-        .addCase(importBotItems.fulfilled, (state, action) => {
+        .addCase(importBotItems.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(importBotItems.rejected, (state, action) => {
+        .addCase(importBotItems.rejected, (state) => {
             state.status = "rejected"
         })
 }
@@ -211,10 +210,10 @@ const botSlice = createSlice({
             state.edit = undefined;
             state.show_import_form = false;
         },
-        showBotImportForm:(state, action) => {
+        showBotImportForm:(state) => {
             state.show_bot_import_form = true;
         },
-        closeBotImportForm:(state, action) => {
+        closeBotImportForm:(state) => {
             state.show_bot_import_form = false;
         }
     },

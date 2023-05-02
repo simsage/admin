@@ -1,15 +1,10 @@
-import {useDispatch, useSelector} from "react-redux";
-import {closeBotImportForm} from "./botSlice";
+import { useSelector} from "react-redux";
 
 import {BotImport} from "./BotImport";
 
 const BotImportForm = () => {
 
-    const dispatch = useDispatch();
-
     const show_bot_import_form = useSelector((state) => state.botReducer.show_bot_import_form)
-
-
 
     const downloadFile = (e) => {
         let a = e.target

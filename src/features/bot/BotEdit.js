@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
 import {closeMemoryForm, updateMindItem} from "./botSlice";
-import Button from "bootstrap/js/src/button";
 
 
 export function BotEdit(){
@@ -28,6 +27,7 @@ export function BotEdit(){
     const [mId, setMId] = useState('');
     const [soundList, setSoundList] = useState([]);
     const [videoList, setVideoList] = useState([]);
+
 
     // Grab memory details if editing
     let selectedMemory = {}

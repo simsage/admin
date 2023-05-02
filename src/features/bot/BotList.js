@@ -132,17 +132,17 @@ export default function BotHome() {
         return str;
     }
 
-    function displayLinks(memory) {
-        let str = "";
-        for (const question of memory.questionList) {
-            if (str.length > 0) {
-                str += " | ";
-            }
-            str += question;
-        }
-        str += ' => ' + memory.information;
-        return str;
-    }
+    // function displayLinks(memory) {
+    //     let str = "";
+    //     for (const question of memory.questionList) {
+    //         if (str.length > 0) {
+    //             str += " | ";
+    //         }
+    //         str += question;
+    //     }
+    //     str += ' => ' + memory.information;
+    //     return str;
+    // }
 
     function handleExport() {
         Comms.download_mind_dump(selected_organisation_id, selected_knowledge_base_id, session_id)

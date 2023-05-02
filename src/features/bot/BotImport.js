@@ -5,7 +5,7 @@ import {closeBotImportForm, closeForm, importBotItems} from "./botSlice";
 
 export function BotImport() {
 
-    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
+    const {register, handleSubmit, formState: {errors}} = useForm();
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session)
 

@@ -3,10 +3,9 @@ import React from "react";
 import {useIsAuthenticated, useMsal} from "@azure/msal-react";
 import {SignInButton} from "./SignInButtion";
 import {useDispatch, useSelector} from "react-redux";
-import {login, setJwt, simSageSignIn} from "./authSlice";
-import Comms from "../../common/comms";
+import {login} from "./authSlice";
 import axios from "axios";
-import {getOrganisationList, setOrganisationList} from "../organisations/organisationSlice";
+import {setOrganisationList} from "../organisations/organisationSlice";
 import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 
 
@@ -17,7 +16,7 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const dispatch = useDispatch();
 
-    const {session, jwt} = useSelector((state)=>state.authReducer)
+    const {session} = useSelector((state)=>state.authReducer)
     const { instance, accounts } = useMsal();
 
 
@@ -31,7 +30,7 @@ export const PageLayout = (props) => {
             // dispatch(setJwt(response.idToken));
             const api_base = window.ENV.api_base;
             const url = '/auth/admin/authenticate/msal';
-            const jwt = response.idToken;
+            // const jwt = response.idToken;
 
             axios.get(api_base + url,{
                 headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": response.idToken,}
@@ -39,7 +38,7 @@ export const PageLayout = (props) => {
                 .then(function (response2) {
                     dispatch(login(response2.data));
                     const session = response2.data.session;
-                    const filter = null;
+                    // const filter = null;
                     dispatch(setOrganisationList(response2.data))
                     // dispatch(getOrganisationList({session:session,filter:filter}));
                     dispatch(getKBList({session_id:session.id, organization_id:session.organisationId}));
