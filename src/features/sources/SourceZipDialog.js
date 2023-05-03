@@ -25,7 +25,7 @@ export function SourceZipDialog() {
     }
 
 
-    const title = "Zip Source";
+    // const title = "Zip Source";
     const source_name = (selected_source)?selected_source.name:'';
     const message = `Are you sure you want to zip the content of '${source_name}'? `;
 
