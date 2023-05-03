@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeForm, startSource} from "./sourceSlice";
+import {closeForm} from "./sourceSlice";
 
 export function SourceErrorDialog() {
     const dispatch = useDispatch();

@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {BsFilePdf} from 'react-icons/bs'
 
-import Api from "../../../common/api";
-
 // import '../css/crawler.css';
 // import {useForm} from "react-hook-form";
 
 export default function CrawlerConfluenceForm(props) {
     const selected_source = props.source;
-    const [has_error, setFormError] = useState();
+    const has_error = false;
+    // const [has_error,setError] = useState()
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
     const l_form_data = props.form_data;

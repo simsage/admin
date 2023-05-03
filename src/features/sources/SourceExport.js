@@ -1,9 +1,9 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeAlert} from "../alerts/alertSlice";
+// import {closeAlert} from "../alerts/alertSlice";
 import {closeForm} from "./sourceSlice";
-import {useState} from "react";
+// import {useState} from "react";
 
-export function SourceExport(props) {
+export function SourceExport() {
 
     const selected_source = useSelector((state) => state.sourceReducer.selected_source)
     const dispatch = useDispatch()

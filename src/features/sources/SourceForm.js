@@ -1,13 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
-import {closeForm, getSource, updateSources} from "./sourceSlice";
+import {closeForm, updateSources} from "./sourceSlice";
 import SourceTabs from "./SourceTabs";
 import React, {useEffect, useState} from "react";
 import GeneralForm from "./forms/GeneralForm";
 import CrawlerMetadataForm from "./forms/CrawlerMetadataForm";
 import AclSetup from "../../common/acl-setup";
 import {getGroupList} from "../groups/groupSlice";
-import {getUserList, getUserListPaginated} from "../users/usersSlice";
+import {getUserListPaginated} from "../users/usersSlice";
 import TimeSelect from "../../common/time-select";
 import CrawlerRssForm from "./forms/CrawlerRssForm";
 import CrawlerBoxForm from "./forms/CrawlerBoxForm";
@@ -34,7 +34,7 @@ import CrawlerServiceNow from "./forms/CrawlerServiceNow";
 import ProcessorSetup from "../../common/processor-setup";
 
 
-export default function SourceForm(props) {
+export default function SourceForm() {
 
     let new_default_source_data = {
         "filesPerSecond": 0.5,
@@ -90,9 +90,9 @@ export default function SourceForm(props) {
 
 
     const dispatch = useDispatch();
-    const theme = '';
+    // const theme = '';
     // marker for an external node
-    const external_node_id = 1000000;
+    // const external_node_id = 1000000;
 
 
     // a few defaults
@@ -206,7 +206,7 @@ export default function SourceForm(props) {
         watch,
         formState: {errors, dirtyFields},
         reset,
-        control,
+        // control,
         getValues
     } = useForm({mode: 'onChange'});
 

@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import React from "react";
+// import {useSelector} from "react-redux";
 
 export default function GeneralForm(props) {
 
 
     // a few defaults
     // marker for an external node
-    const default_error_threshold = 10;
-    const default_num_results = 5;
-    const default_num_fragments = 3;
+    // const default_error_threshold = 10;
+    // const default_num_results = 5;
+    // const default_num_fragments = 3;
     const default_qna_threshold = 0.8125;
 
     const crawler_list = [

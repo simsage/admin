@@ -1,10 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeAlert} from "../alerts/alertSlice";
+// import {closeAlert} from "../alerts/alertSlice";
 import {closeForm, updateSources} from "./sourceSlice";
-import {useState} from "react";
+// import {useState} from "react";
 import {useForm} from "react-hook-form";
 
-export function SourceImport(props) {
+export function SourceImport() {
 
     const dispatch = useDispatch()
     const session = useSelector((state) => state.authReducer.session)
@@ -13,11 +13,11 @@ export function SourceImport(props) {
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
 
     const show_error_form = useSelector((state) => state.sourceReducer.show_error_form);
-    const error_title = useSelector((state) => state.sourceReducer.error_title);
+    // const error_title = useSelector((state) => state.sourceReducer.error_title);
     const error_message = useSelector((state) => state.sourceReducer.error_message);
 
     //Form Hook
-    const {register, handleSubmit, watch, formState: {errors}, reset} = useForm();
+    const {register, handleSubmit,  formState: {}} = useForm();
 
 
     const title = "Import Crawler"

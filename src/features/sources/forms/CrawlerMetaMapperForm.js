@@ -9,8 +9,8 @@ export default function CrawlerMetaMapperForm(props) {
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
 
-    const self = this;
-    const theme = props.theme;
+    // const self = this;
+    // const theme = props.theme;
     const num_rows = get_md_list().length;
     const l_form_data = props.form_data;
     const source_id = (props.source && props.source.sourceId) ? props.source.sourceId : 0;

@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 export class CrawlerImportExport extends Component {
     constructor(props) {
         super(props);
-        var data = (props.crawler) ? JSON.stringify(props.crawler) : "";
+        let data = (props.crawler) ? JSON.stringify(props.crawler) : "";
         if (data === "{}") {
             data = "";
         }
