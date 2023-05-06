@@ -33,7 +33,7 @@ export const SignInButton = () => {
             <div className="auth-wrapper header-height">
                 <div className="auth-inner">
 
-                    <div className="sign-in-title">SimSage Mind sign in</div>
+                    <div className="sign-in-title">SimSage admin sign in</div>
 
                     <span className="form-group sign-in-button" title="Sign into the SimSage mind">
                         <button className="btn btn-primary" onClick={() => { setShowLicense(false); handleLogin(instance) }}>

@@ -1,7 +1,7 @@
 
 window.ENV = {
     // SimSage platform version (used for display only in UI)
-    version: '7.7.3',
+    version: '7.7.5',
     // api version of api_base
     api_version: 1,
     // is this a production build or not?
@@ -9,7 +9,7 @@ window.ENV = {
     // dark or light theme?
     theme: 'light',
     // the service layer end-point, change "localhost:8080" to ...
-    api_base: 'https://adminux.simsage.ai/api',
+    api_base: 'http://localhost:8080/api',
     // date picker display format
     date_format: 'yyyy/MM',
     // msal/jwt clientId and authority
