@@ -53,6 +53,9 @@ export class CrawlerExternal extends Component {
             <div className="crawler-page">
                 <div className="wp-form">
                     <div style={{padding: '20px'}}>external crawler</div>
+                    <div>
+                        <a href="https://github.com/simsage/example-upload" rel="noreferrer" target="_blank">Read how to upload your own external data to SimSage.</a>
+                    </div>
                 </div>
             </div>
         );

@@ -99,6 +99,8 @@ export const RESTORE_SYSTEM = "restore system";
 export const GET_LICENSE = "get license";
 export const INSTALL_LICENCE = "install license";
 
+export const SET_OIDC_REDIRECT_URL = "set oidc redirect url";
+
 export const BUSY = "busy";
 export const ERROR = "error";
 export const CLOSE_ERROR = "close error";

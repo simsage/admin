@@ -30,6 +30,7 @@ import CrawlerServiceNow from "./crawler-service-now";
 import CrawlerSearch from "./crawler-search";
 import ProcessorSetup from "../common/processor-setup";
 import CrawlerConfluence from "./crawler-confluence";
+import CrawlerExternal from "./crawler-external";
 
 
 export class CrawlerDialog extends Component {
@@ -90,6 +91,12 @@ export class CrawlerDialog extends Component {
     setError(title, error_msg) {
         if (this.props.onError) {
             this.props.onError(title, error_msg);
+        }
+    }
+
+    setUpOIDCRequest(OIDCClientID, OIDCSecret) {
+        if (this.props.setUpOIDCRequest) {
+            this.props.setUpOIDCRequest(OIDCClientID, OIDCSecret);
         }
     }
 
@@ -316,8 +323,8 @@ export class CrawlerDialog extends Component {
             this.setError('invalid parameters', 'iManage crawler: you have invalid values in your start folder.');
 
         } else if (crawler.crawlerType === 'box' && (!sj.clientId || sj.clientId.length === 0 ||
-                    !sj.clientSecret || sj.clientSecret.length === 0 || !sj.enterpriseId || sj.enterpriseId.length === 0 ||
-                     sj.deltaIndicator.length === 0)) {
+            !sj.clientSecret || sj.clientSecret.length === 0 || !sj.enterpriseId || sj.enterpriseId.length === 0 ||
+            sj.deltaIndicator.length === 0)) {
 
             this.setError('invalid parameters', 'box crawler: you have invalid values for clientId / clientSecret / enterpriseId / time-to-check-from.');
 
@@ -329,7 +336,7 @@ export class CrawlerDialog extends Component {
             this.setError('invalid parameters', 'iManage crawler: you have invalid values for server / username / clientId / clientSecret / libraryId / cursor.');
 
         } else if (crawler.crawlerType === 'gdrive' && (!sj.drive_user_csv || sj.drive_user_csv.length === 0 ||
-                                                        !sj.deltaIndicator || sj.deltaIndicator.length === 0)) {
+            !sj.deltaIndicator || sj.deltaIndicator.length === 0)) {
 
             this.setError('invalid parameters', 'you must supply values for all fields, and select one user as a minimum.');
 
@@ -559,6 +566,12 @@ export class CrawlerDialog extends Component {
                                             onClick={() => this.setState({selectedTab: 'rss crawler'})}>rss crawler
                                         </div>
                                     </li>}
+                                    {c_type === "external" && <li className="nav-item nav-cursor">
+                                        <div
+                                            className={"nav-link " + (this.state.selectedTab === 'external' ? 'active' : '')}
+                                            onClick={() => this.setState({selectedTab: 'external'})}>SimSage API
+                                        </div>
+                                    </li>}
                                     {c_type === "search" && <li className="nav-item nav-cursor">
                                         <div
                                             className={"nav-link " + (this.state.selectedTab === 'search crawler' ? 'active' : '')}
@@ -680,7 +693,12 @@ export class CrawlerDialog extends Component {
                                             password={sj.password}
                                             userAgent={sj.userAgent}
                                             validDomainCSV={sj.validDomainCSV}
+                                            OIDCClientID={sj.OIDCClientID}
+                                            OIDCSecret={sj.OIDCSecret}
+                                            googleJsonKeyFile={sj.googleJsonKeyFile}
+                                            googleImpersonationUser={sj.googleImpersonationUser}
                                             specific_json={sj}
+                                            setUpOIDCRequest={(OIDCClientID, OIDCSecret) => this.setUpOIDCRequest(OIDCClientID, OIDCSecret)}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                     }
@@ -862,6 +880,16 @@ export class CrawlerDialog extends Component {
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
                                     }
+                                    {t_value === 'external' &&
+                                        <CrawlerExternal
+                                            theme={theme}
+                                            source_id={crawler.sourceId}
+                                            organisation_id={this.props.organisation_id}
+                                            kb_id={this.props.kb_id}
+                                            specific_json={sj}
+                                            onError={(title, errStr) => this.setError(title, errStr)}
+                                            onSave={(specific_json) => this.update_specific_json(specific_json)}/>
+                                    }
                                     {t_value === 'search crawler' &&
                                         <CrawlerSearch
                                             theme={theme}
@@ -872,6 +900,8 @@ export class CrawlerDialog extends Component {
                                             userId={sj.userId}
                                             target_organisation_id={sj.target_organisation_id}
                                             queryList={sj.queryList ? sj.queryList.concat([""]) : [""]}
+                                            projectId={sj.project_id ? sj.project_id : ""}
+                                            projectTitle={sj.project_title ? sj.project_title : ""}
                                             specific_json={sj}
                                             onError={(title, errStr) => this.setError(title, errStr)}
                                             onSave={(specific_json) => this.update_specific_json(specific_json)}/>
@@ -910,7 +940,7 @@ export class CrawlerDialog extends Component {
                                                 acl_list={crawler.acls}
                                                 onChange={(acl_list) => this.update_acl_list(acl_list)}
                                                 user_list={this.props.user_list}
-                                                group_list={this.props.group_list} />
+                                                group_list={this.props.group_list}/>
                                         </div>
                                     }
                                     {t_value === 'processors' &&

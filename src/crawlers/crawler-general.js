@@ -31,6 +31,7 @@ const crawler_list = [
     {"key": "rss", "value": "RSS crawler"},
     {"key": "servicenow", "value": "Service-now crawler"},
     {"key": "sharepoint365", "value": "Sharepoint 365 crawler"},
+    {"key": "external", "value": "SimSage API"},
     {"key": "web", "value": "Web crawler"},
     {"key": "wordpress", "value": "WordPress external crawler"},
     {"key": "search", "value": "Search crawler"},

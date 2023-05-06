@@ -75,6 +75,10 @@
     width: 200px;
 }
 
+.clear-both {
+    clear: both;
+}
+
 .crawler-page .dropbox-manual-box {
     display: inline-block;
     float: right;

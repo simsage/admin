@@ -18,6 +18,8 @@ export class CrawlerSearch extends Component {
             target_organisation_id: props.target_organisation_id ? props.target_organisation_id : '',
             target_kb_id: props.target_kb_id ? props.target_kb_id : '',
             queryList: props.queryList ? props.queryList : [""],
+            projectId: props.projectId ? props.projectId : "",
+            projectName: props.projectName ? props.projectName : "",
             userId: props.userId ? props.userId : '',
             specific_json: props.specific_json,
         };
@@ -119,13 +121,21 @@ export class CrawlerSearch extends Component {
             return <h1>crawler-search.js: Something went wrong.</h1>;
         }
 
+        if (this.state.projectId && this.state.projectId.trim().length > 0) {
+            return <div>
+                <br/>
+                <h5>Crawler is managed by a Data project</h5>
+                <h5>{this.state.projectName + " - " + this.state.projectId}</h5>
+            </div>
+        }
+
 
         return (
             <div className="crawler-page">
 
                 <div className="form-group">
                     <div className="full-column-2">
-                        <span className="label-right-top">Target Organisation</span>
+                        <span className="label-right-top">{this.state.projectId}Target Organisation</span>
                         <span className="bigger-text">
                             <form>
                                 <input type="text" className="form-control dropbox-text-width"

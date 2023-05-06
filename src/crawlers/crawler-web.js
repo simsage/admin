@@ -29,6 +29,10 @@ export class CrawlerWeb extends Component {
             specific_json: props.specific_json,
             userAgent: Api.defined(props.userAgent) ? props.userAgent : '',
             validDomainCSV: Api.defined(props.validDomainCSV) ? props.validDomainCSV : '',
+            OIDCClientID: Api.defined(props.OIDCClientID) ? props.OIDCClientID : '',
+            OIDCSecret: Api.defined(props.OIDCSecret) ? props.OIDCSecret : '',
+            googleJsonKeyFile: Api.defined(props.googleJsonKeyFile) ? props.googleJsonKeyFile : '',
+            googleImpersonationUser: Api.defined(props.googleImpersonationUser) ? props.googleImpersonationUser : '',
         };
 
     }
@@ -56,6 +60,10 @@ export class CrawlerWeb extends Component {
                 password: Api.defined(nextProps.password) ? nextProps.password : '',
                 userAgent: Api.defined(nextProps.userAgent) ? nextProps.userAgent : '',
                 validDomainCSV: Api.defined(nextProps.validDomainCSV) ? nextProps.validDomainCSV : '',
+                OIDCClientID: Api.defined(nextProps.OIDCClientID) ? nextProps.OIDCClientID : '',
+                OIDCSecret: Api.defined(nextProps.OIDCSecret) ? nextProps.OIDCSecret : '',
+                googleJsonKeyFile: Api.defined(nextProps.googleJsonKeyFile) ? nextProps.googleJsonKeyFile : '',
+                googleImpersonationUser: Api.defined(nextProps.googleImpersonationUser) ? nextProps.googleImpersonationUser : '',
                 specific_json: nextProps.specific_json,
                 onSave: nextProps.onSave,
                 onError: nextProps.onError,
@@ -78,6 +86,10 @@ export class CrawlerWeb extends Component {
             password: Api.defined(data.password) ? data.password : this.state.password ,
             userAgent: Api.defined(data.userAgent) ? data.userAgent : this.state.userAgent ,
             validDomainCSV: Api.defined(data.validDomainCSV) ? data.validDomainCSV : this.state.validDomainCSV ,
+            OIDCClientID: Api.defined(data.OIDCClientID) ? data.OIDCClientID : this.state.OIDCClientID ,
+            OIDCSecret: Api.defined(data.OIDCSecret) ? data.OIDCSecret : this.state.OIDCSecret ,
+            googleImpersonationUser: Api.defined(data.googleImpersonationUser) ? data.googleImpersonationUser : this.state.googleImpersonationUser,
+            googleJsonKeyFile: Api.defined(data.googleJsonKeyFile) ? data.googleJsonKeyFile : this.state.googleJsonKeyFile,
         };
     }
     change_callback(data) {
@@ -86,6 +98,17 @@ export class CrawlerWeb extends Component {
             this.state.onSave(this.construct_data(data));
         }
     }
+
+    // start the OIDC set up process
+    setUpOIDCRequest() {
+        if (this.state.OIDCClientID === "" || this.state.OIDCSecret === "") {
+            if (this.props.onError)
+                this.props.onError("OIDC Request", "please provide values for the OIDC Client ID and OIDC Secret fields.");
+        } else if (this.props.setUpOIDCRequest) {
+            this.props.setUpOIDCRequest(this.state.OIDCClientID, this.state.OIDCSecret);
+        }
+    }
+
     render() {
         if (this.state.has_error) {
             return <h1>crawler-web.js: Something went wrong.</h1>;
@@ -239,7 +262,7 @@ export class CrawlerWeb extends Component {
                 </div>
 
                 <div className="form-group">
-                    <span className="label-right-top">csv allowed domains</span>
+                    <span className="label-right-top">csv additional allowed domains</span>
                     <span className="full-column">
                         <textarea className="textarea-width"
                                   placeholder="csv urls (starting with https://), of additional allowed domains by prefix starts [optional]"
@@ -247,6 +270,86 @@ export class CrawlerWeb extends Component {
                                   value={this.state.validDomainCSV}
                                   onChange={(event) => {this.change_callback({validDomainCSV: event.target.value})}}
                         />
+                    </span>
+                </div>
+
+                <hr />
+
+                <div className="form-group">
+                    <div className="full-column office-manual-box">
+                        <a href="resources/simsage-oidc-setup.pdf" id="dlOIDC" target="_blank" title="download the SimSage OIDC setup guide">
+                            <span className="instructions-label">OIDC instructions</span>
+                            <img src="../images/pdf-icon.png" alt="oidc setup guide" className="image-size" />
+                        </a>
+                    </div>
+                </div>
+                <br className="clear-both" />
+
+                <div className="form-group">
+                    <span className="label-right-top">OIDC Client ID</span>
+                    <span className="full-column">
+                        <input type="text" className="form-control"
+                               placeholder="OIDC Client ID"
+                               title="(optional) if set, an OIDC Client ID"
+                               value={this.state.OIDCClientID}
+                               onChange={(event) => {this.change_callback({OIDCClientID: event.target.value})}}
+                        />
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <span className="label-right-top">OIDC Secret</span>
+                    <span className="full-column">
+                        <input type="text" className="form-control"
+                               placeholder="OIDC Secret"
+                               title="(optional) a Secret used along with OIDC Client ID"
+                               value={this.state.OIDCSecret}
+                               onChange={(event) => {this.change_callback({OIDCSecret: event.target.value})}}
+                        />
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <span className="label-right-top">set up OIDC</span>
+                    <span className="full-column">
+                        <button type="button" className="btn btn-primary btn-block close" onClick={() => this.setUpOIDCRequest()}>set up OIDC</button>
+                    </span>
+                </div>
+
+
+                <hr />
+
+                <div className="form-group">
+                    <div className="full-column office-manual-box">
+                        <a href="resources/simsage-google-drive-setup.pdf" id="dlGDrive" target="_blank" title="download the SimSage Google-drive setup guide">
+                                <span className="instructions-label">Google drive instructions</span>
+                                <img src="../images/pdf-icon.png" alt="google-drive setup guide" className="image-size" />
+                        </a>
+                    </div>
+                </div>
+                <br className="clear-both" />
+
+                <div className="form-group">
+                    <span className="label-right-top">Google Drive impersonation user</span>
+                    <span className="full-column">
+                        <input type="text"
+                               placeholder="the user to impersonate for Google drive (e.g. john@abc.com)"
+                               className="form-control"
+                               value={this.state.googleImpersonationUser}
+                               onChange={(event) => {this.change_callback({googleImpersonationUser: event.target.value})}}
+                        />
+                    </span>
+                </div>
+
+                <div className="form-group">
+                    <span className="label-right-top">Google Drive JSON key</span>
+                    <span className="full-column">
+                    <textarea className="textarea-width"
+                              rows="7"
+                              placeholder="the Google Drive JSON key identifying the service account to use to access and impersonate user-drive data.  Leave empty if you've already set this value previously and don't want to change it."
+                              value={this.state.googleJsonKeyFile}
+                              onChange={(event) => {this.change_callback({googleJsonKeyFile: event.target.value})}}
+                    />
                     </span>
                 </div>
 

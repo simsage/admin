@@ -20,6 +20,7 @@ import {
     GET_INVENTORIZE_LIST,
     GET_INVENTORIZE_BUSY,
     GET_LICENSE,
+    SET_OIDC_REDIRECT_URL,
     SET_ORGANISATION_LIST,
     SET_ORGANISATION_FILTER,
     SET_ORGANISATION_PAGE,
@@ -306,6 +307,16 @@ export const reducer = (state, action) => {
             return {
                 ...state,
                 license: action.license,
+                busy: false,
+            };
+        }
+
+        case SET_OIDC_REDIRECT_URL: {
+            // get the redirect URL
+            const redirect_url = action.redirect_url;
+            window.open(redirect_url, "_blank");
+            return {
+                ...state,
                 busy: false,
             };
         }

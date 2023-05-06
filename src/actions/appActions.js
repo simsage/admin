@@ -13,6 +13,7 @@ import {
     SET_SOURCE_PAGE,
     SET_SOURCE_PAGE_SIZE,
     GET_LICENSE,
+    SET_OIDC_REDIRECT_URL,
     SET_ORGANISATION_FILTER,
     SET_ORGANISATION_PAGE,
     SET_ORGANISATION_PAGE_SIZE,
@@ -232,6 +233,27 @@ export const appCreators = {
         const org_id = getState().appReducer.selected_organisation_id;
         await _getOrganisationList( org_name, org_id, filter, true, dispatch, getState, session_id);
         await _setupPage('knowledge bases', dispatch, getState);
+    },
+
+    // start an OIDC request
+    setUpOIDCRequest: (OIDCClientID, OIDCSecret) => async (dispatch, getState) => {
+        dispatch({type: BUSY, busy: true});
+        const session_id = get_session_id(getState);
+        const organisation_id = getState().appReducer.selected_organisation_id;
+        const kb_id = getState().appReducer.selected_knowledgebase_id;
+        const payload = {
+            "organisationId": organisation_id,
+            "kbId": kb_id,
+            "oidcClientId": OIDCClientID,
+            "oidcSecret": OIDCSecret,
+            "platformUrl": window.ENV.api_base
+        };
+        await Comms.http_post('/auth/oidc/request', session_id, payload,
+            (response) => {
+                dispatch(({type: SET_OIDC_REDIRECT_URL, redirect_url: response.data}));
+            },
+            (errStr) => { dispatch({type: ERROR, title: "Error", error: errStr}) }
+        )
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
