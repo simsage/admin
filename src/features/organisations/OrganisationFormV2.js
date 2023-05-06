@@ -20,12 +20,6 @@ export default function OrganisationFormV2(props) {
     const [availableGroupFilter, setAvailableGroupFilter] = useState('');
     const [groupFilter, setGroupFilter] = useState('');
 
-    // sso values: autoCreateSSOUsers: bool, autoCreateSSODomainList: string, autoCreateSSORoleList: [], setAutoCreateSSOACLList: []
-    const [autoCreateSSOUsers, setAutoCreateSSOUsers] = useState((props.organisation && props.organisation.autoCreateSSOUsers));
-    const [autoCreateSSODomainList, setAutoCreateSSODomainList] = useState((props.organisation && props.organisation.autoCreateSSODomainList) || "");
-    const [autoCreateSSORoleList, setAutoCreateSSORoleList] = useState((props.organisation && props.organisation.autoCreateSSORoleList) || []);
-    const [autoCreateSSOACLList, setAutoCreateSSOACLList] = useState((props.organisation && props.organisation.autoCreateSSOACLList) || []);
-
     //load organisation
     if (props.organisation_id && organisation_list) {
         let temp_org = organisation_list.filter((org) => {
@@ -51,20 +45,16 @@ export default function OrganisationFormV2(props) {
     //Form Hook
     const {register, handleSubmit,  formState: {errors}, reset} = useForm();
 
-    // ['search', 'dms', 'discover']
-    let available_roles = [];
-    if (autoCreateSSORoleList.indexOf("search") === -1) available_roles.push("search");
-    if (autoCreateSSORoleList.indexOf("dms") === -1) available_roles.push("search");
-    if (autoCreateSSORoleList.indexOf("discover") === -1) available_roles.push("discover");
-
-    const group_list_full = [];
-
     //set default value depends on organisation and show_organisation_form
     useEffect(() => {
         let defaultValues = {};
         defaultValues.name = organisation ? organisation.name : '';
         defaultValues.enabled = organisation ? organisation.enabled : false;
         defaultValues.id = organisation ? organisation.id : undefined;
+        defaultValues.autoCreateSSOUsers = organisation ? organisation.autoCreateSSOUsers : false;
+        defaultValues.autoCreateSSODomainList = organisation ? organisation.autoCreateSSODomainList : "";
+        defaultValues.autoCreateSSORoleList = organisation ? organisation.autoCreateSSORoleList : [];
+        defaultValues.autoCreateSSOACLList = organisation ? organisation.autoCreateSSOACLList : [];
         reset({...defaultValues});
     }, [organisation, props.show_organisation_form, reset]);
 
@@ -78,72 +68,77 @@ export default function OrganisationFormV2(props) {
         setSelectedTab(slug);
     }
 
-    function getUserRoles(){
-        return roleFilter.length > 0 ? autoCreateSSORoleList.filter( role => {
-                return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
-            })
-            :
-            autoCreateSSORoleList
-    }
-
-    function addRoleToUser(roleToAdd){
-        setAutoCreateSSORoleList([ ...(autoCreateSSORoleList || []).push(roleToAdd)])
-    }
-
-    function removeRoleFromUser(roleToRemove){
-        setAutoCreateSSORoleList(autoCreateSSORoleList.filter( r => {
-            return r.role !== roleToRemove.role
-        }))
-    }
-
-    const getAvailableRoles = () => {
-        const roleNames = autoCreateSSORoleList ? autoCreateSSORoleList.map( r => r.role) :  [];
-        let tempRoleList = [];
-        available_roles.forEach( ar => {
-            if(!roleNames.includes(ar)){
-                tempRoleList.push(ar);
-            }
-        })
-
-        return availableRoleFilter.length > 0 ? tempRoleList.filter( role => {
-                return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
-            })
-            :
-            tempRoleList;
-    }
-
-    function addGroupToUser(groupToAdd){
-        setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
-    }
-
-    function removeGroupFromUser(groupToRemove){
-        setAutoCreateSSOACLList(autoCreateSSOACLList.filter( grp => {
-            return grp.name !== groupToRemove.name
-        }))
-    }
-
-    const getAvailableGroups = () => {
-        const groupNames = autoCreateSSOACLList ? autoCreateSSOACLList.map( g => g.name) : []
-        const availableGroups = group_list_full.filter( grp => {
-            return !groupNames.includes(grp.name)
-        })
-        return availableGroupFilter.length > 0 ? availableGroups.filter( grp => {
-                return grp.name.toLowerCase().includes(availableGroupFilter.toLowerCase())
-            })
-            :
-            availableGroups
-    }
-
-    function getGroups(){
-        return groupFilter.length > 0 ? autoCreateSSOACLList.filter( grp => {
-                return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
-            })
-            :
-            autoCreateSSOACLList
-    }
+    // function getUserRoles(){
+    //     if (!autoCreateSSORoleList || !autoCreateSSORoleList.length)
+    //         return [];
+    //     return roleFilter.length > 0 ? autoCreateSSORoleList.filter( role => {
+    //             return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
+    //         })
+    //         :
+    //         autoCreateSSORoleList
+    // }
+    //
+    // function addRoleToUser(roleToAdd){
+    //     const list = (autoCreateSSORoleList && autoCreateSSORoleList.length > 0) ? autoCreateSSORoleList : [];
+    //     list.push(roleToAdd);
+    //     setAutoCreateSSORoleList(list);
+    // }
+    //
+    // function removeRoleFromUser(roleToRemove){
+    //     setAutoCreateSSORoleList(autoCreateSSORoleList.filter( r => {
+    //         return r.role !== roleToRemove.role
+    //     }))
+    // }
+    //
+    // const getAvailableRoles = () => {
+    //     const roleNames = autoCreateSSORoleList ? autoCreateSSORoleList.map( r => r.role) :  [];
+    //     let tempRoleList = [];
+    //     ["search", "dms", "discovery"].forEach( ar => {
+    //         if(!roleNames.includes(ar)){
+    //             tempRoleList.push(ar);
+    //         }
+    //     })
+    //
+    //     return availableRoleFilter.length > 0 ? tempRoleList.filter( role => {
+    //             return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
+    //         })
+    //         :
+    //         tempRoleList;
+    // }
+    //
+    // function addGroupToUser(groupToAdd){
+    //     setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
+    // }
+    //
+    // function removeGroupFromUser(groupToRemove){
+    //     setAutoCreateSSOACLList(autoCreateSSOACLList.filter( grp => {
+    //         return grp.name !== groupToRemove.name
+    //     }))
+    // }
+    //
+    // const getAvailableGroups = () => {
+    //     const groupNames = autoCreateSSOACLList ? autoCreateSSOACLList.map( g => g.name) : []
+    //     const availableGroups = [].filter( grp => {
+    //         return !groupNames.includes(grp.name)
+    //     })
+    //     return availableGroupFilter.length > 0 ? availableGroups.filter( grp => {
+    //             return grp.name.toLowerCase().includes(availableGroupFilter.toLowerCase())
+    //         })
+    //         :
+    //         availableGroups
+    // }
+    //
+    // function getGroups(){
+    //     return groupFilter.length > 0 ? autoCreateSSOACLList.filter( grp => {
+    //             return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
+    //         })
+    //         :
+    //         autoCreateSSOACLList
+    // }
 
     if (!props.show_organisation_form)
         return (<div/>);
+
     return (
         <div>
 
@@ -190,7 +185,7 @@ export default function OrganisationFormV2(props) {
                                     <div className="time-tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
 
                                         <div className="form-check form-switch">
-                                            <input className="form-check-input" type="checkbox" {...autoCreateSSOUsers ? "checked" : ""} onChange={(event) => setAutoCreateSSOUsers(event.target.value)}/>
+                                            <input className="form-check-input" type="checkbox" {...register('autoCreateSSOUsers')}/>
                                             <label className="form-check-label">allow single sign-on users to be auto-created with a default set of group ACLs and SimSage role(s).</label>
                                         </div>
 
@@ -199,79 +194,75 @@ export default function OrganisationFormV2(props) {
                                             <textarea className="form-control"
                                                       placeholder="valid domain names separated by commas (e.g. simsage.co.uk)"
                                                       rows="3"
-                                                      value={autoCreateSSODomainList}
-                                                      onChange={(event) => {
-                                                          setAutoCreateSSODomainList(event.target.value);
-                                                      }}
+                                                      {...register("autoCreateSSODomainList", {required: false})}
                                             />
                                         </div>
 
-                                        <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "300px"}}>
-                                            <div className="row pb-5">
-                                                <div className="role-block col-6">
-                                                    <h6 className="role-label text-center">SimSage Roles</h6>
-                                                    <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}/>
-                                                        {
-                                                            autoCreateSSORoleList && getUserRoles().map((role, i) => {
-                                                                return (<Chip key={i} color="secondary"
-                                                                              onClick={() => removeRoleFromUser(role)}
-                                                                              label={Api.getPrettyRole(role.role)} variant="outlined"/>)
-                                                            })
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="role-block col-6">
-                                                    <h6 className="role-label text-center" >Available</h6>
-                                                    <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableRoleFilter} onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
-                                                        {
-                                                            getAvailableRoles().map((role, i) => {
-                                                                return (<Chip key={i} color="primary"
-                                                                              onClick={() => addRoleToUser(role)}
-                                                                              label={Api.getPrettyRole(role)} variant="outlined"/>)
-                                                            })
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {/*<div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "300px"}}>*/}
+                                        {/*    <div className="row pb-5">*/}
+                                        {/*        <div className="role-block col-6">*/}
+                                        {/*            <h6 className="role-label text-center">SimSage Roles</h6>*/}
+                                        {/*            <div className="role-area bg-light border rounded h-100">*/}
+                                        {/*                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}/>*/}
+                                        {/*                {*/}
+                                        {/*                    getUserRoles().map((role, i) => {*/}
+                                        {/*                        return (<Chip key={i} color="secondary"*/}
+                                        {/*                                      onClick={() => removeRoleFromUser(role)}*/}
+                                        {/*                                      label={Api.getPrettyRole(role.role)} variant="outlined"/>)*/}
+                                        {/*                    })*/}
+                                        {/*                }*/}
+                                        {/*            </div>*/}
+                                        {/*        </div>*/}
+                                        {/*        <div className="role-block col-6">*/}
+                                        {/*            <h6 className="role-label text-center" >Available</h6>*/}
+                                        {/*            <div className="role-area bg-light border rounded h-100">*/}
+                                        {/*                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableRoleFilter} onChange={(e) => setAvailableRoleFilter(e.target.value)}/>*/}
+                                        {/*                {*/}
+                                        {/*                    getAvailableRoles().map((role, i) => {*/}
+                                        {/*                        return (<Chip key={i} color="primary"*/}
+                                        {/*                                      onClick={() => addRoleToUser(role)}*/}
+                                        {/*                                      label={Api.getPrettyRole(role)} variant="outlined"/>)*/}
+                                        {/*                    })*/}
+                                        {/*                }*/}
+                                        {/*            </div>*/}
+                                        {/*        </div>*/}
+                                        {/*    </div>*/}
+                                        {/*</div>*/}
 
-                                        <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "300px"}}>
-                                            <div className="row pb-5">
-                                                <div className="role-block col-6">
-                                                    <h6 className="role-label text-center">SimSage Groups</h6>
-                                                    <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}/>
-                                                        {
-                                                            autoCreateSSOACLList && getGroups().map((grp, i) => {
-                                                                return (
+                                        {/*<div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "300px"}}>*/}
+                                        {/*    <div className="row pb-5">*/}
+                                        {/*        <div className="role-block col-6">*/}
+                                        {/*            <h6 className="role-label text-center">SimSage Groups</h6>*/}
+                                        {/*            <div className="role-area bg-light border rounded h-100">*/}
+                                        {/*                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}/>*/}
+                                        {/*                {*/}
+                                        {/*                    autoCreateSSOACLList && getGroups().map((grp, i) => {*/}
+                                        {/*                        return (*/}
 
-                                                                    <Chip key={i} color="secondary"
-                                                                          onClick={() => removeGroupFromUser(grp)}
-                                                                          label={grp.name} variant="outlined"/>
-                                                                )
-                                                            })
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="role-block col-6">
-                                                    <h6 className="role-label text-center">Available</h6>
-                                                    <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableGroupFilter} onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
-                                                        {
-                                                            getAvailableGroups().map((grp, i) => {
-                                                                return (<Chip key={i} color="primary"
-                                                                              onClick={() => addGroupToUser(grp)}
-                                                                              label={grp.name}
-                                                                              variant="outlined"/>)
-                                                            })
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
+                                        {/*                            <Chip key={i} color="secondary"*/}
+                                        {/*                                  onClick={() => removeGroupFromUser(grp)}*/}
+                                        {/*                                  label={grp.name} variant="outlined"/>*/}
+                                        {/*                        )*/}
+                                        {/*                    })*/}
+                                        {/*                }*/}
+                                        {/*            </div>*/}
+                                        {/*        </div>*/}
+                                        {/*        <div className="role-block col-6">*/}
+                                        {/*            <h6 className="role-label text-center">Available</h6>*/}
+                                        {/*            <div className="role-area bg-light border rounded h-100">*/}
+                                        {/*                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableGroupFilter} onChange={(e) => setAvailableGroupFilter(e.target.value)}/>*/}
+                                        {/*                {*/}
+                                        {/*                    getAvailableGroups().map((grp, i) => {*/}
+                                        {/*                        return (<Chip key={i} color="primary"*/}
+                                        {/*                                      onClick={() => addGroupToUser(grp)}*/}
+                                        {/*                                      label={grp.name}*/}
+                                        {/*                                      variant="outlined"/>)*/}
+                                        {/*                    })*/}
+                                        {/*                }*/}
+                                        {/*            </div>*/}
+                                        {/*        </div>*/}
+                                        {/*    </div>*/}
+                                        {/*</div>*/}
 
                                     </div>
                                 }

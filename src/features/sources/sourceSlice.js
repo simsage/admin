@@ -390,6 +390,15 @@ export const processFiles = createAsyncThunk(
     });
 
 
+export const setupOIDCRequest = createAsyncThunk(
+    'sources/setupOIDCRequest',
+    async ({OIDCClientID, OIDCSecret}) => {
+        const api_base = window.ENV.api_base;
+        alert(api_base);
+    }
+);
+
+
 const sourceSlice = createSlice({
     name: 'sources',
     initialState,
@@ -398,7 +407,7 @@ const sourceSlice = createSlice({
 });
 
 export const {
-    showAddForm, showEditForm, closeForm, setSelectedSourceTab, showExportForm, showImportForm,
+    showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
     showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert
 } = sourceSlice.actions
 export default sourceSlice.reducer;

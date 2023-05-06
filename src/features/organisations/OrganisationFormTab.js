@@ -4,7 +4,7 @@ export function OrganisationTab({selected_tab, onTabChange}){
 
     const tabs = [
         {slug:'general', label:'General'},
-        {slug:'sso', label:'Single Sign On'},
+        {slug:'sso', label:'Single sign-on'},
     ];
 
     return(
