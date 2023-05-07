@@ -1,10 +1,30 @@
 import axios from "axios/index";
+import {loadState} from "./helpers";
 
-import {loadState} from '../reducers/stateLoader'
+// import {loadState} from '../state/stateLoader'
 
 
 // communications common to all components
 export class Comms {
+
+    /**
+     * New set of Api functions
+     */
+
+    static http_get2(url, session_id) {
+        const api_base = window.ENV.api_base;
+        if (url !== '/stats/stats/os') {
+            console.log('GET ' + api_base + url);
+        }
+
+        return axios.get(api_base + url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {return error}
+            )
+    };
+
 
     static http_post(url, session_id, payload, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
@@ -46,6 +66,8 @@ export class Comms {
             });
     };
 
+
+
     static http_get(url, session_id, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
         if (url !== '/stats/stats/os') {
@@ -70,9 +92,9 @@ export class Comms {
 
     static http_get_jwt(url, jwt, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
-        }
+        // if (url !== '/stats/stats/os') {
+        //     console.log('GET ' + api_base + url);
+        // }
         return axios.get(api_base + url,{
                 headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": jwt,}
             })
@@ -240,6 +262,8 @@ export class Comms {
 
     static getSession() {
         const state = loadState();
+        console.log("loadstate",state)
+        return state;
         if (state && state.appReducer && state.appReducer.session && state.appReducer.session.id) {
             return state.appReducer.session;
         }
@@ -248,9 +272,11 @@ export class Comms {
 
     static getHeaders(session_id) {
         if (session_id) {
+            // const api_version = 1;
+            const api_version = window.ENV.api_version
             return {
                 headers: {
-                    "API-Version": window.ENV.api_version,
+                    "API-Version": api_version,
                     "Content-Type": "application/json",
                     "session-id": session_id,
                 }
@@ -265,5 +291,4 @@ export class Comms {
     }
 
 }
-
 export default Comms;

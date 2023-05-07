@@ -59,12 +59,14 @@ export class AclSetup extends Component {
         return this.props.group_list ? this.props.group_list : [];
     }
     getAllUsers() {
+        console.log("getAllUsers",this.props)
         return this.props.user_list ? this.props.user_list : [];
     }
     getAvailableGroupsOrUsers() {
+        console.log("getAllUsers")
         const list = [];
         const filter = this.state.availableFilter.trim().toLowerCase();
-        for (const group of this.getAllGroups()) {
+        for (let group of this.getAllGroups()) {
             let found = false;
             for (const s_acl of this.state.acl_list) {
                 if (group.name === s_acl.acl) {
@@ -73,12 +75,14 @@ export class AclSetup extends Component {
             }
             if (!found) { // still available (ie. not found)?
                 if (filter.length === 0 || group.name.toLowerCase().indexOf(filter) >= 0) {
-                    group.isUser = false;
+                    //todo: Cannot add property isUser - check this with rock
+                    // group.isUser = false;
                     list.push(group);
                 }
             }
         }
         for (const user of this.getAllUsers()) {
+            // console.error("getAllUsers", user)
             let found = false;
             for (const s_acl of this.state.acl_list) {
                 if (user.email === s_acl.acl) {
@@ -165,46 +169,55 @@ export class AclSetup extends Component {
             return <h1>acl-setup.js: Something went wrong.</h1>;
         }
         return (
-            <div>
+            <div className="row pb-5">
 
-                <div className="acl-setup-role-block">
-                    <div className="role-label">ACLs
-                        <span className="filter-label">filter </span>
-                        <span className="filter-text-box"><input type="text" className="filter-text" value={this.state.selectedFilter}
+                <div className="role-block col-6">
+                        <h6 className="role-label text-center">ACLs </h6>
+                        {/* <span className="filter-text-box"><input type="text" className="filter-text" value={this.state.selectedFilter}
                                                                  onChange={(event) => { this.setState({selectedFilter: event.target.value})}} />
                             <span className="clear" title="clear filter" onClick={() => this.setState({selectedFilter: ''})}>&times;</span>
-                        </span>
-                    </div>
-                    <div className="role-area">
+                        </span> */}
+                    <div className="role-area bg-light border rounded h-100">
+                        <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center bg-white'>
+                            <input type="text" className="filter-text w-100 px-2 py-2 border-0" placeholder="Filter..." value={this.state.selectedFilter}
+                                                                 onChange={(event) => { this.setState({selectedFilter: event.target.value})}} />
+                            <span className="clear px-3" title="clear filter" onClick={() => this.setState({selectedFilter: ''})}>&times;</span>
+                        </div>
                         {
                             this.getAcls().map((acl, i) => {
-                                return (<div key={i} className="acl-box" title={(acl.isUser ? "user " : "group ") + acl.acl}>
-                                    <span className="acl-name" onClick={() => this.removeAcl(acl)}>
-                                        <span className="user-group-image-box"><img className="user-group-image" src={acl.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{acl.acl}</span>
+                                return (<div key={i} className="role-chip d-flex justify-content-between align-items-center" title={(acl.isUser ? "user " : "group ") + acl.acl}>
+                                    <span className="w-100" onClick={() => this.removeAcl(acl)}>
+                                        <span className="user-group-image-box"><img className="user-group-image me-3" src={acl.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{acl.acl}</span>
                                     </span>
-                                    <span className={this.getAclClassName(acl, "R")} title={this.getTitle(acl, "R")}>{this.getAccess(acl, "R")}</span>
-                                    <span className={this.getAclClassName(acl, "W")} title={this.getTitle(acl, "W")} onClick={(event) => this.invertAccess(event, acl, "W")}>{this.getAccess(acl, "W")}</span>
-                                    <span className={this.getAclClassName(acl, "D")} title={this.getTitle(acl, "D")} onClick={(event) => this.invertAccess(event, acl, "D")}>{this.getAccess(acl, "D")}</span>
-                                    <span className={this.getAclClassName(acl, "M")} title={this.getTitle(acl, "M")} onClick={(event) => this.invertAccess(event, acl, "M")}>{this.getAccess(acl, "M")}</span>
+                                    <div className="d-flex flex-nowrap">
+                                        <span className={this.getAclClassName(acl, "R")} title={this.getTitle(acl, "R")}>{this.getAccess(acl, "R")}</span>
+                                        <span className={this.getAclClassName(acl, "W")} title={this.getTitle(acl, "W")} onClick={(event) => this.invertAccess(event, acl, "W")}>{this.getAccess(acl, "W")}</span>
+                                        <span className={this.getAclClassName(acl, "D")} title={this.getTitle(acl, "D")} onClick={(event) => this.invertAccess(event, acl, "D")}>{this.getAccess(acl, "D")}</span>
+                                        <span className={this.getAclClassName(acl, "M")} title={this.getTitle(acl, "M")} onClick={(event) => this.invertAccess(event, acl, "M")}>{this.getAccess(acl, "M")}</span>
+                                    </div>
                                 </div>)
                             })
                         }
                     </div>
                 </div>
 
-                <div className="acl-setup-role-block-2">
-                    <div className="role-label">available
-                        <span className="available-filter-label">filter </span>
+                <div className="role-block col-6">
+                    <h6 className="role-label text-center">Available</h6>
+                        {/* <span className="available-filter-label">filter </span>
                         <span className="filter-text-box"><input type="text" className="filter-text" value={this.state.availableFilter}
                                                                  onChange={(event) => { this.setState({availableFilter: event.target.value})}} />
                             <span className="clear" title="clear filter" onClick={() => this.setState({availableFilter: ''})}>&times;</span>
-                        </span>
-                    </div>
-                    <div className="role-area">
+                        </span> */}
+                    <div className="role-area bg-light border rounded h-100">
+                        <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center bg-white'>
+                            <input type="text" className="filter-text w-100 px-2 py-2 border-0" placeholder="Filter..." value={this.state.availableFilter}
+                                                                 onChange={(event) => { this.setState({availableFilter: event.target.value})}} />
+                            <span className="clear px-3" title="clear filter" onClick={() => this.setState({availableFilter: ''})}>&times;</span>
+                        </div>
                         {
                             this.getAvailableGroupsOrUsers().map((u_group, i) => {
-                                return (<div key={i} className="user-name" onClick={() => this.addAcl(u_group)} title={(u_group.isUser ? "user " : "group ") + u_group.name}>
-                                    <span className="user-group-image-box"><img className="user-group-image" src={u_group.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{u_group.name}</span>
+                                return (<div key={i} className="role-chip" onClick={() => this.addAcl(u_group)} title={(u_group.isUser ? "user " : "group ") + u_group.name}>
+                                    <span className="user-group-image-box me-3"><img className="user-group-image" src={u_group.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{u_group.name}</span>
                                 </div>)
                             })
                         }

@@ -1,0 +1,50 @@
+.modal-container {
+    background-color: #fff;
+    border-radius: 10px;
+    max-height: 80%;
+    min-width: 600px;
+    border: 1px solid #ddd;
+    /* box-shadow: 0 0 100px 0 #20273180; */
+}
+.permissions-table td {
+    transition: all .3s ease;
+}
+.permissions-table tbody tr:hover td {
+    background-color: #f9f8fa;
+}
+.permissions-table tbody tr:hover {
+    /* outline: 1px solid #dee2e6; */
+}
+.permissions-btn {
+    width: 70px;
+}
+.permissions-btn:hover {
+    background-color: #f3f3f3;
+}
+.permissions-btn img {
+    opacity: .3;
+    height: 24px;
+}
+.permissions-btn.active {
+    background-color: #1c9bd21e;
+}
+.permissions-btn.active:hover {
+    background-color: #1c9bd22e;
+}
+.permissions-btn.active img {
+    opacity: 1;
+}
+.modal-cancel {
+}
+.modal-cancel:hover {
+    background-color: #fff;
+}
+.modal-save {
+    background-color: #1c9bd2;
+    color: #fff;
+    border-radius: 5px;
+}
+.modal-save:hover {
+    background-color: #0c81b3;
+    color: #fff;
+}

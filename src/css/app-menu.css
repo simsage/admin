@@ -9,7 +9,7 @@
     top: 10px;
 }
 
-.app-menu .logo {
+.app-menu .logo, .logo {
     float: left;
     width: 200px;
 }

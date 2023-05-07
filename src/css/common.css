@@ -19,6 +19,20 @@
     float: left;
 }
 
+.label-3 {
+    width: 260px;
+    margin-right: 20px;
+    text-align: right;
+    float: left;
+}
+
+.label-4 {
+    width: 300px;
+    margin-right: 20px;
+    text-align: right;
+    float: left;
+}
+
 .label-wide {
     width: 450px;
     margin-right: 20px;
@@ -32,6 +46,26 @@
     width: 400px;
 }
 
+.text-area {
+    float: left;
+    width: 400px;
+    min-height: 100px;
+    height: auto;
+
+}
+
+
+
+.id-width {
+    padding-left: 20px;
+    width: 320px;
+}
+
+.copied-style {
+    padding-left: 10px;
+    font-size: 12px;
+}
+
 .text:after {
     visibility: hidden;
     display: block;
@@ -40,10 +74,27 @@
     height: 0;
 }
 
+.edit-box {
+    width: 300px;
+}
+
+.sid-box {
+    width: 300px;
+}
+
+.number-box {
+    width: 100px;
+}
+
 .control-row {
     display: inline-block;
-    height: 40px;
+    /*height: 40px;*/
     width: 100%;
+    margin-bottom: 10px;
+}
+
+.synset-text-area {
+    height: auto;
 }
 
 .control-row:after {
@@ -71,3 +122,71 @@
     border-bottom: 1px solid #fff;
 }
 
+.margin-left {
+    margin-left: 170px;
+}
+
+.organisation-menu-item {
+    width: 200px;
+    display: block;
+    cursor: default;
+}
+
+
+/* logs */
+
+.log-list-overflow {
+    height: 60vh;
+    overflow: scroll;
+    scroll-behavior: auto;
+}
+
+.logger-service-selector {
+    width: 300px;
+    padding-bottom: 10px;
+}
+
+.log-spacer {
+    width: 20px;
+    display: inline-block;
+}
+
+.small-button-spacer {
+    margin-right: 2px;
+}
+
+.log-type-debug {
+    color: #51B274;
+}
+
+.log-type-info {
+    color: #0e70a5;
+}
+
+.log-type-error {
+    color: darkred;
+}
+
+.log-type-warn {
+    color: darkmagenta;
+}
+
+.log-type-width {
+    width: 50px;
+    display: inline-block;
+}
+
+.log-service-width {
+    width: 80px;
+    display: inline-block;
+}
+
+.log-time-width {
+    width: 130px;
+    display: inline-block;
+}
+
+.log-line {
+    font-size: 0.65em;
+    margin-bottom: 4px;
+}

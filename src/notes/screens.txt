@@ -1,0 +1,119 @@
+List of Pages and Local function.
+Will add actions soon
+
+
+------------------
+Organisations
+    Organisation List on Account Dropdown
+    Add Organisation
+    Edit
+    Filter -- not there
+
+-------------------------
+KB
+    KBHome
+        editKnowledgeBase
+        deleteKnowledgeBaseAsk
+        viewIds
+        optimizeIndexesAsk
+        filters:
+        pagination
+    EditKB
+    AddKB
+    Remove
+    Optimize
+
+------------------------
+Overview
+    sub menu: KB, Status, Logs
+    KB Home
+    LogsHome
+    StatusHome
+
+----------------------------
+Users Management
+    sub menu: Users, Group
+    Users Home
+        filters:
+        pagination
+    Add User
+    Edit User
+    Delete User
+
+Groups
+    GroupHome
+        filters:
+        pagination
+    AddGroup
+    EditGroup
+
+
+-----------------
+Document Management
+    sub menu: Sources, Inventory, Documents
+    DocumentManagementHome
+
+Sources
+    SourcesHome
+        filters:
+        pagination
+    Add Source
+    Edit Sources
+
+Inventory
+    InventoryHome
+        filters:
+        pagination
+    Indexes
+    Documents
+
+Documents
+    DocumentsHome
+        filters:
+        pagination
+    AddDocument
+    EditDocument
+    DeleteDocument
+
+----------------
+
+The Mind
+    sub nav: Bot, Synonyms, Semantics, Synsets, Categorization
+    MindHome
+
+Bot
+    BotHome
+        filters:
+
+
+Synonyms
+    SynonymsHome
+        filters:
+        pagination
+    AddSynonym
+    EditSynonym
+    DeleteSynonym
+
+Semantics
+        SemanticsHome
+            filters:
+            pagination
+        AddSemantic
+        EditSemantic
+        DeleteSemantic
+
+Synsets
+        SemanticsHome
+            filters:
+            pagination
+        AddSemantic
+        EditSemantic
+        DeleteSemantic
+
+Categorization
+        CategorizationHome
+            filters:
+            pagination
+
+Reports
+    ReportsHome

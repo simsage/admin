@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import '../css/time-select.css';
+import '../css/time-select.css'
 
 const time_list = ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00',
                    '12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
@@ -69,13 +69,15 @@ export class TimeSelect extends Component {
             return "inactive";
         }
     }
-    clearAll() {
+    clearAll(e) {
+        e.preventDefault();
         this.setState({time_map: this.setupTimeMap(''), time: ''});
         if (this.state.onSave) {
             this.state.onSave('');
         }
     }
-    selectAll() {
+    selectAll(e) {
+        e.preventDefault();
         this.setState({time_map: this.setupTimeMap(defaultAllTimesSelected), time: defaultAllTimesSelected});
         if (this.state.onSave) {
             this.state.onSave(defaultAllTimesSelected);
@@ -143,7 +145,9 @@ export class TimeSelect extends Component {
         }
         return (
             <div className="time-select">
-                <div className="labelTop">all times in GMT (now {this.timeStr()})</div>
+                <div className="labelTop text-center">
+                    <h6>All times in GMT (now {this.timeStr()})</h6>
+                </div>
                 <table className="tableStyle">
                     <tbody>
                     <tr>
@@ -197,20 +201,15 @@ export class TimeSelect extends Component {
                     </tbody>
                 </table>
 
-                <br />
-                <div className="legenda">
-                    <div className="activeText">active</div>
-                    <div className="inactiveText">inactive</div>
-                    <div className="button1">
-                        <button className="btn btn-primary btn-block" onClick={() => this.clearAll()}>
-                            clear all
-                        </button>
-                    </div>
-                    <div className="button2">
-                        <button className="btn btn-primary btn-block" onClick={() => this.selectAll()}>
-                            select all
-                        </button>
-                    </div>
+                <div className="legenda d-flex justify-content-center w-100">
+                    {/* <div className="activeText">Active</div>
+                    <div className="inactiveText">Inactive</div> */}
+                    <button className="inactiveText btn-sm" onClick={(e) => this.clearAll(e)}>
+                        Clear All
+                    </button>
+                    <button className="activeText btn-sm" onClick={(e) => this.selectAll(e)}>
+                        Select All
+                    </button>
                 </div>
             </div>
         );
