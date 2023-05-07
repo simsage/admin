@@ -75,7 +75,7 @@ export class CrawlerDropbox extends Component {
                         </span>
                     </span>
                     <span className="dropbox-manual-box">
-                        <a href="resources/simsage-dropbox-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Dropbox setup guide">
+                        <a href="../resources/simsage-dropbox-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Dropbox setup guide">
                             <span className="instructions-label">instructions</span>
                             <img src="../images/pdf-icon.png" alt="dropbox setup guide" className="image-size" />
                         </a>

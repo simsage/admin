@@ -63,18 +63,20 @@ export class RestoreWPArchive extends React.Component {
     render() {
         return (
             <div className="restore-wp">
-                <div className="form-width">
-                    <input className="upload-control"
-                           type="file"
-                           onChange={(e) => this._handleImageChange(e)}/>
-                    {
-                        this.state.data && this.state.data.length > 0 && this.state.fileType === "application/zip" &&
-                        <span className="image-button" onClick={() => this.upload()}><img
-                            className="image-size" src="../images/restore.svg"
-                            title={"Click here to upload WordPress Archive \"" + this.state.filename + "\""}
-                            alt="restore data from file"/></span>
-                    }
-                </div>
+                <form onSubmit={(e) => this._handleSubmit(e)} className="upload-container">
+                    <div className="form-width">
+                        <input className="upload-control"
+                               type="file"
+                               onChange={(e) => this._handleImageChange(e)}/>
+                        {
+                            this.state.data && this.state.data.length > 0 && this.state.fileType === "application/zip" &&
+                            <span className="image-button" onClick={() => this.upload()}><img
+                                className="image-size" src="../images/restore.svg"
+                                title={"Click here to upload WordPress Archive \"" + this.state.filename + "\""}
+                                alt="restore data from file"/></span>
+                        }
+                    </div>
+                </form>
             </div>
         )
     }

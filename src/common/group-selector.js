@@ -116,7 +116,7 @@ export class GroupSelector extends Component {
             return <h1>group-selector.js: Something went wrong.</h1>;
         }
         return (
-            <div className="group-control">
+            <div>
 
                 <div className="group-block">
                     <div className="group-label">selected groups

@@ -42,19 +42,6 @@ export class Api {
         return bytes;
     };
 
-    // print a number with thousand formatters and return a string
-    static numberWithCommas(number) {
-        if (number)
-            return new Intl.NumberFormat().format(number);
-        return "0";
-    }
-
-    // get a date object, but in GMT time
-    static getGMTDate() {
-        const localDate = new Date();
-        return new Date(localDate.valueOf() + localDate.getTimezoneOffset() * 60000);
-    }
-
     // convert unix timestamp to string if it's for a reasonable time in the future
     static unixTimeConvert(timestamp){
         if (timestamp > 1000) {
@@ -70,32 +57,9 @@ export class Api {
         return "";
     }
 
-    // convert unix timestamp to string if it's for a reasonable time in the future
-    static unixTimeForFilename(timestamp){
-        if (timestamp > 1000) {
-            const a = new Date(timestamp);
-            const year = a.getUTCFullYear();
-            const month = a.getUTCMonth() + 1;
-            const date = a.getUTCDate();
-            const hour = a.getUTCHours();
-            const min = a.getUTCMinutes();
-            const sec = a.getUTCSeconds();
-            return year + '-' + Api.pad2(month) + '-' + Api.pad2(date) + '_' + Api.pad2(hour) + '-' + Api.pad2(min) + '-' + Api.pad2(sec);
-        }
-        return "";
-    }
-
     // get current time in milli-seconds
     static getSystemTime() {
         return new Date().getTime();
-    }
-
-    // get current time in milliseconds
-    static sessionHasExpired(session_time) {
-        if (!session_time || session_time === 0)
-            return true;
-        const age = new Date().getTime() - session_time;
-        return !age || age.isNaN() || age < 0 || age > window.ENV.session_expiry_time;
     }
 
     // convert a date object to an iso date string
@@ -122,17 +86,6 @@ export class Api {
         if (hour < 0) hour += 24;
         if (hour >= 24) hour -= 24;
         return year + '-' + Api.pad2(month) + '-' + Api.pad2(day) + 'T' + Api.pad2(hour) + ':00:00.000';
-    }
-
-    // convert a date object to an iso date string
-    static toShortIsoDateTime(date) {
-        if (!date)
-            return "";
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        let hour = date.getHours();
-        return year + '-' + Api.pad2(month) + '-' + Api.pad2(day) + ' ' + Api.pad2(hour) + ':00';
     }
 
     // convert a date object to an iso date string
@@ -201,12 +154,13 @@ export class Api {
     // start a password reset request
     static passwordResetRequest(email, success, fail) {
         if (email && email.length > 0) {
-            Comms.http_post('/auth/reset-password-request', null, {"email": email},
+            Comms.http_post('/auth/reset-password-request', {"email": email},
                 (response) => { success(response.data.session, response.data.user) },
-                (errStr) => { if (fail) fail(errStr) }
+                (errStr) => { fail(errStr) }
             )
-        } else {
-            if (fail) fail('you must provide your SimSage email address');
+        }
+        else{
+            fail('you must provide your SimSage email address');
         }
     };
 
@@ -214,7 +168,7 @@ export class Api {
     static resetPassword(email, newPassword, reset_id, success, fail) {
         if (email && email.length > 0 && newPassword.length > 0) {
             const payload = {"email": email, "password": newPassword, "resetId": reset_id};
-            Comms.http_post('/auth/reset-password', null, payload,
+            Comms.http_post('/auth/reset-password', payload,
                 (response) => { success(response.data.session, response.data.user) },
                 (errStr) => { fail(errStr) }
             )

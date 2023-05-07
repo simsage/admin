@@ -12,7 +12,7 @@ import { LogLevel } from "@azure/msal-browser";
  */
 let wl = "" + window.location;
 if (wl.lastIndexOf('/') > 8) {
-    wl = wl.substr(0, wl.lastIndexOf('/'));
+    wl = wl.substr(0, wl.lastIndexOf('/#'));
 }
 //
 // wl = "http://localhost:4210";
@@ -29,7 +29,7 @@ export const msalConfig = {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored
         storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
     },
-    system: {
+    system: {	
         loggerOptions: {	
             loggerCallback: (level, message, containsPii) => {	
                 if (containsPii) {		

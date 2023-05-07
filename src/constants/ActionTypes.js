@@ -6,15 +6,12 @@ export const SET_THEME = "set theme";
 
 export const PASSWORD_RESET_REQUEST = "password reset request";
 export const RESET_PASSWORD = "reset password";
-export const RESET_SESSION = "reset session";
 
 export const SET_USER_LIST = "set user list";
 export const UPDATE_USER = "update user";
 export const SET_USER_FILTER = "set user filter";
 export const SET_USER_PAGE = "set user page";
 export const SET_USER_PAGE_SIZE = "set user page size";
-export const UPLOADING_USERS = "uploading users";
-export const UPLOADING_USERS_FINISHED = "uploading users finished";
 
 export const SET_ORGANISATION_LIST = "get organisation list";
 export const SELECT_ORGANISATION = "select organisation";
@@ -29,8 +26,6 @@ export const SELECT_KNOWLEDGE_BASE = "selected knowledge base";
 export const SELECT_EDGE_DEVICE = "select edge device";
 export const GET_INVENTORIZE_LIST = "get inventorize list";
 export const GET_INVENTORIZE_BUSY = "get inventorize busy";
-export const SET_INVENTORIZE_PAGE = "set inventory page";
-export const SET_INVENTORIZE_PAGE_SIZE = "set inventory page size";
 export const SET_KB_PAGE = "set kb page";
 export const SET_KB_PAGE_SIZE = "set kb page size";
 
@@ -40,8 +35,6 @@ export const UPLOADING_PROGRAM_FINISHED = "uploading program finished";
 export const UPLOADING_WP_ARCHIVE = "uploading wp archive";
 export const UPLOADING_WP_ARCHIVE_FINISHED = "uploading wp archive finished";
 
-export const SET_SOURCE_PAGE = "set source page";
-export const SET_SOURCE_PAGE_SIZE = "set source page size";
 export const GET_CRAWLERS = "get crawlers";
 export const GET_DOMAINS = "get domains";
 
@@ -55,12 +48,12 @@ export const RESET_DOCUMENT_PAGINATION = "reset document pagination";
 export const GET_STATS = "get stats";
 export const GET_OS_MESSAGES = "get os messages";
 
-export const MIND_FIND = "bot find";
-export const SET_MEMORIES_PAGINATED = "set bot items paginated";
-export const SET_MEMORIES_PAGE_SIZE = "set bot item page size";
-export const SET_MEMORIES_PAGE = "set bot item page";
-export const RESET_MEMORIES_PAGINATION = "reset bot item pagination";
-export const SET_MEMORY_FILTER = "set bot item filter";
+export const MIND_FIND = "mind find";
+export const SET_MEMORIES_PAGINATED = "set mind items paginated";
+export const SET_MEMORIES_PAGE_SIZE = "set mind item page size";
+export const SET_MEMORIES_PAGE = "set mind item page";
+export const RESET_MEMORIES_PAGINATION = "reset mind item pagination";
+export const SET_MEMORY_FILTER = "set mind item filter";
 export const SET_MIND_QUERY_LIST = "set bot query list";
 export const SET_MIND_QUERY_STRING = "set bot query string";
 
@@ -86,20 +79,10 @@ export const SET_SYNSET_PAGE = "set synset page";
 export const SET_SYNSET_PAGE_SIZE = "set synset page size";
 export const RESET_SYNSET_PAGINATION = "reset synset pagination";
 
-export const SET_TEXT2SEARCH_PAGINATED = "set text2search paginated";
-export const SET_TEXT2SEARCH_PAGE_SIZE = "set text2search page size";
-export const SET_TEXT2SEARCH_PAGE = "set text2search page";
-export const RESET_TEXT2SEARCH_PAGINATION = "reset text2search pagination";
-export const SET_TEXT2SEARCH_FILTER = "set text2search filter";
-export const SET_TEXT2SEARCH_TRY_TEXT = "set text2search try text";
-export const SET_TEXT2SEARCH_TRY_REPLY = "set text2search try reply";
-
 export const RESTORE_SYSTEM = "restore system";
 
 export const GET_LICENSE = "get license";
 export const INSTALL_LICENCE = "install license";
-
-export const SET_OIDC_REDIRECT_URL = "set oidc redirect url";
 
 export const BUSY = "busy";
 export const ERROR = "error";
@@ -146,14 +129,8 @@ export const SET_GROUP_PAGE_SIZE = "set group page size";
 export const SET_GROUP_PAGE = "set group page";
 export const SET_GROUP_FILTER = "set group filter";
 
-// document categorization
-export const SET_CATEGORIZATION_LIST = "set categorization list";
-export const SET_CATEGORIZATION_PAGE_SIZE = "set categorization page size";
-export const SET_CATEGORIZATION_PAGE = "set categorization page";
-export const RESET_CATEGORIZATION_PAGINATION = "reset categorization pagination";
+// categories
+export const SET_CATEGORIES = "set categories";
 
 // SimSage status
 export const SIMSAGE_STATUS = "simsage status";
-
-// backups
-export const SET_BACKUP_LIST = "set backup list";

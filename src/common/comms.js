@@ -134,31 +134,6 @@ export class Comms {
             });
     };
 
-
-    /**
-     * sign in the admin user using a username and password
-     *
-     * @param username   the email address of the user
-     * @param password   the password of said user
-     * @param on_success success callback
-     * @param on_fail    fail callback
-     */
-    static usernamePasswordSignIn(username, password, on_success, on_fail) {
-        Comms.http_post('/auth/sign-in', null, {"email": username, "password": password},
-            (response) => {
-                // const organisation_list = response.data.organisationList ? response.data.organisationList : [];
-                // _getBackupList(organisation_list && organisation_list.length > 0 ? organisation_list[0].id : '', dispatch, getState);
-                if (on_success)
-                    on_success(response.data);
-            },
-            (errStr) => {
-                console.error(errStr);
-                if (on_fail) {
-                    on_fail(errStr);
-                }
-            });
-    }
-
     // get a url that can be used to backup the system, regime e {all (backup all orgs), specific (backup specified org)}
     static download_backup(organisation_id, regime, session_id) {
         Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {

@@ -1,13 +1,9 @@
 
-.min-width {
-    min-width: 600px;
-}
-
 .role-block {
     padding: 5px;
     margin-top: 20px;
     float: left;
-    width: 300px;
+    width: 500px;
     height: 220px;
     border: 1px solid #888;
     border-radius: 4px;
@@ -16,14 +12,13 @@
 }
 
 .role-block .role-label {
-    margin-left: 10px;
     font-size: 0.8em;
     color: #aaa;
     cursor: default;
 }
 
 .role-label .filter-label {
-    width: 90px;
+    margin-left: 80px;
     color: #808080;
 }
 
@@ -37,9 +32,9 @@
 
 .role-label .clear {
     text-align: center;
-    background: #606060;
+    background: #808080;
     color: #fff;
-    padding: 2px 6px;
+    padding: 2px 4px;
     border-radius: 50px;
     margin-top: 4px;
     margin-left: 4px;

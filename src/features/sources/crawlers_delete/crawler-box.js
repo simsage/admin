@@ -20,7 +20,7 @@ export class CrawlerBox extends Component {
             clientId: props.clientId ? props.clientId : '',
             clientSecret: props.clientSecret ? props.clientSecret : '',
             enterpriseId: props.enterpriseId ? props.enterpriseId : '',
-            deltaIndicator: props.deltaIndicator ? props.deltaIndicator : '0',
+            timeToCheckFrom: props.timeToCheckFrom ? props.timeToCheckFrom : '0',
             folderList: props.folderList ? props.folderList : '',
             specific_json: props.specific_json,
         };
@@ -39,7 +39,7 @@ export class CrawlerBox extends Component {
                 clientId: Api.defined(nextProps.clientId) ? nextProps.clientId : '',
                 clientSecret: Api.defined(nextProps.clientSecret) ? nextProps.clientSecret : '',
                 enterpriseId: Api.defined(nextProps.enterpriseId) ? nextProps.enterpriseId : '',
-                deltaIndicator: Api.defined(nextProps.deltaIndicator) ? nextProps.deltaIndicator : '0',
+                timeToCheckFrom: Api.defined(nextProps.timeToCheckFrom) ? nextProps.timeToCheckFrom : '0',
                 folderList: Api.defined(nextProps.folderList) ? nextProps.folderList : '',
                 specific_json: nextProps.specific_json,
                 onSave: nextProps.onSave,
@@ -53,7 +53,7 @@ export class CrawlerBox extends Component {
             clientId: Api.defined(data.clientId) ? data.clientId : this.state.clientId,
             clientSecret: Api.defined(data.clientSecret) ? data.clientSecret : this.state.clientSecret,
             enterpriseId: Api.defined(data.enterpriseId) ? data.enterpriseId : this.state.enterpriseId,
-            deltaIndicator: Api.defined(data.deltaIndicator) ? data.deltaIndicator : this.state.deltaIndicator,
+            timeToCheckFrom: Api.defined(data.timeToCheckFrom) ? data.timeToCheckFrom : this.state.timeToCheckFrom,
             folderList: Api.defined(data.folderList) ? data.folderList : this.state.folderList,
         };
     }
@@ -65,15 +65,15 @@ export class CrawlerBox extends Component {
         }
     }
     setTimeToNow() {
-        this.setState({deltaIndicator: Math.floor(Date.now() / 1000)});
+        this.setState({timeToCheckFrom: Math.floor(Date.now() / 1000)});
     }
     render() {
         if (this.state.has_error) {
             return <h1>crawler-dropbox.js: Something went wrong.</h1>;
         }
         let date_time_str = "complete crawl";
-        if (this.state.deltaIndicator > time2020)
-            date_time_str = Api.toPrettyDateTime(new Date(this.state.deltaIndicator * 1000));
+        if (this.state.timeToCheckFrom > time2020)
+            date_time_str = Api.toPrettyDateTime(new Date(this.state.timeToCheckFrom * 1000));
         return (
             <div className="crawler-page">
 
@@ -93,7 +93,7 @@ export class CrawlerBox extends Component {
                         </span>
                     </span>
                     <span className="dropbox-manual-box">
-                        <a href="resources/simsage-box-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Box setup guide">
+                        <a href="../resources/simsage-box-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Box setup guide">
                             <span className="instructions-label">instructions</span>
                             <img src="../images/pdf-icon.png" alt="box setup guide" className="image-size" />
                         </a>
@@ -145,8 +145,8 @@ export class CrawlerBox extends Component {
                                                spellCheck={false}
                                                style={{width: "200px", marginRight: "10px"}}
                                                placeholder="time to check from"
-                                               value={this.state.deltaIndicator}
-                                               onChange={(event) => {this.change_callback({deltaIndicator: event.target.value})}}
+                                               value={this.state.timeToCheckFrom}
+                                               onChange={(event) => {this.change_callback({timeToCheckFrom: event.target.value})}}
                                         />
                                     </td>
                                     <td>

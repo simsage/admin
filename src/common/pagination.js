@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import '../css/pagination.css';
-import Api from "./api";
 
 
 export class Pagination extends Component {

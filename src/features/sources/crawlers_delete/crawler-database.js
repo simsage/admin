@@ -28,26 +28,7 @@ export class CrawlerDatabase extends Component {
             type: Api.defined(props.type) ? props.type : 'none',
             query: props.query ? props.query : '',
             pk: props.pk ? props.pk : '',
-            template: props.template ? props.template : '<div class="ms-3 w-100">\n' +
-                '  <div class="d-flex align-items-center text-align-end mb-1">\n' +
-                '    <p class="mb-0 result-breadcrumb me-2">BREADCRUMB</p>\n' +
-                '  </div>\n' +
-                '    <span class="mb-2 results-filename text-break pointer-cursor" title="URL">TITLE</span>\n' +
-                '    <div class="d-flex align-items-center mb-1">\n' +
-                '      <span class="mb-0 result-details-title">URL</span>\n' +
-                '    </div>\n' +
-                '  <div class="d-flex align-items-center mb-1">\n' +
-                '    <span class="mb-0 result-details">LAST_MODIFIED</span>\n' +
-                '    <span class="d-flex align-items-center">\n' +
-                '      <span class="mb-0 result-details mx-2">|</span>\n' +
-                '      <span class="mb-0 result-details">AUTHOR</span>\n' +
-                '    </span>\n' +
-                '  </div>\n' +
-                '  <div>\n' +
-                '    <p class="small fw-light mb-2">RESULT_TEXT</p>\n' +
-                '  </div>\n' +
-                '  <div class="d-flex align-items-center flex-wrap"></div>\n' +
-                '</div>\n',
+            template: props.template ? props.template : '',
             text: props.text ? props.text : '',
             content_url: props.content_url ? props.content_url : '',
             customRender: props.customRender,
@@ -112,16 +93,6 @@ export class CrawlerDatabase extends Component {
         }
         return (
             <div className="crawler-page">
-
-                <div className="form-group">
-                    <span className="office-manual-box">
-                        <a href="resources/simsage-database-crawler-setup.pdf" id="dlOffice365" target="_blank" title="download the SimSage Database crawler setup guide">
-                            <span className="instructions-label">instructions</span>
-                            <img src="../images/pdf-icon.png" alt="database crawler setup guide" className="image-size" />
-                        </a>
-                    </span>
-                    <br />
-                </div>
 
                 <div className="form-group">
                     <span className="left-column">
@@ -244,7 +215,7 @@ export class CrawlerDatabase extends Component {
                         <textarea className="textarea-width"
                             placeholder="sql html render template, an html template referencing SQL fields in square brackets [FIELD-NAME]"
                             disabled={!this.state.customRender}
-                            rows={22}
+                            rows={4}
                             value={this.state.template}
                             onChange={(event) => {this.change_callback({template: event.target.value})}}
                         />

@@ -11,7 +11,6 @@ const metadata_list = [
     {"key": "created date range", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
     {"key": "last modified date ranges", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "false", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
     {"key": "document type", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
-    {"key": "categorical list", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
     {"key": "people list", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
     {"key": "hashtag list", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
     {"key": "location list", "display": "", "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
