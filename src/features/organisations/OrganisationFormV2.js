@@ -68,73 +68,84 @@ export default function OrganisationFormV2(props) {
         setSelectedTab(slug);
     }
 
-    // function getUserRoles(){
-    //     if (!autoCreateSSORoleList || !autoCreateSSORoleList.length)
-    //         return [];
-    //     return roleFilter.length > 0 ? autoCreateSSORoleList.filter( role => {
-    //             return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
-    //         })
-    //         :
-    //         autoCreateSSORoleList
-    // }
-    //
-    // function addRoleToUser(roleToAdd){
-    //     const list = (autoCreateSSORoleList && autoCreateSSORoleList.length > 0) ? autoCreateSSORoleList : [];
-    //     list.push(roleToAdd);
-    //     setAutoCreateSSORoleList(list);
-    // }
-    //
-    // function removeRoleFromUser(roleToRemove){
-    //     setAutoCreateSSORoleList(autoCreateSSORoleList.filter( r => {
-    //         return r.role !== roleToRemove.role
-    //     }))
-    // }
-    //
-    // const getAvailableRoles = () => {
-    //     const roleNames = autoCreateSSORoleList ? autoCreateSSORoleList.map( r => r.role) :  [];
-    //     let tempRoleList = [];
-    //     ["search", "dms", "discovery"].forEach( ar => {
-    //         if(!roleNames.includes(ar)){
-    //             tempRoleList.push(ar);
-    //         }
-    //     })
-    //
-    //     return availableRoleFilter.length > 0 ? tempRoleList.filter( role => {
-    //             return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
-    //         })
-    //         :
-    //         tempRoleList;
-    // }
-    //
-    // function addGroupToUser(groupToAdd){
-    //     setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
-    // }
-    //
-    // function removeGroupFromUser(groupToRemove){
-    //     setAutoCreateSSOACLList(autoCreateSSOACLList.filter( grp => {
-    //         return grp.name !== groupToRemove.name
-    //     }))
-    // }
-    //
-    // const getAvailableGroups = () => {
-    //     const groupNames = autoCreateSSOACLList ? autoCreateSSOACLList.map( g => g.name) : []
-    //     const availableGroups = [].filter( grp => {
-    //         return !groupNames.includes(grp.name)
-    //     })
-    //     return availableGroupFilter.length > 0 ? availableGroups.filter( grp => {
-    //             return grp.name.toLowerCase().includes(availableGroupFilter.toLowerCase())
-    //         })
-    //         :
-    //         availableGroups
-    // }
-    //
-    // function getGroups(){
-    //     return groupFilter.length > 0 ? autoCreateSSOACLList.filter( grp => {
-    //             return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
-    //         })
-    //         :
-    //         autoCreateSSOACLList
-    // }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // SimSage role management
+
+    function getUserRoles() {
+        // if (!autoCreateSSORoleList || !autoCreateSSORoleList.length)
+        //     return [];
+        // return roleFilter.length > 0 ? autoCreateSSORoleList.filter( role => {
+        //         return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
+        //     })
+        //     :
+        //     autoCreateSSORoleList
+        return [];
+    }
+
+    function addRoleToUser(roleToAdd){
+        // const list = (autoCreateSSORoleList && autoCreateSSORoleList.length > 0) ? autoCreateSSORoleList : [];
+        // list.push(roleToAdd);
+        // setAutoCreateSSORoleList(list);
+    }
+
+    function removeRoleFromUser(roleToRemove){
+        // setAutoCreateSSORoleList(autoCreateSSORoleList.filter( r => {
+        //     return r.role !== roleToRemove.role
+        // }))
+    }
+
+    const getAvailableRoles = () => {
+        // const roleNames = autoCreateSSORoleList ? autoCreateSSORoleList.map( r => r.role) :  [];
+        // let tempRoleList = [];
+        // ["search", "dms", "discovery"].forEach( ar => {
+        //     if(!roleNames.includes(ar)){
+        //         tempRoleList.push(ar);
+        //     }
+        // })
+        let tempRoleList = ["search", "dms", "discovery"];
+        return availableRoleFilter.length > 0 ? tempRoleList.filter( role => {
+                return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
+            })
+            :
+            tempRoleList;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // group/ACL management
+
+    function addGroupToUser(groupToAdd){
+        // setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
+    }
+
+    function removeGroupFromUser(groupToRemove){
+        // setAutoCreateSSOACLList(autoCreateSSOACLList.filter( grp => {
+        //     return grp.name !== groupToRemove.name
+        // }))
+    }
+
+    const getAvailableGroups = () => {
+        // const groupNames = autoCreateSSOACLList ? autoCreateSSOACLList.map( g => g.name) : []
+        // const availableGroups = [].filter( grp => {
+        //     return !groupNames.includes(grp.name)
+        // })
+        // return availableGroupFilter.length > 0 ? availableGroups.filter( grp => {
+        //         return grp.name.toLowerCase().includes(availableGroupFilter.toLowerCase())
+        //     })
+        //     :
+        //     availableGroups
+        return [];
+    }
+
+    function getGroups(){
+        // return groupFilter.length > 0 ? autoCreateSSOACLList.filter( grp => {
+        //         return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
+        //     })
+        //     :
+        //     autoCreateSSOACLList
+        return [];
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (!props.show_organisation_form)
         return (<div/>);
@@ -198,71 +209,71 @@ export default function OrganisationFormV2(props) {
                                             />
                                         </div>
 
-                                        {/*<div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "300px"}}>*/}
-                                        {/*    <div className="row pb-5">*/}
-                                        {/*        <div className="role-block col-6">*/}
-                                        {/*            <h6 className="role-label text-center">SimSage Roles</h6>*/}
-                                        {/*            <div className="role-area bg-light border rounded h-100">*/}
-                                        {/*                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}/>*/}
-                                        {/*                {*/}
-                                        {/*                    getUserRoles().map((role, i) => {*/}
-                                        {/*                        return (<Chip key={i} color="secondary"*/}
-                                        {/*                                      onClick={() => removeRoleFromUser(role)}*/}
-                                        {/*                                      label={Api.getPrettyRole(role.role)} variant="outlined"/>)*/}
-                                        {/*                    })*/}
-                                        {/*                }*/}
-                                        {/*            </div>*/}
-                                        {/*        </div>*/}
-                                        {/*        <div className="role-block col-6">*/}
-                                        {/*            <h6 className="role-label text-center" >Available</h6>*/}
-                                        {/*            <div className="role-area bg-light border rounded h-100">*/}
-                                        {/*                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableRoleFilter} onChange={(e) => setAvailableRoleFilter(e.target.value)}/>*/}
-                                        {/*                {*/}
-                                        {/*                    getAvailableRoles().map((role, i) => {*/}
-                                        {/*                        return (<Chip key={i} color="primary"*/}
-                                        {/*                                      onClick={() => addRoleToUser(role)}*/}
-                                        {/*                                      label={Api.getPrettyRole(role)} variant="outlined"/>)*/}
-                                        {/*                    })*/}
-                                        {/*                }*/}
-                                        {/*            </div>*/}
-                                        {/*        </div>*/}
-                                        {/*    </div>*/}
-                                        {/*</div>*/}
+                                        <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "450px"}}>
+                                            <div className="row pb-5">
+                                                <div className="role-block col-6">
+                                                    <h6 className="role-label text-center">SimSage Roles</h6>
+                                                    <div className="role-area bg-light border rounded h-100">
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}/>
+                                                        {
+                                                            getUserRoles().map((role, i) => {
+                                                                return (<Chip key={i} color="secondary"
+                                                                              onClick={() => removeRoleFromUser(role)}
+                                                                              label={Api.getPrettyRole(role.role)} variant="outlined"/>)
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="role-block col-6">
+                                                    <h6 className="role-label text-center" >Available</h6>
+                                                    <div className="role-area bg-light border rounded h-100">
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableRoleFilter} onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
+                                                        {
+                                                            getAvailableRoles().map((role, i) => {
+                                                                return (<Chip key={i} color="primary"
+                                                                              onClick={() => addRoleToUser(role)}
+                                                                              label={Api.getPrettyRole(role)} variant="outlined"/>)
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                        {/*<div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "300px"}}>*/}
-                                        {/*    <div className="row pb-5">*/}
-                                        {/*        <div className="role-block col-6">*/}
-                                        {/*            <h6 className="role-label text-center">SimSage Groups</h6>*/}
-                                        {/*            <div className="role-area bg-light border rounded h-100">*/}
-                                        {/*                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}/>*/}
-                                        {/*                {*/}
-                                        {/*                    autoCreateSSOACLList && getGroups().map((grp, i) => {*/}
-                                        {/*                        return (*/}
+                                        <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "300px"}}>
+                                            <div className="row pb-5">
+                                                <div className="role-block col-6">
+                                                    <h6 className="role-label text-center">SimSage Groups</h6>
+                                                    <div className="role-area bg-light border rounded h-100">
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}/>
+                                                        {
+                                                            getGroups().map((grp, i) => {
+                                                                return (
 
-                                        {/*                            <Chip key={i} color="secondary"*/}
-                                        {/*                                  onClick={() => removeGroupFromUser(grp)}*/}
-                                        {/*                                  label={grp.name} variant="outlined"/>*/}
-                                        {/*                        )*/}
-                                        {/*                    })*/}
-                                        {/*                }*/}
-                                        {/*            </div>*/}
-                                        {/*        </div>*/}
-                                        {/*        <div className="role-block col-6">*/}
-                                        {/*            <h6 className="role-label text-center">Available</h6>*/}
-                                        {/*            <div className="role-area bg-light border rounded h-100">*/}
-                                        {/*                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableGroupFilter} onChange={(e) => setAvailableGroupFilter(e.target.value)}/>*/}
-                                        {/*                {*/}
-                                        {/*                    getAvailableGroups().map((grp, i) => {*/}
-                                        {/*                        return (<Chip key={i} color="primary"*/}
-                                        {/*                                      onClick={() => addGroupToUser(grp)}*/}
-                                        {/*                                      label={grp.name}*/}
-                                        {/*                                      variant="outlined"/>)*/}
-                                        {/*                    })*/}
-                                        {/*                }*/}
-                                        {/*            </div>*/}
-                                        {/*        </div>*/}
-                                        {/*    </div>*/}
-                                        {/*</div>*/}
+                                                                    <Chip key={i} color="secondary"
+                                                                          onClick={() => removeGroupFromUser(grp)}
+                                                                          label={grp.name} variant="outlined"/>
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="role-block col-6">
+                                                    <h6 className="role-label text-center">Available</h6>
+                                                    <div className="role-area bg-light border rounded h-100">
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableGroupFilter} onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
+                                                        {
+                                                            getAvailableGroups().map((grp, i) => {
+                                                                return (<Chip key={i} color="primary"
+                                                                              onClick={() => addGroupToUser(grp)}
+                                                                              label={grp.name}
+                                                                              variant="outlined"/>)
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                     </div>
                                 }

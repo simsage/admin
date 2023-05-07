@@ -52,15 +52,14 @@ const authSlice = createSlice({
             state.selected_knowledge_base_id = action.payload;
         },
 
-        // showError: (state, action) => {
-        //     // alert("test")
-        //     console.log("showError")
-        //     if (action && action.payload && action.payload.title && action.payload.text) {
-        //         state.is_error = true;
-        //         state.error_title = action.payload.title;
-        //         state.error_text = action.payload.text;
-        //     }
-        // },
+        showError: (state, action) => {
+            console.log("showError", action.payload);
+            if (action && action.payload && action.payload.title && action.payload.message) {
+                state.is_error = true;
+                state.error_title = action.payload.title;
+                state.error_text = action.payload.message;
+            }
+        },
 
         closeError: (state) => {
             state.is_error = false;
@@ -97,19 +96,8 @@ const authSlice = createSlice({
     },
     extraReducers:(builder) => {
         builder
-    //         .addCase(acquireTokenSilent.pending,(state) => {
-    //             state.status = 'loading...'
-    //         })
-    //         .addCase(acquireTokenSilent.fulfilled, (state, action) => {
-    //             state.status = 'fulfilled'
-    //             state.jwt = action.payload
-    //             console.log("fulfilled",action.data)
-    //             })
-    //         .addCase(acquireTokenSilent.rejected, (state) => {
-    //             state.status = 'rejected'
-    //         })
             .addCase(simSageSignIn.pending, (state, action) => {
-            console.log("addCase simSageSignIn pending ",action)
+                console.log("addCase simSageSignIn pending ",action)
             })
             .addCase(simSageSignIn.fulfilled, (state,action) => {
                 console.log("addCase simSageSignIn fulfilled ",action)
@@ -151,6 +139,7 @@ export const simsageLogOut = createAsyncThunk(
     }
 )
 
+
 export const {reset, login, showAccount, closeAllMenus, setSelectedOrganisation, closeError,
-     setJwt, setSelectedKB } = authSlice.actions
+     setJwt, showError, setSelectedKB } = authSlice.actions
 export default authSlice.reducer;

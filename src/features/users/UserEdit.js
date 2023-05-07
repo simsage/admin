@@ -102,9 +102,19 @@ export function UserEdit(){
     }
 
     //Valid email check --##Need to add in validation here.
-    function validEmail(address){
-        const valid = true ? true: false;
-        return valid;
+    function validEmail(email) {
+        if (email && typeof email === "string") {
+            const email_str = email.trim();
+            const len = email_str.length;
+            const at_pos = email_str.indexOf('@');
+            const last_dot = email_str.lastIndexOf('.');
+            if (at_pos === -1 || last_dot === -1)
+                return false;
+            if (last_dot < at_pos)
+                return false;
+            return (last_dot + 2 < len);
+        }
+        return false;
     }
 
     const handleSave = () => {
