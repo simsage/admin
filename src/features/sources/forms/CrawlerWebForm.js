@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {setupOIDCRequest} from "../sourceSlice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 export default function CrawlerWebForm(props) {
 
@@ -12,6 +12,10 @@ export default function CrawlerWebForm(props) {
     //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
+    const session = useSelector((state) => state.authReducer.session);
+    const session_id = session.id;
+    const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
+    const kb_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
 
     // const self = this;
     // const theme = props.theme;
@@ -36,6 +40,9 @@ export default function CrawlerWebForm(props) {
         } else {
             dispatch(
                 setupOIDCRequest({
+                    session_id: session_id,
+                    organisation_id: organisation_id,
+                    kb_id: kb_id,
                     OIDCClientID: specific_json.OIDCClientID,
                     OIDCSecret: specific_json.OIDCSecret
                 })

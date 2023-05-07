@@ -36,7 +36,8 @@ export default function LeftNavbar(){
 
     return (
         <div className="sidebar no-select">
-            <div className="sb-logo d-flex justify-content-center align-items-center">
+            <div className="sb-logo d-flex justify-content-center align-items-center pointer-cursor"
+                 title="SimSage Portal" onClick={() => window.location = "/"}>
                 <img src="/images/brand/simsage-logo-no-strapline.svg" alt="" className="h-75" />
             </div>
 

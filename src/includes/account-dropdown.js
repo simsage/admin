@@ -74,15 +74,18 @@ const AccountDropdown = (props) => {
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
                             <li key={item.id}
                                 className={(item.id === selected_organisation.id)? "acc-item px-4 py-3 d-flex justify-content-between active":"acc-item px-4 py-3 d-flex justify-content-between"}>
-                                <span className="organisation-menu-item" onClick={() => handleSelectOrganisation(session.id, item)}>{item.name}</span>
-                                <img onClick={() => handleEditOrganisation(item.id)} src="../images/icon/icon_setting.svg" alt="" className="me-2 sb-icon"/>
+                                <span className="organisation-menu-item pointer-cursor" title={"select " + item.name}
+                                      onClick={() => handleSelectOrganisation(session.id, item)}>{item.name}</span>
+                                <img onClick={() => handleEditOrganisation(item.id)} src="../images/icon/icon_setting.svg"
+                                     alt="edit" title={"edit " + item.name}
+                                     className="me-2 sb-icon pointer-cursor"/>
                             </li>)
                     })
                 }
 
 
-                <li className="acc-item px-4 py-3" onClick={() => handleAddOrganisation()}>
-                    <label>+ Add New Organisation</label>
+                <li className="acc-item px-4 py-3 pointer-cursor" onClick={() => handleAddOrganisation()}>
+                    <label className="pointer-cursor" title="add a new organisation">+ Add New Organisation</label>
                 </li>
 
                 <hr />
@@ -95,11 +98,11 @@ const AccountDropdown = (props) => {
                 {/*<li className="acc-item px-4 py-3" onClick={() => getHelp()}>*/}
                 {/*    <label>Help</label>*/}
                 {/*</li>*/}
-                <li className="acc-item px-4 py-3"
+                <li className="acc-item px-4 py-3 pointer-cursor" title="Sign Out"
                     onClick={() => {
                         handleSignOut()
                     }}>
-                    <label>Sign Out</label>
+                    <label className="pointer-cursor" title="Sign Out">Sign Out</label>
                 </li>
                 </ul>
             </div>

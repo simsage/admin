@@ -33,7 +33,7 @@ const Header = (props) => {
                     <p className="org-name mb-0" title={"your primary organisation is " + org_name}>{org_name}</p>
                 </div>
 
-                <div className="account" title="this is the sign-out button for now">
+                <div className="account" title="Sign out and Organisation menu">
                     <button className={(accounts_dropdown ? "active" : "") + " btn nav-btn"}
                             onClick={(e) => toggleAccountsMenu(e,accounts_dropdown)}>
                         <img src="/images/icon/icon_n-account.svg" alt="" className={accounts_dropdown ? "d-none" : ""} />

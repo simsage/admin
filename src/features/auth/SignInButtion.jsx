@@ -35,8 +35,9 @@ export const SignInButton = () => {
 
                     <div className="sign-in-title">SimSage admin sign in</div>
 
-                    <span className="form-group sign-in-button" title="Sign into the SimSage mind">
-                        <button className="btn btn-primary" onClick={() => { setShowLicense(false); handleLogin(instance) }}>
+                    <span className="form-group sign-in-button" title="Sign into the SimSage mind"
+                          onClick={() => { setShowLicense(false); handleLogin(instance) }}>
+                        <button className="btn btn-primary">
                             Sign in
                         </button>
                     </span>
