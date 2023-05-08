@@ -122,17 +122,18 @@ export class AclSetup extends Component {
     invertAccess(event, acl, attribute) {
         event.preventDefault();
         event.stopPropagation();
-        if (acl && acl.access && acl.access.indexOf(attribute) >= 0) {
-            acl.access = acl.access.replace(attribute, "");
-        } else {
-            acl.access += attribute;
-        }
+        let acl_copy = JSON.parse(JSON.stringify(acl));
         const acl_list = this.state.acl_list;
+        if (acl_copy && acl_copy.access && acl_copy.access.indexOf(attribute) >= 0) {
+            acl_copy.access = acl_copy.access.replace(attribute, "");
+        } else {
+            acl_copy.access += attribute;
+        }
         const updated_acl_list = [];
         for (const all_acl of acl_list) {
             if (all_acl && all_acl.acl) {
                 if (all_acl.acl === acl.acl) {
-                    updated_acl_list.push(acl);
+                    updated_acl_list.push(acl_copy);
                 } else {
                     updated_acl_list.push(all_acl);
                 }
