@@ -18,7 +18,7 @@ const Header = (props) => {
         dispatch(showAccount())
     }
 
-    const full_name = firstName + " " + surname;
+    const full_name = (firstName ? firstName : "") + " " + (surname ? surname : "");
     const org_name = (organisation && organisation.name) ? organisation.name : "";
 
     return(
