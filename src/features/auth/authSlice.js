@@ -124,7 +124,7 @@ export const simsageLogOut = createAsyncThunk(
     'auth/Logout',
     async ({session_id}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/sign-out/'
+        const url = api_base + '/auth/sign-out'
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {

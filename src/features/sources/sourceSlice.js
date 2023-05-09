@@ -357,7 +357,7 @@ export const zipSource = createAsyncThunk(
         console.log("sources/zipSource");
 
         const api_base = window.ENV.api_base;
-        const url = api_base + '/document/zip/source/';
+        const url = api_base + '/document/zip/source';
 
 
         if (url !== '/stats/stats/os') {
