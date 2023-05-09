@@ -15,8 +15,8 @@ export default function OrganisationFormV2(props) {
     const [selected_tab, setSelectedTab] = useState('general')
 
     //filters
-    const [roleFilter, setRoleFilter] = useState('');
-    const [availableRoleFilter, setAvailableRoleFilter] = useState('');
+    const [selected_role_filter, setRoleFilter] = useState('');
+    const [available_role_filter, setAvailableRoleFilter] = useState('');
     const [availableGroupFilter, setAvailableGroupFilter] = useState('');
     const [groupFilter, setGroupFilter] = useState('');
 
@@ -83,16 +83,32 @@ export default function OrganisationFormV2(props) {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // SimSage role management
 
+
     function getUserRoles() {
-        // if (!autoCreateSSORoleList || !autoCreateSSORoleList.length)
-        //     return [];
-        // return roleFilter.length > 0 ? autoCreateSSORoleList.filter( role => {
-        //         return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
-        //     })
-        //     :
-        //     autoCreateSSORoleList
-        return [];
+
+        let temp_list = [];
+
+        if(selected_role_filter.length > 0) {
+            temp_list = selected_roles.filter((role) => {
+                return Api.getPrettyRole(role).toLowerCase().includes(selected_role_filter.toLowerCase())
+            })
+        } else {
+          temp_list = selected_roles
+        }
+
+        console.log("getUserRoles", getUserRoles)
+        return temp_list;
     }
+    // function getUserRoles() {
+    //     if (!autoCreateSSORoleList || !autoCreateSSORoleList.length)
+    //         return [];
+    //     return selected_role_filter.length > 0 ? autoCreateSSORoleList.filter( role => {
+    //             return Api.getPrettyRole(role.role).toLowerCase().includes(selected_role_filter.toLowerCase())
+    //         })
+    //         :
+    //         autoCreateSSORoleList
+    //     return [];
+    // }
 
     function addRoleToUser(roleToAdd) {
         // const list = (autoCreateSSORoleList && autoCreateSSORoleList.length > 0) ? autoCreateSSORoleList : [];
@@ -108,21 +124,15 @@ export default function OrganisationFormV2(props) {
 
 
 
-    function removeRoleFromUser(roleToRemove) {
-        // setAutoCreateSSORoleList(autoCreateSSORoleList.filter( r => {
-        //     return r.role !== roleToRemove.role
-        // }))
+    function removeRoleFromUser(role) {
+        const temp_list = selected_roles.filter( r => {
+            return r !== role
+        })
+
+        setSelectedRoles(temp_list)
     }
 
     const getAvailableRoles = () => {
-        // const roleNames = autoCreateSSORoleList ? autoCreateSSORoleList.map( r => r.role) :  [];
-        // let tempRoleList = [];
-        // ["search", "dms", "discovery"].forEach( ar => {
-        //     if(!roleNames.includes(ar)){
-        //         tempRoleList.push(ar);
-        //     }
-        // })
-
         let temp_role_list = []
 
         available_roles.forEach((role)=>{
@@ -131,8 +141,8 @@ export default function OrganisationFormV2(props) {
             }
         })
 
-        return availableRoleFilter.length > 0 ? temp_role_list.filter(role => {
-                return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
+        return available_role_filter.length > 0 ? temp_role_list.filter(role => {
+                return Api.getPrettyRole(role).toLowerCase().includes(available_role_filter.toLowerCase())
             })
             :
             temp_role_list;
@@ -179,6 +189,7 @@ export default function OrganisationFormV2(props) {
     // }, [watch, getValues]);
 
     console.log("getValues", getValues())
+    // console.log("getRoelse", getUserRoles())
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (!props.show_organisation_form)
@@ -258,13 +269,13 @@ export default function OrganisationFormV2(props) {
                                                     <h6 className="role-label text-center">SimSage Roles</h6>
                                                     <div className="role-area bg-light border rounded h-100">
                                                         <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                               placeholder="Filter..." value={roleFilter}
+                                                               placeholder="Filter..." value={selected_role_filter}
                                                                onChange={(e) => setRoleFilter(e.target.value)}/>
                                                         {
                                                             getUserRoles().map((role, i) => {
                                                                 return (<Chip key={i} color="secondary"
                                                                               onClick={() => removeRoleFromUser(role)}
-                                                                              label={Api.getPrettyRole(role.role)}
+                                                                              label={Api.getPrettyRole(role)}
                                                                               variant="outlined"/>)
                                                             })
                                                         }
@@ -274,7 +285,7 @@ export default function OrganisationFormV2(props) {
                                                     <h6 className="role-label text-center">Available</h6>
                                                     <div className="role-area bg-light border rounded h-100">
                                                         <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                               placeholder="Filter..." value={availableRoleFilter}
+                                                               placeholder="Filter..." value={available_role_filter}
                                                                onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
                                                         {
                                                             getAvailableRoles().map((role, i) => {
