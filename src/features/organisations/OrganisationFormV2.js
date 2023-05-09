@@ -20,6 +20,11 @@ export default function OrganisationFormV2(props) {
     const [availableGroupFilter, setAvailableGroupFilter] = useState('');
     const [groupFilter, setGroupFilter] = useState('');
 
+    const [selected_roles, setSelectedRoles] = useState([]);
+    const [selected_groups, setSelectedGroups] = useState([]);
+
+    const available_roles = ["search", "dms", "discovery"];
+
     //load organisation
     if (props.organisation_id && organisation_list) {
         let temp_org = organisation_list.filter((org) => {
@@ -43,7 +48,14 @@ export default function OrganisationFormV2(props) {
     const title = (organisation === null) ? "New Organisation" : "Edit Organisation";
 
     //Form Hook
-    const {register, handleSubmit,  formState: {errors}, reset} = useForm();
+    const {
+        register,
+        handleSubmit,
+        formState: {errors},
+        reset,
+        watch,
+        getValues
+    } = useForm();
 
     //set default value depends on organisation and show_organisation_form
     useEffect(() => {
@@ -82,13 +94,21 @@ export default function OrganisationFormV2(props) {
         return [];
     }
 
-    function addRoleToUser(roleToAdd){
+    function addRoleToUser(roleToAdd) {
         // const list = (autoCreateSSORoleList && autoCreateSSORoleList.length > 0) ? autoCreateSSORoleList : [];
         // list.push(roleToAdd);
         // setAutoCreateSSORoleList(list);
     }
 
-    function removeRoleFromUser(roleToRemove){
+
+    function addRoleToUser(roleToAdd){
+        setSelectedRoles([ ...(selected_roles || []), roleToAdd ])
+        console.log("selected_roles", selected_roles)
+    };
+
+
+
+    function removeRoleFromUser(roleToRemove) {
         // setAutoCreateSSORoleList(autoCreateSSORoleList.filter( r => {
         //     return r.role !== roleToRemove.role
         // }))
@@ -102,22 +122,30 @@ export default function OrganisationFormV2(props) {
         //         tempRoleList.push(ar);
         //     }
         // })
-        let tempRoleList = ["search", "dms", "discovery"];
-        return availableRoleFilter.length > 0 ? tempRoleList.filter( role => {
+
+        let temp_role_list = []
+
+        available_roles.forEach((role)=>{
+            if(!selected_roles.includes(role)) {
+                temp_role_list.push(role)
+            }
+        })
+
+        return availableRoleFilter.length > 0 ? temp_role_list.filter(role => {
                 return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
             })
             :
-            tempRoleList;
+            temp_role_list;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // group/ACL management
 
-    function addGroupToUser(groupToAdd){
+    function addGroupToUser(groupToAdd) {
         // setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
     }
 
-    function removeGroupFromUser(groupToRemove){
+    function removeGroupFromUser(groupToRemove) {
         // setAutoCreateSSOACLList(autoCreateSSOACLList.filter( grp => {
         //     return grp.name !== groupToRemove.name
         // }))
@@ -136,7 +164,7 @@ export default function OrganisationFormV2(props) {
         return [];
     }
 
-    function getGroups(){
+    function getGroups() {
         // return groupFilter.length > 0 ? autoCreateSSOACLList.filter( grp => {
         //         return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
         //     })
@@ -145,6 +173,12 @@ export default function OrganisationFormV2(props) {
         return [];
     }
 
+
+    // React.useEffect(() => {
+    //     console.log("")
+    // }, [watch, getValues]);
+
+    console.log("getValues", getValues())
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (!props.show_organisation_form)
@@ -167,37 +201,45 @@ export default function OrganisationFormV2(props) {
                             <div className="modal-body p-0">
 
                                 <div className="nav nav-tabs overflow-auto">
-                                    <OrganisationTab selected_tab={selected_tab} onTabChange={handleTabChange} />
+                                    <OrganisationTab selected_tab={selected_tab} onTabChange={handleTabChange}/>
                                 </div>
 
                                 {selected_tab === 'general' &&
-                                <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
-                                    <div className="mb-4">
+                                    <div className="tab-content px-5 py-4 overflow-auto"
+                                         style={{maxHeight: "600px", minHeight: "400px"}}>
+                                        <div className="mb-4">
 
-                                        <div className={"mb-3 name" + (errors.name ? " error " : "")}>
-                                            <label className="label-2 small">Name</label>
-                                            <input className="form-control" {...register("name", {required: true})} />
-                                            {errors.name && <span className="text-danger fst-italic small">This field is required </span>}
-                                        </div>
+                                            <div className={"mb-3 name" + (errors.name ? " error " : "")}>
+                                                <label className="label-2 small">Name</label>
+                                                <input
+                                                    className="form-control" {...register("name", {required: true})} />
+                                                {errors.name &&
+                                                    <span className="text-danger fst-italic small">This field is required </span>}
+                                            </div>
 
-                                        <div className="form-check form-switch">
-                                            <input className="form-check-input" type="checkbox" {...register('enabled')}/>
-                                            <label className="form-check-label">Enabled</label>
-                                        </div>
+                                            <div className="form-check form-switch">
+                                                <input className="form-check-input"
+                                                       type="checkbox" {...register('enabled')}/>
+                                                <label className="form-check-label">Enabled</label>
+                                            </div>
 
-                                        <div>
-                                            <input {...register("id")} type="hidden"/>
+                                            <div>
+                                                <input {...register("id")} type="hidden"/>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                                 }
 
                                 {selected_tab === 'sso' &&
-                                    <div className="time-tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
+                                    <div className="time-tab-content px-5 py-4 overflow-auto"
+                                         style={{maxHeight: "600px", minHeight: "400px"}}>
 
                                         <div className="form-check form-switch">
-                                            <input className="form-check-input" type="checkbox" {...register('autoCreateSSOUsers')}/>
-                                            <label className="form-check-label">allow single sign-on users to be auto-created with a default set of group ACLs and SimSage role(s).</label>
+                                            <input className="form-check-input"
+                                                   type="checkbox" {...register('autoCreateSSOUsers')}/>
+                                            <label className="form-check-label">allow single sign-on users to be
+                                                auto-created with a default set of group ACLs and SimSage
+                                                role(s).</label>
                                         </div>
 
                                         <div className="form-group col-12">
@@ -209,30 +251,37 @@ export default function OrganisationFormV2(props) {
                                             />
                                         </div>
 
-                                        <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "450px"}}>
+                                        <div className="tab-content container px-5 py-4 overflow-auto"
+                                             style={{maxHeight: "450px"}}>
                                             <div className="row pb-5">
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">SimSage Roles</h6>
                                                     <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}/>
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                               placeholder="Filter..." value={roleFilter}
+                                                               onChange={(e) => setRoleFilter(e.target.value)}/>
                                                         {
                                                             getUserRoles().map((role, i) => {
                                                                 return (<Chip key={i} color="secondary"
                                                                               onClick={() => removeRoleFromUser(role)}
-                                                                              label={Api.getPrettyRole(role.role)} variant="outlined"/>)
+                                                                              label={Api.getPrettyRole(role.role)}
+                                                                              variant="outlined"/>)
                                                             })
                                                         }
                                                     </div>
                                                 </div>
                                                 <div className="role-block col-6">
-                                                    <h6 className="role-label text-center" >Available</h6>
+                                                    <h6 className="role-label text-center">Available</h6>
                                                     <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableRoleFilter} onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                               placeholder="Filter..." value={availableRoleFilter}
+                                                               onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
                                                         {
                                                             getAvailableRoles().map((role, i) => {
                                                                 return (<Chip key={i} color="primary"
                                                                               onClick={() => addRoleToUser(role)}
-                                                                              label={Api.getPrettyRole(role)} variant="outlined"/>)
+                                                                              label={Api.getPrettyRole(role)}
+                                                                              variant="outlined"/>)
                                                             })
                                                         }
                                                     </div>
@@ -240,12 +289,15 @@ export default function OrganisationFormV2(props) {
                                             </div>
                                         </div>
 
-                                        <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "300px"}}>
+                                        <div className="tab-content container px-5 py-4 overflow-auto"
+                                             style={{maxHeight: "300px"}}>
                                             <div className="row pb-5">
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">SimSage Groups</h6>
                                                     <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}/>
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                               placeholder="Filter..." value={groupFilter}
+                                                               onChange={(e) => setGroupFilter(e.target.value)}/>
                                                         {
                                                             getGroups().map((grp, i) => {
                                                                 return (
@@ -261,7 +313,9 @@ export default function OrganisationFormV2(props) {
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">Available</h6>
                                                     <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableGroupFilter} onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                               placeholder="Filter..." value={availableGroupFilter}
+                                                               onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
                                                         {
                                                             getAvailableGroups().map((grp, i) => {
                                                                 return (<Chip key={i} color="primary"
