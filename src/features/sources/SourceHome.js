@@ -437,7 +437,7 @@ export default function SourceHome(props) {
                                                 <div>{`analyzed: ${crawler.numParsedDocuments}`}</div>
                                                 <div>{`indexed: ${crawler.numIndexedDocuments}`}</div>
                                                 <div>{`completed: ${crawler.numFinishedDocuments}`}</div>
-                                                <div>{`total documnets: ${crawler.numTotalDocuments}`}</div>
+                                                <div>{`total documents: ${crawler.numTotalDocuments}`}</div>
                                             </div>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">

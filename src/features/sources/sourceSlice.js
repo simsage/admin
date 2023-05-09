@@ -278,7 +278,7 @@ export const updateSources = createAsyncThunk(
         console.log("sources/updateSources");
 
         const api_base = window.ENV.api_base;
-        const url = api_base + '/crawler/crawler/';
+        const url = api_base + '/crawler/crawler';
 
         if (url !== '/stats/stats/os') {
             console.log('POST ' + url);
