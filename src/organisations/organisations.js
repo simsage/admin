@@ -201,7 +201,7 @@ export class Organisations extends React.Component {
                     <span className="filter-find-image">
                             <img className="image-size"
                                  onClick={() => this.props.getOrganisationList()}
-                                 src="../images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
+                                 src="images/dark-magnifying-glass.svg" title="filter" alt="filter"/>
                         </span>
                 </div>
 
@@ -226,18 +226,18 @@ export class Organisations extends React.Component {
                                             <td>
                                                 <div className="linkButton"
                                                      onClick={() => { this.viewIds(organisation); }}>
-                                                    <img src="../images/id.svg" className="image-size"
+                                                    <img src="images/id.svg" className="image-size"
                                                          title="view knowledge base ids" alt="ids"/>
                                                 </div>
                                                 <div className="linkButton" onClick={() => this.editOrganisation(organisation)}>
-                                                    <img src="../images/edit.svg" className="image-size" title="edit organisation" alt="edit"/>
+                                                    <img src="images/edit.svg" className="image-size" title="edit organisation" alt="edit"/>
                                                 </div>
                                                 <div className="linkButton" onClick={() => this.deleteOrganisationAsk(organisation)}>
-                                                    <img src="../images/delete.svg" className="image-size" title="remove organisation" alt="remove"/>
+                                                    <img src="images/delete.svg" className="image-size" title="remove organisation" alt="remove"/>
                                                 </div>
                                                 {isAdmin &&
                                                 <div className="linkButton" onClick={() => this.backupAsk(organisation.id)}>
-                                                    <img src="../images/backup.svg" className="image-size" title="backup this organisation"
+                                                    <img src="images/backup.svg" className="image-size" title="backup this organisation"
                                                          alt={"backup " + organisation.name} />
                                                 </div>
                                                 }
@@ -249,7 +249,7 @@ export class Organisations extends React.Component {
                             <tr>
                                 <td colSpan={2}>
                                     <div className="imageButton" onClick={() => this.addNewOrganisation()}><img
-                                        className="addImage" src="../images/add.svg" title="add new organisation"
+                                        className="addImage" src="images/add.svg" title="add new organisation"
                                         alt="add new organisation"/></div>
                                     <br />
                                 </td>

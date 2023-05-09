@@ -130,7 +130,7 @@ export class GroupSelector extends Component {
                         {
                             this.getSelectedGroups().map((item, i) => {
                                 return (<div key={i} className="user-name" onClick={() => this.removeUserOrGroup(item)} title={item.name + (item.isUser ? " (user)" : " (group)")}>
-                                    <span className="user-group-image-box"><img className="user-group-image" src={item.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{item.name}</span>
+                                    <span className="user-group-image-box"><img className="user-group-image" src={item.isUser ? "images/user.svg" : "images/group.svg"} alt="user"/></span><span>{item.name}</span>
                                 </div>)
                             })
                         }
@@ -154,7 +154,7 @@ export class GroupSelector extends Component {
                         {
                             this.getAvailableGroupsAndUsers().map((item, i) => {
                                 return (<div key={i} className="user-name" onClick={() => this.addUserOrGroup(item)} title={item.name + (item.isUser ? " (user)" : " (group)")}>
-                                    <span className="user-group-image-box"><img className="user-group-image" src={item.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{item.name}</span>
+                                    <span className="user-group-image-box"><img className="user-group-image" src={item.isUser ? "images/user.svg" : "images/group.svg"} alt="user"/></span><span>{item.name}</span>
                                 </div>)
                             })
                         }

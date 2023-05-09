@@ -125,11 +125,11 @@ export default function DocumentsHome(props) {
     function getStatus(document, stage) {
         const status = getActive(document, stage);
         if (status === 1)
-            return "../images/dot-green.svg";
+            return "images/dot-green.svg";
         else if (status === 0)
-            return "../images/dot-orange.svg";
+            return "images/dot-orange.svg";
         else
-            return "../images/dot-grey.svg";
+            return "images/dot-grey.svg";
     }
 
     function getStatusText(document, stage, staging) {
@@ -175,7 +175,7 @@ export default function DocumentsHome(props) {
                         <span className="filter-find-image">&nbsp;
                             <button className="btn btn-secondary"
                                     onClick={() => getDocuments()}
-                                    src="../images/dark-magnifying-glass.svg" title="filter"
+                                    src="images/dark-magnifying-glass.svg" title="filter"
                                     alt="filter">filter</button>
                             </span>
                     </div>

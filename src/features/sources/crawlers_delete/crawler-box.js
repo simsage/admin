@@ -95,7 +95,7 @@ export class CrawlerBox extends Component {
                     <span className="dropbox-manual-box">
                         <a href="../resources/simsage-box-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Box setup guide">
                             <span className="instructions-label">instructions</span>
-                            <img src="../images/pdf-icon.png" alt="box setup guide" className="image-size" />
+                            <img src="images/pdf-icon.png" alt="box setup guide" className="image-size" />
                         </a>
                     </span>
                 </div>

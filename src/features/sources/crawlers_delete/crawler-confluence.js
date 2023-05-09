@@ -84,7 +84,7 @@ export class CrawlerConfluence extends Component {
                     <a href="resources/simsage-confluence-crawler-setup.pdf" id="dlGDrive" target="_blank"
                        title="download the SimSage Google-drive setup guide">
                             <span className="instructions-label">instructions</span>
-                            <img src="../images/pdf-icon.png" alt="google-drive setup guide" className="image-size"/>
+                            <img src="images/pdf-icon.png" alt="google-drive setup guide" className="image-size"/>
                         </a>
                     </span>
                 </div>
@@ -163,12 +163,12 @@ export class CrawlerConfluence extends Component {
                                     </td>
                                     <td className={"password_hide_show"}>
                                         {!this.state.show_password &&
-                                            <img src="../images/eye.svg" alt="show password" className="image-size"
+                                            <img src="images/eye.svg" alt="show password" className="image-size"
                                                  onClick={() => this.setState({show_password: true})}/>
                                         }
 
                                         {this.state.show_password &&
-                                            <img src="../images/eye-slash.svg" alt="hide password"
+                                            <img src="images/eye-slash.svg" alt="hide password"
                                                  className="image-size"
                                                  onClick={() => this.setState({show_password: false})}/>
                                         }

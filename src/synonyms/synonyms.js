@@ -139,7 +139,7 @@ export class Synonyms extends React.Component {
                         <span className="filter-find-image">
                             <img className="image-size"
                                  onClick={() => this.props.getSemantics()}
-                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
+                                 src="images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </span>
                     </div>
                 }
@@ -170,10 +170,10 @@ export class Synonyms extends React.Component {
                                                 </td>
                                                 <td>
                                                     <div className="link-button" onClick={() => this.editSynonym(synonym)}>
-                                                        <img src="../images/edit.svg" className="image-size" title="edit synonym" alt="edit"/>
+                                                        <img src="images/edit.svg" className="image-size" title="edit synonym" alt="edit"/>
                                                     </div>
                                                     <div className="link-button" onClick={() => this.deleteSynonymAsk(synonym)}>
-                                                        <img src="../images/delete.svg" className="image-size" title="remove synonym" alt="remove"/>
+                                                        <img src="images/delete.svg" className="image-size" title="remove synonym" alt="remove"/>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -186,19 +186,19 @@ export class Synonyms extends React.Component {
                                     <td className="action-column-width">
                                         {this.isVisible() &&
                                         <span onClick={() => this.newSynonym()} className="icon-left">
-                                            <img className="image-size" src="../images/add.svg" title="new relationship" alt="new relationship"/>
+                                            <img className="image-size" src="images/add.svg" title="new relationship" alt="new relationship"/>
                                         </span>
                                         }
                                         {this.isVisible() &&
                                             <span className="icon-left"
                                                  onClick={() => this.tuneGraphAsk()}>
-                                                <img src="../images/tuning-fork.svg" className="image-size"
+                                                <img src="images/tuning-fork.svg" className="image-size"
                                                      title="tune relationship graph" alt="tune graph"/>
                                             </span>
                                         }
                                         {this.isVisible() &&
                                             <span onClick={() => this.deleteAllSynonymsAsk()}>
-                                                <img src="../images/delete.svg" className="image-size"
+                                                <img src="images/delete.svg" className="image-size"
                                                      title="delete all relationships" alt="delete all"/>
                                             </span>
                                         }

@@ -90,7 +90,7 @@ export class CrawlerDiscourse extends Component {
                     <span className="dropbox-manual-box">
                         <a href="resources/discourse-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage Discourse setup guide">
                             <span className="instructions-label">instructions</span>
-                            <img src="../images/pdf-icon.png" alt="discourse setup guide" className="image-size" />
+                            <img src="images/pdf-icon.png" alt="discourse setup guide" className="image-size" />
                         </a>
                     </span>
                 </div>

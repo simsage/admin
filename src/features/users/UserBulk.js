@@ -105,7 +105,7 @@ export default function UserBulk() {
                             {/*        disabled={this.state.binary_data === null || this.props.uploading}*/}
                             {/*        onClick={this.upload.bind(this)}>restore</button>*/}
                             {/*{this.props.uploading &&*/}
-                            {/*    <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>*/}
+                            {/*    <div className="upload-wheel"><img src="images/busy2.gif" alt="busy" className="busy-image" /></div>*/}
                             {/*}*/}
 
                             <button type="button" className="btn btn-white px-4" onClick={()=> handleFormClose()}

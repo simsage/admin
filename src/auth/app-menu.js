@@ -34,9 +34,9 @@ export class AppMenu extends Component {
     // get the right logo file depending on the theme
     getLogo() {
         if (this.props.theme === 'dark') {
-            return "../images/simsage-logo-white-no-strapline.svg";
+            return "images/simsage-logo-white-no-strapline.svg";
         }
-        return "../images/simsage-logo-no-strapline.svg"; // default
+        return "images/simsage-logo-no-strapline.svg"; // default
     }
     flipTheme() {
         if (this.props.theme !== 'light') {
@@ -59,7 +59,7 @@ export class AppMenu extends Component {
                     {
                         !this.state.signed_in &&
                         <span className="home-image-container">
-                            <img src={theme === 'light' ? "../images/home.svg" : "../images/home-light.svg"} alt="home" title="home" onClick={() => this.goWeb()}
+                            <img src={theme === 'light' ? "images/home.svg" : "images/home-light.svg"} alt="home" title="home" onClick={() => this.goWeb()}
                                  className="home-image" />
                              <div className="version-text">version {window.ENV.version}</div>
                         </span>
@@ -67,7 +67,7 @@ export class AppMenu extends Component {
                     {
                         this.state.signed_in &&
                         <div className="sign-out-image-container">
-                            <img src={theme === 'light' ? "../images/sign-out.svg" : "../images/sign-out-light.svg"} alt="sign-out" title="sign-out"
+                            <img src={theme === 'light' ? "images/sign-out.svg" : "images/sign-out-light.svg"} alt="sign-out" title="sign-out"
                                  onClick={() => { this.signOut() }} className="sign-out-image" />
                         </div>
                     }

@@ -163,7 +163,7 @@ export default function CategorizationHome() {
                         <span className="filter-find-image">
                             <button className="btn btn-secondary"
                                     onClick={() => filterRecords()}
-                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
+                                    src="images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
                         </span>
                     </div>
                 } */}
@@ -175,7 +175,7 @@ export default function CategorizationHome() {
                             />
                             <button className="btn btn-secondary"
                                     onClick={() => filterRecords()}
-                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">
+                                    src="images/dark-magnifying-glass.svg" title="search" alt="search">
                                 Search
                             </button>
                         </div>

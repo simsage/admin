@@ -332,40 +332,40 @@ export class DocumentSources extends Component {
                                             <td>
                                                 <div className="link-button"
                                                      onClick={() => this.startCrawlerAsk(crawler)}>
-                                                    <img src="../images/play.svg" className="image-size"
+                                                    <img src="images/play.svg" className="image-size"
                                                          title="start this crawler" alt="start"/>
                                                 </div>
                                                 <div className="link-button" onClick={() => this.editCrawler(crawler)}>
-                                                    <img src="../images/edit.svg" className="image-size"
+                                                    <img src="images/edit.svg" className="image-size"
                                                          title="edit crawler" alt="edit"/>
                                                 </div>
                                                 <div className="link-button"
                                                      onClick={() => this.deleteCrawlerAsk(crawler)}>
-                                                    <img src="../images/delete.svg" className="image-size"
+                                                    <img src="images/delete.svg" className="image-size"
                                                          title="remove crawler" alt="remove"/>
                                                 </div>
                                                 {crawler.storeBinary &&
                                                     <div className="link-button"
                                                          onClick={() => this.processAllFilesCrawlerAsk(crawler)}>
-                                                        <img src="../images/file.svg" className="image-size"
+                                                        <img src="images/file.svg" className="image-size"
                                                              title="process all files for a source"
                                                              alt="process files"/>
                                                     </div>
                                                 }
                                                 {!crawler.storeBinary &&
                                                     <div className="link-button">
-                                                        <img src="../images/file-disabled.svg" className="image-size"
+                                                        <img src="images/file-disabled.svg" className="image-size"
                                                              title="process all files for a source disabled (store binaries is not set)"
                                                              alt="process files"/>
                                                     </div>
                                                 }
                                                 <div className="link-button"
                                                      onClick={() => this.exportCrawler(crawler)}>
-                                                    <img src="../images/download.svg" className="image-size"
+                                                    <img src="images/download.svg" className="image-size"
                                                          title="get crawler JSON for export" alt="export"/>
                                                 </div>
                                                 <div className="link-button" onClick={() => this.zipSourceAsk(crawler)}>
-                                                    <img src="../images/zip.svg" className="image-size"
+                                                    <img src="images/zip.svg" className="image-size"
                                                          title="zip all files in a source" alt="zip files"/>
                                                 </div>
                                             </td>
@@ -381,12 +381,12 @@ export class DocumentSources extends Component {
                                 <td>
                                     {this.props.selected_organisation_id.length > 0 &&
                                         <div className="image-button" onClick={() => this.addNewCrawler()}><img
-                                            className="image-size" src="../images/add.svg" title="add new crawler"
+                                            className="image-size" src="images/add.svg" title="add new crawler"
                                             alt="add new crawler"/></div>
                                     }
                                     {this.props.selected_organisation_id.length > 0 &&
                                         <div className="image-button" onClick={() => this.importCrawler()}><img
-                                            className="image-size" src="../images/upload.svg"
+                                            className="image-size" src="images/upload.svg"
                                             title="upload crawler JSON"
                                             alt="import"/></div>
                                     }

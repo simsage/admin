@@ -17,7 +17,7 @@ import './css/app-menu.css';
 export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const theme = "light";
-    const image = "../images/simsage-logo-no-strapline.svg";
+    const image = "images/simsage-logo-no-strapline.svg";
     const { instance } = useMsal();
 
     return (
@@ -33,7 +33,7 @@ export const PageLayout = (props) => {
                 {
                     isAuthenticated &&
                     <div className="sign-out-image-container">
-                        <img src={theme === 'light' ? "../images/sign-out.svg" : "../images/sign-out-light.svg"} alt="sign-out" title="sign-out"
+                        <img src={theme === 'light' ? "images/sign-out.svg" : "images/sign-out-light.svg"} alt="sign-out" title="sign-out"
                              onClick={() => {
                                  instance.logoutRedirect({
                                      postLogoutRedirectUri: "/",

@@ -123,7 +123,7 @@ export class UserSelector extends Component {
                             this.getSelectedUsers().map((user) => {
                                 const user_name = this.getUserFullName(user);
                                 return (<div key={user.id} className="user-name" onClick={() => this.removeUserFromGroup(user.id)} title={user_name}>
-                                    <span className="user-group-image-box"><img className="user-group-image" src="../images/user.svg" alt="user"/></span><span>{user_name}</span>
+                                    <span className="user-group-image-box"><img className="user-group-image" src="images/user.svg" alt="user"/></span><span>{user_name}</span>
                                 </div>)
                             })
                         }
@@ -148,7 +148,7 @@ export class UserSelector extends Component {
                             this.getAvailableUsers().map((user) => {
                                 const user_name = this.getUserFullName(user);
                                 return (<div key={user.id} className="user-name" onClick={() => this.addUserToGroup(user.id)} title={user_name}>
-                                    <span className="user-group-image-box"><img className="user-group-image" src="../images/user.svg" alt="user"/></span><span>{user_name}</span>
+                                    <span className="user-group-image-box"><img className="user-group-image" src="images/user.svg" alt="user"/></span><span>{user_name}</span>
                                 </div>)
                             })
                         }

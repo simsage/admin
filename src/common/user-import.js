@@ -63,7 +63,7 @@ export class UserImport extends Component {
                                     disabled={this.state.binary_data === null || this.props.uploading}
                                     onClick={this.upload.bind(this)}>import csv</button>
                             {this.props.uploading &&
-                            <div className="upload-wheel"><img src="../images/busy2.gif" alt="busy" className="busy-image" /></div>
+                            <div className="upload-wheel"><img src="images/busy2.gif" alt="busy" className="busy-image" /></div>
                             }
                             <span className="help-button">
                                 <img className="help-button-img" src="images/help.svg" alt="help" />

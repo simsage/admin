@@ -444,13 +444,13 @@ export default function SourceHome(props) {
                                             {/*{!is_running &&*/}
                                             {/*<div className="link-button"*/}
                                             {/*     onClick={() => handleStartCrawler(crawler)}>*/}
-                                            {/*    <img src="../images/play.svg" className="image-size"*/}
+                                            {/*    <img src="images/play.svg" className="image-size"*/}
                                             {/*         title="start this crawler" alt="start"/>*/}
                                             {/*</div>*/}
                                             {/*}*/}
                                             {/*{is_running &&*/}
                                             {/*<div className="link-button">*/}
-                                            {/*    <img src="../images/play-disabled.svg" className="image-size"*/}
+                                            {/*    <img src="images/play-disabled.svg" className="image-size"*/}
                                             {/*         title="crawler running" alt="start"/>*/}
                                             {/*</div>*/}
                                             {/*}*/}
@@ -491,13 +491,13 @@ export default function SourceHome(props) {
                                             {/*    <img src="../../images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>*/}
                                             {/*</div>*/}
                                             {/*<div className="link-button" onClick={() => deleteCrawlerAsk(crawler)}>*/}
-                                            {/*    <img src="../images/delete.svg" className="image-size" title="remove crawler" alt="remove"/>*/}
+                                            {/*    <img src="images/delete.svg" className="image-size" title="remove crawler" alt="remove"/>*/}
                                             {/*</div>*/}
                                             {/*<div className="link-button" onClick={() => exportCrawler(crawler)}>*/}
-                                            {/*    <img src="../images/download.svg" className="image-size" title="get crawler JSON for export" alt="export"/>*/}
+                                            {/*    <img src="images/download.svg" className="image-size" title="get crawler JSON for export" alt="export"/>*/}
                                             {/*</div>*/}
                                             {/*<div className="link-button" onClick={() => zipSourceAsk(crawler)}>*/}
-                                            {/*    <img src="../images/zip.svg" className="image-size" title="zip all files in a source" alt="zip files"/>*/}
+                                            {/*    <img src="images/zip.svg" className="image-size" title="zip all files in a source" alt="zip files"/>*/}
                                             {/*</div>*/}
                                         </td>
                                     </tr>

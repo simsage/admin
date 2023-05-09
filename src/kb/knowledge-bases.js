@@ -200,22 +200,22 @@ export class KnowledgeBases extends Component {
                                                     <td>
                                                         <div className="link-button"
                                                              onClick={() => this.viewIds(knowledge_base)}>
-                                                            <img src="../images/id.svg" className="image-size"
+                                                            <img src="images/id.svg" className="image-size"
                                                                  title="view knowledge base ids" alt="ids"/>
                                                         </div>
                                                         <div className="link-button"
                                                              onClick={() => this.editKnowledgeBase(knowledge_base)}>
-                                                            <img src="../images/edit.svg" className="image-size"
+                                                            <img src="images/edit.svg" className="image-size"
                                                                  title="edit knowledge base" alt="edit"/>
                                                         </div>
                                                         <div className="link-button"
                                                              onClick={() => this.deleteKnowledgeBaseAsk(knowledge_base)}>
-                                                            <img src="../images/delete.svg" className="image-size"
+                                                            <img src="images/delete.svg" className="image-size"
                                                                  title="remove knowledge base" alt="remove"/>
                                                         </div>
                                                         <div className="link-button"
                                                                 onClick={() => this.optimizeIndexesAsk(knowledge_base, true)}>
-                                                            <img src="../images/optimize-indexes.svg" className="image-size"
+                                                            <img src="images/optimize-indexes.svg" className="image-size"
                                                                  title="optimize indexes" alt="optimize indexes"/>
                                                         </div>
                                                     </td>
@@ -230,7 +230,7 @@ export class KnowledgeBases extends Component {
                                             {this.props.selected_organisation_id.length > 0 &&
                                             <div className="kb-image-button" onClick={() => this.addNewKnowledgeBase()}>
                                                 <img
-                                                    className="image-size" src="../images/add.svg" title="add new user"
+                                                    className="image-size" src="images/add.svg" title="add new user"
                                                     alt="add new user"/></div>
                                             }
                                         </td>
@@ -319,7 +319,7 @@ export class KnowledgeBases extends Component {
                                                         />
                                                         </span>
                                                         <img title="generate new security id" alt="refresh"
-                                                             src={theme === 'light' ? "../images/refresh.svg" : "../images/refresh-dark.svg"}
+                                                             src={theme === 'light' ? "images/refresh.svg" : "images/refresh-dark.svg"}
                                                              onClick={() => this.refreshSecurityId()}
                                                              className="image-size" />
                                                     </div>

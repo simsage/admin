@@ -132,7 +132,7 @@ export class Groups extends React.Component {
                         <span className="filter-find-image">
                             <img className="image-size"
                                  onClick={() => this.props.getGroups()}
-                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
+                                 src="images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </span>
                     </div>
                 }
@@ -160,10 +160,10 @@ export class Groups extends React.Component {
                                                 </td>
                                                 <td>
                                                     <div className="link-button" onClick={() => this.editGroup(group)}>
-                                                        <img src="../images/edit.svg" className="image-size" title="edit group" alt="edit"/>
+                                                        <img src="images/edit.svg" className="image-size" title="edit group" alt="edit"/>
                                                     </div>
                                                     <div className="link-button" onClick={() => this.deleteGroupAsk(group)}>
-                                                        <img src="../images/delete.svg" className="image-size" title="remove group" alt="remove"/>
+                                                        <img src="images/delete.svg" className="image-size" title="remove group" alt="remove"/>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -175,7 +175,7 @@ export class Groups extends React.Component {
                                     <td>
                                         {this.isVisible() &&
                                         <div className="image-button" onClick={() => this.newGroup()}><img
-                                            className="image-size" src="../images/add.svg" title="new group"
+                                            className="image-size" src="images/add.svg" title="new group"
                                             alt="new group"/></div>
                                         }
                                     </td>

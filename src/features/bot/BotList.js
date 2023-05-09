@@ -172,7 +172,7 @@ export default function BotHome() {
                         />
                         <button className="btn btn-secondary"
                                 onClick={(e) => filterRecords(e)}
-                                src="../images/dark-magnifying-glass.svg" title="search" alt="search">Search
+                                src="images/dark-magnifying-glass.svg" title="search" alt="search">Search
                         </button>
                     </div>
                 </div>

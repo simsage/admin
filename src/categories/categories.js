@@ -108,10 +108,10 @@ export class Categories extends React.Component {
                                                 </td>
                                                 <td>
                                                     <div className="link-button" onClick={() => this.editCategorizationRule(category)}>
-                                                        <img src="../images/edit.svg" className="image-size" title="edit syn-set" alt="edit"/>
+                                                        <img src="images/edit.svg" className="image-size" title="edit syn-set" alt="edit"/>
                                                     </div>
                                                     <div className="link-button" onClick={() => this.deleteCategorizationRuleAsk(category)}>
-                                                        <img src="../images/delete.svg" className="image-size" title="remove syn-set" alt="remove"/>
+                                                        <img src="images/delete.svg" className="image-size" title="remove syn-set" alt="remove"/>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -123,7 +123,7 @@ export class Categories extends React.Component {
                                     <td>
                                         {this.isVisible() &&
                                         <div className="image-button" onClick={() => this.newCategorizationRule()} title="add a new categorization label"><img
-                                            className="image-size" src="../images/add.svg"
+                                            className="image-size" src="images/add.svg"
                                             alt="new"/>&nbsp;new</div>
                                         }
                                     </td>

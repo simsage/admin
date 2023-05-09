@@ -60,7 +60,7 @@ export class BotSearchComponent extends Component {
 
                 <div className="form-group">
                     <div className="busy-body">
-                        <img alt="busy" src="../images/busy2.gif"
+                        <img alt="busy" src="images/busy2.gif"
                              style={{'display': this.state.busy ? '' : 'none', width: '32px'}}/>
                     </div>
                 </div>

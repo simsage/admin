@@ -142,7 +142,7 @@ export class Bot extends React.Component {
                         <span className="filter-find-image">
                             <img className="image-size"
                                  onClick={() => this.props.getMindItems()}
-                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
+                                 src="images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </span>
                     </div>
                 }
@@ -173,10 +173,10 @@ export class Bot extends React.Component {
                                                 </td>
                                                 <td>
                                                     <span onClick={() => this.editMemory(memory)}>
-                                                        <img src="../images/edit.svg" className="image-size" title="edit memory" alt="edit"/>
+                                                        <img src="images/edit.svg" className="image-size" title="edit memory" alt="edit"/>
                                                     </span>
                                                     <span onClick={() => this.deleteMemoryAsk(memory)}>
-                                                        <img src="../images/delete.svg" className="image-size" title="remove memory" alt="remove"/>
+                                                        <img src="images/delete.svg" className="image-size" title="remove memory" alt="remove"/>
                                                     </span>
                                                 </td>
                                             </tr>
@@ -202,12 +202,12 @@ export class Bot extends React.Component {
                                         }
                                         {this.props.selected_knowledgebase_id.length > 0 &&
                                         <div className="image-button" onClick={() => this.newMemory()}><img
-                                            className="image-size" src="../images/add.svg" title="new mind item"
+                                            className="image-size" src="images/add.svg" title="new mind item"
                                             alt="new mind item"/></div>
                                         }
                                         {this.props.selected_knowledgebase_id.length > 0 &&
                                             <div className="image-button" onClick={() => this.deleteAllMemoriesAsk()}><img
-                                                className="image-size" src="../images/delete.svg" title="remove all mind items of this knowledgebase"
+                                                className="image-size" src="images/delete.svg" title="remove all mind items of this knowledgebase"
                                                 alt="remove all mind items"/></div>
                                         }
                                     </td>

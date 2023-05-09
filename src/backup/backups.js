@@ -102,10 +102,10 @@ export class Backups extends React.Component {
                                             <td>
                                                 <div className="action-row">
                                                 <span className="linkButton padding-right" onClick={() => this.getBackup(backup)}>
-                                                    <img src="../images/download.svg" className="image-size" title="download backup" alt="download"/>
+                                                    <img src="images/download.svg" className="image-size" title="download backup" alt="download"/>
                                                 </span>
                                                 <span className="linkButton" onClick={() => this.deleteBackupAsk(backup)}>
-                                                    <img src="../images/delete.svg" className="image-size" title="remove backup" alt="remove"/>
+                                                    <img src="images/delete.svg" className="image-size" title="remove backup" alt="remove"/>
                                                 </span>
                                                 </div>
                                             </td>

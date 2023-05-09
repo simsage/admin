@@ -244,7 +244,7 @@ export class UserManager extends React.Component {
                         <span className="filter-find-image">
                             <img className="image-size"
                                  onClick={() => this.props.getUsers()}
-                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
+                                 src="images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </span>
                     </div>
 
@@ -283,21 +283,21 @@ export class UserManager extends React.Component {
                                                 <td>
                                                     { !canEdit &&
                                                         <div className="disabled-link-button" title="cannot edit this user">
-                                                            <img src="../images/edit.svg" className="dl-image-size-disabled"
+                                                            <img src="images/edit.svg" className="dl-image-size-disabled"
                                                                  title="cannot edit this user" alt="cannot edit this user"/>
                                                         </div>
                                                     }
                                                     { canEdit &&
                                                         <div className="link-button" title="Edit this user"
                                                              onClick={() => this.editUser(user)}>
-                                                            <img src="../images/edit.svg" className="dl-image-size"
+                                                            <img src="images/edit.svg" className="dl-image-size"
                                                                  title="edit user" alt="edit"/>
                                                         </div>
                                                     }
                                                     {
                                                         !canDelete &&
                                                         <div className="disabled-link-button" title="cannot remove this user">
-                                                            <img src="../images/delete.svg" className="dl-image-size-disabled"
+                                                            <img src="images/delete.svg" className="dl-image-size-disabled"
                                                                  title="cannot remove this user" alt="cannot remove this user"/>
                                                         </div>
                                                     }
@@ -305,7 +305,7 @@ export class UserManager extends React.Component {
                                                         canDelete &&
                                                         <div className="link-button" title="Remove this user"
                                                              onClick={() => this.deleteUserAsk(user, isAdmin)}>
-                                                            <img src="../images/delete.svg" className="dl-image-size"
+                                                            <img src="images/delete.svg" className="dl-image-size"
                                                                  title={isAdmin ? "remove user" : "remove user roles"} alt="remove"/>
                                                         </div>
                                                     }
@@ -327,7 +327,7 @@ export class UserManager extends React.Component {
                                     <td>
                                         {this.props.selected_organisation_id.length > 0 && (isAdmin || isManager) &&
                                         <div className="image-button" onClick={() => this.addNewUser()}>
-                                            <img className="add-image" src="../images/add.svg" title="add new user" alt="add new user"/>
+                                            <img className="add-image" src="images/add.svg" title="add new user" alt="add new user"/>
                                         </div>
                                         }
                                     </td>

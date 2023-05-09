@@ -125,7 +125,7 @@ export class Inventory extends React.Component {
                             <span>  SimSage is busy creating a new snapshot.</span>
                         }
                         {this.props.selected_organisation_id.length > 0 &&
-                            <img src="../images/refresh.svg" alt="refresh"
+                            <img src="images/refresh.svg" alt="refresh"
                                  title="refresh the inventory list"
                                  onClick={() => {
                                      this.props.getInventoryList();
@@ -164,13 +164,13 @@ export class Inventory extends React.Component {
                                             {(item.name === "content parquet" || item.name === "index parquet") &&
                                                 <div className="link-button"
                                                      onClick={() => this.inventorizeDump(item.time)}>
-                                                    <img src="../images/parquet.png" className="image-size"
+                                                    <img src="images/parquet.png" className="image-size"
                                                          title="download as parquet-file" alt="download parquet"/>
                                                 </div>
                                             }
                                             <div className="link-button"
                                                  onClick={() => this.deleteInventorizeAsk(item.time)}>
-                                                <img src="../images/delete.svg" className="image-size"
+                                                <img src="images/delete.svg" className="image-size"
                                                      title="remove report" alt="remove"/>
                                             </div>
                                         </td>
@@ -185,7 +185,7 @@ export class Inventory extends React.Component {
                                         <div className="image-button" onClick={() => {
                                             this.props.createIndexInventory();
                                             this.props.forceInventoryBusy();
-                                        }}><img className="image-size" src="../images/add.svg"
+                                        }}><img className="image-size" src="images/add.svg"
                                                 title="create entity statistics"
                                                 alt="create entity statistics"/>&nbsp;entity graph</div>
                                     }
@@ -193,13 +193,13 @@ export class Inventory extends React.Component {
                                         <div className="image-button" onClick={() => {
                                             this.props.createInventory();
                                             this.props.forceInventoryBusy();
-                                        }}><img className="image-size" src="../images/add.svg"
+                                        }}><img className="image-size" src="images/add.svg"
                                                 title="create document statistics"
                                                 alt="create document statistics"/>&nbsp;documents</div>
                                     }
                                     {this.props.selected_organisation_id.length > 0 && this.props.inventorize_busy &&
                                         <div className="image-button">
-                                            <img className="image-size add-image-disabled" src="../images/add.svg"
+                                            <img className="image-size add-image-disabled" src="images/add.svg"
                                                  title="SimSage is currently busy processing an inventory.  Please try again later."
                                                  alt="create new snapshot"/>
                                         </div>

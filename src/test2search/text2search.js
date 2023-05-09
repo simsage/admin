@@ -135,7 +135,7 @@ export class Text2Search extends React.Component {
                         <span className="filter-find-image">
                             <img className="image-size"
                                  onClick={() => this.props.getText2SearchList()}
-                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
+                                 src="images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </span>
                     </div>
                 }
@@ -170,10 +170,10 @@ export class Text2Search extends React.Component {
                                                 </td>
                                                 <td>
                                                     <div className="link-button" onClick={() => this.editText2Search(t2s)}>
-                                                        <img src="../images/edit.svg" className="image-size" title="edit text-to-search item" alt="edit"/>
+                                                        <img src="images/edit.svg" className="image-size" title="edit text-to-search item" alt="edit"/>
                                                     </div>
                                                     <div className="link-button" onClick={() => this.deleteText2SearchAsk(t2s)}>
-                                                        <img src="../images/delete.svg" className="image-size" title="remove text-to-search item" alt="remove"/>
+                                                        <img src="images/delete.svg" className="image-size" title="remove text-to-search item" alt="remove"/>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -187,7 +187,7 @@ export class Text2Search extends React.Component {
                                     <td className="action-column-width">
                                         {this.isVisible() &&
                                         <span onClick={() => this.newTextToSearch()} className="icon-left">
-                                            <img className="image-size" src="../images/add.svg" title="new text-to-search item" alt="new"/>
+                                            <img className="image-size" src="images/add.svg" title="new text-to-search item" alt="new"/>
                                         </span>
                                         }
                                     </td>

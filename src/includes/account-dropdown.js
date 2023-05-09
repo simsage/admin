@@ -76,7 +76,7 @@ const AccountDropdown = (props) => {
                                 className={(item.id === selected_organisation.id)? "acc-item px-4 py-3 d-flex justify-content-between active":"acc-item px-4 py-3 d-flex justify-content-between"}>
                                 <span className="organisation-menu-item pointer-cursor" title={"select " + item.name}
                                       onClick={() => handleSelectOrganisation(session.id, item)}>{item.name}</span>
-                                <img onClick={() => handleEditOrganisation(item.id)} src="../images/icon/icon_setting.svg"
+                                <img onClick={() => handleEditOrganisation(item.id)} src="images/icon/icon_setting.svg"
                                      alt="edit" title={"edit " + item.name}
                                      className="me-2 sb-icon pointer-cursor"/>
                             </li>)

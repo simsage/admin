@@ -186,7 +186,7 @@ export class AclSetup extends Component {
                             this.getAcls().map((acl, i) => {
                                 return (<div key={i} className="role-chip d-flex justify-content-between align-items-center" title={(acl.isUser ? "user " : "group ") + acl.acl}>
                                     <span className="w-100" onClick={() => this.removeAcl(acl)}>
-                                        <span className="user-group-image-box"><img className="user-group-image me-3" src={acl.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{acl.acl}</span>
+                                        <span className="user-group-image-box"><img className="user-group-image me-3" src={acl.isUser ? "images/user.svg" : "images/group.svg"} alt="user"/></span><span>{acl.acl}</span>
                                     </span>
                                     <div className="d-flex flex-nowrap">
                                         <span className={this.getAclClassName(acl, "R")} title={this.getTitle(acl, "R")}>{this.getAccess(acl, "R")}</span>
@@ -216,7 +216,7 @@ export class AclSetup extends Component {
                         {
                             this.getAvailableGroupsOrUsers().map((u_group, i) => {
                                 return (<div key={i} className="role-chip" onClick={() => this.addAcl(u_group)} title={(u_group.isUser ? "user " : "group ") + u_group.name}>
-                                    <span className="user-group-image-box me-3"><img className="user-group-image" src={u_group.isUser ? "../images/user.svg" : "../images/group.svg"} alt="user"/></span><span>{u_group.name}</span>
+                                    <span className="user-group-image-box me-3"><img className="user-group-image" src={u_group.isUser ? "images/user.svg" : "images/group.svg"} alt="user"/></span><span>{u_group.name}</span>
                                 </div>)
                             })
                         }

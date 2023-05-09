@@ -170,7 +170,7 @@ export default function KnowledgeBaseForm() {
                                                 <input className="border-0 p-0 w-100 sid-box" value={security_id}
                                                 readOnly="readonly" {...register("securityId", {required: true})} />
                                                 <img title="generate new security id" alt="refresh"
-                                                src={theme === 'light' ? "../images/refresh.svg" : "../images/refresh.svg"}
+                                                src={theme === 'light' ? "images/refresh.svg" : "images/refresh.svg"}
                                                 onClick={() => refreshSecurityId()}
                                                 className="image-size form-icon"/>
                                             </div>

@@ -385,7 +385,7 @@ export default function CrawlerMetaMapperForm(props) {
                                             data-bs-dismiss="modal">remove
                                     </button>
                                     {/*<span className="delete-box" onClick={() => deleteMetadataItem(index)} title="remove this metadata item">*/}
-                                    {/*    <img src={theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>*/}
+                                    {/*    <img src={theme === 'light' ? "images/delete.svg" : "images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>*/}
                                     {/*</span>*/}
                                     {index > 0 &&
                                         <span className="up-arrow" title="move row up (change UI ordering)"
@@ -412,7 +412,7 @@ export default function CrawlerMetaMapperForm(props) {
                     <tr>
                         <td colSpan={6} align={"right"}>
                             {/*<div className="image-button" onClick={() => addNewMetadataMapping()}><img*/}
-                            {/*    className="image-size" src={theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add new metadata mapping"*/}
+                            {/*    className="image-size" src={theme === 'light' ? "images/add.svg" : "images/add-dark.svg"} title="add new metadata mapping"*/}
                             {/*    alt="add new metadata mapping"/></div>*/}
                             <button onClick={addNewMetadataMapping} type="button" className="btn btn-secondary"
                                     title="add new metadata mapping"

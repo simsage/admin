@@ -95,7 +95,7 @@ export class CrawlerExchange365 extends Component {
                         <span className="office-manual-box">
                             <a href="../resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank" title="download the SimSage Exchange 365 setup guide">
                                 <span className="instructions-label">instructions</span>
-                                <img src="../images/pdf-icon.png" alt="exchange 365 setup guide" className="image-size" />
+                                <img src="images/pdf-icon.png" alt="exchange 365 setup guide" className="image-size" />
                             </a>
                         </span>
                     </div>

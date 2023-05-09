@@ -495,7 +495,7 @@ export default function CrawlerMetadataForm(props) {
                                     </div>
 
                                     {/*<span className="delete-box" onClick={() => deleteMetadataItem(index)} title="remove this metadata item">*/}
-                                    {/*    <img src={theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>*/}
+                                    {/*    <img src={theme === 'light' ? "images/delete.svg" : "images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>*/}
                                     {/*</span>*/}
 
                                     {index > 0 &&
@@ -520,7 +520,7 @@ export default function CrawlerMetadataForm(props) {
                     {/* <tr>
                         <td colSpan={5} align={"right"}> */}
                             {/*<div className="image-button" onClick={() => this.addNewMetadataMapping()}><img*/}
-                            {/*    className="image-size" src={theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add new metadata mapping"*/}
+                            {/*    className="image-size" src={theme === 'light' ? "images/add.svg" : "images/add-dark.svg"} title="add new metadata mapping"*/}
                             {/*    alt="add new metadata mapping"/></div>*/}
 
                             {/* <button onClick={addNewMetadataMapping} type="button" className="btn btn-secondary"

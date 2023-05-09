@@ -333,14 +333,14 @@ export class Home extends Component {
 
                      { isPasswordSignIn &&
                          <div className="logo-box">
-                             <img alt="SimSage" title="Search Reimagined" className="logo" src={"../images/simsage-logo-no-strapline.svg"} onClick={() => {
+                             <img alt="SimSage" title="Search Reimagined" className="logo" src={"images/simsage-logo-no-strapline.svg"} onClick={() => {
                                  window.location = "/";
                              }}/>
                          </div>
                      }
                      { isPasswordSignIn &&
                          <div className="sign-out-password-image-container">
-                             <img src={theme === 'light' ? "../images/sign-out.svg" : "../images/sign-out-light.svg"} alt="sign-out" title="sign-out"
+                             <img src={theme === 'light' ? "images/sign-out.svg" : "images/sign-out-light.svg"} alt="sign-out" title="sign-out"
                                   onClick={() => { this.props.signOut(() => {window.location = "/"}) }} className="sign-out-image" />
                          </div>
                      }

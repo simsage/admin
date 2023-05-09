@@ -60,7 +60,7 @@ export class RestoreUpload extends React.Component {
                         {
                             this.state.data && this.state.data.length > 0 && this.state.fileType === "text/plain" &&
                             <div className="restore-image-button" onClick={() => this.upload()}><img
-                                className="image-size" src="../images/restore.svg"
+                                className="image-size" src="images/restore.svg"
                                 title={"Click here to restore data from \"" + this.state.filename + "\""}
                                 alt="restore data from file"/></div>
                         }

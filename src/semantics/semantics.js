@@ -136,7 +136,7 @@ export class Semantics extends React.Component {
                         <span className="filter-find-image">
                             <img className="image-size"
                                  onClick={() => this.props.getSemantics()}
-                                 src="../images/dark-magnifying-glass.svg" title="search" alt="search"/>
+                                 src="images/dark-magnifying-glass.svg" title="search" alt="search"/>
                         </span>
                     </div>
                 }
@@ -167,10 +167,10 @@ export class Semantics extends React.Component {
                                                 </td>
                                                 <td>
                                                     <div className="link-button" onClick={() => this.editSemantic(semantic)}>
-                                                        <img src="../images/edit.svg" className="image-size" title="edit semantic" alt="edit"/>
+                                                        <img src="images/edit.svg" className="image-size" title="edit semantic" alt="edit"/>
                                                     </div>
                                                     <div className="link-button" onClick={() => this.deleteSemanticAsk(semantic)}>
-                                                        <img src="../images/delete.svg" className="image-size" title="remove semantic" alt="remove"/>
+                                                        <img src="images/delete.svg" className="image-size" title="remove semantic" alt="remove"/>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -183,7 +183,7 @@ export class Semantics extends React.Component {
                                     <td>
                                         {this.isVisible() &&
                                             <div className="link-button" onClick={() => this.newSemantic()}><img
-                                                className="image-size" src="../images/add.svg" title="new semantic" alt="new semantic"/></div>
+                                                className="image-size" src="images/add.svg" title="new semantic" alt="new semantic"/></div>
                                         }
                                     </td>
                                 </tr>

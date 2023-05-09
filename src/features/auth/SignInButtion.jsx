@@ -14,7 +14,7 @@ function handleLogin(instance) {
 }
 
 export const SignInButton = () => {
-    const image = "../images/simsage-logo-no-strapline.svg";
+    const image = "images/simsage-logo-no-strapline.svg";
     const { instance } = useMsal()
 
     const [show_license, setShowLicense] = useState(false);

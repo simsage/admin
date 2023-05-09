@@ -140,7 +140,7 @@ console.log("page",prev_word)
                             />
                             <button className="btn btn-secondary"
                                     onClick={() => filterSemantic()}
-                                    src="../images/dark-magnifying-glass.svg" title="search" alt="search">Search</button>
+                                    src="images/dark-magnifying-glass.svg" title="search" alt="search">Search</button>
                         </div>
                     </div>
 

@@ -7,15 +7,15 @@ export default function LeftNavbar(){
 
     // Todo:: add nav separator
     const nav1 = [
-        {label: "Overview", slug:"home", logo:"../images/icon/icon_overview.svg", separator:true, sub:[] },
-        {label: "User Management", slug:"user-management", logo:"../images/icon/icon_user_management.svg", separator:false, sub:[] },
-        // {label: "Organisations", slug:"organisation", logo:"../images/icon/icon_user_management.svg", separator:false, sub:[] },
+        {label: "Overview", slug:"home", logo:"images/icon/icon_overview.svg", separator:true, sub:[] },
+        {label: "User Management", slug:"user-management", logo:"images/icon/icon_user_management.svg", separator:false, sub:[] },
+        // {label: "Organisations", slug:"organisation", logo:"images/icon/icon_user_management.svg", separator:false, sub:[] },
     ]
 
     const nav2 = [
-        {label: "Document Management", slug:"document-management", logo:"../images/icon/icon_document_sources.svg", separator:false, sub:[] },
-        {label: "The Mind", slug:"the-mind", logo:"../images/icon/icon_the_mind.svg", separator:false, sub:[] }
-        // {label: "Reports", slug:"reports", logo:"../images/icon/icon_reports.svg", separator:false, sub:[] }
+        {label: "Document Management", slug:"document-management", logo:"images/icon/icon_document_sources.svg", separator:false, sub:[] },
+        {label: "The Mind", slug:"the-mind", logo:"images/icon/icon_the_mind.svg", separator:false, sub:[] }
+        // {label: "Reports", slug:"reports", logo:"images/icon/icon_reports.svg", separator:false, sub:[] }
     ]
 
     const dispatch = useDispatch();
@@ -38,7 +38,7 @@ export default function LeftNavbar(){
         <div className="sidebar no-select">
             <div className="sb-logo d-flex justify-content-center align-items-center pointer-cursor"
                  title="SimSage Portal" onClick={() => window.location = "/"}>
-                <img src="/images/brand/simsage-logo-no-strapline.svg" alt="" className="h-75" />
+                <img src="images/brand/simsage-logo-no-strapline.svg" alt="" className="h-75" />
             </div>
 
             <ul className="sb-nav ps-0 h-100 border-end">

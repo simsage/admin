@@ -369,7 +369,7 @@ export class CrawlerMetadata extends Component {
 
                                 <td className="td-action">
                                     <span className="delete-box" onClick={() => self.deleteMetadataItem(index)} title="remove this metadata item">
-                                        <img src={theme === 'light' ? "../images/delete.svg" : "../images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>
+                                        <img src={theme === 'light' ? "images/delete.svg" : "images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>
                                     </span>
                                     {index > 0 &&
                                     <span className="up-arrow" title="move row up (change UI ordering)"
@@ -397,7 +397,7 @@ export class CrawlerMetadata extends Component {
                         <td colSpan={4} />
                         <td>
                             <div className="image-button" onClick={() => this.addNewMetadataMapping()}><img
-                                className="image-size" src={theme === 'light' ? "../images/add.svg" : "../images/add-dark.svg"} title="add new metadata mapping"
+                                className="image-size" src={theme === 'light' ? "images/add.svg" : "images/add-dark.svg"} title="add new metadata mapping"
                                 alt="add new metadata mapping"/></div>
                         </td>
                     </tr>
