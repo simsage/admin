@@ -40,7 +40,7 @@ export default function SourceForm() {
         "filesPerSecond": 0.5,
         "organisationId": "",
         "crawlerType": "none",
-        "deleteFiles": false,
+        "deleteFiles": true,
         "allowAnonymous": true,
         "enablePreview": true,
         "processingLevel": "INDEX",
@@ -63,12 +63,12 @@ export default function SourceForm() {
         "kbId": "",
         "internalCrawler": "",
 
-        "storeBinary":"",
-        "versioned":"",
-        writeToCassandra:"",
-        enableDocumentSimilarity:"",
-        documentSimilarityThreshold:"",
-        isExternal:"",
+        "storeBinary": true,
+        "versioned": false,
+        writeToCassandra: true,
+        enableDocumentSimilarity: false,
+        documentSimilarityThreshold: 0.95,
+        isExternal: false,
 
         "processorConfig": "",
 
@@ -244,12 +244,12 @@ export default function SourceForm() {
         //
         defaultValues.sourceId = selected_source ? selected_source.sourceId : 0;
 
-        defaultValues.storeBinary = "";
-        defaultValues.versioned = "";
-        defaultValues.writeToCassandra = "";
-        defaultValues.enableDocumentSimilarity = "";
-        defaultValues.documentSimilarityThreshold = "";
-        defaultValues.isExternal = "";
+        defaultValues.storeBinary = true;
+        defaultValues.versioned = false;
+        defaultValues.writeToCassandra = true;
+        defaultValues.enableDocumentSimilarity = false;
+        defaultValues.documentSimilarityThreshold = 0.95;
+        defaultValues.isExternal = false;
 
         reset({...defaultValues});
     }, [show_form]);
