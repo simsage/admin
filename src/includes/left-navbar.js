@@ -81,12 +81,15 @@ export const LeftSidebarNavItem = (props) => {
     const slug = props.slug;
 
     const {selected_tab} = useSelector((state) => state.homeReducer)
+    const {session, selected_organisation_id, selected_knowledge_base_id} = useSelector((state)=>state.authReducer)
     const is_active = (selected_tab === slug);
 
     const dispatch = useDispatch();
 
     return(
-        <li key={slug} onClick={() => dispatch(selectTab(slug))}
+        <li key={slug} onClick={() => dispatch(selectTab({slug: slug,
+                                                                       session_id: (session && session.session_id) ? session.session_id: "",
+                                                                       organisation_id: selected_organisation_id, kb_id: selected_knowledge_base_id}))}
             className={is_active?"sb-item d-flex align-items-center px-4 py-2 active":"sb-item d-flex align-items-center px-4 py-2"} >
             <img src={logo} alt="" className="me-2 sb-icon"/>
             <label>{label}</label>

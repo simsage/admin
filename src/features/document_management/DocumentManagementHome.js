@@ -2,20 +2,17 @@ import React, {useState} from "react";
 import SubNav from "../../includes/sub-nav";
 import SourceHome from "../sources/SourceHome";
 import InventoryHome from "../inventory/InventoryHome";
-// import DocumentsHome from "./DocumentsHome";
+import {getStatus} from "../home/homeSlice";
 
 export default function DocumentManagementHome(){
-    // const title = "Document Management";
     const [selected_sub_nav, setSelectedSubNav] = useState('sources')
 
     const sub_nav = [
         {label: "Sources", slug:"sources" },
         {label: "Inventory", slug:"inventory" },
-        // {label: "Documents", slug:"documents" },
     ]
 
     function changeNav(slug){
-        console.log(slug)
         setSelectedSubNav(slug);
     }
 
@@ -31,9 +28,6 @@ export default function DocumentManagementHome(){
             {selected_sub_nav === 'inventory' &&
             <InventoryHome tab={selected_sub_nav}/>
             }
-            {/*{selected_sub_nav === 'documents' &&*/}
-            {/*<DocumentsHome tab={selected_sub_nav}/>*/}
-            {/*}*/}
         </div>
     )
 }
