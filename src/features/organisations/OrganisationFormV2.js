@@ -17,13 +17,14 @@ export default function OrganisationFormV2(props) {
     //filters
     const [selected_role_filter, setRoleFilter] = useState('');
     const [available_role_filter, setAvailableRoleFilter] = useState('');
-    const [availableGroupFilter, setAvailableGroupFilter] = useState('');
-    const [groupFilter, setGroupFilter] = useState('');
+    const [available_group_filter, setAvailableGroupFilter] = useState('');
+    const [selected_group_filter, setSelectedGroupFilter] = useState('');
 
     const [selected_roles, setSelectedRoles] = useState([]);
     const [selected_groups, setSelectedGroups] = useState([]);
 
     const available_roles = ["search", "dms", "discovery"];
+    const available_groups = ["group1", "group2", "group3"];
 
     //load organisation
     if (props.organisation_id && organisation_list) {
@@ -85,9 +86,7 @@ export default function OrganisationFormV2(props) {
 
 
     function getUserRoles() {
-
         let temp_list = [];
-
         if(selected_role_filter.length > 0) {
             temp_list = selected_roles.filter((role) => {
                 return Api.getPrettyRole(role).toLowerCase().includes(selected_role_filter.toLowerCase())
@@ -95,31 +94,12 @@ export default function OrganisationFormV2(props) {
         } else {
           temp_list = selected_roles
         }
-
-        console.log("getUserRoles", getUserRoles)
         return temp_list;
-    }
-    // function getUserRoles() {
-    //     if (!autoCreateSSORoleList || !autoCreateSSORoleList.length)
-    //         return [];
-    //     return selected_role_filter.length > 0 ? autoCreateSSORoleList.filter( role => {
-    //             return Api.getPrettyRole(role.role).toLowerCase().includes(selected_role_filter.toLowerCase())
-    //         })
-    //         :
-    //         autoCreateSSORoleList
-    //     return [];
-    // }
-
-    function addRoleToUser(roleToAdd) {
-        // const list = (autoCreateSSORoleList && autoCreateSSORoleList.length > 0) ? autoCreateSSORoleList : [];
-        // list.push(roleToAdd);
-        // setAutoCreateSSORoleList(list);
     }
 
 
     function addRoleToUser(roleToAdd){
         setSelectedRoles([ ...(selected_roles || []), roleToAdd ])
-        console.log("selected_roles", selected_roles)
     };
 
 
@@ -128,13 +108,11 @@ export default function OrganisationFormV2(props) {
         const temp_list = selected_roles.filter( r => {
             return r !== role
         })
-
         setSelectedRoles(temp_list)
     }
 
     const getAvailableRoles = () => {
         let temp_role_list = []
-
         available_roles.forEach((role)=>{
             if(!selected_roles.includes(role)) {
                 temp_role_list.push(role)
@@ -151,36 +129,47 @@ export default function OrganisationFormV2(props) {
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // group/ACL management
 
-    function addGroupToUser(groupToAdd) {
+    function addGroupToUser(group) {
+        setSelectedGroups([ ...(selected_groups || []), group ])
         // setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
     }
 
-    function removeGroupFromUser(groupToRemove) {
-        // setAutoCreateSSOACLList(autoCreateSSOACLList.filter( grp => {
-        //     return grp.name !== groupToRemove.name
-        // }))
+    function removeGroupFromUser(group) {
+
+        const temp_list = selected_groups.filter( g => {
+            return g !== group
+        })
+        setSelectedGroups(temp_list)
+
     }
 
     const getAvailableGroups = () => {
-        // const groupNames = autoCreateSSOACLList ? autoCreateSSOACLList.map( g => g.name) : []
-        // const availableGroups = [].filter( grp => {
-        //     return !groupNames.includes(grp.name)
-        // })
-        // return availableGroupFilter.length > 0 ? availableGroups.filter( grp => {
-        //         return grp.name.toLowerCase().includes(availableGroupFilter.toLowerCase())
-        //     })
-        //     :
-        //     availableGroups
-        return [];
+
+        let temp_list = []
+        available_groups.forEach((group)=>{
+            if(!selected_groups.includes(group)) {
+                temp_list.push(group)
+            }
+        })
+
+        return available_group_filter.length > 0 ? temp_list.filter(group => {
+                return group.toLowerCase().includes(available_group_filter.toLowerCase())
+            })
+            :
+            temp_list;
+
     }
 
     function getGroups() {
-        // return groupFilter.length > 0 ? autoCreateSSOACLList.filter( grp => {
-        //         return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
-        //     })
-        //     :
-        //     autoCreateSSOACLList
-        return [];
+        let temp_list = [];
+        if(selected_group_filter.length > 0) {
+            temp_list = selected_groups.filter((group) => {
+                return Api.getPrettyRole(group).toLowerCase().includes(selected_group_filter.toLowerCase())
+            })
+        } else {
+            temp_list = selected_groups
+        }
+        return temp_list;
     }
 
 
@@ -307,15 +296,15 @@ export default function OrganisationFormV2(props) {
                                                     <h6 className="role-label text-center">SimSage Groups</h6>
                                                     <div className="role-area bg-light border rounded h-100">
                                                         <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                               placeholder="Filter..." value={groupFilter}
-                                                               onChange={(e) => setGroupFilter(e.target.value)}/>
+                                                               placeholder="Filter..." value={selected_group_filter}
+                                                               onChange={(e) => setSelectedGroupFilter(e.target.value)}/>
                                                         {
                                                             getGroups().map((grp, i) => {
                                                                 return (
 
                                                                     <Chip key={i} color="secondary"
                                                                           onClick={() => removeGroupFromUser(grp)}
-                                                                          label={grp.name} variant="outlined"/>
+                                                                          label={grp} variant="outlined"/>
                                                                 )
                                                             })
                                                         }
@@ -325,13 +314,13 @@ export default function OrganisationFormV2(props) {
                                                     <h6 className="role-label text-center">Available</h6>
                                                     <div className="role-area bg-light border rounded h-100">
                                                         <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                               placeholder="Filter..." value={availableGroupFilter}
+                                                               placeholder="Filter..." value={available_group_filter}
                                                                onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
                                                         {
                                                             getAvailableGroups().map((grp, i) => {
                                                                 return (<Chip key={i} color="primary"
                                                                               onClick={() => addGroupToUser(grp)}
-                                                                              label={grp.name}
+                                                                              label={grp}
                                                                               variant="outlined"/>)
                                                             })
                                                         }
