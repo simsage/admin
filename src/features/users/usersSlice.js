@@ -48,7 +48,7 @@ export const updateUser = createAsyncThunk(
     async ({session_id, organisation_id, data}) => {
 
         const api_base = window.ENV.api_base;
-        const url = '/auth/user/' ;
+        const url = '/auth/user' ;
         if (url !== '/stats/stats/os') {
             console.log('PUT ' + api_base + url );
         }
@@ -67,7 +67,7 @@ export const bulkUpdateUser = createAsyncThunk(
     async ({session_id, payload}) => {
 
         const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/user/import/';
+        const url = api_base + '/auth/user/import';
 
         return axios.put(url, payload, Comms.getHeaders(session_id))
             .then((response) => {

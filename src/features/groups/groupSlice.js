@@ -44,7 +44,7 @@ export const updateGroup = createAsyncThunk(
     'group/update',
     async ({session_id, data}) => {
         const api_base = window.ENV.api_base;
-        const url = '/auth/group/';
+        const url = '/auth/group';
         if (url !== '/stats/stats/os') {
             console.log('PUT ' + api_base + url);
         }

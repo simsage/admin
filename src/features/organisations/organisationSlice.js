@@ -276,7 +276,7 @@ export const updateOrganisation = createAsyncThunk(
         console.log("organisations/updateOrganisation");
 
         const api_base = window.ENV.api_base;
-        const url = '/auth/organisation/';
+        const url = '/auth/organisation';
         if (url !== '/stats/stats/os') {
             console.log('PUT ' + api_base + url);
         }
@@ -401,7 +401,7 @@ export const restoreOrganisation = createAsyncThunk(
     'organisations/restoreOrganisation',
     async ({session_id, data}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/backup/restore/';
+        const url = api_base + '/backup/restore';
 
         if (url !== '/stats/stats/os') {
             console.log('POST ' + url);
