@@ -39,6 +39,8 @@ export default function OrganisationFormV2(props) {
 
     const handleClose = () => {
         dispatch(closeOrganisationForm());
+        setSelectedRoles([])
+        setSelectedGroups([])
     }
 
     const handleDelete = () => {
@@ -86,6 +88,8 @@ export default function OrganisationFormV2(props) {
         data.autoCreateSSORoleList = selected_roles;
         data.autoCreateSSOACLList = selected_groups;
         dispatch(updateOrganisation({session_id: props.session.id, data: data}))
+        setSelectedRoles([])
+        setSelectedGroups([])
     };
 
     function handleTabChange(slug) {
