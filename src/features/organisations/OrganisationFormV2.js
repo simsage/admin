@@ -20,11 +20,12 @@ export default function OrganisationFormV2(props) {
     const [available_group_filter, setAvailableGroupFilter] = useState('');
     const [selected_group_filter, setSelectedGroupFilter] = useState('');
 
-    const [selected_roles, setSelectedRoles] = useState([]);
-    const [selected_groups, setSelectedGroups] = useState([]);
+    const [selected_roles, setSelectedRoles] = useState(organisation ? organisation.autoCreateSSORoleList:[]);
+    const [selected_groups, setSelectedGroups] = useState(organisation ? organisation.autoCreateSSOACLList : []);
 
     const available_roles = ["search", "dms", "discovery"];
     const available_groups = ["group1", "group2", "group3"];
+
 
     //load organisation
     if (props.organisation_id && organisation_list) {
@@ -54,8 +55,10 @@ export default function OrganisationFormV2(props) {
         handleSubmit,
         formState: {errors},
         reset,
-        watch,
-        getValues
+        // watch,
+        getValues,
+        getFieldState,
+        setValue
     } = useForm();
 
     //set default value depends on organisation and show_organisation_form
@@ -68,18 +71,28 @@ export default function OrganisationFormV2(props) {
         defaultValues.autoCreateSSODomainList = organisation ? organisation.autoCreateSSODomainList : "";
         defaultValues.autoCreateSSORoleList = organisation ? organisation.autoCreateSSORoleList : [];
         defaultValues.autoCreateSSOACLList = organisation ? organisation.autoCreateSSOACLList : [];
+
         reset({...defaultValues});
     }, [organisation, props.show_organisation_form, reset]);
 
+    //reset the selected selected_roles and selected_groups
+    useEffect(()=>{
+        console.log("getFieldState", getFieldState('autoCreateSSORoleList'))
+        console.log("getValues", getValues('autoCreateSSORoleList'))
+    },[])
 
     //on submit store or update
     const onSubmit = data => {
+        data.autoCreateSSORoleList = selected_roles;
+        data.autoCreateSSOACLList = selected_groups;
         dispatch(updateOrganisation({session_id: props.session.id, data: data}))
     };
 
     function handleTabChange(slug) {
         setSelectedTab(slug);
     }
+
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // SimSage role management
@@ -173,12 +186,7 @@ export default function OrganisationFormV2(props) {
     }
 
 
-    // React.useEffect(() => {
-    //     console.log("")
-    // }, [watch, getValues]);
 
-    console.log("getValues", getValues())
-    // console.log("getRoelse", getUserRoles())
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (!props.show_organisation_form)
