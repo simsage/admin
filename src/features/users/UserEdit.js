@@ -1,11 +1,11 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeUserForm,updateUser} from "./usersSlice";
+import {closeUserForm, updateUser} from "./usersSlice";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import SubNav from "../../includes/sub-nav";
 
-export function UserEdit(){
+export function UserEdit() {
 
     const dispatch = useDispatch();
 
@@ -13,22 +13,22 @@ export function UserEdit(){
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
 
     const sub_nav = [
-        {label: "Details", slug:"details" },
-        {label: "Roles", slug:"roles" },
-        {label: "Groups", slug:"groups" },
+        {label: "Details", slug: "details"},
+        {label: "Roles", slug: "roles"},
+        {label: "Groups", slug: "groups"},
     ]
 
-    function changeNav(slug){
+    function changeNav(slug) {
         console.log(slug)
         setSelectedTab(slug);
     }
 
     const show_user_form = useSelector((state) => state.usersReducer.show_user_form);
-    const user_id = useSelector( (state) => state.usersReducer.edit_id);
-    const user_list = useSelector( (state)=> state.usersReducer.user_list );
-    const available_roles = useSelector( (state) => state.usersReducer.roles);
+    const user_id = useSelector((state) => state.usersReducer.edit_id);
+    const user_list = useSelector((state) => state.usersReducer.user_list);
+    const available_roles = useSelector((state) => state.usersReducer.roles);
     const available_KBs = useSelector((state) => state.kbReducer.kb_list);
-    const group_list_full = useSelector(( (state) => state.groupReducer.group_list))
+    const group_list_full = useSelector(((state) => state.groupReducer.group_list))
     //const group_list_full = group_list_parent ? group_list_parent.groupList : group_list_parent;
 
     //user form details
@@ -53,7 +53,7 @@ export function UserEdit(){
 
     // Grab user details if editing
     let selectedUser = {}
-    useEffect(()=> {
+    useEffect(() => {
         if (user_id && user_list) {
             let temp_obj = user_list.filter((o) => {
                 return o.id === user_id
@@ -64,18 +64,18 @@ export function UserEdit(){
             }
         }
         //Populate form if necessary
-        if(Object.keys(selectedUser).length){
+        if (Object.keys(selectedUser).length) {
             setEmail(selectedUser.email)
             setFirstName(selectedUser.firstName)
             setLastName(selectedUser.surname)
-            setRoles(!selectedUser.roles ? [] : selectedUser.roles.filter( roleObj => {
+            setRoles(!selectedUser.roles ? [] : selectedUser.roles.filter(roleObj => {
                 return roleObj.organisationId === organisation_id
             }))
             setGroups(selectedUser.groupList)
-            setKBs(!selectedUser.operatorKBList ? [] : selectedUser.operatorKBList.filter( KBObj => {
+            setKBs(!selectedUser.operatorKBList ? [] : selectedUser.operatorKBList.filter(KBObj => {
                 return KBObj.organisationId === organisation_id
             }))
-            setShowKBs(!selectedUser.roles ? [] : selectedUser.roles.filter( roleObj => {
+            setShowKBs(!selectedUser.roles ? [] : selectedUser.roles.filter(roleObj => {
                 return roleObj.organisationId === organisation_id
             }).map(r => r.role).includes('operator'))
         }
@@ -84,7 +84,7 @@ export function UserEdit(){
     //[details,roles, groups]
     const [selectedTab, setSelectedTab] = useState('details');
 
-    function handleClose(e){
+    function handleClose(e) {
         defaultValues()
         dispatch(closeUserForm())
     }
@@ -118,27 +118,45 @@ export function UserEdit(){
     }
 
     const handleSave = () => {
+        let form_error = false;
         //Check for valid updates
-        if( !validEmail(email) ) { alert('Invalid Email') }
-        if( !firstName ) { alert('Invalid Name') }
-        if( !lastName ) { alert('Invalid Last Name') }
-        if( showKbs && kbs.length < 1) {alert("A knowledge operator must have at least 1 Knowledge base assigned")}
-        if( password !== confPassword){ return alert("Please ensure the passwords match")}
-        //begin updating user
-        const session_id = session.id;
-        const data = {
-            email: email,
-            firstName: firstName,
-            groupList: groups,
-            id: user_id,
-            operatorKBList: kbs,
-            password: password,
-            roles: roles,
-            surname: lastName
+        if (!validEmail(email)) {
+            alert('Invalid Email')
+            form_error = true;
         }
-        console.log('Saving...', data);
-        dispatch(updateUser({session_id,organisation_id, data}));
-        dispatch(closeUserForm());
+        if (!firstName) {
+            alert('Invalid Name');
+            form_error = true;
+        }
+        if (!lastName) {
+            alert('Invalid Last Name');
+            form_error = true;
+        }
+        if (showKbs && kbs.length < 1) {
+            alert("A knowledge operator must have at least 1 Knowledge base assigned");
+            form_error = true;
+        }
+        if (password !== confPassword) {
+            return alert("Please ensure the passwords match");
+            form_error = true;
+        }
+        //begin updating user
+        if (!form_error) {
+            const session_id = session.id;
+            const data = {
+                email: email,
+                firstName: firstName,
+                groupList: groups,
+                id: user_id,
+                operatorKBList: kbs,
+                password: password,
+                roles: roles,
+                surname: lastName
+            }
+            console.log('Saving...', data);
+            dispatch(updateUser({session_id, organisation_id, data}));
+            dispatch(closeUserForm());
+        }
     }
 
 
@@ -172,36 +190,34 @@ export function UserEdit(){
     }
 
 
-
-
     //Roles functions
 
     const getAvailableRoles = () => {
-        const roleNames = roles ? roles.map( r => r.role) :  [];
+        const roleNames = roles ? roles.map(r => r.role) : [];
         let tempRoleList = [];
-        available_roles.forEach( ar => {
-            if(!roleNames.includes(ar)){
+        available_roles.forEach(ar => {
+            if (!roleNames.includes(ar)) {
                 tempRoleList.push(ar);
             }
         })
 
-        return availableRoleFilter.length > 0 ? tempRoleList.filter( role => {
-            return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
-        })
+        return availableRoleFilter.length > 0 ? tempRoleList.filter(role => {
+                return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
+            })
             :
-        tempRoleList;
+            tempRoleList;
     }
 
-    function getUserRoles(){
-        return roleFilter.length > 0 ? roles.filter( role => {
+    function getUserRoles() {
+        return roleFilter.length > 0 ? roles.filter(role => {
                 return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
             })
             :
             roles
     }
 
-    function addRoleToUser(roleToAdd){
-        setRoles([ ...(roles || []), {
+    function addRoleToUser(roleToAdd) {
+        setRoles([...(roles || []), {
             organisation_id: organisation_id,
             role: roleToAdd
         }])
@@ -209,8 +225,8 @@ export function UserEdit(){
         if (roleToAdd === "operator") setShowKBs(true);
     };
 
-    function removeRoleFromUser(roleToRemove){
-        setRoles(roles.filter( r => {
+    function removeRoleFromUser(roleToRemove) {
+        setRoles(roles.filter(r => {
             return r.role !== roleToRemove.role
         }))
         if (roleToRemove.role === "operator") setShowKBs(false);
@@ -221,16 +237,18 @@ export function UserEdit(){
     function getKbName(kbID) {
         console.log('test2', kbID)
         console.log('tets3', available_KBs)
-        const temp_list = available_KBs.filter( (obj) => {return obj.kbId === kbID})
+        const temp_list = available_KBs.filter((obj) => {
+            return obj.kbId === kbID
+        })
         console.log('test4', temp_list)
-        if(temp_list.length < 1) return "No KBs"
+        if (temp_list.length < 1) return "No KBs"
         return temp_list[0].name
     }
 
-    function getKbs(){
-        return kbFilter.length > 0 ? kbs.filter( kb => {
-            console.log('pre-test', kb)
-            console.log('testing', getKbName(kb.kbId))
+    function getKbs() {
+        return kbFilter.length > 0 ? kbs.filter(kb => {
+                console.log('pre-test', kb)
+                console.log('testing', getKbName(kb.kbId))
                 return getKbName(kb.kbId).toLowerCase().includes(kbFilter.toLowerCase())
             })
             :
@@ -238,26 +256,25 @@ export function UserEdit(){
     }
 
 
-
     const getAvailableKnowledgeBases = () => {
         const userKbName = kbs ? kbs.map(kb => getKbName(kb.kbId)) : [];
-        const availableKbNames = available_KBs.map( kb => kb.name)
+        const availableKbNames = available_KBs.map(kb => kb.name)
         let tempKBsList = [];
-        availableKbNames.forEach( kb => {
-            if(!userKbName.includes(kb)){
+        availableKbNames.forEach(kb => {
+            if (!userKbName.includes(kb)) {
                 tempKBsList.push(kb);
             }
         })
-        return availableKbFilter.length > 0 ? tempKBsList.filter( kb => {
-            return kb.toLowerCase().includes(availableKbFilter.toLowerCase())
-        })
+        return availableKbFilter.length > 0 ? tempKBsList.filter(kb => {
+                return kb.toLowerCase().includes(availableKbFilter.toLowerCase())
+            })
             :
-        tempKBsList
+            tempKBsList
     }
 
 
-    function addKbToUser(kb){
-        const kbObj = available_KBs.filter( k => {
+    function addKbToUser(kb) {
+        const kbObj = available_KBs.filter(k => {
             return k.name === kb;
         })
         setKBs([...(kbs || []), {
@@ -268,8 +285,8 @@ export function UserEdit(){
 
     };
 
-    function removeKbFromUser(kb){
-        setKBs( kbs.filter( k => {
+    function removeKbFromUser(kb) {
+        setKBs(kbs.filter(k => {
             return k.kbId !== kb
         }))
     };
@@ -277,41 +294,41 @@ export function UserEdit(){
     //Groups functions
 
     const getAvailableGroups = () => {
-        const groupNames = groups ? groups.map( g => g.name) : []
-        const availableGroups = group_list_full.filter( grp => {
+        const groupNames = groups ? groups.map(g => g.name) : []
+        const availableGroups = group_list_full.filter(grp => {
             return !groupNames.includes(grp.name)
         })
-        return availableGroupFilter.length > 0 ? availableGroups.filter( grp => {
-            return grp.name.toLowerCase().includes(availableGroupFilter.toLowerCase())
-        })
+        return availableGroupFilter.length > 0 ? availableGroups.filter(grp => {
+                return grp.name.toLowerCase().includes(availableGroupFilter.toLowerCase())
+            })
             :
-        availableGroups
+            availableGroups
     }
 
-    function getGroups(){
-        return groupFilter.length > 0 ? groups.filter( grp => {
-            return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
-        })
+    function getGroups() {
+        return groupFilter.length > 0 ? groups.filter(grp => {
+                return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
+            })
             :
-        groups
+            groups
     }
 
-    function addGroupToUser(groupToAdd){
-        setGroups([...(groups || []) , groupToAdd])
+    function addGroupToUser(groupToAdd) {
+        setGroups([...(groups || []), groupToAdd])
     };
 
-    function removeGroupFromUser(groupToRemove){
-        setGroups(groups.filter( grp => {
+    function removeGroupFromUser(groupToRemove) {
+        setGroups(groups.filter(grp => {
             return grp.name !== groupToRemove.name
         }))
     };
 
 
-
     if (show_user_form === false)
         return (<div/>);
     return (
-        <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
+        <div className="modal user-display" tabIndex="-1" role="dialog"
+             style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-lg"} role="document">
                 <div className="modal-content">
                     <div className="modal-header px-5 pt-4 bg-light">
@@ -320,7 +337,7 @@ export function UserEdit(){
                     <div className="modal-body p-0">
 
                         <div className="nav nav-tabs overflow-auto">
-                            <SubNav sub_nav={sub_nav} active_item={selectedTab} onClick={changeNav} />
+                            <SubNav sub_nav={sub_nav} active_item={selectedTab} onClick={changeNav}/>
                         </div>
 
                         {
@@ -333,10 +350,10 @@ export function UserEdit(){
                                         <span className="text">
                                                 <form>
                                                     <input type="text" className="form-control"
-                                                        autoComplete="false"
-                                                        placeholder=""
-                                                        value={firstName}
-                                                        onChange={(e) => setFirstName(e.target.value)}
+                                                           autoComplete="false"
+                                                           placeholder=""
+                                                           value={firstName}
+                                                           onChange={(e) => setFirstName(e.target.value)}
                                                     />
                                                 </form>
                                             </span>
@@ -347,10 +364,10 @@ export function UserEdit(){
                                         <span className="text">
                                                 <form>
                                                     <input type="text" className="form-control"
-                                                        autoComplete="false"
-                                                        placeholder=""
-                                                        value={lastName}
-                                                        onChange={(event) => setLastName(event.target.value)}
+                                                           autoComplete="false"
+                                                           placeholder=""
+                                                           value={lastName}
+                                                           onChange={(event) => setLastName(event.target.value)}
                                                     />
                                                 </form>
                                             </span>
@@ -363,12 +380,12 @@ export function UserEdit(){
                                         <span className="text">
                                                 <form>
                                                     <input type="text" className="form-control"
-                                                        autoFocus={true}
-                                                        autoComplete="false"
-                                                        placeholder="example@email.com"
-                                                        value={email}
-                                                        onBlur={() => fillNames()}
-                                                        onChange={(event) => setEmail(event.target.value)}
+                                                           autoFocus={true}
+                                                           autoComplete="false"
+                                                           placeholder="example@email.com"
+                                                           value={email}
+                                                           onBlur={() => fillNames()}
+                                                           onChange={(event) => setEmail(event.target.value)}
                                                     />
                                                     </form>
                                             </span>
@@ -381,11 +398,11 @@ export function UserEdit(){
                                         <span className="text">
                                                 <form>
                                                     <input type="password" className="form-control"
-                                                        autoFocus={true}
-                                                        autoComplete="false"
-                                                        placeholder="********"
-                                                        value={password}
-                                                        onChange={(event) => setPassword(event.target.value)}
+                                                           autoFocus={true}
+                                                           autoComplete="false"
+                                                           placeholder="********"
+                                                           value={password}
+                                                           onChange={(event) => setPassword(event.target.value)}
                                                     />
                                                     </form>
                                             </span>
@@ -395,11 +412,11 @@ export function UserEdit(){
                                         <span className="text">
                                                 <form>
                                                     <input type="password" className="form-control"
-                                                        autoFocus={true}
-                                                        autoComplete="false"
-                                                        placeholder="********"
-                                                        value={confPassword}
-                                                        onChange={(event) => setConfPassword(event.target.value)}
+                                                           autoFocus={true}
+                                                           autoComplete="false"
+                                                           placeholder="********"
+                                                           value={confPassword}
+                                                           onChange={(event) => setConfPassword(event.target.value)}
                                                     />
                                                     </form>
                                             </span>
@@ -417,7 +434,9 @@ export function UserEdit(){
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">SimSage Roles</h6>
                                         <div className="role-area bg-light border rounded h-100">
-                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}/>
+                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                   placeholder="Filter..." value={roleFilter}
+                                                   onChange={(e) => setRoleFilter(e.target.value)}/>
                                             {
                                                 roles && getUserRoles().map((role, i) => {
                                                     return (<Chip key={i} color="secondary"
@@ -428,9 +447,11 @@ export function UserEdit(){
                                         </div>
                                     </div>
                                     <div className="role-block col-6">
-                                        <h6 className="role-label text-center" >Available</h6>
+                                        <h6 className="role-label text-center">Available</h6>
                                         <div className="role-area bg-light border rounded h-100">
-                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableRoleFilter} onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
+                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                   placeholder="Filter..." value={availableRoleFilter}
+                                                   onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
                                             {
                                                 getAvailableRoles().map((role, i) => {
                                                     return (<Chip key={i} color="primary"
@@ -446,7 +467,9 @@ export function UserEdit(){
                                         <div className="role-block col-6">
                                             <h6 className="role-label text-center">Operator's Knowledge Bases</h6>
                                             <div className="role-area bg-light border rounded h-100">
-                                                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={kbFilter} onChange={(e) => setKbFilter(e.target.value)}/>
+                                                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                       placeholder="Filter..." value={kbFilter}
+                                                       onChange={(e) => setKbFilter(e.target.value)}/>
                                                 {
                                                     kbs && getKbs().map((kb, i) => {
                                                         return (<Chip key={i} color="secondary"
@@ -459,7 +482,9 @@ export function UserEdit(){
                                         <div className="role-block col-6">
                                             <h6 className="role-label text-center">Available</h6>
                                             <div className="role-area bg-light border rounded h-100">
-                                                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableKbFilter} onChange={(e) => setAvailableKbFilter(e.target.value)}/>
+                                                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                       placeholder="Filter..." value={availableKbFilter}
+                                                       onChange={(e) => setAvailableKbFilter(e.target.value)}/>
                                                 {
                                                     getAvailableKnowledgeBases().map((kb, i) => {
                                                         return (<Chip key={i} color="primary"
@@ -483,7 +508,9 @@ export function UserEdit(){
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">SimSage Groups</h6>
                                         <div className="role-area bg-light border rounded h-100">
-                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={groupFilter} onChange={(e) => setGroupFilter(e.target.value)}/>
+                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                   placeholder="Filter..." value={groupFilter}
+                                                   onChange={(e) => setGroupFilter(e.target.value)}/>
                                             {
                                                 groups && getGroups().map((grp, i) => {
                                                     return (
@@ -499,7 +526,9 @@ export function UserEdit(){
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">Available</h6>
                                         <div className="role-area bg-light border rounded h-100">
-                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom" placeholder="Filter..." value={availableGroupFilter} onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
+                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                   placeholder="Filter..." value={availableGroupFilter}
+                                                   onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
                                             {
                                                 getAvailableGroups().map((grp, i) => {
                                                     return (<Chip key={i} color="primary"
