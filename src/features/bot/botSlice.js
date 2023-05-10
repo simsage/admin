@@ -172,7 +172,13 @@ const extraReducers = (builder) => {
             state.status = "rejected"
         })
     //importBotItems
+        .addCase(importBotItems.pending, (state) => {
+            console.log("mind_item_list memories/importBotItems", state);
+            state.status = "pending";
+            state.data_status = 'pending';
+        })
         .addCase(importBotItems.fulfilled, (state) => {
+            console.log("mind_item_list memories/importBotItems", state);
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })

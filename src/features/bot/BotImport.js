@@ -33,11 +33,11 @@ export function BotImport() {
             setFileData(reader.result)
         };
         reader.readAsDataURL(file)
-
+        console.log("BotImport onSubmit")
         console.log("file_name", file_name)
         console.log("file_type", file_type)
         console.log("file_data", file_data)
-        console.log("BotImport onSubmit")
+
 
         if (file_data && file_name) {
             const data = {
@@ -48,7 +48,7 @@ export function BotImport() {
             };
 
             dispatch(importBotItems({session_id:session.id,data:data}));
-            dispatch(closeForm())
+            dispatch(closeBotImportForm())
         }
 
     };

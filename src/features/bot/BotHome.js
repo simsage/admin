@@ -5,34 +5,39 @@ import BotList from "./BotList"
 
 export default function BotHome() {
 
-    const dispatch = useDispatch();
-    const session = useSelector((state) => state).authReducer.session;
-    const session_id = session.id;
-    const load_data = useSelector( (state) => state.botReducer.data_status)
-    const status = useSelector((state) => state.botReducer.status)
+    // const dispatch = useDispatch();
+    // const session = useSelector((state) => state).authReducer.session;
+    // const session_id = session.id;
+    // const load_data = useSelector( (state) => state.botReducer.data_status)
+    // const status = useSelector((state) => state.botReducer.status)
+    //
+    // const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
+    // const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
+    // const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
+    // const total_mind_items = useSelector((state) => state.botReducer.total_mind_items);
 
-    const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
-    const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
-    const total_mind_items = useSelector((state) => state.botReducer.total_mind_items);
+    // let data = {
+    //     filter: "",
+    //     kbId: selected_knowledge_base_id,
+    //     organisationId: selected_organisation_id,
+    //     pageSize: 10,
+    //     prevId: 0
+    // }
+    //
+    // useEffect(()=>{
+    //     console.log("mind_item_list",mind_item_list)
+    //     console.log("mind_item_list load_data",load_data)
+    //
+    //     dispatch(loadMindItems({ session_id, data }))
+    // },[load_data === 'load_now', selected_knowledge_base_id])
 
-    let data = {
-        filter: "",
-        kbId: selected_knowledge_base_id,
-        organisationId: selected_organisation_id,
-        pageSize: 10,
-        prevId: 0
-    }
+    // console.log("mind_item_list",mind_item_list)
+    // console.log("mind_item_list load_data",load_data)
 
-    useEffect(()=>{
-            dispatch(loadMindItems({ session_id, data }))
-    },[load_data === 'load_now', selected_knowledge_base_id])
-
-
-    console.log("mind_item_list",mind_item_list)
-    console.log("status",status)
-    console.log("mind_item_list length",mind_item_list.length)
-    console.log("total_mind_items",total_mind_items)
+    // console.log("mind_item_list",mind_item_list)
+    // console.log("status",status)
+    // console.log("mind_item_list length",mind_item_list.length)
+    // console.log("total_mind_items",total_mind_items)
     return (
 
         <div className="">
