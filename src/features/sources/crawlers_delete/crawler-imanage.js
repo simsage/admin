@@ -97,7 +97,7 @@ export class CrawlerIManage extends Component {
                         </span>
                     </span>
                     <span className="dropbox-manual-box">
-                        <a href="../resources/imanage-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage iManage setup guide">
+                        <a href="resources/imanage-setup.pdf" id="dlDropbox" target="_blank" title="download the SimSage iManage setup guide">
                             <span className="instructions-label">instructions</span>
                             <img src="images/pdf-icon.png" alt="box setup guide" className="image-size" />
                         </a>

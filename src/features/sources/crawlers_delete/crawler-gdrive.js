@@ -82,7 +82,7 @@ export class CrawlerGDrive extends Component {
                             </form>
                         </span>
                         <span className="office-manual-box">
-                        <a href="../resources/simsage-google-drive-setup.pdf" id="dlGDrive" target="_blank" title="download the SimSage Google-drive setup guide">
+                        <a href="resources/simsage-google-drive-setup.pdf" id="dlGDrive" target="_blank" title="download the SimSage Google-drive setup guide">
                                 <span className="instructions-label">instructions</span>
                                 <img src="images/pdf-icon.png" alt="google-drive setup guide" className="image-size" />
                             </a>

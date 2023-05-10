@@ -119,7 +119,7 @@ export default function CrawlerOnedriveForm(props) {
                     </div>
                 </div>
                 <div className="col-2 offset-1">
-                    <a href="../resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank"
+                    <a href="resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank"
                     title="Download the SimSage Exchange 365 setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                     <BsFilePdf size={25}/>
                     <span className="me-2 mt-2"></span>Exchange 365 <br/>Setup Guide 

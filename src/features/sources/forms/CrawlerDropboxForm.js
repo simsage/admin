@@ -78,7 +78,7 @@ export default function CrawlerDropboxForm(props) {
                     </div>
                 </div>
                 <div className="col-2 offset-1">
-                    <a href="../resources/simsage-dropbox-setup.pdf" id="dlDropbox" target="_blank"
+                    <a href="resources/simsage-dropbox-setup.pdf" id="dlDropbox" target="_blank"
                     title="Download the SimSage Dropbox setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                     <BsFilePdf size={25}/>
                     <span className="me-2 mt-2"></span>Dropbox <br/>Setup Guide 

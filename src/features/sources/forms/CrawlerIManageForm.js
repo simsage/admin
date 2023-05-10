@@ -158,7 +158,7 @@ export default function CrawlerIManageForm(props) {
                     </div>
                 </div>
                 <div className="col-2 offset-1">
-                    <a href="../resources/imanage-setup.pdf" id="dlIManage" target="_blank"
+                    <a href="resources/imanage-setup.pdf" id="dlIManage" target="_blank"
                     title="Download the SimSage iManage setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                     <BsFilePdf size={25}/>
                     <span className="me-2 mt-2"></span>iManage <br/>Setup Guide 
