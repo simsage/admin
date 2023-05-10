@@ -1,5 +1,4 @@
 import {useSelector} from "react-redux";
-// import {closeAlert} from "./alertSlice";
 import ErrorAlert from "./ErrorAlert";
 import WarningAlert from "./WarningAlert";
 
@@ -7,14 +6,6 @@ export default function AlertDialogHome(props) {
 
     const show_alert = useSelector((state) => state.alertReducer.show_alert)
     const alert_type = useSelector((state) => state.alertReducer.alert_type)
-
-    // const dispatch = useDispatch()
-
-    console.log("alert_type qqqq",alert_type, props)
-    //handle form close or cancel
-    // const handleClose = () => {
-    //     dispatch(closeAlert());
-    // }
 
     if (!show_alert)
         return (<div/>);

@@ -22,31 +22,6 @@ const initialState = {
 };
 
 
-
-
-export const getStatus = createAsyncThunk(
-    'home/getStatus',
-    async ({session_id, organisation_id, kb_id, slug}) => {
-        console.log("sources/getSources");
-        const api_base = window.ENV.api_base;
-        const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
-        }
-
-        return axios.get(api_base + url, Comms.getHeaders(session_id))
-            .then((response) => {
-                const data = response.data;
-                data["slug"] = slug;
-                return data
-            }).catch(
-                (error) => {return error}
-            )
-    }
-);
-
-
 // {}
 export const getLogs = createAsyncThunk(
     'home/getLogs',
@@ -85,36 +60,10 @@ export const getLogs = createAsyncThunk(
 );
 
 
-// select a tab - and potentially reload the documents
-export const selectTab = createAsyncThunk(
-    'home/selectTab',
-    async ({slug, session_id, organisation_id, kb_id}) => {
-        if (slug === "document-management") {
-            getStatus({organisation_id, kb_id, session_id, slug});
-        }
-        return {"slug": slug};
-    }
-);
-
-
 const extraReducers = (builder) => {
     builder
-        .addCase(getStatus.pending, (state) => {
-            state.status = "loading"
-        })
-        .addCase(getStatus.fulfilled, (state, action) => {
-            state.status = "fulfilled"
-            state.source_list = action.payload
-        })
-        .addCase(getStatus.rejected, (state) => {
-            state.status = "rejected"
-        })
         .addCase(getLogs.fulfilled, (state, action) => {
             state.log_list = action.payload;
-        })
-        .addCase(selectTab.fulfilled, (state, action) => {
-            if (action.payload.slug)
-                state.selected_tab = action.payload.slug;
         })
 }
 
@@ -128,6 +77,10 @@ export const homeSlice = createSlice({
 
         setLogHours: (state, action) => {
             state.log_hours = action.payload;
+        },
+
+        selectTab: (state, action) => {
+            state.selected_tab = action.payload;
         },
 
         setLogService: (state, action) => {
@@ -145,6 +98,6 @@ export const homeSlice = createSlice({
     extraReducers
 });
 
-export const { setLogHours, setLogService, setLogType, closeAllMenus, showDeleteAskForm } = homeSlice.actions;
+export const { selectTab, setLogHours, setLogService, setLogType, closeAllMenus, showDeleteAskForm } = homeSlice.actions;
 
 export default homeSlice.reducer;

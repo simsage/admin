@@ -114,3 +114,8 @@
 .sign-out-password-image-container {
     float: right;
 }
+
+.refresh-image {
+    width: 16px;
+    height: 16px;
+}

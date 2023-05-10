@@ -58,7 +58,7 @@ export function SourceProcessFilesDialog() {
                     <div className="modal-body text-center">
                         <div className="control-row mb-4">
                             <p className="label-wide">{message1}</p>
-                            <div class="alert alert-warning small py-2" role="alert">
+                            <div className="alert alert-warning small py-2" role="alert">
                             {message2}
                             </div>
                         </div>

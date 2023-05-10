@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import SubNav from "../../includes/sub-nav";
 import SourceHome from "../sources/SourceHome";
 import InventoryHome from "../inventory/InventoryHome";
-import {getStatus} from "../home/homeSlice";
 
 export default function DocumentManagementHome(){
     const [selected_sub_nav, setSelectedSubNav] = useState('sources')

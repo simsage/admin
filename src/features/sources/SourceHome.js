@@ -20,6 +20,7 @@ import {SourceZipDialog} from "./SourceZipDialog";
 import {SourceProcessFilesDialog} from "./SourceProcessFilesDialog";
 import {SourceErrorDialog} from "./SourceErrorDialog";
 import api from "../../common/api";
+import "../../css/home.css";
 
 
 //TODO:: No need to list documents anymore.
@@ -82,6 +83,14 @@ export default function SourceHome(props) {
         }))
     }, [selected_knowledge_base_id, session, props.tab, data_status === 'load_now'])
 
+
+    function refresh_sources() {
+        dispatch(getSources({
+            session_id: session.id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id
+        }))
+    }
 
     function getCrawlers() {
         // const paginated_list = [];
@@ -388,7 +397,7 @@ export default function SourceHome(props) {
                 <div className="form-group ms-auto">
                     {selected_knowledge_base_id.length > 0 &&
                         <div className="d-flex">
-                            {/*<button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleResetCrawlers()} >Reset Crawlers </button>*/}
+                            <div className="btn" onClick={() => refresh_sources()} ><img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh source-list" /></div>
                             <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleImportCrawler()} >Upload Crawler</button>
                             <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddForm()}> + Add Source</button>
                         </div>
