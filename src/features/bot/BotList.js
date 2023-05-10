@@ -14,7 +14,7 @@ import Comms from "../../common/comms";
 import BotImportForm from "./BotImportForm";
 import api from "../../common/api";
 
-export default function BotHome() {
+export default function BotList() {
 
     const theme = null;
     const dispatch = useDispatch()
@@ -52,7 +52,13 @@ export default function BotHome() {
 
     useEffect(() => {
         dispatch(loadMindItems({session_id, data}))
+
+        console.log("mind_item_list",mind_item_list)
+        console.log("mind_item_list load_data",load_data)
+
     }, [load_data === "load_now", selected_knowledge_base_id, page_size, page])
+
+
 
 
     function handlePageChange(next_page){
