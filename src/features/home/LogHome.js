@@ -184,7 +184,7 @@ export default function LogHome(){
                 </div>
             </div>
             <br />
-            <div className="log-list-overflow overflow-auto h-100 px-5 pb-4 d-flex flex-column flex-column-reverse">
+            <div className="log-list-overflow overflow-auto h-100 px-5 pb-4 d-flex flex-column">
                 {
                     log_list && log_list.map((line, j) => {
                         return (<div key={j} className="log-line py-2 border-bottom w-100 d-flex flex-column" id={line.created}>
