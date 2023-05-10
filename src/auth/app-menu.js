@@ -24,7 +24,7 @@ export class AppMenu extends Component {
         }
     }
     goWeb() {
-        this.props.history.push(window.ENV.web_base);
+        window.location = "/";
     }
     signOut() {
         this.props.signOut(() => {
@@ -52,7 +52,7 @@ export class AppMenu extends Component {
         return (
             <div className={"app-menu menu-padding no-select"}>
                 <div className="logo-box">
-                    <img alt="SimSage" title="Search less; find more." className="logo" src={this.getLogo()} onClick={() => this.goWeb()} />
+                    <img alt="SimSage" title="SimSage admin" className="logo" src={this.getLogo()} onClick={() => this.goWeb()} />
                 </div>
                 <div>
 

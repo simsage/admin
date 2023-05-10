@@ -28,7 +28,7 @@ export const SignInButton = () => {
             <div className="spinner">
             </div>
             <div className="logo-box">
-                <img alt="SimSage" title="Search less; find more." className="logo" src={image} onClick={() => {}} />
+                <img alt="SimSage" title="SimSage admin" className="logo" src={image} onClick={() => window.location = "/"} />
             </div>
             <div className="auth-wrapper header-height">
                 <div className="auth-inner">
