@@ -279,10 +279,6 @@ export const updateSources = createAsyncThunk(
 
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler';
-
-        if (url !== '/stats/stats/os') {
-            console.log('POST ' + url);
-        }
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("updateSources data", response.data)

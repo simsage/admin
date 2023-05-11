@@ -270,7 +270,7 @@ export default function GeneralForm(props) {
                 </div>
                 <div className="col-4">
                     <div className="form-check form-switch" title="is this a source that needs an external crawler to operate?">
-                        <input className="form-check-input" type="checkbox" {...props.register("isExternal")} value={"external source?"}/>
+                        <input className="form-check-input" type="checkbox" {...props.register("isExternal")} />
                         <label className="form-check-label small">External source</label>
                     </div>
                 </div>
