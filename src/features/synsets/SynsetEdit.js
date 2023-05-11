@@ -130,18 +130,16 @@ export default function SynsetEdit(){
                                         return (
                                         <div className="control-row col-12 mb-2" key={i}>
                                             <span className="text">
-                                                <form>
                                                     <div className="form-control d-flex p-0 overflow-hidden align-items-start">
                                                         <textarea type="text" className="border-0 w-100 mb-0 me-2 d-block" style={{padding: "0.375rem 0.75rem"}}
                                                                 autoComplete="false"
-                                                                rows="1"
+                                                                rows="3"
                                                                 placeholder="e.g. Family, Divorce, Custody..."
                                                                 value={cloud}
                                                                 onChange={updateWordCloud(i)}
                                                         />
-                                                        <button className="btn pointer-cursor mb-0 px-3 py-1" onClick={() => removeNewWordCloudBtn(cloud, i)}>&times;</button>
+                                                        <bubtton className="btn pointer-cursor mb-0 px-3 py-1" title="Remove Word Cloud" onClick={() => removeNewWordCloudBtn(cloud, i)}>&times;</bubtton>
                                                     </div>
-                                                </form>
                                             </span>
                                             
                                         </div>
@@ -153,15 +151,16 @@ export default function SynsetEdit(){
                                         <form className="w-100 me-2">
                                             <textarea type="text" className="form-control"
                                                 autoComplete="false"
-                                                rows="1"
+                                                rows="3"
                                                 placeholder="e.g. Family, Divorce, Custody..."
                                                 value={newWordCloud}
                                                 onChange={(e) => {setNewWordCloud(e.target.value)} }
                                                 onKeyDown={(e) => addNewWordCloud(e)}
                                             />
                                         </form>
-
-                                        <button className="btn-secondary btn pointer-cursor px-3" onClick={(e) => addNewWordCloudBtn(e, newWordCloud)}>+</button>
+                                        <div>
+                                            <button className="btn-secondary btn pointer-cursor px-3" title="Add another Word Cloud" onClick={(e) => addNewWordCloudBtn(e, newWordCloud)}>+</button>
+                                        </div>
                                     </span>
                                 </div>
                             </div>
