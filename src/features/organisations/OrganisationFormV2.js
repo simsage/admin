@@ -41,6 +41,7 @@ export default function OrganisationFormV2(props) {
         dispatch(closeOrganisationForm());
         setSelectedRoles([])
         setSelectedGroups([])
+        setSelectedTab('general')
     }
 
     const handleDelete = () => {
