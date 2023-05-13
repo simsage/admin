@@ -30,14 +30,8 @@ const initialState = {
 
 export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
     async ({session_id, organisation_id, kb_id, page, filter, page_size}) => {
-
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/find-syn-sets';
-
-        if (url !== '/stats/stats/os') {
-            console.log('put ' + url);
-        }
-
         const data = {
             "organisationId": organisation_id,
             "kbId": kb_id,
@@ -45,8 +39,6 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
             "filter": filter ? filter : "",
             "pageSize": page_size ? page_size : 10
         };
-
-        console.log("loadSynsets data",data)
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("load Synsets response data", response.data)

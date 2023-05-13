@@ -1,7 +1,7 @@
 
 import React from "react";
 import {useIsAuthenticated, useMsal} from "@azure/msal-react";
-import {SignInButton} from "./SignInButtion";
+import {SignInButton} from "./SignInButton";
 import {useDispatch, useSelector} from "react-redux";
 import {login, showError} from "./authSlice";
 import axios from "axios";

@@ -40,7 +40,6 @@ export default function InventoryHome(props) {
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
-
     useEffect(() => {
         console.log("Inventory useEffect")
         dispatch(loadInventoryList({
@@ -49,11 +48,16 @@ export default function InventoryHome(props) {
             kb_id: selected_knowledge_base_id
         }))
 
-    }, [data_status === 'load_now', props.tab, selected_knowledge_base_id])
+    }, [dispatch, data_status === 'load_now', props.tab,
+             selected_knowledge_base_id, selected_organisation_id, session_id])
 
-    //TODO::inventorize_busy
-    const inventorize_busy = false;
-
+    function refresh_inventory() {
+        dispatch(loadInventoryList({
+            session_id: session_id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id
+        }))
+    }
 
     function getList() {
         const paginated_list = [];
@@ -86,62 +90,19 @@ export default function InventoryHome(props) {
             Comms.download_inventorize_dump_spreadhseet(selected_organisation_id, selected_knowledge_base_id, dateTime, session.id);
     }
 
-    // function deleteInventorizeAsk(dateTime) {
-    //     this.setState({date_time: dateTime});
-    //     this.props.openDialog("are you sure you want to remove the report dated <b>" + Api.unixTimeConvert(dateTime) + "</b>?",
-    //         "Remove Inventory Report", (action) => {
-    //             deleteReport(action)
-    //         });
-    // }
-    //
-    // function deleteReport(action) {
-    //     if (action) {
-    //         this.props.deleteInventoryItem(this.state.date_time);
-    //     }
-    //     if (this.props.closeDialog) {
-    //         this.props.closeDialog();
-    //     }
-    // }
-
-    // function restore(data) {
-    //     if (data) {
-    //         this.setState({uploading: true});
-    //         Api.restore(data,
-    //             () => {
-    //                 this.setState({
-    //                     uploading: false,
-    //                     message_title: "Success",
-    //                     message: "data restored",
-    //                     message_callback: () => {
-    //                         this.setState({message: "", message_title: ""})
-    //                     }
-    //                 });
-    //             },
-    //             (errStr) => {
-    //                 setError("Error", errStr);
-    //             })
-    //     }
-    // }
-
     function isVisible() {
         return selected_organisation_id && selected_organisation_id.length > 0 &&
             selected_organisation && selected_organisation.length > 0 &&
             selected_knowledge_base_id && selected_knowledge_base_id.length > 0;
     }
 
-    function itemNameToDescription(name) {
-        if (name === "content spreadsheet")
-            return "Content analysis SpreadSheet";
-        else if (name === "content parquet")
+    function item_name_to_description(name) {
+        if (name === "content parquet")
             return "Content analysis Parquet file";
         else if (name === "indexes parquet" || name === 'index parquet')
             return "Index analysis Parquet file";
-        else if (name === "indexes spreadsheet")
-            return "Index analysis SpreadSheet";
         else return name;
     }
-
-
 
     function handleCreateDocumentSnapshot() {
         dispatch(showDocumentSnapshotForm())
@@ -171,26 +132,21 @@ export default function InventoryHome(props) {
                 <div className="form-group ms-auto">
                     {selected_knowledge_base_id.length > 0 &&
                         <div className="d-flex">
-                            {selected_organisation_id.length > 0 && !inventorize_busy &&
+                            {selected_organisation_id.length > 0 &&
+                                <div className="btn" onClick={() => refresh_inventory()} >
+                                    <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh inventory-list" />
+                                </div>
+                            }
+                            {selected_organisation_id.length > 0 &&
                                 <button className="btn btn-primary text-nowrap ms-2" onClick={() => {
                                     handleCreateDocumentSnapshot();
-                                    // forceInventoryBusy();
-                                }}
-                                        title="create a new document snapshot">New Document Snapshot
+                                }} title="create a new document snapshot">New Document Snapshot
                                 </button>
                             }
-                            {selected_organisation_id.length > 0 && !inventorize_busy &&
+                            {selected_organisation_id.length > 0 &&
                                 <button className="btn btn-primary text-nowrap ms-2" onClick={() => {
                                     handleCreateIndexSnapshot();
-                                    // forceInventoryBusy();
-                                }} title="create a new index snapshot">New
-                                    Index Snapshot
-                                </button>
-                            }
-                            {selected_organisation_id.length > 0 && inventorize_busy &&
-                                <button className="btu btn-secondary disabled ms-2"
-                                        title="SimSage is currently busy processing an inventory.  Please try again later.">Create
-                                    new snapshot
+                                }} title="create a new index snapshot">New Index Snapshot
                                 </button>
                             }
                         </div>
@@ -215,7 +171,7 @@ export default function InventoryHome(props) {
                                 <tr key={i}>
                                     <td className="pt-3 px-4 pb-3">
                                         <div className="snapshot-item">
-                                            {itemNameToDescription(item.name)}
+                                            {item_name_to_description(item.name)}
                                         </div>
                                     </td>
                                     <td className="pt-3 px-4 pb-3 fw-light">
@@ -229,8 +185,7 @@ export default function InventoryHome(props) {
                                             <div className="link-button">
                                                 <button className="btn text-primary btn-sm"
                                                         onClick={() => inventorizeDump(item.time)}
-                                                        title="download as parquet-file" alt="download parquet">Download
-                                                    parquet
+                                                        title="download as parquet-file">Download parquet
                                                 </button>
 
                                             </div>
@@ -239,15 +194,13 @@ export default function InventoryHome(props) {
                                             <div className="link-button">
                                                 <button className="btn text-primary btn-sm"
                                                         onClick={() => inventorizeDumpSpreadsheet(item.time)}
-                                                        title="download as spreadsheet-xlsx"
-                                                        alt="download spreadsheet">Download spreadsheet
+                                                        title="download as spreadsheet-xlsx">Download spreadsheet
                                                 </button>
                                             </div>
                                         }
                                         <div className="link-button">
                                             <button onClick={() => handleDelete(item)}
-                                                    className="btn text-danger btn-sm" title="remove report"
-                                                    alt="remove">Remove
+                                                    className="btn text-danger btn-sm" title="remove report">Remove
                                             </button>
                                         </div>
                                         </div>

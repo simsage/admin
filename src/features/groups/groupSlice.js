@@ -24,11 +24,6 @@ export const getGroupList = createAsyncThunk(
         console.log("groups/getGroupList organization_id", organization_id)
         console.log("groups/getGroupList session_id", session_id)
         const url = api_base + '/auth/groups/' + encodeURIComponent(organization_id);
-
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + url);
-        }
-
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data.groupList
@@ -45,9 +40,6 @@ export const updateGroup = createAsyncThunk(
     async ({session_id, data}) => {
         const api_base = window.ENV.api_base;
         const url = '/auth/group';
-        if (url !== '/stats/stats/os') {
-            console.log('PUT ' + api_base + url);
-        }
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("updateGroup data", response.data);

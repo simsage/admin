@@ -35,12 +35,6 @@ export const getKBList = createAsyncThunk(
         const api_base = window.ENV.api_base;
         console.log("organization_id getKBList", organization_id)
         const url = api_base + '/knowledgebase/' + encodeURIComponent(organization_id);
-
-        // return "Hello";
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + url);
-        }
-
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -57,11 +51,6 @@ export const deleteRecord = createAsyncThunk(
     async ({session_id, organisation_id, kb_id}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/knowledgebase/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-
-        if (url !== '/stats/stats/os') {
-            console.log('DELETE ' + api_base + url);
-        }
-
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("deleteRecord knowledgeBases data", response.data)
