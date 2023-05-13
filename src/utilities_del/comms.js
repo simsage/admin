@@ -215,12 +215,6 @@ export class Comms {
     };
 
     static getSession() {
-        const state = loadState();
-        console.log("loadstate",state)
-        return state;
-        if (state && state.appReducer && state.appReducer.session && state.appReducer.session.id) {
-            return state.appReducer.session;
-        }
         return null;
     }
 

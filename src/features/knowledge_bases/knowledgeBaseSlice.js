@@ -9,6 +9,7 @@ const initialState = {
     kb_filter: null,
     kb_page: 0,
     kb_page_size: 10,
+    busy: false,
 
     status: null,
     error: null,
@@ -29,136 +30,54 @@ const initialState = {
 }
 
 
-export const getKBList = createAsyncThunk(
-    'knowledgeBases/getKBList',
-    async ({session_id, organization_id}) => {
-        const api_base = window.ENV.api_base;
-        console.log("organization_id getKBList", organization_id)
-        const url = api_base + '/knowledgebase/' + encodeURIComponent(organization_id);
-
-        // return "Hello";
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + url);
-        }
-
-        return axios.get(url, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
-    }
-);
-
-export const deleteRecord = createAsyncThunk(
-    'knowledgeBases/deleteRecord',
-    async ({session_id, organisation_id, kb_id}) => {
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/knowledgebase/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-
-        if (url !== '/stats/stats/os') {
-            console.log('DELETE ' + api_base + url);
-        }
-
-        return axios.delete(url, Comms.getHeaders(session_id))
-            .then((response) => {
-                console.log("deleteRecord knowledgeBases data", response.data)
-                return response.data
-            }).catch(
-                (error) => {
-                    console.log("deleteRecord knowledgeBases errer", error)
-                    return error
-                }
-            )
-    }
-)
-
-export const addOrUpdate = createAsyncThunk(
-    'knowledgeBases/addOrUpdate',
-    async ({session_id, data}, thunkAPI) => {
-        console.log("knowledgeBases/updateKnowledgeBase");
-
-        const api_base = window.ENV.api_base;
-        const url = '/knowledgebase';
-        console.log('PUT ' + api_base + url);
-        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                // thunkAPI.dispatch(updateKB(response.data));
-                return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
-    }
-)
-
-
-export const optimizeIndexes = createAsyncThunk(
-    'knowledgeBases/optimizeIndexes',
-    async ({session_id, organisation_id, kb_id}, thunkAPI) => {
-        const data = {"organisationId": organisation_id, "kbId": kb_id}
-        console.log("knowledgeBases/optimizeIndexes", data);
-        const api_base = window.ENV.api_base;
-        const url = '/language/optimize-indexes';
-        console.log('PUT ' + api_base + url);
-        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                // thunkAPI.dispatch(updateKB(response.data));
-                return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
-    }
-)
-
-
 const extraReducers = (builder) => {
     builder
         //getKBList
         .addCase(getKBList.pending, (state) => {
+            state.busy = true;
             state.status = "loading";
             state.data_status = 'loading';
         })
         .addCase(getKBList.fulfilled, (state, action) => {
-            console.log("knowledgeBases/getKBList ", action)
+            state.busy = false;
             state.status = "fulfilled";
             state.kb_list = action.payload;
             state.kb_original_list = action.payload;
             state.data_status = 'loaded';
         })
         .addCase(getKBList.rejected, (state) => {
+            state.busy = false;
             state.status = "rejected";
             state.data_status = 'rejected';
         })
 
         //deleteRecord
         .addCase(deleteRecord.pending, (state) => {
+            state.busy = true;
             state.status = "loading"
         })
         .addCase(deleteRecord.fulfilled, (state, action) => {
-            console.log("knowledgeBases/deleteRecord ", action)
+            state.busy = false;
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
         .addCase(deleteRecord.rejected, (state) => {
+            state.busy = false;
             state.status = "rejected"
         })
 
         //addOrUpdate
         .addCase(addOrUpdate.pending, (state) => {
+            state.busy = true;
             state.status = "loading"
         })
         .addCase(addOrUpdate.fulfilled, (state, action) => {
-            console.log("knowledgeBases/addOrUpdate ", action)
+            state.busy = false;
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
         .addCase(addOrUpdate.rejected, (state) => {
+            state.busy = false;
             state.status = "rejected"
         })
 }
@@ -245,6 +164,87 @@ const knowledgeBaseSlice = createSlice({
     },
     extraReducers
 });
+
+
+export const getKBList = createAsyncThunk(
+    'knowledgeBases/getKBList',
+    async ({session_id, organization_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/knowledgebase/' + encodeURIComponent(organization_id);
+        return axios.get(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    }
+);
+
+export const deleteRecord = createAsyncThunk(
+    'knowledgeBases/deleteRecord',
+    async ({session_id, organisation_id, kb_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/knowledgebase/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+
+        if (url !== '/stats/stats/os') {
+            console.log('DELETE ' + api_base + url);
+        }
+
+        return axios.delete(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log("deleteRecord knowledgeBases data", response.data)
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("deleteRecord knowledgeBases errer", error)
+                    return error
+                }
+            )
+    }
+)
+
+export const addOrUpdate = createAsyncThunk(
+    'knowledgeBases/addOrUpdate',
+    async ({session_id, data}, thunkAPI) => {
+        console.log("knowledgeBases/updateKnowledgeBase");
+
+        const api_base = window.ENV.api_base;
+        const url = '/knowledgebase';
+        console.log('PUT ' + api_base + url);
+        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                // thunkAPI.dispatch(updateKB(response.data));
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    }
+)
+
+
+export const optimizeIndexes = createAsyncThunk(
+    'knowledgeBases/optimizeIndexes',
+    async ({session_id, organisation_id, kb_id}, thunkAPI) => {
+        const data = {"organisationId": organisation_id, "kbId": kb_id}
+        console.log("knowledgeBases/optimizeIndexes", data);
+        const api_base = window.ENV.api_base;
+        const url = '/language/optimize-indexes';
+        console.log('PUT ' + api_base + url);
+        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                // thunkAPI.dispatch(updateKB(response.data));
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    }
+)
 
 
 export const {
