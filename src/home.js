@@ -1,32 +1,22 @@
 import React, {Component} from 'react';
 
-import ErrorDialog from './common/error-dialog'
 import {MessageDialog} from './common/message-dialog'
 import AutoComplete from './common/autocomplete'
 
 import Organisations from "./organisations/organisations";
 import UserManager from "./users/user-manager";
 import KnowledgeBases from "./kb/knowledge-bases";
-import EdgeDevices from "./edge/edge-devices";
-import EdgeDeviceCommands from "./edge/edge-device-commands";
 import Inventory from './inventory/inventory'
-import DocumentSources from "./documents/document-sources";
-import Bot from "./bot/bot";
 import Synonyms from "./synonyms/synonyms";
 import Semantics from "./semantics/semantics";
-import SynSets from "./synsets/synsets";
 import Categories from "./categories/categories";
 import Logs from "./reports/logs";
-import Reports from "./reports/reports";
-import OperatorTabs from "./operator/operator_tabs";
-import Domains from "./ad/domains";
 import Groups from "./users/groups";
 
 // import SockJsClient from 'react-stomp';
 
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {appCreators} from "./actions/appActions";
 import './css/home.css';
 import { MsalContext } from "@azure/msal-react";
 import {Text2Search} from "./test2search/text2search";
@@ -294,14 +284,14 @@ export class Home extends Component {
     render() {
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
         const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
-        const operator_id_list = [];
-        if (this.props.operators) {
-            for (const operator of this.props.operators) {
-                if (operator && operator.id) {
-                    operator_id_list.push('/chat/' + operator.id);
-                }
-            }
-        }
+        // const operator_id_list = [];
+        // if (this.props.operators) {
+        //     for (const operator of this.props.operators) {
+        //         if (operator && operator.id) {
+        //             operator_id_list.push('/chat/' + operator.id);
+        //         }
+        //     }
+        // }
         const theme = this.props.theme;
         const isPasswordSignIn = (window.ENV.authentication === "password");
         return (
@@ -310,11 +300,6 @@ export class Home extends Component {
                     this.props.busy &&
                     <div className={theme === 'light' ? "busy" : "busyDark"} />
                 }
-
-                <ErrorDialog title={this.props.error_title}
-                             theme={theme}
-                             message={this.props.error}
-                             callback={() => this.props.closeError()} />
 
                 <MessageDialog callback={(action) => {if (this.state.message_callback) this.state.message_callback(action)}}
                                open={this.state.message.length > 0}
@@ -527,18 +512,6 @@ export class Home extends Component {
                                 closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'edge devices' &&
-                             <EdgeDevices
-                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                 closeDialog={() => this.closeDialog()} />
-                         }
-
-                         { this.props.selected_tab === 'edge commands' &&
-                            <EdgeDeviceCommands
-                             openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                             closeDialog={() => this.closeDialog()} />
-                         }
-
                          { this.props.selected_tab === 'users' &&
                             <UserManager
                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
@@ -551,32 +524,8 @@ export class Home extends Component {
                                  closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'operator' &&
-                             <OperatorTabs
-                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                 closeDialog={() => this.closeDialog()} />
-                         }
-
                          { this.props.selected_tab === 'inventory' &&
                              <Inventory
-                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                 closeDialog={() => this.closeDialog()} />
-                         }
-
-                         { this.props.selected_tab === 'document sources' &&
-                            <DocumentSources
-                                openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                closeDialog={() => this.closeDialog()} />
-                         }
-
-                         { this.props.selected_tab === 'active directory' &&
-                             <Domains
-                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                 closeDialog={() => this.closeDialog()} />
-                         }
-
-                         { this.props.selected_tab === 'bot' &&
-                             <Bot
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
                          }
@@ -615,20 +564,8 @@ export class Home extends Component {
                                  closeDialog={() => this.closeDialog()} />
                          }
 
-                         { this.props.selected_tab === 'syn-sets' &&
-                             <SynSets
-                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                 closeDialog={() => this.closeDialog()} />
-                         }
-
                          { this.props.selected_tab === 'categories' &&
                              <Categories
-                                 openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
-                                 closeDialog={() => this.closeDialog()} />
-                         }
-
-                         { this.props.selected_tab === 'reports' &&
-                             <Reports
                                  openDialog={(message, title, callback) => this.openDialog(message, title, callback)}
                                  closeDialog={() => this.closeDialog()} />
                          }
@@ -693,9 +630,3 @@ const mapStateToProps = function(state) {
         text2search_try_text: state.appReducer.text2search_try_text,
     };
 };
-
-export default connect(
-    mapStateToProps,
-    dispatch => bindActionCreators(appCreators, dispatch)
-)(Home);
-

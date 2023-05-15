@@ -1,11 +1,8 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import Comms from "../../common/comms";
 import axios from "axios";
-// import {useMsal} from "@azure/msal-react";
-// import axios from "axios";
-// import {getOrganisationList} from "../organisations/organisationSlice";
-// import {useSelector} from "react-redux";
-// import {useState} from "react";
+import {setOrganisationList} from "../organisations/organisationSlice";
+import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 
 
 const initialState = {
@@ -17,8 +14,6 @@ const initialState = {
     selected_knowledge_base: {},
     selected_knowledge_base_id: null,
 
-    isSuccess: false,
-    isLoading: false,
     message: null,
 
     // error dialog
@@ -26,10 +21,11 @@ const initialState = {
     error_title: '',
     error_text: '',
 
-    accounts_dropdown: false,
-    // jwt: undefined,
-}
+    busy: false,
+    status: '',
 
+    accounts_dropdown: false,
+}
 
 
 const authSlice = createSlice({
@@ -39,8 +35,8 @@ const authSlice = createSlice({
     //not async function : sync functions
     reducers: {
 
-        setSelectedOrganisation: (state,action) => {
-            if(state.selected_organisation_id !== action.payload.id){
+        setSelectedOrganisation: (state, action) => {
+            if (state.selected_organisation_id !== action.payload.id) {
                 state.selected_organisation = action.payload;
                 state.selected_organisation_id = action.payload.id;
                 state.selected_knowledge_base = {};
@@ -48,7 +44,7 @@ const authSlice = createSlice({
             }
         },
 
-        setSelectedKB: (state,action) => {
+        setSelectedKB: (state, action) => {
             state.selected_knowledge_base_id = action.payload;
         },
 
@@ -72,14 +68,14 @@ const authSlice = createSlice({
 
             const org_list = action.payload.organisationList
 
-            if(org_list.length){
-                for(let i=0; i < org_list.length; i++){
-                    if(org_list[i]['id'] == action.payload.organisationId){
+            if (org_list.length) {
+                for (let i = 0; i < org_list.length; i++) {
+                    if (org_list[i] && org_list[i]['id'] === action.payload.organisationId) {
                         state.selected_organisation = org_list[i];
                         state.selected_organisation_id = org_list[i].id;
                     }
                 }
-            }else{
+            } else {
                 state.selected_organisation = action.payload.organisationId;
                 state.selected_organisation_id = action.payload.organisationId;
             }
@@ -94,31 +90,23 @@ const authSlice = createSlice({
         },
 
     },
-    extraReducers:(builder) => {
+    extraReducers: (builder) => {
         builder
-            .addCase(simSageSignIn.pending, (state, action) => {
-                console.log("addCase simSageSignIn pending ",action)
+            .addCase(simsageSignIn.pending, (state) => {
+                state.busy = true;
+                state.status = "loading";
             })
-            .addCase(simSageSignIn.fulfilled, (state,action) => {
-                console.log("addCase simSageSignIn fulfilled ",action)
-                login(state,action);
-                // setSelectedOrganisation()
-
+            .addCase(simsageSignIn.fulfilled, (state, action) => {
+                state.busy = false;
+                state.status = "fulfilled";
             })
-            .addCase(simSageSignIn.rejected, (state,action) => {
-                console.log("addCase simSageSignIn rejected ",action)
+            .addCase(simsageSignIn.rejected, (state) => {
+                state.busy = false;
+                state.status = "rejected";
             })
     }
 });
 
-
-export const simSageSignIn = createAsyncThunk(
-    'authSlider/simSageSignIn',
-    async (jwt) => {
-        console.log("simSageSignIn jwt ",jwt);
-        await Comms.http_get_jwt('/auth/admin/authenticate/msal', jwt)
-    }
-);
 
 export const simsageLogOut = createAsyncThunk(
     'auth/Logout',
@@ -140,6 +128,34 @@ export const simsageLogOut = createAsyncThunk(
 )
 
 
-export const {reset, login, showAccount, closeAllMenus, setSelectedOrganisation, closeError,
-     setJwt, showError, setSelectedKB } = authSlice.actions
+export const simsageSignIn = createAsyncThunk(
+    'auth/signIn',
+    async ({id_token, on_success, on_fail}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/auth/admin/authenticate/msal';
+        axios.get(url,{
+            headers: {"API-Version": window.ENV.api_version,
+                "Content-Type": "application/json",
+                "jwt": id_token,}
+        })
+            .then(function (response2) {
+                if (on_success)
+                    on_success(response2.data);
+                return response2.data;
+            })
+            .catch((error) => {
+                console.error("SimSage sign-in error:",error);
+                if (on_fail)
+                    on_fail(error.message);
+                return error;
+            });
+    }
+)
+
+
+export const {
+    reset, login, showAccount, closeAllMenus, setSelectedOrganisation, closeError,
+    setJwt, showError, setSelectedKB
+} = authSlice.actions
+
 export default authSlice.reducer;

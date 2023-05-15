@@ -20,7 +20,6 @@ export default function BotList() {
     const dispatch = useDispatch()
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
-    const load_data = useSelector((state) => state.botReducer.data_status)
 
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
@@ -41,24 +40,18 @@ export default function BotList() {
     const [prev_id,setPrevID] = useState(0)
 
 
-    let data = {
+    const [data, setData] = useState({
         filter: "",
         kbId: selected_knowledge_base_id,
         organisationId: selected_organisation_id,
         pageSize: page_size,
         prevId: prev_id,
-    }
+    })
 
 
     useEffect(() => {
         dispatch(loadMindItems({session_id, data}))
-
-        console.log("mind_item_list",mind_item_list)
-        console.log("mind_item_list load_data",load_data)
-
-    }, [load_data === "load_now", selected_knowledge_base_id, page_size, page])
-
-
+    }, [dispatch, session_id, data])
 
 
     function handlePageChange(next_page){
@@ -107,9 +100,9 @@ export default function BotList() {
 
 
     function filterRecords(event) {
-        console.log(`Editing... `);
         if (event.key === "Enter") {
-            data.filter = filter
+            data.filter = filter;
+            setData(data);
             dispatch(loadMindItems({session_id, data}));
         }
     }
@@ -177,8 +170,7 @@ export default function BotList() {
                             }}
                         />
                         <button className="btn btn-secondary"
-                                onClick={(e) => filterRecords(e)}
-                                src="images/dark-magnifying-glass.svg" title="search" alt="search">Search
+                                onClick={(e) => filterRecords(e)}>Search
                         </button>
                     </div>
                 </div>

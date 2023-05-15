@@ -7,7 +7,6 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./features/auth/authConfig";
 
-import {saveState} from "./common/helpers";
 import { store } from './app/store';
 
 // todo:: need to merge some style sheets
@@ -21,11 +20,6 @@ const msalInstance = new PublicClientApplication(msalConfig);
 
 const container = document.getElementById('root');
 const root = createRoot(container);
-
-store.subscribe(() => {
-    saveState(store.getState());
-});
-
 
 root.render(
   <React.StrictMode>
