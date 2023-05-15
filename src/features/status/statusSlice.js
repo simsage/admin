@@ -41,11 +41,6 @@ export const getSimSageStatus = createAsyncThunk(
     async ({session_id, organisation_id}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/stats/status/'+ encodeURIComponent(organisation_id);;
-
-        if (url !== '/stats/stats/os') {
-            console.log('put ' + url);
-        }
-
         return axios.put(url,{},Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("status/getSimSageStatus 1", response.data);

@@ -252,11 +252,6 @@ export const getOrganisationList = createAsyncThunk(
     async ({session, filter}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/user/organisations/' + encodeURIComponent(filter);
-
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + url);
-        }
-
         return axios.get(url, Comms.getHeaders(session.id))
             .then((response) => {
                 return response.data
@@ -273,13 +268,8 @@ export const getOrganisationList = createAsyncThunk(
 export const updateOrganisation = createAsyncThunk(
     'organisations/updateOrganisation',
     async ({session_id, data}) => {
-        console.log("organisations/updateOrganisation");
-
         const api_base = window.ENV.api_base;
         const url = '/auth/organisation';
-        if (url !== '/stats/stats/os') {
-            console.log('PUT ' + api_base + url);
-        }
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("updateOrganisation data", response.data)
@@ -299,11 +289,6 @@ export const deleteOrganisation = createAsyncThunk(
     async ({session_id, organisation_id}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/organisation/' + encodeURIComponent(organisation_id);
-
-        if (url !== '/stats/stats/os') {
-            console.log('DELETE ' + api_base + url);
-        }
-
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("deleteOrganisation", response.data)
@@ -328,11 +313,6 @@ export const getOrganisationBackupList = createAsyncThunk(
         const api_base = window.ENV.api_base;
         const url = '/backup/backups/' + encodeURIComponent(organisation_id);
         const {id} = session
-
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
-        }
-
         return axios.get(api_base + url, Comms.getHeaders(id))
             .then((response) => {
                 console.log("getOrganisationBackupList", response.data)
@@ -352,11 +332,6 @@ export const downloadBackup = createAsyncThunk(
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
         const {id} = session
-
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
-        }
-
         return axios.get(url, Comms.getHeaders(id))
             .then((response) => {
                 console.log("downloadBackup", response.data)
@@ -376,10 +351,6 @@ export const backupOrganisation = createAsyncThunk(
     async ({session_id, organisation_id}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/specific';
-
-        if (url !== '/stats/stats/os') {
-            console.log('POST ' + api_base + url);
-        }
         const data = {};
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
@@ -402,10 +373,6 @@ export const restoreOrganisation = createAsyncThunk(
     async ({session_id, data}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/restore';
-
-        if (url !== '/stats/stats/os') {
-            console.log('POST ' + url);
-        }
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("backupOrganisation", response.data)
@@ -426,11 +393,6 @@ export const deleteBackup = createAsyncThunk(
     async ({session_id, organisation_id, backup_id}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
-
-        if (url !== '/stats/stats/os') {
-            console.log('DELETE ' + api_base + url);
-        }
-
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("delete organisations deleteBackup data", response.data)

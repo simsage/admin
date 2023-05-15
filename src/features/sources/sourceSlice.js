@@ -230,10 +230,6 @@ export const getSources = createAsyncThunk(
     async ({session_id, organisation_id, kb_id}) => {
         const api_base = window.ENV.api_base;
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
-        }
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("sources/getSources", response.data);
@@ -252,10 +248,6 @@ export const getSource = createAsyncThunk(
     async ({session_id, organisation_id, kb_id, source_id}) => {
         const api_base = window.ENV.api_base;
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
-
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
-        }
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("sources/getSource", response.data);
@@ -297,15 +289,8 @@ export const updateSources = createAsyncThunk(
 export const startSource = createAsyncThunk(
     'sources/startSource',
     async ({session_id, data}) => {
-
-        console.log("sources/startSource");
-
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/start';
-
-        if (url !== '/stats/stats/os') {
-            console.log('POST ' + url);
-        }
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("startSource data", response.data)
@@ -325,11 +310,6 @@ export const deleteSource = createAsyncThunk(
     async ({session_id, organisation_id, kb_id, source_id}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
-
-        if (url !== '/stats/stats/os') {
-            console.log('DELETE ' + api_base + url);
-        }
-
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("deleteRecord sources data", response.data)
@@ -349,16 +329,8 @@ export const deleteSource = createAsyncThunk(
 export const zipSource = createAsyncThunk(
     'sources/zipSource',
     async ({session_id, data}) => {
-
-        console.log("sources/zipSource");
-
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/zip/source';
-
-
-        if (url !== '/stats/stats/os') {
-            console.log('POST ' + url);
-        }
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("zipSource data", response.data)
@@ -369,7 +341,6 @@ export const zipSource = createAsyncThunk(
                     return error
                 }
             )
-
     });
 
 
@@ -377,15 +348,8 @@ export const zipSource = createAsyncThunk(
 export const processFiles = createAsyncThunk(
     'sources/processFiles',
     async ({session_id, data}) => {
-
-        console.log("sources/processFiles");
-
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/process-all-files';
-
-        if (url !== '/stats/stats/os') {
-            console.log('POST ' + url);
-        }
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("processFiles data", response.data)
@@ -396,7 +360,6 @@ export const processFiles = createAsyncThunk(
                     return error
                 }
             )
-
     });
 
 

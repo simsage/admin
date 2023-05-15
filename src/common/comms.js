@@ -16,7 +16,6 @@ export class Comms {
         if (url !== '/stats/stats/os') {
             console.log('GET ' + api_base + url);
         }
-
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -92,9 +91,6 @@ export class Comms {
 
     static http_get_jwt(url, jwt, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
-        // if (url !== '/stats/stats/os') {
-        //     console.log('GET ' + api_base + url);
-        // }
         return axios.get(api_base + url,{
                 headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": jwt,}
             })

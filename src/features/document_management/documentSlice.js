@@ -59,11 +59,6 @@ export const loadDocumentList = createAsyncThunk(
             "pageSize": document_page_size?document_page_size: 10,
             "prevUrl": document_previous ? document_previous : 'null',
         }
-
-        if (url !== '/stats/stats/os') {
-            console.log('put ' + url);
-        }
-
         return axios.post(url,data,Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("status/getDocuments 1", response.data);

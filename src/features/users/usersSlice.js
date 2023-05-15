@@ -28,12 +28,6 @@ export const getUserListPaginated = createAsyncThunk(
     async ({session_id,organization_id,page=0,page_size=100,filter}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/users-paginated/'+ encodeURIComponent(organization_id)+ '/' + encodeURIComponent(page)+ '/' + encodeURIComponent(page_size)+ '/' + encodeURIComponent(filter);
-
-        // return "Hello";
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + url);
-        }
-
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -46,12 +40,8 @@ export const getUserListPaginated = createAsyncThunk(
 export const updateUser = createAsyncThunk(
     'users/update',
     async ({session_id, organisation_id, data}) => {
-
         const api_base = window.ENV.api_base;
         const url = '/auth/user/' ;
-        if (url !== '/stats/stats/os') {
-            console.log('PUT ' + api_base + url );
-        }
         return axios.put(api_base + url + encodeURIComponent(organisation_id), data, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("updateUser data", response.data);
