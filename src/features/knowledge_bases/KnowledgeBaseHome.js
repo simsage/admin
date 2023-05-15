@@ -23,33 +23,19 @@ export default function KnowledgeBaseHome() {
     const session = useSelector((state) => state).authReducer.session;
     const session_id = session.id;
 
-    const load_data = useSelector((state) => state.kbReducer.data_status)
     const dispatch = useDispatch()
 
 
     useEffect(() => {
-        console.log("load getKBList line 33", load_data)
-        console.log("load getKBList line 33 organisation_id", organisation_id)
-        if(organisation_id) dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
-    }, [load_data==='load_now', session_id, organisation_id, organisation_id!==null])
+        if (organisation_id)
+            dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
+    }, [dispatch, session_id, organisation_id])
 
 
 
     return (
 
         <div className="section px-5 pt-4">
-
-            {/*{status === null &&*/}
-            {/*    <KnowledgeBaseIntro/>*/}
-            {/*}*/}
-            {/*/!*Intro message when there is no kb list*!/*/}
-            {/*{status !== null && kb_list !== {} && kb_list.length === 0 &&*/}
-            {/*    <KnowledgeBaseIntro/>*/}
-            {/*}*/}
-            {/*/!*show kb list*!/*/}
-            {/*{status !== null && kb_list !== {} && kb_list.length > 0 &&*/}
-            {/*    <KnowledgeBaseList/>*/}
-            {/*}*/}
 
             <KnowledgeBaseList/>
 
