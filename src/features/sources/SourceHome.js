@@ -10,7 +10,7 @@ import {SourceExport} from "./SourceExport";
 import {SourceImport} from "./SourceImport";
 import {
     deleteSource,
-    getSources,
+    getSources, search, searchSource,
     showAddForm,
     showEditForm,
     showExportForm, showImportForm, showProcessFilesAlert, showStartCrawlerAlert, showZipCrawlerAlert,
@@ -52,24 +52,8 @@ export default function SourceHome(props) {
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
-
-    // const [selectedUser, setSelectedUser] = useState(null);
     const [searchFilter,setSearchFilter] = useState('');
-    // const [orderFilter,setOrderFilter] = useState('');
     const [sourceFilter,setSourceFilter] = useState('');
-
-
-    // const default_specific_json = '{"metadata_list":[' +
-    //     '{"key":"created date range","display":"created","metadata":"created","db1":"","db2":"","sort":"true","sortDefault":"desc","sortAscText":"oldest documents first","sortDescText":"newest documents first", "fieldOrder": "0"},' +
-    //     '{"key":"last modified date ranges","display":"last modified","metadata":"last-modified","db1":"","db2":"","sort":"true","sortDefault":"","sortAscText":"least recently modified","sortDescText":"most recently modified", "fieldOrder": "1"},' +
-    //     '{"key":"document type","display":"document type","metadata":"document-type","db1":"","db2":"","sort":"","sortDefault":"","sortAscText":"","sortDescText":"", "fieldOrder": "2"}' +
-    //     ']}';
-    //
-    // const empty_crawler = {
-    //     id: '', sourceId: '0', crawlerType: '', name: '', deleteFiles: true, allowAnonymous: false,
-    //     enablePreview: true, schedule: '', filesPerSecond: '0', specificJson: default_specific_json,
-    //     processingLevel: 'SEARCH', nodeId: '0', maxItems: '0', maxQNAItems: '0', customRender: false, "acls": []
-    // };
 
     const [selected_source, setSelectedSource] = useState(undefined)
     const [button_clicked, setButtonClicked] = useState(undefined);
@@ -313,12 +297,11 @@ export default function SourceHome(props) {
     }
 
 
-    function handleSearchTextKeydown() {
-        console.log("handleSearchTextKeydown")
+    function handleSearchFilter(event) {
+        const val = event.target.value;
 
-        // if (e.key === "Enter" && this.props.selected_organisation_id) {
-        //     this.props.getUsers(this.props.selected_organisation_id);
-        // }
+        console.log("handleSearchFilter",val)
+        dispatch(searchSource({keyword:val}))
     }
 
     // function handleResetCrawlers() {
@@ -375,9 +358,13 @@ export default function SourceHome(props) {
             <div className="d-flex justify-content-beteween w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control filter-search-input " + theme}
-                               onKeyPress={(e) => handleSearchTextKeydown(e)}
-                               onChange={(e) => setSearchFilter(e.target.value)}/>
+                        {/*<input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control filter-search-input " + theme}*/}
+                        {/*       onKeyPress={(e) => handleSearchFilter(e)}*/}
+                        {/*       onChange={(e) => setSearchFilter(e.target.value)}/>*/}
+
+                        <input onKeyUp={(event) => handleSearchFilter(event)} type="text"
+                               placeholder={"Filter..."} className="form-control filter-search-input"/>
+
                     </div>
                     {/* <div className="form-group me-2">
                         <select  placeholder={"Filter"} autoFocus={true} className={"form-select filter-text-width " + theme}

@@ -4,6 +4,7 @@ import axios from "axios";
 
 const initialState = {
     source_list: [],
+    source_original_ist: [],
     source_filter: null,
     source_page: 0,
     source_page_size: 10,
@@ -94,9 +95,30 @@ const reducers = {
         state.show_process_files_prompt = false
     },
 
-    setSelectedSourceTab: (state, action) => {
-        state.selected_source_tab = action.payload
+    searchSource: (state, action) => {
+
+        console.log("search",action.payload.keyword)
+        if (action.payload.keyword.length > 0) {
+            let temp = state.source_original_ist.filter(list_item => {
+                return list_item.name.match(new RegExp(action.payload.keyword, "i"))
+            });
+            if (temp.length > 0) {
+                state.source_list = temp;
+                state.status = "fulfilled";
+            }else{
+                state.source_list = state.source_original_ist;
+                state.status = "fulfilled";
+            }
+        }  else {
+            state.source_list = state.source_original_ist;
+            state.status = "fulfilled";
+        }
     },
+
+
+    // setSelectedSourceTab: (state, action) => {
+    //     state.selected_source_tab = action.payload
+    // },
 
     // setSelectedSourceType:(state,action) => {
     //     state.selected_source_type = action.payload
@@ -112,6 +134,7 @@ const extraReducers = (builder) => {
         .addCase(getSources.fulfilled, (state, action) => {
             state.status = "fulfilled"
             state.source_list = action.payload
+            state.source_original_ist = action.payload
             state.data_status = 'loaded';
         })
         .addCase(getSources.rejected, (state) => {
@@ -223,6 +246,7 @@ const extraReducers = (builder) => {
         })
 
 }
+
 
 
 export const getSources = createAsyncThunk(
@@ -397,6 +421,6 @@ const sourceSlice = createSlice({
 
 export const {
     showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
-    showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert
+    showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert, searchSource
 } = sourceSlice.actions
 export default sourceSlice.reducer;
