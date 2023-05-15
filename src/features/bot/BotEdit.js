@@ -114,7 +114,7 @@ export function BotEdit(){
     }
 
     const addNewLink = e => {
-        if(e.key === 'Enter') {
+        if(e.key === 'Enter' && newLink.trim()) {
             e.preventDefault()
             let newArr = [...(links || [])];
             newArr.push(newLink)
@@ -157,11 +157,15 @@ export function BotEdit(){
     }
 
     const addNewLinkBtn = () => {
-        let newArr = [...(links || [])];
-        // setNewQuestion(e.target.value)
-        newArr.push(newLink)
-        setLinks(newArr);
-        setNewLink('')
+
+        if(newLink.trim()){
+            let newArr = [...(links || [])];
+            // setNewQuestion(e.target.value)
+            newArr.push(newLink)
+            setLinks(newArr);
+            setNewLink('')
+        }
+
     }
 
 
