@@ -220,6 +220,10 @@ export class Api {
     }
 
 
+    static getAvailableRoles(){
+        return ['admin', 'operator', 'dms', 'manager', 'discover', 'search'];
+    }
+
     // pretty print a role
     static getPrettyRole(role) {
         // 'admin', 'operator', 'dms', 'manager'

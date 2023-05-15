@@ -23,7 +23,12 @@ export default function OrganisationFormV2(props) {
     const [selected_roles, setSelectedRoles] = useState(organisation ? organisation.autoCreateSSORoleList:[]);
     const [selected_groups, setSelectedGroups] = useState(organisation ? organisation.autoCreateSSOACLList : []);
 
-    const available_roles = ["search", "dms", "discovery"];
+    // const available_groups = useSelector((state) => state.groupReducer.group_list)
+    const available_roles = Api.getAvailableRoles();
+
+    // console.log("available_groups",available_groups)
+    // console.log("available_roles",available_roles)
+    // const available_roles = ["search", "dms", "discovery"];
     const available_groups = ["group1", "group2", "group3"];
 
 
@@ -41,6 +46,7 @@ export default function OrganisationFormV2(props) {
         dispatch(closeOrganisationForm());
         setSelectedRoles([])
         setSelectedGroups([])
+        setSelectedTab('general');
     }
 
     const handleDelete = () => {
@@ -87,9 +93,12 @@ export default function OrganisationFormV2(props) {
     const onSubmit = data => {
         data.autoCreateSSORoleList = selected_roles;
         data.autoCreateSSOACLList = selected_groups;
+
+        console.log("org data", data)
         dispatch(updateOrganisation({session_id: props.session.id, data: data}))
         setSelectedRoles([])
         setSelectedGroups([])
+        setSelectedTab('general');
     };
 
     function handleTabChange(slug) {
