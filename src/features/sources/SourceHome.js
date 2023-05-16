@@ -485,7 +485,6 @@ export default function SourceHome(props) {
                         {
                             getCrawlers().map((crawler) => {
                                 const description = getCrawlerStatus(crawler);
-                                const is_running = isCrawlerRunning(crawler);
                                 return (
                                     <tr key={crawler.sourceId}>
                                         <td className="pt-3 px-4 pb-3 fw-light">
@@ -513,32 +512,11 @@ export default function SourceHome(props) {
                                             </div>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
-                                            {/*{!is_running &&*/}
-                                            {/*<div className="link-button"*/}
-                                            {/*     onClick={() => handleStartCrawler(crawler)}>*/}
-                                            {/*    <img src="images/play.svg" className="image-size"*/}
-                                            {/*         title="start this crawler" alt="start"/>*/}
-                                            {/*</div>*/}
-                                            {/*}*/}
-                                            {/*{is_running &&*/}
-                                            {/*<div className="link-button">*/}
-                                            {/*    <img src="images/play-disabled.svg" className="image-size"*/}
-                                            {/*         title="crawler running" alt="start"/>*/}
-                                            {/*</div>*/}
-                                            {/*}*/}
                                             <div className="d-flex justify-content-end">
-                                                {!is_running && <>
-                                                    <button title="start crawler"
-                                                            onClick={() => handleStartCrawler(crawler)}
-                                                            className={"btn text-primary btn-sm"}>Start
-                                                    </button>
-                                                    </>}
-                                                {is_running && <>
-                                                    <button title="start crawler" disabled
-                                                            className={"btn text-primary btn-sm"}>Start
-                                                    </button>
-                                                     </>}
-
+                                                <button title="start crawler"
+                                                        onClick={() => handleStartCrawler(crawler)}
+                                                        className={"btn text-primary btn-sm"}>Start
+                                                </button>
                                                 <button title="edit crawler" onClick={() => handleEditCrawler(crawler)}
                                                         className={"btn text-primary btn-sm"}>Edit
                                                 </button>
