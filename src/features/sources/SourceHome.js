@@ -77,12 +77,18 @@ export default function SourceHome(props) {
     }
 
     function getCrawlers() {
-        // const paginated_list = [];
-        // const first = page * page_size;
-        // const last = first + parseInt(page_size);
+        let paginated_list = [];
+        const first = page * page_size;
+        const last = first + parseInt(page_size);
 
-        // console.log("source_list",source_list);
-        // source_list.sort((a, b) => { return a.sourceId - b.sourceId });
+        let tempList = [...source_list]
+        console.log("tempList",tempList);
+
+
+        tempList.sort((a, b) => { return a.sourceId - b.sourceId });
+
+        // source_list.sort();
+
         // for (const i in source_list) {
         //     if (i >= first && i < last) {
         //         paginated_list.push(source_list[i]);
@@ -94,7 +100,7 @@ export default function SourceHome(props) {
         //     }
         // }
 
-        return source_list;
+        return tempList;
     }
 
 
