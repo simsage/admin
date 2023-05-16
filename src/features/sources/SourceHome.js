@@ -86,17 +86,36 @@ export default function SourceHome(props) {
         }))
     }
 
-    function getCrawlers() {
-
+    function sortList(order,source_list){
+        let tempList = [...source_list]
         const order_by_id_asc = (a, b) => { return a.sourceId - b.sourceId }
         const order_by_id_desc = (a, b) => { return b.sourceId - a.sourceId }
+        const order_by_name_asc = (a, b) => {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
 
-        let paginated_list = [];
-        const first = page * page_size;
-        const last = first + parseInt(page_size);
+            // names must be equal
+            return 0;
+        }
+        const order_by_name_desc = (a, b)  => {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return 1;
+            }
+            if (nameA > nameB) {
+                return -1;
+            }
 
-        let tempList = [...source_list]
-        console.log("tempList",tempList);
+            // names must be equal
+            return 0;
+        }
 
         switch (order_by){
             // {slug:'id_asc', label:'ID'},
@@ -108,27 +127,45 @@ export default function SourceHome(props) {
             case 'id_desc':
                 tempList.sort(order_by_id_desc);
                 break;
-
+            // {slug:'name_asc', label:'Name'},
+            case 'name_asc':
+                tempList.sort(order_by_name_asc);
+                break;
+            // {slug:'name_desc', label:'Name Desc'}
+            case 'name_desc':
+                tempList.sort(order_by_name_desc);
+                break;
             default:
                 tempList.sort(order_by_id_asc);
                 break;
         }
-        // tempList.sort((a, b) => { return a.sourceId - b.sourceId });
-
-        // source_list.sort();
-
-        // for (const i in source_list) {
-        //     if (i >= first && i < last) {
-        //         paginated_list.push(source_list[i]);
-        //     }
-        // }
-        // for (const i in source_list) {
-        //     if (i >= first && i < last) {
-        //         paginated_list.push(source_list[i]);
-        //     }
-        // }
 
         return tempList;
+    }
+
+    function getCrawlers() {
+
+        let paginated_list = [];
+        const first = page * page_size;
+        const last = first + parseInt(page_size);
+
+        let tempList = sortList(order_by, source_list)
+        console.log("tempList",tempList);
+
+
+
+        for (const i in tempList) {
+            if (i >= first && i < last) {
+                paginated_list.push(tempList[i]);
+            }
+        }
+        // for (const i in source_list) {
+        //     if (i >= first && i < last) {
+        //         paginated_list.push(source_list[i]);
+        //     }
+        // }
+
+        return paginated_list;
     }
 
 
