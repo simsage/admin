@@ -23,6 +23,8 @@ import api from "../../common/api";
 import "../../css/home.css";
 
 
+
+
 //TODO:: No need to list documents anymore.
 
 export default function SourceHome(props) {
@@ -58,6 +60,14 @@ export default function SourceHome(props) {
     const [selected_source, setSelectedSource] = useState(undefined)
     const [button_clicked, setButtonClicked] = useState(undefined);
 
+    const [order_by, setOrderBy] = useState('id_asc') //
+    const order_by_options = [
+        {slug:'id_asc', label:'ID'},
+        {slug:'id_desc', label:'ID Desc'},
+        {slug:'name_asc', label:'Name'},
+        {slug:'name_desc', label:'Name Desc'}
+    ];
+
 
     useEffect(() => {
         dispatch(getSources({
@@ -77,6 +87,10 @@ export default function SourceHome(props) {
     }
 
     function getCrawlers() {
+
+        const order_by_id_asc = (a, b) => { return a.sourceId - b.sourceId }
+        const order_by_id_desc = (a, b) => { return b.sourceId - a.sourceId }
+
         let paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
@@ -84,8 +98,22 @@ export default function SourceHome(props) {
         let tempList = [...source_list]
         console.log("tempList",tempList);
 
+        switch (order_by){
+            // {slug:'id_asc', label:'ID'},
+            case 'id_asc':
+                tempList.sort(order_by_id_asc);
+                break;
 
-        tempList.sort((a, b) => { return a.sourceId - b.sourceId });
+            // {slug:'id_desc', label:'ID Desc'}
+            case 'id_desc':
+                tempList.sort(order_by_id_desc);
+                break;
+
+            default:
+                tempList.sort(order_by_id_asc);
+                break;
+        }
+        // tempList.sort((a, b) => { return a.sourceId - b.sourceId });
 
         // source_list.sort();
 
@@ -379,10 +407,15 @@ export default function SourceHome(props) {
                             <option value="">Join</option>
                         </select>
                     </div> */}
+                    <div className="form-group me-2 small text-black-50 px-4">Order by</div>
                     <div className="form-group me-2">
-                        <select type="text" placeholder={"Filter"} value={sourceFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
-                                onChange={(e) => setSourceFilter(e.target.value)}>
-                            <option value="all-users">All Sources</option>
+
+                        <select type="text" placeholder={"Filter"} value={order_by} autoFocus={true} className={"form-select filter-text-width " + theme}
+                                onChange={(e) => setOrderBy(e.target.value)}>
+                            {order_by_options.map((item) => {
+                                return <option value={item.slug}>{item.label}</option>
+                            })}
+
                         </select>
                     </div>
                 </div>
