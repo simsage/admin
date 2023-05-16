@@ -10,8 +10,21 @@ export default function OrganisationFormV2(props) {
 
     const dispatch = useDispatch();
     let organisation = null;
+
+
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
 
+    //load organisation
+    if (props.organisation_id && organisation_list) {
+        let temp_org = organisation_list.filter((org) => {
+            return org.id === props.organisation_id
+        })
+        if (temp_org.length > 0) {
+            organisation = (temp_org[0])
+        }
+    }
+
+    console.log("organisationasa",organisation)
     const [selected_tab, setSelectedTab] = useState('general')
 
     //filters
@@ -32,15 +45,6 @@ export default function OrganisationFormV2(props) {
     const available_groups = ["group1", "group2", "group3"];
 
 
-    //load organisation
-    if (props.organisation_id && organisation_list) {
-        let temp_org = organisation_list.filter((org) => {
-            return org.id === props.organisation_id
-        })
-        if (temp_org.length > 0) {
-            organisation = (temp_org[0])
-        }
-    }
 
     const handleClose = () => {
         dispatch(closeOrganisationForm());
@@ -76,7 +80,7 @@ export default function OrganisationFormV2(props) {
         defaultValues.enabled = organisation ? organisation.enabled : false;
         defaultValues.id = organisation ? organisation.id : undefined;
         defaultValues.autoCreateSSOUsers = organisation ? organisation.autoCreateSSOUsers : false;
-        defaultValues.autoCreateSSODomainList = organisation ? organisation.autoCreateSSODomainList : "";
+        defaultValues.autoCreateSSODomainListStr = organisation ? organisation.autoCreateSSODomainList.toString() : "";
         defaultValues.autoCreateSSORoleList = organisation ? organisation.autoCreateSSORoleList : [];
         defaultValues.autoCreateSSOACLList = organisation ? organisation.autoCreateSSOACLList : [];
 
@@ -94,7 +98,15 @@ export default function OrganisationFormV2(props) {
         data.autoCreateSSORoleList = selected_roles;
         data.autoCreateSSOACLList = selected_groups;
 
+        //convert domain string to array
+        data.autoCreateSSODomainList = data.autoCreateSSODomainListStr.split(',');
+
         console.log("org data", data)
+
+        //form data
+        const {autoCreateSSODomainListStr, ...form_data} = data;
+        console.log("org data", form_data)
+
         dispatch(updateOrganisation({session_id: props.session.id, data: data}))
         setSelectedRoles([])
         setSelectedGroups([])
@@ -268,7 +280,7 @@ export default function OrganisationFormV2(props) {
                                             <textarea className="form-control"
                                                       placeholder="valid domain names separated by commas (e.g. simsage.co.uk)"
                                                       rows="3"
-                                                      {...register("autoCreateSSODomainList", {required: false})}
+                                                      {...register("autoCreateSSODomainListStr", {required: false})}
                                             />
                                         </div>
 
