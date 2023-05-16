@@ -211,9 +211,8 @@ export const addOrUpdate = createAsyncThunk(
         console.log("knowledgeBases/updateKnowledgeBase");
 
         const api_base = window.ENV.api_base;
-        const url = '/knowledgebase';
-        console.log('PUT ' + api_base + url);
-        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+        const url = api_base + '/knowledgebase/save';
+        return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 // thunkAPI.dispatch(updateKB(response.data));
                 return response.data

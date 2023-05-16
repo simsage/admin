@@ -10,9 +10,6 @@ import TimeSelect from "../../common/time-select";
 
 export default function KnowledgeBaseForm() {
 
-    //TODO: Speak to Cole regarding highlighting the form errors
-
-
     const dispatch = useDispatch();
     //get the data from slices
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
@@ -71,11 +68,9 @@ export default function KnowledgeBaseForm() {
         dispatch(closeForm());
     }
 
-
     // set title
     const title = (kb_id) ? "Edit Knowledge Base" : "New Knowledge Base";
 
-    console.log(security_id)
     //Form Hook
     const {register, handleSubmit, formState: {errors}, reset} = useForm();
 
@@ -83,21 +78,20 @@ export default function KnowledgeBaseForm() {
     useEffect(() => {
         let defaultValues = {};
 
-        defaultValues.kbId = kb_id ? kb_id : undefined;
+        defaultValues.kbId = kb_id ? kb_id : '';
         defaultValues.name = kb ? kb.name : '';
         defaultValues.email = kb ? kb.email : '';
         defaultValues.securityId = kb ? kb.securityId : refreshSecurityId();
         defaultValues.maxQueriesPerDay = kb ? kb.maxQueriesPerDay : 0;
         defaultValues.analyticsWindowInMonths = kb ? kb.analyticsWindowInMonths : 0;
 
-        defaultValues.enabled = kb ? kb.enabled : false;
+        defaultValues.enabled = kb ? kb.enabled : true;
         defaultValues.operatorEnabled = kb ? kb.operatorEnabled : false;
         defaultValues.capacityWarnings = kb ? kb.capacityWarnings : false;
-        // defaultValues.enableDocumentSimilarity = kb ? kb.enableDocumentSimilarity : false;
 
-        defaultValues.dmsIndexSchedule = kb ? kb.dmsIndexSchedule : '';
-        defaultValues.documentSimilarityThreshold = kb ? kb.documentSimilarityThreshold : 0.9;
-        defaultValues.created = kb ? kb.created : '';
+        defaultValues.indexSchedule = kb ? kb.indexSchedule : '';
+        defaultValues.created = kb ? kb.created : 0;
+        defaultValues.lastIndexOptimizationTime = 0;
 
         reset({...defaultValues});
     }, [kb, show_kb_form]);
@@ -107,8 +101,7 @@ export default function KnowledgeBaseForm() {
     const onSubmit = data => {
         data = {...data,
             organisationId: organisation_id,
-            // lastIndexOptimizationTime:0,
-            indexSchedule:edit_index_schedule,
+            indexSchedule: edit_index_schedule,
         }
         console.log("data", data)
         dispatch(addOrUpdate({session_id: session.id, data: data}))
@@ -198,12 +191,10 @@ export default function KnowledgeBaseForm() {
 
                                     <div className="row mb-3">
                                         <div className="control-row col-4">
-                                            {/* <span className="label-3">knowledge-base enabled?</span>
-                                            <input type="checkbox" {...register('enabled')}  /> */}
                                             <div className="form-check form-switch">
                                                 <input className="form-check-input" type="checkbox" id="enableKnowledgeBase"
                                                 {...register('enabled')}/>
-                                                <label className="form-check-label" for="enableKnowledgeBase">Knowledge Base</label>
+                                                <label className="form-check-label">Knowledge Base</label>
                                             </div>
 
                                             {/* <span className="label-3">operator enabled?</span>
@@ -211,7 +202,7 @@ export default function KnowledgeBaseForm() {
                                             <div className="form-check form-switch">
                                                 <input className="form-check-input" type="checkbox" id="enableOperator"
                                                 {...register('operatorEnabled')}/>
-                                                <label className="form-check-label" for="enableOperator">Operator</label>
+                                                <label className="form-check-label">Operator</label>
                                             </div>
 
                                             {/* <span className="label-3">capacity-warnings on?</span>
@@ -219,16 +210,8 @@ export default function KnowledgeBaseForm() {
                                             <div className="form-check form-switch">
                                                 <input className="form-check-input" type="checkbox" id="enableCapacityWarnings"
                                                 {...register('capacityWarnings')}/>
-                                                <label className="form-check-label" for="enableCapacityWarnings">Capacity Warnings</label>
+                                                <label className="form-check-label">Capacity Warnings</label>
                                             </div>
-
-                                            {/* <span className="label-3">enable document similarity?</span>
-                                            <input type="checkbox" {...register('enableDocumentSimilarity')}  /> */}
-                                            {/*<div className="form-check form-switch">*/}
-                                            {/*    <input className="form-check-input" type="checkbox" id="enableDocumentSimilarity"*/}
-                                            {/*    {...register('enableDocumentSimilarity')}/>*/}
-                                            {/*    <label className="form-check-label" for="enableDocumentSimilarity">Document Similarity</label>*/}
-                                            {/*</div>*/}
                                         </div>
 
                                     </div>
@@ -239,15 +222,12 @@ export default function KnowledgeBaseForm() {
                                     <div className="time-tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
                                         <div className="row justify-content-center">
                                             <div className="col-6">
-                                                <div class="alert alert-warning small py-2" role="alert">
+                                                <div className="alert alert-warning small py-2" role="alert">
                                                 We strongly advice to allocate only one hour per day for index optimizations.  Unlike the crawler, each selected slot will cause the indexer to start again.
                                                 </div>
                                             </div>
                                         </div>
                                         
-                                        {/*<TimeSelect time={this.state.edit_index_schedule}*/}
-                                        {/*            onSave={(time) => this.updateIndexSchedule(time)}/>*/}
-
                                         <div className="w-100">
                                         <TimeSelect time={edit_index_schedule}
                                                     onSave={(time) => updateSchedule(time)}/>

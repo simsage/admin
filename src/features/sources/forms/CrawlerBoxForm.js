@@ -24,8 +24,8 @@ export default function CrawlerBoxForm(props) {
 
     let date_time_str = "complete crawl";
 
-    if (specific_json.timeToCheckFrom > time2020)
-        date_time_str = Api.toPrettyDateTime(new Date(specific_json.timeToCheckFrom * 1000));
+    if (specific_json.deltaIndicator > time2020)
+        date_time_str = Api.toPrettyDateTime(new Date(specific_json.deltaIndicator * 1000));
 
 
     //update local variable specific_json when data is changed
@@ -35,7 +35,7 @@ export default function CrawlerBoxForm(props) {
 
     function setTimeToNow(e) {
         e.preventDefault()
-        setData({timeToCheckFrom: Math.floor(Date.now() / 1000)});
+        setData({deltaIndicator: Math.floor(Date.now() / 1000)});
     }
 
 
@@ -58,7 +58,7 @@ export default function CrawlerBoxForm(props) {
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label label className="small">Client ID</label>
+                            <label className="small">Client ID</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
@@ -69,7 +69,7 @@ export default function CrawlerBoxForm(props) {
                             </form>
                         </div>
                         <div className="form-group col-6">
-                            <label label className="small">Client secret</label>
+                            <label className="small">Client secret</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
@@ -82,7 +82,7 @@ export default function CrawlerBoxForm(props) {
                     </div>
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label label className="small">Enterprise ID</label>
+                            <label className="small">Enterprise ID</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
@@ -100,8 +100,8 @@ export default function CrawlerBoxForm(props) {
                                 <input type="text" className="form-control"
                                     placeholder=""
                                     autoFocus={true}
-                                    value={specific_json.timeToCheckFrom}
-                                               onChange={(event) => {setData({timeToCheckFrom: event.target.value})}}
+                                    value={specific_json.deltaIndicator}
+                                               onChange={(event) => {setData({deltaIndicator: event.target.value})}}
                                 />
                                 <a className="btn bt-sm btn-primary ms-2" onClick={(e) => setTimeToNow(e)}>Now</a>
                                 <span className="small text-nowrap ms-3 text-capitalize">{date_time_str}</span>
@@ -122,7 +122,7 @@ export default function CrawlerBoxForm(props) {
                                    onChange={(event) => {setData({folderList: event.target.value})}}
                                 />
                             </form>
-                            <ul class="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                            <ul className="alert alert-warning small py-2 mt-3 ps-4" role="alert">
                                 <li className="">Each folder must be part of the root folder and not contain any sub-folders.</li>
                                 <li className="">
                                 Each folder name must start with '/'.

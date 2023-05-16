@@ -4,7 +4,6 @@ import axios from "axios";
 
 const initialState = {
     source_list: [],
-    source_original_ist: [],
     source_filter: null,
     source_page: 0,
     source_page_size: 10,
@@ -95,30 +94,9 @@ const reducers = {
         state.show_process_files_prompt = false
     },
 
-    searchSource: (state, action) => {
-
-        console.log("search",action.payload.keyword)
-        if (action.payload.keyword.length > 0) {
-            let temp = state.source_original_ist.filter(list_item => {
-                return list_item.name.match(new RegExp(action.payload.keyword, "i"))
-            });
-            if (temp.length > 0) {
-                state.source_list = temp;
-                state.status = "fulfilled";
-            }else{
-                state.source_list = state.source_original_ist;
-                state.status = "fulfilled";
-            }
-        }  else {
-            state.source_list = state.source_original_ist;
-            state.status = "fulfilled";
-        }
+    setSelectedSourceTab: (state, action) => {
+        state.selected_source_tab = action.payload
     },
-
-
-    // setSelectedSourceTab: (state, action) => {
-    //     state.selected_source_tab = action.payload
-    // },
 
     // setSelectedSourceType:(state,action) => {
     //     state.selected_source_type = action.payload
@@ -134,7 +112,6 @@ const extraReducers = (builder) => {
         .addCase(getSources.fulfilled, (state, action) => {
             state.status = "fulfilled"
             state.source_list = action.payload
-            state.source_original_ist = action.payload
             state.data_status = 'loaded';
         })
         .addCase(getSources.rejected, (state) => {
@@ -248,7 +225,6 @@ const extraReducers = (builder) => {
 }
 
 
-
 export const getSources = createAsyncThunk(
     'sources/getSources',
     async ({session_id, organisation_id, kb_id}) => {
@@ -290,14 +266,10 @@ export const getSource = createAsyncThunk(
 export const updateSources = createAsyncThunk(
     'sources/updateSources',
     async ({session_id, data}) => {
-
-        console.log("sources/updateSources");
-
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("updateSources data", response.data)
                 return response.data
             }).catch(
                 (error) => {
@@ -421,6 +393,6 @@ const sourceSlice = createSlice({
 
 export const {
     showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
-    showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert, searchSource
+    showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert
 } = sourceSlice.actions
 export default sourceSlice.reducer;
