@@ -10,7 +10,7 @@ import {SourceExport} from "./SourceExport";
 import {SourceImport} from "./SourceImport";
 import {
     deleteSource,
-    getSources, search, searchSource,
+    getSources,
     showAddForm,
     showEditForm,
     showExportForm, showImportForm, showProcessFilesAlert, showStartCrawlerAlert, showZipCrawlerAlert,
@@ -372,7 +372,9 @@ export default function SourceHome(props) {
         const val = event.target.value;
 
         console.log("handleSearchFilter",val)
-        dispatch(searchSource({keyword:val}))
+
+        // todo: 'searchSource' doesn't seem to exist?
+        //dispatch(searchSource({keyword:val}))
     }
 
     // function handleResetCrawlers() {
