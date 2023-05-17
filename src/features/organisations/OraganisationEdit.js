@@ -20,6 +20,8 @@ export default function OrganisationEdit() {
     }
 
 
+    if (organisation === null)
+        return (<div/>);
     return (
         <OrganisationFormV2
             show_organisation_form={show_organisation_form}

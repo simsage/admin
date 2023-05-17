@@ -9,9 +9,22 @@ import Api from "../../common/api";
 export default function OrganisationFormV2(props) {
 
     const dispatch = useDispatch();
-    let organisation = null;
-    const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
+    let organisation = props.organisation;
 
+
+    // const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
+
+    // //load organisation
+    // if (props.organisation_id && organisation_list) {
+    //     let temp_org = organisation_list.filter((org) => {
+    //         return org.id === props.organisation_id
+    //     })
+    //     if (temp_org.length > 0) {
+    //         organisation = (temp_org[0])
+    //     }
+    // }
+
+    console.log("organisationasa", organisation)
     const [selected_tab, setSelectedTab] = useState('general')
 
     //filters
@@ -20,27 +33,30 @@ export default function OrganisationFormV2(props) {
     const [available_group_filter, setAvailableGroupFilter] = useState('');
     const [selected_group_filter, setSelectedGroupFilter] = useState('');
 
-    const [selected_roles, setSelectedRoles] = useState(organisation ? organisation.autoCreateSSORoleList:[]);
+    const [selected_roles, setSelectedRoles] = useState(organisation ? organisation.autoCreateSSORoleList : []);
     const [selected_groups, setSelectedGroups] = useState(organisation ? organisation.autoCreateSSOACLList : []);
 
-    const available_roles = ["search", "dms", "discovery"];
+    if (organisation) {
+        console.log("selected_roles", selected_roles)
+        console.log("selected_roles organisation", organisation)
+        console.log("selected_roles organisation autoCreateSSORoleList", organisation.autoCreateSSORoleList)
+    } else {
+        console.log("selected_roles", organisation)
+    }
+// const available_groups = useSelector((state) => state.groupReducer.group_list)
+    const available_roles = Api.getAvailableRoles();
+
+// console.log("available_groups",available_groups)
+// console.log("available_roles",available_roles)
+// const available_roles = ["search", "dms", "discovery"];
     const available_groups = ["group1", "group2", "group3"];
 
-
-    //load organisation
-    if (props.organisation_id && organisation_list) {
-        let temp_org = organisation_list.filter((org) => {
-            return org.id === props.organisation_id
-        })
-        if (temp_org.length > 0) {
-            organisation = (temp_org[0])
-        }
-    }
 
     const handleClose = () => {
         dispatch(closeOrganisationForm());
         setSelectedRoles([])
         setSelectedGroups([])
+        setSelectedTab('general');
     }
 
     const handleDelete = () => {
@@ -48,10 +64,10 @@ export default function OrganisationFormV2(props) {
         handleClose();
     }
 
-    // set title
+// set title
     const title = (organisation === null) ? "New Organisation" : "Edit Organisation";
 
-    //Form Hook
+//Form Hook
     const {
         register,
         handleSubmit,
@@ -63,33 +79,44 @@ export default function OrganisationFormV2(props) {
         setValue
     } = useForm();
 
-    //set default value depends on organisation and show_organisation_form
+//set default value depends on organisation and show_organisation_form
     useEffect(() => {
         let defaultValues = {};
         defaultValues.name = organisation ? organisation.name : '';
         defaultValues.enabled = organisation ? organisation.enabled : false;
         defaultValues.id = organisation ? organisation.id : undefined;
         defaultValues.autoCreateSSOUsers = organisation ? organisation.autoCreateSSOUsers : false;
-        defaultValues.autoCreateSSODomainList = organisation ? organisation.autoCreateSSODomainList : "";
+        defaultValues.autoCreateSSODomainListStr = organisation ? organisation.autoCreateSSODomainList.toString() : "";
         defaultValues.autoCreateSSORoleList = organisation ? organisation.autoCreateSSORoleList : [];
         defaultValues.autoCreateSSOACLList = organisation ? organisation.autoCreateSSOACLList : [];
 
         reset({...defaultValues});
     }, [organisation, props.show_organisation_form, reset]);
 
-    //reset the selected selected_roles and selected_groups
-    useEffect(()=>{
+//reset the selected selected_roles and selected_groups
+    useEffect(() => {
         console.log("getFieldState", getFieldState('autoCreateSSORoleList'))
         console.log("getValues", getValues('autoCreateSSORoleList'))
-    },[])
+    }, [])
 
-    //on submit store or update
+//on submit store or update
     const onSubmit = data => {
         data.autoCreateSSORoleList = selected_roles;
         data.autoCreateSSOACLList = selected_groups;
+
+        //convert domain string to array
+        data.autoCreateSSODomainList = data.autoCreateSSODomainListStr.split(',');
+
+        console.log("org data", data)
+
+        //form data
+        const {autoCreateSSODomainListStr, ...form_data} = data;
+        console.log("org data", form_data)
+
         dispatch(updateOrganisation({session_id: props.session.id, data: data}))
         setSelectedRoles([])
         setSelectedGroups([])
+        setSelectedTab('general');
     };
 
     function handleTabChange(slug) {
@@ -97,32 +124,30 @@ export default function OrganisationFormV2(props) {
     }
 
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-    // SimSage role management
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// SimSage role management
 
 
     function getUserRoles() {
         let temp_list = [];
-        if(selected_role_filter.length > 0) {
+        if (selected_role_filter.length > 0) {
             temp_list = selected_roles.filter((role) => {
                 return Api.getPrettyRole(role).toLowerCase().includes(selected_role_filter.toLowerCase())
             })
         } else {
-          temp_list = selected_roles
+            temp_list = selected_roles
         }
         return temp_list;
     }
 
 
-    function addRoleToUser(roleToAdd){
-        setSelectedRoles([ ...(selected_roles || []), roleToAdd ])
+    function addRoleToUser(roleToAdd) {
+        setSelectedRoles([...(selected_roles || []), roleToAdd])
     };
 
 
-
     function removeRoleFromUser(role) {
-        const temp_list = selected_roles.filter( r => {
+        const temp_list = selected_roles.filter(r => {
             return r !== role
         })
         setSelectedRoles(temp_list)
@@ -130,8 +155,8 @@ export default function OrganisationFormV2(props) {
 
     const getAvailableRoles = () => {
         let temp_role_list = []
-        available_roles.forEach((role)=>{
-            if(!selected_roles.includes(role)) {
+        available_roles.forEach((role) => {
+            if (!selected_roles.includes(role)) {
                 temp_role_list.push(role)
             }
         })
@@ -143,17 +168,17 @@ export default function OrganisationFormV2(props) {
             temp_role_list;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-    // group/ACL management
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// group/ACL management
 
     function addGroupToUser(group) {
-        setSelectedGroups([ ...(selected_groups || []), group ])
+        setSelectedGroups([...(selected_groups || []), group])
         // setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
     }
 
     function removeGroupFromUser(group) {
 
-        const temp_list = selected_groups.filter( g => {
+        const temp_list = selected_groups.filter(g => {
             return g !== group
         })
         setSelectedGroups(temp_list)
@@ -163,8 +188,8 @@ export default function OrganisationFormV2(props) {
     const getAvailableGroups = () => {
 
         let temp_list = []
-        available_groups.forEach((group)=>{
-            if(!selected_groups.includes(group)) {
+        available_groups.forEach((group) => {
+            if (!selected_groups.includes(group)) {
                 temp_list.push(group)
             }
         })
@@ -179,7 +204,7 @@ export default function OrganisationFormV2(props) {
 
     function getGroups() {
         let temp_list = [];
-        if(selected_group_filter.length > 0) {
+        if (selected_group_filter.length > 0) {
             temp_list = selected_groups.filter((group) => {
                 return Api.getPrettyRole(group).toLowerCase().includes(selected_group_filter.toLowerCase())
             })
@@ -190,8 +215,7 @@ export default function OrganisationFormV2(props) {
     }
 
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (!props.show_organisation_form)
         return (<div/>);
@@ -226,7 +250,8 @@ export default function OrganisationFormV2(props) {
                                                 <input
                                                     className="form-control" {...register("name", {required: true})} />
                                                 {errors.name &&
-                                                    <span className="text-danger fst-italic small">This field is required </span>}
+                                                    <span
+                                                        className="text-danger fst-italic small">This field is required </span>}
                                             </div>
 
                                             <div className="form-check form-switch">
@@ -259,7 +284,7 @@ export default function OrganisationFormV2(props) {
                                             <textarea className="form-control"
                                                       placeholder="valid domain names separated by commas (e.g. simsage.co.uk)"
                                                       rows="3"
-                                                      {...register("autoCreateSSODomainList", {required: false})}
+                                                      {...register("autoCreateSSODomainListStr", {required: false})}
                                             />
                                         </div>
 
