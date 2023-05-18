@@ -24,6 +24,7 @@ import {hasRole} from "../../common/helpers";
 import api from "../../common/api";
 import {ShowInvalidSession} from "./ShowInvalidSession";
 import {useMsal} from "@azure/msal-react";
+import {getGroupList} from "../groups/groupSlice";
 
 
 export function OrganisationHome() {
@@ -53,6 +54,7 @@ export function OrganisationHome() {
 
     const error = useSelector((state) => state.organisationReducer.error);
 
+    const group_data_status = useSelector((state) => state.groupReducer.data_status)
 
     function  handleSignOut() {
         dispatch(simsageLogOut({session_id: session.id}))
@@ -75,6 +77,8 @@ export function OrganisationHome() {
     }, [backup_data_status === 'load_now', org_id != null])
 
 
+
+    console.log("group_data_status", group_data_status)
     function handleSelectOrganisation(session_id, org) {
         const org_id = org.id
         dispatch(setSelectedOrganisation(org));

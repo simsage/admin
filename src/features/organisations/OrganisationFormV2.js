@@ -5,27 +5,18 @@ import {useForm} from "react-hook-form";
 import {OrganisationTab} from "./OrganisationFormTab";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
+import {getGroupList} from "../groups/groupSlice";
 
 export default function OrganisationFormV2(props) {
-
     const dispatch = useDispatch();
+    const session = useSelector((state) => state.authReducer.session)
+    const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
     let organisation = props.organisation;
 
-
-    // const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
-
-    // //load organisation
-    // if (props.organisation_id && organisation_list) {
-    //     let temp_org = organisation_list.filter((org) => {
-    //         return org.id === props.organisation_id
-    //     })
-    //     if (temp_org.length > 0) {
-    //         organisation = (temp_org[0])
-    //     }
-    // }
-
-    console.log("organisationasa", organisation)
     const [selected_tab, setSelectedTab] = useState('general')
+    const group_data_status = useSelector((state) => state.groupReducer.data_status)
+    const group_list_full = useSelector(((state) => state.groupReducer.group_list))
+    const available_roles = Api.getAvailableRoles();
 
     //filters
     const [selected_role_filter, setRoleFilter] = useState('');
@@ -35,23 +26,11 @@ export default function OrganisationFormV2(props) {
 
     const [selected_roles, setSelectedRoles] = useState(organisation ? organisation.autoCreateSSORoleList : []);
     const [selected_groups, setSelectedGroups] = useState(organisation ? organisation.autoCreateSSOACLList : []);
-
-    if (organisation) {
-        console.log("selected_roles", selected_roles)
-        console.log("selected_roles organisation", organisation)
-        console.log("selected_roles organisation autoCreateSSORoleList", organisation.autoCreateSSORoleList)
-    } else {
-        console.log("selected_roles", organisation)
-    }
-// const available_groups = useSelector((state) => state.groupReducer.group_list)
-    const available_roles = Api.getAvailableRoles();
-
-// console.log("available_groups",available_groups)
-// console.log("available_roles",available_roles)
-// const available_roles = ["search", "dms", "discovery"];
-    const available_groups = ["group1", "group2", "group3"];
+    // const [selected_groups, setSelectedGroups] = useState( []);
 
 
+    console.log("group_data_status", group_list_full)
+    console.log("group_data_status selected_groups", selected_groups)
     const handleClose = () => {
         dispatch(closeOrganisationForm());
         setSelectedRoles([])
@@ -99,10 +78,66 @@ export default function OrganisationFormV2(props) {
         console.log("getValues", getValues('autoCreateSSORoleList'))
     }, [])
 
+    useEffect(() => {
+        dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+    }, [group_data_status === 'load_now'])
+
 //on submit store or update
     const onSubmit = data => {
+
+
+       const user = {
+            "email": "elansiva@hotmail.com",
+            "firstName": "Elan41",
+            "groupList": [
+            {
+                "organisationId": "0185bfcb-3a35-2583-5ae2-718d6f197db6",
+                "name": "Admin",
+                "userIdList": []
+            },
+            {
+                "organisationId": "0185bfcb-3a35-2583-5ae2-718d6f197db6",
+                "name": "Administrators",
+                "userIdList": []
+            }
+        ],
+            "id": "0186977b-7870-2e7d-f061-8852fbc45e2b",
+            "operatorKBList": [
+            {
+                "userId": "0186977b-7870-2e7d-f061-8852fbc45e2b",
+                "organisationId": "0185bfcb-3a35-2583-5ae2-718d6f197db6",
+                "kbId": "01866e7d-9850-4efb-2fca-fb47ab578188"
+            }
+        ],
+            "password": "",
+            "roles": [
+            {
+                "organisationId": "0185bfcb-3a35-2583-5ae2-718d6f197db6",
+                "role": "admin"
+            },
+            {
+                "organisationId": "0185bfcb-3a35-2583-5ae2-718d6f197db6",
+                "role": "operator"
+            }
+        ],
+            "surname": "Siva41"
+        }
+
         data.autoCreateSSORoleList = selected_roles;
         data.autoCreateSSOACLList = selected_groups;
+        // data.autoCreateSSOACLList = [];
+        // data.autoCreateSSOACLList = [
+        //     {
+        //         "organisationId": "0185bfcb-3a35-2583-5ae2-718d6f197db6",
+        //         "name": "Admin",
+        //         "userIdList": []
+        //     },
+        //     {
+        //         "organisationId": "0185bfcb-3a35-2583-5ae2-718d6f197db6",
+        //         "name": "Administrators",
+        //         "userIdList": []
+        //     }
+        // ]
 
         //convert domain string to array
         data.autoCreateSSODomainList = data.autoCreateSSODomainListStr.split(',');
@@ -113,7 +148,7 @@ export default function OrganisationFormV2(props) {
         const {autoCreateSSODomainListStr, ...form_data} = data;
         console.log("org data", form_data)
 
-        dispatch(updateOrganisation({session_id: props.session.id, data: data}))
+        dispatch(updateOrganisation({session_id: props.session.id, data: form_data}))
         setSelectedRoles([])
         setSelectedGroups([])
         setSelectedTab('general');
@@ -170,49 +205,80 @@ export default function OrganisationFormV2(props) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // group/ACL management
+//
+//     function addGroupToUser(group) {
+//         setSelectedGroups([...(selected_groups || []), group])
+//         // setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
+//     }
+//
+//     function removeGroupFromUser(group) {
+//
+//         const temp_list = selected_groups.filter(g => {
+//             return g !== group
+//         })
+//         setSelectedGroups(temp_list)
+//
+//     }
+//
+//     const getAvailableGroups = () => {
+//
+//         let temp_list = []
+//         available_groups.forEach((group) => {
+//             if (!selected_groups.includes(group)) {
+//                 temp_list.push(group)
+//             }
+//         })
+//
+//         return available_group_filter.length > 0 ? temp_list.filter(group => {
+//                 return group.toLowerCase().includes(available_group_filter.toLowerCase())
+//             })
+//             :
+//             temp_list;
+//
+//     }
+//
+//     function getGroups() {
+//         let temp_list = [];
+//         if (selected_group_filter.length > 0) {
+//             temp_list = selected_groups.filter((group) => {
+//                 return Api.getPrettyRole(group).toLowerCase().includes(selected_group_filter.toLowerCase())
+//             })
+//         } else {
+//             temp_list = selected_groups
+//         }
+//         return temp_list;
+//     }
 
-    function addGroupToUser(group) {
-        setSelectedGroups([...(selected_groups || []), group])
-        // setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
-    }
-
-    function removeGroupFromUser(group) {
-
-        const temp_list = selected_groups.filter(g => {
-            return g !== group
-        })
-        setSelectedGroups(temp_list)
-
-    }
 
     const getAvailableGroups = () => {
-
-        let temp_list = []
-        available_groups.forEach((group) => {
-            if (!selected_groups.includes(group)) {
-                temp_list.push(group)
-            }
+        const groupNames = selected_groups ? selected_groups.map(g => g.name) : []
+        const availableGroups = group_list_full.filter(grp => {
+            return !groupNames.includes(grp.name)
         })
-
-        return available_group_filter.length > 0 ? temp_list.filter(group => {
-                return group.toLowerCase().includes(available_group_filter.toLowerCase())
+        return available_group_filter.length > 0 ? availableGroups.filter(grp => {
+                return grp.name.toLowerCase().includes(available_group_filter.toLowerCase())
             })
             :
-            temp_list;
-
+            availableGroups
     }
 
     function getGroups() {
-        let temp_list = [];
-        if (selected_group_filter.length > 0) {
-            temp_list = selected_groups.filter((group) => {
-                return Api.getPrettyRole(group).toLowerCase().includes(selected_group_filter.toLowerCase())
+        return selected_groups.length > 0 ? selected_groups.filter(grp => {
+                return grp.name.toLowerCase().includes(selected_group_filter.toLowerCase())
             })
-        } else {
-            temp_list = selected_groups
-        }
-        return temp_list;
+            :
+            selected_groups
     }
+
+    function addGroupToUser(groupToAdd) {
+        setSelectedGroups([...(selected_groups || []), groupToAdd])
+    };
+
+    function removeGroupFromUser(groupToRemove) {
+        setSelectedGroups(selected_groups.filter(grp => {
+            return grp.name !== groupToRemove.name
+        }))
+    };
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +407,7 @@ export default function OrganisationFormV2(props) {
 
                                                                     <Chip key={i} color="secondary"
                                                                           onClick={() => removeGroupFromUser(grp)}
-                                                                          label={grp} variant="outlined"/>
+                                                                          label={grp.name} variant="outlined"/>
                                                                 )
                                                             })
                                                         }
@@ -357,7 +423,7 @@ export default function OrganisationFormV2(props) {
                                                             getAvailableGroups().map((grp, i) => {
                                                                 return (<Chip key={i} color="primary"
                                                                               onClick={() => addGroupToUser(grp)}
-                                                                              label={grp}
+                                                                              label={grp.name}
                                                                               variant="outlined"/>)
                                                             })
                                                         }
