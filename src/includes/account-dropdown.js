@@ -23,10 +23,7 @@ const AccountDropdown = (props) => {
     const session = useSelector((state) => state.authReducer.session)
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
     const organisation_list_status = useSelector((state) => state.organisationReducer.status);
-
-    console.log("session",session)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
-
 
     // menu selects a different organisation
     function handleSelectOrganisation(session_id, org) {
@@ -37,10 +34,6 @@ const AccountDropdown = (props) => {
             dispatch(selectTab('home'))
         }
     }
-
-    // useEffect(()=>{
-    //     dispatch(getOrganisationList({session:session, filter:null}))
-    // },[data_status === 'load_now'])
 
     function handleAddOrganisation(){
         dispatch(showAddOrganisationForm({show_form:true}))
@@ -89,15 +82,6 @@ const AccountDropdown = (props) => {
                 </li>
 
                 <hr />
-
-                {/*{window.ENV.use_experimental &&*/}
-                {/*<li className="acc-item px-4 py-3 " onClick={() => editAccount()}>*/}
-                {/*    <label>Account</label>*/}
-
-                {/*</li>*/}
-                {/*<li className="acc-item px-4 py-3" onClick={() => getHelp()}>*/}
-                {/*    <label>Help</label>*/}
-                {/*</li>*/}
                 <li className="acc-item px-4 py-3 pointer-cursor" title="Sign Out"
                     onClick={() => {
                         handleSignOut()

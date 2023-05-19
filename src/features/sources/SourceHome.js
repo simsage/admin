@@ -10,7 +10,7 @@ import {SourceExport} from "./SourceExport";
 import {SourceImport} from "./SourceImport";
 import {
     deleteSource,
-    getSources, search, searchSource,
+    getSources,
     showAddForm,
     showEditForm,
     showExportForm, showImportForm, showProcessFilesAlert, showStartCrawlerAlert, showZipCrawlerAlert,
@@ -21,6 +21,8 @@ import {SourceProcessFilesDialog} from "./SourceProcessFilesDialog";
 import {SourceErrorDialog} from "./SourceErrorDialog";
 import api from "../../common/api";
 import "../../css/home.css";
+
+
 
 
 //TODO:: No need to list documents anymore.
@@ -58,6 +60,14 @@ export default function SourceHome(props) {
     const [selected_source, setSelectedSource] = useState(undefined)
     const [button_clicked, setButtonClicked] = useState(undefined);
 
+    const [order_by, setOrderBy] = useState('id_asc') //
+    const order_by_options = [
+        {slug:'id_asc', label:'ID'},
+        {slug:'id_desc', label:'ID Desc'},
+        {slug:'name_asc', label:'Name'},
+        {slug:'name_desc', label:'Name Desc'}
+    ];
+
 
     useEffect(() => {
         dispatch(getSources({
@@ -76,25 +86,86 @@ export default function SourceHome(props) {
         }))
     }
 
+    function sortList(order,source_list){
+        let tempList = [...source_list]
+        const order_by_id_asc = (a, b) => { return a.sourceId - b.sourceId }
+        const order_by_id_desc = (a, b) => { return b.sourceId - a.sourceId }
+        const order_by_name_asc = (a, b) => {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        }
+        const order_by_name_desc = (a, b)  => {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) {
+                return 1;
+            }
+            if (nameA > nameB) {
+                return -1;
+            }
+
+            // names must be equal
+            return 0;
+        }
+
+        switch (order_by){
+            // {slug:'id_asc', label:'ID'},
+            case 'id_asc':
+                tempList.sort(order_by_id_asc);
+                break;
+
+            // {slug:'id_desc', label:'ID Desc'}
+            case 'id_desc':
+                tempList.sort(order_by_id_desc);
+                break;
+            // {slug:'name_asc', label:'Name'},
+            case 'name_asc':
+                tempList.sort(order_by_name_asc);
+                break;
+            // {slug:'name_desc', label:'Name Desc'}
+            case 'name_desc':
+                tempList.sort(order_by_name_desc);
+                break;
+            default:
+                tempList.sort(order_by_id_asc);
+                break;
+        }
+
+        return tempList;
+    }
+
     function getCrawlers() {
-        // const paginated_list = [];
-        // const first = page * page_size;
-        // const last = first + parseInt(page_size);
 
-        // console.log("source_list",source_list);
-        // source_list.sort((a, b) => { return a.sourceId - b.sourceId });
+        let paginated_list = [];
+        const first = page * page_size;
+        const last = first + parseInt(page_size);
+
+        let tempList = sortList(order_by, source_list)
+        console.log("tempList",tempList);
+
+
+
+        for (const i in tempList) {
+            if (i >= first && i < last) {
+                paginated_list.push(tempList[i]);
+            }
+        }
         // for (const i in source_list) {
         //     if (i >= first && i < last) {
         //         paginated_list.push(source_list[i]);
         //     }
         // }
-        // for (const i in source_list) {
-        //     if (i >= first && i < last) {
-        //         paginated_list.push(source_list[i]);
-        //     }
-        // }
 
-        return source_list;
+        return paginated_list;
     }
 
 
@@ -301,7 +372,9 @@ export default function SourceHome(props) {
         const val = event.target.value;
 
         console.log("handleSearchFilter",val)
-        dispatch(searchSource({keyword:val}))
+
+        // todo: 'searchSource' doesn't seem to exist?
+        //dispatch(searchSource({keyword:val}))
     }
 
     // function handleResetCrawlers() {
@@ -373,10 +446,15 @@ export default function SourceHome(props) {
                             <option value="">Join</option>
                         </select>
                     </div> */}
+                    <div className="form-group me-2 small text-black-50 px-4">Order by</div>
                     <div className="form-group me-2">
-                        <select type="text" placeholder={"Filter"} value={sourceFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
-                                onChange={(e) => setSourceFilter(e.target.value)}>
-                            <option value="all-users">All Sources</option>
+
+                        <select type="text" placeholder={"Filter"} value={order_by} autoFocus={true} className={"form-select filter-text-width " + theme}
+                                onChange={(e) => setOrderBy(e.target.value)}>
+                            {order_by_options.map((item) => {
+                                return <option value={item.slug}>{item.label}</option>
+                            })}
+
                         </select>
                     </div>
                 </div>
@@ -409,7 +487,6 @@ export default function SourceHome(props) {
                         {
                             getCrawlers().map((crawler) => {
                                 const description = getCrawlerStatus(crawler);
-                                const is_running = isCrawlerRunning(crawler);
                                 return (
                                     <tr key={crawler.sourceId}>
                                         <td className="pt-3 px-4 pb-3 fw-light">
@@ -437,32 +514,11 @@ export default function SourceHome(props) {
                                             </div>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
-                                            {/*{!is_running &&*/}
-                                            {/*<div className="link-button"*/}
-                                            {/*     onClick={() => handleStartCrawler(crawler)}>*/}
-                                            {/*    <img src="images/play.svg" className="image-size"*/}
-                                            {/*         title="start this crawler" alt="start"/>*/}
-                                            {/*</div>*/}
-                                            {/*}*/}
-                                            {/*{is_running &&*/}
-                                            {/*<div className="link-button">*/}
-                                            {/*    <img src="images/play-disabled.svg" className="image-size"*/}
-                                            {/*         title="crawler running" alt="start"/>*/}
-                                            {/*</div>*/}
-                                            {/*}*/}
                                             <div className="d-flex justify-content-end">
-                                                {!is_running && <>
-                                                    <button title="start crawler"
-                                                            onClick={() => handleStartCrawler(crawler)}
-                                                            className={"btn text-primary btn-sm"}>Start
-                                                    </button>
-                                                    </>}
-                                                {is_running && <>
-                                                    <button title="start crawler" disabled
-                                                            className={"btn text-primary btn-sm"}>Start
-                                                    </button>
-                                                     </>}
-
+                                                <button title="start crawler"
+                                                        onClick={() => handleStartCrawler(crawler)}
+                                                        className={"btn text-primary btn-sm"}>Start
+                                                </button>
                                                 <button title="edit crawler" onClick={() => handleEditCrawler(crawler)}
                                                         className={"btn text-primary btn-sm"}>Edit
                                                 </button>

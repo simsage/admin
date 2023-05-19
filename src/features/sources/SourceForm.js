@@ -125,8 +125,6 @@ export default function SourceForm() {
 
     const user_list = useSelector((state) => state.usersReducer.user_list);
     const group_list = useSelector((state) => state.groupReducer.group_list);
-    console.log("user_list", user_list)
-    console.log("group_list", group_list)
 
     /**
      Set Form Data
@@ -145,7 +143,6 @@ export default function SourceForm() {
         }
     }
 
-    console.log("processorConfig", selected_source)
     //set the selected source as the form_data
     const [form_data, setFormData] = useState(selected_source);
 
@@ -533,7 +530,7 @@ export default function SourceForm() {
 
         } else if (new_data.crawlerType === 'box' && (!sj.clientId || sj.clientId.length === 0 ||
             !sj.clientSecret || sj.clientSecret.length === 0 || !sj.enterpriseId || sj.enterpriseId.length === 0 ||
-            sj.deltaIndicator.length === 0)) {
+            !Api.defined(sj.deltaIndicator) || sj.deltaIndicator.length === 0)) {
             setError({
                 title: 'invalid parameters',
                 message: 'box crawler: you have invalid values for clientId / clientSecret / enterpriseId / time-to-check-from.'
