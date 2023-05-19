@@ -201,16 +201,11 @@ export function UserEdit() {
             }
         })
 
-        let t_roles = availableRoleFilter.length > 0 ? tempRoleList.filter(role => {
+        return availableRoleFilter.length > 0 ? tempRoleList.filter(role => {
                 return Api.getPrettyRole(role).toLowerCase().includes(availableRoleFilter.toLowerCase())
             })
             :
             tempRoleList;
-
-        console.log("getAvailableRoles ",t_roles );
-        console.log("getAvailableRoles selected",roles );
-        return t_roles;
-
     }
 
     function getUserRoles() {
@@ -328,8 +323,6 @@ export function UserEdit() {
         }))
     };
 
-    console.log("roles_xy",roles)
-    console.log("roles_xy",)
 
     if (show_user_form === false)
         return (<div/>);
