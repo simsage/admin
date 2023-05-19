@@ -16,7 +16,8 @@ export default function OrganisationFormV2(props) {
     const [selected_tab, setSelectedTab] = useState('general')
     const group_data_status = useSelector((state) => state.groupReducer.data_status)
     const group_list_full = useSelector(((state) => state.groupReducer.group_list))
-    const available_roles = Api.getAvailableRoles();
+    // const available_roles = Api.getAvailableRoles();
+    const available_roles = useSelector((state) => state.usersReducer.roles);
 
     //filters
     const [selected_role_filter, setRoleFilter] = useState('');
@@ -25,6 +26,7 @@ export default function OrganisationFormV2(props) {
     const [selected_group_filter, setSelectedGroupFilter] = useState('');
 
     const [selected_roles, setSelectedRoles] = useState(organisation ? organisation.autoCreateSSORoleList : []);
+    // const [selected_roles, setSelectedRoles] = useState([]);
     const [selected_groups, setSelectedGroups] = useState(organisation ? organisation.autoCreateSSOACLList : []);
     // const [selected_groups, setSelectedGroups] = useState( []);
 
@@ -167,7 +169,7 @@ export default function OrganisationFormV2(props) {
         let temp_list = [];
         if (selected_role_filter.length > 0) {
             temp_list = selected_roles.filter((role) => {
-                return Api.getPrettyRole(role).toLowerCase().includes(selected_role_filter.toLowerCase())
+                return Api.getPrettyRole(role.role).toLowerCase().includes(selected_role_filter.toLowerCase())
             })
         } else {
             temp_list = selected_roles
@@ -177,30 +179,38 @@ export default function OrganisationFormV2(props) {
 
 
     function addRoleToUser(roleToAdd) {
-        setSelectedRoles([...(selected_roles || []), roleToAdd])
+
+        setSelectedRoles([...(selected_roles || []), {
+            organisation_id: selected_organisation_id,
+            role: roleToAdd
+        }])
     };
 
 
     function removeRoleFromUser(role) {
         const temp_list = selected_roles.filter(r => {
-            return r !== role
+            return r.role !== role.role
         })
         setSelectedRoles(temp_list)
     }
 
     const getAvailableRoles = () => {
+        const roleNames = selected_roles ? selected_roles.map(r => r.role) : [];
         let temp_role_list = []
         available_roles.forEach((role) => {
-            if (!selected_roles.includes(role)) {
+            if (!roleNames.includes(role)) {
                 temp_role_list.push(role)
             }
         })
 
-        return available_role_filter.length > 0 ? temp_role_list.filter(role => {
+        let temp_available = available_role_filter.length > 0 ? temp_role_list.filter(role => {
                 return Api.getPrettyRole(role).toLowerCase().includes(available_role_filter.toLowerCase())
             })
             :
             temp_role_list;
+        console.log("getAvailableRoles ",temp_available );
+        return temp_available;
+
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -367,7 +377,7 @@ export default function OrganisationFormV2(props) {
                                                             getUserRoles().map((role, i) => {
                                                                 return (<Chip key={i} color="secondary"
                                                                               onClick={() => removeRoleFromUser(role)}
-                                                                              label={Api.getPrettyRole(role)}
+                                                                              label={Api.getPrettyRole(role.role)}
                                                                               variant="outlined"/>)
                                                             })
                                                         }
