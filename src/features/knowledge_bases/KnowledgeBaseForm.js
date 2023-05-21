@@ -25,10 +25,12 @@ export default function KnowledgeBaseForm() {
     const [selected_tab, setSelectedTab] = useState('general')
 
 
-
     function showMissingOrganisationError() {
         if (!organisation_id) {
-            dispatch(showErrorAlert({"message": "Organisation-id missing, please select an organisation first.", "title": "error"}));
+            dispatch(showErrorAlert({
+                "message": "Organisation-id missing, please select an organisation first.",
+                "title": "error"
+            }));
             handleClose();
         }
     }
@@ -45,7 +47,7 @@ export default function KnowledgeBaseForm() {
         }
     }
 
-    const [edit_index_schedule, setIndexSchedule] = useState(kb? kb.indexSchedule:'');
+    const [edit_index_schedule, setIndexSchedule] = useState(kb ? kb.indexSchedule : '');
 
     const refreshSecurityId = () => {
         const id = Api.createGuid();
@@ -99,11 +101,11 @@ export default function KnowledgeBaseForm() {
 
     //on submit store or update
     const onSubmit = data => {
-        data = {...data,
+        data = {
+            ...data,
             organisationId: organisation_id,
             indexSchedule: edit_index_schedule,
         }
-        console.log("data", data)
         dispatch(addOrUpdate({session_id: session.id, data: data}))
         handleClose()
     };
@@ -139,105 +141,122 @@ export default function KnowledgeBaseForm() {
                             <div className="modal-body p-0">
 
                                 <div className="nav nav-tabs overflow-auto">
-                                    <KnowledgeBaseFormTab selected_tab={selected_tab} onTabChange={handleTabChange} />
+                                    <KnowledgeBaseFormTab selected_tab={selected_tab} onTabChange={handleTabChange}/>
                                 </div>
 
 
                                 {selected_tab === 'general' &&
-                                <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
-                                    <div className="row mb-5">
-                                        <div className="control-row col-4">
-                                            <label className="label-2 small">Name</label>
-                                                <input className="form-control" {...register("name", {required: true})} />
-                                                {errors.name && <span className=""> Name is required</span>}
-                                        </div>
-                                        <div className="control-row col-4">
-                                            <label className="label-2 small">Email Queries</label>
-                                            <input className="form-control" placeholder="example@email.com" {...register("email", {required: true, pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i})} />
-                                            {errors.email && <span> Email is required</span>}
-                                        </div>
-                                        <div className="control-row col-4">
-                                            <label className="label-2 small">Security ID</label>
-                                                
-                                            <div className="form-control d-flex">
-                                                <input className="border-0 p-0 w-100 sid-box" value={security_id}
-                                                readOnly="readonly" {...register("securityId", {required: true})} />
-                                                <img title="generate new security id" alt="refresh"
-                                                src={theme === 'light' ? "images/refresh.svg" : "images/refresh.svg"}
-                                                onClick={() => refreshSecurityId()}
-                                                className="image-size form-icon"/>
+                                    <div className="tab-content px-5 py-4 overflow-auto"
+                                         style={{maxHeight: "600px", minHeight: "400px"}}>
+                                        <div className="row mb-5">
+                                            <div className="control-row col-4">
+                                                <label className="label-2 small">Name</label>
+                                                <input
+                                                    className="form-control" {...register("name", {required: true})} />
+                                                {errors.name && <span className="text-danger fst-italic small">Name is required </span>}
                                             </div>
-                                            {errors.securityId && <span> Security id is required</span>}
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="row mb-5">
-                                        <div className="control-row col-4">
-                                            <span className="label-2 small">Max number of queries (per day) </span>
-                                            <div className="form-control d-flex">
-                                                <input className="border-0 p-0 w-100" {...register("maxQueriesPerDay", {required: true})} />
-                                                <span className="text-nowrap small text-black-50">(0 = no limits)</span>
+                                            <div className="control-row col-4">
+                                                <label className="label-2 small">Email Queries</label>
+                                                <input className="form-control"
+                                                       placeholder="example@email.com" {...register("email", {
+                                                    required: true,
+                                                    pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+                                                })} />
+                                                {errors.email && <span className="text-danger fst-italic small"> Email is required</span>}
+                                            </div>
+                                            <div className="control-row col-4">
+                                                <label className="label-2 small">Security ID</label>
+
+                                                <div className="form-control d-flex">
+                                                    <input className="border-0 p-0 w-100 sid-box" value={security_id}
+                                                           readOnly="readonly" {...register("securityId", {required: true})} />
+                                                    <img title="generate new security id" alt="refresh"
+                                                         src={theme === 'light' ? "images/refresh.svg" : "images/refresh.svg"}
+                                                         onClick={() => refreshSecurityId()}
+                                                         className="image-size form-icon"/>
+                                                </div>
+                                                {errors.securityId && <span> Security id is required</span>}
                                             </div>
                                         </div>
 
-                                        <div className="control-row col-4">
-                                            <span className="label-2 small">Max analytics retention period (months) </span>
-                                            <div className="form-control d-flex">
-                                                <input className="border-0 p-0 w-100" {...register("analyticsWindowInMonths", {required: true})} /> 
-                                                <span className="text-nowrap small text-black-50">(0 = no limits)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="row mb-3">
-                                        <div className="control-row col-4">
-                                            <div className="form-check form-switch">
-                                                <input className="form-check-input" type="checkbox" id="enableKnowledgeBase"
-                                                {...register('enabled')}/>
-                                                <label className="form-check-label">Knowledge Base</label>
+                                        <div className="row mb-5">
+                                            <div className="control-row col-4">
+                                                <span className="label-2 small">Max number of queries (per day) </span>
+                                                <div className="form-control d-flex">
+                                                    <input
+                                                        className="border-0 p-0 w-100" {...register("maxQueriesPerDay", {required: true})} />
+                                                    <span
+                                                        className="text-nowrap small text-black-50">(0 = no limits)</span>
+                                                </div>
                                             </div>
 
-                                            {/* <span className="label-3">operator enabled?</span>
-                                            <input type="checkbox" {...register('operatorEnabled')}  /> */}
-                                            <div className="form-check form-switch">
-                                                <input className="form-check-input" type="checkbox" id="enableOperator"
-                                                {...register('operatorEnabled')}/>
-                                                <label className="form-check-label">Operator</label>
-                                            </div>
-
-                                            {/* <span className="label-3">capacity-warnings on?</span>
-                                            <input type="checkbox" {...register('capacityWarnings')}  /> */}
-                                            <div className="form-check form-switch">
-                                                <input className="form-check-input" type="checkbox" id="enableCapacityWarnings"
-                                                {...register('capacityWarnings')}/>
-                                                <label className="form-check-label">Capacity Warnings</label>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                }
-                                {selected_tab === 'index_schedule' &&
-
-                                    <div className="time-tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px", minHeight: "400px"}}>
-                                        <div className="row justify-content-center">
-                                            <div className="col-6">
-                                                <div className="alert alert-warning small py-2" role="alert">
-                                                We strongly advice to allocate only one hour per day for index optimizations.  Unlike the crawler, each selected slot will cause the indexer to start again.
+                                            <div className="control-row col-4">
+                                                <span
+                                                    className="label-2 small">Max analytics retention period (months) </span>
+                                                <div className="form-control d-flex">
+                                                    <input
+                                                        className="border-0 p-0 w-100" {...register("analyticsWindowInMonths", {required: true})} />
+                                                    <span
+                                                        className="text-nowrap small text-black-50">(0 = no limits)</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        <div className="w-100">
-                                        <TimeSelect time={edit_index_schedule}
-                                                    onSave={(time) => updateSchedule(time)}/>
+
+                                        <div className="row mb-3">
+                                            <div className="control-row col-4">
+                                                <div className="form-check form-switch">
+                                                    <input className="form-check-input" type="checkbox"
+                                                           id="enableKnowledgeBase"
+                                                           {...register('enabled')}/>
+                                                    <label className="form-check-label">Knowledge Base</label>
+                                                </div>
+
+                                                {/* <span className="label-3">operator enabled?</span>
+                                            <input type="checkbox" {...register('operatorEnabled')}  /> */}
+                                                <div className="form-check form-switch">
+                                                    <input className="form-check-input" type="checkbox"
+                                                           id="enableOperator"
+                                                           {...register('operatorEnabled')}/>
+                                                    <label className="form-check-label">Operator</label>
+                                                </div>
+
+                                                {/* <span className="label-3">capacity-warnings on?</span>
+                                            <input type="checkbox" {...register('capacityWarnings')}  /> */}
+                                                <div className="form-check form-switch">
+                                                    <input className="form-check-input" type="checkbox"
+                                                           id="enableCapacityWarnings"
+                                                           {...register('capacityWarnings')}/>
+                                                    <label className="form-check-label">Capacity Warnings</label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                {selected_tab === 'index_schedule' &&
+
+                                    <div className="time-tab-content px-5 py-4 overflow-auto"
+                                         style={{maxHeight: "600px", minHeight: "400px"}}>
+                                        <div className="row justify-content-center">
+                                            <div className="col-6">
+                                                <div className="alert alert-warning small py-2" role="alert">
+                                                    We strongly advice to allocate only one hour per day for index
+                                                    optimizations. Unlike the crawler, each selected slot will cause the
+                                                    indexer to start again.
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        { kb && kb.lastIndexOptimizationTime > 0 &&
+                                        <div className="w-100">
+                                            <TimeSelect time={edit_index_schedule}
+                                                        onSave={(time) => updateSchedule(time)}/>
+                                        </div>
+
+                                        {kb && kb.lastIndexOptimizationTime > 0 &&
                                             <div>
-                                                <br />
-                                                <br />
-                                                <br />
+                                                <br/>
+                                                <br/>
+                                                <br/>
                                                 this knowledge-base was last optimized on&nbsp;
                                                 <i>{Api.unixTimeConvert(kb.lastIndexOptimizationTime)}</i>
                                             </div>
