@@ -1,7 +1,6 @@
 import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {UserManagementHome} from "../features/users/UserManagementHome";
-import OrganisationEdit from "../features/organisations/OraganisationEdit";
 import MindHome from "../features/the_mind/MindHome";
 import DocumentManagementHome from "../features/document_management/DocumentManagementHome";
 import Home from "../features/home/Home";
@@ -40,11 +39,6 @@ function MainSection(){
             {/*    <ReportsHome />*/}
             {/*}*/}
 
-
-            {/* Account dropdown*/}
-            <OrganisationEdit />
-
-        {/*    KB Form*/}
 
 
         </div>
