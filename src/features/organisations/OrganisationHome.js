@@ -25,6 +25,7 @@ import api from "../../common/api";
 import {ShowInvalidSession} from "./ShowInvalidSession";
 import {useMsal} from "@azure/msal-react";
 import {getGroupList} from "../groups/groupSlice";
+import OrganisationEdit from "./OraganisationEdit";
 
 
 export function OrganisationHome() {
@@ -243,6 +244,10 @@ export function OrganisationHome() {
 
             {/*Show backups*/}
             <div>
+
+
+                <OrganisationEdit />
+
                 <OrganisationViewId/>
 
                 <OrganisationDeleteAsk/>
