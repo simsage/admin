@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
 import {closeMemoryForm, updateMindItem} from "./botSlice";
-
+import ErrorMessage from "../../common/ErrorMessage";
 
 export function BotEdit(){
 
@@ -16,7 +16,7 @@ export function BotEdit(){
     const memory = useSelector( (state) => state.botReducer.edit);
 
     //Memory details
-    const [questions, setQuestions] = useState([]);
+    const [questions, setQuestions] = useState(['']);
     const [newQuestion, setNewQuestion] = useState('');
     const [answer, setAnswer] = useState('');
     const [links, setLinks] = useState([]);
@@ -27,12 +27,12 @@ export function BotEdit(){
     const [mId, setMId] = useState('');
     const [soundList, setSoundList] = useState([]);
     const [videoList, setVideoList] = useState([]);
+    const [error, setError] = useState('');
 
 
     // Grab memory details if editing
     let selectedMemory = {}
     useEffect(()=> {
-        console.log('running......')
         if (memory && selected_memories) {
             let temp_obj = selected_memories.filter((o) => {
                 return o.id === memory.id
@@ -40,13 +40,10 @@ export function BotEdit(){
             console.log('here',temp_obj)
             if (temp_obj.length > 0) {
                 selectedMemory = (temp_obj[0])
-                console.log('selectedMemory!', selectedMemory)
-                console.log('selected KB', knowledge_base_id)
             }
         }
         //Populate form if necessary
         if(selectedMemory){
-            console.log('selected memory',selectedMemory)
             setQuestions(selectedMemory.questionList)
             setAnswer(selectedMemory.information)
             setLinks(selectedMemory.urlList)
@@ -60,7 +57,7 @@ export function BotEdit(){
     }, [show_memory_form])
 
     function resetData () {
-        setQuestions([]);
+        setQuestions(['']);
         setAnswer('')
         setLinks([])
         setCreated(0)
@@ -79,24 +76,29 @@ export function BotEdit(){
 
 
     const handleSave = () => {
-        //begin updating user
-        const session_id = session.id;
-        const data = {
-            created: 0,
-            id : id ? id : "" ,
-            imageList : imageList ? imageList : [],
-            information:answer ? answer : '',
-            mid: mId,
-            organisationId: organisation_id,
-            questionList : questions ? questions : [],
-            soundList:soundList,
-            urlList: links ? links : [],
-            videoList:videoList
+        if (!questions || questions.length === 0) {
+            setError("empty Question(s) not allowed");
+        } else if (!answer || answer.length === 0) {
+            setError("empty Answer not allowed");
+        } else {
+            //begin updating user
+            const session_id = session.id;
+            const data = {
+                created: 0,
+                id : id ? id : "" ,
+                imageList: imageList ? imageList : [],
+                information: answer ? answer : '',
+                mid: mId ? mId : 0,
+                organisationId: organisation_id,
+                questionList : questions ? questions : [],
+                soundList: soundList ? soundList : [],
+                urlList: links ? links : [],
+                videoList:videoList
+            }
+            console.log("handleSave", data);
+            dispatch(updateMindItem({session_id,organisation_id, knowledge_base_id, data}));
+            dispatch(closeMemoryForm());
         }
-
-        console.log('Saving...', data,organisation_id,knowledge_base_id);
-        dispatch(updateMindItem({session_id,organisation_id, knowledge_base_id, data}));
-        dispatch(closeMemoryForm());
     }
 
     const updateLink = index => e => {
@@ -144,7 +146,6 @@ export function BotEdit(){
     const removeQuestionBtn = (q, index) => {
         let newArr = [...questions];
         newArr.splice(index,1)
-        console.log('questions', newArr)
         setQuestions(newArr);
 
     }
@@ -152,7 +153,6 @@ export function BotEdit(){
     const removeLinkBtn = (l, index) => {
         let newArr = [...links];
         newArr.splice(index,1)
-        console.log('links', newArr)
         setLinks(newArr);
     }
 
@@ -171,8 +171,14 @@ export function BotEdit(){
 
     if (show_memory_form === false)
         return (<div/>);
+
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
+
+            { error &&
+                <ErrorMessage error_title="Error" error_text={error} handleClose={() => setError('')} />
+            }
+
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
                     <div className="modal-header px-5 pt-4 bg-light">
@@ -188,8 +194,6 @@ export function BotEdit(){
                                 </div>
                                 {
                                     questions && questions.map( (question,i) => {
-                                        console.log(question)
-                                        if (question === '') {return;}
                                         return (
                                             <div className="control-row col-12 mb-2" key={i}>
 

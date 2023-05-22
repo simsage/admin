@@ -14,7 +14,6 @@ const initialState = {
     show_delete_form: false,
     show_import_form: false,
     show_bot_import_form: false,
-
 }
 
 export const loadMindItems = createAsyncThunk(
@@ -114,14 +113,12 @@ const extraReducers = (builder) => {
         })
 
         .addCase(loadMindItems.fulfilled, (state, action) => {
-            console.log("addCase getDocuments fulfilled ", action);
             state.status = "fulfilled";
             state.mind_item_list = action.payload.memoryList;
             state.total_mind_items = action.payload.numMemories;
             state.data_status = 'loaded';
         })
         .addCase(loadMindItems.rejected, (state, action) => {
-            console.log("addCase getDocuments rejected ", action)
             state.status = "rejected"
             state.data_status = 'rejected';
         })
@@ -132,13 +129,11 @@ const extraReducers = (builder) => {
         })
 
         .addCase(updateMindItem.fulfilled, (state, action) => {
-            console.log("memories/update", action);
             state.status = "fulfilled";
             state.data_status = 'load_now';
 
         })
         .addCase(updateMindItem.rejected, (state, action) => {
-            console.log("memories/delete", action)
             state.status = "rejected"
         })
         //delete memory
@@ -147,13 +142,11 @@ const extraReducers = (builder) => {
         })
 
         .addCase(deleteMindItem.fulfilled, (state, action) => {
-            console.log("memories/delete", action);
             state.status = "fulfilled";
             state.data_status = 'load_now';
 
         })
         .addCase(deleteMindItem.rejected, (state, action) => {
-            console.log("memories/delete", action)
             state.status = "rejected"
         })
         //delete all memories
@@ -162,23 +155,18 @@ const extraReducers = (builder) => {
         })
 
         .addCase(deleteAllMindItems.fulfilled, (state, action) => {
-            console.log("memories/delete", action);
             state.status = "fulfilled";
             state.data_status = 'load_now';
 
         })
         .addCase(deleteAllMindItems.rejected, (state, action) => {
-            console.log("memories/delete", action)
             state.status = "rejected"
         })
-    //importBotItems
         .addCase(importBotItems.pending, (state) => {
-            console.log("mind_item_list memories/importBotItems", state);
             state.status = "pending";
             state.data_status = 'pending';
         })
         .addCase(importBotItems.fulfilled, (state) => {
-            console.log("mind_item_list memories/importBotItems", state);
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
@@ -221,7 +209,7 @@ const botSlice = createSlice({
         },
         closeBotImportForm:(state) => {
             state.show_bot_import_form = false;
-        }
+        },
     },
     extraReducers
 })
