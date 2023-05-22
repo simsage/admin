@@ -32,7 +32,7 @@ export default function SynsetEdit(){
             setWordCloud(synset.wordCloudCsvList);
             console.log('here', wordCloud)
         }
-    }, [show_synset_form])
+    }, [show_synset_form, synset, wordCloud])
 
     function resetData () {
         setWord('');
@@ -51,7 +51,7 @@ export default function SynsetEdit(){
     const handleSave = () => {
 
         const data = {
-            lemma: word,
+            lemma: lemma,
             word: word,
             wordCloudCsvList:
             wordCloud
@@ -126,30 +126,31 @@ export default function SynsetEdit(){
                                 </div>
                                 {
                                     wordCloud && wordCloud.map( (cloud, i) => {
-                                        if(cloud === ''){return;}
-                                        return (
-                                        <div className="control-row col-12 mb-2" key={i}>
+                                            return (<div className="control-row col-12 mb-2" key={i}>
                                             <span className="text">
-                                                    <div className="form-control d-flex p-0 overflow-hidden align-items-start">
-                                                        <textarea type="text" className="border-0 w-100 mb-0 me-2 d-block" style={{padding: "0.375rem 0.75rem"}}
-                                                                autoComplete="false"
-                                                                rows="3"
-                                                                placeholder="e.g. Family, Divorce, Custody..."
-                                                                value={cloud}
-                                                                onChange={updateWordCloud(i)}
+                                                    <div
+                                                        className="form-control d-flex p-0 overflow-hidden align-items-start">
+                                                        <textarea
+                                                                  className="border-0 w-100 mb-0 me-2 d-block"
+                                                                  style={{padding: "0.375rem 0.75rem"}}
+                                                                  autoComplete="false"
+                                                                  rows="3"
+                                                                  placeholder="e.g. Family, Divorce, Custody..."
+                                                                  value={cloud}
+                                                                  onChange={updateWordCloud(i)}
                                                         />
-                                                        <bubtton className="btn pointer-cursor mb-0 px-3 py-1" title="Remove Word Cloud" onClick={() => removeNewWordCloudBtn(cloud, i)}>&times;</bubtton>
+                                                        <bubtton className="btn pointer-cursor mb-0 px-3 py-1"
+                                                                 title="Remove Word Cloud"
+                                                                 onClick={() => removeNewWordCloudBtn(cloud, i)}>&times;</bubtton>
                                                     </div>
                                             </span>
-                                            
-                                        </div>
-                                        )
-                                    })
+                                            </div>
+                                            )})
                                 }
                                 <div className="control-row col-12 mb-3">
                                     <span className="text d-flex">
                                         <form className="w-100 me-2">
-                                            <textarea type="text" className="form-control"
+                                            <textarea className="form-control"
                                                 autoComplete="false"
                                                 rows="3"
                                                 placeholder="e.g. Family, Divorce, Custody..."

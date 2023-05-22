@@ -35,13 +35,9 @@ export default function GroupList(){
     const [filter, setFilter] = useState('');
 
     useEffect(()=>{
-        // if(group_list_status === undefined && group_list === undefined){
-        console.log("session useEffect",session)
-        console.log("selected_organisation",selected_organisation_id)
-        dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
-        // }
-        console.log('use effect ran',load_data);
-    },[load_data === "load_now", page_size])
+        if (load_data === 'load_now')
+            dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+    },[dispatch, load_data, page_size, selected_organisation_id, session.id])
 
     function filterGroups() {
         let filteredGroup = []

@@ -10,13 +10,10 @@ import {
 } from "./synonymSlice";
 import {SynonymEdit} from "./SynonymEdit";
 import SynonymDeleteAsk from "./SynonymDeleteAsk";
-import SynonymFilter from "./SynonymFilter";
-import {loadSemantics} from "../semantics/semanticSlice";
 import api from "../../common/api";
 
 export default function SynonymsHome(props) {
 
-    const title = "Synonyms";
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
@@ -38,18 +35,19 @@ export default function SynonymsHome(props) {
 
     const dispatch = useDispatch();
 
-    let data = {
+    const [data] = useState( {
         "organisationId": selected_organisation_id,
         "kbId": selected_knowledge_base_id,
         "prevId": prev_id,
         "filter": '',
         "pageSize": page_size
-    };
+    })
 
 
     useEffect(() => {
-        dispatch(loadSynonyms({session_id, data }));
-    }, [load_data === "load_now",page, page_size])
+        if (load_data === "load_now")
+            dispatch(loadSynonyms({session_id, data }));
+    }, [load_data, data, dispatch, page, page_size, session_id])
 
 
     function handlePageChange(next_page){
@@ -111,24 +109,6 @@ export default function SynonymsHome(props) {
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
-
-
-    // function handleSearchFilter(event) {
-    //     let filter = event.target.value;
-    //     if(filter.length > 2){
-    //         console.log("handleSearchTextKeydown",filter)
-    //         // setFilter(filter)
-    //         data = {...data,  ...{"filter": filter,}}
-    //         dispatch(loadSynonyms({session_id, data }));
-    //     }
-    // }
-
-    function handleSearchTextKeydown(event)
-    {
-        if (event.key === "Enter") {
-            filterRecords();
-        }
-    }
 
     function filterRecords(e) {
         e.preventDefault()

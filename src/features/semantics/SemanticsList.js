@@ -8,7 +8,6 @@ import api from "../../common/api";
 
 
 export default function SemanticsHome() {
-    // const title = "Semantics";
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
@@ -29,19 +28,6 @@ export default function SemanticsHome() {
 
     const dispatch = useDispatch();
 
-console.log("page",page_history)
-console.log("page",prev_word)
-
-    // let prev_semantic_set = semantic_list.slice(-1)[0]
-    // let prev_word = page != 0 ? prev_semantic_set['word']:0
-    // useEffect(() => {
-    //     console.log("page",page)
-    //     console.log("prev_semantic_set1",prev_semantic_set)
-    //
-    // },[page,page!=0])
-
-
-    // console.log("page num",page,prev_word)
     let data = {
         "kbId": selected_knowledge_base_id,
         "organisationId": selected_organisation_id,
@@ -52,9 +38,10 @@ console.log("page",prev_word)
 
 //load semantics
     useEffect(() => {
-        console.log("useEffect dataload", data)
-        dispatch(loadSemantics({ session_id, data }));
-    }, [load_data === "load_now" ,page, page_size ,selected_organisation_id, selected_knowledge_base_id])
+        if (load_data === "load_now")
+            dispatch(loadSemantics({ session_id, data }));
+
+    }, [load_data, page, page_size, selected_organisation_id, selected_knowledge_base_id, data, dispatch, session_id])
 
 
 

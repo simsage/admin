@@ -25,17 +25,6 @@ export default function KnowledgeBaseForm() {
     const [selected_tab, setSelectedTab] = useState('general')
 
 
-    function showMissingOrganisationError() {
-        if (!organisation_id) {
-            dispatch(showErrorAlert({
-                "message": "Organisation-id missing, please select an organisation first.",
-                "title": "error"
-            }));
-            handleClose();
-        }
-    }
-
-
     let kb = undefined;
 
     if (kb_id && kb_list) {
@@ -55,20 +44,33 @@ export default function KnowledgeBaseForm() {
         return id;
     }
 
+    const handleClose = () => {
+        dispatch(closeForm());
+    }
 
     useEffect(() => {
+
+        const handleClose2 = () => {
+            dispatch(closeForm());
+        }
+
+        function showMissingOrganisationError() {
+            if (!organisation_id) {
+                dispatch(showErrorAlert({
+                    "message": "Organisation-id missing, please select an organisation first.",
+                    "title": "error"
+                }));
+                handleClose2();
+            }
+        }
 
         if (kb_id === undefined || kb_id === null) {
             refreshSecurityId();
         }
         //Show Missing Org error at page loading if no org set.
         showMissingOrganisationError()
-    }, [show_kb_form]);
+    }, [dispatch, kb_id, organisation_id, show_kb_form]);
 
-
-    const handleClose = () => {
-        dispatch(closeForm());
-    }
 
     // set title
     const title = (kb_id) ? "Edit Knowledge Base" : "New Knowledge Base";
@@ -96,7 +98,7 @@ export default function KnowledgeBaseForm() {
         defaultValues.lastIndexOptimizationTime = 0;
 
         reset({...defaultValues});
-    }, [kb, show_kb_form]);
+    }, [kb, kb_id, reset, show_kb_form]);
 
 
     //on submit store or update
