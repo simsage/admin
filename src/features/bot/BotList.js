@@ -27,6 +27,7 @@ export default function BotList() {
 
     const show_memory_form = useSelector((state) => state.botReducer.show_memory_form);
     const show_import_form = useSelector((state) => state.botReducer.show_import_form)
+    const load_data = useSelector((state) => state.botReducer.data_status)
 
     const mind_item_list = useSelector((state) => state.botReducer.mind_item_list);
     const total_mind_items = useSelector((state) => state.botReducer.total_mind_items);
@@ -40,19 +41,22 @@ export default function BotList() {
     const [prev_id,setPrevID] = useState(0)
 
 
-    const [data, setData] = useState({
-        filter: "",
+    let data ={
+        filter: filter,
         kbId: selected_knowledge_base_id,
         organisationId: selected_organisation_id,
         pageSize: page_size,
         prevId: prev_id,
-    })
+    }
 
+
+    // useEffect(() => {
+    //     dispatch(loadMindItems({session_id, data}))
+    // }, [dispatch, session_id, data])
 
     useEffect(() => {
         dispatch(loadMindItems({session_id, data}))
-    }, [dispatch, session_id, data])
-
+    }, [load_data === "load_now", selected_knowledge_base_id, page_size, page])
 
     function handlePageChange(next_page){
         console.log("page next_page",next_page)
@@ -78,6 +82,7 @@ export default function BotList() {
         setPrevID(0)
         setPage(0)
         setPageSize(row)
+        setFilter('')
     }
 
 
@@ -101,8 +106,7 @@ export default function BotList() {
 
     function filterRecords(event) {
         if (event.key === "Enter") {
-            data.filter = filter;
-            setData(data);
+            setFilter(event.target.value);
             dispatch(loadMindItems({session_id, data}));
         }
     }
