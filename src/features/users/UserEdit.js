@@ -4,6 +4,7 @@ import {closeUserForm, updateUser} from "./usersSlice";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import SubNav from "../../includes/sub-nav";
+import {useForm} from "react-hook-form";
 
 export function UserEdit() {
 
@@ -23,6 +24,15 @@ export function UserEdit() {
         setSelectedTab(slug);
     }
 
+    const {
+        register,
+        handleSubmit,
+        formState: {errors},
+        reset,
+        // watch,
+    } = useForm();
+
+
     const show_user_form = useSelector((state) => state.usersReducer.show_user_form);
     const user_id = useSelector((state) => state.usersReducer.edit_id);
     const user_list = useSelector((state) => state.usersReducer.user_list);
@@ -30,6 +40,9 @@ export function UserEdit() {
     const available_KBs = useSelector((state) => state.kbReducer.kb_list);
     const group_list_full = useSelector(((state) => state.groupReducer.group_list))
     //const group_list_full = group_list_parent ? group_list_parent.groupList : group_list_parent;
+
+
+
 
     //user form details
     const [email, setEmail] = useState('');
