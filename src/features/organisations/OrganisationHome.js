@@ -246,8 +246,6 @@ export function OrganisationHome() {
             <div>
 
 
-                <OrganisationEdit />
-
                 <OrganisationViewId/>
 
                 <OrganisationDeleteAsk/>
