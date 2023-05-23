@@ -12,16 +12,17 @@ const TextToSearchHome = () => {
         const session = useSelector((state) => state.authReducer.session)
         const session_id = session.id
 
+        let data = {
+            "filter": "",
+            "kbId": selected_knowledge_base_id,
+            "organisationId": selected_organisation_id,
+            "pageSize": 10,
+            "prevWord": ""
+        };
+
         useEffect( () => {
-            let data = {
-                "filter": "",
-                "kbId": selected_knowledge_base_id,
-                "organisationId": selected_organisation_id,
-                "pageSize": 10,
-                "prevWord": ""
-            };
             dispatch(loadTextToSearch({session_id, data}))
-        }, [dispatch, selected_knowledge_base_id, selected_organisation_id, session_id])
+        }, [])
     return (
         <div>
 

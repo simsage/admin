@@ -18,21 +18,22 @@ export default function SynonymsHome(props) {
     const synonym_list = useSelector((state)=>state.synonymReducer.synonym_list)
     const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
 
+    let data = {
+        "organisationId": selected_organisation_id,
+        "kbId": selected_knowledge_base_id,
+        "prevId": null,
+        "filter": "",
+        "pageSize": 10
+    };
+
     console.log("synonym_list",synonym_list)
 
 
     useEffect(() => {
-        let data = {
-            "organisationId": selected_organisation_id,
-            "kbId": selected_knowledge_base_id,
-            "prevId": null,
-            "filter": "",
-            "pageSize": 10
-        };
-        if (load_data === 'load_now')
-            dispatch(loadSynonyms({ session_id, data }));
+        dispatch(loadSynonyms({ session_id, data }));
+        console.log("useEffect load_data",load_data)
 
-    }, [selected_knowledge_base_id, session, props.tab, dispatch, session_id, load_data, selected_organisation_id])
+    }, [selected_knowledge_base_id, session, props.tab, load_data === 'load_now'])
 
 
 

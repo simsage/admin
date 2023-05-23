@@ -34,17 +34,24 @@ export default function CategorizationHome() {
 
     const dispatch = useDispatch();
 
-    const [data, setData] = useState({
+    console.log("semantic_page",page_history)
+    console.log("semantic_page",prev_label)
+
+    // let prev_set = category_list.slice(-1)[0]
+    // console.log("prev_set",prev_set)
+    // let prev_cat_label = cat_page != 0 ? prev_set['categorizationLabel']:null
+    // console.log("prev_cat_label",prev_cat_label)
+
+    let data = {
         session_id: session_id,
         organisation_id:selected_organisation_id,
         kb_id:selected_knowledge_base_id,
         prevCategorizationLabel: prev_label,
-        pageSize: cat_page_size})
+        pageSize: cat_page_size};
 
     useEffect(()=>{
-        if (load_data === 'load_now')
-            dispatch(loadCategorizations(data))
-    },[load_data, selected_knowledge_base_id, cat_page_size, cat_page, dispatch, data])
+        dispatch(loadCategorizations(data))
+    },[load_data === "load_now",selected_knowledge_base_id,cat_page_size,cat_page])
 
 
 
@@ -120,8 +127,8 @@ export default function CategorizationHome() {
     // }
 
     function filterRecords() {
-        data.filter = filter;
-        setData(data);
+        data.filter = filter
+        // data.pageSize = cat_page_size
         dispatch(loadCategorizations(data))
     }
 
@@ -166,7 +173,9 @@ export default function CategorizationHome() {
                         <div className="d-flex form-group me-2">
                             <input type="text" placeholder={"Search Category..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} value={filter} onChange={(event) => {setFilter(event.target.value);}}
                             />
-                            <button className="btn btn-secondary" onClick={() => filterRecords()} title="search">
+                            <button className="btn btn-secondary"
+                                    onClick={() => filterRecords()}
+                                    src="images/dark-magnifying-glass.svg" title="search" alt="search">
                                 Search
                             </button>
                         </div>

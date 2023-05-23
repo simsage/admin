@@ -29,9 +29,9 @@ export default function SemanticsHome() {
 
 
     useEffect(() => {
-        if (load_data === 'load_now')
-            dispatch(loadSemantics({ session_id, data }));
-    }, [data, dispatch, load_data, session_id])
+        console.log('loading...', data)
+        dispatch(loadSemantics({ session_id, data }));
+    }, [load_data === 'load_now'])
 
     return (
         <div className="">

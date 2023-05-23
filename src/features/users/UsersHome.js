@@ -38,7 +38,6 @@ export function UsersHome(){
 
     useEffect(()=>{
         dispatch(getUserListPaginated({session_id:session.id, organization_id:selected_organisation_id,page:page,page_size:page_size,filter:null}))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[load_data === "load_now", page, page_size])
 
     function handleSearchTextKeydown(e) {

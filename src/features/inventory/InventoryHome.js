@@ -41,14 +41,14 @@ export default function InventoryHome(props) {
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
     useEffect(() => {
-        if (data_status === "load_now")
-            dispatch(loadInventoryList({
-                session_id: session_id,
-                organisation_id: selected_organisation_id,
-                kb_id: selected_knowledge_base_id
-            }))
+        console.log("Inventory useEffect")
+        dispatch(loadInventoryList({
+            session_id: session_id,
+            organisation_id: selected_organisation_id,
+            kb_id: selected_knowledge_base_id
+        }))
 
-    }, [dispatch, data_status, props.tab,
+    }, [dispatch, data_status === 'load_now', props.tab,
              selected_knowledge_base_id, selected_organisation_id, session_id])
 
     function refresh_inventory() {

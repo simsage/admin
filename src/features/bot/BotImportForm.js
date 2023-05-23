@@ -24,7 +24,7 @@ const BotImportForm = () => {
                     <div className="modal-body text-center">
                         <div className="control-row mb-4">
                             <span className="label-wide me-2 fw-500">Import Bulk Bot items</span>
-                            <div className="link-primary text-decoration-underline pointer-cursor small fst-italic" download="Import Bot Items.xlsx" onClick={downloadFile}>(Download Bulk Bot template)</div>
+                            <a className="link-primary text-decoration-underline pointer-cursor small fst-italic" download="Import Bot Items.xlsx" onClick={downloadFile}>(Download Bulk Bot template)</a>
                         </div>
                         <div className="control-row">
                             <BotImport/>

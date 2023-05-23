@@ -72,7 +72,6 @@ export function UserEdit() {
                 return o.id === user_id
             })
             if (temp_obj.length > 0) {
-                // eslint-disable-next-line react-hooks/exhaustive-deps
                 selectedUser = (temp_obj[0])
                 console.log('selectedUser!', selectedUser)
             }
@@ -152,6 +151,7 @@ export function UserEdit() {
         }
         if (password !== confPassword) {
             return alert("Please ensure the passwords match");
+            form_error = true;
         }
         //begin updating user
         if (!form_error) {

@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectTab} from "../features/home/homeSlice";
 import React from "react";
 import {setSelectedKB} from "../features/auth/authSlice";
+import {getSources} from "../features/sources/sourceSlice";
 
 export default function LeftNavbar(){
 

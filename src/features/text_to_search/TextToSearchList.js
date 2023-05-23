@@ -45,9 +45,8 @@ const TextToSearchList = () => {
     };
 
     useEffect( () => {
-        if (load_data === "load_now")
-            dispatch(loadTextToSearch({session_id, data}))
-    }, [load_data, ts_page, ts_page_size, selected_knowledge_base_id, dispatch, session_id, data])
+        dispatch(loadTextToSearch({session_id, data}))
+    }, [load_data === "load_now", ts_page, ts_page_size, selected_knowledge_base_id])
 
 
     function handlePageChange(next_page){

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import SubNav from "../../includes/sub-nav";
 import KnowledgeBaseHome from "../knowledge_bases/KnowledgeBaseHome";
 import LogHome from "./LogHome";
@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {OrganisationHome} from "../organisations/OrganisationHome";
 import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import AlertDialogHome from "../alerts/AlertDialogHome";
+import {getGroupList} from "../groups/groupSlice";
 
 export default function Home() {
     const [selected_sub_nav, setSelectedSubNav] = useState('knowledge-bases')

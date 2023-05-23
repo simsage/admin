@@ -22,10 +22,11 @@ export function CategorizationEdit(){
     // Grab synonym details if editing
     useEffect(()=> {
         if ( selectedCategory ) {
+            console.log(`editing...`, selectedCategory)
             setCategoryLabel(selectedCategory.categorizationLabel);
             setRule(selectedCategory.rule)
         }
-    }, [selectedCategory, show_category_form])
+    }, [show_category_form])
 
     function resetData () {
         setCategoryLabel('');
@@ -36,6 +37,11 @@ export function CategorizationEdit(){
         dispatch(closeCategoryForm());
         resetData();
     }
+
+    // function handleError(){
+    //     //Todo: Need to look into presenting response errors
+    // }
+
 
     const handleSave = () => {
         const session_id = session.id;

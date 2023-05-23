@@ -4,7 +4,9 @@ import {useIsAuthenticated, useMsal} from "@azure/msal-react";
 import {SignInButton} from "./SignInButton";
 import {useDispatch, useSelector} from "react-redux";
 import {login, showError, simsageSignIn} from "./authSlice";
+import axios from "axios";
 import {setOrganisationList} from "../organisations/organisationSlice";
+import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import ErrorMessage from "../../common/ErrorMessage";
 
 
