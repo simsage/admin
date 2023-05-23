@@ -13,6 +13,7 @@ import {hasRole} from "../../common/helpers";
 import UserDeleteAsk from "./UserDeleteAsk";
 import {UserBulkForm} from "./UserBulkForm";
 import api from "../../common/api";
+import {UserEditV2} from "./UserEditV2";
 
 export function UsersHome(){
     const user_roles = useSelector((state) => state.usersReducer.roles);
@@ -25,7 +26,6 @@ export function UsersHome(){
 
     const theme = null;
     const dispatch = useDispatch();
-
 
     const user_account = useSelector((state) => state.authReducer.user)
     const user_list = useSelector((state) => state.usersReducer.user_list)
@@ -58,6 +58,7 @@ export function UsersHome(){
     }
 
     function handleEditUser(u) {
+        setSelectedUser(u)
         dispatch(showEditUserForm({show:true, user_id: u.id}));
     }
 
@@ -202,7 +203,7 @@ export function UsersHome(){
                     />
                 }
             </div>
-            <UserEdit user={selectedUser} setSelectedUser={setSelectedUser} filter={searchFilter}/>
+            <UserEditV2 user={selectedUser}/>
             <UserDeleteAsk />
             <UserBulkForm />
         </div>
