@@ -37,8 +37,8 @@ export function BotEdit(){
             let temp_obj = selected_memories.filter((o) => {
                 return o.id === memory.id
             })
-            console.log('here',temp_obj)
             if (temp_obj.length > 0) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 selectedMemory = (temp_obj[0])
             }
         }
@@ -54,7 +54,7 @@ export function BotEdit(){
             setSoundList(selectedMemory.soundList)
             setVideoList(selectedMemory.videoList)
         }
-    }, [show_memory_form])
+    }, [show_memory_form, memory, selected_memories])
 
     function resetData () {
         setQuestions(['']);
@@ -84,7 +84,7 @@ export function BotEdit(){
             //begin updating user
             const session_id = session.id;
             const data = {
-                created: 0,
+                created: created,
                 id : id ? id : "" ,
                 imageList: imageList ? imageList : [],
                 information: answer ? answer : '',

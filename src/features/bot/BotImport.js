@@ -1,7 +1,7 @@
 import {useForm} from "react-hook-form";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
-import {closeBotImportForm, closeForm, importBotItems} from "./botSlice";
+import {closeBotImportForm, importBotItems} from "./botSlice";
 
 export function BotImport() {
 

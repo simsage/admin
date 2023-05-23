@@ -34,6 +34,7 @@ export default function GroupEdit(){
                 return o.name === groupName
             })
             if (temp_obj.length > 0) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 selectedGroup = (temp_obj[0])
                 console.log('selectedGroup!', selectedGroup)
             }

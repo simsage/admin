@@ -71,8 +71,9 @@ export default function OrganisationFormV2(props) {
 
 
     useEffect(() => {
-        dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
-    }, [group_data_status === 'load_now'])
+        if (group_data_status === 'load_now')
+            dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+    }, [dispatch, group_data_status, selected_organisation_id, session.id])
 
 //on submit store or update
     const onSubmit = data => {

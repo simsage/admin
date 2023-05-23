@@ -1,8 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import Comms from "../../common/comms";
 import axios from "axios";
-import {setOrganisationList} from "../organisations/organisationSlice";
-import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 
 
 const initialState = {

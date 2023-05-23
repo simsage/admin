@@ -26,7 +26,7 @@ export function TextToSearchEdit(props){
             setSearchType(edit.type);
             setMatchWords(edit.matchWords);
         }
-    }, [show_text_to_search_form])
+    }, [edit, show_text_to_search_form])
 
     function resetData () {
         setSearchPart('');

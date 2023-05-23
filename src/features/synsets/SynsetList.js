@@ -33,22 +33,21 @@ export default function SynsetList() {
 
     const load_data = useSelector((state) => state.synsetReducer.data_status)
 
-    let data = {
+    let [data] = useState({
         session_id: session_id,
         organisation_id: selected_organisation_id,
         kb_id: selected_knowledge_base_id,
         page: page,
         filter: synset_filter,
         page_size: page_size
-    };
+    })
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log(" useEffect load_data",load_data)
-        console.log(" useEffect load_data",load_data)
-        dispatch(loadSynsets(data));
-    }, [load_data === 'load_now', page, page_size])
+        if (load_data === "load_now")
+            dispatch(loadSynsets(data));
+    }, [data, dispatch, load_data, page, page_size])
 
     // const handleFilterTextChange = (e) => {
     //     setSynSetFilter(e.target.value);

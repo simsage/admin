@@ -24,7 +24,6 @@ import {hasRole} from "../../common/helpers";
 import api from "../../common/api";
 import {ShowInvalidSession} from "./ShowInvalidSession";
 import {useMsal} from "@azure/msal-react";
-import {getGroupList} from "../groups/groupSlice";
 import OrganisationEdit from "./OraganisationEdit";
 
 
@@ -70,12 +69,14 @@ export function OrganisationHome() {
     // }
 
     useEffect(() => {
-        dispatch(getOrganisationList({session: session, filter: filter}))
-    }, [load_data === 'load_now'])
+        if (load_data === 'load_now')
+            dispatch(getOrganisationList({session: session, filter: filter}))
+    }, [dispatch, load_data, session])
 
     useEffect(() => {
-        dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
-    }, [backup_data_status === 'load_now', org_id != null])
+        if (backup_data_status === 'load_now' && org_id)
+            dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
+    }, [backup_data_status, dispatch, org_id, session])
 
 
 

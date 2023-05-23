@@ -21,8 +21,9 @@ export default function SynonymsHome() {
 
 
     useEffect(() => {
-        dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
-    }, [load_data === 'load_now'])
+        if (load_data === 'load_now')
+            dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+    }, [dispatch, load_data, selected_organisation_id, session.id])
 
 
     return (
