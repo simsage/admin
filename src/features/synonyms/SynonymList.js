@@ -35,19 +35,18 @@ export default function SynonymsHome(props) {
 
     const dispatch = useDispatch();
 
-    const [data] = useState( {
+    let data = {
         "organisationId": selected_organisation_id,
         "kbId": selected_knowledge_base_id,
         "prevId": prev_id,
         "filter": '',
         "pageSize": page_size
-    })
+    }
 
 
     useEffect(() => {
-        if (load_data === "load_now")
             dispatch(loadSynonyms({session_id, data }));
-    }, [load_data, data, dispatch, page, page_size, session_id])
+    }, [load_data === "load_now",page, page_size])
 
 
     function handlePageChange(next_page){

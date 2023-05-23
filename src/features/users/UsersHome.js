@@ -13,7 +13,6 @@ import {hasRole} from "../../common/helpers";
 import UserDeleteAsk from "./UserDeleteAsk";
 import {UserBulkForm} from "./UserBulkForm";
 import api from "../../common/api";
-import {UserEditV2} from "./UserEditV2";
 
 export function UsersHome(){
     const user_roles = useSelector((state) => state.usersReducer.roles);
@@ -203,7 +202,7 @@ export function UsersHome(){
                     />
                 }
             </div>
-            <UserEditV2 user={selectedUser}/>
+            <UserEdit user={selectedUser}/>
             <UserDeleteAsk />
             <UserBulkForm />
         </div>
