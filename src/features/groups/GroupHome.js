@@ -20,10 +20,9 @@ export default function SynonymsHome() {
     console.log(status !== null && group_list.length > 0 )
 
 
-    useEffect(() => {
-        if (load_data === 'load_now')
-            dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
-    }, [dispatch, load_data, selected_organisation_id, session.id])
+    useEffect(()=>{
+        dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+    },[load_data === 'load_now', selected_organisation_id])
 
 
     return (

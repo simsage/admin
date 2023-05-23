@@ -35,9 +35,8 @@ export default function GroupList(){
     const [filter, setFilter] = useState('');
 
     useEffect(()=>{
-        if (load_data === 'load_now')
-            dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
-    },[dispatch, load_data, page_size, selected_organisation_id, session.id])
+            // dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+    },[load_data === 'load_now',page, page_size, selected_organisation_id])
 
     function filterGroups() {
         let filteredGroup = []
@@ -58,9 +57,8 @@ export default function GroupList(){
         const last = first + parseInt(page_size);
         let index = 0;
         const iterable_list = filter.length > 0 ? filterGroups() : group_list
-        console.log('filter lenght check ', filter.length > 0)
-        console.log('group_list', group_list)
-        console.log('iterable list: ', iterable_list)
+
+
         for (const i in iterable_list) {
             // paginate all users - but only those that have roles in this organisation
             const group = iterable_list[i];
