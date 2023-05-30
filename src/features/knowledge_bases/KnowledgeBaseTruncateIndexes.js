@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeTruncateIndexes, optimizeIndexes, truncateSlowIndexes} from "./knowledgeBaseSlice";
+import {closeTruncateIndexes, truncateSlowIndexes} from "./knowledgeBaseSlice";
 
 export default function KnowledgeBaseTruncateIndexes(){
 

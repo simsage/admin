@@ -42,12 +42,7 @@ export default function CrawlerDatabaseForm(props) {
         '  <div class="d-flex align-items-center flex-wrap"></div>\n' +
         '</div>\n';
 
-    // const self = this;
-    // const theme = props.theme;
     const l_form_data = props.form_data;
-
-    const has_error = false;
-    // const [has_error,setError] = useState()
 
     let date_time_str = "complete crawl";
 
@@ -73,10 +68,6 @@ export default function CrawlerDatabaseForm(props) {
         console.log("specific_json in database", specific_json)
     }, [specific_json])
 
-
-    if (has_error) {
-        return <h1>CrawlerDatabaseForm.js: Something went wrong.</h1>;
-    }
 
     return (
 

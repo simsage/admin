@@ -24,13 +24,7 @@ export function UserEdit() {
         setSelectedTab(slug);
     }
 
-    const {
-        register,
-        handleSubmit,
-        formState: {errors},
-        reset,
-        // watch,
-    } = useForm();
+    // const {formState: {errors},} = useForm();
 
 
     const show_user_form = useSelector((state) => state.usersReducer.show_user_form);
@@ -150,8 +144,9 @@ export function UserEdit() {
             form_error = true;
         }
         if (password !== confPassword) {
-            return alert("Please ensure the passwords match");
+            alert("Please ensure the passwords match");
             form_error = true;
+            return;
         }
         //begin updating user
         if (!form_error) {

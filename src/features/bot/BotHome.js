@@ -1,6 +1,4 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {loadMindItems} from "./botSlice";
+import React from "react";
 import BotList from "./BotList"
 
 export default function BotHome() {

@@ -13,9 +13,6 @@ export default function CrawlerWebForm(props) {
     // const theme = props.theme;
     const l_form_data = props.form_data;
 
-    const [has_error, setError] = useState()
-
-
     //update local variable specific_json when data is changed
     function setData(data) {
         setSpecificJson({...specific_json, ...data})
@@ -29,10 +26,6 @@ export default function CrawlerWebForm(props) {
         console.log("specific_json in rss", specific_json)
     }, [specific_json])
 
-
-    if (has_error) {
-        return <h1>CrawlerWebForm.js: Something went wrong.</h1>;
-    }
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">

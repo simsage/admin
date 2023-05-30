@@ -6,8 +6,6 @@ import {BsFilePdf} from 'react-icons/bs'
 
 export default function CrawlerConfluenceForm(props) {
     const selected_source = props.source;
-    const has_error = false;
-    // const [has_error,setError] = useState()
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
     const l_form_data = props.form_data;
@@ -25,11 +23,6 @@ export default function CrawlerConfluenceForm(props) {
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
         console.log("specific_json in rss", specific_json)
     }, [specific_json])
-
-
-    if (has_error) {
-        return <h1>CrawlerOnedriveForm.js: Something went wrong.</h1>;
-    }
 
 
     return (

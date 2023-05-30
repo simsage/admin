@@ -5,7 +5,6 @@ export default function CrawlerDiscourseForm2(props){
 
 
     const selected_source = props.source;
-    const [has_error, setFormError] = useState();
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
     const l_form_data = props.form_data;
@@ -23,10 +22,6 @@ export default function CrawlerDiscourseForm2(props){
         console.log("specific_json in rss", specific_json)
     }, [specific_json])
 
-
-    if (has_error) {
-        return <h1>CrawlerOnedriveForm.js: Something went wrong.</h1>;
-    }
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
