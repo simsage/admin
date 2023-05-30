@@ -10,7 +10,8 @@ import {getGroupList} from "../groups/groupSlice";
 export default function OrganisationFormV2(props) {
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session)
-    const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
+    const selected_organisation_id = props.organisation_id;
+    // const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
     let organisation = props.organisation;
 
 
@@ -71,7 +72,10 @@ export default function OrganisationFormV2(props) {
 
 
     useEffect(() => {
-        dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+        if(selected_organisation_id !== null){
+            console.log("selected_organisation_org",selected_organisation_id)
+            dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+        }
     }, [group_data_status === 'load_now'])
 
 //on submit store or update

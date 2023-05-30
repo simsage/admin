@@ -10,6 +10,7 @@ function MainSection(){
     const {selected_tab} = useSelector((state)=>state.homeReducer)
     const session = useSelector((state)=>state.authReducer.session)
     const organisation_list = useSelector((state)=>state.organisationReducer.organisation_list)
+    const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form);
 
     if(organisation_list === {}) {
         console.log("useEffect Main sesction organisation_list", organisation_list,"session",session)
@@ -40,8 +41,10 @@ function MainSection(){
             {/*    <ReportsHome />*/}
             {/*}*/}
 
-            <OrganisationEdit />
-
+            {show_organisation_form &&
+                <OrganisationEdit />
+            }
+c
         </div>
     )
 }
