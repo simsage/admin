@@ -198,7 +198,7 @@ export default function CrawlerWebForm(props) {
                         <div className="form-group col-12">
                             <label className="small">openid-configuration endpoint</label>
                             <input type="text"
-                                   placeholder="openid-configuration endpoint (e.g. https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration)"
+                                   placeholder="openid-configuration endpoint (e.g. https://login.microsoftonline.com/<tenant-id>/.well-known/openid-configuration)"
                                    className="form-control"
                                    value={specific_json.OIDCEndpoint}
                                    onChange={(event) => {
