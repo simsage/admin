@@ -49,7 +49,7 @@ export default function LogHome(){
                 window.log_timer = null;
             }
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // convert a log-type to a css class for display purposes

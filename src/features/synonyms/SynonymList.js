@@ -46,6 +46,7 @@ export default function SynonymsHome(props) {
 
     useEffect(() => {
             dispatch(loadSynonyms({session_id, data }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === "load_now",page, page_size])
 
 

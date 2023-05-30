@@ -69,10 +69,12 @@ export function OrganisationHome() {
 
     useEffect(() => {
         dispatch(getOrganisationList({session: session, filter: filter}))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === 'load_now'])
 
     useEffect(() => {
         dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backup_data_status === 'load_now', org_id != null])
 
 

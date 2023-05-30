@@ -76,6 +76,7 @@ export default function OrganisationFormV2(props) {
             console.log("selected_organisation_org",selected_organisation_id)
             dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [group_data_status === 'load_now'])
 
 //on submit store or update

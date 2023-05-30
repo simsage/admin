@@ -10,8 +10,6 @@ export default function SynsetDefault(){
     const show_form = useSelector((state) => state.synsetReducer.show_add_default_form)
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
-
-    const title = "Add all Default Synsets";
     const body = "Are you sure you want to add all default Synsets?";
 
     //handle form close or cancel

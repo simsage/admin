@@ -18,7 +18,6 @@ export function SourceProcessFilesDialog() {
         dispatch(closeForm());
     }
 
-    const title = "Process all files for Crawler";
     const source_name = (selected_source)?selected_source.name:'';
     let message1 = `Are you sure you want to process all files for '${source_name}'? `;
     let message2 = "NB. Please stop any crawling activity first to keep your counters up-to-date.";

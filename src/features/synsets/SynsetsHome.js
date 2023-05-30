@@ -21,6 +21,7 @@ export default function SynsetHome() {
 
     useEffect(() => {
         dispatch(loadSynsets({ session_id, organisation_id: selected_organisation_id, kb_id:selected_knowledge_base_id, page:0, filter:"", page_size:10 }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 
@@ -36,7 +37,7 @@ export default function SynsetHome() {
 
             }
             {/*Intro message when there are no synsets items loaded*/}
-            {status !== null && synset_list.length === 0 && num_synsets == 0 && allow_no_results &&
+            {status !== null && synset_list.length === 0 && num_synsets === 0 && allow_no_results &&
                 <SynsetIntro />
 
             }

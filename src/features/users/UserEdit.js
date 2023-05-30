@@ -4,7 +4,6 @@ import {closeUserForm, updateUser} from "./usersSlice";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import SubNav from "../../includes/sub-nav";
-import {useForm} from "react-hook-form";
 
 export function UserEdit() {
 
@@ -24,19 +23,12 @@ export function UserEdit() {
         setSelectedTab(slug);
     }
 
-    // const {formState: {errors},} = useForm();
-
-
     const show_user_form = useSelector((state) => state.usersReducer.show_user_form);
     const user_id = useSelector((state) => state.usersReducer.edit_id);
     const user_list = useSelector((state) => state.usersReducer.user_list);
     const available_roles = useSelector((state) => state.usersReducer.roles);
     const available_KBs = useSelector((state) => state.kbReducer.kb_list);
     const group_list_full = useSelector(((state) => state.groupReducer.group_list))
-    //const group_list_full = group_list_parent ? group_list_parent.groupList : group_list_parent;
-
-
-
 
     //user form details
     const [email, setEmail] = useState('');
@@ -59,8 +51,8 @@ export function UserEdit() {
     const [kbFilter, setKbFilter] = useState('');
 
     // Grab user details if editing
-    let selectedUser = {}
     useEffect(() => {
+        let selectedUser = {}
         if (user_id && user_list) {
             let temp_obj = user_list.filter((o) => {
                 return o.id === user_id
@@ -86,6 +78,7 @@ export function UserEdit() {
                 return roleObj.organisationId === organisation_id
             }).map(r => r.role).includes('operator'))
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_user_form])
 
     //[details,roles, groups]

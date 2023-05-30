@@ -54,5 +54,4 @@ export const getSimSageStatus = createAsyncThunk(
 );
 
 
-export const {} = statusSlice.actions
 export default statusSlice.reducer;

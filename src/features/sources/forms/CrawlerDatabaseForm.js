@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import Api from "../../../common/api";
 
 export default function CrawlerDatabaseForm(props) {
 
@@ -9,9 +8,6 @@ export default function CrawlerDatabaseForm(props) {
         {"key": "postgresql", "value": "Postgresql"},
         {"key": "microsoftsql", "value": "Microsoft SQL"},
     ];
-
-    // 2020-01-01 00:00 GMT (without milliseconds)
-    const time2020 = 1577836800;
 
     const selected_source = props.source;
 
@@ -44,28 +40,17 @@ export default function CrawlerDatabaseForm(props) {
 
     const l_form_data = props.form_data;
 
-    let date_time_str = "complete crawl";
-
-    if (specific_json.timeToCheckFrom > time2020)
-        date_time_str = Api.toPrettyDateTime(new Date(specific_json.timeToCheckFrom * 1000));
-
-
     //update local variable specific_json when data is changed
     function setData(data) {
         setSpecificJson({...specific_json,...data})
     }
-
-    function setTimeToNow(e) {
-        e.preventDefault()
-        setData({timeToCheckFrom: Math.floor(Date.now() / 1000)});
-    }
-
 
     //update setFormData when specific_json is changed
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
         console.log("specific_json in database", specific_json)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
 

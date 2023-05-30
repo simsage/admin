@@ -256,6 +256,7 @@ export default function SourceForm() {
         defaultValues.isExternal = false;
 
         reset({...defaultValues});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_form]);
 
 
@@ -601,6 +602,7 @@ export default function SourceForm() {
         console.log("selected_val", selected_val)
 
         if (selected_val) setFormData({...form_data, crawlerType: selected_val})
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [watch("crawlerType")])
 
 

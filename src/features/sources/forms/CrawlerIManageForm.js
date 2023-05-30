@@ -27,6 +27,7 @@ export default function CrawlerIManageForm(props) {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
         console.log("specific_json in rss", specific_json)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
 
@@ -119,7 +120,7 @@ export default function CrawlerIManageForm(props) {
                                     value={specific_json.cursor}
                                                onChange={(event) => {setData({cursor: event.target.value})}}
                                 />
-                                <a className="btn bt-sm btn-primary ms-2" onClick={(e) => resetCursor(e)}>Now</a>
+                                <div className="btn bt-sm btn-primary ms-2" onClick={(e) => resetCursor(e)}>Now</div>
                             </div>
                         </div>
                     </div>

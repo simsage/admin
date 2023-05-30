@@ -72,6 +72,7 @@ export default function SourceHome(props) {
             organisation_id: selected_organisation_id,
             kb_id: selected_knowledge_base_id
         }))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected_knowledge_base_id, session, props.tab, data_status === 'load_now'])
 
 
@@ -263,57 +264,6 @@ export default function SourceHome(props) {
         return "?";
     }
 
-    function isCrawlerRunning(crawler) {
-        if (crawler) {
-            if (crawler.startTime <= 0)
-                return false;
-            if (crawler.endTime > crawler.startTime && crawler.optimizedTime > crawler.endTime)
-                return false;
-            if (crawler.startTime > 0 && crawler.endTime < crawler.startTime) {
-                if (Api.defined(crawler.schedule) && crawler.schedule.length === 0)
-                    return false;
-                else
-                    return true;
-            }
-            if (crawler.endTime > crawler.startTime) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    // function onUpdate(crawler) {
-    //     // this.setState({selected_source: crawler});
-    //     // setSelectedSource(crawler)
-    //     console.log(crawler)
-    //     console.log(crawler.url)
-    // }
-
-    // function deleteCrawler(action) {
-    //     if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
-    //         this.props.deleteCrawler(this.state.crawler_ask.sourceId);
-    //     }
-    //     if (this.props.closeDialog) {
-    //         this.props.closeDialog();
-    //     }
-    // }
-
-    // function saveCrawler(crawler) {
-    //     if (crawler) {
-    //         console.log("crawler.sourceID :", crawler)
-    //         console.log("crawler.sourceID :", crawler.sourceId)
-    //         console.log("crawler.organisationId :", crawler.organisationId)
-    //         console.log("crawler.kbId :", crawler.kbId)
-    //
-    //         dispatch(updateSources({session_id: session.id, data: crawler}))
-    //     }
-    //
-    // }
-    //
-    // function canDeleteDocuments(crawler) {
-    //     return crawler.crawlerType !== 'wordpress';
-    // }
-
     function saveExport(crawler_str) {
         if (crawler_str && this.state.export_upload) {
             const crawler = JSON.parse(crawler_str);
@@ -322,42 +272,6 @@ export default function SourceHome(props) {
         }
         this.setState({export_open: false, selected_source: {}});
     }
-    //
-    // function zipSource(action) {
-    //     if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
-    //         const crawler = this.state.crawler_ask;
-    //         this.props.zipSource(crawler);
-    //     }
-    //     if (this.props.closeDialog) {
-    //         this.props.closeDialog();
-    //     }
-    // }
-    //
-    // function startCrawler(action) {
-    //     if (action && this.state.crawler_ask && this.state.crawler_ask.sourceId) {
-    //         const crawler = this.state.crawler_ask;
-    //         this.props.startCrawler(crawler);
-    //     }
-    //     if (this.props.closeDialog) {
-    //         this.props.closeDialog();
-    //     }
-    // }
-    //
-    // function resetCrawlers(action) {
-    //     if (action) {
-    //         this.props.resetCrawlers(selected_organisation_id, selected_knowledge_base_id);
-    //     }
-    //     if (this.props.closeDialog) {
-    //         this.props.closeDialog();
-    //     }
-    // }
-    //
-    // //handle form close or cancel
-    // const handleClose = () => {
-    //     // clearFormData();
-    //     console.log("handleClose Source Home")
-    //     dispatch(closeForm);
-    // }
 
     function handleAddForm(){
         console.log("handleAddNew")
@@ -374,37 +288,12 @@ export default function SourceHome(props) {
         //dispatch(searchSource({keyword:val}))
     }
 
-    // function handleResetCrawlers() {
-    //
-    //     setButtonClicked('reset_crawlers')
-    //     this.props.openDialog("Are you sure you want to reset all crawlers?  This will clear crawler schedules, and mark their files as out-of-date.",
-    //         "Reset Crawlers", (action) => {
-    //             this.resetCrawlers(action)
-    //         });
-    // }
 
     function setError(title, errStr) {
     }
 
-    // function wpUploadArchive(data) {
-    // }
-    //
-    // function message_callback(action) {
-    // }
-
-    // const open = show_form_source;
-    // const source_title = 'Add/Edit Source';
-    // const group_list = [];
-    // const edge_device_list = [];
-    // // const error_title = ''
-    // // const error_msg = ''
-    // const testCrawler = null
-
     const export_open = false;
     const export_upload = false;
-
-    // const message = ""
-    // const message_title = "message_title"
 
     return (
         <div className="section px-5 pt-4">

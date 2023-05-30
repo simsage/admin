@@ -26,6 +26,7 @@ export function TextToSearchEdit(props){
             setSearchType(edit.type);
             setMatchWords(edit.matchWords);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_text_to_search_form])
 
     function resetData () {

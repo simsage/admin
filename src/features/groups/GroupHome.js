@@ -22,6 +22,7 @@ export default function SynonymsHome() {
 
     useEffect(()=>{
         dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[load_data === 'load_now', selected_organisation_id])
 
 

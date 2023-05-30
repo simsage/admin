@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {BsFilePdf} from 'react-icons/bs'
-import Api from "../../../common/api";
 
 export default function CrawlerOnedriveForm(props) {
 
@@ -15,9 +14,6 @@ export default function CrawlerOnedriveForm(props) {
     // const theme = props.theme;
     const l_form_data = props.form_data;
 
-    const [has_error, setError] = useState()
-
-
     //update local variable specific_json when data is changed
     function setData(data) {
         setSpecificJson({...specific_json, ...data})
@@ -29,12 +25,9 @@ export default function CrawlerOnedriveForm(props) {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson: specific_json_stringify})
         console.log("specific_json in rss", specific_json)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
-
-    if (has_error) {
-        return <h1>CrawlerOnedriveForm.js: Something went wrong.</h1>;
-    }
 
     return (
 

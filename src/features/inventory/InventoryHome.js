@@ -47,7 +47,7 @@ export default function InventoryHome(props) {
             organisation_id: selected_organisation_id,
             kb_id: selected_knowledge_base_id
         }))
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, data_status === 'load_now', props.tab,
              selected_knowledge_base_id, selected_organisation_id, session_id])
 

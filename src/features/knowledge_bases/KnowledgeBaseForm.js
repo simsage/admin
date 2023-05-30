@@ -63,6 +63,7 @@ export default function KnowledgeBaseForm() {
         }
         //Show Missing Org error at page loading if no org set.
         showMissingOrganisationError()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_kb_form]);
 
 
@@ -96,6 +97,7 @@ export default function KnowledgeBaseForm() {
         defaultValues.lastIndexOptimizationTime = 0;
 
         reset({...defaultValues});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [kb, show_kb_form]);
 
 

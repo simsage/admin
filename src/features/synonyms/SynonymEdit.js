@@ -22,9 +22,10 @@ export function SynonymEdit(props){
 
     // Grab synonym details if editing
     useEffect(()=> {
-    if ( synonym ) {
-        setSynonymList(synonym.words);
-    }
+        if ( synonym ) {
+            setSynonymList(synonym.words);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_synonym_form])
 
     function resetData () {

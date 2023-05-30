@@ -27,8 +27,8 @@ export default function GroupEdit(){
     //dummydata End
 
     // Grab Group details if editing
-    let selectedGroup= {}
     useEffect(()=> {
+        let selectedGroup= {}
         if (groupName && group_list) {
             let temp_obj = group_list.filter((o) => {
                 return o.name === groupName
@@ -51,6 +51,7 @@ export default function GroupEdit(){
                 return !users.includes(u.id);
             }))
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showGroupForm])
 
 

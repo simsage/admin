@@ -36,6 +36,7 @@ export default function CrawlerBoxForm(props) {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
         console.log("specific_json in rss", specific_json)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
 
@@ -91,7 +92,7 @@ export default function CrawlerBoxForm(props) {
                                     value={specific_json.deltaIndicator}
                                                onChange={(event) => {setData({deltaIndicator: event.target.value})}}
                                 />
-                                <a className="btn bt-sm btn-primary ms-2" onClick={(e) => setTimeToNow(e)}>Now</a>
+                                <div className="btn bt-sm btn-primary ms-2" onClick={(e) => setTimeToNow(e)}>Now</div>
                                 <span className="small text-nowrap ms-3 text-capitalize">{date_time_str}</span>
                             </div>
                         </div>

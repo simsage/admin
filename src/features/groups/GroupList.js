@@ -33,6 +33,7 @@ export default function GroupList(){
 
     useEffect(()=>{
             // dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[load_data === 'load_now',page, page_size, selected_organisation_id])
 
     function filterGroups() {

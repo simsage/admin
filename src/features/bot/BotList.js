@@ -56,6 +56,7 @@ export default function BotList() {
 
     useEffect(() => {
         dispatch(loadMindItems({session_id, data}))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === "load_now", selected_knowledge_base_id, page_size, page])
 
     function handlePageChange(next_page){

@@ -23,6 +23,8 @@ export default function SourceTabs(props) {
                             <li key={index} className={((selected_tab === item.slug) ? "active" : "")+" nav-item px-5 pt-3 pb-2 no-select text-capitalize"} onClick={() => props.onClick(item.slug)}>
                                 {item.label}
                             </li>)
+                    } else {
+                        return (<div />)
                     }
                 })
             }

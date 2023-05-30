@@ -19,18 +19,17 @@ export default function CrawlerSearchForm2(props){
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
         console.log("specific_json in rss", specific_json)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
 
     function handleQueryInputChange(val,index){
         let temp_list = query_list.filter((item) => {
-            if (item.trim().length) {
-                return item
-            }
+            return item.trim().length > 0
         })
         if(val.trim().length === 0){
             temp_list.splice(index,1);
-        }else {
+        } else {
             temp_list[index] = val;
         }
 

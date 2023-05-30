@@ -3,9 +3,6 @@ import React, {useEffect, useState} from "react";
 export default function CrawlerMetaMapperForm(props) {
 
     const selected_source = props.source;
-
-    const [form_error, setFormError] = useState();
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
 
@@ -40,6 +37,7 @@ export default function CrawlerMetaMapperForm(props) {
     useEffect(()=>{
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[specific_json])
 
 
@@ -210,225 +208,220 @@ export default function CrawlerMetaMapperForm(props) {
     }
 
 
-    if (form_error) {
-        return <h1>crawler metadata: Something went wrong.</h1>;
-    } else {
-        return (
-            <div className="crawler-page">
+    return (
+        <div className="crawler-page">
 
-                <div className="instructions-label">All rows in order of UI.  Use 'actions' arrows to re-arrange existing rows.</div>
+            <div className="instructions-label">All rows in order of UI.  Use 'actions' arrows to re-arrange existing rows.</div>
 
-                <table className="table">
+            <table className="table">
 
-                    <thead>
-                    <tr className='table-header'>
-                        <th className="table-header metadata-column">data-type</th>
-                        <th className="table-header db-field-column">source field</th>
-                        <th className="table-header display-column">UI display-name</th>
-                        <th className="table-header metadata-field-column">metadata name</th>
-                        <th className="table-header sort-field-column">sortable</th>
-                        <th className="table-header action-field-column">actions</th>
-                    </tr>
-                    </thead>
+                <thead>
+                <tr className='table-header'>
+                    <th className="table-header metadata-column">data-type</th>
+                    <th className="table-header db-field-column">source field</th>
+                    <th className="table-header display-column">UI display-name</th>
+                    <th className="table-header metadata-field-column">metadata name</th>
+                    <th className="table-header sort-field-column">sortable</th>
+                    <th className="table-header action-field-column">actions</th>
+                </tr>
+                </thead>
 
-                    <tbody>
+                <tbody>
 
-                    {
-                        get_md_list().map(function(md, index) {
-                            return (<tr key={index}>
+                {
+                    get_md_list().map(function(md, index) {
+                        return (<tr key={index}>
 
-                                <td className="selector-column">
-                                    <select className="form-select metadata-field-column" onChange={(event) => { set_md_type(md, index, event.target.value) }}
-                                            disabled={("" + source_id) !== "0"} aria-label="select what kind of metadata field to use"
-                                            defaultValue={md.key}>
-                                        {
-                                            metadata_list.map((value, j) => {
-                                                return (<option key={j} value={value.key}>{value.key}</option>)
-                                            })
-                                        }
-                                    </select>
+                            <td className="selector-column">
+                                <select className="form-select metadata-field-column" onChange={(event) => { set_md_type(md, index, event.target.value) }}
+                                        disabled={("" + source_id) !== "0"} aria-label="select what kind of metadata field to use"
+                                        defaultValue={md.key}>
+                                    {
+                                        metadata_list.map((value, j) => {
+                                            return (<option key={j} value={value.key}>{value.key}</option>)
+                                        })
+                                    }
+                                </select>
+                            </td>
+
+                            {md.key !== "two level category" &&
+                                <td className="db-field-column">
+                                    <input type="text"
+                                           className="theme source-field-width"
+                                           placeholder="source [field-name]"
+                                           title="the source-name field to use for this category"
+                                           value={md.db1}
+                                           onChange={(event) => {
+                                               set_db(md, index, event.target.value)
+                                           }}
+                                    />
                                 </td>
+                            }
 
-                                {md.key !== "two level category" &&
-                                    <td className="db-field-column">
+                            {md.key === "two level category" &&
+                                <td className="db-field-column">
+                                    <input type="text"
+                                           placeholder="level 1 [field-name]"
+                                           className="theme source-field-width"
+                                           value={md.db1}
+                                           title="the first source field to use for this double category"
+                                           onChange={(event) => {
+                                               set_db(md, index, event.target.value)
+                                           }}
+                                    />
+                                    <input type="text"
+                                           placeholder="level 2 [field-name]"
+                                           className="theme source-field-width"
+                                           value={md.db2}
+                                           title="the second source field to use for this double category"
+                                           onChange={(event) => {
+                                               set_db_extra(md, index, event.target.value)
+                                           }}
+                                    />
+                                </td>
+                            }
+
+
+                            <td className="td-display-column">
+                                {
+                                    md.display !== null &&
+                                    <span>
                                         <input type="text"
-                                               className="theme source-field-width"
-                                               placeholder="source [field-name]"
-                                               title="the source-name field to use for this category"
-                                               value={md.db1}
+                                               className="theme metadata-text"
+                                               placeholder="UI display-name"
+                                               title="name displayed in the UI for this item"
+                                               value={md.display}
+                                               onChange={(event) => {setDisplayName(md, index, event.target.value)}}  />
+                                    </span>
+                                }
+                            </td>
+
+
+                            <td className="td-align-top">
+                                {
+                                    needs_metadata_field(md) &&
+                                    <div className="td-md-field-width">
+                                        <input type="text"
+                                               className="theme metadata-text"
+                                               placeholder="metadata name"
+                                               value={md.metadata}
+                                               title="metadata names should only contain 0..9, a..z, and A..Z"
+                                               onKeyDown={(event) => {return checkMetadataName(event)}}
+                                               onChange={(event) => {setUserMetadataName1(md, index, event.target.value)}}  />
+                                    </div>
+                                }
+                                { md.sort === "true" &&
+                                    <div>
+                                        <input type="text"
+                                               className="theme metadata-text"
+                                               placeholder="sort descending UI text"
+                                               value={md.sortDescText}
+                                               title="The text to display for this field if a descending sort is selected of this type"
+                                               onChange={(event) => {setValue(md, index, "sortDescText", event.target.value)}}  />
+                                    </div>
+                                }
+                                { md.sort === "true" &&
+                                    <div>
+                                        <input type="text"
+                                               className="theme metadata-text"
+                                               placeholder="sort ascending UI text"
+                                               value={md.sortAscText}
+                                               title="The text to display for this field if an ascending sort is selected of this type"
+                                               onChange={(event) => {setValue(md, index, "sortAscText", event.target.value)}}  />
+                                    </div>
+                                }
+                                {md.sort === "true" &&
+                                    <br />
+                                }
+                            </td>
+
+                            <td className="td-align-top">
+                                {md.sort !== "" &&
+                                    <div className="td-sort-2" title="enable this category as an item used for sorting in the UI">
+                                        <input type="checkbox"
+                                               checked={md.sort === "true"}
                                                onChange={(event) => {
-                                                   set_db(md, index, event.target.value)
+                                                   setSort(md, index, event.target.checked);
+                                               }}
+                                               value="enable result sorting over this field?"
+                                        />
+                                    </div>
+                                }
+                                {md.sort === "true" &&
+                                    <div className="td-sort-2" title="set this descending field as the default sort field for the UI">
+                                        {'\u2190'}
+                                        <input type="checkbox"
+                                               checked={md.sortDefault === "desc"}
+                                               onChange={(event) => {
+                                                   setDefaultSort(md, index, "desc", event.target.checked);
                                                }}
                                         />
-                                    </td>
+                                    </div>
                                 }
 
-                                {md.key === "two level category" &&
-                                    <td className="db-field-column">
-                                        <input type="text"
-                                               placeholder="level 1 [field-name]"
-                                               className="theme source-field-width"
-                                               value={md.db1}
-                                               title="the first source field to use for this double category"
+                                {md.sort === "true" &&
+                                    <div className="td-sort-2" title="set this ascending field as the default sort field for the UI">
+                                        {'\u2190'}
+                                        <input type="checkbox"
+                                               checked={md.sortDefault === "asc"}
                                                onChange={(event) => {
-                                                   set_db(md, index, event.target.value)
+                                                   setDefaultSort(md, index, "asc", event.target.checked);
                                                }}
                                         />
-                                        <input type="text"
-                                               placeholder="level 2 [field-name]"
-                                               className="theme source-field-width"
-                                               value={md.db2}
-                                               title="the second source field to use for this double category"
-                                               onChange={(event) => {
-                                                   set_db_extra(md, index, event.target.value)
-                                               }}
-                                        />
-                                    </td>
+                                    </div>
                                 }
+                            </td>
 
+                            <td className="td-action">
+                                <button onClick={() => deleteMetadataItem(index)} type="button"
+                                        className="btn btn-secondary" title="remove this metadata mapping"
+                                        data-bs-dismiss="modal">remove
+                                </button>
+                                {/*<span className="delete-box" onClick={() => deleteMetadataItem(index)} title="remove this metadata item">*/}
+                                {/*    <img src={theme === 'light' ? "images/delete.svg" : "images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>*/}
+                                {/*</span>*/}
+                                {index > 0 &&
+                                    <span className="up-arrow" title="move row up (change UI ordering)"
+                                          onClick={() => {
+                                              move_row_up(md, index)
+                                          }}>&#8679;</span>
+                                }
+                                {index + 1 < num_rows &&
+                                    <span className="up-arrow" title="move row down (change UI ordering)"
+                                          onClick={() => {
+                                              move_row_down(md, index)
+                                          }}>&#8681;</span>
+                                }
+                            </td>
 
-                                <td className="td-display-column">
-                                    {
-                                        md.display !== null &&
-                                        <span>
-                                            <input type="text"
-                                                   className="theme metadata-text"
-                                                   placeholder="UI display-name"
-                                                   title="name displayed in the UI for this item"
-                                                   value={md.display}
-                                                   onChange={(event) => {setDisplayName(md, index, event.target.value)}}  />
-                                        </span>
-                                    }
-                                </td>
+                        </tr>)
+                    })
+                }
 
+                <tr>
+                    <td colSpan={6}>&nbsp;</td>
+                </tr>
 
-                                <td className="td-align-top">
-                                    {
-                                        needs_metadata_field(md) &&
-                                        <div className="td-md-field-width">
-                                            <input type="text"
-                                                   className="theme metadata-text"
-                                                   placeholder="metadata name"
-                                                   value={md.metadata}
-                                                   title="metadata names should only contain 0..9, a..z, and A..Z"
-                                                   onKeyDown={(event) => {return checkMetadataName(event)}}
-                                                   onChange={(event) => {setUserMetadataName1(md, index, event.target.value)}}  />
-                                        </div>
-                                    }
-                                    { md.sort === "true" &&
-                                        <div>
-                                            <input type="text"
-                                                   className="theme metadata-text"
-                                                   placeholder="sort descending UI text"
-                                                   value={md.sortDescText}
-                                                   title="The text to display for this field if a descending sort is selected of this type"
-                                                   onChange={(event) => {setValue(md, index, "sortDescText", event.target.value)}}  />
-                                        </div>
-                                    }
-                                    { md.sort === "true" &&
-                                        <div>
-                                            <input type="text"
-                                                   className="theme metadata-text"
-                                                   placeholder="sort ascending UI text"
-                                                   value={md.sortAscText}
-                                                   title="The text to display for this field if an ascending sort is selected of this type"
-                                                   onChange={(event) => {setValue(md, index, "sortAscText", event.target.value)}}  />
-                                        </div>
-                                    }
-                                    {md.sort === "true" &&
-                                        <br />
-                                    }
-                                </td>
+                <tr>
+                    <td colSpan={6} align={"right"}>
+                        {/*<div className="image-button" onClick={() => addNewMetadataMapping()}><img*/}
+                        {/*    className="image-size" src={theme === 'light' ? "images/add.svg" : "images/add-dark.svg"} title="add new metadata mapping"*/}
+                        {/*    alt="add new metadata mapping"/></div>*/}
+                        <button onClick={addNewMetadataMapping} type="button" className="btn btn-secondary"
+                                title="add new metadata mapping"
+                                data-bs-dismiss="modal">add new metadata mapping
+                        </button>
+                    </td>
+                </tr>
 
-                                <td className="td-align-top">
-                                    {md.sort !== "" &&
-                                        <div className="td-sort-2" title="enable this category as an item used for sorting in the UI">
-                                            <input type="checkbox"
-                                                   checked={md.sort === "true"}
-                                                   onChange={(event) => {
-                                                       setSort(md, index, event.target.checked);
-                                                   }}
-                                                   value="enable result sorting over this field?"
-                                            />
-                                        </div>
-                                    }
-                                    {md.sort === "true" &&
-                                        <div className="td-sort-2" title="set this descending field as the default sort field for the UI">
-                                            {'\u2190'}
-                                            <input type="checkbox"
-                                                   checked={md.sortDefault === "desc"}
-                                                   onChange={(event) => {
-                                                       setDefaultSort(md, index, "desc", event.target.checked);
-                                                   }}
-                                            />
-                                        </div>
-                                    }
+                <tr>
+                    <td colSpan={6}>&nbsp;</td>
+                </tr>
 
-                                    {md.sort === "true" &&
-                                        <div className="td-sort-2" title="set this ascending field as the default sort field for the UI">
-                                            {'\u2190'}
-                                            <input type="checkbox"
-                                                   checked={md.sortDefault === "asc"}
-                                                   onChange={(event) => {
-                                                       setDefaultSort(md, index, "asc", event.target.checked);
-                                                   }}
-                                            />
-                                        </div>
-                                    }
-                                </td>
+                </tbody>
 
-                                <td className="td-action">
-                                    <button onClick={() => deleteMetadataItem(index)} type="button"
-                                            className="btn btn-secondary" title="remove this metadata mapping"
-                                            data-bs-dismiss="modal">remove
-                                    </button>
-                                    {/*<span className="delete-box" onClick={() => deleteMetadataItem(index)} title="remove this metadata item">*/}
-                                    {/*    <img src={theme === 'light' ? "images/delete.svg" : "images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>*/}
-                                    {/*</span>*/}
-                                    {index > 0 &&
-                                        <span className="up-arrow" title="move row up (change UI ordering)"
-                                              onClick={() => {
-                                                  move_row_up(md, index)
-                                              }}>&#8679;</span>
-                                    }
-                                    {index + 1 < num_rows &&
-                                        <span className="up-arrow" title="move row down (change UI ordering)"
-                                              onClick={() => {
-                                                  move_row_down(md, index)
-                                              }}>&#8681;</span>
-                                    }
-                                </td>
-
-                            </tr>)
-                        })
-                    }
-
-                    <tr>
-                        <td colSpan={6}>&nbsp;</td>
-                    </tr>
-
-                    <tr>
-                        <td colSpan={6} align={"right"}>
-                            {/*<div className="image-button" onClick={() => addNewMetadataMapping()}><img*/}
-                            {/*    className="image-size" src={theme === 'light' ? "images/add.svg" : "images/add-dark.svg"} title="add new metadata mapping"*/}
-                            {/*    alt="add new metadata mapping"/></div>*/}
-                            <button onClick={addNewMetadataMapping} type="button" className="btn btn-secondary"
-                                    title="add new metadata mapping"
-                                    data-bs-dismiss="modal">add new metadata mapping
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td colSpan={6}>&nbsp;</td>
-                    </tr>
-
-                    </tbody>
-
-                </table>
-            </div>
-        )
-    }
-
+            </table>
+        </div>
+    )
 
 }

@@ -54,6 +54,7 @@ console.log("page",prev_word)
     useEffect(() => {
         console.log("useEffect dataload", data)
         dispatch(loadSemantics({ session_id, data }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === "load_now" ,page, page_size ,selected_organisation_id, selected_knowledge_base_id])
 
 

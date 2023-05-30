@@ -23,7 +23,7 @@ export function SemanticEdit(){
             setWord(selectedSemantic.word);
             setSemanticType(selectedSemantic.semantic);
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_semantic_form])
 
     function resetData () {

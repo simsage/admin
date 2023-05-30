@@ -46,6 +46,7 @@ const TextToSearchList = () => {
 
     useEffect( () => {
         dispatch(loadTextToSearch({session_id, data}))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === "load_now", ts_page, ts_page_size, selected_knowledge_base_id])
 
 

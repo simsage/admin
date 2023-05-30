@@ -22,6 +22,7 @@ const TextToSearchHome = () => {
 
         useEffect( () => {
             dispatch(loadTextToSearch({session_id, data}))
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     return (
         <div>

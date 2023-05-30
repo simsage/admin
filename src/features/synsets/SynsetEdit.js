@@ -30,6 +30,7 @@ export default function SynsetEdit(){
             setWordCloud(synset.wordCloudCsvList);
             console.log('here', wordCloud)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_synset_form])
 
     function resetData () {
@@ -123,7 +124,8 @@ export default function SynsetEdit(){
                                 </div>
                                 {
                                     wordCloud && wordCloud.map( (cloud, i) => {
-                                        if(cloud === ''){return;}
+                                        if(cloud === '')
+                                            return (<div />)
                                         return (
                                         <div className="control-row col-12 mb-2" key={i}>
                                             <span className="text">

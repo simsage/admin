@@ -26,6 +26,7 @@ export function CategorizationEdit(){
             setCategoryLabel(selectedCategory.categorizationLabel);
             setRule(selectedCategory.rule)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_category_form])
 
     function resetData () {

@@ -37,6 +37,7 @@ export default function CategorizationHome() {
     useEffect(()=>{
         // console.log("category_list",load_data)
         dispatch(loadCategorizations(data))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[load_data === "load_now",selected_knowledge_base_id])
 
 
