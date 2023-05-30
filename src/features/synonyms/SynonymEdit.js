@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
-import {closeSynonymForm, loadSynonyms, updateSynonyms} from "./synonymSlice";
+import {closeSynonymForm, updateSynonyms} from "./synonymSlice";
 
 
 

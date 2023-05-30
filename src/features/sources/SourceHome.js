@@ -54,9 +54,6 @@ export default function SourceHome(props) {
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
-    const [searchFilter,setSearchFilter] = useState('');
-    const [sourceFilter,setSourceFilter] = useState('');
-
     const [selected_source, setSelectedSource] = useState(undefined)
     const [button_clicked, setButtonClicked] = useState(undefined);
 

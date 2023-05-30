@@ -19,15 +19,6 @@ export default function SynsetHome() {
 
     const allow_no_results = useSelector((state)=> state.synsetReducer.allow_no_results)
 
-    let data = {
-        "organisation_id": selected_organisation_id,
-        "kb_id": selected_knowledge_base_id,
-        "page": 0,
-        "filter": "",
-        "page_size": 10
-    };
-
-
     useEffect(() => {
         dispatch(loadSynsets({ session_id, organisation_id: selected_organisation_id, kb_id:selected_knowledge_base_id, page:0, filter:"", page_size:10 }));
     }, [])

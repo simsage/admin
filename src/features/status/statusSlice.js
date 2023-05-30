@@ -1,5 +1,4 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {getOrganisationList} from "../organisations/organisationSlice";
 import axios from "axios";
 import Comms from "../../common/comms";
 

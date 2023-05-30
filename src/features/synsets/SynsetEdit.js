@@ -19,7 +19,6 @@ export default function SynsetEdit(){
 
     //Synonym details
     const [word, setWord] = useState('');
-    const [lemma, setLemma] = useState('');
     const [wordCloud, setWordCloud] = useState([]);
     const [newWordCloud, setNewWordCloud] = useState('');
 
@@ -28,7 +27,6 @@ export default function SynsetEdit(){
         if ( synset ) {
             console.log('editing', synset)
             setWord(synset.word);
-            setLemma(synset.lemma);
             setWordCloud(synset.wordCloudCsvList);
             console.log('here', wordCloud)
         }
@@ -36,7 +34,6 @@ export default function SynsetEdit(){
 
     function resetData () {
         setWord('');
-        setLemma('');
         setWordCloud([]);
         setNewWordCloud('');
     }
