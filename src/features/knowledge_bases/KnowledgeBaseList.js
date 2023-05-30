@@ -7,7 +7,7 @@ import {
     showEditForm,
     showDeleteAskForm,
     showOptimizeAskDialog,
-    search
+    search, showTruncateIndexesAskDialog
 } from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
 import api from "../../common/api";
@@ -68,6 +68,10 @@ export default function KnowledgeBaseList() {
 
     function handleOptimizeIndexesAsk(knowledge_base) {
         dispatch(showOptimizeAskDialog({session_id, kb: knowledge_base}));
+    }
+
+    function handleTruncateSlowIndexesAsk(knowledge_base) {
+        dispatch(showTruncateIndexesAskDialog({session_id, kb: knowledge_base}));
     }
 
     function handleSearchFilter(event) {
@@ -136,6 +140,10 @@ export default function KnowledgeBaseList() {
                                                     <button title="optimize indexes"
                                                             onClick={() => handleOptimizeIndexesAsk(knowledge_base)}
                                                             className={"btn text-primary btn-sm"}>Optimize indexes
+                                                    </button>
+                                                    <button title="truncate slow indexes"
+                                                            onClick={() => handleTruncateSlowIndexesAsk(knowledge_base)}
+                                                            className={"btn text-primary btn-sm"}>Truncate slow indexes
                                                     </button>
                                                     <button title="edit knowledge base"
                                                             onClick={() => handleEditForm(knowledge_base.kbId)}

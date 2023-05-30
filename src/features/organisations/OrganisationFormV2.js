@@ -15,6 +15,7 @@ export default function OrganisationFormV2(props) {
     let organisation = props.organisation;
 
 
+
     const [selected_tab, setSelectedTab] = useState('general')
     const group_data_status = useSelector((state) => state.groupReducer.data_status)
     const group_list_full = useSelector(((state) => state.groupReducer.group_list))
@@ -71,11 +72,11 @@ export default function OrganisationFormV2(props) {
 
 
     useEffect(() => {
-        if (organisation !== null && organisation !== undefined) {
-            console.log("selected_organisation_org", organisation.id)
-            dispatch(getGroupList({session_id: session.id, organization_id: organisation.id}))
+        if(selected_organisation_id !== null){
+            console.log("selected_organisation_org",selected_organisation_id)
+            dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
         }
-    }, [group_data_status === 'load_now', organisation])
+    }, [group_data_status === 'load_now'])
 
 //on submit store or update
     const onSubmit = data => {
@@ -317,93 +318,80 @@ export default function OrganisationFormV2(props) {
 
                                         <div className="tab-content container px-5 py-4 overflow-auto"
                                              style={{maxHeight: "450px"}}>
-                                            {organisation !== null &&
-                                                <div className="row pb-5">
-                                                    <div className="role-block col-6"   >
-                                                        <h6 className="role-label text-center">SimSage Roles</h6>
-                                                        <div className="role-area bg-light border rounded h-100">
-                                                            <input
-                                                                className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                                placeholder="Filter..." value={selected_role_filter}
-                                                                onChange={(e) => setRoleFilter(e.target.value)}/>
-                                                            {
-                                                                getUserRoles().map((role, i) => {
-                                                                    return (<Chip key={i} color="secondary"
-                                                                                  onClick={() => removeRoleFromUser(role)}
-                                                                                  label={Api.getPrettyRole(role.role)}
-                                                                                  variant="outlined"/>)
-                                                                })
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                    <div className="role-block col-6">
-                                                        <h6 className="role-label text-center">Available</h6>
-                                                        <div className="role-area bg-light border rounded h-100">
-                                                            <input
-                                                                className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                                placeholder="Filter..." value={available_role_filter}
-                                                                onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
-                                                            {
-                                                                getAvailableRoles().map((role, i) => {
-                                                                    return (<Chip key={i} color="primary"
-                                                                                  onClick={() => addRoleToUser(role)}
-                                                                                  label={Api.getPrettyRole(role)}
-                                                                                  variant="outlined"/>)
-                                                                })
-                                                            }
-                                                        </div>
+                                            <div className="row pb-5">
+                                                <div className="role-block col-6">
+                                                    <h6 className="role-label text-center">SimSage Roles</h6>
+                                                    <div className="role-area bg-light border rounded h-100">
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                               placeholder="Filter..." value={selected_role_filter}
+                                                               onChange={(e) => setRoleFilter(e.target.value)}/>
+                                                        {
+                                                            getUserRoles().map((role, i) => {
+                                                                return (<Chip key={i} color="secondary"
+                                                                              onClick={() => removeRoleFromUser(role)}
+                                                                              label={Api.getPrettyRole(role.role)}
+                                                                              variant="outlined"/>)
+                                                            })
+                                                        }
                                                     </div>
                                                 </div>
-                                            }
+                                                <div className="role-block col-6">
+                                                    <h6 className="role-label text-center">Available</h6>
+                                                    <div className="role-area bg-light border rounded h-100">
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                               placeholder="Filter..." value={available_role_filter}
+                                                               onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
+                                                        {
+                                                            getAvailableRoles().map((role, i) => {
+                                                                return (<Chip key={i} color="primary"
+                                                                              onClick={() => addRoleToUser(role)}
+                                                                              label={Api.getPrettyRole(role)}
+                                                                              variant="outlined"/>)
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div className="tab-content container px-5 py-4 overflow-auto"
                                              style={{maxHeight: "300px"}}>
+                                            <div className="row pb-5">
+                                                <div className="role-block col-6">
+                                                    <h6 className="role-label text-center">SimSage Groups</h6>
+                                                    <div className="role-area bg-light border rounded h-100">
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                               placeholder="Filter..." value={selected_group_filter}
+                                                               onChange={(e) => setSelectedGroupFilter(e.target.value)}/>
+                                                        {
+                                                            getGroups().map((grp, i) => {
+                                                                return (
 
-                                            {organisation !== null &&
-                                                <div className="row pb-5">
-                                                    <div className="role-block col-6">
-                                                        <h6 className="role-label text-center">SimSage Groups</h6>
-                                                        <div className="role-area bg-light border rounded h-100">
-                                                            <input
-                                                                className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                                placeholder="Filter..."
-                                                                value={selected_group_filter}
-                                                                onChange={(e) => setSelectedGroupFilter(e.target.value)}/>
-                                                            {
-                                                                getGroups().map((grp, i) => {
-                                                                    return (
-
-                                                                        <Chip key={i} color="secondary"
-                                                                              onClick={() => removeGroupFromUser(grp)}
-                                                                              label={grp.name} variant="outlined"/>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="role-block col-6">
-                                                        <h6 className="role-label text-center">Available</h6>
-                                                        <div className="role-area bg-light border rounded h-100">
-                                                            <input
-                                                                className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                                placeholder="Filter..."
-                                                                value={available_group_filter}
-                                                                onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
-                                                            {
-                                                                getAvailableGroups().map((grp, i) => {
-                                                                    return (<Chip key={i} color="primary"
-                                                                                  onClick={() => addGroupToUser(grp)}
-                                                                                  label={grp.name}
-                                                                                  variant="outlined"/>)
-                                                                })
-                                                            }
-                                                        </div>
+                                                                    <Chip key={i} color="secondary"
+                                                                          onClick={() => removeGroupFromUser(grp)}
+                                                                          label={grp.name} variant="outlined"/>
+                                                                )
+                                                            })
+                                                        }
                                                     </div>
                                                 </div>
-                                            }
-
+                                                <div className="role-block col-6">
+                                                    <h6 className="role-label text-center">Available</h6>
+                                                    <div className="role-area bg-light border rounded h-100">
+                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                               placeholder="Filter..." value={available_group_filter}
+                                                               onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
+                                                        {
+                                                            getAvailableGroups().map((grp, i) => {
+                                                                return (<Chip key={i} color="primary"
+                                                                              onClick={() => addGroupToUser(grp)}
+                                                                              label={grp.name}
+                                                                              variant="outlined"/>)
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                     </div>

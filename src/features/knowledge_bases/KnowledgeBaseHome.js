@@ -7,6 +7,7 @@ import KnowledgeBaseDeleteInfo from "./KnowledgeBaseDeleteInfo";
 import KnowledgeBaseOptimize from "./KnowledgeBaseOptimize";
 import KnowledgeBaseViewIds from "./KnowledgeBaseViewIds";
 import {getKBList} from "./knowledgeBaseSlice";
+import KnowledgeBaseTruncateIndexes from "./KnowledgeBaseTruncateIndexes";
 
 
 export default function KnowledgeBaseHome() {
@@ -18,6 +19,7 @@ export default function KnowledgeBaseHome() {
     const kb_show_delete_form = useSelector((state) => state.kbReducer.show_delete_form)
     const kb_show_delete_info_form = useSelector((state) => state.kbReducer.show_delete_info_form)
     const kb_show_optimize_form = useSelector((state) => state.kbReducer.show_optimize_form)
+    const kb_show_truncate_indexes_form = useSelector((state) => state.kbReducer.show_truncate_indexes_form)
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const session = useSelector((state) => state).authReducer.session;
@@ -55,6 +57,9 @@ export default function KnowledgeBaseHome() {
             }
             {kb_show_optimize_form === true &&
                 <KnowledgeBaseOptimize />
+            }
+            {kb_show_truncate_indexes_form === true &&
+                <KnowledgeBaseTruncateIndexes />
             }
 
         </div>

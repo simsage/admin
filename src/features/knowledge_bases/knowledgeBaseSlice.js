@@ -27,6 +27,9 @@ const initialState = {
     show_optimize_form: false,
     optimize_data: null,            // {session and kb}
 
+    // ask truncate indexes
+    show_truncate_indexes_form: false,
+    truncate_indexes_data: null,    // {session and kb}
 }
 
 
@@ -123,6 +126,14 @@ const knowledgeBaseSlice = createSlice({
         closeOptimize: (state) => {
             state.show_optimize_form = false;
             state.optimize_data = null;
+        },
+        showTruncateIndexesAskDialog: (state, action) => {
+            state.truncate_indexes_data = action.payload;
+            state.show_truncate_indexes_form = true;
+        },
+        closeTruncateIndexes: (state) => {
+            state.show_truncate_indexes_form = false;
+            state.truncate_indexes_data = null;
         },
         //
         search: (state, action) => {
@@ -246,8 +257,27 @@ export const optimizeIndexes = createAsyncThunk(
 )
 
 
+export const truncateSlowIndexes = createAsyncThunk(
+    'knowledgeBases/truncateSlowIndexes',
+    async ({session_id, organisation_id, kb_id}, thunkAPI) => {
+        const api_base = window.ENV.api_base;
+        const url = '/language/truncate-slow-indexes/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        console.log('GET ' + api_base + url);
+        return axios.get(api_base + url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    return error
+                }
+            )
+    }
+)
+
+
 export const {
     showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
-    setViewIds, showOptimizeAskDialog, closeOptimize, updateKB, search, orderBy
+    setViewIds, showOptimizeAskDialog, closeOptimize, updateKB, search, orderBy,
+    showTruncateIndexesAskDialog, closeTruncateIndexes
 } = knowledgeBaseSlice.actions
 export default knowledgeBaseSlice.reducer;
