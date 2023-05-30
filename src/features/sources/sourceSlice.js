@@ -186,7 +186,7 @@ const extraReducers = (builder) => {
             state.error_message = ""
         })
 
-        //startSource setupOIDCRequest
+        //startSource
         .addCase(startSource.fulfilled, (state, action) => {
             console.log("source/startSource ", action)
 
@@ -202,20 +202,6 @@ const extraReducers = (builder) => {
         })
         .addCase(startSource.rejected, (state,action) => {
             console.log("source/startSource rejected", action)
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = action.payload
-            state.error_message = action.payload.data
-        })
-
-        // setupOIDCRequest
-        .addCase(setupOIDCRequest.fulfilled, (state, action) => {
-            console.log("source/setupOIDCRequest ", action)
-            const redirect_url = action.payload;
-            window.open(redirect_url, "_blank");
-        })
-        .addCase(setupOIDCRequest.rejected, (state,action) => {
-            console.log("source/setupOIDCRequest rejected", action)
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = action.payload
@@ -357,31 +343,6 @@ export const processFiles = createAsyncThunk(
                 }
             )
     });
-
-
-export const setupOIDCRequest = createAsyncThunk(
-    'sources/setupOIDCRequest',
-    async ({session_id, organisation_id, kb_id, OIDCClientID, OIDCSecret}) => {
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/oidc/request';
-        const data = {
-            "organisationId": organisation_id,
-            "kbId": kb_id,
-            "oidcClientId": OIDCClientID,
-            "oidcSecret": OIDCSecret,
-            "platformUrl": api_base
-        };
-        return axios.post(url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch(
-                (error) => {
-                    console.log("error", error)
-                    return error
-                }
-            )
-    }
-);
 
 
 const sourceSlice = createSlice({

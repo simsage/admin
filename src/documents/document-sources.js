@@ -244,7 +244,6 @@ export class DocumentSources extends Component {
                     onSave={(crawler) => this.saveCrawler(crawler)}
                     onUpdate={(crawler) => this.onUpdate(crawler)}
                     onError={(title, errStr) => this.props.setError(title, errStr)}
-                    setUpOIDCRequest={(OIDCClientID, OIDCSecret) => this.props.setUpOIDCRequest(OIDCClientID, OIDCSecret)}
                     error_title={this.props.error_title}
                     error_msg={this.props.error}
                     wpUploadArchive={(data) => this.props.wpUploadArchive(data)}
