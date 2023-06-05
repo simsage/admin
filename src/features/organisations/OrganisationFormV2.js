@@ -80,7 +80,7 @@ export default function OrganisationFormV2(props) {
 
 //on submit store or update
     const onSubmit = data => {
-        data.autoCreateSSORoleList = selected_roles;
+        data.autoCreateSSORoleList = selected_roles.map(role => { return role.role });
         data.autoCreateSSOACLList = selected_groups;
         //convert domain string to array
         data.autoCreateSSODomainList = data.autoCreateSSODomainListStr.split(',');
