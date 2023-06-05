@@ -4,6 +4,7 @@ import axios from "axios";
 
 const initialState = {
     source_list: [],
+    source_original_ist: [],
     source_filter: null,
     source_page: 0,
     source_page_size: 10,
@@ -101,6 +102,27 @@ const reducers = {
     // setSelectedSourceType:(state,action) => {
     //     state.selected_source_type = action.payload
     // },
+
+    searchSource: (state, action) => {
+
+        console.log("searchSource", action.payload.keyword)
+        if (action.payload.keyword.length > 0) {
+            let temp = state.source_original_ist.filter(list_item => {
+                return list_item.name.match(new RegExp(action.payload.keyword, "i"))
+            });
+            if (temp.length > 0) {
+                state.source_list = temp;
+                state.status = "fulfilled";
+            } else {
+                state.source_list = state.source_original_ist;
+                state.status = "fulfilled";
+            }
+        } else {
+            state.source_list = state.source_original_ist;
+            state.status = "fulfilled";
+        }
+    },
+
 }
 
 const extraReducers = (builder) => {
@@ -112,6 +134,7 @@ const extraReducers = (builder) => {
         .addCase(getSources.fulfilled, (state, action) => {
             state.status = "fulfilled"
             state.source_list = action.payload
+            state.source_original_ist = action.payload
             state.data_status = 'loaded';
         })
         .addCase(getSources.rejected, (state) => {
@@ -137,8 +160,8 @@ const extraReducers = (builder) => {
 
         .addCase(updateSources.fulfilled, (state, action) => {
 
-            if(action.payload.code === "ERR_BAD_RESPONSE"){
-            // if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
+            if (action.payload.code === "ERR_BAD_RESPONSE") {
+                // if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
                 console.log("updateSources fulfilled ", action.payload.response.data.error)
                 state.show_error_form = true
                 state.error_title = "Error"
@@ -190,17 +213,17 @@ const extraReducers = (builder) => {
         .addCase(startSource.fulfilled, (state, action) => {
             console.log("source/startSource ", action)
 
-            if(action.payload.code === "ERR_BAD_RESPONSE"){
+            if (action.payload.code === "ERR_BAD_RESPONSE") {
                 state.show_error_form = true
                 state.error_title = "Error"
                 state.error_message = action.payload.response.data.error
-                console.log("source/startSource error_message", state.error_message )
-            }else{
+                console.log("source/startSource error_message", state.error_message)
+            } else {
                 state.status = "fulfilled"
                 state.data_status = 'load_now';
             }
         })
-        .addCase(startSource.rejected, (state,action) => {
+        .addCase(startSource.rejected, (state, action) => {
             console.log("source/startSource rejected", action)
             state.status = "rejected"
             state.show_error_form = true
@@ -354,6 +377,6 @@ const sourceSlice = createSlice({
 
 export const {
     showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
-    showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert
+    showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert, searchSource
 } = sourceSlice.actions
 export default sourceSlice.reducer;

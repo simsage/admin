@@ -10,7 +10,7 @@ import {SourceExport} from "./SourceExport";
 import {SourceImport} from "./SourceImport";
 import {
     deleteSource,
-    getSources,
+    getSources, searchSource,
     showAddForm,
     showEditForm,
     showExportForm, showImportForm, showProcessFilesAlert, showStartCrawlerAlert, showZipCrawlerAlert,
@@ -282,10 +282,10 @@ export default function SourceHome(props) {
     function handleSearchFilter(event) {
         const val = event.target.value;
 
-        console.log("handleSearchFilter",val)
+        console.log("searchSource",val)
 
         // todo: 'searchSource' doesn't seem to exist?
-        //dispatch(searchSource({keyword:val}))
+        dispatch(searchSource({keyword:val}))
     }
 
 
