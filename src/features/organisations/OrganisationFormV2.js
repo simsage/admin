@@ -4,8 +4,8 @@ import {closeOrganisationForm, deleteOrganisation, updateOrganisation} from "./o
 import {useForm} from "react-hook-form";
 import {OrganisationTab} from "./OrganisationFormTab";
 import {Chip} from "../../components/Chip";
-import Api from "../../common/api";
 import {getGroupList} from "../groups/groupSlice";
+import api from "../../common/api";
 
 export default function OrganisationFormV2(props) {
     const dispatch = useDispatch();
@@ -15,12 +15,11 @@ export default function OrganisationFormV2(props) {
     let organisation = props.organisation;
 
 
-
     const [selected_tab, setSelectedTab] = useState('general')
     const group_data_status = useSelector((state) => state.groupReducer.data_status)
     const group_list_full = useSelector(((state) => state.groupReducer.group_list))
-    // const available_roles = Api.getAvailableRoles();
-    const available_roles = useSelector((state) => state.usersReducer.roles);
+    // const available_roles = useSelector((state) => state.usersReducer.roles);
+    const roles_list_full = api.getPrettyRoles(useSelector((state) => state.usersReducer.roles));
 
     //filters
     const [selected_role_filter, setRoleFilter] = useState('');
@@ -28,7 +27,7 @@ export default function OrganisationFormV2(props) {
     const [available_group_filter, setAvailableGroupFilter] = useState('');
     const [selected_group_filter, setSelectedGroupFilter] = useState('');
 
-    const [selected_roles, setSelectedRoles] = useState(organisation ? organisation.autoCreateSSORoleList : []);
+    const [selected_roles, setSelectedRoles] = useState(organisation ? api.getPrettyRoles(organisation.autoCreateSSORoleList) : []);
     const [selected_groups, setSelectedGroups] = useState(organisation ? organisation.autoCreateSSOACLList : []);
 
 
@@ -72,16 +71,16 @@ export default function OrganisationFormV2(props) {
 
 
     useEffect(() => {
-        if(selected_organisation_id !== null){
-            console.log("selected_organisation_org",selected_organisation_id)
-            dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+        if (selected_organisation_id !== null) {
+            console.log("selected_organisation_org", selected_organisation_id)
+            dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [group_data_status === 'load_now'])
 
 //on submit store or update
     const onSubmit = data => {
-        data.autoCreateSSORoleList = selected_roles;
+        data.autoCreateSSORoleList = selected_roles.map(role => { return role.role });
         data.autoCreateSSOACLList = selected_groups;
         //convert domain string to array
         data.autoCreateSSODomainList = data.autoCreateSSODomainListStr.split(',');
@@ -105,24 +104,41 @@ export default function OrganisationFormV2(props) {
 // SimSage role management
 
 
-    function getUserRoles() {
-        let temp_list;
-        if (selected_role_filter.length > 0) {
-            temp_list = selected_roles.filter((role) => {
-                return Api.getPrettyRole(role.role).toLowerCase().includes(selected_role_filter.toLowerCase())
+    const getAvailableRoles = () => {
+        const roleNames = selected_roles ? selected_roles.map(r => r.role) : [];
+        let temp_available_rolls = roles_list_full.filter(role => {
+            if (!roleNames.includes(role.role)) {
+                return role
+            }
+        })
+
+        let l = available_role_filter.length > 0 ? temp_available_rolls.filter(role => {
+                return role.label.toLowerCase().includes(available_role_filter.toLowerCase())
             })
-        } else {
-            temp_list = selected_roles
-        }
-        return temp_list;
+            :
+            temp_available_rolls;
+
+        return l;
+
     }
 
 
-    function addRoleToUser(roleToAdd) {
-        setSelectedRoles([...(selected_roles || []), {
-            organisation_id: selected_organisation_id,
-            role: roleToAdd
-        }])
+    function getSelectedRoles() {
+        console.log("roles: getSelectedRoles", selected_roles);
+
+        let l = selected_role_filter.length > 0 ? selected_roles.filter(role => {
+                return role.label.toLowerCase().includes(selected_role_filter.toLowerCase())
+            })
+            :
+            selected_roles;
+
+        return l;
+
+    }
+
+
+    function addRoleToUser(role) {
+        setSelectedRoles([...(selected_roles || []), role])
     }
 
 
@@ -133,21 +149,6 @@ export default function OrganisationFormV2(props) {
         setSelectedRoles(temp_list)
     }
 
-    const getAvailableRoles = () => {
-        const roleNames = selected_roles ? selected_roles.map(r => r.role) : [];
-        let temp_role_list = []
-        available_roles.forEach((role) => {
-            if (!roleNames.includes(role)) {
-                temp_role_list.push(role)
-            }
-        })
-
-        return available_role_filter.length > 0 ? temp_role_list.filter(role => {
-                return Api.getPrettyRole(role).toLowerCase().includes(available_role_filter.toLowerCase())
-            })
-            :
-            temp_role_list;
-    }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // group/ACL management
@@ -327,10 +328,10 @@ export default function OrganisationFormV2(props) {
                                                                placeholder="Filter..." value={selected_role_filter}
                                                                onChange={(e) => setRoleFilter(e.target.value)}/>
                                                         {
-                                                            getUserRoles().map((role, i) => {
+                                                            getSelectedRoles().map((role, i) => {
                                                                 return (<Chip key={i} color="secondary"
                                                                               onClick={() => removeRoleFromUser(role)}
-                                                                              label={Api.getPrettyRole(role.role)}
+                                                                              label={role.label}
                                                                               variant="outlined"/>)
                                                             })
                                                         }
@@ -346,7 +347,7 @@ export default function OrganisationFormV2(props) {
                                                             getAvailableRoles().map((role, i) => {
                                                                 return (<Chip key={i} color="primary"
                                                                               onClick={() => addRoleToUser(role)}
-                                                                              label={Api.getPrettyRole(role)}
+                                                                              label={role.label}
                                                                               variant="outlined"/>)
                                                             })
                                                         }
@@ -355,6 +356,7 @@ export default function OrganisationFormV2(props) {
                                             </div>
                                         </div>
 
+                                        {organisation &&
                                         <div className="tab-content container px-5 py-4 overflow-auto"
                                              style={{maxHeight: "300px"}}>
                                             <div className="row pb-5">
@@ -394,7 +396,7 @@ export default function OrganisationFormV2(props) {
                                                 </div>
                                             </div>
                                         </div>
-
+                                        }
                                     </div>
                                 }
 
