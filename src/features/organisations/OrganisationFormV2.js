@@ -114,13 +114,11 @@ export default function OrganisationFormV2(props) {
             }
         })
 
-        let l = available_role_filter.length > 0 ? temp_available_rolls.filter(role => {
+        return available_role_filter.length > 0 ? temp_available_rolls.filter(role => {
                 return role.label.toLowerCase().includes(available_role_filter.toLowerCase())
             })
             :
             temp_available_rolls;
-
-        return l;
 
     }
 
@@ -128,13 +126,11 @@ export default function OrganisationFormV2(props) {
     function getSelectedRoles() {
         console.log("roles: getSelectedRoles", selected_roles);
 
-        let l = selected_role_filter.length > 0 ? selected_roles.filter(role => {
+        return selected_role_filter.length > 0 ? selected_roles.filter(role => {
                 return role.label.toLowerCase().includes(selected_role_filter.toLowerCase())
             })
             :
             selected_roles;
-
-        return l;
 
     }
 
