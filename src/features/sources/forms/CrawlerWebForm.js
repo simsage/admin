@@ -9,6 +9,14 @@ export default function CrawlerWebForm(props) {
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
 
+    const [webCssIgnore, setWebCssIgnore] = useState(specific_json.webCssIgnore?specific_json.webCssIgnore:'header, footer');
+
+    function handleWebCssIgnore(data){
+        setWebCssIgnore(data);
+        setData({webCssIgnore:data})
+    }
+
+
     // const self = this;
     // const theme = props.theme;
     const l_form_data = props.form_data;
@@ -129,9 +137,9 @@ export default function CrawlerWebForm(props) {
                     <textarea className="form-control"
                             placeholder="css/html root fragments to exclude csv"
                             rows="3"
-                            value={specific_json.webCssIgnore?specific_json.webCssIgnore:'header, footer'}
+                            value={webCssIgnore}
                             onChange={(event) => {
-                                setData({webCssIgnore: event.target.value})
+                                handleWebCssIgnore(event.target.value)
                             }}
                     />
                 </div>
