@@ -15,9 +15,11 @@ export default function OrganisationFormV2(props) {
     let organisation = props.organisation;
 
 
-    const [selected_tab, setSelectedTab] = useState('general')
-    const group_data_status = useSelector((state) => state.groupReducer.data_status)
-    const group_list_full = useSelector(((state) => state.groupReducer.group_list))
+    const [selected_tab, setSelectedTab] = useState('general');
+    const group_data_status = useSelector((state) => state.groupReducer.data_status);
+    //group_list_full should be in ['Admin','Managers',..] format
+    const group_list_full = useSelector((state) => state.groupReducer.group_list).map(g => {return g.name});
+    console.log("group: _list_full", group_list_full);
     // const available_roles = useSelector((state) => state.usersReducer.roles);
     const roles_list_full = api.getPrettyRoles(useSelector((state) => state.usersReducer.roles));
 
@@ -76,7 +78,7 @@ export default function OrganisationFormV2(props) {
             dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [group_data_status === 'load_now'])
+    }, [group_data_status === 'load_now', organisation])
 
 //on submit store or update
     const onSubmit = data => {
@@ -112,13 +114,11 @@ export default function OrganisationFormV2(props) {
             }
         })
 
-        let l = available_role_filter.length > 0 ? temp_available_rolls.filter(role => {
+        return available_role_filter.length > 0 ? temp_available_rolls.filter(role => {
                 return role.label.toLowerCase().includes(available_role_filter.toLowerCase())
             })
             :
             temp_available_rolls;
-
-        return l;
 
     }
 
@@ -126,13 +126,11 @@ export default function OrganisationFormV2(props) {
     function getSelectedRoles() {
         console.log("roles: getSelectedRoles", selected_roles);
 
-        let l = selected_role_filter.length > 0 ? selected_roles.filter(role => {
+        return selected_role_filter.length > 0 ? selected_roles.filter(role => {
                 return role.label.toLowerCase().includes(selected_role_filter.toLowerCase())
             })
             :
             selected_roles;
-
-        return l;
 
     }
 
@@ -201,7 +199,7 @@ export default function OrganisationFormV2(props) {
 //
 //     }
 //
-//     function getGroups() {
+//     function getSelectedGroups() {
 //         let temp_list = [];
 //         if (selected_group_filter.length > 0) {
 //             temp_list = selected_groups.filter((group) => {
@@ -215,21 +213,21 @@ export default function OrganisationFormV2(props) {
 
 
     const getAvailableGroups = () => {
-        const groupNames = selected_groups ? selected_groups.map(g => g.name) : []
+        // const groupNames = selected_groups ? selected_groups.map(g => g.name) : []
         const availableGroups = group_list_full.filter(grp => {
-            return !groupNames.includes(grp.name)
+            return !selected_groups.includes(grp)
 
         })
         return available_group_filter.length > 0 ? availableGroups.filter(grp => {
-                return grp.name.toLowerCase().includes(available_group_filter.toLowerCase())
+                return grp.toLowerCase().includes(available_group_filter.toLowerCase())
             })
             :
             availableGroups
     }
 
-    function getGroups() {
+    function getSelectedGroups() {
         return selected_groups.length > 0 ? selected_groups.filter(grp => {
-                return grp.name.toLowerCase().includes(selected_group_filter.toLowerCase())
+                return grp.toLowerCase().includes(selected_group_filter.toLowerCase())
             })
             :
             selected_groups
@@ -241,11 +239,13 @@ export default function OrganisationFormV2(props) {
 
     function removeGroupFromUser(groupToRemove) {
         setSelectedGroups(selected_groups.filter(grp => {
-            return grp.name !== groupToRemove.name
+            return grp !== groupToRemove
         }))
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    console.log("group: selected_groups",selected_groups)
 
     if (!props.show_organisation_form)
         return (<div/>);
@@ -367,12 +367,12 @@ export default function OrganisationFormV2(props) {
                                                                placeholder="Filter..." value={selected_group_filter}
                                                                onChange={(e) => setSelectedGroupFilter(e.target.value)}/>
                                                         {
-                                                            getGroups().map((grp, i) => {
+                                                            getSelectedGroups().map((grp, i) => {
                                                                 return (
 
                                                                     <Chip key={i} color="secondary"
                                                                           onClick={() => removeGroupFromUser(grp)}
-                                                                          label={grp.name} variant="outlined"/>
+                                                                          label={grp} variant="outlined"/>
                                                                 )
                                                             })
                                                         }
@@ -388,7 +388,7 @@ export default function OrganisationFormV2(props) {
                                                             getAvailableGroups().map((grp, i) => {
                                                                 return (<Chip key={i} color="primary"
                                                                               onClick={() => addGroupToUser(grp)}
-                                                                              label={grp.name}
+                                                                              label={grp}
                                                                               variant="outlined"/>)
                                                             })
                                                         }
