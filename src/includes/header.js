@@ -37,7 +37,7 @@ const Header = (props) => {
                     <button className={(accounts_dropdown ? "active" : "") + " btn nav-btn"}
                             onClick={(e) => toggleAccountsMenu(e,accounts_dropdown)}>
                         <img src="images/icon/icon_n-account.svg" alt="" className={accounts_dropdown ? "d-none" : ""} />
-                        <img src="images/icon/icon_n-account-active.svg" alt="" className={!accounts_dropdown ? "d-none" : ""} />
+                        <img src="images/icon/icon_n-account.svg" alt="" className={!accounts_dropdown ? "d-none" : ""} />
                     </button>
                 </div>
 

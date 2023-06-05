@@ -87,7 +87,7 @@ export const LeftSidebarNavItem = (props) => {
 
     return(
         <li key={slug} onClick={() => dispatch(selectTab(slug))}
-            className={is_active?"sb-item d-flex align-items-center px-4 py-2 active":"sb-item d-flex align-items-center px-4 py-2"} >
+            className={is_active?"sb-item d-flex align-items-center px-4 py-3 active":"sb-item d-flex align-items-center px-4 py-3"} >
             <img src={logo} alt="" className="me-2 sb-icon"/>
             <label>{label}</label>
         </li>

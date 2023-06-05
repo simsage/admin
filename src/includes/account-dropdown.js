@@ -57,7 +57,7 @@ const AccountDropdown = (props) => {
             <ul className="acc-nav ps-0 mb-0">
                 {organisation_list_status  !== "fulfilled" &&
                 <li className="acc-item px-4 py-3 d-flex justify-content-between">
-                    <label>organisations loading...</label>
+                    <label className='fst-italic'>Organisations loading...</label>
                 </li>
                 }
 
@@ -66,27 +66,31 @@ const AccountDropdown = (props) => {
                         return(
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
                             <li key={item.id}
-                                className={(item.id === selected_organisation.id)? "acc-item px-4 py-3 d-flex justify-content-between active":"acc-item px-4 py-3 d-flex justify-content-between"}>
+                                className={((item.id === selected_organisation.id)? "active" : "") + " acc-item px-4 py-2 d-flex justify-content-between align-items-center"}>
                                 <span className="organisation-menu-item pointer-cursor" title={"select " + item.name}
                                       onClick={() => handleSelectOrganisation(session.id, item)}>{item.name}</span>
-                                <img onClick={() => handleEditOrganisation(item.id)} src="images/icon/icon_setting.svg"
-                                     alt="edit" title={"edit " + item.name}
-                                     className="me-2 sb-icon pointer-cursor"/>
+                                <span className="p-2 org-settings pointer-cursor" onClick={() => handleEditOrganisation(item.id)} title={"edit " + item.name}>
+                                    <img src="images/icon/icon_setting.svg"
+                                     alt="edit"
+                                     className="sb-icon"/>
+                                </span>
                             </li>)
                     })
                 }
 
 
-                <li className="acc-item px-4 py-3 pointer-cursor" onClick={() => handleAddOrganisation()}>
-                    <label className="pointer-cursor" title="add a new organisation">+ Add New Organisation</label>
+                <li className="px-3 py-3 pointer-cursor" onClick={() => handleAddOrganisation()}>
+                    <span className='py-2 btn btn-outline-primary w-100'>
+                    <label className="pointer-cursor fw-500" title="add a new organisation">+ Add Organisation</label>
+                    </span>
                 </li>
 
-                <hr />
-                <li className="acc-item px-4 py-3 pointer-cursor" title="Sign Out"
+                <hr className="my-0" />
+                <li className="acc-item px-4 py-3 pointer-cursor fw-500" title="Sign Out"
                     onClick={() => {
                         handleSignOut()
                     }}>
-                    <label className="pointer-cursor" title="Sign Out">Sign Out</label>
+                    <labeZl className="pointer-cursor" title="Sign Out">Sign Out</labeZl>
                 </li>
                 </ul>
             </div>

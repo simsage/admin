@@ -122,11 +122,25 @@ html, body, #root, .App, .dms {
     transition: all .3s ease;
     color: #20273185;
 }
-.acc-item:hover, .acc-item.active {
-    background-color: #1c9bd220;
-    color: #1c9bd2;
+.acc-item:hover {
+    background-color: #f2f2f2;
+    color: #202731b5;
 }
-
+.acc-item.active {
+    background-color: #0d6efd20;
+    color: #0d6efd;
+    font-weight: 500;
+}
+.acc-item .org-settings {
+    opacity: 0;
+    transition: all .3s ease;
+}
+.acc-item:hover .org-settings, .acc-item.active .org-settings {
+    opacity: .7;
+}
+.acc-item .org-settings:hover {
+    opacity: 1;
+}
 
 
 
@@ -182,14 +196,16 @@ html, body, #root, .App, .dms {
     border: 1px solid #dfdfdf;
     border-radius: 10px;
     padding: .3rem;
+    color: #dfdfdf !important;
 }
 .nav-btn:hover {
     background-color: #f2f2f2;
+    border-color: #dfdfdf;
 }
-.nav-btn.active {
-    border-color: #1c9bd260;
-    background-color: #1c9bd220;
-    color: #1c9bd2;
+.nav-btn.active, .nav-btn.active:active, .nav-btn:active {
+    border-color: #0d6efd40;
+    background-color: #0d6efd20 !important;
+    /* color: #0d6efd; */
 }
 .notifications {
     position: relative;
@@ -278,8 +294,8 @@ html, body, #root, .App, .dms {
     opacity: 1;
 }
 .sb-icon {
-    width: 10px;
-    height: 10px;
+    width: 14px;
+    height: 14px;
 }
 
 .form-icon {
@@ -349,7 +365,7 @@ html, body, #root, .App, .dms {
 }
 .table tbody tr:hover,
 .log-line:hover {
-    background-color: #f8f9fa;
+    background-color: #f8f8f8;
     transition: all .4s ease;
 }
 .selected-kb {
@@ -361,12 +377,13 @@ html, body, #root, .App, .dms {
     width: 12px;
 }
 .table-pill {
-    background-color: #f8f9fa;
+    background-color: #f8f8f8;
     border: 1px solid #e1e1e1;
     transition: all .3s ease;
 }
 .table tbody tr:hover .table-pill {
-    background-color: #fff;
+    background-color: #eee;
+    border: 1px solid #d1d1d1;
     transition: all .4s ease;
 }
 .wc-divider {
