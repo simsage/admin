@@ -151,7 +151,7 @@ export default function CrawlerMetadataForm(props) {
     useEffect(()=>{
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
-    },[l_form_data, props, specific_json])
+    },[ specific_json])
 
 
 
