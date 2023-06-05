@@ -73,8 +73,8 @@ export default function OrganisationFormV2(props) {
 
 
     useEffect(() => {
-        if (selected_organisation_id !== null) {
-            console.log("selected_organisation_org", selected_organisation_id)
+        if (selected_organisation_id !== null && selected_organisation_id !== undefined) {
+            console.log("selected_organisation_org", selected_organisation_id, organisation)
             dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
