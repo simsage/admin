@@ -356,6 +356,7 @@ export default function OrganisationFormV2(props) {
                                             </div>
                                         </div>
 
+                                        {organisation &&
                                         <div className="tab-content container px-5 py-4 overflow-auto"
                                              style={{maxHeight: "300px"}}>
                                             <div className="row pb-5">
@@ -395,7 +396,7 @@ export default function OrganisationFormV2(props) {
                                                 </div>
                                             </div>
                                         </div>
-
+                                        }
                                     </div>
                                 }
 
