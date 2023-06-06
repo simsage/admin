@@ -16,6 +16,8 @@ export function SynonymEdit(props){
 
     //Synonym details
     const [synonymList, setSynonymList] = useState('');
+    const [error,setError] = useState('');
+
 
 
 
@@ -30,6 +32,7 @@ export function SynonymEdit(props){
 
     function resetData () {
         setSynonymList('');
+        setError('')
     }
 
     function handleClose(e){
@@ -38,19 +41,32 @@ export function SynonymEdit(props){
     }
 
 
+    useEffect(()=>{
+        if(synonymList.length===0){
+            setError("Synonym list is empty")
+        }else {
+            setError("")
+        }
+    },[synonymList])
 
     function handleSave(e) {
+
         e.preventDefault();
-        const session_id = session.id;
-        console.log(`Editing...`, synonym)
-        const data = {
-            "id": synonym ? synonym.id : "",
-            "words": synonymList
+        if(synonymList.length > 0) {
+            const session_id = session.id;
+            console.log(`Editing...`, synonym)
+
+            const data = {
+                "id": synonym ? synonym.id : "",
+                "words": synonymList
+            }
+            console.log(`Saving...`, data);
+            dispatch(updateSynonyms({session_id, organisation_id, knowledge_base_id, data}));
+            dispatch(closeSynonymForm());
+            resetData();
+        }else {
+            setError("An input is required");
         }
-        console.log(`Saving...`, data);
-        dispatch(updateSynonyms({session_id, organisation_id, knowledge_base_id, data}));
-        dispatch(closeSynonymForm());
-        resetData();
     }
 
 
@@ -81,6 +97,8 @@ export function SynonymEdit(props){
                                             />
                                         </form>
                                     </span>
+                                    {error && error.length > 0 &&
+                                        <span className="text-danger fst-italic small">{error}</span>}
                                 </div>
                             </div>
                         </div>
