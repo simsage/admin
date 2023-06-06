@@ -152,6 +152,10 @@ export default function BotList() {
         Comms.download_mind_dump(selected_organisation_id, selected_knowledge_base_id, session_id)
     }
 
+    function handleQNAExport() {
+        Comms.download_query_log(selected_organisation_id, selected_knowledge_base_id, session_id)
+    }
+
     function handleImport() {
         dispatch(showBotImportForm());
     }
@@ -182,10 +186,13 @@ export default function BotList() {
 
                 <div className="form-group d-flex ms-auto">
                     <button className="btn btn-outline-primary text-nowrap ms-2"
-                            onClick={() => handleImport(!show_import_form)}>Import
+                            onClick={() => handleImport(!show_import_form)}>Import mind
                     </button>
                     <button className="btn btn-outline-primary text-nowrap ms-2"
-                            onClick={() => handleExport()}>Export
+                            onClick={() => handleExport()}>Export mind
+                    </button>
+                    <button className="btn btn-outline-primary text-nowrap ms-2"
+                            onClick={() => handleQNAExport()}>Download Q&A report
                     </button>
                     <button className="btn btn-outline-danger text-nowrap ms-2"
                             title="remove all mind items of this knowledgebase"

@@ -161,7 +161,10 @@ export class Comms {
     };
 
     // get a url that can be used to get the query-logs
-    static download_query_log(organisation_id, kb_id, year, month, session_id) {
+    static download_query_log(organisation_id, kb_id, session_id) {
+        const date = new Date();
+        const year = "" + date.getFullYear();
+        const month = "" + (date.getMonth() + 1);
         Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/stats/query-logs/' + encodeURIComponent(organisation_id) + '/' +
                 encodeURIComponent(kb_id) + '/' + encodeURIComponent(year) + '/' + encodeURIComponent(month);
