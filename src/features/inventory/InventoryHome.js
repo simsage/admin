@@ -13,6 +13,7 @@ import {InventoryIndexSnapshotPrompt} from "./InventoryIndexSnapshotPrompt";
 import {InventoryDeleteDialog} from "./InventoryDeleteDialog";
 import {Pagination} from "../../common/pagination";
 import api from "../../common/api";
+import InventorySuccessMessage from "./InventorySuccessMessage";
 
 
 export default function InventoryHome(props) {
@@ -29,7 +30,7 @@ export default function InventoryHome(props) {
     const show_document_snapshot_form = useSelector((state) => state.inventoryReducer.show_document_snapshot_form)
     const show_index_snapshot_form = useSelector((state) => state.inventoryReducer.show_index_snapshot_form)
     const show_delete_form = useSelector((state) => state.inventoryReducer.show_delete_form)
-
+    const show_add_info_form = useSelector((state) => state.inventoryReducer.show_add_info_form)
 
     const inventory_list = useSelector((state) => state.inventoryReducer.inventory_list);
     const num_inventory_list_items = inventory_list.timeList ? inventory_list.timeList.length : 0
@@ -238,6 +239,11 @@ export default function InventoryHome(props) {
             {
                 show_index_snapshot_form &&
                 <InventoryIndexSnapshotPrompt />
+            }
+
+            {
+                (show_add_info_form === 'index' || show_add_info_form === 'doc') &&
+                <InventorySuccessMessage/>
             }
         </div>
     )

@@ -16,6 +16,7 @@ const initialState = {
     show_document_snapshot_form: false,
     show_index_snapshot_form: false,
     show_delete_form: false,
+    show_add_info_form: false,
 };
 
 const reducers = {
@@ -42,6 +43,10 @@ const reducers = {
         state.selected_inventory = action.payload.inventory
     },
 
+    showAddInfoForm(state, action) {
+        state.show_add_info_form = action.payload
+    },
+
     closeForm(state) {
         state.show_form = false;
         state.edit_id = null;
@@ -49,6 +54,7 @@ const reducers = {
         state.show_document_snapshot_form = false;
         state.show_index_snapshot_form = false;
         state.show_delete_form = false;
+        state.show_add_info_form = false;
     }
 };
 
@@ -190,6 +196,7 @@ export const {
     closeForm,
     showDocumentSnapshotForm,
     showIndexSnapshotForm,
-    showDeleteInventoryForm
+    showDeleteInventoryForm,
+    showAddInfoForm
 } = inventorySlice.actions;
 export default inventorySlice.reducer;
