@@ -4,7 +4,6 @@ export default function CrawlerDatabaseForm(props) {
 
     const type_list = [
         {"key": "none", "value": "Please select database type..."},
-        {"key": "mysql", "value": "MySQL"},
         {"key": "postgresql", "value": "Postgresql"},
         {"key": "microsoftsql", "value": "Microsoft SQL"},
     ];
