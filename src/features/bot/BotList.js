@@ -59,6 +59,12 @@ export default function BotList() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === "load_now", selected_knowledge_base_id, page_size, page])
 
+
+    // refresh button
+    function refresh_memories() {
+        dispatch(loadMindItems({session_id, data}))
+    }
+
     function handlePageChange(next_page){
         console.log("page next_page",next_page)
         if(next_page > page){
@@ -86,9 +92,6 @@ export default function BotList() {
         setFilter('')
     }
 
-
-
-
     function isVisible() {
         return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
             selected_organisation !== null && selected_organisation.id === selected_organisation_id &&
@@ -96,7 +99,6 @@ export default function BotList() {
     }
 
     function getMemoryList() {
-
         if (mind_item_list) {
             return mind_item_list;
         }
@@ -185,6 +187,9 @@ export default function BotList() {
                 </div>
 
                 <div className="form-group d-flex ms-auto">
+                    <div className="btn" onClick={() => refresh_memories()} >
+                        <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh memories" />
+                    </div>
                     <button className="btn btn-outline-primary text-nowrap ms-2"
                             onClick={() => handleImport(!show_import_form)}>Import mind
                     </button>
@@ -222,7 +227,6 @@ export default function BotList() {
                         <tbody>
                         {
                             getMemoryList().map((memory) => {
-                                console.log('testing bot output', memory )
                                 return (
                                     <tr key={memory.id}>
                                         <td className="pt-3 px-4 pb-2">
