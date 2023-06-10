@@ -325,7 +325,7 @@ export default function OrganisationFormV2(props) {
                                         </div>
 
                                         <div>
-                                            <div className="row pb-5">
+                                            <div className="row pb-5 mb-3">
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">SimSage Roles</h6>
                                                     <div className="role-area bg-light border rounded h-100">
@@ -362,8 +362,7 @@ export default function OrganisationFormV2(props) {
                                         </div>
 
                                         {organisation &&
-                                        <div className="tab-content container px-5 py-4 overflow-auto"
-                                             style={{maxHeight: "300px"}}>
+                                        <div>
                                             <div className="row pb-5">
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">SimSage Groups</h6>
