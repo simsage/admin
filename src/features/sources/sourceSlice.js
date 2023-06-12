@@ -15,11 +15,13 @@ const initialState = {
 
     status: null,
 
-
     // data form
     show_data_form: false,
     show_export_form: false,
     show_import_form: false,
+
+    // LGPL library support / installation
+    has_jcifs: false,
 
     //error
     show_error_form: false,
@@ -231,6 +233,36 @@ const extraReducers = (builder) => {
             state.error_message = action.payload.data
         })
 
+
+        // JCIFS check
+        .addCase(checkJcifsLibrary.pending, (state) => {
+            state.status = "loading"
+            state.data_status = 'loading'
+        })
+        .addCase(checkJcifsLibrary.fulfilled, (state, action) => {
+            state.has_jcifs = (action.payload === "true" || action.payload === "True");
+            state.data_status = 'loaded';
+        })
+        .addCase(checkJcifsLibrary.rejected, (state) => {
+            state.status = "rejected"
+            state.data_status = "rejected"
+        })
+
+
+        // JCIFS install
+        .addCase(installJcifsLibrary.pending, (state) => {
+            state.status = "loading"
+            state.data_status = 'loading'
+        })
+        .addCase(installJcifsLibrary.fulfilled, (state, action) => {
+            state.has_jcifs = (action.payload === "true" || action.payload === "True");
+            state.data_status = 'loaded';
+        })
+        .addCase(installJcifsLibrary.rejected, (state) => {
+            state.status = "rejected"
+            state.data_status = "rejected"
+        })
+
 }
 
 
@@ -366,6 +398,41 @@ export const processFiles = createAsyncThunk(
                 }
             )
     });
+
+
+export const checkJcifsLibrary = createAsyncThunk(
+    'sources/checkJcifsLibrary',
+    async ({session_id, organisation_id, callback}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/crawler/has-jcifs/' + encodeURIComponent(organisation_id);
+        return axios.get(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("error", error)
+                    return error
+                }
+            )
+    });
+
+
+export const installJcifsLibrary = createAsyncThunk(
+    'sources/installJcifsLibrary',
+    async ({session_id, organisation_id, callback}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/crawler/install-jcifs/' + encodeURIComponent(organisation_id);
+        return axios.get(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch(
+                (error) => {
+                    console.log("error", error)
+                    return error
+                }
+            )
+    });
+
 
 
 const sourceSlice = createSlice({
