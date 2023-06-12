@@ -10,10 +10,9 @@ export default function CrawlerFileForm(props) {
     // const [form_error, setFormError] = useState();
     //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const session = useSelector((state) => state.authReducer.session);
-    const has_jcifs = useSelector((state) => state.authReducer.source);
+    const {session, selected_organisation_id} = useSelector((state) => state.authReducer);
+    const {has_jcifs, busy} = useSelector((state) => state.sourceReducer);
     const session_id = session.id;
-    const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
     const l_form_data = props.form_data;
     //update local variable specific_json when data is changed
@@ -26,17 +25,17 @@ export default function CrawlerFileForm(props) {
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
-        dispatch(checkJcifsLibrary({session_id: session_id, organisation_id: organisation_id}))
+        dispatch(checkJcifsLibrary({session_id: session_id, organisation_id: selected_organisation_id}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
     function agreeLicense() {
-        dispatch(installJcifsLibrary({session_id: session_id, organisation_id: organisation_id}))
+        dispatch(installJcifsLibrary({session_id: session_id, organisation_id: selected_organisation_id}))
     }
 
     if (!has_jcifs) {
         return (
-            <div className="tab-content px-5 py-4 overflow-auto">
+            <div className={"tab-content px-5 py-4 overflow-auto" + ((busy) ? " wait-cursor" : "")}>
                 <div>&nbsp;</div>
                 <div>The SimSage file-crawler requires the use of an open-source library called jcifs-ng.</div>
                 <div>
@@ -55,7 +54,7 @@ export default function CrawlerFileForm(props) {
                 <div>&nbsp;</div>
                 <div>&nbsp;</div>
                 <div>
-                    <button onClick={agreeLicense} type="button" className="btn btn-primary btn-block px-4"
+                    <button onClick={agreeLicense} disabled={busy} type="button" className="btn btn-primary btn-block px-4"
                             title="I agree with the jcifs-ng license and wish to install it on SimSage"
                             data-bs-dismiss="modal">I Agree with the license and wish to install jcifs-ng
                     </button>
@@ -98,13 +97,11 @@ export default function CrawlerFileForm(props) {
                 </div>
                 <div className="form-group col-8">
                     <label className="small">FQDN</label>
-                    <form>
                         <input type="text" className="form-control"
                             placeholder="e.g. simsage.ai  (this will form your user's email addresses, eg. account-name@simsage.ai)"
                             value={specific_json.fqdn}
                                 onChange={(event) => {setData({fqdn: event.target.value})}}
                         />
-                    </form>
                 </div>
             </div>
             <div className="row mb-4">

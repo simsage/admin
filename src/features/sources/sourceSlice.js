@@ -11,7 +11,9 @@ const initialState = {
 
     selected_source: null,
     selected_source_id: null,
-    data_status: 'load_now',//load_now,loading,loaded
+    data_status: 'load_now', // load_now,loading,loaded
+    // busy processing / loading
+    busy: false,
 
     status: null,
 
@@ -130,38 +132,44 @@ const reducers = {
 const extraReducers = (builder) => {
     builder
         .addCase(getSources.pending, (state) => {
+            state.busy = true;
             state.status = "loading"
             state.data_status = 'loading'
         })
         .addCase(getSources.fulfilled, (state, action) => {
+            state.busy = false;
             state.status = "fulfilled"
             state.source_list = action.payload
             state.source_original_ist = action.payload
             state.data_status = 'loaded';
         })
         .addCase(getSources.rejected, (state) => {
+            state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
         })
 
 
         .addCase(getSource.pending, (state) => {
+            state.busy = true;
             state.status = "loading"
             state.data_status = 'loading'
         })
         .addCase(getSource.fulfilled, (state, action) => {
+            state.busy = false;
             state.status = "fulfilled"
             state.selected_source = action.payload
             state.data_status = 'loaded';
         })
         .addCase(getSource.rejected, (state) => {
+            state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
         })
 
 
         .addCase(updateSources.fulfilled, (state, action) => {
-
+            state.busy = false;
             if (action.payload.code === "ERR_BAD_RESPONSE") {
                 // if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
                 console.log("updateSources fulfilled ", action.payload.response.data.error)
@@ -179,6 +187,7 @@ const extraReducers = (builder) => {
         })
 
         .addCase(updateSources.rejected, (state, action) => {
+            state.busy = false;
             console.log("updateSources rejected ", action)
             state.data_status = 'load_now';
             state.error = action.payload
@@ -187,24 +196,29 @@ const extraReducers = (builder) => {
 
         //deleteRecord
         .addCase(deleteSource.pending, (state) => {
+            state.busy = true;
             state.status = "loading"
         })
         .addCase(deleteSource.fulfilled, (state, action) => {
+            state.busy = false;
             console.log("source/deleteSource ", action)
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
         .addCase(deleteSource.rejected, (state) => {
+            state.busy = false;
             state.status = "rejected"
         })
 
         //processFiles
         .addCase(processFiles.fulfilled, (state, action) => {
+            state.busy = false;
             console.log("source/processFiles ", action)
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
         .addCase(processFiles.rejected, (state) => {
+            state.busy = false;
             state.status = "rejected"
             state.show_error_form = false
             state.error_title = ""
@@ -213,6 +227,7 @@ const extraReducers = (builder) => {
 
         //startSource
         .addCase(startSource.fulfilled, (state, action) => {
+            state.busy = false;
             console.log("source/startSource ", action)
 
             if (action.payload.code === "ERR_BAD_RESPONSE") {
@@ -226,6 +241,7 @@ const extraReducers = (builder) => {
             }
         })
         .addCase(startSource.rejected, (state, action) => {
+            state.busy = false;
             console.log("source/startSource rejected", action)
             state.status = "rejected"
             state.show_error_form = true
@@ -236,14 +252,17 @@ const extraReducers = (builder) => {
 
         // JCIFS check
         .addCase(checkJcifsLibrary.pending, (state) => {
+            state.busy = true;
             state.status = "loading"
             state.data_status = 'loading'
         })
         .addCase(checkJcifsLibrary.fulfilled, (state, action) => {
-            state.has_jcifs = (action.payload === "true" || action.payload === "True");
+            state.busy = false;
+            state.has_jcifs = (action.payload.information === "true" || action.payload.information === "True");
             state.data_status = 'loaded';
         })
         .addCase(checkJcifsLibrary.rejected, (state) => {
+            state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
         })
@@ -251,14 +270,17 @@ const extraReducers = (builder) => {
 
         // JCIFS install
         .addCase(installJcifsLibrary.pending, (state) => {
+            state.busy = true;
             state.status = "loading"
             state.data_status = 'loading'
         })
         .addCase(installJcifsLibrary.fulfilled, (state, action) => {
-            state.has_jcifs = (action.payload === "true" || action.payload === "True");
+            state.busy = false;
+            state.has_jcifs = true;
             state.data_status = 'loaded';
         })
         .addCase(installJcifsLibrary.rejected, (state) => {
+            state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
         })
