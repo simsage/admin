@@ -116,7 +116,7 @@ export const loadInventoryList = createAsyncThunk(
     'inventories/getInventoryList',
     async ({session_id, organisation_id, kb_id}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/document/parquets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/0/10';
+        const url = api_base + '/document/parquets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/0/100';
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log("loadInventoryList", response.data)
