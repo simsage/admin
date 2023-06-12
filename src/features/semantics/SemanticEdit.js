@@ -1,6 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {closeSemanticForm, updateSemantics} from "./semanticSlice";
+import {useForm} from "react-hook-form";
 
 export function SemanticEdit(){
 
@@ -15,46 +16,34 @@ export function SemanticEdit(){
 
     //Memory details
     const [word, setWord] = useState('');
-    const [semanticType, setSemanticType] = useState('');
+    const [semantic, setSemantic] = useState('');
+    const [error, setError] = useState('');
     // Grab memory details if editing
 
+    const {register, handleSubmit, formState: {errors}, reset} = useForm();
+
+
     useEffect(()=> {
-        if(selectedSemantic) {
-            setWord(selectedSemantic.word);
-            setSemanticType(selectedSemantic.semantic);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [show_semantic_form])
+        let defaultValues = {};
+        defaultValues.word = selectedSemantic ? selectedSemantic.word : '';
+        defaultValues.semantic = selectedSemantic ? selectedSemantic.semantic : '';
+        reset({...defaultValues});
+    }, [show_semantic_form,selectedSemantic])
 
-    function resetData () {
-
-        setWord('');
-        setSemanticType('');
-
-    }
 
     function handleClose(){
         dispatch(closeSemanticForm())
-        resetData()
     }
 
 
-
-    const handleSave = () => {
-        //begin updating user
+    const onSubmit = data => {
         const session_id = session.id;
-        const data = {
-            "word": word,
-            "prevWord": selectedSemantic ? selectedSemantic.word : "",
-            "semantic": semanticType
-
-        }
-         console.log('org', organisation_id, 'kb',knowledge_base_id,'Saving...', data);
+        console.log("data onSubmit",data);
+        data = {...data,  "prevWord": selectedSemantic ? selectedSemantic.word : ""}
+        console.log("data onSubmit2",data);
         dispatch(updateSemantics({session_id, organisation_id, knowledge_base_id, data}));
         dispatch(closeSemanticForm());
     }
-// dispatch(updateMindItem({session_id,organisation_id, knowledge_base_id, data}));
-        // dispatch();
 
     if (show_semantic_form === false)
         return (<div/>);
@@ -62,48 +51,55 @@ export function SemanticEdit(){
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                <div className="modal-header px-5 pt-4 bg-light">
-                    <h4 className="mb-0">{selectedSemantic ? "Edit Semantic" : "New Semantic"}</h4>
+                    <div className="modal-header px-5 pt-4 bg-light">
+                        <h4 className="mb-0">{selectedSemantic ? "Edit Semantic" : "New Semantic"}</h4>
                     </div>
-                    <div className="modal-body p-0">
-                        <div className="tab-content px-5 py-4 overflow-auto">
-                            <div className="row mb-3">
-                                <div className="control-row col-6">
-                                    <span className="label-2 small">Word</span>
-                                    <span className="text">
-                                        <form>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <div className="modal-body p-0">
+                            <div className="tab-content px-5 py-4 overflow-auto">
+                                <div className="row mb-3">
+                                    <div className="control-row col-6">
+                                        <span className="label-2 small">Word</span>
+                                        <span className="text">
+                                        {/*<form>*/}
                                             <input type="text" className="form-control"
-                                                    autoFocus={true}
-                                                    autoComplete="false"
-                                                    placeholder="e.g. Wellington"
-                                                    value={word}
-                                                    onChange={(event) => setWord(event.target.value)}
+                                                   autoFocus={true}
+                                                   autoComplete="false"
+                                                   placeholder="e.g. Wellington"
+                                                // value={word}
+                                                   {...register("word", {required: true})}
+                                                // onChange={(event) => setWord(event.target.value)}
                                             />
-                                        </form>
+                                            {/*</form>*/}
                                     </span>
-                                </div>
-                                <div className="control-row col-6">
-                                    <span className="label-2 small">Semantic</span>
-                                    <span className="text">
-                                        <form>
+                                        {errors.word && <span className="text-danger fst-italic small"> Word is required</span>}
+                                    </div>
+                                    <div className="control-row col-6">
+                                        <span className="label-2 small">Semantic</span>
+                                        <span className="text">
+                                        {/*<form>*/}
                                             <input type="text" className="form-control"
-                                                    autoFocus={true}
-                                                    autoComplete="false"
-                                                    placeholder="e.g. City"
-                                                    value={semanticType}
-                                                    onChange={(event) => setSemanticType(event.target.value)}
+                                                   autoFocus={true}
+                                                   autoComplete="false"
+                                                   placeholder="e.g. City"
+                                                // value={semantic}
+                                                   {...register("semantic", {required: true})}
+                                                // onChange={(event) => semantic(event.target.value)}
                                             />
-                                        </form>
+                                            {/*</form>*/}
                                     </span>
+                                        {errors.semantic && <span className="text-danger fst-italic small"> Semantic is required</span>}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="modal-footer px-5 pb-3">
-                        <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
-                        <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
-                    </div>
 
+                        <div className="modal-footer px-5 pb-3">
+                            <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
+                            {/*<button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>*/}
+                            <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
