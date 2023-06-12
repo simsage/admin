@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
+import {useDispatch} from "react-redux";
 
 const initialState ={
     semantic_list: [],
@@ -12,7 +13,8 @@ const initialState ={
     show_semantic_form: false,
     edit: undefined,
     show_delete_form : false,
-    prev_word:0
+    prev_word:0,
+    error: null,
 }
 //organisation_id,kb_id,prev_word,filter,page_size
 export const loadSemantics = createAsyncThunk("semantics/getSemantic",
@@ -49,17 +51,21 @@ export const updateSemantics = createAsyncThunk(
 export const deleteSemantic = createAsyncThunk(
     "semantic/deleteSemantic",
 
-        async ({session_id, organisation_id, knowledge_base_id, word}) => {
+        async ({session_id, organisation_id, knowledge_base_id, word, semantic}) => {
 
             const api_base = window.ENV.api_base;
-            const url = api_base + `/language/delete-semantic/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(word)}`
+            const url = api_base + `/language/delete-semantic/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(word)}/${encodeURIComponent(semantic)}`
 
             return axios.delete(url, Comms.getHeaders(session_id))
                 .then( (response) => {
+                    console.log('the try of a delete', response.data)
                     return response.data
-                }).catch(
-                    (error) => {return error}
-                )
+                })
+                // .catch(
+                //     (error) => {
+                //         console.log('the catch of a delete', error?.response?.data)
+                //         return error}
+                // )
             }
 )
 
@@ -107,10 +113,12 @@ const extraReducers = (builder) => {
             console.log("loadSemantics fulfilled ", action);
             state.status = "fulfilled";
             state.data_status = "load_now";
+
         })
-        .addCase(deleteSemantic.rejected, (state) => {
+        .addCase(deleteSemantic.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected";
+            state.error = action.error
         })
 }
 
@@ -136,11 +144,16 @@ const semanticSlice = createSlice({
         closeDeleteForm:(state) => {
             state.show_delete_form = false;
             state.edit = undefined;
+        },
+        closeForm:(state) => {
+            state.show_semantic_form = false;
+            state.show_delete_form = false;
+            state.error = false;
         }
     },
     extraReducers
 })
 
 
-export const {showEditSemanticForm, closeSemanticForm, showAddSemanticForm, showDeleteSemanticAsk, closeDeleteForm} = semanticSlice.actions;
+export const {closeForm, showEditSemanticForm, closeSemanticForm, showAddSemanticForm, showDeleteSemanticAsk, closeDeleteForm} = semanticSlice.actions;
 export default semanticSlice.reducer;

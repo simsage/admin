@@ -1,7 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, { useEffect } from "react";
-import {loadSemantics} from "./semanticSlice";
+import {closeForm, loadSemantics} from "./semanticSlice";
 import SemanticList from "./SemanticsList";
+import ErrorMessage from "../../common/ErrorMessage";
 
 
 export default function SemanticsHome() {
@@ -10,6 +11,7 @@ export default function SemanticsHome() {
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
     const load_data = useSelector( (state) => state.semanticReducer.data_status);
+    const semantic_error = useSelector((state)=> state.semanticReducer.error)
     // const status = useSelector((state) => state.semanticReducer.status);
 
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
@@ -34,6 +36,11 @@ export default function SemanticsHome() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === 'load_now'])
 
+    const handleClose = () => {
+        console.log('working')
+        dispatch(closeForm())
+    }
+
     return (
         <div className="">
 
@@ -51,6 +58,10 @@ export default function SemanticsHome() {
             {/*}*/}
 
             <SemanticList />
+
+            { semantic_error &&
+                <ErrorMessage error={semantic_error} close={handleClose}/>
+            }
         </div>
     )
 }
