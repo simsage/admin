@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeForm, createIndexSnapshot} from "./inventorySlice";
+import {closeForm, createIndexSnapshot, showAddInfoForm} from "./inventorySlice";
 
 export function InventoryIndexSnapshotPrompt() {
     const dispatch = useDispatch();
@@ -34,6 +34,7 @@ export function InventoryIndexSnapshotPrompt() {
         console.log("InventoryDocumentSnapshotPrompt handleOk")
         dispatch(createIndexSnapshot({session_id:session_id, data:data}))
         dispatch(closeForm());
+        dispatch(showAddInfoForm('index'))
     }
 
 

@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeForm, createDocumentSnapshot} from "./inventorySlice";
+import {closeForm, createDocumentSnapshot, showAddInfoForm} from "./inventorySlice";
 
 export function InventoryDocumentSnapshotPrompt() {
     const dispatch = useDispatch();
@@ -33,6 +33,7 @@ export function InventoryDocumentSnapshotPrompt() {
         console.log("InventoryDocumentSnapshotPrompt handleOk")
         dispatch(createDocumentSnapshot({session_id:session_id, data:data}))
         dispatch(closeForm());
+        dispatch(showAddInfoForm('doc'))
     }
 
 

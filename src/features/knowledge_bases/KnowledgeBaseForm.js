@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {useForm} from "react-hook-form";
 import Api from "../../common/api";
-import {addOrUpdate, closeForm} from "./knowledgeBaseSlice";
+import {addOrUpdate, closeForm, getKBList} from "./knowledgeBaseSlice";
 import {showErrorAlert} from "../alerts/alertSlice";
 import {KnowledgeBaseFormTab} from "./KnowledgeBaseFormTab";
 import TimeSelect from "../../common/time-select";
@@ -116,6 +116,7 @@ export default function KnowledgeBaseForm() {
             }));
         }else {
             dispatch(addOrUpdate({session_id: session.id, data: data}))
+            dispatch(getKBList({session_id: session.id, organization_id: organisation_id}));
             handleClose()
         }
     };
