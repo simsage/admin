@@ -254,7 +254,7 @@ export default function OrganisationFormV2(props) {
         <div>
 
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
-                <div className={"modal-dialog modal-dialog-centered"} role="document">
+                <div className={"modal-dialog modal-lg"} role="document">
                     <div className="modal-content">
                         <form onSubmit={handleSubmit(onSubmit)}>
 
@@ -272,26 +272,26 @@ export default function OrganisationFormV2(props) {
 
                                 {selected_tab === 'general' &&
                                     <div className="tab-content px-5 py-4 overflow-auto"
-                                         style={{maxHeight: "600px", minHeight: "400px"}}>
-                                        <div className="mb-4">
+                                         style={{maxHeight: "600px", minHeight: "300px"}}>
+                                        <div className="row mb-4">
 
-                                            <div className={"mb-3 name" + (errors.name ? " error " : "")}>
+                                            <div className={"control-row col-10 name" + (errors.name ? " error " : "")}>
                                                 <label className="label-2 small">Name</label>
-                                                <input
-                                                    className="form-control" {...register("name", {required: true})} />
+                                                <div className="d-flex align-items-center">
+                                                    <input
+                                                        className="form-control me-3" {...register("name", {required: true})} />
+                                                    <div className="form-check form-switch">
+                                                        <input className="form-check-input"
+                                                            type="checkbox" {...register('enabled')}/>
+                                                        <label className="form-check-label">Enabled</label>
+                                                    </div>
+                                                    <div>
+                                                        <input {...register("id")} type="hidden"/>
+                                                    </div>
+                                                </div>
                                                 {errors.name &&
                                                     <span
                                                         className="text-danger fst-italic small">This field is required </span>}
-                                            </div>
-
-                                            <div className="form-check form-switch">
-                                                <input className="form-check-input"
-                                                       type="checkbox" {...register('enabled')}/>
-                                                <label className="form-check-label">Enabled</label>
-                                            </div>
-
-                                            <div>
-                                                <input {...register("id")} type="hidden"/>
                                             </div>
                                         </div>
                                     </div>
@@ -300,27 +300,32 @@ export default function OrganisationFormV2(props) {
                                 {selected_tab === 'sso' &&
                                     <div className="time-tab-content px-5 py-4 overflow-auto"
                                          style={{maxHeight: "600px", minHeight: "400px"}}>
-
-                                        <div className="form-check form-switch">
-                                            <input className="form-check-input"
-                                                   type="checkbox" {...register('autoCreateSSOUsers')}/>
-                                            <label className="form-check-label">allow single sign-on users to be
-                                                auto-created with a default set of group ACLs and SimSage
-                                                role(s).</label>
+                                        <div className="row mb-4">
+                                            <div className="col-12">
+                                                <div className="form-check form-switch">
+                                                    <input className="form-check-input"
+                                                        type="checkbox" {...register('autoCreateSSOUsers')}/>
+                                                    <label className="form-check-label">Allow single sign-on users to be
+                                                        auto-created with a default set of group ACLs and SimSage
+                                                        role(s).</label>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div className="form-group col-12">
-                                            <label className="small">domain csv</label>
-                                            <textarea className="form-control"
-                                                      placeholder="valid domain names separated by commas (e.g. simsage.co.uk)"
-                                                      rows="3"
-                                                      {...register("autoCreateSSODomainListStr", {required: false})}
-                                            />
+                                        <div className="row mb-5">
+                                            <div className="form-group col-12">
+                                                <label className="label-2 small">Domain CSV <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span>
+                                                </label>
+                                                <textarea className="form-control"
+                                                        placeholder="Valid domain names (e.g. simsage.co.uk)"
+                                                        rows="3"
+                                                        {...register("autoCreateSSODomainListStr", {required: false})}
+                                                />
+                                            </div>
                                         </div>
 
-                                        <div className="tab-content container px-5 py-4 overflow-auto"
-                                             style={{maxHeight: "450px"}}>
-                                            <div className="row pb-5">
+                                        <div>
+                                            <div className="row pb-5 mb-3">
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">SimSage Roles</h6>
                                                     <div className="role-area bg-light border rounded h-100">
@@ -357,8 +362,7 @@ export default function OrganisationFormV2(props) {
                                         </div>
 
                                         {organisation &&
-                                        <div className="tab-content container px-5 py-4 overflow-auto"
-                                             style={{maxHeight: "300px"}}>
+                                        <div>
                                             <div className="row pb-5">
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">SimSage Groups</h6>
