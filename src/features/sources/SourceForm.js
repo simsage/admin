@@ -630,10 +630,6 @@ export default function SourceForm() {
     }
 
 
-    //consoles
-    console.log("elected_source.crawlerType", selected_source.crawlerType)
-
-
     if (!show_form)
         return (<div/>);
     return (

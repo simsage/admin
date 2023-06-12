@@ -90,7 +90,7 @@ const AccountDropdown = (props) => {
                     onClick={() => {
                         handleSignOut()
                     }}>
-                    <labeZl className="pointer-cursor" title="Sign Out">Sign Out</labeZl>
+                    <label className="pointer-cursor" title="Sign Out">Sign Out</label>
                 </li>
                 </ul>
             </div>
