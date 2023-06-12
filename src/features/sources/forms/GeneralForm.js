@@ -221,8 +221,7 @@ export default function GeneralForm(props) {
                 <div className="col-4">
                     <div className="form-check form-switch" title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
                         <input className="form-check-input" type="checkbox" {...props.register(
-                                "allowAnonymous",
-                                {disabled: ['web', 'rss', 'googlesite'].includes(props.getValues("crawlerType"))}
+                                "allowAnonymous", {disabled: false}
                             )} />
                         <label className="form-check-label small">Allow anonymous access to these files</label>
                     </div>
