@@ -30,36 +30,30 @@ export default function CrawlerFileForm(props) {
             <div className="row mb-4">
                 <div className="form-group col-4">
                     <label className="small">Username</label>
-                    <form>
                         <input type="text" className="form-control"
                             placeholder=""
                             autoFocus={true}
                             value={specific_json.username}
                                        onChange={(event) => {setData({username: event.target.value})}}
                         />
-                    </form>
                 </div>
                 <div className="form-group col-4">
                     <label className="small">Password</label>
-                    <form>
-                        <input type="password" className="form-control"
-                            placeholder="********"
-                            value={specific_json.password}
-                            onChange={(event) => {setData({password: event.target.value})}}
-                        />
-                    </form>
+                    <input type="password" className="form-control"
+                        placeholder="********"
+                        value={specific_json.password}
+                        onChange={(event) => {setData({password: event.target.value})}}
+                    />
                 </div>
             </div>
             <div className="row mb-4">
                 <div className="form-group col-4">
                     <label className="small">Domain name</label>
-                    <form>
-                        <input type="text" className="form-control"
-                            placeholder=""
-                            value={specific_json.domain}
-                                onChange={(event) => {setData({domain: event.target.value})}}
-                        />
-                    </form>
+                    <input type="text" className="form-control"
+                        placeholder=""
+                        value={specific_json.domain}
+                            onChange={(event) => {setData({domain: event.target.value})}}
+                    />
                 </div>
                 <div className="form-group col-8">
                     <label className="small">FQDN</label>
@@ -75,33 +69,27 @@ export default function CrawlerFileForm(props) {
             <div className="row mb-4">
                 <div className="form-group col-4">
                     <label className="small">Server</label>
-                    <form>
                         <input type="text" className="form-control"
                             placeholder="(hostname or IP-address)"
                             value={specific_json.server}
                                        onChange={(event) => {setData({server: event.target.value})}}
                         />
-                    </form>
                 </div>
                 <div className="form-group col-4">
                     <label className="small">Share name</label>
-                    <form>
                         <input type="text" className="form-control"
                             placeholder=""
                             value={specific_json.shareName}
                                        onChange={(event) => {setData({shareName: event.target.value})}}
                         />
-                    </form>
                 </div>
                 <div className="form-group col-4">
                     <label className="small">Share path</label>
-                    <form>
                         <input type="text" className="form-control"
                             placeholder="path inside share (optional)"
                             value={specific_json.sharePath}
                                        onChange={(event) => {setData({sharePath: event.target.value})}}
                         />
-                    </form>
                 </div>
             </div>
         </div>
