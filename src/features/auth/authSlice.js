@@ -64,6 +64,7 @@ const authSlice = createSlice({
             state.message = ''
             state.session = action.payload.session
 
+
             const org_list = action.payload.organisationList
 
             if (org_list.length) {
@@ -77,6 +78,8 @@ const authSlice = createSlice({
                 state.selected_organisation = action.payload.organisationId;
                 state.selected_organisation_id = action.payload.organisationId;
             }
+
+            state.status = 'logged_in'
         },
 
         showAccount: (state, action) => {

@@ -109,7 +109,7 @@ export default function SourceForm() {
         dispatch(getGroupList({session_id: session_id, organization_id: selected_organisation_id}))
         // session_id,organization_id,page,page_size,filter
         dispatch(getUserListPaginated({
-            session_id: session.id,
+            session_id: session_id,
             organization_id: selected_organisation_id,
             page: page,
             page_size: page_size,
@@ -120,7 +120,7 @@ export default function SourceForm() {
             organization_id: selected_organisation_id,
             filter: null
         }))
-    }, [session.id, session_id, dispatch, show_form, selected_organisation_id, selected_knowledge_base_id]);
+    }, [show_form, selected_organisation_id, selected_knowledge_base_id]);
 
 
     const user_list = useSelector((state) => state.usersReducer.user_list);
@@ -264,7 +264,7 @@ export default function SourceForm() {
     useEffect(() => {
         if (has_error && has_error.message && has_error.message.length > 0)
             dispatch(showErrorAlert(has_error))
-    }, [dispatch, has_error])
+    }, [has_error])
 
     function is_valid_metadata(list, is_db) {
         //  "key": "none", "display": null, "metadata": "", "field2": "", "db1": "", "db2":"", "sort": ""

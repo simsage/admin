@@ -31,7 +31,7 @@ export default function KnowledgeBaseHome() {
     useEffect(() => {
         if (organisation_id)
             dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
-    }, [dispatch, session_id, organisation_id])
+    }, [organisation_id])
 
 
 

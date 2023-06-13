@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, {useEffect} from "react";
 import {useIsAuthenticated, useMsal} from "@azure/msal-react";
 import {SignInButton} from "./SignInButton";
 import {useDispatch, useSelector} from "react-redux";
@@ -15,42 +14,50 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const dispatch = useDispatch();
 
-    const {session, error_text, error_title} = useSelector((state)=>state.authReducer)
-    const { instance, accounts } = useMsal();
+    const {session, error_text, error_title, status, busy} = useSelector((state) => state.authReducer)
+    const {instance, accounts} = useMsal();
 
 
-    if ((!session || !session.id) && accounts && accounts.length > 0){
+    useEffect(() => {
+        // console.log("acquireTokenSilent: SimSage sign-in", busy, '-', status);
+        if ((!session || !session.id) && accounts && accounts.length > 0) {
 
-        const request = {
-            account: accounts[0]
-        };
+            const controller = new AbortController();
 
-        // actual SimSage/MSAL sign-in happens here
-        instance.acquireTokenSilent(request).then((response) => {
-            dispatch(simsageSignIn({id_token: response.idToken, on_success: (data) => {
-                dispatch(login(data));
-                dispatch(setOrganisationList(data))
-            }, on_fail: (error_message) => {
-                console.error("SimSage sign-in error:", error_message);
-                dispatch(showError({"message": "cannot sign-in: " + error_message, "title": "sign-in error"}));
-            }}));
-        });
-    }
+            const request = {
+                account: accounts[0]
+            };
+            // actual SimSage/MSAL sign-in happens here
+            instance.acquireTokenSilent(request).then((response) => {
+                // console.log("acquireTokenSilent: SimSage sign-in", busy);
+                dispatch(simsageSignIn({
+                    id_token: response.idToken, on_success: (data) => {
+                        dispatch(login(data));
+                        dispatch(setOrganisationList(data))
+                        console.log("acquireTokenSilent: SimSage sign-in", busy, '-', status, '-', data);
+                    }, on_fail: (error_message) => {
+                        console.error("SimSage sign-in error:", error_message);
+                        dispatch(showError({"message": "cannot sign-in: " + error_message, "title": "sign-in error"}));
+                    }
+                }));
 
+            });
 
-
+        }
+    }, [busy===false])
 
     return (
         <>
             <nav>
-                { isAuthenticated ? <></> : <SignInButton /> }
+                {isAuthenticated ? <></> : <SignInButton/>}
             </nav>
-            { error_text && error_text.length > 1 &&
+            {error_text && error_text.length > 1 &&
                 <ErrorMessage error_text={error_text} error_title={error_title}
-                          handleClose={() => {
-                              instance.logoutRedirect().catch(e => {
-                                  console.error("logoutRequest error", e);
-                              });}}
+                              handleClose={() => {
+                                  instance.logoutRedirect().catch(e => {
+                                      console.error("logoutRequest error", e);
+                                  });
+                              }}
 
                 />
             }

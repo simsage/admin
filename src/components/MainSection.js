@@ -16,8 +16,8 @@ function MainSection(){
         console.log("useEffect Main sesction organisation_list", organisation_list,"session",session)
     }
 
-    useEffect(() => {
-    }, [])
+    // useEffect(() => {
+    // }, [])
 
     return(
         <div>
