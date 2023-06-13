@@ -108,7 +108,7 @@ const authSlice = createSlice({
     }
 });
 
-
+// let abortController;
 export const simsageLogOut = createAsyncThunk(
     'auth/Logout',
     async ({session_id}) => {
@@ -134,10 +134,21 @@ export const simsageSignIn = createAsyncThunk(
     async ({id_token, on_success, on_fail}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/admin/authenticate/msal';
-        axios.get(url,{
-            headers: {"API-Version": window.ENV.api_version,
+
+        // if (abortController) {
+        //     abortController.abort(); // Tell the browser to abort request
+        // }
+
+        // abortController = typeof 'AbortController' !== 'undefined' && new AbortController();
+
+        console.log("simsageSignIn")
+        axios.get(url, {
+            headers: {
+                "API-Version": window.ENV.api_version,
                 "Content-Type": "application/json",
-                "jwt": id_token,}
+                "jwt": id_token,
+            },
+            // signal: abortController.signal
         })
             .then(function (response2) {
                 if (on_success)
@@ -145,11 +156,12 @@ export const simsageSignIn = createAsyncThunk(
                 return response2.data;
             })
             .catch((error) => {
-                console.error("SimSage sign-in error:",error);
+                console.error("SimSage sign-in error:", error);
                 if (on_fail)
                     on_fail(error.message);
                 return error;
             });
+
     }
 )
 
