@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
-import {closeForm, updateSources} from "./sourceSlice";
+import {closeForm, testSource, updateSources} from "./sourceSlice";
 import SourceTabs from "./SourceTabs";
 import React, {useEffect, useState} from "react";
 import GeneralForm from "./forms/GeneralForm";
@@ -216,6 +216,11 @@ export default function SourceForm() {
 
     const handleClose = () => {
         dispatch(closeForm());
+    }
+
+    const handleTest = () => {
+        dispatch(testSource({session_id:session_id, organisation_id: selected_organisation_id, knowledgeBase_id: selected_knowledge_base_id, source_id:selected_source.sourceId}))
+        //console.log('Test source data', {session_id:session_id, organisation_id: selected_organisation_id, knowledgeBase_id: selected_knowledge_base_id, source_id:selected_source.sourceId})
     }
 
     // Set form defaultValues
@@ -899,6 +904,11 @@ export default function SourceForm() {
                                 <button onClick={handleClose} type="button" className="btn btn-white px-4"
                                         data-bs-dismiss="modal">Close
                                 </button>
+                                { selected_source && selected_source.sourceId > 0 &&
+                                    <button onClick={handleTest} type="button" title='Test Source Connection' className={`btn btn-primary px-4 ${(selected_source.crawlerType === 'database')?'disabled' : ''}`}
+                                            data-bs-dismiss="modal">Test
+                                    </button>
+                                }
                                 <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
 
 

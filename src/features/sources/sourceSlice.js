@@ -285,6 +285,23 @@ const extraReducers = (builder) => {
             state.data_status = "rejected"
         })
 
+        //testSource
+        .addCase(testSource.pending, (state) => {
+            state.busy = true;
+            state.status = "loading"
+            state.data_status = 'loading'
+        })
+        .addCase(testSource.fulfilled, (state, action) => {
+            state.busy = false;
+            state.data_status = 'loaded';
+        })
+        .addCase(testSource.rejected, (state, action) => {
+            state.busy = false;
+            state.status = "rejected"
+            state.data_status = "rejected"
+            state.error = action.error
+        })
+
 }
 
 
@@ -453,6 +470,17 @@ export const installJcifsLibrary = createAsyncThunk(
                     return error
                 }
             )
+    });
+
+export const testSource = createAsyncThunk(
+    'sources/test',
+    async ({session_id, organisation_id, knowledgeBase_id, source_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/crawler/crawler/test/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}/${encodeURIComponent(source_id)}`;
+        return axios.get(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            })
     });
 
 
