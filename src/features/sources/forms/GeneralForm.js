@@ -85,7 +85,7 @@ export default function GeneralForm(props) {
         }
     }
 
-    console.log("crawlerType", selected_source.crawlerType)
+    // console.log("crawlerType", selected_source.crawlerType)
     //Validation Data
 
 

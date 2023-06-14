@@ -302,13 +302,16 @@ const extraReducers = (builder) => {
         .addCase(testSource.fulfilled, (state, action) => {
             state.busy = false;
             state.data_status = 'loaded';
-            state.test_result = action.payload
+            state.test_result = action.payload?.information === 'OK' ? 'Success' : 'Failed'
         })
         .addCase(testSource.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
-            state.error = action.error
+            state.error = {
+                code: 'Test Failed',
+                message: 'Please double check your configuration'
+            }
         })
 
 }
@@ -321,7 +324,7 @@ export const getSources = createAsyncThunk(
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("sources/getSources", response.data);
+                //console.log("sources/getSources", response.data);
                 return response.data
             }).catch(
                 (error) => {
@@ -488,6 +491,7 @@ export const testSource = createAsyncThunk(
         const url = api_base + `/crawler/crawler/test/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}/${encodeURIComponent(source_id)}`;
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
+                console.log( 'testing test response', response.data)
                 return response.data
             })
     });
