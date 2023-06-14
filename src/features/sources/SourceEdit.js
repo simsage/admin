@@ -17,7 +17,7 @@ export default function SourceEdit() {
     // const theme = '';
     const show_form = useSelector((state) => state.sourceReducer.show_data_form);
     const error = useSelector((state) => state.sourceReducer.error);
-
+    const test_result = useSelector((state) => state.sourceReducer.test_result);
     const handleClose = () => {
         dispatch(closeTestMessage())
     }
@@ -31,8 +31,9 @@ export default function SourceEdit() {
 
 
             <SourceForm/>
-
-            <SourceTest/>
+            {test_result &&
+                <SourceTest/>
+            }
 
             {error &&
                 <ErrorMessage error={error} close={handleClose}/>

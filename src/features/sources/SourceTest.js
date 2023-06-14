@@ -1,17 +1,20 @@
 import React from "react";
+import {useDispatch} from "react-redux";
+import {closeTestMessage} from "./sourceSlice";
 
 const SourceTest = () => {
+    const dispatch = useDispatch();
 
-    const title = 'Testing';
-    const message = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad doloribus error ipsam non nulla perferendis ratione velit veritatis voluptate? Consequatur dolores doloribus ducimus excepturi laudantium, modi reiciendis ullam veniam.';
+    const title = 'Connection Successful!';
+    const message = 'SimSage can successfully see your endpoint / tenant with the information you have provided.';
 
     const close = () => {
-
+        dispatch(closeTestMessage())
     }
 
     return (
-        <div className="popover">
-            <div className="popover" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+        <div>
+            <div className="modal"  tabIndex="-1" role="dialog" style={{display: "inline", zIndex: 1061}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
@@ -24,9 +27,6 @@ const SourceTest = () => {
                             <div className="control-row">
                                 <span title={message}
                                       className="label-wide">{message}</span>
-                            </div>
-                            <div className="control-row">
-                                <span className="label-wide small text">Please try again. If the problem persists contact the SimSage Customer Support Team</span>
                             </div>
                         </div>
                         <div className="modal-footer">
