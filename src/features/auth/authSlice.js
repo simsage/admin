@@ -30,80 +30,117 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
 
-    //not async function : sync functions
+    // not async function : sync functions
+    // state must be pure!  see: https://github.com/facebook/react/issues/16295
     reducers: {
 
         setSelectedOrganisation: (state, action) => {
             if (state.selected_organisation_id !== action.payload.id) {
-                state.selected_organisation = action.payload;
-                state.selected_organisation_id = action.payload.id;
-                state.selected_knowledge_base = {};
-                state.selected_knowledge_base_id = null
+                return {
+                    ...state,
+                    selected_organisation: action.payload,
+                    selected_organisation_id: action.payload.id,
+                    selected_knowledge_base: {},
+                    selected_knowledge_base_id: null
+                }
             }
+            return state;
         },
 
         setSelectedKB: (state, action) => {
-            state.selected_knowledge_base_id = action.payload;
+            return {
+                ...state,
+                selected_knowledge_base_id: action.payload
+            }
         },
 
         showError: (state, action) => {
             console.log("showError", action.payload);
             if (action && action.payload && action.payload.title && action.payload.message) {
-                state.is_error = true;
-                state.error_title = action.payload.title;
-                state.error_text = action.payload.message;
+                return {
+                    ...state,
+                    is_error: true,
+                    error_title: action.payload.title,
+                    error_text: action.payload.message
+                }
             }
+            return state;
         },
 
         closeError: (state) => {
-            state.is_error = false;
+            return {
+                ...state,
+                is_error: false
+            }
         },
 
         login: (state, action) => {
-            state.user = action.payload.user
-            state.message = ''
-            state.session = action.payload.session
-
 
             const org_list = action.payload.organisationList
-
+            let selected_org = null;
+            let selected_org_id = null;
             if (org_list.length) {
                 for (let i = 0; i < org_list.length; i++) {
                     if (org_list[i] && org_list[i]['id'] === action.payload.organisationId) {
-                        state.selected_organisation = org_list[i];
-                        state.selected_organisation_id = org_list[i].id;
+                        selected_org = org_list[i];
+                        selected_org_id = org_list[i].id;
+                        break;
                     }
                 }
             } else {
-                state.selected_organisation = action.payload.organisationId;
-                state.selected_organisation_id = action.payload.organisationId;
+                selected_org = action.payload.organisationId;
+                selected_org_id = action.payload.organisationId;
             }
 
-            state.status = 'logged_in'
+            return {
+                ...state,
+                user: action.payload.user,
+                message: '',
+                session: action.payload.session,
+                status: 'logged_in',
+                selected_organisation: selected_org,
+                selected_organisation_id: selected_org_id,
+            }
         },
 
         showAccount: (state, action) => {
-            state.accounts_dropdown = !state.accounts_dropdown;
+            const ad = !state.accounts_dropdown;
+            return {
+                ...state,
+                accounts_dropdown: ad,
+            }
         },
 
         closeAllMenus: (state) => {
-            state.accounts_dropdown = false
+            return {
+                ...state,
+                accounts_dropdown: false,
+            }
         },
 
     },
     extraReducers: (builder) => {
         builder
             .addCase(simsageSignIn.pending, (state) => {
-                state.busy = true;
-                state.status = "loading";
+                return {
+                    ...state,
+                    busy: true,
+                    status: "loading"
+                }
             })
             .addCase(simsageSignIn.fulfilled, (state, action) => {
-                state.busy = false;
-                state.status = "fulfilled";
+                return {
+                    ...state,
+                    busy: false,
+                    status: "fullfilled"
+                }
             })
             .addCase(simsageSignIn.rejected, (state) => {
-                state.busy = false;
-                state.status = "rejected";
+                return {
+                    ...state,
+                    busy: false,
+                    status: "rejected"
+                }
             })
     }
 });
@@ -135,13 +172,6 @@ export const simsageSignIn = createAsyncThunk(
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/admin/authenticate/msal';
 
-        // if (abortController) {
-        //     abortController.abort(); // Tell the browser to abort request
-        // }
-
-        // abortController = typeof 'AbortController' !== 'undefined' && new AbortController();
-
-        console.log("simsageSignIn")
         axios.get(url, {
             headers: {
                 "API-Version": window.ENV.api_version,

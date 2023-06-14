@@ -1,10 +1,13 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useIsAuthenticated, useMsal} from "@azure/msal-react";
 import {SignInButton} from "./SignInButton";
 import {useDispatch, useSelector} from "react-redux";
 import {login, showError, simsageSignIn} from "./authSlice";
 import {setOrganisationList} from "../organisations/organisationSlice";
 import ErrorMessage from "../../common/ErrorMessage";
+
+// global variable - bad - but controls the process
+let signing_in = false;
 
 
 /**
@@ -14,37 +17,33 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const dispatch = useDispatch();
 
-    const {session, error_text, error_title, status, busy} = useSelector((state) => state.authReducer)
+    const {session, error_text, error_title} = useSelector((state) => state.authReducer)
     const {instance, accounts} = useMsal();
 
-
+    // actual SimSage/MSAL sign-in happens here
     useEffect(() => {
-        // console.log("acquireTokenSilent: SimSage sign-in", busy, '-', status);
-        if ((!session || !session.id) && accounts && accounts.length > 0) {
 
-            const controller = new AbortController();
-
-            const request = {
-                account: accounts[0]
-            };
-            // actual SimSage/MSAL sign-in happens here
-            instance.acquireTokenSilent(request).then((response) => {
-                // console.log("acquireTokenSilent: SimSage sign-in", busy);
+        function sign_in(response) {
+            if ((!session || !session.id) && !signing_in && response && response.idToken) {
+                signing_in = true;
                 dispatch(simsageSignIn({
                     id_token: response.idToken, on_success: (data) => {
                         dispatch(login(data));
                         dispatch(setOrganisationList(data))
-                        console.log("acquireTokenSilent: SimSage sign-in", busy, '-', status, '-', data);
                     }, on_fail: (error_message) => {
                         console.error("SimSage sign-in error:", error_message);
                         dispatch(showError({"message": "cannot sign-in: " + error_message, "title": "sign-in error"}));
                     }
                 }));
-
-            });
-
+            }
         }
-    }, [busy===false])
+
+        instance.acquireTokenSilent({account: accounts[0]}).then((response) => {
+            sign_in(response)
+        });
+
+    }, [instance, accounts, dispatch, session])
+
 
     return (
         <>
