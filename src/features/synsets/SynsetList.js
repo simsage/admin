@@ -8,7 +8,7 @@ import {
     showAddDefaultAskForm,
     noResultsMessage
 } from "./synsetSlice";
-import {showEditSynSetForm} from "../synsets/synsetSlice"
+import {showEditSynSetForm} from "./synsetSlice"
 import SynsetEdit from "./SynsetEdit";
 import SynsetDelete from "./SynsetDelete";
 import SynsetDefault from "./SynsetDefault";
@@ -140,35 +140,6 @@ export default function SynsetList() {
 
             <div className="synset-page">
 
-                {/* {
-                    isVisible() &&
-                    <div className="filter-find-box">
-                        <span className="filter-label">find </span>
-                        <span className="filter-find-text">
-                            <input type="text" value={synset_filter} autoFocus={true}
-                                className={"filter-text-width " + theme}
-                                onKeyDown={(e) => handleSearchTextKeydown(e)}
-                                onChange={(e) => {setSynSetFilter(e.target.value)}}/>
-                        </span> &nbsp;
-                        <span className="filter-find-image">
-                            <button className="btn btn-secondary" onClick={() => filterRecords()} title="search">
-                            search
-                            </button>
-                        </span>
-                        <span className="ms-4 fw-bolder" style={{color: "hotPink"}}> &#8592; Couldn't get the filter below to work without a button</span>
-                    <div className="form-group ms-auto w-20">
-                        <button className="btn btn-primary text-nowrap m-1"  onClick={() => handleAddSynSet()}>
-                            + Add SynSet
-                        </button>
-                        <button className="btn btn-primary text-nowrap m-1"
-                                onClick={() => handleAddDefaultSynSet()}
-                                title="add all default syn-sets">+ Defaults
-                        </button>
-                    </div>
-                </div>
-            }
-            <br/><br/><br/> */}
-
                 <div className="d-flex justify-content-between w-100 mb-4">
                     <div className="d-flex w-100">
                         <div className="d-flex form-group me-2">
@@ -201,8 +172,6 @@ export default function SynsetList() {
                         </button>
                     </div>
                 </div>
-
-                {/* <br clear="both"/> */}
 
                 {
                     isVisible() &&
@@ -276,21 +245,6 @@ export default function SynsetList() {
                                     )
                                 })
                             }
-                            {/* <tr>
-                                <td/>
-                                <td>
-                                    {isVisible() &&
-                                        <div>
-                                            <button className="btn text-primary btn-sm"
-                                                    onClick={() => handleAddDefaultSynSet()}
-                                                    title="add all default syn-sets">defaults
-                                            </button>
-                                        </div>
-
-                                    }
-                                </td>
-                            </tr> */}
-
                             </tbody>
 
                         </table>

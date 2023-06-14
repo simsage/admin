@@ -44,7 +44,7 @@ function MainSection(){
             {show_organisation_form &&
                 <OrganisationEdit />
             }
-c
+
         </div>
     )
 }
