@@ -39,7 +39,6 @@ export const getLogs = createAsyncThunk(
         const url = '/stats/system-logs/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(year) + '/' +
             encodeURIComponent(month) + '/' + encodeURIComponent(day) + '/' + encodeURIComponent(hour) + '/' +
             encodeURIComponent(log_hours)
-        console.log('GET ' + api_base + url);
 
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {

@@ -15,7 +15,6 @@ export function SourceStartDialog() {
     const session_id = session.id;
 
     if(!selected_source){
-        console.error("Missing source")
         dispatch(closeForm());
     }
 
@@ -30,13 +29,11 @@ export function SourceStartDialog() {
     }
 
     const handleClose = () => {
-        console.log("BkOrganisationBackupDialog handleClose")
         dispatch(closeForm());
     }
 
 
     const handleOk = () => {
-        console.log("BkOrganisationBackupDialog handleClose")
         dispatch(startSource({session_id:session_id, data:data}))
         dispatch(closeForm());
     }

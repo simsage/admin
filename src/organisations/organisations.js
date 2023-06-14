@@ -48,7 +48,6 @@ export class Organisations extends React.Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     addNewOrganisation() {
         this.setState({edit_organisation: true,

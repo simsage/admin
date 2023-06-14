@@ -18,7 +18,6 @@ export class Status extends React.Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     isVisible() {
         return this.props.selected_organisation_id && this.props.selected_organisation_id.length > 0;

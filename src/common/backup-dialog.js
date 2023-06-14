@@ -12,7 +12,6 @@ export class BackupDialog extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     cancel() {
         if (this.props.callback) {

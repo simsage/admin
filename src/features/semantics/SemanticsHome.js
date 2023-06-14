@@ -31,13 +31,11 @@ export default function SemanticsHome() {
 
 
     useEffect(() => {
-        console.log('loading...', data)
         dispatch(loadSemantics({ session_id, data }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === 'load_now'])
 
     const handleClose = () => {
-        console.log('working')
         dispatch(closeForm())
     }
 

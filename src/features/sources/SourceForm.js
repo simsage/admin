@@ -195,7 +195,6 @@ export default function SourceForm() {
     const [selected_source_tab, setSelectedSourceTab] = useState('general')
 
     function changeNav(slug) {
-        console.log("slug", slug)
         setSelectedSourceTab(slug);
     }
 
@@ -577,28 +576,11 @@ export default function SourceForm() {
         } else {
             dispatch(updateSources({session_id: session.id, data: new_data}))
         }
-
-
-        // setFormData(new_data)
-        console.log("onSubmit new_data", new_data)
-        // console.log("onSubmit new_default_source_data", new_default_source_data)
-        // errors = {title: "Form validation", message: "Invalid name added"}
-
-        // if (errors != undefined) {
-        //     console.log("showErrorAlert: event dispatch", errors)
-        //     dispatch(showErrorAlert(errors))
-        // } else {
-
-        // }
-
-        // handleClose()
     };
 
     //update the crawlerType
     useEffect(() => {
         let selected_val = getValues("crawlerType")
-        console.log("selected_val", selected_val)
-
         if (selected_val) setFormData({...form_data, crawlerType: selected_val})
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [watch("crawlerType")])
@@ -606,22 +588,17 @@ export default function SourceForm() {
 
     //set acl data to form_data
     function updateAclList(list) {
-        console.log("acl in source form", list)
         setFormData({...form_data, acls: list})
-        console.log("acl in source form form_data", form_data)
     }
-
 
     //set schedule data to form_data
     function updateSchedule(time) {
-        console.log(time)
         if (time !== null) {
             setFormData({...form_data, schedule: time})
         }
     }
 
     function updateProcessorConfig(processors) {
-        console.log(processors)
         if (processors !== null) {
             setFormData({...form_data, processorConfig: processors})
         }

@@ -25,14 +25,11 @@ const extraReducers = (builder) => {
         })
 
         .addCase(loadDocumentList.fulfilled, (state, action) => {
-            console.log("addCase getDocuments fulfilled ", action);
             state.status = "fulfilled";
             state.document_list = action.payload.documentList;
             state.numDocuments = action.payload.numDocuments;
-            // console.log('action.payload', action.payload);
         })
         .addCase(loadDocumentList.rejected, (state, action) => {
-            console.log("addCase getDocuments rejected ", action)
             state.status = "rejected"
         })
 }
@@ -61,11 +58,9 @@ export const loadDocumentList = createAsyncThunk(
         }
         return axios.post(url,data,Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("status/getDocuments 1", response.data);
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("status/getDocuments", error);
                     return error
                 }
             )

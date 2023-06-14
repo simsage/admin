@@ -44,15 +44,8 @@ export const updateCategorization = createAsyncThunk(
 
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log('response...', response)
                 return response;
             })
-            // .catch(
-            //     (error) => {
-            //         console.log('error...', error.response.data.error)
-            //         return error.response.data.error
-            //     }
-            // )
     }
 )
 

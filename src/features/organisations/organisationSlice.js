@@ -124,7 +124,6 @@ const reducers = {
     },
 
     showDeleteBackupForm: (state, action) => {
-        console.log("showDeleteBackupForm in Slice")
         state.show_delete_backup_form = action.payload.show_form;
         // state.backup_organisation_id = action.payload.org_id;
         state.selected_backup = action.payload.selected_backup;
@@ -136,7 +135,6 @@ const reducers = {
     },
 
     showDownloadBackupForm: (state, action) => {
-        console.log("showDeleteBackupForm in Slice")
         state.show_download_backup_form = action.payload.show_form;
         state.selected_backup = action.payload.selected_backup;
     },
@@ -191,11 +189,9 @@ const extraReducers = (builder) => {
             state.show_organisation_form = false;
             state.edit_organisation_id = undefined;
             state.data_status = 'load_now';
-            // state.organisation_list = action.payload
         })
 
         .addCase(updateOrganisation.rejected, (state, action) => {
-            console.log("addCase updateOrganisation rejected ", action)
         })
 
         //delete Record
@@ -212,7 +208,6 @@ const extraReducers = (builder) => {
             state.organisation_backup_list = action.payload;
             state.organisation_original_backup_list = action.payload;
             state.backup_data_status = 'loaded';
-            // console.log('action.payload', action.payload);
         })
 
         //backup an org
@@ -272,7 +267,6 @@ export const updateOrganisation = createAsyncThunk(
         const url = '/auth/organisation';
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("updateOrganisation data", response.data)
                 return response.data
             }).catch(
                 (error) => {
@@ -291,11 +285,9 @@ export const deleteOrganisation = createAsyncThunk(
         const url = api_base + '/auth/organisation/' + encodeURIComponent(organisation_id);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("deleteOrganisation", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("deleteOrganisation error", error.response.data.error)
                     return error
                 }
             )
@@ -315,7 +307,6 @@ export const getOrganisationBackupList = createAsyncThunk(
         const {id} = session
         return axios.get(api_base + url, Comms.getHeaders(id))
             .then((response) => {
-                console.log("getOrganisationBackupList", response.data)
                 return response.data
             }).catch(
                 (error) => {
@@ -334,7 +325,6 @@ export const downloadBackup = createAsyncThunk(
         const {id} = session
         return axios.get(url, Comms.getHeaders(id))
             .then((response) => {
-                console.log("downloadBackup", response.data)
                 return response.data
             }).catch(
                 (error) => {
@@ -354,11 +344,9 @@ export const backupOrganisation = createAsyncThunk(
         const data = {};
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("backupOrganisation", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("backupOrganisation error", error)
                     return error
                 }
             )
@@ -375,11 +363,9 @@ export const restoreOrganisation = createAsyncThunk(
         const url = api_base + '/backup/restore';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("backupOrganisation", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("backupOrganisation error", error)
                     return error
                 }
             )
@@ -395,11 +381,9 @@ export const deleteBackup = createAsyncThunk(
         const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("delete organisations deleteBackup data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("delete organisations deleteBackup data error", error)
                     return error
                 }
             )

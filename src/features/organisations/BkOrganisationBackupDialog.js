@@ -11,7 +11,6 @@ export default function BkOrganisationBackupDialog() {
 
     //handle form close or cancel
     const handleClose = () => {
-        console.log("BkOrganisationBackupDialog handleClose")
         dispatch(closeBackupForm());
     }
 
@@ -21,7 +20,6 @@ export default function BkOrganisationBackupDialog() {
     }
 
     const handleBackup = () => {
-        console.log("handleBackup");
         dispatch(backupOrganisation(data))
         dispatch(closeBackupForm());
     }

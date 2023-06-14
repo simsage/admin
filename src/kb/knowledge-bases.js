@@ -46,7 +46,6 @@ export class KnowledgeBases extends Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     changePage(page) {
         this.props.setKbPage(page);

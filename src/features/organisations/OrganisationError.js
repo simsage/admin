@@ -7,9 +7,7 @@ export default function OrganisationError(){
     const dispatch = useDispatch();
 
     const show_error_form = useSelector((state) => state.organisationReducer.show_error_form)
-    console.log('show_error_form', show_error_form)
     const error_obj = useSelector((state) => state.organisationReducer.error)
-    console.log('error', error_obj)
     const error= error_obj && error_obj.response ? error_obj.response.data.error : ''
 
 

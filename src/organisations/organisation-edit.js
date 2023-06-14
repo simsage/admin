@@ -27,7 +27,6 @@ export class OrganisationEdit extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     handleSave() {
         if (this.state.onSave) {
@@ -66,10 +65,8 @@ export class OrganisationEdit extends Component {
     }
     groupsFromNames(group_name_list) {
         const group_list = [];
-        console.log("group_name_list", group_name_list);
         for (const group of this.props.all_groups) {
             if (group_name_list.includes(group.name)) {
-                console.log("group", group, group_name_list);
                 group_list.push(group);
             }
         }

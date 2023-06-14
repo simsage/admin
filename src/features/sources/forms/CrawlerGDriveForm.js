@@ -33,7 +33,6 @@ export default function CrawlerGDriveForm(props) {
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
-        console.log("specific_json in rss", specific_json)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
@@ -42,8 +41,6 @@ export default function CrawlerGDriveForm(props) {
         const temp_time_now = Math.floor(Date.now())
         setTimeNow(temp_time_now)
         setData({deltaIndicator:temp_time_now});
-
-        console.log("handleSetTimeNow",time_now,'--',specific_json.deltaIndicator)
     }
 
     return (

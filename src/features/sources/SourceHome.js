@@ -167,7 +167,6 @@ export default function SourceHome(props) {
 
     function deleteCrawler() {
         let source_id = selected_source.sourceId;
-        console.log("deleteOk is called ", source_id)
         dispatch(deleteSource({
             session_id: session.id,
             organisation_id: selected_organisation_id,
@@ -179,7 +178,6 @@ export default function SourceHome(props) {
 
 
     function alertHandler() {
-        console.log("alertHandler")
         if (button_clicked === 'remove_crawler') {
             deleteCrawler()
         } else if (button_clicked === 'reset_crawlers') {
@@ -201,8 +199,6 @@ export default function SourceHome(props) {
 
 
     function handleExportCrawler(crawler) {
-
-        console.log("handleExportCrawler", show_export_form)
         if (crawler) {
             dispatch(showExportForm({source: crawler}))
         }
@@ -221,7 +217,6 @@ export default function SourceHome(props) {
     }
 
     function handleStartCrawler(source) {
-        console.log("handleStartCrawler",source.name)
         dispatch(showStartCrawlerAlert({source:source}))
     }
 
@@ -265,16 +260,12 @@ export default function SourceHome(props) {
     }
 
     function handleAddForm(){
-        console.log("handleAddNew")
         dispatch(showAddForm(true));
     }
 
 
     function handleSearchFilter(event) {
         const val = event.target.value;
-
-        console.log("searchSource",val)
-
         // todo: 'searchSource' doesn't seem to exist?
         dispatch(searchSource({keyword:val}))
     }

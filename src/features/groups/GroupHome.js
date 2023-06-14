@@ -15,10 +15,6 @@ export default function SynonymsHome() {
     const load_data = useSelector( (state) => state.groupReducer.data_status)
 
     const group_list = useSelector((state) => state.groupReducer.group_list)
-    console.log('group_list...', group_list.length)
-    console.log('status...', status)
-    console.log(status !== null && group_list.length > 0 )
-
 
     useEffect(()=>{
         dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))

@@ -19,9 +19,7 @@ export default function BotDeleteAsk(){
     }
 
     const handleDelete = () => {
-        console.log("delete", memory);
         const data = {"session_id": session_id, "organisation_id": organisation_id, "knowledge_base_id": knowledgeBase_id, "id": memory.id };
-        console.log("delete data",data)
         if( typeof memory === 'string' && memory.toLowerCase() === 'all') {
             dispatch(deleteAllMindItems( {session_id, organisation_id, knowledgeBase_id}));
             dispatch(closeDeleteForm());

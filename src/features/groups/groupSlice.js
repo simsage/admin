@@ -20,9 +20,6 @@ export const getGroupList = createAsyncThunk(
     'groups/getGroupList',
     async ({session_id, organization_id}) => {
         const api_base = window.ENV.api_base;
-
-        console.log("groups/getGroupList organization_id", organization_id)
-        console.log("groups/getGroupList session_id", session_id)
         const url = api_base + '/auth/groups/' + encodeURIComponent(organization_id);
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
@@ -42,7 +39,6 @@ export const updateGroup = createAsyncThunk(
         const url = '/auth/group';
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("updateGroup data", response.data);
                 return response.data;
             }).catch(
                 (error) => {
@@ -62,7 +58,6 @@ export const deleteGroup = createAsyncThunk(
             .then((response) => {
                 return response.data
             }).catch(error => {
-                console.log('error...', error.response.data.error);
                 return error
             })
     }
@@ -76,7 +71,6 @@ const extraReducers = (builder) => {
             state.data_status = "loading"
         })
         .addCase(getGroupList.fulfilled, (state, action) => {
-            console.log("groups/getGroupList", action.payload)
             state.status = "fulfilled"
             state.data_status = "loaded"
             state.group_list = action.payload
@@ -91,7 +85,6 @@ const extraReducers = (builder) => {
             state.data_status = "loading";
         })
         .addCase(updateGroup.fulfilled, (state, action) => {
-            console.log("group/update ", action);
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
@@ -105,7 +98,6 @@ const extraReducers = (builder) => {
             state.data_status = "loading";
         })
         .addCase(deleteGroup.fulfilled, (state, action) => {
-            console.log("group/update ", action);
             state.status = "fulfilled";
             state.data_status = "load_now";
         })

@@ -31,7 +31,6 @@ export const PageLayout = (props) => {
                         dispatch(login(data));
                         dispatch(setOrganisationList(data))
                     }, on_fail: (error_message) => {
-                        console.error("SimSage sign-in error:", error_message);
                         dispatch(showError({"message": "cannot sign-in: " + error_message, "title": "sign-in error"}));
                     }
                 }));

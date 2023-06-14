@@ -9,7 +9,6 @@ export default function SemanticsIntro(){
     const dispatch = useDispatch();
 
     function handleAddNewMemory(){
-        console.log("handleAddNewMemory")
         dispatch(showAddSemanticForm(true))
     }
 

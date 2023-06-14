@@ -126,12 +126,7 @@ export default function KnowledgeBaseForm() {
     }
 
     function updateSchedule(time) {
-        console.log(time)
         setIndexSchedule(time)
-        console.log("edit_index_schedule", edit_index_schedule)
-        // if (time !== null) {
-        //     setFormData({...form_data, schedule: time})
-        // }
     }
 
 

@@ -11,7 +11,6 @@ export function SourceErrorDialog() {
 
 
     const handleClose = () => {
-        console.log("SourceErrorDialog handleClose")
         dispatch(closeForm());
     }
 

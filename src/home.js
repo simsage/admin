@@ -40,7 +40,6 @@ export class Home extends Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     componentDidMount() {
         if (window.ENV.authentication === "password") {

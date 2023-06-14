@@ -79,7 +79,6 @@ export default function GeneralForm(props) {
                     message: 'Success!  crawler "' + name + '" can communicate with its intended end-point.'
                 });
             }, (errStr) => {
-                console.error(errStr);
                 this.setError("Error Testing Crawler", errStr);
             });
         }

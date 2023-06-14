@@ -66,7 +66,6 @@ export default function BotList() {
     }
 
     function handlePageChange(next_page){
-        console.log("page next_page",next_page)
         if(next_page > page){
             // last list item is used for next page
             const last_row = mind_item_list.slice(-1)[0]
@@ -115,7 +114,6 @@ export default function BotList() {
     }
 
     function handleEditMemory(m) {
-        console.log(`Editing... `);
         dispatch(showEditMemoryForm({show: true, memory: m}))
     }
 

@@ -7,10 +7,8 @@ export default function CategorizationError(){
     const dispatch = useDispatch();
     const show_error = useSelector((state) => state.categorizationReducer.show_error)
     const error = useSelector((state) => state.categorizationReducer.error)
-    console.log(typeof error)
 
     const handleOk = () => {
-        console.log(error)
         dispatch(closeErrorForm());
     }
 

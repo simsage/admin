@@ -32,7 +32,6 @@ export class UserManager extends React.Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     numUsers(organisation_id, isAdmin) {
         return this.props.user_count;

@@ -16,7 +16,6 @@ const url = 'https://adminux.simsage.ai/api/auth/user/organisations/' + encodeUR
 
 export const handlers = [
     rest.get(url, (req, res, ctx) => {
-        console.log(req.url)
         return res(ctx.json(fetch_data.organisations), ctx.delay(150))
     })
 ]

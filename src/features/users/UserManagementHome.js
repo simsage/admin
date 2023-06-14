@@ -13,7 +13,6 @@ export function UserManagementHome(){
     ]
 
     function changeNav(slug){
-        console.log(slug)
         setSelectedSubNav(slug);
     }
 
