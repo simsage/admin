@@ -195,6 +195,8 @@ export default function SourceForm() {
         {label: "schedule", slug: "schedule", type: "schedule"},
 
     ]
+
+    const externalCrawlers = ['database', 'nfs', 'restful']
     const [selected_source_tab, setSelectedSourceTab] = useState('general')
 
     function changeNav(slug) {
@@ -907,7 +909,7 @@ export default function SourceForm() {
                                         data-bs-dismiss="modal">Close
                                 </button>
                                 { selected_source && selected_source.sourceId > 0 &&
-                                    <button onClick={handleTest} type="button" title='Test Source Connection' className={`btn btn-primary px-4 ${(selected_source.crawlerType === 'database')?'disabled' : ''}`}
+                                    <button onClick={handleTest} type="button" title='Test Source Connection' className={`btn btn-primary px-4 ${(externalCrawlers.includes(selected_source.crawlerType))?'disabled' : ''}`}
                                             data-bs-dismiss="modal">Test
                                     </button>
                                 }
