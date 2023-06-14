@@ -38,9 +38,14 @@ export const PageLayout = (props) => {
             }
         }
 
-        instance.acquireTokenSilent({account: accounts[0]}).then((response) => {
-            sign_in(response)
-        });
+        if (accounts && accounts.length > 0) {
+            const request = {
+                account: accounts[0]
+            };
+            instance.acquireTokenSilent(request).then((response) => {
+                sign_in(response)
+            });
+        }
 
     }, [instance, accounts, dispatch, session])
 
