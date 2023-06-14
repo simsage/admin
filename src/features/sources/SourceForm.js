@@ -32,6 +32,7 @@ import CrawlerDiscourseForm2 from "./forms/CrawlerDiscourseForm2";
 import CrawlerSearchForm2 from "./forms/CrawlerSearchForm2";
 import CrawlerServiceNow from "./forms/CrawlerServiceNow";
 import ProcessorSetup from "../../common/processor-setup";
+import SourceTest from "./SourceTest";
 
 
 export default function SourceForm() {
@@ -102,6 +103,7 @@ export default function SourceForm() {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const show_form = useSelector((state) => state.sourceReducer.show_data_form);
+    const test_result = useSelector((state) => state.sourceReducer.test_result);
 
     useEffect(() => {
         const page = 0;
@@ -640,7 +642,7 @@ export default function SourceForm() {
     return (
         <div>
             <div className="modal" tabIndex="-1" role="dialog"
-                 style={{display: "inline", 'zIndex': 8000, background: "#202731bb"}}>
+                 style={{display: "inline", 'zIndex': 1060, background: "#202731bb"}}>
                 <div className={"modal-dialog modal-xl"} role="document">
                     <div className="modal-content">
                         <form onSubmit={handleSubmit(onSubmit)}>

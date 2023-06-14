@@ -40,7 +40,9 @@ const initialState = {
     show_zip_crawler_prompt: false,
     show_process_files_prompt: false,
 
-    //error
+    //test
+    test_result: false,
+    error: false,
 }
 
 const reducers = {
@@ -97,6 +99,12 @@ const reducers = {
         state.show_start_crawler_prompt = false
         state.show_zip_crawler_prompt = false
         state.show_process_files_prompt = false
+
+    },
+
+    closeTestMessage: (state, action) => {
+        state.test_result = false
+        state.error = false;
     },
 
     setSelectedSourceTab: (state, action) => {
@@ -294,6 +302,7 @@ const extraReducers = (builder) => {
         .addCase(testSource.fulfilled, (state, action) => {
             state.busy = false;
             state.data_status = 'loaded';
+            state.test_result = action.payload
         })
         .addCase(testSource.rejected, (state, action) => {
             state.busy = false;
@@ -493,7 +502,7 @@ const sourceSlice = createSlice({
 });
 
 export const {
-    showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
+    closeTestMessage, showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
     showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert, searchSource
 } = sourceSlice.actions
 export default sourceSlice.reducer;

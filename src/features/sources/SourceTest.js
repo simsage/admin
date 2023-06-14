@@ -1,30 +1,29 @@
-import React from 'react';
+import React from "react";
 
+const SourceTest = () => {
 
-export default function ErrorMessage( {error, close} ){
+    const title = 'Testing';
+    const message = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad doloribus error ipsam non nulla perferendis ratione velit veritatis voluptate? Consequatur dolores doloribus ducimus excepturi laudantium, modi reiciendis ullam veniam.';
 
-    const error_title = error.code
-    const error_text = error.message
-
-    const handleClose = () => {
+    const close = () => {
 
     }
 
     return (
-        <div>
-            <div className="modal"  tabIndex="-1" role="dialog" style={{display: "inline", zIndex: 1061}}>
+        <div className="popover">
+            <div className="popover" tabIndex="-1" role="dialog" style={{display: "inline"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel" title={error_title}>{error_title}</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel" title={title}>{title}</h5>
                             <button onClick={close} type="button" className="btn-close" data-bs-dismiss="modal"
                                     title="close this error message" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
                             <div className="control-row">
-                                <span title={error_text}
-                                    className="label-wide">{error_text}</span>
+                                <span title={message}
+                                      className="label-wide">{message}</span>
                             </div>
                             <div className="control-row">
                                 <span className="label-wide small text">Please try again. If the problem persists contact the SimSage Customer Support Team</span>
@@ -38,5 +37,7 @@ export default function ErrorMessage( {error, close} ){
                 </div>
             </div>
         </div>
-    );
+    )
 }
+
+export default SourceTest;
