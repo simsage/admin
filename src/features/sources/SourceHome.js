@@ -148,21 +148,12 @@ export default function SourceHome(props) {
         const last = first + parseInt(page_size);
 
         let tempList = sortList(order_by, source_list)
-        console.log("tempList",tempList);
-
-
 
         for (const i in tempList) {
             if (i >= first && i < last) {
                 paginated_list.push(tempList[i]);
             }
         }
-        // for (const i in source_list) {
-        //     if (i >= first && i < last) {
-        //         paginated_list.push(source_list[i]);
-        //     }
-        // }
-
         return paginated_list;
     }
 

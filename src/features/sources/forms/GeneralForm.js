@@ -85,9 +85,6 @@ export default function GeneralForm(props) {
         }
     }
 
-    console.log("crawlerType", selected_source.crawlerType)
-    //Validation Data
-
 
     return (
         <div className="w-100 tab-content px-5 pt-4 pb-5 overflow-auto"  style={{maxHeight: "600px", minHeight: "400px"}}>
@@ -220,9 +217,7 @@ export default function GeneralForm(props) {
                 </div>
                 <div className="col-4">
                     <div className="form-check form-switch" title="Our default web-search and bot-interfaces require anonymous access to the data gathered by this source.  Check this box if you want anonymous users to view the data in it. (always enabled for web-sources).">
-                        <input className="form-check-input" type="checkbox" {...props.register(
-                                "allowAnonymous", {disabled: false}
-                            )} />
+                        <input className="form-check-input" type="checkbox" {...props.register("allowAnonymous")} />
                         <label className="form-check-label small">Allow anonymous access to these files</label>
                     </div>
                 </div>
@@ -249,21 +244,21 @@ export default function GeneralForm(props) {
                 <div className="col-4">
                     <div className="form-check form-switch" title="If checked, SimSage will store the document binaries locally (default true).">
                         <input className="form-check-input" type="checkbox" {...props.register("storeBinary")}
-                            value="Store the binaries of each document inside the SimSage platform?"/>
+                               title="Store the binaries of each document inside the SimSage platform?"/>
                         <label className="form-check-label small">Store the binaries of each document</label>
                     </div>
                 </div>
                 <div className="col-4">
                     <div className="form-check form-switch" title="If checked, SimSage will keep older versions of the document, unchecked it will only keep the latest">
                         <input className="form-check-input" type="checkbox" {...props.register("versioned")}
-                            value="Store older versions of the document?"/>
+                            title="Store older versions of the document?"/>
                         <label className="form-check-label small">Store older versions of the Document</label>
                     </div>
                 </div>
                 <div className="col-4">
                     <div className="form-check form-switch" title="If checked (default) we write all index-data direct to Cassandra">
                         <input className="form-check-input" type="checkbox" {...props.register("writeToCassandra")}
-                            value={"write indexes direct to Cassandra?"}/>
+                               title={"write indexes direct to Cassandra?"}/>
                         <label className="form-check-label small">Write indexes direct to Cassandra</label>
                     </div>
                 </div>
