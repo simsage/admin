@@ -333,6 +333,12 @@ export default function OpenSourceSoftwareLicenses() {
                 <div className="license">Apache compatible</div>
             </div>
 
+            <div className="license-section">
+                <div className="title">REACT</div>
+                <div className="copyright">Copyright © Meta Platforms, Inc. and affiliates.</div>
+                <div className="license">MIT license</div>
+            </div>
+
             <br clear="both" />
 
         </div>
