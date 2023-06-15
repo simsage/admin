@@ -143,7 +143,7 @@ const TextToSearchList = () => {
                         <table className="table">
                             <thead>
                             <tr className=''>
-                                <td className='small text-black-50 px-4'>Search Part</td>
+                                <td className='small text-black-50 px-4'>Advanced query language part</td>
                                 <td className='small text-black-50 px-4'>Sub</td>
                                 <td className='small text-black-50 px-4'>Match Words</td>
                                 <td className='small text-black-50 px-4'></td>

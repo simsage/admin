@@ -67,12 +67,13 @@ export function TextToSearchEdit(props){
                         <div className="tab-content px-5 py-4 overflow-auto">
                             <div className="row mb-3">
                                 <div className="control-row col-8">
-                                    <span className="label-2 small">Search Part</span>
+                                    <span className="label-2 small">SimSage advanced query language part</span>
                                     <span className="text">
                                         <form>
                                             <input type="text" className="form-control"
                                                 autoComplete="false"
-                                                placeholder="e.g. doc(document-type,html)"
+                                                   placeholder="SimSage advanced query language expression (e.g. (word(test))  )"
+                                                   title="SimSage advanced query language expression (e.g. (word(test))  )"
                                                 value= {searchPart}
                                                 onChange={(e) => setSearchPart(e.target.value)}
                                             />

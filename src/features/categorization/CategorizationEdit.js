@@ -90,12 +90,13 @@ export function CategorizationEdit(){
                                     </span>
                                 </div>
                                 <div className="control-row col-8 mb-3">
-                                    <span className="label-2 small">Rule</span>
+                                    <span className="label-2 small">SimSage advanced query language</span>
                                     <span className="text">
                                         <form>
                                             <input type="text" className="form-control"
                                                     autoComplete="false"
-                                                    placeholder="SimSage rule defining the matching criteria"
+                                                    placeholder="SimSage advanced query language expression (e.g. (word(test))  )"
+                                                    title="SimSage advanced query language expression (e.g. (word(test))  )"
                                                     value={rule}
                                                     onChange={(event) => setRule(event.target.value)}
                                                     onKeyDown={(e) => {handleKeyDown(e)}}
