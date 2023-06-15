@@ -99,7 +99,7 @@ export default function CrawlerOnedriveForm(props) {
                                        onChange={(event) => {
                                            setData({crawlAllOfOneDrive: event.target.checked});
                                        }}
-                                       value="Crawl all of Exchange"/>
+                                       title="Crawl all of Exchange"/>
                                 <label className="form-check-label small" for="enableOperator">Crawl all of One
                                     Drive</label>
                             </div>

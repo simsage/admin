@@ -330,7 +330,7 @@ export class KnowledgeBases extends Component {
                                                                    onChange={(event) => {
                                                                        this.setState({edit_enabled: event.target.checked});
                                                                    }}
-                                                                   value="enable this knowledge-base?"
+                                                                   title="enable this knowledge-base?"
                                                             />
                                                         </span>
                                                         <span>knowledge-base enabled?</span>
@@ -344,7 +344,7 @@ export class KnowledgeBases extends Component {
                                                                    onChange={(event) => {
                                                                        this.setState({edit_operator_enabled: event.target.checked});
                                                                    }}
-                                                                   value="enable operator access?"
+                                                                   title="enable operator access?"
                                                             />
                                                         </span>
                                                         <span>operator enabled?</span>
@@ -358,7 +358,7 @@ export class KnowledgeBases extends Component {
                                                                    onChange={(event) => {
                                                                        this.setState({edit_capacity_warnings: event.target.checked});
                                                                    }}
-                                                                   value="enable capacity warnings?"
+                                                                   title="enable capacity warnings?"
                                                             />
                                                         </span>
                                                         <span>capacity-warnings on?</span>

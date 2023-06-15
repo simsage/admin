@@ -341,7 +341,7 @@ export default function CrawlerMetaMapperForm(props) {
                                                onChange={(event) => {
                                                    setSort(md, index, event.target.checked);
                                                }}
-                                               value="enable result sorting over this field?"
+                                               title="enable result sorting over this field?"
                                         />
                                     </div>
                                 }

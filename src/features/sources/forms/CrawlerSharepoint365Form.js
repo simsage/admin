@@ -68,24 +68,12 @@ export default function CrawlerSharepoint365Form(props) {
                     </div>
                     <div className="row border-top pt-4">
                         <div className="col-4">
-                            {/* <div className="form-group">
-                                <span className="full-column">
-                                    <div style={{float: 'left'}} title="Check this box if you want all SharePoint sites to be indexed">
-                                        <input type="checkbox"
-                                                checked={specific_json.crawlAllSites}
-                                                onChange={(event) => { setData({crawlAllSites: event.target.checked}); }}
-                                                value="crawl all Sites?"
-                                        />
-                                        <span className="label-left">crawl all Sites?</span>
-                                    </div>
-                                </span>
-                            </div> */}
                             <div className="form-check form-switch">
                                 <input className="form-check-input" type="checkbox"     
                                     checked={specific_json.crawlAllSites}
                                     onChange={(event) => { setData({crawlAllSites: event.target.checked}); }}
-                                    value="Crawl all sites"/>
-                                <label className="form-check-label small" for="enableOperator">Crawl all SharePoint sites</label>
+                                    title="Crawl all sites"/>
+                                <label className="form-check-label small">Crawl all SharePoint sites</label>
                             </div>
 
                         </div>

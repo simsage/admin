@@ -415,7 +415,8 @@ export default function CrawlerMetadataForm(props) {
                             <td className="pt-3 ps-4 pe-0 pb-3">
                                 {md.sort !== "" &&
                                     <div className="form-check form-switch">
-                                        <input className="form-check-input" title="Enable this category as an item used for sorting in the UI" value="Enable result sorting over this field?" type="checkbox" checked={md.sort === "true"}
+                                        <input className="form-check-input" title="Enable result sorting over this field?"
+                                               type="checkbox" checked={md.sort === "true"}
                                                onChange={(event) => {
                                                    setSort(md, index, event.target.checked);
                                                }}/>

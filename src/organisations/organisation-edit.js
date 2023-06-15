@@ -141,7 +141,7 @@ export class OrganisationEdit extends Component {
                                                    onChange={(event) => {
                                                        this.setState({enabled: event.target.checked});
                                                    }}
-                                                   value="enable this organisation?"
+                                                   title="enable this organisation?"
                                             />
                                         </span>
                                         <span>organisation enabled?</span>
@@ -163,7 +163,7 @@ export class OrganisationEdit extends Component {
                                                    onChange={(event) => {
                                                        this.setState({autoCreateSSOUsers: event.target.checked});
                                                    }}
-                                                   value="enable SSO auto-user creation?"
+                                                   title="enable SSO auto-user creation?"
                                             />
                                         </span>
                                         <span>enable SSO auto-user creation?</span>

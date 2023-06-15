@@ -77,7 +77,7 @@ export function SourceImport() {
                                     data-bs-dismiss="modal">Cancel
                             </button>
 
-                            <input type="submit" value={"Import"} className={"btn btn-primary px-4"}/>
+                            <input type="submit" value="Import" className="btn btn-primary px-4" />
 
                         </div>
                         </form>

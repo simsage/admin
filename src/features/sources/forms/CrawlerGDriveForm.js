@@ -95,7 +95,7 @@ export default function CrawlerGDriveForm(props) {
                                 <input className="form-check-input" type="checkbox"     
                                     checked={specific_json.sites_only}
                                     onChange={(event) => { setData({sites_only: event.target.checked}); }}
-                                    value="Crawl only Google site data from these Drives"/>
+                                    title="Crawl only Google site data from these Drives"/>
                                 <label className="form-check-label small" for="enableOperator">Crawl only Google site data from these Drives</label>
                             </div>
                         </div>
