@@ -22,7 +22,6 @@ export function CategorizationEdit(){
     // Grab synonym details if editing
     useEffect(()=> {
         if ( selectedCategory ) {
-            console.log(`editing...`, selectedCategory)
             setCategoryLabel(selectedCategory.categorizationLabel);
             setRule(selectedCategory.rule)
         }
@@ -46,21 +45,13 @@ export function CategorizationEdit(){
 
     const handleSave = () => {
         const session_id = session.id;
-        console.log(`Editing...`, selectedCategory)
         const data = {
             "categorizationLabel": categoryLabel,
             "kbId": knowledge_base_id,
             "organisationId": organisation_id,
             "rule": rule
         }
-         console.log(`Saving...`, data);
         dispatch(updateCategorization({session_id, data}));
-        // if(error) {
-        //     console.log('error')
-        // }
-        // else {
-        //     handleClose()
-        // }
         resetData();
     }
 

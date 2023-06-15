@@ -55,7 +55,6 @@ const authSlice = createSlice({
         },
 
         showError: (state, action) => {
-            console.log("showError", action.payload);
             if (action && action.payload && action.payload.title && action.payload.message) {
                 return {
                     ...state,
@@ -154,11 +153,9 @@ export const simsageLogOut = createAsyncThunk(
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("Logging out", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("Logging out error", error.response.data.error)
                     return error
                 }
             )
@@ -186,7 +183,6 @@ export const simsageSignIn = createAsyncThunk(
                 return response2.data;
             })
             .catch((error) => {
-                console.error("SimSage sign-in error:", error);
                 if (on_fail)
                     on_fail(error.message);
                 return error;

@@ -20,7 +20,6 @@ export class SingleSearchResult extends React.Component {
 
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
 
     // helper - highlight SimSage matching keywords at various levels

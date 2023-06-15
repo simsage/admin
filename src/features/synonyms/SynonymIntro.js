@@ -8,7 +8,6 @@ export default function SynonymIntro(){
     const dispatch = useDispatch();
 
     function handleAddNewMemory(){
-        console.log("handleAddNewMemory")
         dispatch(showAddSynonymForm(true))
     }
 

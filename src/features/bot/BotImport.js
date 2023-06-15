@@ -22,7 +22,6 @@ export function BotImport() {
 
         const formData = new FormData();
         formData.append("file", data.file[0]);
-        console.log(data);
 
         const reader = new FileReader();
         const file = data.file[0];
@@ -33,11 +32,6 @@ export function BotImport() {
             setFileData(reader.result)
         };
         reader.readAsDataURL(file)
-        console.log("BotImport onSubmit")
-        console.log("file_name", file_name)
-        console.log("file_type", file_type)
-        console.log("file_data", file_data)
-
 
         if (file_data && file_name) {
             const data = {

@@ -32,10 +32,6 @@ const TextToSearchList = () => {
     const [page_history,setPageHistory] = useState([])
     const [prev_word,setPrevWord] = useState("")
 
-    console.log("semantic_page",page_history)
-    console.log("semantic_page",prev_word)
-
-
     let data = {
         "filter": filter,
         "kbId": selected_knowledge_base_id,
@@ -87,12 +83,10 @@ const TextToSearchList = () => {
 
     function handleFilter(e) {
         e.preventDefault()
-        console.log('filtering', data)
         dispatch(loadTextToSearch({session_id, data}))
     }
 
     function handleEdit(obj) {
-        console.log('edit', obj);
         dispatch(showEditForm(obj));
     }
 
@@ -105,7 +99,6 @@ const TextToSearchList = () => {
     }
 
     function handleDelete(obj) {
-        console.log('deleting: ', obj);
         dispatch(showDeleteForm(obj));
         setFilter('');
     }

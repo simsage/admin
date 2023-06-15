@@ -14,7 +14,6 @@ export function SourceZipDialog() {
     const session_id = session.id;
 
     if(!selected_source){
-        console.error("Missing source")
         dispatch(closeForm());
     }
 
@@ -31,13 +30,11 @@ export function SourceZipDialog() {
 
 
     const handleClose = () => {
-        console.log("SourceZipDialog handleClose")
         dispatch(closeForm());
     }
 
 
     const handleOk = () => {
-        console.log("SourceZipDialog handleClose")
         dispatch(zipSource({session_id:session_id,data:data}))
         dispatch(closeForm());
     }

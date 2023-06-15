@@ -37,7 +37,6 @@ export class Categories extends React.Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     deleteCategorizationRuleAsk(category) {
         if (category && category.categorizationLabel) {

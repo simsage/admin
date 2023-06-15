@@ -9,7 +9,6 @@ export class Comms {
 
     static http_post(url, session_id, payload, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
-        console.log('POST ' + api_base + url);
         axios.post(api_base + url, payload, Comms.getHeaders(session_id))
             .then(function (response) {
                 if (fn_success) {
@@ -29,7 +28,6 @@ export class Comms {
 
     static http_put(url, session_id, payload, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
-        console.log('PUT ' + api_base + url);
         axios.put(api_base + url, payload, Comms.getHeaders(session_id))
             .then(function (result) {
                 if (fn_success) {
@@ -49,9 +47,6 @@ export class Comms {
 
     static http_get(url, session_id, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
-        if (url !== '/stats/stats/os') {
-            console.log('GET ' + api_base + url);
-        }
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then(function (response) {
                 if (fn_success) {
@@ -71,9 +66,6 @@ export class Comms {
 
     static http_get_jwt(url, jwt, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
-        // if (url !== '/stats/stats/os') {
-        //     console.log('GET ' + api_base + url);
-        // }
         return axios.get(api_base + url,{
                 headers: {"API-Version": window.ENV.api_version, "Content-Type": "application/json", "jwt": jwt,}
             })
@@ -95,7 +87,6 @@ export class Comms {
 
     static http_delete(url, session_id, fn_success, fn_fail) {
         const api_base = window.ENV.api_base;
-        console.log('DELETE ' + api_base + url);
         axios.delete(api_base + url, Comms.getHeaders(session_id))
             .then(function (response) {
                 if (fn_success) {

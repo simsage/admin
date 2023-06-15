@@ -66,14 +66,11 @@ const extraReducers = (builder) => {
         })
 
         .addCase(loadInventoryList.fulfilled, (state, action) => {
-            // console.log("addCase getInventoryList fulfilled ", action);
             state.status = "fulfilled";
             state.inventory_list = action.payload;
             state.data_status = 'loaded';
-            console.log('action.payload', action.payload);
         })
         .addCase(loadInventoryList.rejected, (state, action) => {
-            console.log("addCase getInventoryList rejected ", action)
             state.status = "rejected"
         })
 
@@ -119,11 +116,9 @@ export const loadInventoryList = createAsyncThunk(
         const url = api_base + '/document/parquets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/0/100';
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("loadInventoryList", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("loadInventoryList error", error)
                     return error
 
                 }
@@ -139,11 +134,9 @@ export const createDocumentSnapshot = createAsyncThunk(
         const url = api_base + '/document/inventorize';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("createDocumentSnapshot data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error", error)
                     return error
                 }
             )
@@ -157,11 +150,9 @@ export const createIndexSnapshot = createAsyncThunk(
         const url = api_base + '/document/inventorize-indexes';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("createIndexSnapshot data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error", error)
                     return error
                 }
             )
@@ -179,11 +170,9 @@ export const deleteRecord = createAsyncThunk(
             encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(inventory_date_time);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("deleteRecord data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("deleteRecord error", error)
                     return error
                 }
             )

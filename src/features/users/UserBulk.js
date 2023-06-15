@@ -17,10 +17,8 @@ export default function UserBulk() {
     const dispatch = useDispatch();
 
     const onSubmit = data => {
-        console.log("UserBulk onSubmit")
         const formData = new FormData();
         formData.append("file", data.file[0]);
-        console.log("data",data);
 
         const reader = new FileReader();
         const file = data.file[0];
@@ -32,11 +30,6 @@ export default function UserBulk() {
         };
         reader.readAsDataURL(file)
 
-        console.log("file_name",file_name)
-        console.log("file_type",file_type)
-        console.log("file_data",file_data)
-
-
         if (file_data && file_name && file_type==='text/csv') {
             const payload = {
                 base64Text: file_data,
@@ -45,44 +38,14 @@ export default function UserBulk() {
 
 
             };
-            console.log("payload data ", payload)
-            //dispatch(restoreOrganisation({session_id:session.id,data:payload}));
             dispatch(bulkUpdateUser({session_id:session.id, payload:payload}))
         }
-
     };
 
 
     const handleFormClose = () => {
         dispatch(closeUserBulkForm())
     }
-    // function handleImageChange(e) {
-    //     e.preventDefault();
-    //
-    //     const self = this;
-    //     const reader = new FileReader();
-    //     const file = e.target.files[0];
-    //
-    //     reader.onloadend = () => {
-    //         setFilename(file['name'])
-    //         setFileType(file['type'])
-    //         setFileData(reader.result)
-    //     };
-    //     reader.readAsDataURL(file)
-    // }
-
-
-    // upload() {
-    //     if (this.state.binary_data) {
-    //         const payload = {
-    //             base64Text: this.state.binary_data,
-    //             fileType: this.state.file_type,
-    //             organisationId: this.props.selected_organisation_id,
-    //         };
-    //         this.props.uploadBackup(payload, this.props.onUploadDone);
-    //     }
-    // }
-
 
     return (
         <div className="backup-upload">

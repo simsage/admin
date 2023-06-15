@@ -9,21 +9,17 @@ export default function BkOrganisationBackupHome() {
     const dispatch = useDispatch();
 
     function getBackupList() {
-        console.log("organisation_backup_list",organisation_backup_list)
         return organisation_backup_list;
     }
 
     function handleDownloadBackup(backup) {
-        console.log("handleDownloadBackup")
         dispatch(showDownloadBackupForm({show_form: true, selected_backup:backup}))
     }
 
     function handleDeleteBackup(backup) {
-        console.log("handleDeleteBackup ",backup)
         dispatch(showDeleteBackupForm({show_form: true, selected_backup:backup}))
     }
 
-    console.log("organisation_backup_list", organisation_backup_list.length)
     if (!organisation_backup_list.length)
         return (<div>
             No data BkOrganisationBackupHome

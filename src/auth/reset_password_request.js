@@ -23,7 +23,6 @@ export class ResetPasswordRequest extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     resetPasswordRequest() {
         const self = this;

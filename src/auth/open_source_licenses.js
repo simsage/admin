@@ -18,7 +18,6 @@ export class OpenSourceLicenses extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     showError(title, error_msg) {
         this.setState({error_title: title, error_msg: error_msg});

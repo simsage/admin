@@ -8,7 +8,6 @@ export default function SynsetIntro(){
     const dispatch = useDispatch();
 
     function handleAddNewMemory(){
-        console.log("handleAddNewSynSet")
         dispatch(showAddSynSetForm())
     }
 

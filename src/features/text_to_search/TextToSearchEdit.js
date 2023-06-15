@@ -45,13 +45,11 @@ export function TextToSearchEdit(props){
     function handleSave(e) {
         e.preventDefault();
         const session_id = session.id;
-        console.log(`Editing...`, edit)
         const data = {
             "matchWordCsv": matchWords,
             "searchPart": searchPart,
             "searchType": searchType
         }
-        console.log(`Saving...`, data);
         dispatch(addOrUpdateTextToSearch({session_id:session_id, organisation_id: organisation_id, kb_id: knowledge_base_id, data}));
         dispatch(closeEditForm());
         resetData();

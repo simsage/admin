@@ -44,43 +44,10 @@ export default function SynsetList() {
 
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     console.log("useEffect", load_data, )
-    //     // if (load_data === "load_now")
-    //
-    //         // dispatch(loadSynsets(data));
-    // }, [load_data === "load_now", data, dispatch, load_data, page, page_size])
-
     useEffect(() => {
         dispatch(loadSynsets(data));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === 'load_now', page, page_size])
-
-    // const handleFilterTextChange = (e) => {
-    //     setSynSetFilter(e.target.value);
-    // }
-    //
-    // const handleSearchTextKeydown = (e) => {
-    //     if( e.key === "Enter") {
-    //         dispatch(loadSynsets({
-    //             session_id: session_id,
-    //             organisation_id: selected_organisation_id,
-    //             kb_id: selected_knowledge_base_id,
-    //             page: page,
-    //             filter: synset_filter,
-    //             page_size: page_size
-    //         }))
-    //         dispatch(noResultsMessage(true))
-    //         setSynSetFilter('');
-    //     }
-    // }
-
-    // function handleSearchTextKeydown(event)
-    // {
-    //     if (event.key === "Enter") {
-    //         setSynSetFilter('');
-    //     }
-    // }
 
     function filterRecords(e) {
         e.preventDefault()
@@ -94,7 +61,6 @@ export default function SynsetList() {
     }
 
     const handleAddSynSet = () => {
-        console.log("handleAddSynSet")
         dispatch(showAddSynSetForm());
     }
 
@@ -111,25 +77,8 @@ export default function SynsetList() {
     //Legacy functions
 
     const handleAddDefaultSynSet = () => {
-        console.log("handleAddSynSet")
         dispatch(showAddDefaultAskForm());
     }
-    // function handleSynSetFilterKeydown(event) {
-    //     //TODO: Add in filtering.
-    // }
-
-    // function findSynSets() {
-    //     dispatch(loadSynsets({
-    //         session_id: session_id,
-    //         organisation_id: selected_organisation_id,
-    //         kb_id: selected_knowledge_base_id,
-    //         page: page,
-    //         filter: synset_filter,
-    //         page_size: page_size
-    //     }))
-    //     dispatch(noResultsMessage(true))
-    //     setSynSetFilter('');
-    // }
 
     function getSynSets() {
         return synset_list ? synset_list : [];
@@ -194,11 +143,6 @@ export default function SynsetList() {
                                             </td>
                                             <td className="pt-3 px-4 pb-2">
                                                 {synSet.wordCloudCsvList.map((wc, i) => {
-                                                    console.log('testing', wc.split(','))
-                                                    //  wc.split(',').slice(0,3).map(item => {
-                                                    //     console.log('test', item)
-                                                    //      return <div>hello</div>
-                                                    // })
                                                     return (
                                                         <div className="synset-label">
                                                             {

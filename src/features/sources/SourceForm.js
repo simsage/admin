@@ -40,38 +40,37 @@ export default function SourceForm() {
         "filesPerSecond": 0.5,
         "organisationId": "",
         "crawlerType": "none",
-        "deleteFiles": true,
-        "allowAnonymous": true,
-        "enablePreview": true,
         "processingLevel": "INDEX",
         "name": "",
         "sourceId": '0',
         "nodeId": 0,
         "maxItems": 0,
         "maxQNAItems": "0",
-        "customRender": false,
-        "edgeDeviceId": "",
+        "edgeDeviceId": "none",
         "qaMatchStrength": 0.8125,
         "numResults": 5,
         "numFragments": 3,
         "errorThreshold": 10,
-        "useDefaultRelationships": true,
-        "autoOptimize": false,
         "specificJson": "{\"metadata_list\":[{\"key\":\"created date range\",\"display\":\"created\",\"metadata\":\"created\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"true\",\"sortDefault\":\"desc\",\"sortAscText\":\"oldest documents first\",\"sortDescText\":\"newest documents first\",\"fieldOrder\":\"0\"}," +
             "{\"key\":\"last modified date ranges\",\"display\":\"last modified\",\"metadata\":\"last-modified\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"true\",\"sortDefault\":\"\",\"sortAscText\":\"least recently modified\",\"sortDescText\":\"most recently modified\",\"fieldOrder\":\"1\"}," +
             "{\"key\":\"document type\",\"display\":\"document type\",\"metadata\":\"document-type\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"\",\"sortDefault\":\"\",\"sortAscText\":\"\",\"sortDescText\":\"\",\"fieldOrder\":\"2\"}]}",
         "schedule": "",
         "acls": [],
         "kbId": "",
-        "internalCrawler": "",
+        "documentSimilarityThreshold": 0.95,
+        "processorConfig": "",
 
+        "deleteFiles": true,
+        "allowAnonymous": true,
+        "enablePreview": true,
+        "customRender": false,
+        "useDefaultRelationships": true,
+        "autoOptimize": false,
         "storeBinary": true,
         "versioned": false,
         "writeToCassandra": true,
         "enableDocumentSimilarity": false,
-        "documentSimilarityThreshold": 0.95,
         "isExternal": false,
-        "processorConfig": "",
 
         // these aren't inputs - just info values coming back from SimSage
         "maxBotItems": 0,
@@ -196,7 +195,6 @@ export default function SourceForm() {
     const [selected_source_tab, setSelectedSourceTab] = useState('general')
 
     function changeNav(slug) {
-        console.log("slug", slug)
         setSelectedSourceTab(slug);
     }
 
@@ -231,14 +229,6 @@ export default function SourceForm() {
         defaultValues.maxQNAItems = selected_source && !(selected_source.maxQNAItems === undefined || selected_source.maxQNAItems === '') ? selected_source.maxQNAItems : 0;
 
         defaultValues.nodeId = selected_source ? selected_source.nodeId : 0;
-        defaultValues.customRender = selected_source ? selected_source.customRender : '';
-        defaultValues.internalCrawler = selected_source ? selected_source.internalCrawler : '';
-        defaultValues.deleteFiles = selected_source ? selected_source.deleteFiles : '';
-        defaultValues.autoOptimize = selected_source ? selected_source.autoOptimize : '';
-
-        defaultValues.allowAnonymous = selected_source ? selected_source.allowAnonymous : '';
-        defaultValues.enablePreview = selected_source ? selected_source.enablePreview : '';
-        defaultValues.useDefaultRelationships = selected_source ? selected_source.useDefaultRelationships : '';
         defaultValues.numFragments = selected_source ? selected_source.numFragments : default_num_fragments;
 
         defaultValues.qaMatchStrength = selected_source ? selected_source.qaMatchStrength : default_qna_threshold;
@@ -247,13 +237,20 @@ export default function SourceForm() {
         defaultValues.edgeDeviceId = selected_source && selected_source.edgeDeviceId !== '' ? selected_source.edgeDeviceId : 'none';
         //
         defaultValues.sourceId = selected_source ? selected_source.sourceId : 0;
+        defaultValues.documentSimilarityThreshold = selected_source ? selected_source.documentSimilarityThreshold : 0.95;
 
-        defaultValues.storeBinary = true;
-        defaultValues.versioned = false;
-        defaultValues.writeToCassandra = true;
-        defaultValues.enableDocumentSimilarity = false;
-        defaultValues.documentSimilarityThreshold = 0.95;
-        defaultValues.isExternal = false;
+        // boolean flags
+        defaultValues.customRender = selected_source && selected_source.customRender === true;
+        defaultValues.deleteFiles = selected_source && selected_source.deleteFiles === true;
+        defaultValues.autoOptimize = selected_source && selected_source.autoOptimize === true;
+        defaultValues.allowAnonymous = selected_source && selected_source.allowAnonymous === true;
+        defaultValues.enablePreview = selected_source && selected_source.enablePreview === true;
+        defaultValues.useDefaultRelationships = selected_source && selected_source.useDefaultRelationships === true;
+        defaultValues.storeBinary = selected_source && selected_source.storeBinary === true;
+        defaultValues.versioned = selected_source && selected_source.versioned === true;
+        defaultValues.writeToCassandra = selected_source && selected_source.writeToCassandra === true;
+        defaultValues.enableDocumentSimilarity = selected_source && selected_source.enableDocumentSimilarity === true;
+        defaultValues.isExternal = selected_source && selected_source.storeBinary === true;
 
         reset({...defaultValues});
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -579,28 +576,11 @@ export default function SourceForm() {
         } else {
             dispatch(updateSources({session_id: session.id, data: new_data}))
         }
-
-
-        // setFormData(new_data)
-        console.log("onSubmit new_data", new_data)
-        // console.log("onSubmit new_default_source_data", new_default_source_data)
-        // errors = {title: "Form validation", message: "Invalid name added"}
-
-        // if (errors != undefined) {
-        //     console.log("showErrorAlert: event dispatch", errors)
-        //     dispatch(showErrorAlert(errors))
-        // } else {
-
-        // }
-
-        // handleClose()
     };
 
     //update the crawlerType
     useEffect(() => {
         let selected_val = getValues("crawlerType")
-        console.log("selected_val", selected_val)
-
         if (selected_val) setFormData({...form_data, crawlerType: selected_val})
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [watch("crawlerType")])
@@ -608,22 +588,17 @@ export default function SourceForm() {
 
     //set acl data to form_data
     function updateAclList(list) {
-        console.log("acl in source form", list)
         setFormData({...form_data, acls: list})
-        console.log("acl in source form form_data", form_data)
     }
-
 
     //set schedule data to form_data
     function updateSchedule(time) {
-        console.log(time)
         if (time !== null) {
             setFormData({...form_data, schedule: time})
         }
     }
 
     function updateProcessorConfig(processors) {
-        console.log(processors)
         if (processors !== null) {
             setFormData({...form_data, processorConfig: processors})
         }

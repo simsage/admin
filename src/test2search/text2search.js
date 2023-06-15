@@ -29,7 +29,6 @@ export class Text2Search extends React.Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     changePage(page) {
         this.setState({page: page});

@@ -79,7 +79,6 @@ export function OrganisationHome() {
 
 
 
-    console.log("group_data_status", group_data_status)
     function handleSelectOrganisation(session_id, org) {
         const org_id = org.id
         dispatch(setSelectedOrganisation(org));
@@ -106,7 +105,6 @@ export function OrganisationHome() {
 
 
     function handleBackupOrganisation(org_id) {
-        console.log("handleBackupOrganisation")
         dispatch(showBackupForm({show_form: true, org_id: org_id}))
     }
 
@@ -125,17 +123,9 @@ export function OrganisationHome() {
 
 
     function handleSearchFilter(event) {
-        console.log("handleSearchFilter clicked")
         const val = event.target.value;
         dispatch(search({keyword: val}))
     }
-
-    // function handleOrderBy(event) {
-    //     const val = event.target.value;
-    //     console.log("handleOrderBy", val)
-    //     dispatch(orderBy({order_by: val}))
-    // }
-
 
     return (
         <div className="section px-5 pt-4">

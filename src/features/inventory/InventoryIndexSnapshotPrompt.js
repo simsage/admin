@@ -12,15 +12,10 @@ export function InventoryIndexSnapshotPrompt() {
 
     const session_id = session.id;
 
-
     // const title = "Create new index snapshot";
     let message = 'Are you sure you want to create a new index snapshot?';
 
-
-
-
     const handleClose = () => {
-        console.log("InventoryDocumentSnapshotPrompt handleClose")
         dispatch(closeForm());
     }
 
@@ -31,7 +26,6 @@ export function InventoryIndexSnapshotPrompt() {
             kbId: selected_knowledge_base_id,
         }
 
-        console.log("InventoryDocumentSnapshotPrompt handleOk")
         dispatch(createIndexSnapshot({session_id:session_id, data:data}))
         dispatch(closeForm());
         dispatch(showAddInfoForm('index'))

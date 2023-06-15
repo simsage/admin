@@ -44,7 +44,6 @@ export const updateUser = createAsyncThunk(
         const url = '/auth/user/' ;
         return axios.put(api_base + url + encodeURIComponent(organisation_id), data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("updateUser data", response.data);
                 return response.data;
             }).catch(
                 (error) => {return error}
@@ -61,7 +60,6 @@ export const bulkUpdateUser = createAsyncThunk(
 
         return axios.put(url, payload, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("bulk update", response.data);
                 return response.data;
             }).catch(
                 (error) => {return error}
@@ -107,7 +105,6 @@ const extraReducers = (builder) => {
             state.data_status = "loading"
         })
         .addCase(updateUser.fulfilled, (state, action) => {
-            console.log("users/update ", action);
             state.status = "fulfilled";
             state.data_status = "load_now"
         })
@@ -122,7 +119,6 @@ const extraReducers = (builder) => {
             state.data_status = "loading"
         })
         .addCase(bulkUpdateUser.fulfilled, (state, action) => {
-            console.log("users/update ", action);
             state.status = "fulfilled";
             state.data_status = "load_now"
             state.show_user_bulk_form = false;
@@ -138,7 +134,6 @@ const extraReducers = (builder) => {
             state.data_status = "loading"
         })
         .addCase(deleteUser.fulfilled, (state, action) => {
-            console.log("users/update ", action);
             state.status = "fulfilled";
             state.data_status = "load_now"
         })

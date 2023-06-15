@@ -17,7 +17,6 @@ if (wl.lastIndexOf('/') > 8) {
 //
 // wl = "http://localhost:4210";
 
-// console.log("redirectUri=", wl);
 export const msalConfig = {
     auth: {
         clientId: window.ENV.client_id,

@@ -54,13 +54,10 @@ export function SynonymEdit(props){
         e.preventDefault();
         if(synonymList.length > 0) {
             const session_id = session.id;
-            console.log(`Editing...`, synonym)
-
             const data = {
                 "id": synonym ? synonym.id : "",
                 "words": synonymList
             }
-            console.log(`Saving...`, data);
             dispatch(updateSynonyms({session_id, organisation_id, knowledge_base_id, data}));
             dispatch(closeSynonymForm());
             resetData();

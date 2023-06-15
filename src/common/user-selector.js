@@ -21,7 +21,6 @@ export class UserSelector extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     update_parent(user_id_list) {
         if (this.props.onChange) {

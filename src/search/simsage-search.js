@@ -38,7 +38,6 @@ export class SimsageSearch extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     handleSearchTextKeydown(event) {
         if (event.key === "Enter" && this.state.searchText.length > 0) {

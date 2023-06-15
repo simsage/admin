@@ -29,19 +29,6 @@ export default function SemanticsHome() {
 
     const dispatch = useDispatch();
 
-console.log("page",page_history)
-console.log("page",prev_word)
-
-    // let prev_semantic_set = semantic_list.slice(-1)[0]
-    // let prev_word = page != 0 ? prev_semantic_set['word']:0
-    // useEffect(() => {
-    //     console.log("page",page)
-    //     console.log("prev_semantic_set1",prev_semantic_set)
-    //
-    // },[page,page!=0])
-
-
-    // console.log("page num",page,prev_word)
     let data = {
         "kbId": selected_knowledge_base_id,
         "organisationId": selected_organisation_id,
@@ -52,7 +39,6 @@ console.log("page",prev_word)
 
 //load semantics
     useEffect(() => {
-        console.log("useEffect dataload", data)
         dispatch(loadSemantics({ session_id, data }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === "load_now" ,page, page_size ,selected_organisation_id, selected_knowledge_base_id])
@@ -112,7 +98,6 @@ console.log("page",prev_word)
         dispatch(showAddSemanticForm(true));
     }
     function deleteSemanticAsk(semantic) {
-        console.log(`deleting...` , semantic)
         dispatch(showDeleteSemanticAsk({show:true, semantic: semantic}));
     }
 

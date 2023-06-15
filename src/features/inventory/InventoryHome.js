@@ -42,7 +42,6 @@ export default function InventoryHome(props) {
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
     useEffect(() => {
-        console.log("Inventory useEffect")
         dispatch(loadInventoryList({
             session_id: session_id,
             organisation_id: selected_organisation_id,
@@ -114,7 +113,6 @@ export default function InventoryHome(props) {
     }
 
     function handleDelete(inventory) {
-        console.log("handleDelete")
         dispatch(showDeleteInventoryForm({inventory}))
     }
 

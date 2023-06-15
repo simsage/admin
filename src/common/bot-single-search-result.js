@@ -24,7 +24,6 @@ export class BotSingleSearchResult extends React.Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     static highlight(str) {
         if (str && str.replace) {

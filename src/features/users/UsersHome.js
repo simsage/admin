@@ -73,7 +73,6 @@ export function UsersHome(){
     // is this user entitle to edit the user passed in?
     function canEdit(user, isAdmin, isManager) {
         // admin can edit anyone, always
-        //console.log((isAdmin)?"Admin":"Not Admin")
         if (isAdmin) return true;
         // a non admin user can never edit an administrator
         const userIsAdmin = hasRole(user, ['admin']);
@@ -99,8 +98,6 @@ export function UsersHome(){
         if(role === 'all-users'){return true}
          return userRoles.some( role_obj => role_obj.organisationId === selected_organisation_id && role_obj.role === role)
     }
-
-    console.log("user_list",user_list)
 
     return(
         <div className="section px-5 pt-4">
