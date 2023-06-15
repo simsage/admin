@@ -33,6 +33,7 @@ export function OrganisationHome() {
     const load_data = useSelector((state) => state.organisationReducer.data_status)
     const backup_data_status = useSelector((state) => state.organisationReducer.backup_data_status)
     const user = useSelector((state) => state.authReducer.user);
+    const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
 
     //use one org id to load the backups
     const org_id = organisation_list[0] ? organisation_list[0].id : null;
@@ -172,8 +173,8 @@ export function OrganisationHome() {
                     {organisation_list &&
                         getOrganisations().map((item) => {
                             return (
-                                <tr key={item.id}>
-                                    <td className="pt-3 px-4 pb-3" title={"organisation " + item.name}
+                                <tr key={item.id} className={(item.id === selected_organisation.id) ? "table-primary" : ""}>
+                                    <td className={`${(item.id === selected_organisation.id) ? "text-primary" : ""} pt-3 px-4 pb-3`} title={"organisation " + item.name}
                                         onClick={() => handleSelectOrganisation(session.id, item)}>
                                         {item.name}
                                     </td>
