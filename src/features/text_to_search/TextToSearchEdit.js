@@ -1,6 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {addOrUpdateTextToSearch, closeEditForm} from "./TextToSearchSlice";
+import {BsFilePdf} from "react-icons/bs";
 
 
 export function TextToSearchEdit(props){
@@ -65,6 +66,14 @@ export function TextToSearchEdit(props){
                     <div className="modal-header px-5 pt-4 bg-light"><h4 className="mb-0">{edit ? "Edit Text to Search" : "New Text to Search"}</h4></div>
                     <div className="modal-body p-0">
                         <div className="tab-content px-5 py-4 overflow-auto">
+                            <div className="col-2 offset-10">
+                                <a href="resources/super-search-syntax.pdf" id="dlsuperquery" target="_blank"
+                                   title="Download the SimSage advanced query syntax guide"
+                                   className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                                    <BsFilePdf size={25}/>
+                                    <span className="me-2 mt-2"></span>Advanced Query<br/>Syntax Guide
+                                </a>
+                            </div>
                             <div className="row mb-3">
                                 <div className="control-row col-8">
                                     <span className="label-2 small">SimSage advanced query language part</span>
