@@ -69,7 +69,7 @@ export default function SourceForm() {
         "storeBinary": true,
         "versioned": false,
         "writeToCassandra": true,
-        "enableDocumentSimilarity": false,
+        "enableDocumentSimilarity": true,
         "isExternal": false,
 
         // these aren't inputs - just info values coming back from SimSage
