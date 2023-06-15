@@ -33,7 +33,7 @@ export default function InventoryHome(props) {
     const show_add_info_form = useSelector((state) => state.inventoryReducer.show_add_info_form)
 
     const inventory_list = useSelector((state) => state.inventoryReducer.inventory_list);
-    const num_inventory_list_items = inventory_list.timeList ? inventory_list.timeList.length : 0
+    const num_inventory_list_items = inventory_list.totalCount ? inventory_list.totalCount : 0
 
     const data_status = useSelector((state) => state.inventoryReducer.data_status);
     // const [error, setError] = useState('')
