@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {BsFilePdf} from 'react-icons/bs'
+import {useSelector} from "react-redux";
+import sourceReducer from "../sourceSlice";
 
 export default function CrawlerDropboxForm(props) {
 
@@ -11,6 +13,8 @@ export default function CrawlerDropboxForm(props) {
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
     const l_form_data = props.form_data;
+    const {selected_organisation_id, selected_knowledge_base_id} = useSelector((state) => state.authReducer);
+    const {selected_source_id} = useSelector((state) => state.sourceReducer);
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -26,13 +30,23 @@ export default function CrawlerDropboxForm(props) {
     }, [specific_json])
 
 
+    // get an OIDC code for dropbox
+    function get_oidc(client_id) {
+        const redirect = window.ENV.api_base + "/crawler/oidc-code/" + selected_organisation_id + "/" + selected_knowledge_base_id + "/" + selected_source_id;
+        const dropbox_url = "https://www.dropbox.com/oauth2/authorize?client_id=" +
+            encodeURIComponent(client_id) + "&redirect_uri=" +
+            encodeURIComponent(redirect) +
+            "&response_type=code"
+        window.open(dropbox_url, "_blank");
+    }
+
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
             <div className="row mb-4">
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-8">
-                            <label label className="small">Client token</label>
+                            <label className="small">Client id (aka. app key)</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
@@ -41,6 +55,14 @@ export default function CrawlerDropboxForm(props) {
                                        onChange={(event) => {setData({clientToken: event.target.value})}}
                                 />
                             </form>
+                        </div>
+                    </div>
+                    <div className="row mb-4">
+                        <div className="form-group col-8">
+                            <button className="small btn btn-dark"
+                                    title="get an OIDC code from dropbox for this crawler"
+                                    onClick={() => get_oidc(specific_json.clientToken)}
+                                    disabled={!specific_json.clientToken}>set up OIDC token</button>
                         </div>
                     </div>
                     <div className="row border-top pt-4">
