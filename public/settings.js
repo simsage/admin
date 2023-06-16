@@ -9,8 +9,8 @@ window.ENV = {
     // dark or light theme?
     theme: 'light',
     // the service layer end-point, change "localhost:8080" to ...
-    api_base: 'http://localhost:8080/api',
-    //api_base: 'https://adminux.simsage.ai/api',
+    //api_base: 'http://localhost:8080/api',
+    api_base: 'https://adminux.simsage.ai/api',
     // date picker display format
     date_format: 'yyyy/MM',
     // msal/jwt clientId and authority
