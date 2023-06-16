@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {BsFilePdf} from 'react-icons/bs'
 import {useDispatch, useSelector} from "react-redux";
 import {showErrorAlert} from "../../alerts/alertSlice";
+import Api from "../../../common/api";
 
 export default function CrawlerDropboxForm(props) {
 
@@ -16,6 +17,7 @@ export default function CrawlerDropboxForm(props) {
     const l_form_data = props.form_data;
     const {selected_organisation_id, selected_knowledge_base_id} = useSelector((state) => state.authReducer);
     const {selected_source_id} = useSelector((state) => state.sourceReducer);
+    const [copied_uri, setCopiedUri] = useState('')
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -31,6 +33,15 @@ export default function CrawlerDropboxForm(props) {
     }, [specific_json])
 
 
+    // redirect url for dropbox OIDC
+    const redirect = window.ENV.api_base + "/crawler/dropbox-oidc-code/" + selected_organisation_id + "/" + selected_knowledge_base_id + "/" + selected_source_id;
+
+    function handleCopyUri(e, selected_id) {
+        e.preventDefault();
+        let is_copied = Api.writeToClipboard(selected_id)
+        if (is_copied) setCopiedUri(selected_id)
+    }
+
     // get an OIDC code for dropbox
     function get_oidc(e) {
         e.preventDefault();
@@ -38,7 +49,6 @@ export default function CrawlerDropboxForm(props) {
         if (oidc_disabled) {
             dispatch(showErrorAlert({title: "error", message: "you must save this source before setting up an OIDC token"}))
         } else {
-            const redirect = window.ENV.api_base + "/crawler/dropbox-oidc-code/" + selected_organisation_id + "/" + selected_knowledge_base_id + "/" + selected_source_id;
             const dropbox_url = "https://www.dropbox.com/oauth2/authorize?client_id=" +
                 encodeURIComponent(specific_json.clientId) + "&redirect_uri=" +
                 encodeURIComponent(redirect) +
@@ -73,6 +83,25 @@ export default function CrawlerDropboxForm(props) {
                                 />
                         </div>
                     </div>
+                    { selected_source_id &&
+                    <div className="row mb-4">
+                        <div className="form-group col-8">
+                            <label className="small">Dropbox Redirect URI</label>
+                            <div>{redirect}
+                            {(copied_uri !== redirect) &&
+                                <span className="btn btn-light copied-style small position-absolute top-50 start-50 translate-middle px-2 py-1 rounded">
+                                <button onClick={(e) => handleCopyUri(e, redirect)}
+                                        className={"btn text-primary btn-sm"}>Copy
+                                </button>
+                                </span>
+                            }
+                            {(copied_uri === redirect) &&
+                                <span className="copied-style small position-absolute top-50 start-50 translate-middle text-white bg-dark px-2 py-1 rounded">Copied!</span>
+                            }
+                            </div>
+                        </div>
+                    </div>
+                    }
                     <div className="row mb-4">
                         <div className="form-group col-8">
                             <button className="small btn btn-dark" formAction="return false;"
