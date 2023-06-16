@@ -112,7 +112,7 @@ const TextToSearchList = () => {
                         <div className="d-flex form-group me-2">
                             <input
                                 type="text"
-                                placeholder={"Find Search Part..."}
+                                placeholder={"Find advanced query language part..."}
                                 autoFocus={true}
                                 className={"form-control me-2 filter-search-input " + theme}
                                 value={filter}
@@ -127,11 +127,11 @@ const TextToSearchList = () => {
 
                     <div className="form-group d-flex ms-auto">
                         <button className="btn btn-outline-primary text-nowrap ms-2" onClick={(e) => handleTest()}>
-                            Test Search Parts
+                            Test Advanced Query Language Parts
                         </button>
 
                         <button className="btn btn-primary text-nowrap ms-2" onClick={(e) => handleAdd(e)}>
-                            + Add Search Part
+                            + Add Advanced Query Language Part
                         </button>
                     </div>
                 </div>
