@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "7.8.0",
+  "version": "7.9.0",
   "private": true,
   "dependencies": {
     "@azure/msal-browser": "^2.37.0",

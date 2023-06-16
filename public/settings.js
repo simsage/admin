@@ -1,7 +1,7 @@
 
 window.ENV = {
     // SimSage platform version (used for display only in UI)
-    version: '7.8.0',
+    version: '7.9.0',
     // api version of api_base
     api_version: 1,
     // is this a production build or not?
