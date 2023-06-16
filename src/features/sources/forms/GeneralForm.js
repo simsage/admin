@@ -206,8 +206,6 @@ export default function GeneralForm(props) {
                         </div>
                     </div>
                 }
-
-            
                 <div className="col-4">
                     <div className="form-check form-switch" title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
                         <input className="form-check-input" type="checkbox" {...props.register("deleteFiles")}/>
@@ -258,7 +256,13 @@ export default function GeneralForm(props) {
                     <div className="form-check form-switch" title="Process all documents using OCR where needed (slow)">
                         <input className="form-check-input" type="checkbox" {...props.register("useOCR")}
                                title={"use OCR on all documents?"}/>
-                        <label className="form-check-label small">use OCR on all documents</label>
+                        <label className="form-check-label small">use optical-character-recognition (OCR)</label>
+                    </div>
+                </div>
+                <div className="col-4">
+                    <div className="form-check form-switch" title="use speech-to-text for this source">
+                        <input className="form-check-input" type="checkbox" {...props.register("useSTT")} />
+                        <label className="form-check-label small">use speech-to-text (videos, audio transcripts)</label>
                     </div>
                 </div>
                 <div className="col-4">

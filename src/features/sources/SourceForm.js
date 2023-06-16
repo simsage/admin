@@ -70,6 +70,7 @@ export default function SourceForm() {
         "versioned": false,
         "writeToCassandra": true,
         "useOCR": false,
+        "useSTT": false,
         "enableDocumentSimilarity": true,
         "isExternal": false,
 
@@ -251,6 +252,7 @@ export default function SourceForm() {
         defaultValues.versioned = selected_source && selected_source.versioned === true;
         defaultValues.writeToCassandra = selected_source && selected_source.writeToCassandra === true;
         defaultValues.useOCR = selected_source && selected_source.useOCR === true;
+        defaultValues.useSTT = selected_source && selected_source.useSTT === true;
         defaultValues.enableDocumentSimilarity = selected_source && selected_source.enableDocumentSimilarity === true;
         defaultValues.isExternal = selected_source && selected_source.isExternal === true;
 
