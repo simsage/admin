@@ -55,7 +55,7 @@ const TextToSearchTest = () => {
                         <div className="tab-content px-5 py-4 overflow-aut">
 
                             <div className="control-row">
-                                <span className="label-2 small">Search Part</span>
+                                <span className="label-2 small">Advanced Query Language Part</span>
                                 <span className="text">
                                             <div className="form-control p-0 d-flex overflow-hidden">
                                                 <input type="text" className="border-0 w-100" style={{padding : "0.375rem 0.75rem"}}
