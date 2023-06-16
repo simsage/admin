@@ -67,7 +67,7 @@ const AccountDropdown = (props) => {
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
                             <li key={item.id}
                                 className={((item.id === selected_organisation.id)? "active" : "") + " acc-item px-4 py-2 d-flex justify-content-between align-items-center"}>
-                                <span className="organisation-menu-item pointer-cursor" title={"select " + item.name}
+                                <span className="organisation-menu-item pointer-cursor" title={"select " + item.name} style={{"width": "90%", "padding": "10px"}}
                                       onClick={() => handleSelectOrganisation(session.id, item)}>{item.name}</span>
                                 <span className="p-2 org-settings pointer-cursor" onClick={() => handleEditOrganisation(item.id)} title={"edit " + item.name}>
                                     <img src="images/icon/icon_setting.svg"
