@@ -250,7 +250,7 @@ export default function SourceForm() {
         defaultValues.versioned = selected_source && selected_source.versioned === true;
         defaultValues.writeToCassandra = selected_source && selected_source.writeToCassandra === true;
         defaultValues.enableDocumentSimilarity = selected_source && selected_source.enableDocumentSimilarity === true;
-        defaultValues.isExternal = selected_source && selected_source.storeBinary === true;
+        defaultValues.isExternal = selected_source && selected_source.isExternal === true;
 
         reset({...defaultValues});
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -359,16 +359,19 @@ export default function SourceForm() {
 
 
     function validDropBoxFolderList(folder_list) {
-        for (const i of folder_list.split(",")) {
-            const item = i.trim();
-            if (item.length > 0) {
-                if (!item.startsWith("/"))
-                    return false;
-                if (item.lastIndexOf("/") > 0)
-                    return false;
+        if (folder_list && folder_list.length > 0) {
+            for (const i of folder_list.split(",")) {
+                const item = i.trim();
+                if (item.length > 0) {
+                    if (!item.startsWith("/"))
+                        return false;
+                    if (item.lastIndexOf("/") > 0)
+                        return false;
+                }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     const onSubmit = data => {
@@ -496,10 +499,10 @@ export default function SourceForm() {
                 message: 'you must supply tenant-id, client-id, client-secret, and redirect-url as a minimum.'
             });
 
-        } else if (new_data.crawlerType === 'dropbox' && (!sj.clientToken || sj.clientToken.length === 0)) {
+        } else if (new_data.crawlerType === 'dropbox' && (!sj.clientId || sj.clientId.length === 0 || !sj.clientSecret || sj.clientSecret.length === 0)) {
             setError({
                 title: 'invalid parameters',
-                message: 'dropbox crawler: you must supply a client-token, and select a user as a minimum.'
+                message: 'dropbox crawler: you must supply a client-id, client-secret, and a start folder.'
             });
 
         } else if (new_data.crawlerType === 'discourse' && (!sj.apiToken || sj.apiToken.length === 0 || !sj.server || sj.server.length === 0)) {
