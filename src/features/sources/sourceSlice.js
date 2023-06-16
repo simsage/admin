@@ -317,6 +317,7 @@ export const updateSources = createAsyncThunk(
     async ({session_id, data}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler';
+        console.log("DATA", data);
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
