@@ -69,6 +69,7 @@ export default function SourceForm() {
         "storeBinary": true,
         "versioned": false,
         "writeToCassandra": true,
+        "useOCR": false,
         "enableDocumentSimilarity": true,
         "isExternal": false,
 
@@ -249,6 +250,7 @@ export default function SourceForm() {
         defaultValues.storeBinary = selected_source && selected_source.storeBinary === true;
         defaultValues.versioned = selected_source && selected_source.versioned === true;
         defaultValues.writeToCassandra = selected_source && selected_source.writeToCassandra === true;
+        defaultValues.useOCR = selected_source && selected_source.useOCR === true;
         defaultValues.enableDocumentSimilarity = selected_source && selected_source.enableDocumentSimilarity === true;
         defaultValues.isExternal = selected_source && selected_source.isExternal === true;
 

@@ -44,6 +44,7 @@ const empty_crawler = {
     processorConfig: '',
     versioned: false,
     writeToCassandra: true,
+    useOCR: false,
     documentSimilarityThreshold: 0.9,
     enableDocumentSimilarity: false,
     isExternal: false

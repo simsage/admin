@@ -255,10 +255,10 @@ export default function GeneralForm(props) {
                     </div>
                 </div>
                 <div className="col-4">
-                    <div className="form-check form-switch" title="If checked (default) we write all index-data direct to Cassandra">
-                        <input className="form-check-input" type="checkbox" {...props.register("writeToCassandra")}
-                               title={"write indexes direct to Cassandra?"}/>
-                        <label className="form-check-label small">Write indexes direct to Cassandra</label>
+                    <div className="form-check form-switch" title="Process all documents using OCR where needed (slow)">
+                        <input className="form-check-input" type="checkbox" {...props.register("useOCR")}
+                               title={"use OCR on all documents?"}/>
+                        <label className="form-check-label small">use OCR on all documents</label>
                     </div>
                 </div>
                 <div className="col-4">
