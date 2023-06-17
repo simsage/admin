@@ -13,7 +13,7 @@ export default function CrawlerGDriveForm(props) {
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
     const l_form_data = props.form_data;
 
-    const time2020 = 1577836800000;
+    const time1990 = 631152000000;
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -35,11 +35,11 @@ export default function CrawlerGDriveForm(props) {
     }
 
     function handleResetTime() {
-        setData({deltaIndicator: time2020});
+        setData({deltaIndicator: time1990});
     }
 
     let date_time_str = "complete crawl";
-    if (specific_json.deltaIndicator > time2020) {
+    if (specific_json.deltaIndicator > time1990) {
         date_time_str = Api.toPrettyDateTime(new Date(specific_json.deltaIndicator));
     }
 
