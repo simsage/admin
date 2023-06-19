@@ -53,6 +53,21 @@ export default function CrawlerWebForm(props) {
                 </div>
             </div>
 
+            <div className="row mb-3 pt-3 border-top">
+                <div className="col-4">
+                    <div className="form-check form-switch"
+                         title="check for pre-rendering Javascript based websites into HTML">
+                        <input className="form-check-input" type="checkbox"
+                               checked={specific_json.renderJS === true}
+                               onChange={(event) => {
+                                   setData({renderJS: event.target.checked});
+                               }}
+                        />
+                        <label className="form-check-label small">pre-render Javascript websites</label>
+                    </div>
+                </div>
+            </div>
+
             <div className="row mb-3">
                 <div className="form-group col-3">
                     <label className="small">Valid extensions</label>
