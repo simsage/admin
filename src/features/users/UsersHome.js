@@ -53,6 +53,7 @@ export function UsersHome(){
     }
 
     function handleAddNewUser(){
+        setSelectedUser({});
         dispatch(showAddUserForm(true))
     }
 

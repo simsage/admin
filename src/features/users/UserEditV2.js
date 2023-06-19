@@ -15,6 +15,8 @@ export function UserEditV2(props) {
 
     const show_user_form = useSelector((state) => state.usersReducer.show_user_form);
     const user_id = useSelector((state) => state.usersReducer.edit_id);
+    const user_list = useSelector((state) => state.usersReducer.user_list);
+
     const available_roles = useSelector((state) => state.usersReducer.roles);
     const available_KBs = useSelector((state) => state.kbReducer.kb_list);
     const group_list_full = useSelector(((state) => state.groupReducer.group_list))
@@ -24,7 +26,7 @@ export function UserEditV2(props) {
     const [groups, setGroups] = useState([]);
     const [kbs, setKBs] = useState([]);
     const [showKbs, setShowKBs] = useState(false);
-
+    const [selectedUser,setSelectedUser] = useState({})
 
     //filters
     const [roleFilter, setRoleFilter] = useState('');
@@ -35,8 +37,14 @@ export function UserEditV2(props) {
     const [kbFilter, setKbFilter] = useState('');
 
 
-    const selectedUser = props.user;
+    useEffect(()=>{
+        if(user_id){
+            const temp_user = (user_list.filter((user) => user.id ===user_id ));
+            setSelectedUser(temp_user.length === 1 ?temp_user[0]:{})
+        }
+    },[user_id])
 
+    console.log("selectedUser",selectedUser)
     const sub_nav = [
         {label: "Details", slug: "details"},
         {label: "Roles", slug: "roles"},
@@ -336,6 +344,7 @@ export function UserEditV2(props) {
                                         </div>
                                     </div>
 
+                                    {!user_id &&
                                     <div className="row mb-3">
                                         <div className="control-row col-6">
                                             <label className="label-2 small">Password</label>
@@ -378,6 +387,7 @@ export function UserEditV2(props) {
 
                                         </div>
                                     </div>
+                                    }
 
                                 </div>
                             </>
