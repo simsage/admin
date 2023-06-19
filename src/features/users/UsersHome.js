@@ -4,7 +4,7 @@ import {
     showAddUserForm,
     showDeleteUserAsk,
     showEditUserForm,
-    showUserBulkForm, getUserListPaginated
+    showUserBulkForm, getUserListPaginated, showPasswordResetForm
 } from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import Api from "../../common/api";
@@ -60,6 +60,11 @@ export function UsersHome(){
     function handleEditUser(u) {
         setSelectedUser(u)
         dispatch(showEditUserForm({show:true, user_id: u.id}));
+    }
+
+    function handlePasswordReset(u) {
+        setSelectedUser(u)
+        dispatch(showPasswordResetForm({show:true, user_id: u.id}));
     }
 
     function handleUserBulk(){
@@ -179,6 +184,7 @@ export function UsersHome(){
                                 </td>
                                 <td className="pt-3 px-4 pb-0">
                                     <div className="d-flex  justify-content-end">
+                                        <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handlePasswordReset(user)}>Reset password</button>
                                         <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditUser(user)}>Edit</button>
                                         <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteUserAsk(user)}>Delete</button>
                                     </div>
