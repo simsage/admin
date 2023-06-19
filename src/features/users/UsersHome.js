@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {UserEdit} from "./UserEdit";
 import {useDispatch, useSelector} from "react-redux";
 import {
     showAddUserForm,
@@ -13,6 +12,7 @@ import {hasRole} from "../../common/helpers";
 import UserDeleteAsk from "./UserDeleteAsk";
 import {UserBulkForm} from "./UserBulkForm";
 import api from "../../common/api";
+import {UserEditV2} from "./UserEditV2";
 
 export function UsersHome(){
     const user_roles = useSelector((state) => state.usersReducer.roles);
@@ -202,7 +202,7 @@ export function UsersHome(){
                     />
                 }
             </div>
-            <UserEdit user={selectedUser}/>
+            <UserEditV2 user={selectedUser}/>
             <UserDeleteAsk />
             <UserBulkForm />
         </div>
