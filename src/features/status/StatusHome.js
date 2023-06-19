@@ -16,10 +16,6 @@ export default function StatusHome() {
 
     const status_list = useSelector((state) => state.statusReducer.status_list)
 
-
-    const title = "Status";
-
-    console.log("status_list",status_list)
     return (
         <div className="section px-5 pt-4">
 

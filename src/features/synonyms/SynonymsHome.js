@@ -26,18 +26,12 @@ export default function SynonymsHome(props) {
         "pageSize": 10
     };
 
-    console.log("synonym_list",synonym_list)
-
-
     useEffect(() => {
         dispatch(loadSynonyms({ session_id, data }));
-        console.log("useEffect load_data",load_data)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected_knowledge_base_id, session, props.tab, load_data === 'load_now'])
 
 
-
-    // console.log("useEffect out load_data",load_data)
     return (
         <div className="">
 
@@ -46,11 +40,7 @@ export default function SynonymsHome(props) {
 
             }
             {/*Intro message when there are no bot items loaded*/}
-            {status !== null && synonym_list.length === 0 && num_synonyms === 0 &&
-                <SynonymList />
-
-            }
-            {status !== null && synonym_list.length > 0 && num_synonyms > 0 &&
+            {status !== null &&
                 <SynonymList />
 
             }

@@ -14,15 +14,14 @@ export default function CrawlerWordPressForm(props) {
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
-        console.log("specific_json in rss", specific_json)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
 
 
     function exportArchive() {
-        if (this.props.session && this.props.session.id)
-            Comms.download_export_archive(this.state.organisation_id, this.state.kb_id, this.state.source_id, this.props.session.id);
+        // if (props.session && props.session.id)
+            // Comms.download_export_archive(props.organisation_id, state.kb_id, this.state.source_id, this.props.session.id);
     }
 
     function restore(data) {

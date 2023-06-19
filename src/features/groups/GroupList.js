@@ -39,7 +39,6 @@ export default function GroupList(){
     function filterGroups() {
         let filteredGroup = []
         group_list.forEach( grp => {
-            console.log()
             if(grp.name.toLowerCase().includes(filter.toLowerCase())) {
                 filteredGroup.push(grp)
             }
@@ -71,7 +70,6 @@ export default function GroupList(){
     }
 
     function handleEditGroup(group) {
-        console.log('Opening..', group.name)
         dispatch(showEditGroupForm({show:true, name:group.name}));
     }
     function handleAddGroup() {
@@ -79,12 +77,10 @@ export default function GroupList(){
     }
 
     function deleteGroupAsk(group){
-        console.log('click delete...', group.userIdList.length)
         if (group.userIdList.length === 0) {
             dispatch(showGroupDeleteAsk({show: true, group: group}))
         } else {
             const message = 'Please remove users from group before deleting'
-            console.log(message)
             dispatch(showErrorMessage(message))
         }
     }
@@ -126,19 +122,10 @@ export default function GroupList(){
                             //const deleteYes = canDelete(group, session.user, isAdmin, isManager);
                             const deleteYes = isAdmin || isManager;
                             return (
-                                //console.log(group)
                                 <tr key={group.name} >
                                     <td className="pt-3 px-4 pb-2 d-flex">
                                         <div className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{group.name}</div>
                                     </td>
-                                    {/* <td>
-                                        <button
-                                            className={(editYes)? "btn btn-primary": "btn btn-secondary disabled"}
-                                            onClick={() => handleEditGroup(group)}
-                                        >Edit icon</button>
-                                    </td>
-                                    <td><button className={(deleteYes) ? "btn btn-outline-danger" :"btn btn-secondary" }  disabled={!deleteYes} onClick={() => deleteGroupAsk(group)}> Delete icon </button></td> */}
-
                                     <td className="pt-3 px-4 pb-0">
                                         <div className="d-flex  justify-content-end">
                                             <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditGroup(group)}>Edit</button>

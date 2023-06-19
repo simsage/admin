@@ -18,8 +18,6 @@ export default function BkOrganisationRestore(props) {
     const dispatch = useDispatch();
 
     const onSubmit = data => {
-        console.log("BkOrganisationRestore onSubmit")
-        console.log("BkOrganisationRestore onSubmit")
         const formData = new FormData();
         formData.append("file", data.file[0]);
 

@@ -17,7 +17,6 @@ export class SynonymEdit extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     handleSave() {
         if (this.state.onSave) {

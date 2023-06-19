@@ -19,7 +19,6 @@ const extraReducers = (builder) => {
             .addCase(getSimSageStatus.fulfilled, (state, action) => {
                 state.status = "fulfilled";
                 state.status_list = action.payload;
-                // console.log('action.payload', action.payload);
             })
             .addCase(getSimSageStatus.rejected, (state, action) => {
                 state.status = "rejected"
@@ -42,11 +41,9 @@ export const getSimSageStatus = createAsyncThunk(
         const url = api_base + '/stats/status/'+ encodeURIComponent(organisation_id);;
         return axios.put(url,{},Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("status/getSimSageStatus 1", response.data);
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("status/getSimSageStatus", error);
                     return error
                 }
             )

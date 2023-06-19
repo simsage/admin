@@ -19,57 +19,20 @@ const initialState = {
 
 
 const reducers = {
-    // showAlert: (state, action) => {
-    //     state.show_alert = true
-    //     //default alert_type = 'alert-warning'
-    //     state.alert_type = action.payload.alert_type ? action.payload.alert_type : 'alert-warning'
-    //     state.title = action.payload.title
-    //     state.message = action.payload.message
-    //     console.log("Alert: ", state.alert_type, ' | ', state.title, ' | ', state.message)
-    // },
 
     showErrorAlert: (state, action) => {
-
-        console.log("showErrorAlert: event received", action.payload.title, ' => ', action.payload.message)
-
         state.show_alert = true
         state.alert_type = 'alert-error'
         state.title = action.payload.title
         state.message = action.payload.message
-        console.log("Error Alert: ", state.title, ' => ', state.message)
     },
-
-    // showDangerAlert: (state, action) => {
-    //     state.show_alert = true
-    //     state.alert_type = 'alert-danger'
-    //     state.title = action.payload.title
-    //     state.message = action.payload.message
-    //     console.log("Error Alert: ", state.title, ' => ', state.message)
-    // },
-    //
-    // showWarningAlert: (state, action) => {
-    //     state.show_alert = true
-    //     state.alert_type = 'alert-warning'
-    //     state.title = action.payload.title
-    //     state.message = action.payload.message
-    //     console.log("Error Alert showWarningAlert: ", state.title, ' => ', state.message)
-    // },
 
     showDeleteAlert: (state, action) => {
         state.show_alert = true
         state.alert_type = 'alert-delete'
         state.title = action.payload.title
         state.message = action.payload.message
-        console.log("Error Alert showWarningAlert: ", state.title, ' => ', state.message)
     },
-
-    // showSuccessAlert: (state, action) => {
-    //     state.show_alert = true
-    //     state.alert_type = 'alert-success'
-    //     state.title = action.payload.title
-    //     state.message = action.payload.message
-    //     console.log("Error Alert: ", state.title, ' => ', state.message)
-    // },
 
     closeAlert: (state) => {
         state.show_alert = false

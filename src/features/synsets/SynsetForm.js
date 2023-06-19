@@ -9,7 +9,6 @@ export default function SynsetForm() {
     const theme = null;
 
     const handleClose = () => {
-        console.info("handleClose")
         dispatch(closeForm());
     }
 
@@ -18,9 +17,6 @@ export default function SynsetForm() {
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
-
-    // console.log("data", selected_synset)
-    // console.log("data", selected_synset.word)
 
     // set title
     const title = (selected_synset) ? "Edit syn-set " + selected_synset.word : "Add new syn-set";
@@ -43,12 +39,6 @@ export default function SynsetForm() {
 
     }, [selected_synset, synset_show_form]);
 
-
-
-    // useEffect(() => {
-    //     console.log("wordCloudCsvList",wordCloudCsvList)
-    //     // newSyn()
-    // }, [selected_synset === null]);
 
 
     //add a word cloud field
@@ -79,14 +69,11 @@ export default function SynsetForm() {
     // when pass nothing as argument, you are watching everything
     const watchAllFields = watch();
     useEffect(() => {
-        console.log("watch: ",watchAllFields);
-        console.count();
     }, [watchAllFields]);
 
 
     //on submit store or update
     const onSubmit = data => {
-        console.log("data", data)
         data.lemma = data.word;
         dispatch(addOrUpdate({organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id,session_id:session_id,data:data}))
         handleClose()

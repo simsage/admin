@@ -32,10 +32,6 @@ const TextToSearchList = () => {
     const [page_history,setPageHistory] = useState([])
     const [prev_word,setPrevWord] = useState("")
 
-    console.log("semantic_page",page_history)
-    console.log("semantic_page",prev_word)
-
-
     let data = {
         "filter": filter,
         "kbId": selected_knowledge_base_id,
@@ -87,12 +83,10 @@ const TextToSearchList = () => {
 
     function handleFilter(e) {
         e.preventDefault()
-        console.log('filtering', data)
         dispatch(loadTextToSearch({session_id, data}))
     }
 
     function handleEdit(obj) {
-        console.log('edit', obj);
         dispatch(showEditForm(obj));
     }
 
@@ -105,7 +99,6 @@ const TextToSearchList = () => {
     }
 
     function handleDelete(obj) {
-        console.log('deleting: ', obj);
         dispatch(showDeleteForm(obj));
         setFilter('');
     }
@@ -119,7 +112,7 @@ const TextToSearchList = () => {
                         <div className="d-flex form-group me-2">
                             <input
                                 type="text"
-                                placeholder={"Find Search Part..."}
+                                placeholder={"Find advanced query language part..."}
                                 autoFocus={true}
                                 className={"form-control me-2 filter-search-input " + theme}
                                 value={filter}
@@ -134,11 +127,11 @@ const TextToSearchList = () => {
 
                     <div className="form-group d-flex ms-auto">
                         <button className="btn btn-outline-primary text-nowrap ms-2" onClick={(e) => handleTest()}>
-                            Test Search Parts
+                            Test Advanced Query Language Parts
                         </button>
 
                         <button className="btn btn-primary text-nowrap ms-2" onClick={(e) => handleAdd(e)}>
-                            + Add Search Part
+                            + Add Advanced Query Language Part
                         </button>
                     </div>
                 </div>
@@ -150,7 +143,7 @@ const TextToSearchList = () => {
                         <table className="table">
                             <thead>
                             <tr className=''>
-                                <td className='small text-black-50 px-4'>Search Part</td>
+                                <td className='small text-black-50 px-4'>Advanced query language part</td>
                                 <td className='small text-black-50 px-4'>Sub</td>
                                 <td className='small text-black-50 px-4'>Match Words</td>
                                 <td className='small text-black-50 px-4'></td>

@@ -29,9 +29,7 @@ export default function KnowledgeBaseViewIds() {
     }
 
     const handleCopyIds = (selected_id) => {
-        console.log("selected_id", selected_id)
         let is_copied = Api.writeToClipboard(selected_id)
-        console.log("is_copied", is_copied)
         if(is_copied) setCopiedId(selected_id)
     }
 

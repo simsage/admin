@@ -85,7 +85,6 @@ const reducers = {
 
 
     closeForm: (state) => {
-        console.log("closeForm sourceSlice")
         state.show_data_form = false
         state.show_export_form = false
         state.selected_source = null
@@ -116,8 +115,6 @@ const reducers = {
     // },
 
     searchSource: (state, action) => {
-
-        console.log("searchSource", action.payload.keyword)
         if (action.payload.keyword.length > 0) {
             let temp = state.source_original_ist.filter(list_item => {
                 return list_item.name.match(new RegExp(action.payload.keyword, "i"))
@@ -180,7 +177,6 @@ const extraReducers = (builder) => {
             state.busy = false;
             if (action.payload.code === "ERR_BAD_RESPONSE") {
                 // if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
-                console.log("updateSources fulfilled ", action.payload.response.data.error)
                 state.show_error_form = true
                 state.error_title = "Error"
                 state.error_message = action.payload.response.data.error
@@ -190,13 +186,11 @@ const extraReducers = (builder) => {
                 state.show_data_form = false;
                 state.selected_source = null;
                 state.data_status = 'load_now';
-                console.log("updateSources fulfilled ", action.payload)
             }
         })
 
         .addCase(updateSources.rejected, (state, action) => {
             state.busy = false;
-            console.log("updateSources rejected ", action)
             state.data_status = 'load_now';
             state.error = action.payload
         })
@@ -209,7 +203,6 @@ const extraReducers = (builder) => {
         })
         .addCase(deleteSource.fulfilled, (state, action) => {
             state.busy = false;
-            console.log("source/deleteSource ", action)
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
@@ -221,7 +214,6 @@ const extraReducers = (builder) => {
         //processFiles
         .addCase(processFiles.fulfilled, (state, action) => {
             state.busy = false;
-            console.log("source/processFiles ", action)
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
@@ -236,13 +228,10 @@ const extraReducers = (builder) => {
         //startSource
         .addCase(startSource.fulfilled, (state, action) => {
             state.busy = false;
-            console.log("source/startSource ", action)
-
             if (action.payload.code === "ERR_BAD_RESPONSE") {
                 state.show_error_form = true
                 state.error_title = "Error"
                 state.error_message = action.payload.response.data.error
-                console.log("source/startSource error_message", state.error_message)
             } else {
                 state.status = "fulfilled"
                 state.data_status = 'load_now';
@@ -250,7 +239,6 @@ const extraReducers = (builder) => {
         })
         .addCase(startSource.rejected, (state, action) => {
             state.busy = false;
-            console.log("source/startSource rejected", action)
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = action.payload
@@ -324,7 +312,6 @@ export const getSources = createAsyncThunk(
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
-                //console.log("sources/getSources", response.data);
                 return response.data
             }).catch(
                 (error) => {
@@ -342,7 +329,6 @@ export const getSource = createAsyncThunk(
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("sources/getSource", response.data);
                 return response.data
             }).catch(
                 (error) => {
@@ -360,12 +346,12 @@ export const updateSources = createAsyncThunk(
     async ({session_id, data}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler';
+        console.log("DATA", data);
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error", error)
                     return error
                 }
             )
@@ -381,11 +367,9 @@ export const startSource = createAsyncThunk(
         const url = api_base + '/crawler/start';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("startSource data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error", error)
                     return error
                 }
             )
@@ -400,11 +384,9 @@ export const deleteSource = createAsyncThunk(
         const url = api_base + '/crawler/crawler/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("deleteRecord sources data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("deleteRecord sources error", error)
                     return error
                 }
             )
@@ -421,11 +403,9 @@ export const zipSource = createAsyncThunk(
         const url = api_base + '/document/zip/source';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("zipSource data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error", error)
                     return error
                 }
             )
@@ -440,11 +420,9 @@ export const processFiles = createAsyncThunk(
         const url = api_base + '/crawler/process-all-files';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("processFiles data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error", error)
                     return error
                 }
             )
@@ -461,7 +439,6 @@ export const checkJcifsLibrary = createAsyncThunk(
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error", error)
                     return error
                 }
             )
@@ -478,7 +455,6 @@ export const installJcifsLibrary = createAsyncThunk(
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("error", error)
                     return error
                 }
             )

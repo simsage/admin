@@ -58,14 +58,8 @@ export const deleteSemantic = createAsyncThunk(
 
             return axios.delete(url, Comms.getHeaders(session_id))
                 .then( (response) => {
-                    console.log('the try of a delete', response.data)
                     return response.data
                 })
-                // .catch(
-                //     (error) => {
-                //         console.log('the catch of a delete', error?.response?.data)
-                //         return error}
-                // )
             }
 )
 
@@ -77,14 +71,12 @@ const extraReducers = (builder) => {
         })
 
         .addCase(loadSemantics.fulfilled, (state, action) => {
-            console.log("loadSemantics fulfilled ", action);
             state.status = "fulfilled";
             state.semantic_list = action.payload.semanticList?action.payload.semanticList:[];
             state.num_semantics = action.payload.numSemantics?action.payload.numSemantics:0;
             state.data_status = "loaded";
         })
         .addCase(loadSemantics.rejected, (state, action) => {
-            console.log("loadSemantics rejected ", action)
             state.status = "rejected"
             state.data_status = "rejected";
         })
@@ -95,12 +87,10 @@ const extraReducers = (builder) => {
             state.data_status = "loading";
         })
         .addCase(updateSemantics.fulfilled, (state, action) => {
-            console.log("loadSemantics fulfilled ", action);
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
         .addCase(updateSemantics.rejected, (state, action) => {
-            console.log("loadSemantics rejected ", action)
             state.status = "rejected"
             state.data_status = "rejected";
         })
@@ -110,7 +100,6 @@ const extraReducers = (builder) => {
             state.data_status = "loading";
         })
         .addCase(deleteSemantic.fulfilled, (state, action) => {
-            console.log("loadSemantics fulfilled ", action);
             state.status = "fulfilled";
             state.data_status = "load_now";
 

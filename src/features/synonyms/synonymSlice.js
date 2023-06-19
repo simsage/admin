@@ -74,14 +74,12 @@ const extraReducers = (builder) => {
         })
 
         .addCase(loadSynonyms.fulfilled, (state, action) => {
-            console.log("addCase getDocuments fulfilled ", action);
             state.status = "fulfilled";
             state.synonym_list = action.payload.synonymList?action.payload.synonymList:[];
             state.num_synonyms = action.payload.numSynonyms?action.payload.numSynonyms:0;
             state.data_status = 'loaded';
         })
         .addCase(loadSynonyms.rejected, (state, action) => {
-            console.log("addCase getDocuments rejected ", action)
             state.status = "rejected";
             state.data_status = 'rejected';
         })
@@ -93,12 +91,10 @@ const extraReducers = (builder) => {
         })
 
         .addCase(updateSynonyms.fulfilled, (state, action) => {
-            console.log("addCase getDocuments fulfilled ", action);
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
         .addCase(updateSynonyms.rejected, (state, action) => {
-            console.log("addCase getDocuments rejected ", action)
             state.status = "rejected";
             state.data_status = 'rejected';
         })
@@ -108,13 +104,10 @@ const extraReducers = (builder) => {
         })
 
         .addCase(deleteSynonym.fulfilled, (state, action) => {
-            console.log("memories/delete", action);
             state.status = "fulfilled";
             state.data_status = 'load_now';
-
         })
         .addCase(deleteSynonym.rejected, (state, action) => {
-            console.log("memories/delete", action)
             state.status = "rejected"
         })
 }

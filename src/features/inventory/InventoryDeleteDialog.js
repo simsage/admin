@@ -13,23 +13,14 @@ export function InventoryDeleteDialog() {
     const session = useSelector((state) => state.authReducer.session)
 
     const session_id = session.id;
-
-
-    console.log("selected_inventory",selected_inventory)
-    // const title = "Remove Inventory Report";
     let message = 'Are you sure you want to remove the report dated ' + Api.unixTimeConvert(selected_inventory.time) + '?';
 
-
-
     const handleClose = () => {
-        console.log("InventoryDeleteDialog handleClose")
         dispatch(closeForm());
     }
 
 
     const handleOk = () => {
-
-        console.log("InventoryDeleteDialog handleOk")
         const data = {
             session_id: session_id,
             organisation_id: selected_organisation_id,

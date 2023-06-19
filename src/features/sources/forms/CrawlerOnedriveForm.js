@@ -24,7 +24,6 @@ export default function CrawlerOnedriveForm(props) {
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson: specific_json_stringify})
-        console.log("specific_json in rss", specific_json)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
@@ -100,7 +99,7 @@ export default function CrawlerOnedriveForm(props) {
                                        onChange={(event) => {
                                            setData({crawlAllOfOneDrive: event.target.checked});
                                        }}
-                                       value="Crawl all of Exchange"/>
+                                       title="Crawl all of Exchange"/>
                                 <label className="form-check-label small" for="enableOperator">Crawl all of One
                                     Drive</label>
                             </div>
@@ -126,11 +125,11 @@ export default function CrawlerOnedriveForm(props) {
                     </div>
                 </div>
                 <div className="col-2 offset-1">
-                    <a href="resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank"
-                       title="Download the SimSage Exchange 365 setup guide"
+                    <a href="resources/simsage-onedrive-setup.pdf" id="dlOffice365" target="_blank"
+                       title="Download the SimSage One Drive setup guide"
                        className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
-                        <span className="me-2 mt-2"></span>Exchange 365 <br/>Setup Guide
+                        <span className="me-2 mt-2"></span>One Drive <br/>Setup Guide
                     </a>
                 </div>
             </div>

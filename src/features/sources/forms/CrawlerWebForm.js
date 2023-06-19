@@ -31,7 +31,6 @@ export default function CrawlerWebForm(props) {
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson: specific_json_stringify})
-        console.log("specific_json in rss", specific_json)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
@@ -51,6 +50,21 @@ export default function CrawlerWebForm(props) {
                                     setData({baseUrlList: event.target.value})
                                 }}
                         />
+                </div>
+            </div>
+
+            <div className="row mb-3 pt-3 border-top">
+                <div className="col-4">
+                    <div className="form-check form-switch"
+                         title="check for pre-rendering Javascript based websites into HTML">
+                        <input className="form-check-input" type="checkbox"
+                               checked={specific_json.renderJS === true}
+                               onChange={(event) => {
+                                   setData({renderJS: event.target.checked});
+                               }}
+                        />
+                        <label className="form-check-label small">pre-render Javascript websites</label>
+                    </div>
                 </div>
             </div>
 

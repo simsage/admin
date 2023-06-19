@@ -15,7 +15,6 @@ export class MessageDialog extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     handleOk() {
         this.setState({open: false});

@@ -108,17 +108,9 @@ export default function KnowledgeBaseForm() {
             organisationId: organisation_id,
             indexSchedule: edit_index_schedule,
         }
-        if(edit_index_schedule === ''){
-            setSelectedTab('index_schedule')
-            dispatch(showErrorAlert({
-                "message": "The Index Optimization Schedules are not set. We strongly advise allocating only one hour per day for index optimizations.",
-                "title": "error"
-            }));
-        }else {
-            dispatch(addOrUpdate({session_id: session.id, data: data}))
-            dispatch(getKBList({session_id: session.id, organization_id: organisation_id}));
-            handleClose()
-        }
+        dispatch(addOrUpdate({session_id: session.id, data: data}))
+        dispatch(getKBList({session_id: session.id, organization_id: organisation_id}));
+        handleClose()
     };
 
     function handleTabChange(slug) {
@@ -126,12 +118,7 @@ export default function KnowledgeBaseForm() {
     }
 
     function updateSchedule(time) {
-        console.log(time)
         setIndexSchedule(time)
-        console.log("edit_index_schedule", edit_index_schedule)
-        // if (time !== null) {
-        //     setFormData({...form_data, schedule: time})
-        // }
     }
 
 

@@ -26,21 +26,10 @@ export default function DocumentsHome(props) {
     const dispatch = useDispatch()
     const user = useSelector((state) => state.authReducer.user);
 
-    console.log("document_page_size",document_page_size);
-
     useEffect(() => {
         let arg = {
             session_id: session.id, organisation_id: selected_organisation_id
         }
-        // dispatch(loadDocumentList({
-        //     session_id: session_id,
-        //     organisation_id: selected_organisation_id,
-        //     kb_id: selected_knowledge_base_id,
-        //     document_filter: document_filter,
-        //     document_page_size: document_page_size,
-        //     document_previous:null
-        // }));
-        console.log("useEffect")
     }, [props])
 
 

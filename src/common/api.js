@@ -90,12 +90,18 @@ export class Api {
 
     // convert a date object to an iso date string
     static toPrettyDateTime(date) {
+        if (!date || isNaN(date))
+            return "invalid date";
         if (!date || !date.getFullYear) {
             date = new Date()
         }
         const year = date.getFullYear();
+        if (isNaN(year))
+            return "invalid date";
         const month = date.getMonth() + 1;
         const day = date.getDate();
+        if (isNaN(month))
+            return "invalid date";
         let offset_hours = 0; // date.getTimezoneOffset() / 60;
         let hour = date.getHours() + offset_hours;
         if (hour < 0) hour += 24;

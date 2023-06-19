@@ -25,10 +25,8 @@ export default function SynsetEdit(){
     // Grab synonym details if editing
     useEffect(()=> {
         if ( synset ) {
-            console.log('editing', synset)
             setWord(synset.word);
             setWordCloud(synset.wordCloudCsvList);
-            console.log('here', wordCloud)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_synset_form])
@@ -54,7 +52,6 @@ export default function SynsetEdit(){
             wordCloudCsvList:
             wordCloud
         }
-        console.log('saving...', data);
         dispatch(addOrUpdate({organisation_id: organisation_id, kb_id: knowledge_base_id, session_id: session_id, data}));
         dispatch(closeSynSetForm());
     }
@@ -62,7 +59,6 @@ export default function SynsetEdit(){
     const updateWordCloud = index => e => {
       let newArr = [...wordCloud];
       newArr[index] = e.target.value;
-      console.log('wordcloud', newArr);
       setWordCloud(newArr)
     };
 

@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import {closeGroupForm, getGroupList, updateGroup} from "./groupSlice";
-
+import {getUserListPaginated} from "../users/usersSlice";
 
 export default function GroupEdit(){
 
@@ -14,17 +14,20 @@ export default function GroupEdit(){
     const groupName = useSelector( (state) => state.groupReducer.edit_group)
     const group_list = useSelector((state) => state.groupReducer.group_list)
     //const group_list = group_list_parent ? group_list_parent.groupList : group_list_parent;
-    const user_list = useSelector((state) => state.usersReducer.user_list)
+    const full_user_list = useSelector((state) => state.usersReducer.user_list)
+    const user_count = useSelector((state) => state.usersReducer.count)
 
     //group form details
     const [editName, setEditName] = useState('');
     const [activeUsers, setActiveUsers] = useState([]);
-    const [availableUsers, setAvailableUsers] = useState(user_list);
+    const [availableUsers, setAvailableUsers] = useState([]);
+    const [userFilter, setUserFilter] =useState('');
 
-    //dummy data
-    const edit_group_id = false;
-    // const mockUserContainerStyles = {display: "inline-block", background: "whitesmoke", border: "2px solid black" ,minHeight:"400px", minWidth:"300px", padding:"1rem"}
-    //dummydata End
+    //Get all users
+    useEffect(()=> {
+        dispatch(getUserListPaginated({session_id:session.id, organization_id:organisation_id,filter: null }))
+    }, [])
+
 
     // Grab Group details if editing
     useEffect(()=> {
@@ -35,7 +38,6 @@ export default function GroupEdit(){
             })
             if (temp_obj.length > 0) {
                 selectedGroup = (temp_obj[0])
-                console.log('selectedGroup!', selectedGroup)
             }
         }
         // Populate form if necessary
@@ -43,17 +45,28 @@ export default function GroupEdit(){
             let users = selectedGroup.userIdList ? selectedGroup.userIdList : []
             setEditName(selectedGroup.name)
 
-            setActiveUsers(user_list.filter((u) => {
+            setActiveUsers(full_user_list.filter((u) => {
                 return users.includes(u.id);
              }))
 
-            setAvailableUsers(user_list.filter((u) => {
+            setAvailableUsers(full_user_list.filter((u) => {
                 return !users.includes(u.id);
             }))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showGroupForm])
 
+
+    const getAvailableUsers = () => {
+        if(userFilter.length < 1){
+            return availableUsers
+        } else {
+            return availableUsers.filter(obj => {
+                return (obj.firstName.toLowerCase().includes(userFilter.toLowerCase())) || (obj.surname.toLowerCase().includes(userFilter.toLowerCase())) || (obj.email.toLowerCase().includes(userFilter.toLowerCase()))
+            })
+        }
+
+    }
 
     const handleSave = () => {
         if( !editName ) { alert('Invalid Name')}
@@ -64,7 +77,6 @@ export default function GroupEdit(){
          organisationId: organisation_id,
          userIdList: activeUsers.map( u => u.id )
         }
-        console.log('Saving...', data);
         dispatch(updateGroup({session_id, data}));
         dispatch(closeGroupForm());
         dispatch(getGroupList({session_id:session.id, organization_id: organisation_id}))
@@ -82,17 +94,11 @@ export default function GroupEdit(){
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
                     <div className="modal-header px-5 pt-4 bg-light">
-                        <h4 className="mb-0">{edit_group_id ? "Edit Group" : "New Group"}</h4>
+                        <h4 className="mb-0">{groupName ? "Edit Group" : "New Group"}</h4>
                         </div>
                     <div className="modal-body p-0">
                             <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
-                                {/* <div className="row mb-3">
-                                    <div className="control-row col-6">
-                                        <span className="label-2">Group Name</span>
-                                        
-                                    </div>
-                                </div> */}
-                                <div className="row pb-5">
+                                  <div className="row pb-5">
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">Group</h6>
                                         
@@ -125,7 +131,11 @@ export default function GroupEdit(){
                                     <div className="role-block col-6">
                                         <h6 className="role-label text-center">Available</h6>
                                         <div  className="role-area bg-light border rounded h-100">
-                                            {availableUsers.map(user => {
+                                            <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                   placeholder="Filter..." value={userFilter}
+                                                   onChange={(e) => setUserFilter(e.target.value)}
+                                                   />
+                                            {availableUsers && getAvailableUsers().map(user => {
                                                 return (
                                                     <div className="role-chip"
                                                         key={user.id}

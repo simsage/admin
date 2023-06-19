@@ -111,7 +111,6 @@ const knowledgeBaseSlice = createSlice({
             state.show_delete_info_form = true;
         },
         setViewIds: (state, action) => {
-            console.log("setViewIds", action.payload)
             state.view_id = action.payload ? action.payload : null;
         },
         closeForm: (state) => {
@@ -119,7 +118,6 @@ const knowledgeBaseSlice = createSlice({
             state.edit_id = undefined;
         },
         showOptimizeAskDialog: (state, action) => {
-            console.log("optimizeIndexes", action.payload)
             state.optimize_data = action.payload;
             state.show_optimize_form = true;
         },
@@ -199,17 +197,11 @@ export const deleteRecord = createAsyncThunk(
         const api_base = window.ENV.api_base;
         const url = api_base + '/knowledgebase/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
 
-        if (url !== '/stats/stats/os') {
-            console.log('DELETE ' + api_base + url);
-        }
-
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("deleteRecord knowledgeBases data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("deleteRecord knowledgeBases errer", error)
                     return error
                 }
             )
@@ -219,7 +211,6 @@ export const deleteRecord = createAsyncThunk(
 export const addOrUpdate = createAsyncThunk(
     'knowledgeBases/addOrUpdate',
     async ({session_id, data}, thunkAPI) => {
-        console.log("knowledgeBases/updateKnowledgeBase");
 
         const api_base = window.ENV.api_base;
         const url = api_base + '/knowledgebase/save';
@@ -240,10 +231,8 @@ export const optimizeIndexes = createAsyncThunk(
     'knowledgeBases/optimizeIndexes',
     async ({session_id, organisation_id, kb_id}, thunkAPI) => {
         const data = {"organisationId": organisation_id, "kbId": kb_id}
-        console.log("knowledgeBases/optimizeIndexes", data);
         const api_base = window.ENV.api_base;
         const url = '/language/optimize-indexes';
-        console.log('PUT ' + api_base + url);
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 // thunkAPI.dispatch(updateKB(response.data));
@@ -262,7 +251,6 @@ export const truncateSlowIndexes = createAsyncThunk(
     async ({session_id, organisation_id, kb_id}, thunkAPI) => {
         const api_base = window.ENV.api_base;
         const url = '/language/truncate-slow-indexes/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-        console.log('GET ' + api_base + url);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data

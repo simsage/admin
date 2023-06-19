@@ -20,7 +20,6 @@ export class Backups extends React.Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     deleteBackupAsk(backup) {
         if (backup && backup.backupId && this.props.openDialog) {

@@ -3,7 +3,6 @@ import {closeAlert} from "./alertSlice";
 
 export default function ErrorAlert(props){
 
-    console.log("showErrorAlert: load page")
     const show_alert = useSelector((state) => state.alertReducer.show_alert)
     const title = useSelector((state) => state.alertReducer.title)
     const message = useSelector((state) => state.alertReducer.message)

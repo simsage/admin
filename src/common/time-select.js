@@ -23,7 +23,6 @@ export class TimeSelect extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     handleSave() {
         let time = '';

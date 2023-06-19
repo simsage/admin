@@ -7,7 +7,6 @@ import OpenSourceSoftwareLicenses from "../home/OpenSourceSoftwareLicenses";
 
 function handleLogin(instance) {
     instance.loginRedirect(loginRequest).catch(e => {
-        console.error(e)
     })
 }
 

@@ -17,7 +17,6 @@ export class CategoryEdit extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
 
     // mirrors RockUtils.isValidMetadataName(str) on server-side

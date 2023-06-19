@@ -19,7 +19,6 @@ export default function OrganisationFormV2(props) {
     const group_data_status = useSelector((state) => state.groupReducer.data_status);
     //group_list_full should be in ['Admin','Managers',..] format
     const group_list_full = useSelector((state) => state.groupReducer.group_list).map(g => {return g.name});
-    console.log("group: _list_full", group_list_full);
     // const available_roles = useSelector((state) => state.usersReducer.roles);
     const roles_list_full = api.getPrettyRoles(useSelector((state) => state.usersReducer.roles));
 
@@ -74,7 +73,6 @@ export default function OrganisationFormV2(props) {
 
     useEffect(() => {
         if (selected_organisation_id !== null && selected_organisation_id !== undefined) {
-            console.log("selected_organisation_org", selected_organisation_id, organisation)
             dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,7 +87,6 @@ export default function OrganisationFormV2(props) {
 
         //form data
         const {autoCreateSSODomainListStr, ...form_data} = data;
-        console.log("org data", form_data)
 
         dispatch(updateOrganisation({session_id: props.session.id, data: form_data}))
         setSelectedRoles([])
@@ -124,8 +121,6 @@ export default function OrganisationFormV2(props) {
 
 
     function getSelectedRoles() {
-        console.log("roles: getSelectedRoles", selected_roles);
-
         return selected_role_filter.length > 0 ? selected_roles.filter(role => {
                 return role.label.toLowerCase().includes(selected_role_filter.toLowerCase())
             })
@@ -244,8 +239,6 @@ export default function OrganisationFormV2(props) {
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    console.log("group: selected_groups",selected_groups)
 
     if (!props.show_organisation_form)
         return (<div/>);

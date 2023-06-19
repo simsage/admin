@@ -10,14 +10,9 @@ export default function SemanticsFilter(props) {
     const [semanticsFilter,setSemanticsFilter] = useState('');
 
     function handleSearchTextKeydown(e) {
-        console.log("handleSearchTextKeydown")
-        // if (e.key === "Enter" && this.props.selected_organisation_id) {
-        //     this.props.getUsers(this.props.selected_organisation_id);
-        // }
     }
 
     function handleAddNew(){
-        console.log("handleAddNew")
     }
 
 

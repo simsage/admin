@@ -12,7 +12,6 @@ export default function ReportsHome(){
     ]
 
     function changeNav(slug){
-        console.log(slug)
         setSelectedSubNav(slug);
     }
 
