@@ -40,7 +40,9 @@ const initialState = {
     show_zip_crawler_prompt: false,
     show_process_files_prompt: false,
 
-    //error
+    //test
+    test_result: false,
+    error: false,
 }
 
 const reducers = {
@@ -96,6 +98,12 @@ const reducers = {
         state.show_start_crawler_prompt = false
         state.show_zip_crawler_prompt = false
         state.show_process_files_prompt = false
+
+    },
+
+    closeTestMessage: (state, action) => {
+        state.test_result = false
+        state.error = false;
     },
 
     setSelectedSourceTab: (state, action) => {
@@ -273,6 +281,27 @@ const extraReducers = (builder) => {
             state.data_status = "rejected"
         })
 
+        //testSource
+        .addCase(testSource.pending, (state) => {
+            state.busy = true;
+            state.status = "loading"
+            state.data_status = 'loading'
+        })
+        .addCase(testSource.fulfilled, (state, action) => {
+            state.busy = false;
+            state.data_status = 'loaded';
+            state.test_result = action.payload?.information === 'OK' ? 'Success' : 'Failed'
+        })
+        .addCase(testSource.rejected, (state, action) => {
+            state.busy = false;
+            state.status = "rejected"
+            state.data_status = "rejected"
+            state.error = {
+                code: 'Test Failed',
+                message: 'Please double check your configuration'
+            }
+        })
+
 }
 
 
@@ -431,6 +460,18 @@ export const installJcifsLibrary = createAsyncThunk(
             )
     });
 
+export const testSource = createAsyncThunk(
+    'sources/test',
+    async ({session_id, organisation_id, knowledgeBase_id, source_id}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/crawler/crawler/test/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}/${encodeURIComponent(source_id)}`;
+        return axios.get(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                console.log( 'testing test response', response.data)
+                return response.data
+            })
+    });
+
 
 
 const sourceSlice = createSlice({
@@ -441,7 +482,7 @@ const sourceSlice = createSlice({
 });
 
 export const {
-    showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
+    closeTestMessage, showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
     showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert, searchSource
 } = sourceSlice.actions
 export default sourceSlice.reducer;

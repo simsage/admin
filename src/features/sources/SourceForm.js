@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
-import {closeForm, updateSources} from "./sourceSlice";
+import {closeForm, testSource, updateSources} from "./sourceSlice";
 import SourceTabs from "./SourceTabs";
 import React, {useEffect, useState} from "react";
 import GeneralForm from "./forms/GeneralForm";
@@ -32,6 +32,7 @@ import CrawlerDiscourseForm2 from "./forms/CrawlerDiscourseForm2";
 import CrawlerSearchForm2 from "./forms/CrawlerSearchForm2";
 import CrawlerServiceNow from "./forms/CrawlerServiceNow";
 import ProcessorSetup from "../../common/processor-setup";
+import SourceTest from "./SourceTest";
 
 
 export default function SourceForm() {
@@ -103,6 +104,7 @@ export default function SourceForm() {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const show_form = useSelector((state) => state.sourceReducer.show_data_form);
+    const test_result = useSelector((state) => state.sourceReducer.test_result);
 
     useEffect(() => {
         const page = 0;
@@ -194,6 +196,8 @@ export default function SourceForm() {
         {label: "schedule", slug: "schedule", type: "schedule"},
 
     ]
+
+    const externalCrawlers = ['database', 'nfs', 'restful']
     const [selected_source_tab, setSelectedSourceTab] = useState('general')
 
     function changeNav(slug) {
@@ -216,6 +220,11 @@ export default function SourceForm() {
 
     const handleClose = () => {
         dispatch(closeForm());
+    }
+
+    const handleTest = () => {
+        dispatch(testSource({session_id:session_id, organisation_id: selected_organisation_id, knowledgeBase_id: selected_knowledge_base_id, source_id:selected_source.sourceId}))
+        //console.log('Test source data', {session_id:session_id, organisation_id: selected_organisation_id, knowledgeBase_id: selected_knowledge_base_id, source_id:selected_source.sourceId})
     }
 
     // Set form defaultValues
@@ -617,7 +626,7 @@ export default function SourceForm() {
     return (
         <div>
             <div className="modal" tabIndex="-1" role="dialog"
-                 style={{display: "inline", 'zIndex': 8000, background: "#202731bb"}}>
+                 style={{display: "inline", 'zIndex': 1060, background: "#202731bb"}}>
                 <div className={"modal-dialog modal-xl"} role="document">
                     <div className="modal-content">
                         <form onSubmit={handleSubmit(onSubmit)}>
@@ -881,6 +890,11 @@ export default function SourceForm() {
                                 <button onClick={handleClose} type="button" className="btn btn-white px-4"
                                         data-bs-dismiss="modal">Close
                                 </button>
+                                { selected_source && selected_source.sourceId > 0 &&
+                                    <button onClick={handleTest} type="button" title='Test Source Connection' className={`btn btn-primary px-4 ${(externalCrawlers.includes(selected_source.crawlerType))?'disabled' : ''}`}
+                                            data-bs-dismiss="modal">Test
+                                    </button>
+                                }
                                 <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
 
 
