@@ -22,13 +22,11 @@ export const PasswordSignIn = () => {
     function doSignIn() {
         Comms.usernamePasswordSignIn(username, password,
             (data) => {
-                    console.log("sign-in success");
                     dispatch({type: SIGN_IN, data: data});
                     // and go where we need to go
                     window.location = 'home';
                 },
             (errorStr) => {
-                    console.log(errorStr);
                     setError(errorStr);
                 }
             )

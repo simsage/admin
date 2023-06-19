@@ -3,22 +3,17 @@ import {closeAlert} from "./alertSlice";
 
 export default function WarningAlert(props){
 
-    console.log("WarningAlert1: load page")
     const show_alert = useSelector((state) => state.alertReducer.show_alert)
-    // const alert_type = useSelector((state) => state.alertReducer.alert_type)
-    // const title = useSelector((state) => state.alertReducer.title)
     const message = useSelector((state) => state.alertReducer.message)
 
     const dispatch = useDispatch()
 
     //handle form close or cancel
     const handleCancel = () => {
-        console.log("handleCancel")
         dispatch(closeAlert());
     }
 
     const handleOk = () => {
-        console.log("Ok")
         props.onOk();
     }
 

@@ -11,15 +11,10 @@ export function InventoryDocumentSnapshotPrompt() {
     const session = useSelector((state) => state.authReducer.session)
 
     const session_id = session.id;
-
-
     // const title = "New Document Snapshot";
     let message = 'Are you sure you want to create a new document snapshot?';
 
-
-
     const handleClose = () => {
-        console.log("InventoryDocumentSnapshotPrompt handleClose")
         dispatch(closeForm());
     }
 
@@ -30,7 +25,6 @@ export function InventoryDocumentSnapshotPrompt() {
             kbId: selected_knowledge_base_id,
         }
 
-        console.log("InventoryDocumentSnapshotPrompt handleOk")
         dispatch(createDocumentSnapshot({session_id:session_id, data:data}))
         dispatch(closeForm());
         dispatch(showAddInfoForm('doc'))
@@ -44,12 +38,6 @@ export function InventoryDocumentSnapshotPrompt() {
         <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered"} role="document">
                 <div className="modal-content p-4">
-
-                    {/* <div className="modal-header px-5 pt-4 bg-light">
-                        <h4 className="modal-title mb-0" id="staticBackdropLabel">{title}</h4>
-                        <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                    </div> */}
                     <div className="modal-body text-center">
                         <div className="control-row mb-4">
                             <span className="label-wide">{message}</span>

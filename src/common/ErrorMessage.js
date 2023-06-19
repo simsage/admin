@@ -3,12 +3,12 @@ import React from 'react';
 
 export default function ErrorMessage( {error, close} ){
 
+    if (!error || !error.message || !error.code) {
+        return (<div />)
+    }
+
     const error_title = error.code
     const error_text = error.message
-
-    const handleClose = () => {
-
-    }
 
     return (
         <div>

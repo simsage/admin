@@ -3,11 +3,7 @@ import {useDispatch} from "react-redux";
 
 export default function TestToSearchIntro(){
 
-    const dispatch = useDispatch();
-
     function handleAddNewSearch(){
-        console.log("handleAddNewSearch")
-        // dispatch(showAddSynSetForm())
     }
 
     return(

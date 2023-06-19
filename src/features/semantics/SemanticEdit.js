@@ -38,9 +38,7 @@ export function SemanticEdit(){
 
     const onSubmit = data => {
         const session_id = session.id;
-        console.log("data onSubmit",data);
         data = {...data,  "prevWord": selectedSemantic ? selectedSemantic.word : ""}
-        console.log("data onSubmit2",data);
         dispatch(updateSemantics({session_id, organisation_id, knowledge_base_id, data}));
         dispatch(closeSemanticForm());
     }

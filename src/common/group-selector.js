@@ -21,7 +21,6 @@ export class GroupSelector extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     update_parent(selected_group_list) {
         if (this.props.onChange) {

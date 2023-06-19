@@ -22,7 +22,6 @@ export default function OrganisationDeleteAsk(){
     function handleDelete() {
         dispatch(deleteOrganisation({session_id: session_id, organisation_id: org_to_delete.id}))
         dispatch(closeDeleteForm());
-        console.log("handleRemoveOrganisation")
     }
 
 

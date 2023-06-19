@@ -15,7 +15,6 @@ export default function KnowledgeBaseOptimize(){
     }
 
     const handleOptimize = () => {
-        console.log("optimize", selected_kb.kbId);
         const data = {"session_id": session_id, "organisation_id": selected_kb.organisationId, "kb_id": selected_kb.kbId};
         dispatch(optimizeIndexes(data));
         dispatch(closeOptimize());

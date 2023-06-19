@@ -8,7 +8,6 @@ export default function KnowledgeBaseIntro(){
     const dispatch = useDispatch();
 
     function handleAddNewKnowledgeBase(){
-        console.log("handleAddNewKnowledgeBase")
         dispatch(showAddForm(true))
     }
 

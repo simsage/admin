@@ -19,7 +19,6 @@ const initialState = {
 
 export const loadTextToSearch = createAsyncThunk( "TextToSearch/load",
     async ({ session_id, data}) => {
-    console.log(data)
     const api_base = window.ENV.api_base;
     const url = api_base + '/semantic/text-to-search';
 

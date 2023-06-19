@@ -14,7 +14,6 @@ export function SourceProcessFilesDialog() {
     const session_id = session.id;
 
     if(!selected_source){
-        console.error("Missing source")
         dispatch(closeForm());
     }
 
@@ -29,13 +28,11 @@ export function SourceProcessFilesDialog() {
     }
 
     const handleClose = () => {
-        console.log("SourceProcessFilesDialog handleClose")
         dispatch(closeForm());
     }
 
 
     const handleOk = () => {
-        console.log("SourceProcessFilesDialog handleClose")
         dispatch(processFiles({session_id:session_id, data:data}))
         dispatch(closeForm());
     }

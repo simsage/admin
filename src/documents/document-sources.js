@@ -44,6 +44,8 @@ const empty_crawler = {
     processorConfig: '',
     versioned: false,
     writeToCassandra: true,
+    useOCR: false,
+    useSTT: false,
     documentSimilarityThreshold: 0.9,
     enableDocumentSimilarity: false,
     isExternal: false
@@ -70,7 +72,6 @@ export class DocumentSources extends Component {
 
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
 
     changePage(page) {
@@ -93,7 +94,6 @@ export class DocumentSources extends Component {
                 paginated_list.push(this.props.crawler_list[i]);
             }
         }
-        console.log("first, last", first, last);
         return paginated_list;
     }
 

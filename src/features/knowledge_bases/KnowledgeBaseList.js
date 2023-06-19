@@ -53,7 +53,6 @@ export default function KnowledgeBaseList() {
     }
 
     const handleEditForm = (kb_id) => {
-        console.log("kb_id", kb_id)
         dispatch(showEditForm({kb_id: kb_id}));
     }
 
@@ -62,7 +61,6 @@ export default function KnowledgeBaseList() {
     }
 
     function handleViewIds(kb_id) {
-        console.log("handleViewIds")
         dispatch(setViewIds({kb_id: kb_id}))
     }
 

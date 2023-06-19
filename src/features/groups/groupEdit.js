@@ -35,7 +35,6 @@ export default function GroupEdit(){
             })
             if (temp_obj.length > 0) {
                 selectedGroup = (temp_obj[0])
-                console.log('selectedGroup!', selectedGroup)
             }
         }
         // Populate form if necessary
@@ -64,7 +63,6 @@ export default function GroupEdit(){
          organisationId: organisation_id,
          userIdList: activeUsers.map( u => u.id )
         }
-        console.log('Saving...', data);
         dispatch(updateGroup({session_id, data}));
         dispatch(closeGroupForm());
         dispatch(getGroupList({session_id:session.id, organization_id: organisation_id}))

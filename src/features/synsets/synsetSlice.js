@@ -41,13 +41,10 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
         };
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("load Synsets response data", response.data)
                 return response.data
             }).catch(
                 (error) => {
-                    console.log("loadSynsets error", error)
                     return error
-
                 }
             )
     })
@@ -57,15 +54,10 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
 export const addOrUpdate = createAsyncThunk(
     "synsets/addOrUpdate",
     async ({organisation_id, kb_id, session_id, data}) => {
-        console.log("synsets/addOrUpdate");
-
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-        console.log('PUT ' + url);
-
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("response",response.data)
                 return response.data
             }).catch(
                 (error) => {return error}
@@ -77,12 +69,8 @@ export const addOrUpdate = createAsyncThunk(
 export const deleteRecord = createAsyncThunk(
     "synsets/deleteRecord",
     async ({organisation_id, kb_id, session_id, lemma}) => {
-        console.log("synsets/deleteSynSet");
-
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/delete-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(lemma);
-        console.log('PUT ' + url);
-
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -96,15 +84,10 @@ export const deleteRecord = createAsyncThunk(
 export const addDefaultSynsets = createAsyncThunk(
     "synsets/addDefaultSynsets",
     async ({organisation_id, kb_id, session_id, data}) => {
-        console.log("synsets/addDefaultSynsets");
-
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/default-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-        console.log('PUT ' + url);
-
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log("response",response.data)
                 return response.data
             }).catch(
                 (error) => {return error}
@@ -133,7 +116,6 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(deleteRecord.fulfilled, (state, action) => {
-            console.log("synsets/deleteRecord ",action)
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
@@ -146,7 +128,6 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(addOrUpdate.fulfilled, (state, action) => {
-            console.log("synsets/addOrUpdate ",action)
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
@@ -160,7 +141,6 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(addDefaultSynsets.fulfilled, (state, action) => {
-            console.log("synsets/addDefaultSynsets ",action)
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })

@@ -24,7 +24,6 @@ export class Logs extends React.Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({

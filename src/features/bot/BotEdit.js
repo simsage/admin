@@ -95,7 +95,6 @@ export function BotEdit(){
                 urlList: links ? links : [],
                 videoList:videoList
             }
-            console.log("handleSave", data);
             dispatch(updateMindItem({session_id,organisation_id, knowledge_base_id, data}));
             dispatch(closeMemoryForm());
         }
@@ -104,14 +103,12 @@ export function BotEdit(){
     const updateLink = index => e => {
         let newArr = [...links];
         newArr[index] = e.target.value;
-        console.log('links', newArr)
         setLinks(newArr);
     }
 
     const updateQuestion = index => e => {
         let newArr = [...questions];
         newArr[index] = e.target.value;
-        console.log('questions', newArr)
         setQuestions(newArr);
     }
 
@@ -249,7 +246,6 @@ export function BotEdit(){
                                 </div>
                                 {
                                     links && links.map( (link,i) => {
-                                        console.log(link)
                                         if (link === '') {return '</div>';}
                                         return (
                                             <div className="control-row col-12 mb-2" key={i}>

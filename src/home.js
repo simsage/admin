@@ -14,9 +14,9 @@ import Logs from "./reports/logs";
 import Groups from "./users/groups";
 
 // import SockJsClient from 'react-stomp';
+// import {connect} from "react-redux";
+// import {bindActionCreators} from "redux";
 
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
 import './css/home.css';
 import { MsalContext } from "@azure/msal-react";
 import {Text2Search} from "./test2search/text2search";
@@ -40,7 +40,6 @@ export class Home extends Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     componentDidMount() {
         if (window.ENV.authentication === "password") {

@@ -9,8 +9,6 @@ export default function CrawlerMetaMapperForm(props) {
     const num_rows = get_md_list().length;
     const l_form_data = props.form_data;
     const source_id = (props.source && props.source.sourceId) ? props.source.sourceId : 0;
-    console.log("source_id",props.source.sourceId)
-
 
     const metadata_list = [
         {"key": "none", "display": null, "metadata": "", "db1": "", "db2":"", "sort": "", "sortDefault": "", "sortAscText": "", "sortDescText": "", "sourceId": 0, "fieldOrder": 0},
@@ -343,7 +341,7 @@ export default function CrawlerMetaMapperForm(props) {
                                                onChange={(event) => {
                                                    setSort(md, index, event.target.checked);
                                                }}
-                                               value="enable result sorting over this field?"
+                                               title="enable result sorting over this field?"
                                         />
                                     </div>
                                 }

@@ -28,7 +28,6 @@ export class Groups extends React.Component {
     }
     componentDidCatch(error, info) {
         this.props.setError(error, info);
-        console.log(error, info);
     }
     getGroupList() {
         const start = this.props.group_page * this.props.group_page_size;

@@ -22,7 +22,6 @@ export default function CrawlerExchange365Form(props) {
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
-        console.log("specific_json in rss", specific_json)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
@@ -75,7 +74,7 @@ export default function CrawlerExchange365Form(props) {
                                 <input className="form-check-input" type="checkbox"     
                                     checked={specific_json.crawlAllOfExchange}
                                     onChange={(event) => { setData({crawlAllOfExchange: event.target.checked}); }}
-                                    value="Crawl all of Exchange"/>
+                                    title="Crawl all of Exchange"/>
                                 <label className="form-check-label small" for="enableOperator">Crawl all of Exchange</label>
                             </div>
                         </div>

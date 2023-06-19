@@ -34,14 +34,6 @@ export default function CategorizationHome() {
 
     const dispatch = useDispatch();
 
-    console.log("semantic_page",page_history)
-    console.log("semantic_page",prev_label)
-
-    // let prev_set = category_list.slice(-1)[0]
-    // console.log("prev_set",prev_set)
-    // let prev_cat_label = cat_page != 0 ? prev_set['categorizationLabel']:null
-    // console.log("prev_cat_label",prev_cat_label)
-
     let data = {
         session_id: session_id,
         organisation_id:selected_organisation_id,
@@ -85,7 +77,6 @@ export default function CategorizationHome() {
     function filterCategories() {
         let filteredGroup = []
         category_list && category_list.forEach( cat => {
-            console.log('here',cat)
             if(cat.categorizationLabel.toLowerCase().includes(filter.toLowerCase())) {
                 filteredGroup.push(cat)
             }
@@ -100,12 +91,10 @@ export default function CategorizationHome() {
     }
 
     function newCategory() {
-        console.log('adding new category')
         dispatch(showAddCategoryForm(true));
     }
 
     function editCategory(category) {
-        console.log('editing',category)
         dispatch(showEditCategoryForm({show:true, category:category}));
     }
 
@@ -205,7 +194,6 @@ export default function CategorizationHome() {
                             <tbody>
                             {
                                 getCategoryList().map((category, i) => {
-                                    console.log("getCategoryList: ",category)
                                     return (
                                         <tr key={i}>
                                             <td className="pt-3 px-4 pb-3">

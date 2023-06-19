@@ -32,7 +32,6 @@ export const SignIn = () => {
                             clearState();
                             // sign in and re-direct
                             instance.loginRedirect(loginRequest).catch(e => {
-                                console.error(e);
                             });
                         }}>Sign in</button>
                     </div>

@@ -8,7 +8,6 @@ export default function GroupIntro(){
     const dispatch = useDispatch();
 
     function handleAddNewGroup(){
-        console.log("handleAddNewGroup")
         dispatch(showAddGroupForm(true))
     }
 

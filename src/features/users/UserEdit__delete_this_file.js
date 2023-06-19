@@ -19,7 +19,6 @@ export function UserEdit__delete_this_file() {
     ]
 
     function changeNav(slug) {
-        console.log(slug)
         setSelectedTab(slug);
     }
 
@@ -59,7 +58,6 @@ export function UserEdit__delete_this_file() {
             })
             if (temp_obj.length > 0) {
                 selectedUser = (temp_obj[0])
-                // console.log('selectedUser!', selectedUser)
             }
         }
         //Populate form if necessary
@@ -154,7 +152,6 @@ export function UserEdit__delete_this_file() {
                 roles: roles,
                 surname: lastName
             }
-            console.log('Saving...', data);
             dispatch(updateUser({session_id, organisation_id, data}));
             dispatch(closeUserForm());
         }
@@ -236,20 +233,15 @@ export function UserEdit__delete_this_file() {
 
     //Knowledge base functions
     function getKbName(kbID) {
-        console.log('test2', kbID)
-        console.log('tets3', available_KBs)
         const temp_list = available_KBs.filter((obj) => {
             return obj.kbId === kbID
         })
-        console.log('test4', temp_list)
         if (temp_list.length < 1) return "No KBs"
         return temp_list[0].name
     }
 
     function getKbs() {
         return kbFilter.length > 0 ? kbs.filter(kb => {
-                console.log('pre-test', kb)
-                console.log('testing', getKbName(kb.kbId))
                 return getKbName(kb.kbId).toLowerCase().includes(kbFilter.toLowerCase())
             })
             :

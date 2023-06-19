@@ -29,18 +29,9 @@ export function SourceImport() {
 
     const onSubmit = data => {
         let crawler = JSON.parse(data.source_str);
-        console.log("data", crawler)
         delete crawler.sourceId;
-        console.log("data", crawler)
-        console.log("selected_organisation_id", selected_organisation_id)
-        console.log("selected_knowledge_base_id", selected_knowledge_base_id)
-
         crawler = {...crawler, organisationId:selected_organisation_id, kbId:selected_knowledge_base_id}
-        console.log("data", crawler)
-
         dispatch(updateSources({session_id:session_id, data: crawler}))
-
-        // handleClose()
     };
 
 
@@ -86,7 +77,7 @@ export function SourceImport() {
                                     data-bs-dismiss="modal">Cancel
                             </button>
 
-                            <input type="submit" value={"Import"} className={"btn btn-primary px-4"}/>
+                            <input type="submit" value="Import" className="btn btn-primary px-4" />
 
                         </div>
                         </form>

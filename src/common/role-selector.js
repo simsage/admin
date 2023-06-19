@@ -18,7 +18,6 @@ export class RoleSelector extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     update_parent(role_list) {
         if (this.props.onChange) {

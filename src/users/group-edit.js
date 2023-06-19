@@ -19,7 +19,6 @@ export class GroupEdit extends Component {
     }
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
-        console.log(error, info);
     }
     getAllUsers() {
         return this.props.user_list ? this.props.user_list : [];
@@ -65,7 +64,6 @@ export class GroupEdit extends Component {
         if (this.state.has_error) {
             return <h1>group-edit.js: Something went wrong.</h1>;
         }
-        console.log(this.props.user_list);
         if (!this.state.open)
             return (<div />);
         return (

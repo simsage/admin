@@ -20,7 +20,6 @@ export default function SynsetDefault(){
     const handAddDefault = () => {
         const data = {"session_id": session_id, "organisation_id": selected_organisation_id, "kb_id": selected_knowledge_base_id};
         dispatch(addDefaultSynsets(data));
-        console.log("add default")
         handleClose();
     }
 
