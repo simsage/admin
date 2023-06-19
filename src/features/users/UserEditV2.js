@@ -41,10 +41,31 @@ export function UserEditV2(props) {
         if(user_id){
             const temp_user = (user_list.filter((user) => user.id ===user_id ));
             setSelectedUser(temp_user.length === 1 ?temp_user[0]:{})
+        }else {
+            setSelectedUser({})
         }
     },[user_id])
 
-    console.log("selectedUser",selectedUser)
+    useEffect(()=>{
+        if(user_id){
+            setRoles(!selectedUser.roles ? [] : selectedUser.roles.filter(roleObj => {
+                return roleObj.organisationId === organisation_id
+            }))
+            setGroups(selectedUser.groupList)
+            setKBs(!selectedUser.operatorKBList ? [] : selectedUser.operatorKBList.filter(KBObj => {
+                return KBObj.organisationId === organisation_id
+            }))
+            setShowKBs(!selectedUser.roles ? [] : selectedUser.roles.filter(roleObj => {
+                return roleObj.organisationId === organisation_id
+            }).map(r => r.role).includes('operator'))
+        }else{
+            setRoles([])
+            setGroups([])
+            setKBs([])
+            setShowKBs([])
+        }
+    },[selectedUser,user_id])
+
     const sub_nav = [
         {label: "Details", slug: "details"},
         {label: "Roles", slug: "roles"},
