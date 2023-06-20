@@ -7,8 +7,8 @@ export default function OrganisationError(){
     const dispatch = useDispatch();
 
     const show_error_form = useSelector((state) => state.organisationReducer.show_error_form)
-    const error_obj = useSelector((state) => state.organisationReducer.error)
-    const error= error_obj && error_obj.response ? error_obj.response.data.error : ''
+    const error = useSelector((state) => state.organisationReducer.error)
+    // const error= error_obj && error_obj.response ? error_obj.response.data.error : ''
 
 
     //handle form close or cancel
@@ -21,13 +21,13 @@ export default function OrganisationError(){
     if (!show_error_form)
         return (<div />);
     return(
-        <div>
-            <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>
+        <div className="org_error">
+            <div className="modal" tabIndex="1" role="dialog" style={{display: "inline", zIndex: 2}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">Oops!</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">Error</h5>
                             <button onClick={ handleClose } type="button" className="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
