@@ -39,7 +39,7 @@ export class AclSetup extends Component {
     }
     addAcl(group) {
         const acl_list = JSON.parse(JSON.stringify(this.state.acl_list));
-        const acl = {"acl": group.name, "access": "R", isUser: group.isUser};
+        const acl = {"acl": group.name, "access": "R", isUser: group.isUser?group.isUser:false};
         let exists = false;
         for (const s_acl of this.state.acl_list) {
             if (s_acl.acl === group.name) {
