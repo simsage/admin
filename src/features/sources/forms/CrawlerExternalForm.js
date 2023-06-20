@@ -10,11 +10,11 @@ export default function CrawlerExternalForm(props) {
     const l_form_data = props.form_data;
 
     //update setFormData when specific_json is changed
-    useEffect(() => {
-        let specific_json_stringify = JSON.stringify(specific_json)
-        props.setFormData({...l_form_data, specificJson:specific_json_stringify})
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [specific_json])
+    // useEffect(() => {
+    //     let specific_json_stringify = JSON.stringify(specific_json)
+    //     props.setFormData({...l_form_data, specificJson:specific_json_stringify})
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [specific_json])
 
 
     return (
