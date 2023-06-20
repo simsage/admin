@@ -14,11 +14,15 @@ export default function OrganisationFormV2(props) {
     // const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
     let organisation = props.organisation;
 
+    const show_error_form = useSelector((state) => state.organisationReducer.show_error_form)
+    const error_message = useSelector((state) => state.organisationReducer.error)
 
     const [selected_tab, setSelectedTab] = useState('general');
     const group_data_status = useSelector((state) => state.groupReducer.data_status);
     //group_list_full should be in ['Admin','Managers',..] format
-    const group_list_full = useSelector((state) => state.groupReducer.group_list).map(g => {return g.name});
+    const group_list_full = useSelector((state) => state.groupReducer.group_list).map(g => {
+        return g.name
+    });
     // const available_roles = useSelector((state) => state.usersReducer.roles);
     const roles_list_full = api.getPrettyRoles(useSelector((state) => state.usersReducer.roles));
 
@@ -80,7 +84,9 @@ export default function OrganisationFormV2(props) {
 
 //on submit store or update
     const onSubmit = data => {
-        data.autoCreateSSORoleList = selected_roles.map(role => { return role.role });
+        data.autoCreateSSORoleList = selected_roles.map(role => {
+            return role.role
+        });
         data.autoCreateSSOACLList = selected_groups;
         //convert domain string to array
         data.autoCreateSSODomainList = data.autoCreateSSODomainListStr.split(',');
@@ -275,7 +281,7 @@ export default function OrganisationFormV2(props) {
                                                         className="form-control me-3" {...register("name", {required: true})} />
                                                     <div className="form-check form-switch">
                                                         <input className="form-check-input"
-                                                            type="checkbox" {...register('enabled')}/>
+                                                               type="checkbox" {...register('enabled')}/>
                                                         <label className="form-check-label">Enabled</label>
                                                     </div>
                                                     <div>
@@ -285,6 +291,8 @@ export default function OrganisationFormV2(props) {
                                                 {errors.name &&
                                                     <span
                                                         className="text-danger fst-italic small">This field is required </span>}
+                                                {show_error_form &&
+                                                    <span className="text-danger fst-italic small"> {error_message} </span>}
                                             </div>
                                         </div>
                                     </div>
@@ -297,9 +305,11 @@ export default function OrganisationFormV2(props) {
                                             <div className="col-12">
                                                 <div className="form-check form-switch">
                                                     <input className="form-check-input"
-                                                        type="checkbox" {...register('autoCreateSSOUsers')}/>
-                                                    <label className="form-check-label">Allow single sign-on users to be
-                                                        auto-created with a default set of group ACLs and SimSage
+                                                           type="checkbox" {...register('autoCreateSSOUsers')}/>
+                                                    <label className="form-check-label">Allow single
+                                                        sign-on users to be
+                                                        auto-created with a default set of group ACLs
+                                                        and SimSage
                                                         role(s).</label>
                                                 </div>
                                             </div>
@@ -307,12 +317,13 @@ export default function OrganisationFormV2(props) {
 
                                         <div className="row mb-5">
                                             <div className="form-group col-12">
-                                                <label className="label-2 small">Domain CSV <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span>
+                                                <label className="label-2 small">Domain CSV <span
+                                                    className="small text-black-50 fst-italic fw-light">(Separate by comma) </span>
                                                 </label>
                                                 <textarea className="form-control"
-                                                        placeholder="Valid domain names (e.g. simsage.co.uk)"
-                                                        rows="3"
-                                                        {...register("autoCreateSSODomainListStr", {required: false})}
+                                                          placeholder="Valid domain names (e.g. simsage.co.uk)"
+                                                          rows="3"
+                                                          {...register("autoCreateSSODomainListStr", {required: false})}
                                                 />
                                             </div>
                                         </div>
@@ -320,11 +331,15 @@ export default function OrganisationFormV2(props) {
                                         <div>
                                             <div className="row pb-5 mb-3">
                                                 <div className="role-block col-6">
-                                                    <h6 className="role-label text-center">SimSage Roles</h6>
-                                                    <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                               placeholder="Filter..." value={selected_role_filter}
-                                                               onChange={(e) => setRoleFilter(e.target.value)}/>
+                                                    <h6 className="role-label text-center">SimSage
+                                                        Roles</h6>
+                                                    <div
+                                                        className="role-area bg-light border rounded h-100">
+                                                        <input
+                                                            className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                            placeholder="Filter..."
+                                                            value={selected_role_filter}
+                                                            onChange={(e) => setRoleFilter(e.target.value)}/>
                                                         {
                                                             getSelectedRoles().map((role, i) => {
                                                                 return (<Chip key={i} color="secondary"
@@ -337,10 +352,13 @@ export default function OrganisationFormV2(props) {
                                                 </div>
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">Available</h6>
-                                                    <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                               placeholder="Filter..." value={available_role_filter}
-                                                               onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
+                                                    <div
+                                                        className="role-area bg-light border rounded h-100">
+                                                        <input
+                                                            className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                            placeholder="Filter..."
+                                                            value={available_role_filter}
+                                                            onChange={(e) => setAvailableRoleFilter(e.target.value)}/>
                                                         {
                                                             getAvailableRoles().map((role, i) => {
                                                                 return (<Chip key={i} color="primary"
@@ -355,51 +373,61 @@ export default function OrganisationFormV2(props) {
                                         </div>
 
                                         {organisation &&
-                                        <div>
-                                            <div className="row pb-5">
-                                                <div className="role-block col-6">
-                                                    <h6 className="role-label text-center">SimSage Groups</h6>
-                                                    <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                               placeholder="Filter..." value={selected_group_filter}
-                                                               onChange={(e) => setSelectedGroupFilter(e.target.value)}/>
-                                                        {
-                                                            getSelectedGroups().map((grp, i) => {
-                                                                return (
+                                            <div>
+                                                <div className="row pb-5">
+                                                    <div className="role-block col-6">
+                                                        <h6 className="role-label text-center">SimSage
+                                                            Groups</h6>
+                                                        <div
+                                                            className="role-area bg-light border rounded h-100">
+                                                            <input
+                                                                className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                                placeholder="Filter..."
+                                                                value={selected_group_filter}
+                                                                onChange={(e) => setSelectedGroupFilter(e.target.value)}/>
+                                                            {
+                                                                getSelectedGroups().map((grp, i) => {
+                                                                    return (
 
-                                                                    <Chip key={i} color="secondary"
-                                                                          onClick={() => removeGroupFromUser(grp)}
-                                                                          label={grp} variant="outlined"/>
-                                                                )
-                                                            })
-                                                        }
+                                                                        <Chip key={i} color="secondary"
+                                                                              onClick={() => removeGroupFromUser(grp)}
+                                                                              label={grp}
+                                                                              variant="outlined"/>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="role-block col-6">
-                                                    <h6 className="role-label text-center">Available</h6>
-                                                    <div className="role-area bg-light border rounded h-100">
-                                                        <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                               placeholder="Filter..." value={available_group_filter}
-                                                               onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
-                                                        {
-                                                            getAvailableGroups().map((grp, i) => {
-                                                                return (<Chip key={i} color="primary"
+                                                    <div className="role-block col-6">
+                                                        <h6 className="role-label text-center">Available</h6>
+                                                        <div
+                                                            className="role-area bg-light border rounded h-100">
+                                                            <input
+                                                                className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                                placeholder="Filter..."
+                                                                value={available_group_filter}
+                                                                onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
+                                                            {
+                                                                getAvailableGroups().map((grp, i) => {
+                                                                    return (
+                                                                        <Chip key={i} color="primary"
                                                                               onClick={() => addGroupToUser(grp)}
                                                                               label={grp}
                                                                               variant="outlined"/>)
-                                                            })
-                                                        }
+                                                                })
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
                                         }
                                     </div>
                                 }
 
                             </div>
                             <div className="modal-footer px-5 pb-3">
-                                <button onClick={handleClose} type="button" className="btn btn-white px-4"
+                                <button onClick={handleClose} type="button"
+                                        className="btn btn-white px-4"
                                         data-bs-dismiss="modal">Cancel
                                 </button>
                                 <input type="submit" value="Save" className={"btn btn-primary px-4"}/>

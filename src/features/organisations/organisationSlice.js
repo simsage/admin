@@ -10,6 +10,7 @@ const initialState = {
     status: null,
     error: null,
     show_error_form: false,
+
     show_organisation_form: false,
     edit_organisation_id: null,
     data_status: 'load_now',//load_now,loading,loaded
@@ -185,10 +186,18 @@ const extraReducers = (builder) => {
         })
 
         //update Organisation
-        .addCase(updateOrganisation.fulfilled, (state) => {
-            state.show_organisation_form = false;
-            state.edit_organisation_id = undefined;
-            state.data_status = 'load_now';
+        .addCase(updateOrganisation.fulfilled, (state,action) => {
+
+            console.log("updateOrganisation",action.payload)
+            if(action.payload && action.payload.code && action.payload.code === "ERR_BAD_RESPONSE") {
+                state.show_error_form = true
+                state.error = action.payload.response.data.error
+            }else {
+                state.show_organisation_form = false;
+                state.edit_organisation_id = undefined;
+                state.data_status = 'load_now';
+            }
+
         })
 
         .addCase(updateOrganisation.rejected, (state, action) => {
