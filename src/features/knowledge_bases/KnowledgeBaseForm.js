@@ -20,8 +20,8 @@ export default function KnowledgeBaseForm() {
     const show_kb_form = useSelector((state) => state.kbReducer.show_form);
     const session = useSelector((state) => state.authReducer.session);
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-    const [security_id, setSecurityId] = useState('');
 
+    const [security_id, setSecurityId] = useState();
     const [selected_tab, setSelectedTab] = useState('general')
 
 
@@ -103,13 +103,16 @@ export default function KnowledgeBaseForm() {
 
     //on submit store or update
     const onSubmit = data => {
+
+        console.log("data", data)
         data = {
             ...data,
             organisationId: organisation_id,
             indexSchedule: edit_index_schedule,
         }
         dispatch(addOrUpdate({session_id: session.id, data: data}))
-        dispatch(getKBList({session_id: session.id, organization_id: organisation_id}));
+
+        // dispatch(getKBList({session_id: session.id, organization_id: organisation_id}));
         handleClose()
     };
 
@@ -173,7 +176,7 @@ export default function KnowledgeBaseForm() {
                                                          onClick={() => refreshSecurityId()}
                                                          className="image-size form-icon"/>
                                                 </div>
-                                                {errors.securityId && <span> Security id is required</span>}
+                                                {errors.securityId && <span className="text-danger fst-italic small"> Security id is required</span>}
                                             </div>
                                         </div>
 
