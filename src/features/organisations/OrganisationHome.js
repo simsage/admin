@@ -173,8 +173,8 @@ export function OrganisationHome() {
                     {organisation_list &&
                         getOrganisations().map((item) => {
                             return (
-                                <tr key={item.id} className={(item.id === selected_organisation.id) ? "table-primary" : ""}>
-                                    <td className={`${(item.id === selected_organisation.id) ? "text-primary" : ""} pt-3 px-4 pb-3`} title={"organisation " + item.name}
+                                <tr key={item.id} className={(item.id === selected_organisation.id) ? "active" : ""}>
+                                    <td className={`${(item.id === selected_organisation.id) ? "fw-500" : ""} pt-3 px-4 pb-3`} title={"organisation " + item.name}
                                         onClick={() => handleSelectOrganisation(session.id, item)}>
                                         {item.name}
                                     </td>
