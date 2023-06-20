@@ -1,4 +1,4 @@
-import { useState} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Pagination} from "../../common/pagination";
 import {
@@ -7,7 +7,7 @@ import {
     showEditForm,
     showDeleteAskForm,
     showOptimizeAskDialog,
-    search, showTruncateIndexesAskDialog
+    search, showTruncateIndexesAskDialog, getKBList
 } from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
 import api from "../../common/api";
@@ -15,7 +15,7 @@ import api from "../../common/api";
 export default function KnowledgeBaseList() {
 
     const theme = '';
-
+    const data_status = useSelector((state) => state.kbReducer.data_status);
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const session = useSelector((state) => state).authReducer.session;
@@ -28,6 +28,10 @@ export default function KnowledgeBaseList() {
 
     const dispatch = useDispatch()
 
+    useEffect(() => {
+        if (organisation_id && data_status==='load_now')
+            dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
+    }, [organisation_id, data_status])
 
     function getKnowledgeBases() {
         const paginated_list = [];

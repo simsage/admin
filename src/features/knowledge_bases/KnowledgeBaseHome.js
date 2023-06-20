@@ -14,7 +14,7 @@ export default function KnowledgeBaseHome() {
 
 
     // const kb_list = useSelector((state) => state.kbReducer.kb_list);
-    // const status = useSelector((state) => state.kbReducer.status);
+    const status = useSelector((state) => state.kbReducer.status);
     const kb_show_form = useSelector((state) => state.kbReducer.show_form)
     const kb_show_delete_form = useSelector((state) => state.kbReducer.show_delete_form)
     const kb_show_delete_info_form = useSelector((state) => state.kbReducer.show_delete_info_form)
@@ -31,7 +31,7 @@ export default function KnowledgeBaseHome() {
     useEffect(() => {
         if (organisation_id)
             dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
-    }, [organisation_id])
+    }, [organisation_id, status==='load_now'])
 
 
 
