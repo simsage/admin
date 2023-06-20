@@ -5,7 +5,7 @@ import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import SubNav from "../../includes/sub-nav";
 
-export function UserEdit() {
+export function UserEdit__delete_this_file() {
 
     const dispatch = useDispatch();
 
@@ -327,6 +327,7 @@ export function UserEdit() {
                     <div className="modal-header px-5 pt-4 bg-light">
                         <h4 className="mb-0">{user_id ? "Edit User" : "New User"}</h4>
                     </div>
+
                     <div className="modal-body p-0">
 
                         <div className="nav nav-tabs overflow-auto">

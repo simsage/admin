@@ -17,6 +17,7 @@ const initialState = {
     show_user_form: false,
     show_user_bulk_form: false,
     show_delete_form: false,
+    show_password_reset_form:false,
     edit_id: undefined,
     roles: ['admin','operator','dms','manager','discover','search'],
     // roles: [{'admin':'Admin'}, {'operator':'Operator'}, {'dms':'DMS'}, {'manager':'Manager'},{'discover':'Discover'}],
@@ -148,6 +149,7 @@ const usersSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {
+
         showAddUserForm:(state,action) => {
             state.show_user_form = action.payload
         },
@@ -155,8 +157,13 @@ const usersSlice = createSlice({
             state.show_user_form = action.payload.show
             state.edit_id = action.payload.user_id
         },
+        showPasswordResetForm:(state,action) => {
+            state.show_password_reset_form = action.payload.show
+            state.edit_id = action.payload.user_id
+        },
         closeUserForm:(state) => {
             state.show_user_form = false;
+            state.show_password_reset_form = false;
             state.edit_id = undefined;
         },
         showDeleteUserAsk:(state, action) => {
@@ -195,5 +202,5 @@ const usersSlice = createSlice({
 });
 
 
-export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm, orderBy, closeUserBulkForm,showUserBulkForm} = usersSlice.actions
+export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm, orderBy, closeUserBulkForm,showUserBulkForm,showPasswordResetForm} = usersSlice.actions
 export default usersSlice.reducer;
