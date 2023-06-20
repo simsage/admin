@@ -368,6 +368,10 @@ html, body, #root, .App, .dms {
     background-color: #f8f8f8;
     transition: all .4s ease;
 }
+.table tbody tr.active {
+    background-color: #0d6efd20;
+    color: #0d6efd;
+}
 .selected-kb {
     background-color: #0d6efd12 !important;
     /* color: #0d6efd; */
