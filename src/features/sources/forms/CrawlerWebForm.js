@@ -198,9 +198,9 @@ export default function CrawlerWebForm(props) {
                 </div>
 
                 <div className="form-group col-6">
-                    <label className="small">csv exclude prefixes</label>
+                    <label className="small">exclude paths (csv list)</label>
                     <textarea className="form-control"
-                            placeholder="csv urls (starting with https://), exclude pages by prefix starts [optional]"
+                            placeholder="a set of possible paths values, separated by commas (csv) to exclude pages (e.g. /images/) [optional]"
                             rows="3"
                             value={specific_json.pagePrefixesToIgnore}
                             onChange={(event) => {setData({pagePrefixesToIgnore: event.target.value})}}
