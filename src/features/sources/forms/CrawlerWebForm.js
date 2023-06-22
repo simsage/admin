@@ -236,7 +236,7 @@ export default function CrawlerWebForm(props) {
                         </div>
                         <div className="form-group col-12">
                             <label className="small">OIDC/OAuth secret</label>
-                            <input type="text"
+                            <input type="password"
                                    placeholder="OIDC/OAuth secret"
                                    className="form-control"
                                    value={specific_json.OIDCSecret}
