@@ -150,7 +150,7 @@ export default function CrawlerWebForm(props) {
                 <div className="form-group col-6">
                     <label className="small">Exclude css csv</label>
                     <textarea className="form-control"
-                            placeholder="css/html root fragments to exclude csv"
+                            placeholder="css/html root fragments to exclude csv (e.g. header, footer, div.header)"
                             rows="3"
                             value={webCssIgnore}
                             onChange={(event) => {
