@@ -80,7 +80,7 @@ export default function CrawlerSharepoint365Form(props) {
                         <div className="col-8">
                             <div className="form-group">
                                 <label className="small d-flex justify-content-between">
-                                    or Crawl specific SharePoint sites by name
+                                    filter SharePoint sites by partial-names (case insensitive)
                                     <span className="fst-italic fw-light small">(separate sharepoint site names by comma)</span>
                                 </label>
                                 <textarea className="form-control"
