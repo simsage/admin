@@ -25,6 +25,11 @@ export default function CrawlerExchange365Form(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
+    function handleResetDelta(e) {
+        e.preventDefault()
+        setData({deltaIndicator: ''})
+    }
+
 
     return (
 
@@ -75,7 +80,7 @@ export default function CrawlerExchange365Form(props) {
                                     checked={specific_json.crawlAllOfExchange}
                                     onChange={(event) => { setData({crawlAllOfExchange: event.target.checked}); }}
                                     title="Crawl all of Exchange"/>
-                                <label className="form-check-label small" for="enableOperator">Crawl all of Exchange</label>
+                                <label className="form-check-label small">Crawl all of Exchange</label>
                             </div>
                         </div>
                         <div className="col-8">
@@ -92,6 +97,15 @@ export default function CrawlerExchange365Form(props) {
                                     onChange={(event) => {setData({exchangeUsersToCrawl: event.target.value})}}
                                 />
                             </div>
+                        </div>
+                    </div>
+                    <div className="row border-top pt-4">
+                        <div className="form-group col-6">
+                            <label className="small">Re-crawl all of Exchange</label>
+                            <button className="btn bt-sm btn-primary ms-2"
+                                    disabled={!specific_json.deltaIndicator || specific_json.deltaIndicator.length === 0}
+                                    title=""
+                                    onClick={(e) => handleResetDelta(e)}>Reset delta</button>
                         </div>
                     </div>
                 </div>
