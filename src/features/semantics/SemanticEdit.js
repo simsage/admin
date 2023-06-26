@@ -64,6 +64,7 @@ export function SemanticEdit(){
                                                    autoFocus={true}
                                                    autoComplete="false"
                                                    placeholder="e.g. Wellington"
+                                                   onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
                                                 // value={word}
                                                    {...register("word", {required: true})}
                                                 // onChange={(event) => setWord(event.target.value)}
@@ -80,6 +81,7 @@ export function SemanticEdit(){
                                                    autoFocus={true}
                                                    autoComplete="false"
                                                    placeholder="e.g. City"
+                                                   onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
                                                 // value={semantic}
                                                    {...register("semantic", {required: true})}
                                                 // onChange={(event) => semantic(event.target.value)}
