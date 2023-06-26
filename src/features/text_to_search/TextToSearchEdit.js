@@ -85,6 +85,7 @@ export function TextToSearchEdit(props){
                                                    title="SimSage advanced query language expression (e.g. (word(test))  )"
                                                 value= {searchPart}
                                                 onChange={(e) => setSearchPart(e.target.value)}
+                                                onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
                                             />
                                         </form>
                                     </span>
@@ -98,6 +99,7 @@ export function TextToSearchEdit(props){
                                                 placeholder="e.g. and"
                                                 value= {searchType}
                                                 onChange={(e) => setSearchType(e.target.value)}
+                                                onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
                                             />
                                         </form>
                                     </span>
