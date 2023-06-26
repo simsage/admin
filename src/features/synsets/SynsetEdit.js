@@ -108,6 +108,7 @@ export default function SynsetEdit(){
                                                 placeholder="e.g. Law..."
                                                 value= {word}
                                                 onChange={(e) => setWord(e.target.value)}
+                                                onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
                                             />
                                         </form>
                                     </span>
