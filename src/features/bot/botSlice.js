@@ -205,6 +205,7 @@ const botSlice = createSlice({
             state.show_delete_form = false;
             state.edit = undefined;
             state.show_import_form = false;
+            state.show_add_info_form = false;
         },
         showBotImportForm:(state) => {
             state.show_bot_import_form = true;

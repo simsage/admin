@@ -1,5 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {closeForm} from "./botSlice";
+import React from "react";
 
 export default function BotSuccessMessage(){
 
@@ -27,7 +28,7 @@ export default function BotSuccessMessage(){
                         </div>
                         <div className="modal-body">
                             <div className="control-row">
-                                <div className="small text">Depending on the size of your knowledge base this might take some time.</div>
+                                <div className="small text">You can refresh the list using the<span className="px-1"><img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh memories" /></span> icon.</div>
                             </div>
                         </div>
                         <div className="modal-footer">
