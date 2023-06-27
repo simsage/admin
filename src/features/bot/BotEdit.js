@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState, useEffect} from "react";
-import {closeMemoryForm, updateMindItem} from "./botSlice";
+import {closeMemoryForm, showAddInfoForm, updateMindItem} from "./botSlice";
 import ErrorMessage from "../../common/ErrorMessage";
 
 export function BotEdit(){

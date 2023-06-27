@@ -13,6 +13,7 @@ import BotDeleteAsk from "./BotDeleteAsk";
 import Comms from "../../common/comms";
 import BotImportForm from "./BotImportForm";
 import api from "../../common/api";
+import BotSuccessMessage from "./BotSuccessMessage";
 
 export default function BotList() {
 
@@ -290,6 +291,7 @@ export default function BotList() {
             }
             <BotDeleteAsk/>
             <BotImportForm/>
+            <BotSuccessMessage/>
         </div>
     )
 }

@@ -14,6 +14,7 @@ const initialState = {
     show_delete_form: false,
     show_import_form: false,
     show_bot_import_form: false,
+    show_add_info_form: false,
 }
 
 export const loadMindItems = createAsyncThunk(
@@ -131,6 +132,7 @@ const extraReducers = (builder) => {
         .addCase(updateMindItem.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
+            state.show_add_info_form = true;
 
         })
         .addCase(updateMindItem.rejected, (state, action) => {
@@ -203,6 +205,7 @@ const botSlice = createSlice({
             state.show_delete_form = false;
             state.edit = undefined;
             state.show_import_form = false;
+            state.show_add_info_form = false;
         },
         showBotImportForm:(state) => {
             state.show_bot_import_form = true;
@@ -210,13 +213,16 @@ const botSlice = createSlice({
         closeBotImportForm:(state) => {
             state.show_bot_import_form = false;
         },
+        showAddInfoForm(state, action) {
+            state.show_add_info_form = action.payload
+        },
     },
     extraReducers
 })
 
 
 export const {
-    showEditMemoryForm, showAddMemoryForm, closeMemoryForm, showDeleteMemoryForm,
+    showAddInfoForm, showEditMemoryForm, showAddMemoryForm, closeMemoryForm, showDeleteMemoryForm,
     closeDeleteForm, closeForm, showBotImportForm, closeBotImportForm
 } = botSlice.actions
 export default botSlice.reducer
