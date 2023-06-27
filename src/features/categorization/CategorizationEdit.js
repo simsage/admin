@@ -93,7 +93,7 @@ export function CategorizationEdit(){
                                                     placeholder=""
                                                     value={categoryLabel}
                                                     onChange={(event) => setCategoryLabel(event.target.value)}
-                                                    onKeyDown={(e) => {handleKeyDown(e)}}
+                                                   onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
                                             />
                                         </form>
                                     </span>
@@ -108,7 +108,7 @@ export function CategorizationEdit(){
                                                     title="SimSage advanced query language expression (e.g. (word(test))  )"
                                                     value={rule}
                                                     onChange={(event) => setRule(event.target.value)}
-                                                    onKeyDown={(e) => {handleKeyDown(e)}}
+                                                   onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
                                             />
                                         </form>
                                     </span>
