@@ -5,6 +5,11 @@
     background-color: #f0f0f080;
 }
 
+.auth-inner {
+    width: 400px;
+}
+
+
 .sign-in-button {
     position: absolute;
     right: 20px;
@@ -24,5 +29,20 @@
     margin-left: 220px;
     cursor: pointer;
     color: #1c9bd2;
+}
+
+.auth-text-primary {
+    color: #1c9bd2;
+}
+
+.licence_link {
+    font-size: 13px;
+    width: 150px;
+    float: right;
+}
+
+.version {
+    font-size: 10px;
+    color: rgba(32, 39, 49, 0.3764705882);
 }
 

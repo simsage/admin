@@ -48,7 +48,9 @@ html, body, #root, .App, .dms {
 .auth-wrapper {
     min-width: 450px;
     min-height: 100%;
+    margin-top: 10%;
 }
+
 .auth-inner {
     width: 400px;
     text-align: left;

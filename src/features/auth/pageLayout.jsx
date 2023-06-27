@@ -51,8 +51,7 @@ export const PageLayout = (props) => {
 
     return (
         <>
-            {/*<nav className="h-100 d-flex flex-column justify-content-center bg-light">*/}
-            <nav className={""}>
+            <nav>
                 {isAuthenticated ? <></> : <SignInButton/>}
             </nav>
             {error_text && error_text.length > 1 &&
