@@ -443,7 +443,7 @@ export class KnowledgeBases extends Component {
                                             <div className="float-left">{this.props.selected_organisation_id ? this.props.selected_organisation_id : ""}</div>
                                             <span className="copy-image-span" title={'copy organisation id'}>
                                                 <img
-                                                    src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'}
+                                                    src={theme === 'light' ? 'images/clipboard-copy.svg' : 'images/clipboard-copy-dark.svg'}
                                                     className="clipboard-image" alt={'copy'}
                                                     onClick={() => {
                                                         if (Api.writeToClipboard(this.props.selected_organisation_id ? this.props.selected_organisation_id : ""))
@@ -463,7 +463,7 @@ export class KnowledgeBases extends Component {
                                             <div className="float-left">{this.state.kb ? this.state.kb.kbId : ""}</div>
                                             <span className="copy-image-span" title={'copy knowledge base id'}>
                                                 <img
-                                                    src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'}
+                                                    src={theme === 'light' ? 'images/clipboard-copy.svg' : 'images/clipboard-copy-dark.svg'}
                                                     className="clipboard-image" alt={'copy'}
                                                     onClick={() => {
                                                         if (Api.writeToClipboard(this.state.kb ? this.state.kb.kbId : ""))

@@ -286,7 +286,7 @@ export class Organisations extends React.Component {
                                             className="floatLeft">{this.state.organisation ? this.state.organisation.id : ""}</div>
                                         <span className="copyImageSpan" title={'copy organisation id'}>
                                             <img
-                                                src={theme === 'light' ? '../images/clipboard-copy.svg' : '../images/clipboard-copy-dark.svg'}
+                                                src={theme === 'light' ? 'images/clipboard-copy.svg' : 'images/clipboard-copy-dark.svg'}
                                                 className="clipboardImage" alt={'copy'}
                                                 onClick={() => {
                                                     if (Api.writeToClipboard(this.state.organisation ? this.state.organisation.id : ""))
