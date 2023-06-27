@@ -51,10 +51,10 @@ export default function LeftNavbar(){
                 {(kb_list !== {} && kb_list.length > 0) &&
                 <>
                     <li className="px-3 pt-3 pb-2 border-top">
-                        <select  className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
+                        <select id="kb-selector" className="form-select sb-select px-3 py-2" onChange={(e)=>handleSelectKB(e)}>
                             <option value="">Select Knowledge Base</option>
                             {kb_list.map((item,i) => {
-                                return <option key={i} value={item.kbId}>{item.name}</option>
+                                return <option key={i} value={item.kbId} >{item.name}</option>
                             })}
                         </select>
                     </li>

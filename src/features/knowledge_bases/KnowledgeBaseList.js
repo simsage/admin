@@ -81,6 +81,12 @@ export default function KnowledgeBaseList() {
         dispatch(search({keyword: val}))
     }
 
+    function handleSelectKb(kb) {
+        let kb_select = document.getElementById("kb-selector");
+        kb_select.value = kb.kbId
+        dispatch(setSelectedKB(kb.kbId))
+    }
+
     return (
         <div className="kb-page">
             {isVisible() &&
@@ -123,13 +129,13 @@ export default function KnowledgeBaseList() {
                                     return (
                                         <tr key={knowledge_base.kbId}>
                                             {/* <td className="pt-3 ps-4 pe-0 pb-3"></td> */}
-                                            <td className="pt-3 px-4 pb-3">
+                                            <td className="pt-3 px-4 pb-3 pointer-cursor">
                                                 <div className="kb-label fw-500"
-                                                     onClick={() => dispatch(setSelectedKB(knowledge_base.kbId))}>{knowledge_base.name}</div>
+                                                     onClick={() => handleSelectKb(knowledge_base) }>{knowledge_base.name}</div>
                                             </td>
-                                            <td className="pt-3 px-4 pb-3 fw-light">
+                                            <td className="pt-3 px-4 pb-3 fw-light pointer-cursor">
                                                 <div className="kb-label"
-                                                     onClick={() => dispatch(setSelectedKB(knowledge_base.kbId))}>{knowledge_base.email}</div>
+                                                     onClick={() => handleSelectKb(knowledge_base)}>{knowledge_base.email}</div>
                                             </td>
 
                                             <td className="pt-3 px-4 pb-0">
