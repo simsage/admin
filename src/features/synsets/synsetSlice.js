@@ -91,7 +91,7 @@ export const addDefaultSynsets = createAsyncThunk(
     "synsets/addDefaultSynsets",
     async ({organisation_id, kb_id, session_id, data}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/language/default-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        const url = api_base + '/language/default-syn-sets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -156,19 +156,10 @@ const extraReducers = (builder) => {
         })
         .addCase(addDefaultSynsets.fulfilled, (state, action) => {
 
-            console.log("addDefaultSynsets", action)
-            console.log("addDefaultSynsets", action.payload)
-            console.log("addDefaultSynsets", action.payload.code)
-            if (action && action.payload && action.payload.code === "ERR_BAD_RESPONSE") {
+            if (action && action.payload && (action.payload.code === "ERR_BAD_RESPONSE" || action.payload.code === "ERR_BAD_REQUEST")) {
                 state.error = action.payload.response.data.error;
                 state.status = "rejected"
                 state.show_error_form = true;
-                console.log("addDefaultSynsets", addDefaultSynsets)
-            } else if (action && action.payload && action.payload.code === "ERR_BAD_REQUEST") {
-                state.error = action.payload.response.data.error;
-                state.status = "rejected"
-                state.show_error_form = true;
-                console.log("addDefaultSynsets", addDefaultSynsets)
             } else {
                 state.status = "fulfilled"
                 state.data_status = 'load_now';
