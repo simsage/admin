@@ -12,15 +12,17 @@ const initialState = {
 
     //add edit data
     error: null,
+    show_error_form: false,
+
     show_data_form: false,
     edit: null,
     data_status: 'load_now',//load_now,loading,loaded
 
     //delete
-    show_delete_form:false,
+    show_delete_form: false,
 
     //add default
-    show_add_default_form:false,
+    show_add_default_form: false,
 
     //filter
     allow_no_results: false,
@@ -60,7 +62,9 @@ export const addOrUpdate = createAsyncThunk(
             .then((response) => {
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error
+                }
             )
     })
 
@@ -70,12 +74,14 @@ export const deleteRecord = createAsyncThunk(
     "synsets/deleteRecord",
     async ({organisation_id, kb_id, session_id, lemma}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/language/delete-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(lemma);
+        const url = api_base + '/language/delete-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(lemma);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error
+                }
             )
     })
 
@@ -90,7 +96,9 @@ export const addDefaultSynsets = createAsyncThunk(
             .then((response) => {
                 return response.data
             }).catch(
-                (error) => {return error}
+                (error) => {
+                    return error
+                }
             )
     })
 
@@ -103,8 +111,8 @@ const extraReducers = (builder) => {
         })
         .addCase(loadSynsets.fulfilled, (state, action) => {
             state.status = "fulfilled"
-            state.synset_list = action.payload.list?action.payload.list:[]
-            state.synset_total_size = action.payload.totalSize?action.payload.totalSize:0
+            state.synset_list = action.payload.list ? action.payload.list : []
+            state.synset_total_size = action.payload.totalSize ? action.payload.totalSize : 0
             state.data_status = 'loaded';
         })
         .addCase(loadSynsets.rejected, (state, action) => {
@@ -128,8 +136,14 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(addOrUpdate.fulfilled, (state, action) => {
-            state.status = "fulfilled"
-            state.data_status = 'load_now';
+            if (action && action.payload && action.payload.code === "ERR_BAD_RESPONSE") {
+                state.error = action.payload.response.data.error;
+                state.status = "rejected";
+                state.show_error_form = true;
+            } else {
+                state.status = "fulfilled";
+                state.data_status = 'load_now';
+            }
         })
         .addCase(addOrUpdate.rejected, (state, action) => {
             state.status = "rejected"
@@ -141,11 +155,28 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(addDefaultSynsets.fulfilled, (state, action) => {
-            state.status = "fulfilled"
-            state.data_status = 'load_now';
+
+            console.log("addDefaultSynsets", action)
+            console.log("addDefaultSynsets", action.payload)
+            console.log("addDefaultSynsets", action.payload.code)
+            if (action && action.payload && action.payload.code === "ERR_BAD_RESPONSE") {
+                state.error = action.payload.response.data.error;
+                state.status = "rejected"
+                state.show_error_form = true;
+                console.log("addDefaultSynsets", addDefaultSynsets)
+            } else if (action && action.payload && action.payload.code === "ERR_BAD_REQUEST") {
+                state.error = action.payload.response.data.error;
+                state.status = "rejected"
+                state.show_error_form = true;
+                console.log("addDefaultSynsets", addDefaultSynsets)
+            } else {
+                state.status = "fulfilled"
+                state.data_status = 'load_now';
+            }
         })
         .addCase(addDefaultSynsets.rejected, (state, action) => {
             state.status = "rejected"
+            state.data_status = 'loaded';
         })
 
 
@@ -154,48 +185,64 @@ const extraReducers = (builder) => {
 const synsetSlice = createSlice({
     name: "synsets",
     initialState,
-    reducers : {
-        showAddSynSetForm:(state) => {
+    reducers: {
+        showAddSynSetForm: (state) => {
             state.show_synset_form = true
         },
 
-        showEditSynSetForm:(state,action) => {
+        showEditSynSetForm: (state, action) => {
             state.show_synset_form = true
             state.edit = action.payload.selected_synset
         },
 
-        closeSynSetForm:(state) => {
+        closeSynSetForm: (state) => {
             state.show_synset_form = false;
             state.edit = null;
         },
 
-        showDeleteSynSetForm:(state, action) => {
+        showDeleteSynSetForm: (state, action) => {
             state.show_delete_form = true;
             state.edit = action.payload.selected_synset;
         },
 
-        closeDeleteForm:(state) => {
+        closeDeleteForm: (state) => {
             state.show_delete_form = false;
             state.edit = undefined;
         },
 
-        showAddDefaultAskForm:(state, action) => {
+        showAddDefaultAskForm: (state, action) => {
             state.show_add_default_form = true;
         },
 
-        closeDefaultAskForm:(state) => {
+        closeDefaultAskForm: (state) => {
             state.show_add_default_form = false;
         },
-        noResultsMessage:(state, action) => {
+        noResultsMessage: (state, action) => {
             state.allow_no_results = action.payload;
-        }
+        },
 
+        closeForm: (state) => {
+            state.show_synset_form = false;
+            state.show_delete_form = false;
+            state.show_add_default_form = false;
+            state.show_error_form = false;
+        }
 
     },
     extraReducers
 });
 
-export const {showAddSynSetForm, showEditSynSetForm, closeSynSetForm, showDeleteSynSetForm, closeDeleteForm, showAddDefaultAskForm, closeDefaultAskForm, noResultsMessage} = synsetSlice.actions;
+export const {
+    showAddSynSetForm,
+    showEditSynSetForm,
+    closeSynSetForm,
+    showDeleteSynSetForm,
+    closeDeleteForm,
+    showAddDefaultAskForm,
+    closeDefaultAskForm,
+    noResultsMessage,
+    closeForm
+} = synsetSlice.actions;
 export default synsetSlice.reducer;
 
 

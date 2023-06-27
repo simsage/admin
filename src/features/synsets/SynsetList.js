@@ -6,13 +6,15 @@ import {
     showDeleteSynSetForm,
     showAddSynSetForm,
     showAddDefaultAskForm,
-    noResultsMessage
+    noResultsMessage,
+    closeForm
 } from "./synsetSlice";
 import {showEditSynSetForm} from "./synsetSlice"
 import SynsetEdit from "./SynsetEdit";
 import SynsetDelete from "./SynsetDelete";
 import SynsetDefault from "./SynsetDefault";
 import api from "../../common/api";
+import ShowErrorForm from "../../components/ShowErrorForm";
 
 export default function SynsetList() {
 
@@ -32,6 +34,8 @@ export default function SynsetList() {
     let [synset_filter, setSynSetFilter] = useState('');
 
     const load_data = useSelector((state) => state.synsetReducer.data_status)
+    const show_error_form = useSelector((state) => state.synsetReducer.show_error_form)
+    const error_message = useSelector((state) => state.synsetReducer.error)
 
     let data = {
         session_id: session_id,
@@ -83,6 +87,13 @@ export default function SynsetList() {
     function getSynSets() {
         return synset_list ? synset_list : [];
     }
+
+    const handleClose = () => {
+        // alert("alert called")
+        dispatch(closeForm());
+    }
+
+
 
     return (
         <div className="section px-5 pt-4">
@@ -218,6 +229,13 @@ export default function SynsetList() {
 
             {/* add default   */}
             <SynsetDefault/>
+
+            {show_error_form &&
+                <>
+                console.log("show_error_form",show_error_form)
+                <ShowErrorForm show_error_form={show_error_form} error={error_message} closeForm={handleClose} />
+                </>
+            }
         </div>
     )
 }
