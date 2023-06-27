@@ -42,7 +42,7 @@
 }
 
 .version {
-    font-size: 10px;
+    font-size: 10px !important;
     color: rgba(32, 39, 49, 0.3764705882);
 }
 
