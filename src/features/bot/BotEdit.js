@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {closeMemoryForm, updateMindItem} from "./botSlice";
 import ErrorMessage from "../../common/ErrorMessage";
 
@@ -27,8 +27,11 @@ export function BotEdit(){
     const [mId, setMId] = useState('');
     const [soundList, setSoundList] = useState([]);
     const [videoList, setVideoList] = useState([]);
-    const [error, setError] = useState('');
+    // const [error, setError] = useState();
+    const [errorQ, setErrorQ] = useState();
+    const [errorA, setErrorA] = useState();
 
+    // console.log("error",error)
 
     // Grab memory details if editing
     let selectedMemory = {}
@@ -76,11 +79,19 @@ export function BotEdit(){
 
 
     const handleSave = () => {
-        if (!questions || questions.length === 0) {
-            setError("empty Question(s) not allowed");
+
+        let final_questions = (questions)?[...questions,newQuestion]:(newQuestion)?[newQuestion]:[];
+        let final_links = (links)?[...links,newLink]:[newLink];
+        console.log("final_questions",final_questions)
+        if (!final_questions || final_questions.length === 0) {
+            console.log("answer",answer)
+            // setError("empty Question(s) not allowed");
+            setErrorQ("empty Question(s) not allowed");
         } else if (!answer || answer.length === 0) {
-            setError("empty Answer not allowed");
+            // setError("empty Answer not allowed");
+            setErrorA("empty Answer not allowed");
         } else {
+            console.log("updating",final_questions)
             //begin updating user
             const session_id = session.id;
             const data = {
@@ -90,14 +101,16 @@ export function BotEdit(){
                 information: answer ? answer : '',
                 mid: mId ? mId : knowledge_base_id,
                 organisationId: organisation_id,
-                questionList : questions ? questions : [],
+                questionList : final_questions ? final_questions : [],
                 soundList: soundList ? soundList : [],
-                urlList: links ? links : [],
+                urlList: final_links ? final_links : [],
                 videoList:videoList
             }
             dispatch(updateMindItem({session_id,organisation_id, knowledge_base_id, data}));
             dispatch(closeMemoryForm());
         }
+
+
     }
 
     const updateLink = index => e => {
@@ -172,9 +185,9 @@ export function BotEdit(){
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
 
-            { error &&
-                <ErrorMessage error_title="Error" error_text={error} handleClose={() => setError('')} />
-            }
+            {/*{ error &&*/}
+            {/*    <ErrorMessage error_title="Error" error_text={error} handleClose={() => setError('')} />*/}
+            {/*}*/}
 
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
@@ -220,12 +233,13 @@ export function BotEdit(){
                                                     autoComplete="false"
                                                     placeholder="Question..."
                                                     value={newQuestion}
-                                                    onChange={(e) => {setNewQuestion(e.target.value)}}
+                                                    onChange={(e) => {setNewQuestion(e.target.value); setErrorQ()}}
                                                     onKeyDown={(e) => addNewQuestion(e)}
                                                 />
                                             </form>
                                             <button className="btn-secondary btn pointer-cursor px-3" onClick={(e) => addNewQuestionBtn(e, newQuestion)}>+</button>
                                         </span>
+                                    {errorQ && <span className="text-danger fst-italic small">{errorQ} </span>}
                                 </div>
                                 <div className="control-row col-12 mb-4">
                                     <label className="label-2 small">Answer</label>
@@ -235,10 +249,11 @@ export function BotEdit(){
                                                         autoComplete="false"
                                                         placeholder="Answer..."
                                                         value={answer}
-                                                        onChange={(e) => setAnswer(e.target.value)}
+                                                        onChange={(e) => {setAnswer(e.target.value); setErrorA();} }
                                                     />
                                                 </form>
                                             </span>
+                                    {errorA && <span className="text-danger fst-italic small">{errorA} </span>}
                                 </div>
                                 <div className="d-flex justify-content-between small">
                                     <label className="label-2">Link</label>
