@@ -44,6 +44,40 @@ html, body, #root, .App, .dms {
 
 
 
+/* Auth */
+.auth-wrapper {
+    min-width: 450px;
+    min-height: 100%;
+}
+.auth-inner {
+    width: 400px;
+    text-align: left;
+    background: #ffffff;
+    box-shadow: 0 14px 20px rgba(34, 35, 58, 0.2);
+    padding: 35px 50px 40px 50px;
+    border-radius: 20px;
+    transition: all .3s;
+    margin-bottom: 2rem;
+}
+.auth-logo {
+    width: 100px;
+}
+.spacer-height {
+    height: 16px;
+}
+.auth-wrapper .form-control:focus {
+    border-color: #167bff;
+    box-shadow: none;
+}
+.auth-wrapper h6 {
+    margin: 0;
+    /* padding-bottom: 20px; */
+}
+
+
+
+
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
