@@ -217,12 +217,13 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(processFiles.rejected, (state) => {
+        .addCase(processFiles.rejected, (state, response) => {
+            console.log("STATE", response);
             state.busy = false;
             state.status = "rejected"
-            state.show_error_form = false
-            state.error_title = ""
-            state.error_message = ""
+            state.show_error_form = true
+            state.error_title = "cannot Process files"
+            state.error_message = "please disable this crawler's schedule first."
         })
 
         //startSource
@@ -421,11 +422,7 @@ export const processFiles = createAsyncThunk(
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            })
     });
 
 
