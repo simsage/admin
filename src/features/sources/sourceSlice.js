@@ -217,13 +217,12 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(processFiles.rejected, (state, response) => {
-            console.log("STATE", response);
+        .addCase(processFiles.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
             state.show_error_form = true
-            state.error_title = "cannot Process files"
-            state.error_message = "please disable this crawler's schedule first."
+            state.error_title = "Cannot Process Files"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //startSource
@@ -416,12 +415,15 @@ export const zipSource = createAsyncThunk(
 //crawler/process-all-files
 export const processFiles = createAsyncThunk(
     'sources/processFiles',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/process-all-files';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
+            })
+            .catch((err) => {
+                return rejectWithValue(err?.response?.data)
             })
     });
 
