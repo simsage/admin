@@ -1,12 +1,17 @@
 import React from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {closeTestMessage} from "./sourceSlice";
+import {showTestForm} from "../text_to_search/TextToSearchSlice";
 
 const SourceTest = () => {
     const dispatch = useDispatch();
 
-    const title = 'Connection Successful!';
-    const message = 'SimSage can successfully see your endpoint / tenant with the information you have provided.';
+    const test_result = useSelector((state) => state.sourceReducer.test_result)
+    const error_title  = useSelector((state) => state.sourceReducer.error_title)
+    const error_message = useSelector((state) => state.sourceReducer.error_message)
+
+    const title = test_result === 'Success' ? 'Connection Successful!' : error_title;
+    const message = test_result === 'Success' ? 'SimSage can successfully see your endpoint / tenant with the information you have provided.' : error_message;
 
     const close = () => {
         dispatch(closeTestMessage())

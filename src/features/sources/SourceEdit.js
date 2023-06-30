@@ -35,9 +35,9 @@ export default function SourceEdit() {
                 <SourceTest/>
             }
 
-            {error &&
-                <ErrorMessage error={error} close={handleClose}/>
-            }
+            {/*{error &&*/}
+            {/*    <ErrorMessage error={error} close={handleClose}/>*/}
+            {/*}*/}
 
             {/*<AlertDialogHome />*/}
         </>
