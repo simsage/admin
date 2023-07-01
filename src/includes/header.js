@@ -46,13 +46,7 @@ const Header = (props) => {
 
         </div>
 
-    <AccountDropdown
-        // onSignOut={(e) => signOut(instance, setIsAccountDropdown, dispatch, e)}
-        // onSignIn={(e) => signIn(accounts, ar.session, instance, setIsAccountDropdown, dispatch, e)}
-        // isAuthenticated={isAuthenticated}
-        // session={ar.session}
-        // accounts_dropdown={accounts_dropdown}
-    />
+        <AccountDropdown />
     </>
     );
 }

@@ -1,14 +1,30 @@
 import React, {useEffect} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {UserManagementHome} from "../features/users/UserManagementHome";
 import MindHome from "../features/the_mind/MindHome";
 import DocumentManagementHome from "../features/document_management/DocumentManagementHome";
 import Home from "../features/home/Home";
 import OrganisationEdit from "../features/organisations/OraganisationEdit";
+import ErrorMessage from "../common/ErrorMessage";
+import {closeEditForm} from "../features/text_to_search/TextToSearchSlice";
+import {closeError, simsageLogOut} from "../features/auth/authSlice";
 
 function MainSection(){
+
+    const dispatch = useDispatch();
+
     const {selected_tab} = useSelector((state)=>state.homeReducer)
     const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form);
+    const {session, is_error, error_text, error_title} = useSelector((state) => state.authReducer);
+    const error_obj = {code: error_title, message: error_text};
+
+    function authErrorClose(error_obj) {
+        if (error_obj && error_obj.message.indexOf('cannot sign-in') >= 0) {
+            window.location = "/";
+        } else {
+            dispatch(closeError());
+        }
+    }
 
     return(
         <div>
@@ -30,6 +46,10 @@ function MainSection(){
 
             {show_organisation_form &&
                 <OrganisationEdit />
+            }
+
+            { is_error &&
+                <ErrorMessage error={error_obj} close={() => authErrorClose(error_obj)} />
             }
 
         </div>
