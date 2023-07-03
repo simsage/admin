@@ -10,7 +10,6 @@ import {
     closeForm
 } from "./synsetSlice";
 import {showEditSynSetForm} from "./synsetSlice"
-import SynsetEdit from "./SynsetEdit";
 import SynsetDelete from "./SynsetDelete";
 import SynsetDefault from "./SynsetDefault";
 import api from "../../common/api";
@@ -227,9 +226,6 @@ export default function SynsetList() {
 
 
             {/*Edit form*/}
-
-            {/**/}
-
 
             {show_synset_form &&
             <SynsetForm />
