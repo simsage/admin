@@ -129,7 +129,8 @@ export default function SynsetEdit(){
                                         <div className="control-row col-12 mb-2" key={i}>
                                             <span className="text">
                                                     <div className="form-control d-flex p-0 overflow-hidden align-items-start">
-                                                        <textarea type="text" className="border-0 w-100 mb-0 me-2 d-block" style={{padding: "0.375rem 0.75rem"}}
+                                                        <textarea
+                                                            type="text" className="border-0 w-100 mb-0 me-2 d-block" style={{padding: "0.375rem 0.75rem"}}
                                                                 autoComplete="false"
                                                                 rows="3"
                                                                 placeholder="e.g. Family, Divorce, Custody..."

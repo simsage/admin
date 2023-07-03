@@ -38,6 +38,9 @@ export default function SynsetList() {
     const show_error_form = useSelector((state) => state.synsetReducer.show_error_form)
     const error_message = useSelector((state) => state.synsetReducer.error)
 
+    const show_synset_form = useSelector((state) => state.synsetReducer.show_synset_form)
+
+
     let data = {
         session_id: session_id,
         organisation_id: selected_organisation_id,
@@ -222,9 +225,15 @@ export default function SynsetList() {
             </div>
 
 
+
             {/*Edit form*/}
-            {/*<SynsetEdit/>*/}
+
+            {/**/}
+
+
+            {show_synset_form &&
             <SynsetForm />
+            }
 
             {/* delete   */}
             <SynsetDelete/>
