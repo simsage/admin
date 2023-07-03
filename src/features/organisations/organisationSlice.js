@@ -56,6 +56,7 @@ const reducers = {
         state.show_organisation_form = false;
         state.edit_organisation_id = null;
         state.show_organisation_id = false;
+        state.error = null;
     },
 
     // clearDownloadedBackup: (state) => {
