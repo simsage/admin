@@ -10,7 +10,7 @@ export default function CrawlerWebForm(props) {
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
 
-    const [webCssIgnore, setWebCssIgnore] = useState(specific_json.webCssIgnore?specific_json.webCssIgnore:'header, footer');
+    const [webCssIgnore, setWebCssIgnore] = useState(specific_json.webCssIgnore?specific_json.webCssIgnore:selected_source?'':'header, footer');
 
     function handleWebCssIgnore(data){
         setWebCssIgnore(data);
