@@ -181,9 +181,9 @@ const extraReducers = (builder) => {
 
         .addCase(updateSources.fulfilled, (state, action) => {
             state.busy = false;
-            state.show_import_form = false
-            state.show_data_form = false;
-            state.selected_source = null;
+            // state.show_import_form = false
+            // state.show_data_form = false;
+            // state.selected_source = null;
             state.data_status = 'load_now';
 
             // if (action.payload.code === "ERR_BAD_RESPONSE") {
