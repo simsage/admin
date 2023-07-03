@@ -148,10 +148,13 @@ const extraReducers = (builder) => {
             state.source_original_ist = action.payload
             state.data_status = 'loaded';
         })
-        .addCase(getSources.rejected, (state) => {
+        .addCase(getSources.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Could not get sources"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 
@@ -166,33 +169,44 @@ const extraReducers = (builder) => {
             state.selected_source = action.payload
             state.data_status = 'loaded';
         })
-        .addCase(getSource.rejected, (state) => {
+        .addCase(getSource.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Could not get source"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 
         .addCase(updateSources.fulfilled, (state, action) => {
             state.busy = false;
-            if (action.payload.code === "ERR_BAD_RESPONSE") {
-                // if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
-                state.show_error_form = true
-                state.error_title = "Error"
-                state.error_message = action.payload.response.data.error
+            state.show_import_form = false
+            state.show_data_form = false;
+            state.selected_source = null;
+            state.data_status = 'load_now';
 
-            } else {
-                state.show_import_form = false
-                state.show_data_form = false;
-                state.selected_source = null;
-                state.data_status = 'load_now';
-            }
+            // if (action.payload.code === "ERR_BAD_RESPONSE") {
+            //     // if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
+            //     state.show_error_form = true
+            //     state.error_title = "Error"
+            //     state.error_message = action.payload.response.data.error
+            //
+            // } else {
+            //     state.show_import_form = false
+            //     state.show_data_form = false;
+            //     state.selected_source = null;
+            //     state.data_status = 'load_now';
+            // }
         })
 
         .addCase(updateSources.rejected, (state, action) => {
             state.busy = false;
             state.data_status = 'load_now';
-            state.error = action.payload
+            state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Source Update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 
@@ -206,9 +220,12 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(deleteSource.rejected, (state) => {
+        .addCase(deleteSource.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Source Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //processFiles
@@ -217,33 +234,35 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(processFiles.rejected, (state, response) => {
-            console.log("STATE", response);
+        .addCase(processFiles.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
             state.show_error_form = true
-            state.error_title = "cannot Process files"
-            state.error_message = "please disable this crawler's schedule first."
+            state.error_title = "Cannot Process Files"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //startSource
         .addCase(startSource.fulfilled, (state, action) => {
             state.busy = false;
-            if (action.payload.code === "ERR_BAD_RESPONSE") {
-                state.show_error_form = true
-                state.error_title = "Error"
-                state.error_message = action.payload.response.data.error
-            } else {
-                state.status = "fulfilled"
-                state.data_status = 'load_now';
-            }
+            state.status = "fulfilled"
+            state.data_status = 'load_now';
+            // if (action.payload.code === "ERR_BAD_RESPONSE") {
+            //     state.show_error_form = true
+            //     state.error_title = "Error"
+            //     state.error_message = action.payload.response.data.error
+            // } else {
+            //     state.status = "fulfilled"
+            //     state.data_status = 'load_now';
+            // }
         })
         .addCase(startSource.rejected, (state, action) => {
+            console.log('action rejected', action)
             state.busy = false;
             state.status = "rejected"
             state.show_error_form = true
-            state.error_title = action.payload
-            state.error_message = action.payload.data
+            state.error_title = 'Error'
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 
@@ -258,10 +277,13 @@ const extraReducers = (builder) => {
             state.has_jcifs = (action.payload.information === "true" || action.payload.information === "True");
             state.data_status = 'loaded';
         })
-        .addCase(checkJcifsLibrary.rejected, (state) => {
+        .addCase(checkJcifsLibrary.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Error"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 
@@ -276,10 +298,13 @@ const extraReducers = (builder) => {
             state.has_jcifs = true;
             state.data_status = 'loaded';
         })
-        .addCase(installJcifsLibrary.rejected, (state) => {
+        .addCase(installJcifsLibrary.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Error"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //testSource
@@ -291,16 +316,19 @@ const extraReducers = (builder) => {
         .addCase(testSource.fulfilled, (state, action) => {
             state.busy = false;
             state.data_status = 'loaded';
-            state.test_result = action.payload?.information === 'OK' ? 'Success' : 'Failed'
+            state.test_result = 'Success'
         })
         .addCase(testSource.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
             state.data_status = "rejected"
-            state.error = {
-                code: 'Test Failed',
-                message: 'Please double check your configuration'
-            }
+            // state.error = {
+            //     code: 'Test Failed',
+            //     message: 'Please double check your configuration'
+            // }
+            state.test_result = 'Failed'
+            state.error_title = "Connection Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 }
@@ -308,34 +336,30 @@ const extraReducers = (builder) => {
 
 export const getSources = createAsyncThunk(
     'sources/getSources',
-    async ({session_id, organisation_id, kb_id}) => {
+    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
 
 export const getSource = createAsyncThunk(
     'sources/getSource',
-    async ({session_id, organisation_id, kb_id, source_id}) => {
+    async ({session_id, organisation_id, kb_id, source_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+            return rejectWithValue(err?.response?.data)
+        })
     }
 );
 
@@ -344,18 +368,15 @@ export const getSource = createAsyncThunk(
 // POST
 export const updateSources = createAsyncThunk(
     'sources/updateSources',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler';
-        console.log("DATA", data);
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
 
     });
 
@@ -363,34 +384,30 @@ export const updateSources = createAsyncThunk(
 // https://adminux.simsage.ai/api/crawler/start/
 export const startSource = createAsyncThunk(
     'sources/startSource',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/start';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
 
     });
 
 
 export const deleteSource = createAsyncThunk(
     'sources/deleteSource',
-    async ({session_id, organisation_id, kb_id, source_id}) => {
+    async ({session_id, organisation_id, kb_id, source_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
@@ -399,73 +416,72 @@ export const deleteSource = createAsyncThunk(
 // POST
 export const zipSource = createAsyncThunk(
     'sources/zipSource',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/zip/source';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     });
 
 
 //crawler/process-all-files
 export const processFiles = createAsyncThunk(
     'sources/processFiles',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/process-all-files';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             })
+            .catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     });
 
 
 export const checkJcifsLibrary = createAsyncThunk(
     'sources/checkJcifsLibrary',
-    async ({session_id, organisation_id, callback}) => {
+    async ({session_id, organisation_id, callback}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/has-jcifs/' + encodeURIComponent(organisation_id);
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     });
 
 
 export const installJcifsLibrary = createAsyncThunk(
     'sources/installJcifsLibrary',
-    async ({session_id, organisation_id, callback}) => {
+    async ({session_id, organisation_id, callback}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/install-jcifs/' + encodeURIComponent(organisation_id);
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     });
 
 export const testSource = createAsyncThunk(
     'sources/test',
-    async ({session_id, organisation_id, knowledgeBase_id, source_id}) => {
+    async ({session_id, organisation_id, knowledgeBase_id, source_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + `/crawler/crawler/test/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}/${encodeURIComponent(source_id)}`;
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log( 'testing test response', response.data)
                 return response.data
+            }) .catch((err) => {
+                return rejectWithValue(err?.response?.data)
             })
     });
 
