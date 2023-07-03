@@ -10,12 +10,12 @@ const initialState = {
     status: false,
     show_synset_form: false,
 
-    //add edit data
+    //add selected_synset data
     error: null,
     show_error_form: false,
 
     show_data_form: false,
-    edit: null,
+    selected_synset: null,
     data_status: 'load_now',//load_now,loading,loaded
 
     //delete
@@ -183,22 +183,22 @@ const synsetSlice = createSlice({
 
         showEditSynSetForm: (state, action) => {
             state.show_synset_form = true
-            state.edit = action.payload.selected_synset
+            state.selected_synset = action.payload.selected_synset
         },
 
         closeSynSetForm: (state) => {
             state.show_synset_form = false;
-            state.edit = null;
+            state.selected_synset = null;
         },
 
         showDeleteSynSetForm: (state, action) => {
             state.show_delete_form = true;
-            state.edit = action.payload.selected_synset;
+            state.selected_synset = action.payload.selected_synset;
         },
 
         closeDeleteForm: (state) => {
             state.show_delete_form = false;
-            state.edit = undefined;
+            state.selected_synset = undefined;
         },
 
         showAddDefaultAskForm: (state, action) => {
@@ -217,6 +217,7 @@ const synsetSlice = createSlice({
             state.show_delete_form = false;
             state.show_add_default_form = false;
             state.show_error_form = false;
+            state.selected_synset = undefined;
         }
 
     },

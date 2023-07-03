@@ -8,9 +8,7 @@ export default function SynsetForm() {
     const dispatch = useDispatch();
     const theme = null;
 
-    const handleClose = () => {
-        dispatch(closeForm());
-    }
+
 
     const selected_synset = useSelector((state) => state.synsetReducer.selected_synset)
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
@@ -20,7 +18,7 @@ export default function SynsetForm() {
 
     // set title
     const title = (selected_synset) ? "Edit syn-set " + selected_synset.word : "Add new syn-set";
-    const synset_show_form = useSelector((state) => state.synsetReducer.show_data_form)
+    const show_synset_form = useSelector((state) => state.synsetReducer.show_synset_form)
 
     //Form Hook
     const {register, handleSubmit, watch, formState: {errors, dirtyFields}, reset, control} = useForm();
@@ -28,6 +26,7 @@ export default function SynsetForm() {
     const [wordCloudFields, setWordCloudFields]=useState(selected_synset?selected_synset.wordCloudCsvList:[])
 
 
+    console.log("edit", selected_synset)
     //set default value
     useEffect(() => {
         let defaultValues = {};
@@ -37,7 +36,7 @@ export default function SynsetForm() {
         defaultValues.wordCloudCsvList = selected_synset?selected_synset.wordCloudCsvList:setWordCloudFields(["",""]);
         reset({...defaultValues});
 
-    }, [selected_synset, synset_show_form]);
+    }, [selected_synset, show_synset_form]);
 
 
 
@@ -74,14 +73,19 @@ export default function SynsetForm() {
 
     //on submit store or update
     const onSubmit = data => {
-        data.lemma = data.word;
-        dispatch(addOrUpdate({organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id,session_id:session_id,data:data}))
+
+
+        // data.lemma = data.word;
+        // dispatch(addOrUpdate({organisation_id:selected_organisation_id,kb_id:selected_knowledge_base_id,session_id:session_id,data:data}))
         handleClose()
     };
 
+    const handleClose = () => {
+        dispatch(closeForm());
+        setWordCloudFields(['','']);
+    }
 
-
-    if (!synset_show_form)
+    if (!show_synset_form)
         return (<div/>);
     return (
 

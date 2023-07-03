@@ -10,7 +10,7 @@ export default function SynsetDelete(){
     const show_delete_form = useSelector((state) => state.synsetReducer.show_delete_form)
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
-    const selected_synset = useSelector((state) => state.synsetReducer.edit)
+    const selected_synset = useSelector((state) => state.synsetReducer.selected_synset)
 
     const lemma = selected_synset?selected_synset.lemma:"not set";
 

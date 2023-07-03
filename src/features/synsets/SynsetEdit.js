@@ -14,7 +14,7 @@ export default function SynsetEdit(){
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const show_synset_form = useSelector( (state) => state.synsetReducer.show_synset_form)
-    const synset = useSelector((state) => state.synsetReducer.edit)
+    const synset = useSelector((state) => state.synsetReducer.selected_synset)
 
 
     //Synonym details
@@ -49,8 +49,7 @@ export default function SynsetEdit(){
         const data = {
             lemma: word,
             word: word,
-            wordCloudCsvList:
-            wordCloud
+            wordCloudCsvList: wordCloud
         }
         dispatch(addOrUpdate({organisation_id: organisation_id, kb_id: knowledge_base_id, session_id: session_id, data}));
         dispatch(closeSynSetForm());
@@ -114,6 +113,9 @@ export default function SynsetEdit(){
                                     </span>
                                 </div>
                             </div>
+
+
+
                             <div className="row mb-3">
                                 <div className="d-flex justify-content-between small">
                                     <label className="label-2">Word Cloud <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span></label>

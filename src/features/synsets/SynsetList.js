@@ -15,6 +15,7 @@ import SynsetDelete from "./SynsetDelete";
 import SynsetDefault from "./SynsetDefault";
 import api from "../../common/api";
 import ShowErrorForm from "../../components/ShowErrorForm";
+import SynsetForm from "./SynsetForm";
 
 export default function SynsetList() {
 
@@ -222,7 +223,8 @@ export default function SynsetList() {
 
 
             {/*Edit form*/}
-            <SynsetEdit/>
+            {/*<SynsetEdit/>*/}
+            <SynsetForm />
 
             {/* delete   */}
             <SynsetDelete/>
