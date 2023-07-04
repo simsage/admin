@@ -66,60 +66,65 @@ export function TextToSearchEdit(props){
                     <div className="modal-header px-5 pt-4 bg-light"><h4 className="mb-0">{edit ? "Edit Text to Search" : "New Text to Search"}</h4></div>
                     <div className="modal-body p-0">
                         <div className="tab-content px-5 py-4 overflow-auto">
-                            <div className="col-2 offset-10">
-                                <a href="resources/super-search-syntax.pdf" id="dlsuperquery" target="_blank"
-                                   title="Download the SimSage advanced query syntax guide"
-                                   className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
-                                    <BsFilePdf size={25}/>
-                                    <span className="me-2 mt-2"></span>Advanced Query<br/>Syntax Guide
-                                </a>
-                            </div>
-                            <div className="row mb-3">
-                                <div className="control-row col-8">
-                                    <span className="label-2 small">SimSage advanced query language part</span>
-                                    <span className="text">
-                                        <form>
-                                            <input type="text" className="form-control"
-                                                autoComplete="false"
-                                                   placeholder="SimSage advanced query language expression (e.g. (word(test))  )"
-                                                   title="SimSage advanced query language expression (e.g. (word(test))  )"
-                                                value= {searchPart}
-                                                onChange={(e) => setSearchPart(e.target.value)}
-                                                onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
-                                            />
-                                        </form>
-                                    </span>
-                                </div>
-                                <div className="control-row col-4">
-                                    <span className="label-2 small">Type</span>
-                                    <span className="text">
-                                        <form>
-                                            <input type="text" className="form-control"
-                                                autoComplete="false"
-                                                placeholder="e.g. and"
-                                                value= {searchType}
-                                                onChange={(e) => setSearchType(e.target.value)}
-                                                onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
-                                            />
-                                        </form>
-                                    </span>
-                                </div>
-                            </div>
+                            <div className="row">
+                                <div className="col-10">
+                                    <div className="row mb-3">
+                                        <div className="control-row col-8">
+                                            <span className="label-2 small">SimSage advanced query language part</span>
+                                            <span className="text">
+                                                <form>
+                                                    <input type="text" className="form-control"
+                                                        autoComplete="false"
+                                                        placeholder="e.g. (word(test))"
+                                                        title="SimSage advanced query language expression (e.g. (word(test))  )"
+                                                        value= {searchPart}
+                                                        onChange={(e) => setSearchPart(e.target.value)}
+                                                        onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
+                                                    />
+                                                </form>
+                                            </span>
+                                        </div>
+                                        <div className="control-row col-4">
+                                            <span className="label-2 small">Type</span>
+                                            <span className="text">
+                                                <form>
+                                                    <input type="text" className="form-control"
+                                                        autoComplete="false"
+                                                        placeholder="e.g. and"
+                                                        value= {searchType}
+                                                        onChange={(e) => setSearchType(e.target.value)}
+                                                        onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
+                                                    />
+                                                </form>
+                                            </span>
+                                        </div>
+                                    </div>
 
-                            <div className="row mb-3">
-                                <div className="control-row col-12">
-                                    <span className="label-2 small">Match Words <span className="small text-black-50 fst-italic fw-light">(Separate by comma) (csv) </span></span>
-                                    <span className="text">
-                                        <form>
-                                            <textarea type="text" className="form-control"
-                                                    autoComplete="false"
-                                                    placeholder="e.g. web documents, html file, web file, etc..."
-                                                    value={matchWords}
-                                                    rows={10}
-                                                    onChange={(event) => setMatchWords(event.target.value)}
-                                            />
-                                        </form>
-                                    </span>
+                                    <div className="row mb-3">
+                                        <div className="control-row col-12">
+                                            <span className="label-2 small">Match Words <span className="small text-black-50 fst-italic fw-light">(Separate by comma) (csv) </span></span>
+                                            <span className="text">
+                                                <form>
+                                                    <textarea type="text" className="form-control"
+                                                            autoComplete="false"
+                                                            placeholder="e.g. web documents, html file, web file, etc..."
+                                                            value={matchWords}
+                                                            rows={10}
+                                                            onChange={(event) => setMatchWords(event.target.value)}
+                                                    />
+                                                </form>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-2">
+                                    <a href="resources/super-search-syntax.pdf" id="dlsuperquery" target="_blank"
+                                    title="Download the SimSage advanced query syntax guide"
+                                    className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                                        <BsFilePdf size={25}/>
+                                        <span className="me-2 mt-2"></span>Advanced Query<br/>Syntax Guide
+                                    </a>
+
                                 </div>
                             </div>
                         </div>
