@@ -4,6 +4,8 @@ import {loadSynonyms} from "./synonymSlice";
 import SynonymIntro from "./SynonymIntro";
 import SynonymList from "./SynonymList";
 
+import {SynonymErrorDialog} from "./SynonymErrorDialog";
+
 export default function SynonymsHome(props) {
 
     const dispatch = useDispatch()
@@ -44,6 +46,7 @@ export default function SynonymsHome(props) {
                 <SynonymList />
 
             }
+            <SynonymErrorDialog/>
         </div>
     )
 }

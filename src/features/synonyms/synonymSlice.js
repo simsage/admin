@@ -17,7 +17,7 @@ const initialState = {
 //organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size
 export const loadSynonyms = createAsyncThunk(
     "synonyms/getSynonym",
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/language/synonyms`;
@@ -25,16 +25,14 @@ export const loadSynonyms = createAsyncThunk(
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     })
 
 export const updateSynonyms = createAsyncThunk(
     "synonyms/updateSynonym",
-    async ({session_id, organisation_id, knowledge_base_id, data}) => {
+    async ({session_id, organisation_id, knowledge_base_id, data}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/language/save-synonym/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}`;
@@ -42,17 +40,15 @@ export const updateSynonyms = createAsyncThunk(
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 export const deleteSynonym = createAsyncThunk(
             "synonyms/deleteSynonym",
-                async ({session_id, organisation_id, knowledge_base_id , id}) => {
+                async ({session_id, organisation_id, knowledge_base_id , id}, {rejectWithValue}) => {
 
                 const api_base = window.ENV.api_base;
                 const url = api_base + `/language/delete-synonym/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(id)}`
@@ -60,9 +56,9 @@ export const deleteSynonym = createAsyncThunk(
                 return axios.delete(url,Comms.getHeaders(session_id))
                     .then((response) => {
                         return response.data
-                    }).catch(
-                        (error) => {return error}
-                    )
+                    }).catch((err) => {
+                        return rejectWithValue(err?.response?.data)
+                    })
                 }
 )
 
@@ -82,6 +78,9 @@ const extraReducers = (builder) => {
         .addCase(loadSynonyms.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Synonym Load Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
     // update synonym
@@ -97,6 +96,9 @@ const extraReducers = (builder) => {
         .addCase(updateSynonyms.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Synonym Update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
         //delete Synonym
         .addCase(deleteSynonym.pending, (state, action) => {
@@ -109,6 +111,9 @@ const extraReducers = (builder) => {
         })
         .addCase(deleteSynonym.rejected, (state, action) => {
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Synonym Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 }
 
@@ -135,6 +140,11 @@ const synonymSlice = createSlice({
             state.show_delete_form = false;
             state.edit = undefined;
         },
+        closeErrorMessage: (state, action) => {
+            state.show_error_form = false;
+            state.error_message = undefined;
+            state.error_title = undefined;
+        },
         // filterSearch:(state,action) => {
         //     state.data_status = 'load_now';
         //     state.filter = action.payload;
@@ -147,5 +157,5 @@ const synonymSlice = createSlice({
 
 
 
-export const {showAddSynonymForm, closeSynonymForm, showEditSynonymForm, showDeleteSynonymForm, closeDeleteForm } = synonymSlice.actions;
+export const {closeErrorMessage,showAddSynonymForm, closeSynonymForm, showEditSynonymForm, showDeleteSynonymForm, closeDeleteForm } = synonymSlice.actions;
 export default synonymSlice.reducer;
