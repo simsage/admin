@@ -18,22 +18,20 @@ const initialState = {
 };
 
 export const loadTextToSearch = createAsyncThunk( "TextToSearch/load",
-    async ({ session_id, data}) => {
+    async ({ session_id, data}, {rejectWithValue}) => {
     const api_base = window.ENV.api_base;
     const url = api_base + '/semantic/text-to-search';
 
     return axios.put( url, data, Comms.getHeaders(session_id))
         .then((response) => {
           return response.data
-        }).catch(
-            (error) => {
-              return error
-            }
-        )
+        }).catch((err) => {
+            return rejectWithValue(err?.response?.data)
+        })
 })
 
 export const addOrUpdateTextToSearch = createAsyncThunk( "TextToSearch/update",
-    async({session_id, organisation_id, kb_id, data}) => {
+    async({session_id, organisation_id, kb_id, data}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}`
@@ -41,15 +39,13 @@ export const addOrUpdateTextToSearch = createAsyncThunk( "TextToSearch/update",
         return axios.put( url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     })
 
 export const deleteTextToSearch = createAsyncThunk( "TextToSearch/delete",
-    async({session_id, organisation_id, kb_id, word}) => {
+    async({session_id, organisation_id, kb_id, word}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}/${encodeURIComponent(word)}`
@@ -57,15 +53,13 @@ export const deleteTextToSearch = createAsyncThunk( "TextToSearch/delete",
         return axios.delete( url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     })
 
 export const testTextToSearch = createAsyncThunk( "TextToSearch/Test",
-        async({session_id, data}) => {
+        async({session_id, data}, {rejectWithValue}) => {
 
             const api_base= window.ENV.api_base;
             const url = api_base + `/semantic/text-to-search-try`
@@ -73,8 +67,8 @@ export const testTextToSearch = createAsyncThunk( "TextToSearch/Test",
             return axios.put(url, data, Comms.getHeaders(session_id))
                 .then((response) => {
                     return response.data
-                }).catch((error) => {
-                    return error
+                }).catch((err) => {
+                    return rejectWithValue(err?.response?.data)
                 })
         })
 
@@ -93,6 +87,9 @@ const extraReducers = (builder) => {
       })
       .addCase(loadTextToSearch.rejected, (state, action) => {
         state.status = "rejected"
+          state.show_error_form = true
+          state.error_title = "Could Not Load Language Parts"
+          state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
       })
 
     //update data
@@ -105,6 +102,9 @@ const extraReducers = (builder) => {
           state.data_status = "load_now";})
       .addCase(addOrUpdateTextToSearch.rejected, (state, action) => {
           state.status = "rejected"
+          state.show_error_form = true
+          state.error_title = "ERROR"
+          state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
       })
 
       //deleteRecord
@@ -117,6 +117,9 @@ const extraReducers = (builder) => {
       })
       .addCase(deleteTextToSearch.rejected, (state, action) => {
           state.status = "rejected"
+          state.show_error_form = true
+          state.error_title = "Could Not Delete"
+          state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
       })
 
       //TestRecord
@@ -129,6 +132,9 @@ const extraReducers = (builder) => {
       })
       .addCase(testTextToSearch.rejected, (state, action) => {
           state.status = "rejected"
+          state.show_error_form = true
+          state.error_title = "Test Query Failed"
+          state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
       })
 };
 
@@ -161,10 +167,15 @@ const textToSearchSlice = createSlice({
       },
       closeTestForm:(state, action) => {
         state.show_test_form = false;
-      }
+      },
+      closeErrorMessage: (state, action) => {
+          state.show_error_form = false;
+          state.error_message = undefined;
+          state.error_title = undefined;
+      },
   },
   extraReducers
 });
 
-export const {showAddForm, showEditForm, closeEditForm, showDeleteForm, closeDeleteForm, showTestForm, closeTestForm} = textToSearchSlice.actions;
+export const {closeErrorMessage, showAddForm, showEditForm, closeEditForm, showDeleteForm, closeDeleteForm, showTestForm, closeTestForm} = textToSearchSlice.actions;
 export default textToSearchSlice.reducer;
