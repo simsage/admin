@@ -230,12 +230,12 @@ export default function SynsetList() {
             {/* add default   */}
             <SynsetDefault/>
 
-            {show_error_form &&
-                <>
-                console.log("show_error_form",show_error_form)
-                <ShowErrorForm show_error_form={show_error_form} error={error_message} closeForm={handleClose} />
-                </>
-            }
+            {/*{show_error_form &&*/}
+            {/*    <>*/}
+            {/*    console.log("show_error_form",show_error_form)*/}
+            {/*    <ShowErrorForm show_error_form={show_error_form} error={error_message} closeForm={handleClose} />*/}
+            {/*    </>*/}
+            {/*}*/}
         </div>
     )
 }
