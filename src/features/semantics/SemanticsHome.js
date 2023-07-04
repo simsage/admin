@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import {closeForm, loadSemantics} from "./semanticSlice";
 import SemanticList from "./SemanticsList";
 import ErrorMessage from "../../common/ErrorMessage";
+import {SemanticErrorDialog} from "./SemanticErrorDialog";
 
 
 export default function SemanticsHome() {
@@ -57,9 +58,7 @@ export default function SemanticsHome() {
 
             <SemanticList />
 
-            { semantic_error &&
-                <ErrorMessage error={semantic_error} close={handleClose}/>
-            }
+            <SemanticErrorDialog/>
         </div>
     )
 }
