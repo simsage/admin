@@ -106,6 +106,12 @@ const reducers = {
         state.error = false;
     },
 
+    closeErrorMessage: (state, action) => {
+      state.show_error_form = false;
+      state.error_message = undefined;
+      state.error_title = undefined;
+    },
+
     setSelectedSourceTab: (state, action) => {
         state.selected_source_tab = action.payload
     },
@@ -495,7 +501,7 @@ const sourceSlice = createSlice({
 });
 
 export const {
-    closeTestMessage, showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
+    closeErrorMessage, closeTestMessage, showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
     showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert, searchSource
 } = sourceSlice.actions
 export default sourceSlice.reducer;

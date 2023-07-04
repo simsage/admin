@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeForm} from "./sourceSlice";
+import {closeErrorMessage} from "./sourceSlice";
 
 export function SourceErrorDialog() {
     const dispatch = useDispatch();
@@ -11,7 +11,7 @@ export function SourceErrorDialog() {
 
 
     const handleClose = () => {
-        dispatch(closeForm());
+        dispatch(closeErrorMessage());
     }
 
 
