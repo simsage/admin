@@ -8,8 +8,9 @@ const initialState = {
     organisation_list: [],
 
     status: null,
-    error: null,
     show_error_form: false,
+    error_title: undefined,
+    error_message: undefined,
 
     show_organisation_form: false,
     edit_organisation_id: null,
@@ -153,8 +154,9 @@ const reducers = {
         state.edit_organisation_id = null;
     },
     clearErrorMessage:(state) => {
-        state.error =  null;
         state.show_error_form = false;
+        state.error_message = undefined;
+        state.error_title = undefined;
     }
 
 
@@ -167,103 +169,157 @@ const extraReducers = (builder) => {
             state.data_status = 'loading';
         })
         .addCase(getOrganisationList.fulfilled, (state, action) => {
-
-            if(action.payload.code === "ERR_BAD_RESPONSE") {
-                //todo:: option 1: dispatch logout;
-                state.error = action.payload.response.data.error;
-            }
-            else {
-                state.organisation_list = action.payload;
-                state.organisation_original_list = action.payload;
-            }
+            state.organisation_list = action.payload;
+            state.organisation_original_list = action.payload;
             state.status = "fulfilled";
             state.data_status = 'loaded';
-
         })
-        .addCase(getOrganisationList.rejected, (state) => {
+        .addCase(getOrganisationList.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Failed to load organisation list"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //update Organisation
+        .addCase(updateOrganisation.pending, (state) => {
+            state.status = "loading"
+            state.data_status = 'loading';
+        })
         .addCase(updateOrganisation.fulfilled, (state,action) => {
-
-            console.log("updateOrganisation",action.payload)
-            if(action.payload && action.payload.code && action.payload.code === "ERR_BAD_RESPONSE") {
-                state.show_error_form = true
-                state.error = action.payload.response.data.error
-            }else {
                 state.show_organisation_form = false;
                 state.edit_organisation_id = undefined;
                 state.data_status = 'load_now';
-            }
-
         })
-
         .addCase(updateOrganisation.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Organisation update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
-        //delete Record
+        //delete Organisation
+        .addCase(deleteOrganisation.pending, (state) => {
+            state.status = "loading"
+            state.data_status = 'loading';
+        })
         .addCase(deleteOrganisation.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
             state.error = action.payload
             state.show_error_form = action.payload.response
         })
+        .addCase(deleteOrganisation.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Organisation Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+        })
 
         //load backup list
+        .addCase(getOrganisationBackupList.pending, (state) => {
+            state.status = "loading"
+            state.data_status = 'loading';
+        })
         .addCase(getOrganisationBackupList.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.organisation_backup_list = action.payload;
             state.organisation_original_backup_list = action.payload;
             state.backup_data_status = 'loaded';
         })
-
-        //backup an org
-        .addCase(backupOrganisation.pending, (state) => {
-            state.show_backup_progress_message = true;
+        .addCase(getOrganisationBackupList.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Failed to load backup list"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
+        //Create Backup
+        .addCase(backupOrganisation.pending, (state) => {
+            state.show_backup_progress_message = true;
+
+        })
         .addCase(backupOrganisation.fulfilled, (state) => {
             state.show_backup_progress_message = true;
             state.backup_data_status = 'load_now';
         })
+        .addCase(backupOrganisation.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Failed to Create Backup"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+        })
 
-        //delete Record
+        //delete Backup
+        .addCase(deleteBackup.pending, (state) => {
+            state.status = "loading"
+            state.data_status = 'loading';
+            state.backup_data_status = 'loading';
+        })
         .addCase(deleteBackup.fulfilled, (state) => {
             state.backup_data_status = 'load_now';
         })
+        .addCase(deleteBackup.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Backup Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+        })
 
+        //Download Backup
+        .addCase(downloadBackup.pending, (state) => {
+            state.status = "loading"
+            state.data_status = 'loading';
+        })
         .addCase(downloadBackup.fulfilled, (state, action) => {
             state.show_download_backup_form = false;
             state.downloaded_backup = action.payload;
         })
+        .addCase(downloadBackup.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Backup Download Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+        })
 
-
-        //restore
+        //restore organisation
         .addCase(restoreOrganisation.pending, (state) => {
             state.restore_status = 'uploading';
+            state.status = "loading"
+            state.data_status = 'loading';
         })
         .addCase(restoreOrganisation.fulfilled, (state) => {
             state.restore_status = 'uploaded';
             state.data_status = "load_now";
+        })
+        .addCase(restoreOrganisation.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Organisation restore Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 }
 
 
 export const getOrganisationList = createAsyncThunk(
     'organisations/getOrganisationList',
-    async ({session, filter}) => {
+    async ({session, filter}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/user/organisations/' + encodeURIComponent(filter);
         return axios.get(url, Comms.getHeaders(session.id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
@@ -271,17 +327,15 @@ export const getOrganisationList = createAsyncThunk(
 // /api/auth/organisation/
 export const updateOrganisation = createAsyncThunk(
     'organisations/updateOrganisation',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = '/auth/organisation';
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
@@ -289,17 +343,15 @@ export const updateOrganisation = createAsyncThunk(
 // /api/auth/organisation/{organisationId}
 export const deleteOrganisation = createAsyncThunk(
     'organisations/deleteOrganisation',
-    async ({session_id, organisation_id}) => {
+    async ({session_id, organisation_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/organisation/' + encodeURIComponent(organisation_id);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
@@ -310,36 +362,32 @@ export const deleteOrganisation = createAsyncThunk(
 //https://adminux.simsage.ai/api/backup/backups/c276f883-e0c8-43ae-9119-df8b7df9c574
 export const getOrganisationBackupList = createAsyncThunk(
     'organisations/getOrganisationBackupList',
-    async ({session, organisation_id}) => {
+    async ({session, organisation_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = '/backup/backups/' + encodeURIComponent(organisation_id);
         const {id} = session
         return axios.get(api_base + url, Comms.getHeaders(id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
 
 export const downloadBackup = createAsyncThunk(
     'organisations/downloadBackup',
-    async ({session, organisation_id,backup_id}) => {
+    async ({session, organisation_id,backup_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
         const {id} = session
         return axios.get(url, Comms.getHeaders(id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
@@ -347,18 +395,16 @@ export const downloadBackup = createAsyncThunk(
 // https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific
 export const backupOrganisation = createAsyncThunk(
     'organisations/backupOrganisation',
-    async ({session_id, organisation_id}) => {
+    async ({session_id, organisation_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/specific';
         const data = {};
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
@@ -367,17 +413,15 @@ export const backupOrganisation = createAsyncThunk(
 // https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific
 export const restoreOrganisation = createAsyncThunk(
     'organisations/restoreOrganisation',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/restore';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
@@ -385,17 +429,15 @@ export const restoreOrganisation = createAsyncThunk(
 // https://adminux.simsage.ai/api/backup/backup/c276f883-e0c8-43ae-9119-df8b7df9c574/1675160719696
 export const deleteBackup = createAsyncThunk(
     'organisations/deleteBackup',
-    async ({session_id, organisation_id, backup_id}) => {
+    async ({session_id, organisation_id, backup_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
