@@ -55,7 +55,12 @@ const reducers = {
         state.show_index_snapshot_form = false;
         state.show_delete_form = false;
         state.show_add_info_form = false;
-    }
+    },
+    closeErrorMessage: (state, action) => {
+        state.show_error_form = false;
+        state.error_message = undefined;
+        state.error_title = undefined;
+    },
 };
 
 
@@ -72,31 +77,62 @@ const extraReducers = (builder) => {
         })
         .addCase(loadInventoryList.rejected, (state, action) => {
             state.status = "rejected"
+            state.data_status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Failed to load Inventory list"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
     //Document Snapshot
+        .addCase(createDocumentSnapshot.pending, (state) => {
+            state.status = "loading"
+        })
         .addCase(createDocumentSnapshot.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(createDocumentSnapshot.rejected, (state) => {
+        .addCase(createDocumentSnapshot.rejected, (state, action) => {
             state.status = "rejected"
+            state.data_status = "rejected"
+            state.show_add_info_form = false
+            state.show_error_form = true
+            state.error_title = "Failed to create document snapshot"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
     //Index Snapshot
+        .addCase(createIndexSnapshot.pending, (state) => {
+            state.status = "loading"
+        })
         .addCase(createIndexSnapshot.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(createIndexSnapshot.rejected, (state) => {
+        .addCase(createIndexSnapshot.rejected, (state, action) => {
             state.status = "rejected"
+            state.data_status = "rejected"
+            state.show_add_info_form = false
+            state.show_error_form = true
+            state.error_title = "Failed to create index snapshot"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
     //deleteRecord
+        .addCase(deleteRecord.pending, (state) => {
+            state.status = "loading"
+        })
         .addCase(deleteRecord.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
+        .addCase(deleteRecord.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+        })
+
 
 }
 
@@ -111,51 +147,44 @@ const inventorySlice = createSlice({
 
 export const loadInventoryList = createAsyncThunk(
     'inventories/getInventoryList',
-    async ({session_id, organisation_id, kb_id}) => {
+    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/parquets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/0/10';
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
 
 export const createDocumentSnapshot = createAsyncThunk(
     'inventories/createDocumentSnapshot',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/inventorize';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     });
 
 //api/document/inventorize-indexes
 export const createIndexSnapshot = createAsyncThunk(
     'inventories/createIndexSnapshot',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/inventorize-indexes';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
 
     });
 
@@ -164,18 +193,16 @@ export const createIndexSnapshot = createAsyncThunk(
 ///document/parquet/{organisationId}/{kbId}/{dateTime}
 export const deleteRecord = createAsyncThunk(
     'inventories/deleteRecord',
-    async ({session_id, organisation_id, kb_id, inventory_date_time}) => {
+    async ({session_id, organisation_id, kb_id, inventory_date_time} ,{rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/parquet/' +
             encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(inventory_date_time);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
@@ -183,6 +210,7 @@ export const {
     showAddForm,
     showEditForm,
     closeForm,
+    closeErrorMessage,
     showDocumentSnapshotForm,
     showIndexSnapshotForm,
     showDeleteInventoryForm,
