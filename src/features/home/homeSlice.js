@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from "axios";
 import Comms from "../../common/comms";
+import {loadSemantics} from "../semantics/semanticSlice";
 
 const initialState = {
     selected_tab: 'home',
@@ -25,7 +26,7 @@ const initialState = {
 // {}
 export const getLogs = createAsyncThunk(
     'home/getLogs',
-    async ({session_id, organisation_id, log_type, log_service, log_hours}) => {
+    async ({session_id, organisation_id, log_type, log_service, log_hours}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
 
         // calculate the correct time for the server
@@ -52,17 +53,30 @@ export const getLogs = createAsyncThunk(
                     }
                 }
                 return list;
-            }).catch(
-                (error) => {return error}
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
 
 const extraReducers = (builder) => {
     builder
+        .addCase(getLogs.pending, (state) => {
+            state.status = "loading";
+            state.data_status = "loading";
+        })
         .addCase(getLogs.fulfilled, (state, action) => {
+            state.status = "fulfilled";
+            state.data_status = "loaded";
             state.log_list = action.payload;
+        })
+        .addCase(getLogs.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = "rejected";
+            state.show_error_form = true
+            state.error_title = "Failed to load Logs"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 }
 
@@ -89,6 +103,11 @@ export const homeSlice = createSlice({
         setLogType: (state, action) => {
             state.log_type = action.payload;
         },
+        closeErrorMessage: (state, action) => {
+            state.show_error_form = false;
+            state.error_message = undefined;
+            state.error_title = undefined;
+        },
 
         // closeAllMenus(){
         // }
@@ -97,6 +116,6 @@ export const homeSlice = createSlice({
     extraReducers
 });
 
-export const { selectTab, setLogHours, setLogService, setLogType, closeAllMenus, showDeleteAskForm } = homeSlice.actions;
+export const {closeErrorMessage, selectTab, setLogHours, setLogService, setLogType, closeAllMenus, showDeleteAskForm } = homeSlice.actions;
 
 export default homeSlice.reducer;
