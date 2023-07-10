@@ -106,8 +106,15 @@ const extraReducers = (builder) => {
             state.data_status = "loading"
         })
         .addCase(updateUser.fulfilled, (state, action) => {
-            state.status = "fulfilled";
-            state.data_status = "load_now"
+
+            if(action.payload && action.payload.code && action.payload.code === "ERR_BAD_RESPONSE") {
+                state.error = action.payload.response.data.error;
+                // state.show_user_form=true;
+            }else {
+                state.status = "fulfilled";
+                state.data_status = "load_now"
+            }
+
         })
         .addCase(updateUser.rejected, (state, action) => {
             state.status = "rejected";
