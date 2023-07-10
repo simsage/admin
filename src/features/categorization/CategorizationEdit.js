@@ -3,6 +3,8 @@ import React, {useState, useEffect} from "react";
 import {closeCategoryForm, updateCategorization} from "./categorizationSlice";
 import CategorizationError from './CategorizationError';
 import {BsFilePdf} from "react-icons/bs";
+import {useForm} from "react-hook-form";
+import {addOrUpdate} from "../knowledge_bases/knowledgeBaseSlice";
 
 
 export function CategorizationEdit(){
@@ -18,6 +20,10 @@ export function CategorizationEdit(){
     const [categoryLabel, setCategoryLabel] = useState('');
     const [rule, setRule] = useState('');
 
+
+
+    //Form Hook
+    const {register, handleSubmit, formState: {errors}, reset} = useForm();
 
 
     // Grab synonym details if editing
@@ -56,6 +62,30 @@ export function CategorizationEdit(){
         resetData();
     }
 
+
+    useEffect(() => {
+        let defaultValues = {};
+        defaultValues.categorizationLabel = selectedCategory ? selectedCategory.categorizationLabel : '';
+        defaultValues.rule = selectedCategory ? selectedCategory.rule : '';
+        reset({...defaultValues});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCategory, show_category_form]);
+
+
+    //on submit store or update
+    const onSubmit = data => {
+        const session_id = session.id;
+        data = {...data,
+                kbId: knowledge_base_id,
+                organisationId: organisation_id,
+        }
+
+        dispatch(updateCategorization({session_id, data}));
+        resetData();
+    };
+
+
+
     function handleKeyDown(e) {
         if(e.key === 'Enter') {
             e.preventDefault()
@@ -73,6 +103,9 @@ export function CategorizationEdit(){
                     <div className="modal-header px-5 pt-4 bg-light">
                         <h4 className="mb-0">{selectedCategory ? "Edit Category" : "New Category"}</h4>
                     </div>
+
+
+                    <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="modal-body p-0">
                         <div className="tab-content px-5 py-4 overflow-auto">
                             <div className="col-2 offset-10">
@@ -87,40 +120,43 @@ export function CategorizationEdit(){
                                 <div className="control-row col-4">
                                     <span className="label-2 small">Category</span>
                                     <span className="text">
-                                        <form>
                                             <input type="text" className="form-control"
                                                     autoComplete="false"
                                                     placeholder=""
-                                                    value={categoryLabel}
-                                                    onChange={(event) => setCategoryLabel(event.target.value)}
-                                                   onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
+                                                   {...register("categorizationLabel", {required: true})}
+                                                    // value={categoryLabel}
+                                                    // onChange={(event) => setCategoryLabel(event.target.value)}
+                                                   // onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
                                             />
-                                        </form>
                                     </span>
+                                    {errors.categorizationLabel &&
+                                        <span className="text-danger fst-italic small">Category is required </span>}
                                 </div>
                                 <div className="control-row col-8 mb-3">
                                     <span className="label-2 small">SimSage advanced query language</span>
                                     <span className="text">
-                                        <form>
                                             <input type="text" className="form-control"
                                                     autoComplete="false"
                                                     placeholder="SimSage advanced query language expression (e.g. (word(test))  )"
                                                     title="SimSage advanced query language expression (e.g. (word(test))  )"
-                                                    value={rule}
-                                                    onChange={(event) => setRule(event.target.value)}
-                                                   onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
+                                                   {...register("rule", {required: true})}
+                                                    // value={rule}
+                                                    // onChange={(event) => setRule(event.target.value)}
+                                                   // onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
                                             />
-                                        </form>
                                     </span>
+                                    {errors.rule &&
+                                        <span className="text-danger fst-italic small">SimSage advanced query language is required </span>}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="modal-footer px-5 pb-3">
+                        <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
                         <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
-                        <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
+                        {/*<button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>*/}
                     </div>
-
+                    </form>
                 </div>
             </div>
             <CategorizationError />
