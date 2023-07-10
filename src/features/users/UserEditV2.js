@@ -36,6 +36,8 @@ export function UserEditV2(props) {
     const [availableKbFilter, setAvailableKbFilter] = useState('');
     const [kbFilter, setKbFilter] = useState('');
 
+
+
     //Form
     const {
         register,
@@ -250,18 +252,8 @@ export function UserEditV2(props) {
 
 
     function changeNav(slug) {
-        const data = getValues();
-        // console.log(trigger(data).then(setSelectedTab(slug)).catch(setError))
-        // console.log(slug)
-        let val = trigger(["firstName", "surname", 'email', 'password','password_repeat']).then(
-            (is_valid) => {
-                if(is_valid) setSelectedTab(slug)
-                }
-            )
-        ;
-
-
-    }
+        trigger(["firstName", "surname", 'email', 'password','password_repeat']).then(
+            (is_valid) => { if(is_valid) setSelectedTab(slug) }); }
 
     function handleClose() {
         // defaultValues()
@@ -270,11 +262,7 @@ export function UserEditV2(props) {
     }
 
 
-    console.log('User XS data...4', selected_tab);
-
-
     const onSubmit = data => {
-        console.log('User XS data...1', data);
         const session_id = session.id;
         data = {
             ...data,
@@ -309,8 +297,6 @@ export function UserEditV2(props) {
     }, [show_user_form, selectedUser]);
 
     let pwd = watch("password");
-    console.log("pwd", pwd)
-    console.log("errors.password_repeat", errors.password_repeat)
 
     if (show_user_form === false)
         return (<div/>);
