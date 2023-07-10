@@ -36,7 +36,7 @@ export function UserEditV2(props) {
     const [availableKbFilter, setAvailableKbFilter] = useState('');
     const [kbFilter, setKbFilter] = useState('');
 
-
+    const [kb_error, setKBError] = useState(true);
 
     //Form
     const {
@@ -51,6 +51,10 @@ export function UserEditV2(props) {
         watch
     } = useForm();
 
+
+    useEffect(()=>{
+        kbValidation();
+    },[kbs,roles])
 
     useEffect(() => {
         if (user_id) {
@@ -218,6 +222,16 @@ export function UserEditV2(props) {
         }))
     }
 
+    function kbValidation() {
+        if (showKbs && kbs.length < 1) {
+            setKBError(true);
+        } else {
+            setKBError(false)
+        }
+        // alert("A knowledge operator must have at least 1 Knowledge base assigned");
+
+    }
+
     //Groups functions
 
     const getAvailableGroups = () => {
@@ -252,8 +266,13 @@ export function UserEditV2(props) {
 
 
     function changeNav(slug) {
-        trigger(["firstName", "surname", 'email', 'password','password_repeat']).then(
-            (is_valid) => { if(is_valid) setSelectedTab(slug) }); }
+        trigger(["firstName", "surname", 'email', 'password', 'password_repeat']).then(
+            (is_valid) => {
+                if (is_valid) {
+                    setSelectedTab(slug);
+                }
+            });
+    }
 
     function handleClose() {
         // defaultValues()
@@ -263,17 +282,19 @@ export function UserEditV2(props) {
 
 
     const onSubmit = data => {
-        const session_id = session.id;
-        data = {
-            ...data,
-            groupList: groups,
-            id: user_id,
-            operatorKBList: kbs,
-            roles: roles,
-        }
+        if(kb_error === false){
+            const session_id = session.id;
+            data = {
+                ...data,
+                groupList: groups,
+                id: user_id,
+                operatorKBList: kbs,
+                roles: roles,
+            }
 
-        dispatch(updateUser({session_id, organisation_id, data}));
-        handleClose();
+            dispatch(updateUser({session_id, organisation_id, data}));
+            handleClose();
+        }
 
     }
 
@@ -466,6 +487,7 @@ export function UserEditV2(props) {
                                                 <div className="role-area bg-light border rounded h-100">
                                                     <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
                                                            placeholder="Filter..." value={kbFilter}
+
                                                            onChange={(e) => setKbFilter(e.target.value)}/>
                                                     {
                                                         kbs && getKbs().map((kb, i) => {
@@ -474,7 +496,13 @@ export function UserEditV2(props) {
                                                                           label={getKbName(kb.kbId)} variant="outlined"/>)
                                                         })
                                                     }
+
+
+
                                                 </div>
+
+                                                {kb_error && <span
+                                                    className="text-danger fst-italic small">A knowledge operator must have at least 1 Knowledge base assigned.</span>}
                                             </div>
                                             <div className="role-block col-6">
                                                 <h6 className="role-label text-center">Available</h6>
@@ -489,6 +517,7 @@ export function UserEditV2(props) {
                                                                           label={kb} variant="outlined"/>)
                                                         })
                                                     }
+
                                                 </div>
                                             </div>
                                         </div>
