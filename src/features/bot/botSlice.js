@@ -119,7 +119,7 @@ const extraReducers = (builder) => {
             state.total_mind_items = action.payload.numMemories;
             state.data_status = 'loaded';
         })
-        .addCase(loadMindItems.rejected, (state, action) => {
+        .addCase(loadMindItems.rejected, (state) => {
             state.status = "rejected"
             state.data_status = 'rejected';
         })
@@ -129,13 +129,13 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
 
-        .addCase(updateMindItem.fulfilled, (state, action) => {
+        .addCase(updateMindItem.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
             state.show_add_info_form = true;
 
         })
-        .addCase(updateMindItem.rejected, (state, action) => {
+        .addCase(updateMindItem.rejected, (state) => {
             state.status = "rejected"
         })
         //delete memory
@@ -143,12 +143,12 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
 
-        .addCase(deleteMindItem.fulfilled, (state, action) => {
+        .addCase(deleteMindItem.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
 
         })
-        .addCase(deleteMindItem.rejected, (state, action) => {
+        .addCase(deleteMindItem.rejected, (state) => {
             state.status = "rejected"
         })
         //delete all memories
@@ -156,12 +156,12 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
 
-        .addCase(deleteAllMindItems.fulfilled, (state, action) => {
+        .addCase(deleteAllMindItems.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
 
         })
-        .addCase(deleteAllMindItems.rejected, (state, action) => {
+        .addCase(deleteAllMindItems.rejected, (state) => {
             state.status = "rejected"
         })
         .addCase(importBotItems.pending, (state) => {

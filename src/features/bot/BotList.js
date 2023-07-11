@@ -187,7 +187,7 @@ export default function BotList() {
 
                 <div className="form-group d-flex ms-auto">
                     <div className="btn" onClick={() => refresh_memories()} >
-                        <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh memories" />
+                        <img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh memories" />
                     </div>
                     <button className="btn btn-outline-primary text-nowrap ms-2"
                             onClick={() => handleImport(!show_import_form)}>Import mind

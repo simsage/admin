@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState, useEffect} from "react";
-import {closeMemoryForm, showAddInfoForm, updateMindItem} from "./botSlice";
-import ErrorMessage from "../../common/ErrorMessage";
+import {closeMemoryForm, updateMindItem} from "./botSlice";
 
 export function BotEdit(){
 
@@ -71,7 +70,7 @@ export function BotEdit(){
         setVideoList([])
     }
 
-    function handleClose(e){
+    function handleClose(){
         dispatch(closeMemoryForm())
         resetData()
     }
@@ -245,7 +244,7 @@ export function BotEdit(){
                                     <label className="label-2 small">Answer</label>
                                     <span className="text">
                                                 <form>
-                                                    <textarea type="text" className="form-control"
+                                                    <textarea className="form-control"
                                                         autoComplete="false"
                                                         placeholder="Answer..."
                                                         value={answer}

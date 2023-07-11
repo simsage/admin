@@ -47,7 +47,7 @@ export function BotImport() {
 
     };
 
-    function handleClose(e){
+    function handleClose(){
         dispatch(closeBotImportForm())
     }
 
