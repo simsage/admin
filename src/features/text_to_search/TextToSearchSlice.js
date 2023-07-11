@@ -114,6 +114,7 @@ const extraReducers = (builder) => {
                 state.show_text_to_search_form = false;
                 state.show_error_form = false;
                 state.error = '';
+                state.edit = undefined;
             }
         })
         .addCase(addOrUpdateTextToSearch.rejected, (state, action) => {

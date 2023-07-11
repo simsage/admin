@@ -22,51 +22,13 @@ export function TextToSearchEdit(props){
 
     console.log("selected_item", selected_item)
 
-    //Synonym details
-    // const [searchPart, setSearchPart] = useState('');
-    // const [searchType, setSearchType] = useState('');
-    // const [matchWords, setMatchWords] = useState('');
-
-    // Grab synonym details if editing
-    // useEffect(()=> {
-    //     if ( edit ) {
-    //         setSearchPart(edit.searchPart);
-    //         setSearchType(edit.type);
-    //         setMatchWords(edit.matchWords);
-    //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [show_text_to_search_form])
-
-    // function resetData () {
-    //     setSearchPart('');
-    //     setSearchType('');
-    //     setMatchWords('');
-    // }
-
     function handleClose(){
         dispatch(closeEditForm());
         // resetData();
     }
 
-    console.log("getValues",getValues())
-
-    // function handleSave(e) {
-    //     e.preventDefault();
-    //     const session_id = session.id;
-    //     const data = {
-    //         "matchWordCsv": matchWords,
-    //         "searchPart": searchPart,
-    //         "searchType": searchType
-    //     }
-    //     dispatch(addOrUpdateTextToSearch({session_id:session_id, organisation_id: organisation_id, kb_id: knowledge_base_id, data}));
-    //     dispatch(closeEditForm());
-    //     resetData();
-    // }
-
     useEffect(()=>{
         let defaultValues = {};
-        const matchWordCsv= selected_item ? selected_item.matchWords : '';
-        console.log("matchWords",selected_item)
         defaultValues.matchWordCsv = selected_item ? selected_item.matchWords : '';
         defaultValues.searchPart = selected_item ? selected_item.searchPart : '';
         defaultValues.searchType = selected_item ? selected_item.type : '';
@@ -77,6 +39,7 @@ export function TextToSearchEdit(props){
         const session_id = session.id;
         data = {...data, organisation_id: organisation_id, kb_id: knowledge_base_id}
         dispatch(addOrUpdateTextToSearch({session_id:session_id,organisation_id:organisation_id, kb_id: knowledge_base_id, data}));
+
     }
 
     if (show_text_to_search_form === false)
