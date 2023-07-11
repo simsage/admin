@@ -84,24 +84,24 @@ export const deleteUser = createAsyncThunk (
 const extraReducers = (builder) => {
     builder
         //Get Users Paginated
-        .addCase(getUserListPaginated.pending, (state, action) => {
+        .addCase(getUserListPaginated.pending, (state) => {
             state.status = "loading";
             state.data_status = "loading";
         })
         .addCase(getUserListPaginated.fulfilled, (state, action) => {
             state.status = "fulfilled"
-            state.user_list = action.payload.userList
-            state.user_original_list = action.payload.userList
-            state.count = action.payload.userCount
+            state.user_list = action.payload.userList?action.payload.userList:[]
+            state.user_original_list = action.payload.userList?action.payload.userList:[]
+            state.count = action.payload.userCount?action.payload.userCount:0
             state.data_status = "loaded"
         })
-        .addCase(getUserListPaginated.rejected, (state, action) => {
+        .addCase(getUserListPaginated.rejected, (state) => {
             state.status = "rejected"
             state.data_status = "rejected"
         })
 
         //Update Users
-        .addCase(updateUser.pending, (state, action) => {
+        .addCase(updateUser.pending, (state) => {
             state.status = "Loading"
             state.data_status = "loading"
         })
@@ -116,36 +116,36 @@ const extraReducers = (builder) => {
             }
 
         })
-        .addCase(updateUser.rejected, (state, action) => {
+        .addCase(updateUser.rejected, (state) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
 
         //Bulk update
-        .addCase(bulkUpdateUser.pending, (state, action) => {
+        .addCase(bulkUpdateUser.pending, (state) => {
             state.status = "Loading"
             state.data_status = "loading"
         })
-        .addCase(bulkUpdateUser.fulfilled, (state, action) => {
+        .addCase(bulkUpdateUser.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = "load_now"
             state.show_user_bulk_form = false;
         })
-        .addCase(bulkUpdateUser.rejected, (state, action) => {
+        .addCase(bulkUpdateUser.rejected, (state) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
 
         //Delete User
-        .addCase(deleteUser.pending, (state, action) => {
+        .addCase(deleteUser.pending, (state) => {
             state.status = "Loading"
             state.data_status = "loading"
         })
-        .addCase(deleteUser.fulfilled, (state, action) => {
+        .addCase(deleteUser.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = "load_now"
         })
-        .addCase(deleteUser.rejected, (state, action) => {
+        .addCase(deleteUser.rejected, (state) => {
             state.status = "rejected";
             state.data_status = "rejected";
         })
@@ -177,7 +177,7 @@ const usersSlice = createSlice({
             state.show_delete_form = action.payload.show;
             state.edit_id = action.payload.user_id
         },
-        closeDeleteForm:(state, action) => {
+        closeDeleteForm:(state) => {
             state.show_delete_form = false;
             state.edit_id = undefined;
         },
@@ -195,10 +195,10 @@ const usersSlice = createSlice({
                     break;
             }
         },
-        showUserBulkForm:(state, action) => {
+        showUserBulkForm:(state) => {
             state.show_user_bulk_form = true;
         },
-        closeUserBulkForm:(state, action) => {
+        closeUserBulkForm:(state) => {
             state.show_user_bulk_form = false;
         }
 
