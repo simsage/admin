@@ -126,7 +126,7 @@ export default function SemanticsHome() {
                             />
                             <button className="btn btn-secondary"
                                     onClick={() => filterSemantic()}
-                                    src="images/dark-magnifying-glass.svg" title="search" alt="search">Search</button>
+                                    title="search" >Search</button>
                         </div>
                     </div>
 

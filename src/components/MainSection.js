@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {UserManagementHome} from "../features/users/UserManagementHome";
 import MindHome from "../features/the_mind/MindHome";
@@ -6,8 +6,7 @@ import DocumentManagementHome from "../features/document_management/DocumentMana
 import Home from "../features/home/Home";
 import OrganisationEdit from "../features/organisations/OraganisationEdit";
 import ErrorMessage from "../common/ErrorMessage";
-import {closeEditForm} from "../features/text_to_search/TextToSearchSlice";
-import {closeError, simsageLogOut} from "../features/auth/authSlice";
+import {closeError} from "../features/auth/authSlice";
 
 function MainSection(){
 
@@ -15,7 +14,7 @@ function MainSection(){
 
     const {selected_tab} = useSelector((state)=>state.homeReducer)
     const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form);
-    const {session, is_error, error_text, error_title} = useSelector((state) => state.authReducer);
+    const {is_error, error_text, error_title} = useSelector((state) => state.authReducer);
     const error_obj = {code: error_title, message: error_text};
 
     function authErrorClose(error_obj) {

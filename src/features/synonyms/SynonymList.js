@@ -12,7 +12,7 @@ import {SynonymEdit} from "./SynonymEdit";
 import SynonymDeleteAsk from "./SynonymDeleteAsk";
 import api from "../../common/api";
 
-export default function SynonymsHome(props) {
+export default function SynonymsHome() {
 
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
@@ -134,7 +134,7 @@ export default function SynonymsHome(props) {
                         />
                         <button className="btn btn-secondary"
                                 onClick={(e) => filterRecords(e)}
-                                src="images/dark-magnifying-glass.svg" title="search" alt="search">Search</button>
+                                title="search">Search</button>
                     </div>
                 </div>
 

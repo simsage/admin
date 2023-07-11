@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
-import {useDispatch} from "react-redux";
 
 const initialState ={
     semantic_list: [],
@@ -76,7 +75,7 @@ const extraReducers = (builder) => {
             state.num_semantics = action.payload.numSemantics?action.payload.numSemantics:0;
             state.data_status = "loaded";
         })
-        .addCase(loadSemantics.rejected, (state, action) => {
+        .addCase(loadSemantics.rejected, (state) => {
             state.status = "rejected"
             state.data_status = "rejected";
         })
@@ -86,11 +85,11 @@ const extraReducers = (builder) => {
             state.status = "loading";
             state.data_status = "loading";
         })
-        .addCase(updateSemantics.fulfilled, (state, action) => {
+        .addCase(updateSemantics.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
-        .addCase(updateSemantics.rejected, (state, action) => {
+        .addCase(updateSemantics.rejected, (state) => {
             state.status = "rejected"
             state.data_status = "rejected";
         })
@@ -99,7 +98,7 @@ const extraReducers = (builder) => {
             state.status = "loading";
             state.data_status = "loading";
         })
-        .addCase(deleteSemantic.fulfilled, (state, action) => {
+        .addCase(deleteSemantic.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
 

@@ -1,8 +1,8 @@
-import React, {useState} from "react";
-import {filterSearch, showAddSynonymForm} from "./synonymSlice";
-import {useDispatch, useSelector} from "react-redux";
+import React from "react";
+import { showAddSynonymForm} from "./synonymSlice";
+import {useDispatch} from "react-redux";
 
-export default function SynonymFilter(props) {
+export default function SynonymFilter() {
 
     const dispatch = useDispatch();
 

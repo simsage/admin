@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-export default function SemanticsFilter(props) {
+export default function SemanticsFilter() {
 
     const theme = null;
 
@@ -33,7 +33,7 @@ export default function SemanticsFilter(props) {
 
                 </div>
                 <div className="form-group me-2">
-                    <select type="text" placeholder={"Filter"} value={semanticsFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
+                    <select placeholder={"Filter"} value={semanticsFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
                             onChange={(e) => setSemanticsFilter(e.target.value)}>
                         <option value="all-users">All Semantics</option>
                     </select>

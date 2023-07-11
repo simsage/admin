@@ -209,5 +209,5 @@ const usersSlice = createSlice({
 });
 
 
-export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm, orderBy, closeUserBulkForm,showUserBulkForm,showPasswordResetForm} = usersSlice.actions
+export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm, closeUserBulkForm,showUserBulkForm,showPasswordResetForm} = usersSlice.actions
 export default usersSlice.reducer;

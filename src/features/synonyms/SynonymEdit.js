@@ -4,7 +4,7 @@ import {closeSynonymForm, updateSynonyms} from "./synonymSlice";
 
 
 
-export function SynonymEdit(props){
+export function SynonymEdit(){
 
     const dispatch = useDispatch();
 
@@ -35,7 +35,7 @@ export function SynonymEdit(props){
         setError('')
     }
 
-    function handleClose(e){
+    function handleClose(){
         dispatch(closeSynonymForm());
         resetData();
     }
@@ -85,7 +85,7 @@ export function SynonymEdit(props){
                                     </label>
                                     <span className="text">
                                         <form>
-                                            <textarea type="text" className="form-control"
+                                            <textarea className="form-control"
                                                     autoComplete="false"
                                                     placeholder="e.g. Data Security Standard, DSS..."
                                                     value={synonymList}

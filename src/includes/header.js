@@ -2,7 +2,7 @@ import {useSelector, useDispatch} from "react-redux";
 import AccountDropdown from "./account-dropdown";
 import {showAccount} from "../features/auth/authSlice";
 
-const Header = (props) => {
+const Header = () => {
 
     const dispatch = useDispatch();
 
@@ -12,7 +12,7 @@ const Header = (props) => {
     organisation = (organisation)?organisation:{name:"not set",id:"10"}
     const {firstName, surname} = user? user : {firstName:'not set', surname:'not set'}
 
-    function toggleAccountsMenu(e,accounts_dropdown) {
+    function toggleAccountsMenu(e) {
         e.preventDefault();
         e.stopPropagation();
         dispatch(showAccount())
@@ -36,8 +36,8 @@ const Header = (props) => {
                 <div className="account" title="Sign out and Organisation menu">
                     <button className={(accounts_dropdown ? "active" : "") + " btn nav-btn"}
                             onClick={(e) => toggleAccountsMenu(e,accounts_dropdown)}>
-                        <img src="images/icon/icon_n-account.svg" alt="" className={accounts_dropdown ? "d-none" : ""} />
-                        <img src="images/icon/icon_n-account.svg" alt="" className={!accounts_dropdown ? "d-none" : ""} />
+                        <img src="/images/icon/icon_n-account.svg" alt="" className={accounts_dropdown ? "d-none" : ""} />
+                        <img src="/images/icon/icon_n-account.svg" alt="" className={!accounts_dropdown ? "d-none" : ""} />
                     </button>
                 </div>
 

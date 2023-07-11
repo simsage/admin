@@ -1,9 +1,4 @@
-import {useDispatch, useSelector} from "react-redux";
-
-
 export default function ShowErrorForm(props){
-
-    const dispatch = useDispatch();
 
     const show_error_form = props.show_error_form
     const error = props.error

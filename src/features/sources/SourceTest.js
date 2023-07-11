@@ -1,7 +1,6 @@
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {closeTestMessage} from "./sourceSlice";
-import {showTestForm} from "../text_to_search/TextToSearchSlice";
 
 const SourceTest = () => {
     const dispatch = useDispatch();

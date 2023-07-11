@@ -317,7 +317,7 @@ export default function SourceHome(props) {
                     <div className="form-group me-2 small text-black-50 px-4">Order by</div>
                     <div className="form-group me-2">
 
-                        <select type="text" placeholder={"Filter"} value={order_by} autoFocus={true} className={"form-select filter-text-width " + theme}
+                        <select placeholder={"Filter"} value={order_by} autoFocus={true} className={"form-select filter-text-width " + theme}
                                 onChange={(e) => setOrderBy(e.target.value)}>
                             {order_by_options.map((item) => {
                                 return <option value={item.slug}>{item.label}</option>
@@ -330,7 +330,7 @@ export default function SourceHome(props) {
                 <div className="form-group ms-auto">
                     {selected_knowledge_base_id.length > 0 &&
                         <div className="d-flex">
-                            <div className="btn" onClick={() => refresh_sources()} ><img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh source-list" /></div>
+                            <div className="btn" onClick={() => refresh_sources()} ><img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh source-list" /></div>
                             <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleImportCrawler()} >Upload Crawler</button>
                             <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddForm()}> + Add Source</button>
                         </div>
