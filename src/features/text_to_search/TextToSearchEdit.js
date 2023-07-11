@@ -1,12 +1,11 @@
 import {useDispatch, useSelector} from "react-redux";
-import React, {useState, useEffect} from "react";
+import React, {useEffect} from "react";
 import {addOrUpdateTextToSearch, closeEditForm} from "./TextToSearchSlice";
 import {BsFilePdf} from "react-icons/bs";
 import {useForm} from "react-hook-form";
-import ShowErrorForm from "../../components/ShowErrorForm";
 
 
-export function TextToSearchEdit(props){
+export function TextToSearchEdit(){
 
     const dispatch = useDispatch();
 
@@ -18,13 +17,12 @@ export function TextToSearchEdit(props){
     const show_error_form = useSelector( (state) => state.textToSearchReducer.show_error_form);
     const error = useSelector( (state) => state.textToSearchReducer.error);
 
-    const {register,getValues, setValue,handleSubmit, formState: {errors}, reset} = useForm();
+    const {register, handleSubmit, formState: {errors}, reset} = useForm();
 
     console.log("selected_item", selected_item)
 
     function handleClose(){
         dispatch(closeEditForm());
-        // resetData();
     }
 
     useEffect(()=>{
@@ -33,7 +31,7 @@ export function TextToSearchEdit(props){
         defaultValues.searchPart = selected_item ? selected_item.searchPart : '';
         defaultValues.searchType = selected_item ? selected_item.type : '';
         reset({...defaultValues});
-    },[show_text_to_search_form,selected_item])
+    },[show_text_to_search_form,selected_item, reset])
 
     const onSubmit = data => {
         const session_id = session.id;
@@ -99,7 +97,7 @@ export function TextToSearchEdit(props){
                                             <div className="control-row col-12">
                                                 <span className="label-2 small">Match Words <span className="small text-black-50 fst-italic fw-light">(Separate by comma) (csv) </span></span>
                                                 <span className="text">
-                                                    <textarea type="text" className="form-control"
+                                                    <textarea className="form-control"
                                                               autoComplete="false"
                                                               placeholder="e.g. web documents, html file, web file, etc..."
                                                               {...register('matchWordCsv',{required:true})}
@@ -118,7 +116,8 @@ export function TextToSearchEdit(props){
                                         </div>
                                     </div>
                                     <div className="col-2">
-                                        <a href="resources/super-search-syntax.pdf" id="dlsuperquery" target="_blank"
+
+                                        <a href="/resources/super-search-syntax.pdf" id="dlsuperquery" target="_blank"
                                            title="Download the SimSage advanced query syntax guide"
                                            className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                                             <BsFilePdf size={25}/>
