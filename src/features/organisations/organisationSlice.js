@@ -197,6 +197,8 @@ const extraReducers = (builder) => {
                 state.show_organisation_form = false;
                 state.edit_organisation_id = undefined;
                 state.data_status = 'load_now';
+                state.show_error_form = false;
+                state.error = '';
             }
 
         })
