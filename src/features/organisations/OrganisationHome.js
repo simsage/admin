@@ -18,7 +18,6 @@ import BkOrganisationBackupDeleteDialog from "./BkOrganisationBackupDeleteDialog
 import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDialog";
 import {OrganisationViewId} from "./OrganisationViewId";
 import OrganisationDeleteAsk from "./OrganisationDeleteAsk";
-import OrganisationError from "./OrganisationError";
 import BkOrganisationRestore from "./BkOrganisationRestore";
 import {hasRole} from "../../common/helpers";
 import api from "../../common/api";
@@ -54,7 +53,7 @@ export function OrganisationHome() {
 
     const error = useSelector((state) => state.organisationReducer.error);
 
-    const group_data_status = useSelector((state) => state.groupReducer.data_status)
+    // const group_data_status = useSelector((state) => state.groupReducer.data_status)
 
     function  handleSignOut() {
         dispatch(simsageLogOut({session_id: session.id}))

@@ -201,7 +201,9 @@ const extraReducers = (builder) => {
 
         })
 
-        .addCase(updateOrganisation.rejected, (state, action) => {
+        .addCase(updateOrganisation.rejected, (state) => {
+            state.status = "rejected"
+            state.data_status = 'rejected';
         })
 
         //delete Record

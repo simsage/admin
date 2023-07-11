@@ -31,6 +31,7 @@ export default function KnowledgeBaseList() {
     useEffect(() => {
         if (organisation_id && data_status==='load_now')
             dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [organisation_id, data_status])
 
     function getKnowledgeBases() {
