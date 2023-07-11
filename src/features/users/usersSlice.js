@@ -26,35 +26,35 @@ const initialState = {
 
 export const getUserListPaginated = createAsyncThunk(
     'users/getUserListPaginated',
-    async ({session_id,organization_id,page=0,page_size=100,filter}) => {
+    async ({session_id,organization_id,page=0,page_size=100,filter}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/users-paginated/'+ encodeURIComponent(organization_id)+ '/' + encodeURIComponent(page)+ '/' + encodeURIComponent(page_size)+ '/' + encodeURIComponent(filter);
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {return error}
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
 export const updateUser = createAsyncThunk(
     'users/update',
-    async ({session_id, organisation_id, data}) => {
+    async ({session_id, organisation_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = '/auth/user/' ;
         return axios.put(api_base + url + encodeURIComponent(organisation_id), data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data;
-            }).catch(
-                (error) => {return error}
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 export const bulkUpdateUser = createAsyncThunk(
     'user/bulk',
-    async ({session_id, payload}) => {
+    async ({session_id, payload}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/user/import';
@@ -62,15 +62,15 @@ export const bulkUpdateUser = createAsyncThunk(
         return axios.put(url, payload, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data;
-            }).catch(
-                (error) => {return error}
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 export const deleteUser = createAsyncThunk (
     'users/delete',
-    async ({session_id,user_id, organisation_id}) => {
+    async ({session_id,user_id, organisation_id}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/auth/organisation/user/${encodeURIComponent(user_id)}/${encodeURIComponent(organisation_id)}`;
@@ -78,7 +78,9 @@ export const deleteUser = createAsyncThunk (
         return axios.delete( url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch ((error) => {return error})
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 const extraReducers = (builder) => {
@@ -98,6 +100,9 @@ const extraReducers = (builder) => {
         .addCase(getUserListPaginated.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected"
+            state.show_error_form = true
+            state.error_title = "User Load Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //Update Users
@@ -112,6 +117,9 @@ const extraReducers = (builder) => {
         .addCase(updateUser.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
+            state.show_error_form = true
+            state.error_title = "User Update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //Bulk update
@@ -127,6 +135,9 @@ const extraReducers = (builder) => {
         .addCase(bulkUpdateUser.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
+            state.show_error_form = true
+            state.error_title = "User Update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //Delete User
@@ -141,6 +152,9 @@ const extraReducers = (builder) => {
         .addCase(deleteUser.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
+            state.show_error_form = true
+            state.error_title = "User Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 }
 
@@ -193,7 +207,12 @@ const usersSlice = createSlice({
         },
         closeUserBulkForm:(state, action) => {
             state.show_user_bulk_form = false;
-        }
+        },
+        closeErrorMessage: (state, action) => {
+            state.show_error_form = false;
+            state.error_message = undefined;
+            state.error_title = undefined;
+        },
 
     },
 
@@ -202,5 +221,5 @@ const usersSlice = createSlice({
 });
 
 
-export const { showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm, orderBy, closeUserBulkForm,showUserBulkForm,showPasswordResetForm} = usersSlice.actions
+export const { closeErrorMessage, showAddUserForm, showEditUserForm, closeUserForm,showDeleteUserAsk , closeDeleteForm, orderBy, closeUserBulkForm,showUserBulkForm,showPasswordResetForm} = usersSlice.actions
 export default usersSlice.reducer;

@@ -14,6 +14,7 @@ import {UserBulkForm} from "./UserBulkForm";
 import api from "../../common/api";
 import {UserEditV2} from "./UserEditV2";
 import {UserPasswordResetForm} from "./UserPasswordResetForm";
+import {UserErrorDialog} from "./UserErrorDialog";
 
 export function UsersHome() {
     const user_roles = useSelector((state) => state.usersReducer.roles);
@@ -261,6 +262,7 @@ export function UsersHome() {
             {show_password_reset_form &&
                 <UserPasswordResetForm/>
             }
+            <UserErrorDialog/>
         </div>
     )
 }
