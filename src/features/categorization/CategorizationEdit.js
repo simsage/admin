@@ -123,7 +123,6 @@ export function CategorizationEdit(){
 
                 </div>
             </div>
-            <CategorizationError />
         </div>
     )
 }

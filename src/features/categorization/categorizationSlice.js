@@ -17,7 +17,7 @@ const initialState = {
 }
 
 export const loadCategorizations = createAsyncThunk("categorization/loadCategorizations",
-    async ({session_id, organisation_id, kb_id, prevCategorizationLabel, pageSize}) => {
+    async ({session_id, organisation_id, kb_id, prevCategorizationLabel, pageSize}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         //https://adminux.simsage.ai/api/language/categorization/c276f883-e0c8-43ae-9119-df8b7df9c574/0185c075-31ea-23d7-ec8d-a573738bcd0b/null/5
@@ -27,17 +27,15 @@ export const loadCategorizations = createAsyncThunk("categorization/loadCategori
             .then((response) => {
                 return response.data
             })
-            .catch(
-                (error) => {
-                    return error
-                }
-            )
+            .catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
 export const updateCategorization = createAsyncThunk(
     "categorization/updateCategorization",
-    async({session_id, data}) => {
+    async({session_id, data}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/language/categorization`;
@@ -45,6 +43,8 @@ export const updateCategorization = createAsyncThunk(
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response;
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
             })
     }
 )
@@ -53,7 +53,7 @@ export const updateCategorization = createAsyncThunk(
 
 export const deleteCategorization = createAsyncThunk(
         "categorization/deleteCategorization",
-            async({session_id, organisation_id, knowledge_base_id, categorizationLabel}) => {
+            async({session_id, organisation_id, knowledge_base_id, categorizationLabel}, {rejectWithValue}) => {
 
             const api_base = window.ENV.api_base;
             const url = api_base + `/language/categorization/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(categorizationLabel)}`;
@@ -62,9 +62,9 @@ export const deleteCategorization = createAsyncThunk(
                 .then((response) => {
                     return response.data.error;
                 })
-                .catch(
-                    (error) => {return error}
-                )
+                .catch((err) => {
+                    return rejectWithValue(err?.response?.data)
+                })
             }
 )
 
@@ -83,9 +83,12 @@ const extraReducers = (builder) => {
             state.total_count = action.payload.totalCategorizationCount
             // state.data_status = "loaded";
         })
-        .addCase(loadCategorizations.rejected,(state) => {
+        .addCase(loadCategorizations.rejected,(state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
+            state.show_error_form = true
+            state.error_title = "Categorizations Load Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 
@@ -104,8 +107,9 @@ const extraReducers = (builder) => {
         .addCase(updateCategorization.rejected,(state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
-            state.error = action.error.message
-            state.show_error = true;
+            state.show_error_form = true
+            state.error_title = "Categorizations Update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 
@@ -118,9 +122,12 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = "load_now";
         })
-        .addCase(deleteCategorization.rejected,(state) => {
+        .addCase(deleteCategorization.rejected,(state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
+            state.show_error_form = true
+            state.error_title = "Categorizations Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 }
 
@@ -149,8 +156,9 @@ const categorizationSlice = createSlice({
             state.edit = undefined;
         },
         closeErrorForm:(state) => {
-            state.error = undefined;
-            state.show_error = false;
+            state.show_error_form = false;
+            state.error_message = undefined;
+            state.error_title = undefined;
         }
     },
     extraReducers

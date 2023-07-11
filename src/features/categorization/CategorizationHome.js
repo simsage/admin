@@ -3,6 +3,7 @@ import React, {useEffect} from "react";
 import {loadCategorizations} from "./categorizationSlice";
 import CategorizationList from "./CategorizationList";
 import api from "../../common/api";
+import CategorizationError from "./CategorizationError";
 
 export default function CategorizationHome() {
 
@@ -33,6 +34,7 @@ export default function CategorizationHome() {
     return (
         <div className="">
             <CategorizationList />
+            <CategorizationError/>
         </div>
 
     )
