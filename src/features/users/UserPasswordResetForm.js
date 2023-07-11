@@ -2,11 +2,8 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {closeUserForm, updateUser} from "./usersSlice";
 import {useForm} from "react-hook-form";
-import SubNav from "../../includes/sub-nav";
-import {Chip} from "../../components/Chip";
-import Api from "../../common/api";
 
-export function UserPasswordResetForm(props) {
+export function UserPasswordResetForm() {
     const dispatch = useDispatch();
 
     const session = useSelector((state) => state.authReducer.session);
@@ -26,6 +23,7 @@ export function UserPasswordResetForm(props) {
             const temp_user = (user_list.filter((user) => user.id === user_id));
             setSelectedUser(temp_user.length === 1 ? temp_user[0] : {})
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user_id])
 
     function handleClose() {

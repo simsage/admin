@@ -20,7 +20,7 @@ export function UsersHome() {
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
-    const [selectedUser, setSelectedUser] = useState();
+    // const [selectedUser, setSelectedUser] = useState();
     const [searchFilter, setSearchFilter] = useState('');
     const [userFilter, setUserFilter] = useState('all-users');
 
@@ -73,17 +73,17 @@ export function UsersHome() {
     }
 
     function handleAddNewUser() {
-        setSelectedUser({});
+        // setSelectedUser({});
         dispatch(showAddUserForm(true))
     }
 
     function handleEditUser(u) {
-        setSelectedUser(u)
+        // setSelectedUser(u)
         dispatch(showEditUserForm({show: true, user_id: u.id}));
     }
 
     function handlePasswordReset(u) {
-        setSelectedUser(u)
+        // setSelectedUser(u)
         dispatch(showPasswordResetForm({show: true, user_id: u.id}));
     }
 
@@ -140,7 +140,7 @@ export function UsersHome() {
                         />
                     </div>
                     <div className="form-group me-2">
-                        <select type="text" placeholder={"Filter"} value={userFilter} autoFocus={true}
+                        <select placeholder={"Filter"} value={userFilter} autoFocus={true}
                                 className={"form-select filter-text-width " + theme}
                                 onChange={(e) => {
                                     setUserFilter(e.target.value);

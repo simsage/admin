@@ -6,7 +6,7 @@ import {useForm} from "react-hook-form";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 
-export function UserEditV2(props) {
+export function UserEditV2() {
 
     const dispatch = useDispatch();
 
@@ -41,9 +41,6 @@ export function UserEditV2(props) {
     //Form
     const {
         register,
-        clearErrors,
-        getValues,
-        setError,
         trigger,
         handleSubmit,
         formState: {errors},
@@ -54,6 +51,7 @@ export function UserEditV2(props) {
 
     useEffect(()=>{
         kbValidation();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[kbs,roles])
 
     useEffect(() => {
@@ -63,6 +61,7 @@ export function UserEditV2(props) {
         } else {
             setSelectedUser({})
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user_id])
 
     useEffect(() => {
@@ -83,6 +82,7 @@ export function UserEditV2(props) {
             setKBs([])
             setShowKBs([])
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedUser, user_id])
 
     const sub_nav = [
@@ -168,12 +168,9 @@ export function UserEditV2(props) {
 
     //Knowledge base functions
     function getKbName(kbID) {
-        console.log('test2', kbID)
-        console.log('tets3', available_KBs)
         const temp_list = available_KBs.filter((obj) => {
             return obj.kbId === kbID
         })
-        console.log('test4', temp_list)
         if (temp_list.length < 1) return "No KBs"
         return temp_list[0].name
     }
