@@ -5,7 +5,7 @@ import {Pagination} from "../../common/pagination";
 import {hasRole} from "../../common/helpers";
 import GroupEdit from "./groupEdit";
 import GroupDeleteAsk from "./GroupDeleteAsk";
-import GroupError from "./groupError";
+import groupError from "./GroupErrorDialog";
 import api from "../../common/api";
 
 
@@ -158,7 +158,7 @@ export default function GroupList(){
             </div>
             <GroupEdit/>
             <GroupDeleteAsk/>
-            <GroupError/>
+
         </div>
     )
 }

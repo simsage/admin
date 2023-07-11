@@ -1,13 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeErrorMessage} from "./groupSlice";
+import {closeErrorMessage} from "./knowledgeBaseSlice";
 
-export function groupError() {
+export function KnowledgeBaseErrorDialog() {
     const dispatch = useDispatch();
 
-    const show_error_form = useSelector((state) => state.groupReducer.show_error_form);
-    const error_title = useSelector((state) => state.groupReducer.error_title);
-    const error_message = useSelector((state) => state.groupReducer.error_message);
+    const show_error_form = useSelector((state) => state.kbReducer.show_error_form);
+    const error_title = useSelector((state) => state.kbReducer.error_title);
+    const error_message = useSelector((state) => state.kbReducer.error_message);
 
 
     const handleClose = () => {
