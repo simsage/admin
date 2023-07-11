@@ -7,11 +7,12 @@ import OpenSourceSoftwareLicenses from "../home/OpenSourceSoftwareLicenses";
 
 function handleLogin(instance) {
     instance.loginRedirect(loginRequest).catch(e => {
+        console.log(e)
     })
 }
 
 export const SignInButton = () => {
-    const image = "images/simsage-logo-no-strapline.svg";
+    // const image = "images/simsage-logo-no-strapline.svg";
     const { instance } = useMsal()
 
     const [show_license, setShowLicense] = useState(false);
@@ -32,7 +33,7 @@ export const SignInButton = () => {
 
                             <div className="d-flex justify-content-between align-items-end mb-4 pb-3 border-bottom">
                                 <div className="d-flex justify-content-between align-items-end mb-3">
-                                    <img src="images/brand/simsage-logo-no-strapline.svg" alt="" className="auth-logo" />
+                                    <img src="/images/brand/simsage-logo-no-strapline.svg" alt="" className="auth-logo" />
                                     <p className="mb-1 fw-bold auth-text-primary fst-italic">ADMIN</p>
                                 </div>
                                 <div className="version small fw-300 text-black-50 text-end">Version {window.ENV.version}</div>

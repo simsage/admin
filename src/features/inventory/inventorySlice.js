@@ -70,7 +70,7 @@ const extraReducers = (builder) => {
             state.inventory_list = action.payload;
             state.data_status = 'loaded';
         })
-        .addCase(loadInventoryList.rejected, (state, action) => {
+        .addCase(loadInventoryList.rejected, (state) => {
             state.status = "rejected"
         })
 

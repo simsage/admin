@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useIsAuthenticated, useMsal} from "@azure/msal-react";
 import {SignInButton} from "./SignInButton";
 import {useDispatch, useSelector} from "react-redux";

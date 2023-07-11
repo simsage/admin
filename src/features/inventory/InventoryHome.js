@@ -133,7 +133,7 @@ export default function InventoryHome(props) {
                         <div className="d-flex">
                             {selected_organisation_id.length > 0 &&
                                 <div className="btn" onClick={() => refresh_inventory()} >
-                                    <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh inventory-list" />
+                                    <img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh inventory-list" />
                                 </div>
                             }
                             {selected_organisation_id.length > 0 &&

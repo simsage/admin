@@ -97,6 +97,6 @@ export const homeSlice = createSlice({
     extraReducers
 });
 
-export const { selectTab, setLogHours, setLogService, setLogType, closeAllMenus, showDeleteAskForm } = homeSlice.actions;
+export const { selectTab, setLogHours, setLogService, setLogType } = homeSlice.actions;
 
 export default homeSlice.reducer;

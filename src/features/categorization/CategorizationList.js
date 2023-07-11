@@ -165,7 +165,9 @@ export default function CategorizationHome() {
                             />
                             <button className="btn btn-secondary"
                                     onClick={() => filterRecords()}
-                                    src="images/dark-magnifying-glass.svg" title="search" alt="search">
+                                    // src="images/dark-magnifying-glass.svg"
+                                    // alt="search"
+                                    title="search" >
                                 Search
                             </button>
                         </div>

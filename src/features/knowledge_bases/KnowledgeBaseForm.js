@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {useForm} from "react-hook-form";
 import Api from "../../common/api";
-import {addOrUpdate, closeForm, getKBList} from "./knowledgeBaseSlice";
+import {addOrUpdate, closeForm} from "./knowledgeBaseSlice";
 import {showErrorAlert} from "../alerts/alertSlice";
 import {KnowledgeBaseFormTab} from "./KnowledgeBaseFormTab";
 import TimeSelect from "../../common/time-select";

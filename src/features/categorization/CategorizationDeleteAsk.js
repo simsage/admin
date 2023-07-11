@@ -18,7 +18,7 @@ export default function CategorizationDeleteAsk(){
     }
 
     const handleDelete = () => {
-        const data = {"session_id": session_id, "organisation_id": organisation_id, "knowledge_base_id": knowledgeBase_id, "metadata": category.metadata };
+        // const data = {"session_id": session_id, "organisation_id": organisation_id, "knowledge_base_id": knowledgeBase_id, "metadata": category.metadata };
         dispatch(deleteCategorization({session_id: session_id, organisation_id: organisation_id, knowledge_base_id: knowledgeBase_id, categorizationLabel: category.categorizationLabel }))
         dispatch(closeDeleteForm())
     }

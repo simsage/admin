@@ -15,7 +15,7 @@ export default function GroupEdit(){
     const group_list = useSelector((state) => state.groupReducer.group_list)
     //const group_list = group_list_parent ? group_list_parent.groupList : group_list_parent;
     const full_user_list = useSelector((state) => state.usersReducer.user_list)
-    const user_count = useSelector((state) => state.usersReducer.count)
+    // const user_count = useSelector((state) => state.usersReducer.count)
 
     //group form details
     const [editName, setEditName] = useState('');
@@ -26,6 +26,7 @@ export default function GroupEdit(){
     //Get all users
     useEffect(()=> {
         dispatch(getUserListPaginated({session_id:session.id, organization_id:organisation_id,filter: null }))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 

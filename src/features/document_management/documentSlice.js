@@ -29,7 +29,7 @@ const extraReducers = (builder) => {
             state.document_list = action.payload.documentList;
             state.numDocuments = action.payload.numDocuments;
         })
-        .addCase(loadDocumentList.rejected, (state, action) => {
+        .addCase(loadDocumentList.rejected, (state) => {
             state.status = "rejected"
         })
 }

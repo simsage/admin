@@ -102,7 +102,7 @@ const authSlice = createSlice({
             }
         },
 
-        showAccount: (state, action) => {
+        showAccount: (state) => {
             const ad = !state.accounts_dropdown;
             return {
                 ...state,
@@ -127,7 +127,7 @@ const authSlice = createSlice({
                     status: "loading"
                 }
             })
-            .addCase(simsageSignIn.fulfilled, (state, action) => {
+            .addCase(simsageSignIn.fulfilled, (state) => {
                 return {
                     ...state,
                     busy: false,
@@ -194,7 +194,7 @@ export const simsageSignIn = createAsyncThunk(
 
 export const {
     reset, login, showAccount, closeAllMenus, setSelectedOrganisation, closeError,
-    setJwt, showError, setSelectedKB
+     showError, setSelectedKB
 } = authSlice.actions
 
 export default authSlice.reducer;
