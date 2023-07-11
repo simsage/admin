@@ -18,47 +18,43 @@ const initialState = {
 
 export const getGroupList = createAsyncThunk(
     'groups/getGroupList',
-    async ({session_id, organization_id}) => {
+    async ({session_id, organization_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/groups/' + encodeURIComponent(organization_id);
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data.groupList
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
 export const updateGroup = createAsyncThunk(
     'group/update',
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = '/auth/group';
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data;
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 export const deleteGroup = createAsyncThunk(
     'group/delete',
-    async ({session_id, organisation_id, name}) => {
+    async ({session_id, organisation_id, name}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + `/auth/group/${encodeURIComponent(organisation_id)}/${encodeURIComponent(name)}`;
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(error => {
-                return error
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
             })
     }
 )
@@ -75,9 +71,12 @@ const extraReducers = (builder) => {
             state.data_status = "loaded"
             state.group_list = action.payload
         })
-        .addCase(getGroupList.rejected, (state) => {
+        .addCase(getGroupList.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Group Load Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
         //UPDATE GROUPS
         .addCase(updateGroup.pending, (state) => {
@@ -88,9 +87,12 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
-        .addCase(updateGroup.rejected, (state) => {
+        .addCase(updateGroup.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
+            state.show_error_form = true
+            state.error_title = "Group Update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
         //DELETE GROUPS
         .addCase(deleteGroup.pending, (state) => {
@@ -101,9 +103,12 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
-        .addCase(deleteGroup.rejected, (state) => {
+        .addCase(deleteGroup.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
+            state.show_error_form = true
+            state.error_title = "Group Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 }
 
@@ -135,10 +140,11 @@ const groupSlice = createSlice({
             state.show_error_message = true;
             state.error_message = action.payload;
         },
-        closeErrorMessage: (state) => {
-            state.show_error_message = false;
+        closeErrorMessage: (state, action) => {
+            state.show_error_form = false;
             state.error_message = undefined;
-        }
+            state.error_title = undefined;
+        },
     },
     extraReducers
 });
