@@ -1,10 +1,10 @@
 import React, {useState} from "react";
 
-export default function SynsetFilter(props) {
+export default function SynsetFilter() {
 
     const theme = null;
 
-    const [selectedUser, setSelectedUser] = useState(null);
+    // const [selectedUser, setSelectedUser] = useState(null);
     const [searchFilter,setSearchFilter] = useState('');
     const [orderFilter,setOrderFilter] = useState('');
     const [synsetFilter,setSynsetFilter] = useState('');

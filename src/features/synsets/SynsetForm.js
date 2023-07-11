@@ -1,13 +1,11 @@
-import {useDispatch, useSelector, Controller} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {addOrUpdate, closeForm} from "./synsetSlice";
-import {useForm, useFieldArray} from "react-hook-form";
+import {useForm} from "react-hook-form";
 import React, {useEffect, useState} from "react";
 
 
 export default function SynsetForm() {
     const dispatch = useDispatch();
-    const theme = null;
-
 
     const selected_synset = useSelector((state) => state.synsetReducer.selected_synset)
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
@@ -24,14 +22,13 @@ export default function SynsetForm() {
         handleSubmit,
         watch,
         getValues,
-        formState: {errors, dirtyFields},
-        reset, control} = useForm();
+        formState: {errors},
+        reset} = useForm();
 
     const [wordCloudFields, setWordCloudFields] = useState(selected_synset ? selected_synset.wordCloudCsvList : [])
     const [word_could_error, setWordCloudError] = useState(false);
 
-    console.log("synset11 selected_synset", selected_synset)
-    console.log("synset11 wordCloudFields", wordCloudFields[0])
+    console.log("synset11 selected_synset", word_could_error)
     //set default value
     useEffect(() => {
         let defaultValues = {};
@@ -40,7 +37,7 @@ export default function SynsetForm() {
         //add two blank word cloud when adding a new syn-set
         defaultValues.wordCloudCsvList = selected_synset ? selected_synset.wordCloudCsvList : setWordCloudFields(["", ""]);
         reset({...defaultValues});
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected_synset, show_synset_form]);
 
 
@@ -51,52 +48,29 @@ export default function SynsetForm() {
         setWordCloudFields(newWordCloudFields);
     }
 
-    // // copied from edit page
-    // function updateWC(index, str) {
-    //     const cl = this.state.cloud_list;
-    //     cl[index] = str;
-    //     this.setState({cloud_list: cl});
-    // }
 
     // delete a word cloud field
     function deleteSyn(index) {
 
         let nArr = [];
         for (let i = 0; i < wordCloudFields.length; i++) {
-            if (i != index) {
+            if (i !== index) {
                 nArr.push(wordCloudFields[i]);
             }
         }
         setWordCloudFields(nArr);
     }
 
-    // when pass nothing as argument, you are watching everything
-    // const watchAllFields = watch();
-    // useEffect(() => {
-    // }, [watchAllFields]);
-
-    function validateWordCloud(index){
-        const  data = getValues()
-        console.log("synset112 ssssssss", data)
-        // let list = data.wordCloudCsvList(o => o.length > 2);
-        // if(list === undefined){
-        //     setWordCloudError(true)
-        // }
-    }
 
     //on submit store or update
     const onSubmit = data => {
-        // console.log("synset112 ssssssss", data)
         let list = data.wordCloudCsvList.filter(o => o !== '');
-        console.log("synset112 ssssssss", list.length)
         if(list.length > 1){
             setWordCloudError(true)
         }else {
             setWordCloudError(false)
         }
-        console.log("synset112 ssssssss", list)
         if(list.length > 1){
-            console.log("synset112 ssssssss", data)
             data.lemma = data.word;
             dispatch(addOrUpdate({
                 organisation_id: selected_organisation_id,
@@ -109,8 +83,7 @@ export default function SynsetForm() {
 
     };
 
-    const handleClose = (e) => {
-        // e.preventDefault();
+    const handleClose = () => {
         dispatch(closeForm());
         setWordCloudFields(['', '']);
     }
@@ -164,11 +137,10 @@ export default function SynsetForm() {
                                                     <span className="text">
                                                     <div className="form-control d-flex p-0 overflow-hidden align-items-start">
                                                         <textarea
-                                                            type="text" className="border-0 w-100 mb-0 me-2 d-block" style={{padding: "0.375rem 0.75rem"}}
+                                                            className="border-0 w-100 mb-0 me-2 d-block" style={{padding: "0.375rem 0.75rem"}}
                                                             autoComplete="false"
                                                             rows="3"
                                                             placeholder="e.g. Family, Divorce, Custody..."
-                                                            onChange={validateWordCloud }
                                                             {...register("wordCloudCsvList[" + index + "]")}
 
                                                         />
@@ -204,18 +176,13 @@ export default function SynsetForm() {
 
 
                     <div className="modal-footer px-5 pb-3">
-                        {/*<input type="hidden" {...register("lemma")} />*/}
                         <button className="btn btn-white btn-block px-4"
                                 onClick={(e) => handleClose(e)}>Cancel
                         </button>
                         <input className="btn btn-primary btn-block px-4" type="submit"/>
                     </div>
-                    {/*form ends*/
-                    }
                     </form>
 
-                    {/*{watch("word")}*/
-                    }
                 </div>
             </div>
         </div>

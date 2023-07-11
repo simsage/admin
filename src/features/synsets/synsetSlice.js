@@ -105,34 +105,34 @@ export const addDefaultSynsets = createAsyncThunk(
 
 const extraReducers = (builder) => {
     builder
-        .addCase(loadSynsets.pending, (state, action) => {
+        .addCase(loadSynsets.pending, (state) => {
             state.status = "pending"
             state.data_status = 'loading';
         })
         .addCase(loadSynsets.fulfilled, (state, action) => {
             state.status = "fulfilled"
-            state.synset_list = action.payload.list ? action.payload.list : []
-            state.synset_total_size = action.payload.totalSize ? action.payload.totalSize : 0
+            state.synset_list = action.payload && action.payload.list ? action.payload.list : []
+            state.synset_total_size = action.payload && action.payload.totalSize ? action.payload.totalSize : 0
             state.data_status = 'loaded';
         })
-        .addCase(loadSynsets.rejected, (state, action) => {
+        .addCase(loadSynsets.rejected, (state) => {
             state.status = "rejected"
         })
 
         //deleteRecord
-        .addCase(deleteRecord.pending, (state, action) => {
+        .addCase(deleteRecord.pending, (state) => {
             state.status = "loading"
         })
-        .addCase(deleteRecord.fulfilled, (state, action) => {
+        .addCase(deleteRecord.fulfilled, (state) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(deleteRecord.rejected, (state, action) => {
+        .addCase(deleteRecord.rejected, (state) => {
             state.status = "rejected"
         })
 
         //addOrUpdate
-        .addCase(addOrUpdate.pending, (state, action) => {
+        .addCase(addOrUpdate.pending, (state) => {
             state.status = "loading"
         })
         .addCase(addOrUpdate.fulfilled, (state, action) => {
@@ -145,13 +145,13 @@ const extraReducers = (builder) => {
                 state.data_status = 'load_now';
             }
         })
-        .addCase(addOrUpdate.rejected, (state, action) => {
+        .addCase(addOrUpdate.rejected, (state) => {
             state.status = "rejected"
         })
 
 
         //addDefaultSynsets
-        .addCase(addDefaultSynsets.pending, (state, action) => {
+        .addCase(addDefaultSynsets.pending, (state) => {
             state.status = "loading"
         })
         .addCase(addDefaultSynsets.fulfilled, (state, action) => {
@@ -165,7 +165,7 @@ const extraReducers = (builder) => {
                 state.data_status = 'load_now';
             }
         })
-        .addCase(addDefaultSynsets.rejected, (state, action) => {
+        .addCase(addDefaultSynsets.rejected, (state) => {
             state.status = "rejected"
             state.data_status = 'loaded';
         })
@@ -201,7 +201,7 @@ const synsetSlice = createSlice({
             state.selected_synset = undefined;
         },
 
-        showAddDefaultAskForm: (state, action) => {
+        showAddDefaultAskForm: (state) => {
             state.show_add_default_form = true;
         },
 
@@ -227,7 +227,6 @@ const synsetSlice = createSlice({
 export const {
     showAddSynSetForm,
     showEditSynSetForm,
-    closeSynSetForm,
     showDeleteSynSetForm,
     closeDeleteForm,
     showAddDefaultAskForm,
