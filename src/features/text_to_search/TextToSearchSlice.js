@@ -83,22 +83,22 @@ export const testTextToSearch = createAsyncThunk("TextToSearch/Test",
 const extraReducers = (builder) => {
     builder
         //Load data
-        .addCase(loadTextToSearch.pending, (state, action) => {
+        .addCase(loadTextToSearch.pending, (state) => {
             state.status = "pending";
             state.data_status = "loading";
         })
         .addCase(loadTextToSearch.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.data_status = "loaded";
-            state.text_to_search_list = action.payload.textToSearchList ? action.payload.textToSearchList : [];
-            state.num_of_text_to_search = action.payload.numTextToSearch ? action.payload.numTextToSearch : 0;
+            state.text_to_search_list = action.payload && action.payload.textToSearchList ? action.payload.textToSearchList : [];
+            state.num_of_text_to_search = action.payload && action.payload.numTextToSearch ? action.payload.numTextToSearch : 0;
         })
-        .addCase(loadTextToSearch.rejected, (state, action) => {
+        .addCase(loadTextToSearch.rejected, (state) => {
             state.status = "rejected"
         })
 
         //update data
-        .addCase(addOrUpdateTextToSearch.pending, (state, action) => {
+        .addCase(addOrUpdateTextToSearch.pending, (state) => {
             state.status = "pending";
             state.data_status = "loading";
         })
@@ -117,31 +117,31 @@ const extraReducers = (builder) => {
                 state.edit = undefined;
             }
         })
-        .addCase(addOrUpdateTextToSearch.rejected, (state, action) => {
+        .addCase(addOrUpdateTextToSearch.rejected, (state) => {
             state.status = "rejected"
         })
 
         //deleteRecord
-        .addCase(deleteTextToSearch.pending, (state, action) => {
+        .addCase(deleteTextToSearch.pending, (state) => {
             state.status = "loading"
         })
-        .addCase(deleteTextToSearch.fulfilled, (state, action) => {
+        .addCase(deleteTextToSearch.fulfilled, (state) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(deleteTextToSearch.rejected, (state, action) => {
+        .addCase(deleteTextToSearch.rejected, (state) => {
             state.status = "rejected"
         })
 
         //TestRecord
-        .addCase(testTextToSearch.pending, (state, action) => {
+        .addCase(testTextToSearch.pending, (state) => {
             state.status = "loading"
         })
         .addCase(testTextToSearch.fulfilled, (state, action) => {
             state.status = "fulfilled"
             state.test_response = action.payload.text ? action.payload.text : ''
         })
-        .addCase(testTextToSearch.rejected, (state, action) => {
+        .addCase(testTextToSearch.rejected, (state) => {
             state.status = "rejected"
         })
 };
@@ -157,7 +157,7 @@ const textToSearchSlice = createSlice({
             state.show_text_to_search_form = true;
             state.edit = action.payload;
         },
-        closeEditForm: (state, action) => {
+        closeEditForm: (state) => {
             state.show_text_to_search_form = false;
             state.edit = undefined;
             state.show_error_form = false;
@@ -172,10 +172,10 @@ const textToSearchSlice = createSlice({
             state.show_delete_form = false;
             state.edit = undefined;
         },
-        showTestForm: (state, action) => {
+        showTestForm: (state) => {
             state.show_test_form = true;
         },
-        closeTestForm: (state, action) => {
+        closeTestForm: (state) => {
             state.show_test_form = false;
         }
     },

@@ -90,7 +90,7 @@ const TextToSearchList = () => {
         dispatch(showEditForm(obj));
     }
 
-    function handleAdd(e) {
+    function handleAdd() {
         dispatch(showAddForm());
     }
 
@@ -126,7 +126,7 @@ const TextToSearchList = () => {
                     </div>
 
                     <div className="form-group d-flex ms-auto">
-                        <button className="btn btn-outline-primary text-nowrap ms-2" onClick={(e) => handleTest()}>
+                        <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleTest()}>
                             Test Advanced Query Language Parts
                         </button>
 
