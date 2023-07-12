@@ -18,6 +18,7 @@ import BkOrganisationBackupDeleteDialog from "./BkOrganisationBackupDeleteDialog
 import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDialog";
 import {OrganisationViewId} from "./OrganisationViewId";
 import OrganisationDeleteAsk from "./OrganisationDeleteAsk";
+import OrganisationError from "./OrganisationError";
 import BkOrganisationRestore from "./BkOrganisationRestore";
 import {hasRole} from "../../common/helpers";
 import api from "../../common/api";

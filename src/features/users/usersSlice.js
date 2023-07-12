@@ -97,7 +97,7 @@ const extraReducers = (builder) => {
             state.count = action.payload.userCount?action.payload.userCount:0
             state.data_status = "loaded"
         })
-        .addCase(getUserListPaginated.rejected, (state) => {
+        .addCase(getUserListPaginated.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected"
             state.show_error_form = true
@@ -121,7 +121,7 @@ const extraReducers = (builder) => {
             }
 
         })
-        .addCase(updateUser.rejected, (state) => {
+        .addCase(updateUser.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
             state.show_error_form = true
@@ -139,7 +139,7 @@ const extraReducers = (builder) => {
             state.data_status = "load_now"
             state.show_user_bulk_form = false;
         })
-        .addCase(bulkUpdateUser.rejected, (state) => {
+        .addCase(bulkUpdateUser.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
             state.show_error_form = true
@@ -156,7 +156,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = "load_now"
         })
-        .addCase(deleteUser.rejected, (state) => {
+        .addCase(deleteUser.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = "rejected";
             state.show_error_form = true
