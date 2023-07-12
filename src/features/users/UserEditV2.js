@@ -27,6 +27,7 @@ export function UserEditV2() {
     const [kbs, setKBs] = useState([]);
     const [showKbs, setShowKBs] = useState(false);
     const [selectedUser, setSelectedUser] = useState({})
+    const [sso, setSso] = useState(false);
 
     //filters
     const [roleFilter, setRoleFilter] = useState('');
@@ -277,8 +278,14 @@ export function UserEditV2() {
         setSelectedTab('details')
     }
 
+    function allowSSO() {
+
+    }
+
 
     const onSubmit = data => {
+
+
         if(kb_error === false){
             const session_id = session.id;
             data = {
@@ -384,8 +391,18 @@ export function UserEditV2() {
                                                         className="text-danger fst-italic small">{error_message}</span>}
                                             </div>
                                         </div>
+                                                <div className="form-check form-switch">
+                                                    <label className="form-check-label">SSO</label>
+                                                    <input className="form-check-input"
+                                                           type="checkbox"
+                                                           checked={sso}
+                                                           onChange={()=> {
+                                                                console.log('switching', sso)
+                                                                setSso(!sso)}
+                                                            }/>
+                                                </div>
 
-                                        {!user_id &&
+                                        {!user_id && !sso &&
                                             <div className="row mb-3">
                                                 <div className="control-row col-6">
                                                     <label className="label-2 small">Password</label>
