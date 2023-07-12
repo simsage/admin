@@ -3,6 +3,7 @@ import React, {useEffect} from "react";
 import {getGroupList} from "./groupSlice";
 import GroupList from "./GroupList";
 import GroupIntro from "./GroupIntro";
+import {GroupErrorDialog} from "./GroupErrorDialog";
 
 
 export default function SynonymsHome() {
@@ -38,6 +39,8 @@ export default function SynonymsHome() {
                 <GroupList />
 
             }
+
+            <GroupErrorDialog/>
         </div>
     )
 }

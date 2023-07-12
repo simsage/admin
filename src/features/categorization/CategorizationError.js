@@ -5,14 +5,16 @@ import {closeErrorForm} from "./categorizationSlice";
 export default function CategorizationError(){
 
     const dispatch = useDispatch();
-    const show_error = useSelector((state) => state.categorizationReducer.show_error)
-    const error = useSelector((state) => state.categorizationReducer.error)
+
+    const show_error_form = useSelector((state) => state.categorizationReducer.show_error_form);
+    const error_title = useSelector((state) => state.categorizationReducer.error_title);
+    const error_message = useSelector((state) => state.categorizationReducer.error_message);
 
     const handleOk = () => {
         dispatch(closeErrorForm());
     }
 
-    if (!show_error)
+    if (!show_error_form)
         return (<div />);
     return (
         <div>
@@ -21,11 +23,11 @@ export default function CategorizationError(){
                     <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">Error</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">{error_title}</h5>
                         </div>
                         <div className="modal-body">
                             <div className="control-row">
-                                <span className="label-wide">{error}</span>
+                                <span className="label-wide">{error_message}</span>
                             </div>
                         </div>
                         <div className="modal-footer">

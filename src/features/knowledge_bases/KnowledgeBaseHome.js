@@ -8,6 +8,7 @@ import KnowledgeBaseOptimize from "./KnowledgeBaseOptimize";
 import KnowledgeBaseViewIds from "./KnowledgeBaseViewIds";
 import {getKBList} from "./knowledgeBaseSlice";
 import KnowledgeBaseTruncateIndexes from "./KnowledgeBaseTruncateIndexes";
+import {KnowledgeBaseErrorDialog} from "./KnowledgeBaseErrorDialog";
 
 
 export default function KnowledgeBaseHome() {
@@ -62,6 +63,8 @@ export default function KnowledgeBaseHome() {
             {kb_show_truncate_indexes_form === true &&
                 <KnowledgeBaseTruncateIndexes />
             }
+
+            <KnowledgeBaseErrorDialog/>
 
         </div>
     )

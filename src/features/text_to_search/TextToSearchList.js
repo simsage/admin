@@ -6,6 +6,7 @@ import {TextToSearchEdit} from "./TextToSearchEdit";
 import TextToSearchDeleteAsk from "./TextToSearchDeleteAsk";
 import TextToSearchTest from "./TextToSearchTest";
 import api from "../../common/api";
+import {TextToSearchErrorDialog} from "./TestToSearchErrorDialog";
 
 
 const TextToSearchList = () => {

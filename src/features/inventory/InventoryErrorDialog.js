@@ -1,13 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeErrorMessage} from "./sourceSlice";
+import {closeErrorMessage} from "./inventorySlice";
 
-export function SourceErrorDialog() {
+export function InventoryErrorDialog() {
     const dispatch = useDispatch();
 
-    const show_error_form = useSelector((state) => state.sourceReducer.show_error_form);
-    const error_title = useSelector((state) => state.sourceReducer.error_title);
-    const error_message = useSelector((state) => state.sourceReducer.error_message);
+    const show_error_form = useSelector((state) => state.inventoryReducer.show_error_form);
+    const error_title = useSelector((state) => state.inventoryReducer.error_title);
+    const error_message = useSelector((state) => state.inventoryReducer.error_message);
 
 
     const handleClose = () => {

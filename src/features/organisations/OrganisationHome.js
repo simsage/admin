@@ -240,7 +240,7 @@ export function OrganisationHome() {
 
                 <OrganisationDeleteAsk/>
 
-                {/*<OrganisationError/>*/}
+                <OrganisationError/>
 
                 <BkOrganisationBackupHome/>
 

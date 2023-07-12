@@ -105,7 +105,6 @@ export function CategorizationEdit(){
                     </form>
                 </div>
             </div>
-            <CategorizationError />
         </div>
     )
 }

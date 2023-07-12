@@ -31,7 +31,7 @@ const initialState = {
 
 
 export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
-    async ({session_id, organisation_id, kb_id, page, filter, page_size}) => {
+    async ({session_id, organisation_id, kb_id, page, filter, page_size}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/find-syn-sets';
         const data = {
@@ -44,62 +44,54 @@ export const loadSynsets = createAsyncThunk("synsets/loadSynsets",
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     })
 
 
 ///api/language/save-syn-set/{organisationId}/{kbId}
 export const addOrUpdate = createAsyncThunk(
     "synsets/addOrUpdate",
-    async ({organisation_id, kb_id, session_id, data}) => {
+    async ({organisation_id, kb_id, session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     })
 
 
 ///api/language/delete-syn-set/{organisationId}/{kbId}/{lemma}
 export const deleteRecord = createAsyncThunk(
     "synsets/deleteRecord",
-    async ({organisation_id, kb_id, session_id, lemma}) => {
+    async ({organisation_id, kb_id, session_id, lemma}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/delete-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(lemma);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     })
 
 
 // /api/language/default-syn-sets/{organisationId}/{kbId}
 export const addDefaultSynsets = createAsyncThunk(
     "synsets/addDefaultSynsets",
-    async ({organisation_id, kb_id, session_id, data}) => {
+    async ({organisation_id, kb_id, session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/language/default-syn-sets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     })
 
 
@@ -117,6 +109,9 @@ const extraReducers = (builder) => {
         })
         .addCase(loadSynsets.rejected, (state) => {
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "SynSet Load Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //deleteRecord
@@ -129,6 +124,9 @@ const extraReducers = (builder) => {
         })
         .addCase(deleteRecord.rejected, (state) => {
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Test Query Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //addOrUpdate
@@ -136,17 +134,14 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(addOrUpdate.fulfilled, (state, action) => {
-            if (action && action.payload && action.payload.code === "ERR_BAD_RESPONSE") {
-                state.error = action.payload.response.data.error;
-                state.status = "rejected";
-                state.show_error_form = true;
-            } else {
                 state.status = "fulfilled";
                 state.data_status = 'load_now';
-            }
         })
         .addCase(addOrUpdate.rejected, (state) => {
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "SynSet update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 
@@ -155,19 +150,15 @@ const extraReducers = (builder) => {
             state.status = "loading"
         })
         .addCase(addDefaultSynsets.fulfilled, (state, action) => {
-
-            if (action && action.payload && (action.payload.code === "ERR_BAD_RESPONSE" || action.payload.code === "ERR_BAD_REQUEST")) {
-                state.error = action.payload.response.data.error;
-                state.status = "rejected"
-                state.show_error_form = true;
-            } else {
                 state.status = "fulfilled"
                 state.data_status = 'load_now';
-            }
         })
         .addCase(addDefaultSynsets.rejected, (state) => {
             state.status = "rejected"
             state.data_status = 'loaded';
+            state.show_error_form = true
+            state.error_title = "SynSet Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
 
@@ -216,15 +207,19 @@ const synsetSlice = createSlice({
             state.show_synset_form = false;
             state.show_delete_form = false;
             state.show_add_default_form = false;
+        },
+        closeErrorMessage: (state, action) => {
             state.show_error_form = false;
-            state.selected_synset = undefined;
-        }
+            state.error_message = undefined;
+            state.error_title = undefined;
+        },
 
     },
     extraReducers
 });
 
 export const {
+    closeErrorMessage,
     showAddSynSetForm,
     showEditSynSetForm,
     showDeleteSynSetForm,

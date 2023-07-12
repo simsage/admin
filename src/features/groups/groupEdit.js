@@ -70,7 +70,7 @@ export default function GroupEdit(){
     }
 
     const handleSave = () => {
-        if( !editName ) { alert('Invalid Name')}
+        // if( !editName ) { alert('Invalid Name')}
         //begin saving group
         const session_id = session.id;
         const data = {

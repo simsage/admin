@@ -14,6 +14,7 @@ import {InventoryDeleteDialog} from "./InventoryDeleteDialog";
 import {Pagination} from "../../common/pagination";
 import api from "../../common/api";
 import InventorySuccessMessage from "./InventorySuccessMessage";
+import {InventoryErrorDialog} from "./InventoryErrorDialog";
 
 
 export default function InventoryHome(props) {
@@ -243,6 +244,7 @@ export default function InventoryHome(props) {
                 (show_add_info_form === 'index' || show_add_info_form === 'doc') &&
                 <InventorySuccessMessage/>
             }
+            <InventoryErrorDialog/>
         </div>
     )
 }

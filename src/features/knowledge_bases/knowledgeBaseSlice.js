@@ -48,10 +48,13 @@ const extraReducers = (builder) => {
             state.kb_original_list = action.payload;
             state.data_status = 'loaded';
         })
-        .addCase(getKBList.rejected, (state) => {
+        .addCase(getKBList.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected";
             state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "KnowledgeBase Load Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //deleteRecord
@@ -64,9 +67,12 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(deleteRecord.rejected, (state) => {
+        .addCase(deleteRecord.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "KnowledgeBase Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //addOrUpdate
@@ -79,9 +85,12 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(addOrUpdate.rejected, (state) => {
+        .addCase(addOrUpdate.rejected, (state, action) => {
             state.busy = false;
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "KnowledgeBase Update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 }
 
@@ -133,6 +142,11 @@ const knowledgeBaseSlice = createSlice({
             state.show_truncate_indexes_form = false;
             state.truncate_indexes_data = null;
         },
+        closeErrorMessage: (state, action) => {
+            state.show_error_form = false;
+            state.error_message = undefined;
+            state.error_title = undefined;
+        },
         //
         search: (state, action) => {
 
@@ -177,40 +191,37 @@ const knowledgeBaseSlice = createSlice({
 
 export const getKBList = createAsyncThunk(
     'knowledgeBases/getKBList',
-    async ({session_id, organization_id}) => {
+    async ({session_id, organization_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/knowledgebase/' + encodeURIComponent(organization_id);
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
 export const deleteRecord = createAsyncThunk(
     'knowledgeBases/deleteRecord',
-    async ({session_id, organisation_id, kb_id}) => {
+    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/knowledgebase/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 export const addOrUpdate = createAsyncThunk(
     'knowledgeBases/addOrUpdate',
-    async ({session_id, data}) => {
+
+    async ({session_id, data},{rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + '/knowledgebase/save';
@@ -218,18 +229,17 @@ export const addOrUpdate = createAsyncThunk(
             .then((response) => {
                 // thunkAPI.dispatch(updateKB(response.data));
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 
 export const optimizeIndexes = createAsyncThunk(
     'knowledgeBases/optimizeIndexes',
-    async ({session_id, organisation_id, kb_id}) => {
+
+    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
         const data = {"organisationId": organisation_id, "kbId": kb_id}
         const api_base = window.ENV.api_base;
         const url = '/language/optimize-indexes';
@@ -237,35 +247,35 @@ export const optimizeIndexes = createAsyncThunk(
             .then((response) => {
                 // thunkAPI.dispatch(updateKB(response.data));
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 
 export const truncateSlowIndexes = createAsyncThunk(
     'knowledgeBases/truncateSlowIndexes',
-    async ({session_id, organisation_id, kb_id}) => {
+
+    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
+
         const api_base = window.ENV.api_base;
         const url = '/language/truncate-slow-indexes/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 
 export const {
-    showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
-    setViewIds, showOptimizeAskDialog, closeOptimize, search,
+
+    closeErrorMessage,showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
+    setViewIds, showOptimizeAskDialog, closeOptimize, updateKB, search, orderBy,
+
     showTruncateIndexesAskDialog, closeTruncateIndexes
 } = knowledgeBaseSlice.actions
 export default knowledgeBaseSlice.reducer;

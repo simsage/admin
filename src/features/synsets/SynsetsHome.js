@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect} from "react";
 import {loadSynsets} from "./synsetSlice";
 import SynsetList from "./SynsetList";
+import {SynsetErrorDialog} from "./SynsetErrorDialog";
 
 export default function SynsetHome() {
 
@@ -24,6 +25,7 @@ export default function SynsetHome() {
             {status !== null &&
                 <SynsetList />
             }
+            <SynsetErrorDialog/>
         </div>
     )
 }

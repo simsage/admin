@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {loadTextToSearch} from "./TextToSearchSlice";
 import TextToSearchList from "./TextToSearchList";
+import {TextToSearchErrorDialog} from "./TestToSearchErrorDialog";
 
 const TextToSearchHome = () => {
 
@@ -40,6 +41,7 @@ const TextToSearchHome = () => {
             {/*}*/}
 
             <TextToSearchList/>
+            <TextToSearchErrorDialog/>
         </div>
     )
 };

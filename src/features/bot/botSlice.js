@@ -19,7 +19,7 @@ const initialState = {
 
 export const loadMindItems = createAsyncThunk(
     "bot/loadMindItems",
-    async ({session_id, data}) => {
+    async ({session_id, data}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + '/mind/memories';
@@ -27,17 +27,15 @@ export const loadMindItems = createAsyncThunk(
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 export const updateMindItem = createAsyncThunk(
     'bot/updateMindItem',
-    async ({session_id, organisation_id, knowledge_base_id, data}) => {
+    async ({session_id, organisation_id, knowledge_base_id, data}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/mind/memory/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}`
@@ -45,44 +43,38 @@ export const updateMindItem = createAsyncThunk(
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
 export const deleteMindItem = createAsyncThunk(
     'bot/deleteMindItem',
-    async ({session_id, organisation_id, knowledge_base_id, id}) => {
+    async ({session_id, organisation_id, knowledge_base_id, id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + `/mind/memory/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(id)}`;
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 export const deleteAllMindItems = createAsyncThunk(
     'bot/deleteAllMindItem',
-    async ({session_id, organisation_id, knowledgeBase_id}) => {
+    async ({session_id, organisation_id, knowledgeBase_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + `/mind/delete-all/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}`;
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
     }
 )
 
@@ -90,18 +82,16 @@ export const deleteAllMindItems = createAsyncThunk(
 ///api/knowledgebase/upload
 export const importBotItems = createAsyncThunk(
     'bot/importBotItems',
-    async ({session_id,data}) => {
+    async ({session_id,data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/knowledgebase/upload';
 
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch(
-                (error) => {
-                    return error
-                }
-            )
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
 
     }
 )
@@ -122,6 +112,9 @@ const extraReducers = (builder) => {
         .addCase(loadMindItems.rejected, (state) => {
             state.status = "rejected"
             state.data_status = 'rejected';
+            state.show_error_form = true
+            state.error_title = "Bot Load Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
         //update memory
@@ -137,6 +130,9 @@ const extraReducers = (builder) => {
         })
         .addCase(updateMindItem.rejected, (state) => {
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Bot Update Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
         //delete memory
         .addCase(deleteMindItem.pending, (state) => {
@@ -150,6 +146,9 @@ const extraReducers = (builder) => {
         })
         .addCase(deleteMindItem.rejected, (state) => {
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Bot Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
         //delete all memories
         .addCase(deleteAllMindItems.pending, (state) => {
@@ -163,6 +162,9 @@ const extraReducers = (builder) => {
         })
         .addCase(deleteAllMindItems.rejected, (state) => {
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Bot Delete Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
         .addCase(importBotItems.pending, (state) => {
             state.status = "pending";
@@ -172,8 +174,11 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(importBotItems.rejected, (state) => {
+        .addCase(importBotItems.rejected, (state, action) => {
             state.status = "rejected"
+            state.show_error_form = true
+            state.error_title = "Bot Import Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 }
 
@@ -216,12 +221,18 @@ const botSlice = createSlice({
         showAddInfoForm(state, action) {
             state.show_add_info_form = action.payload
         },
+        closeErrorMessage: (state, action) => {
+            state.show_error_form = false;
+            state.error_message = undefined;
+            state.error_title = undefined;
+        },
     },
     extraReducers
 })
 
 
 export const {
+    closeErrorMessage,
     showAddInfoForm, showEditMemoryForm, showAddMemoryForm, closeMemoryForm, showDeleteMemoryForm,
     closeDeleteForm, closeForm, showBotImportForm, closeBotImportForm
 } = botSlice.actions

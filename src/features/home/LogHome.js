@@ -2,6 +2,7 @@ import React, {useEffect, useState, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
 import {getLogs, setLogHours, setLogType, setLogService} from "./homeSlice";
+import {LogErrorDialog} from "./LogErrorDialog";
 
 const service_list = [
     {"key": "All", "value": "All services"},
@@ -186,7 +187,7 @@ export default function LogHome(){
             <br />
             <div className="log-list-overflow overflow-auto h-100 px-5 pb-4 d-flex flex-column">
                 {
-                    log_list && log_list.map((line, j) => {
+                    log_list?.length > 0 && log_list.map((line, j) => {
                         return (<div key={j} className="log-line py-2 border-bottom w-100 d-flex flex-column" id={line.created}>
                                     <div>
                                         <span className={'me-2 text-black-50 small log-type-width ' + getClassForType(line.type)}>{line.type}</span>
@@ -199,6 +200,7 @@ export default function LogHome(){
                 }
                 <div ref={lastItemRef}></div>
             </div>
+            <LogErrorDialog/>
         </div>
     )
 }

@@ -1,13 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
-import {closeErrorMessage} from "./sourceSlice";
+import {closeErrorMessage} from "./homeSlice";
 
-export function SourceErrorDialog() {
+export function LogErrorDialog() {
     const dispatch = useDispatch();
 
-    const show_error_form = useSelector((state) => state.sourceReducer.show_error_form);
-    const error_title = useSelector((state) => state.sourceReducer.error_title);
-    const error_message = useSelector((state) => state.sourceReducer.error_message);
+    const show_error_form = useSelector((state) => state.homeReducer.show_error_form);
+    const error_title = useSelector((state) => state.homeReducer.error_title);
+    const error_message = useSelector((state) => state.homeReducer.error_message);
 
 
     const handleClose = () => {

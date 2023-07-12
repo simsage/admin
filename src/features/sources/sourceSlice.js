@@ -106,6 +106,12 @@ const reducers = {
         state.error = false;
     },
 
+    closeErrorMessage: (state, action) => {
+      state.show_error_form = false;
+      state.error_message = undefined;
+      state.error_title = undefined;
+    },
+
     setSelectedSourceTab: (state, action) => {
         state.selected_source_tab = action.payload
     },
@@ -181,23 +187,10 @@ const extraReducers = (builder) => {
 
         .addCase(updateSources.fulfilled, (state, action) => {
             state.busy = false;
-            // state.show_import_form = false
-            // state.show_data_form = false;
-            // state.selected_source = null;
+            state.show_import_form = false
+            state.show_data_form = false;
+            state.selected_source = null;
             state.data_status = 'load_now';
-
-            // if (action.payload.code === "ERR_BAD_RESPONSE") {
-            //     // if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
-            //     state.show_error_form = true
-            //     state.error_title = "Error"
-            //     state.error_message = action.payload.response.data.error
-            //
-            // } else {
-            //     state.show_import_form = false
-            //     state.show_data_form = false;
-            //     state.selected_source = null;
-            //     state.data_status = 'load_now';
-            // }
         })
 
         .addCase(updateSources.rejected, (state, action) => {
@@ -495,7 +488,7 @@ const sourceSlice = createSlice({
 });
 
 export const {
-    closeTestMessage, showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
+    closeErrorMessage, closeTestMessage, showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
     showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert, searchSource
 } = sourceSlice.actions
 export default sourceSlice.reducer;
