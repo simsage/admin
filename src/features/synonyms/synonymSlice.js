@@ -75,7 +75,7 @@ const extraReducers = (builder) => {
             state.num_synonyms = action.payload.numSynonyms?action.payload.numSynonyms:0;
             state.data_status = 'loaded';
         })
-        .addCase(loadSynonyms.rejected, (state) => {
+        .addCase(loadSynonyms.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = 'rejected';
             state.show_error_form = true
@@ -93,7 +93,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(updateSynonyms.rejected, (state) => {
+        .addCase(updateSynonyms.rejected, (state, action) => {
             state.status = "rejected";
             state.data_status = 'rejected';
             state.show_error_form = true
@@ -109,7 +109,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(deleteSynonym.rejected, (state) => {
+        .addCase(deleteSynonym.rejected, (state, action) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "Synonym Delete Failed"

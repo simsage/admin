@@ -77,7 +77,7 @@ const extraReducers = (builder) => {
             state.num_semantics = action.payload.numSemantics?action.payload.numSemantics:0;
             state.data_status = "loaded";
         })
-        .addCase(loadSemantics.rejected, (state) => {
+        .addCase(loadSemantics.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected";
             state.show_error_form = true
@@ -94,7 +94,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
-        .addCase(updateSemantics.rejected, (state) => {
+        .addCase(updateSemantics.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected";
             state.show_error_form = true

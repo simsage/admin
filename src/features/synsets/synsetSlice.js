@@ -107,7 +107,7 @@ const extraReducers = (builder) => {
             state.synset_total_size = action.payload && action.payload.totalSize ? action.payload.totalSize : 0
             state.data_status = 'loaded';
         })
-        .addCase(loadSynsets.rejected, (state) => {
+        .addCase(loadSynsets.rejected, (state, action) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "SynSet Load Failed"
@@ -122,7 +122,7 @@ const extraReducers = (builder) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(deleteRecord.rejected, (state) => {
+        .addCase(deleteRecord.rejected, (state, action) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "Test Query Failed"
@@ -133,11 +133,11 @@ const extraReducers = (builder) => {
         .addCase(addOrUpdate.pending, (state) => {
             state.status = "loading"
         })
-        .addCase(addOrUpdate.fulfilled, (state, action) => {
+        .addCase(addOrUpdate.fulfilled, (state) => {
                 state.status = "fulfilled";
                 state.data_status = 'load_now';
         })
-        .addCase(addOrUpdate.rejected, (state) => {
+        .addCase(addOrUpdate.rejected, (state, action) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "SynSet update Failed"
@@ -149,11 +149,11 @@ const extraReducers = (builder) => {
         .addCase(addDefaultSynsets.pending, (state) => {
             state.status = "loading"
         })
-        .addCase(addDefaultSynsets.fulfilled, (state, action) => {
+        .addCase(addDefaultSynsets.fulfilled, (state) => {
                 state.status = "fulfilled"
                 state.data_status = 'load_now';
         })
-        .addCase(addDefaultSynsets.rejected, (state) => {
+        .addCase(addDefaultSynsets.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = 'loaded';
             state.show_error_form = true
@@ -208,7 +208,7 @@ const synsetSlice = createSlice({
             state.show_delete_form = false;
             state.show_add_default_form = false;
         },
-        closeErrorMessage: (state, action) => {
+        closeErrorMessage: (state) => {
             state.show_error_form = false;
             state.error_message = undefined;
             state.error_title = undefined;

@@ -109,7 +109,7 @@ const extraReducers = (builder) => {
             state.total_mind_items = action.payload.numMemories;
             state.data_status = 'loaded';
         })
-        .addCase(loadMindItems.rejected, (state) => {
+        .addCase(loadMindItems.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = 'rejected';
             state.show_error_form = true
@@ -128,7 +128,7 @@ const extraReducers = (builder) => {
             state.show_add_info_form = true;
 
         })
-        .addCase(updateMindItem.rejected, (state) => {
+        .addCase(updateMindItem.rejected, (state, action) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "Bot Update Failed"
@@ -144,7 +144,7 @@ const extraReducers = (builder) => {
             state.data_status = 'load_now';
 
         })
-        .addCase(deleteMindItem.rejected, (state) => {
+        .addCase(deleteMindItem.rejected, (state, action) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "Bot Delete Failed"
@@ -160,7 +160,7 @@ const extraReducers = (builder) => {
             state.data_status = 'load_now';
 
         })
-        .addCase(deleteAllMindItems.rejected, (state) => {
+        .addCase(deleteAllMindItems.rejected, (state, action) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "Bot Delete Failed"
@@ -221,7 +221,7 @@ const botSlice = createSlice({
         showAddInfoForm(state, action) {
             state.show_add_info_form = action.payload
         },
-        closeErrorMessage: (state, action) => {
+        closeErrorMessage: (state) => {
             state.show_error_form = false;
             state.error_message = undefined;
             state.error_title = undefined;
