@@ -53,7 +53,7 @@ export function UserEditV2() {
     useEffect(()=>{
         kbValidation();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[kbs,roles])
+    },[kbs])
 
     useEffect(() => {
         if (user_id) {
@@ -74,14 +74,14 @@ export function UserEditV2() {
             setKBs(!selectedUser.operatorKBList ? [] : selectedUser.operatorKBList.filter(KBObj => {
                 return KBObj.organisationId === organisation_id
             }))
-            setShowKBs(!selectedUser.roles ? [] : selectedUser.roles.filter(roleObj => {
+            setShowKBs(!selectedUser.roles ? false : selectedUser.roles.filter(roleObj => {
                 return roleObj.organisationId === organisation_id
             }).map(r => r.role).includes('operator'))
         } else {
             setRoles([])
             setGroups([])
             setKBs([])
-            setShowKBs([])
+            setShowKBs(false)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedUser, user_id])
@@ -221,6 +221,7 @@ export function UserEditV2() {
     }
 
     function kbValidation() {
+        console.log('here', showKbs)
         if (showKbs && kbs.length < 1) {
             setKBError(true);
         } else {
