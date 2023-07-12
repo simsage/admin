@@ -174,19 +174,17 @@ const textToSearchSlice = createSlice({
         },
         closeTestForm: (state) => {
             state.show_test_form = false;
-        }
+        },
+        closeErrorMessage: (state, action) => {
+            state.show_error_form = false;
+            state.error_message = undefined;
+            state.error_title = undefined;
+        },
     },
-      closeErrorMessage: (state, action) => {
-          state.show_error_form = false;
-          state.error_message = undefined;
-          state.error_title = undefined;
-      },
   },
   extraReducers
-});
+);
 
 export const {closeErrorMessage, showAddForm, showEditForm, closeEditForm, showDeleteForm, closeDeleteForm, showTestForm, closeTestForm} = textToSearchSlice.actions;
-    extraReducers
-});
 
 export default textToSearchSlice.reducer;
