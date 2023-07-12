@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import React, {useState, useEffect} from "react";
+import React, {useEffect} from "react";
 import {closeSemanticForm, updateSemantics} from "./semanticSlice";
 import {useForm} from "react-hook-form";
 
@@ -15,9 +15,9 @@ export function SemanticEdit(){
     const selectedSemantic = useSelector( (state) => state.semanticReducer.edit);
 
     //Memory details
-    const [word, setWord] = useState('');
-    const [semantic, setSemantic] = useState('');
-    const [error, setError] = useState('');
+    // const [word, setWord] = useState('');
+    // const [semantic, setSemantic] = useState('');
+    // const [error, setError] = useState('');
     // Grab memory details if editing
 
     const {register, handleSubmit, formState: {errors}, reset} = useForm();
@@ -28,6 +28,7 @@ export function SemanticEdit(){
         defaultValues.word = selectedSemantic ? selectedSemantic.word : '';
         defaultValues.semantic = selectedSemantic ? selectedSemantic.semantic : '';
         reset({...defaultValues});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_semantic_form,selectedSemantic])
 
 

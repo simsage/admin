@@ -14,7 +14,7 @@ import {selectTab} from "../features/home/homeSlice";
  * this is the main DMS page
  */
 
-const AccountDropdown = (props) => {
+const AccountDropdown = () => {
 
     const { instance } = useMsal();
     const dispatch = useDispatch();
@@ -70,7 +70,7 @@ const AccountDropdown = (props) => {
                                 <span className="organisation-menu-item pointer-cursor" title={"select " + item.name} style={{"width": "90%", "padding": "10px"}}
                                       onClick={() => handleSelectOrganisation(session.id, item)}>{item.name}</span>
                                 <span className="p-2 org-settings pointer-cursor" onClick={() => handleEditOrganisation(item.id)} title={"edit " + item.name}>
-                                    <img src="images/icon/icon_setting.svg"
+                                    <img src="/images/icon/icon_setting.svg"
                                      alt="edit"
                                      className="sb-icon"/>
                                 </span>

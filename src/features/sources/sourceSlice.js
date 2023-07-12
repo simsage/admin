@@ -191,19 +191,6 @@ const extraReducers = (builder) => {
             state.show_data_form = false;
             state.selected_source = null;
             state.data_status = 'load_now';
-
-            // if (action.payload.code === "ERR_BAD_RESPONSE") {
-            //     // if (action.payload.response && action.payload.response.data && action.payload.response.data.error) {
-            //     state.show_error_form = true
-            //     state.error_title = "Error"
-            //     state.error_message = action.payload.response.data.error
-            //
-            // } else {
-            //     state.show_import_form = false
-            //     state.show_data_form = false;
-            //     state.selected_source = null;
-            //     state.data_status = 'load_now';
-            // }
         })
 
         .addCase(updateSources.rejected, (state, action) => {

@@ -1,18 +1,18 @@
 import React, {useState} from "react";
 
-export default function SynsetFilter(props) {
+export default function SemanticsFilter() {
 
     const theme = null;
 
-    const [selectedUser, setSelectedUser] = useState(null);
+    // const [selectedUser, setSelectedUser] = useState(null);
     const [searchFilter,setSearchFilter] = useState('');
     const [orderFilter,setOrderFilter] = useState('');
-    const [synsetFilter,setSynsetFilter] = useState('');
+    const [semanticsFilter,setSemanticsFilter] = useState('');
 
     function handleSearchTextKeydown(e) {
     }
 
-    function handleAddNew() {
+    function handleAddNew(){
     }
 
 
@@ -33,9 +33,9 @@ export default function SynsetFilter(props) {
 
                 </div>
                 <div className="form-group me-2">
-                    <select type="text" placeholder={"Filter"} value={synsetFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
-                            onChange={(e) => setSynsetFilter(e.target.value)}>
-                        <option value="all-users">All Synsets</option>
+                    <select placeholder={"Filter"} value={semanticsFilter} autoFocus={true} className={"form-select filter-text-width " + theme}
+                            onChange={(e) => setSemanticsFilter(e.target.value)}>
+                        <option value="all-users">All Semantics</option>
                     </select>
                 </div>
             </div>

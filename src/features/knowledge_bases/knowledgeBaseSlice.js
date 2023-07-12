@@ -62,7 +62,7 @@ const extraReducers = (builder) => {
             state.busy = true;
             state.status = "loading"
         })
-        .addCase(deleteRecord.fulfilled, (state, action) => {
+        .addCase(deleteRecord.fulfilled, (state) => {
             state.busy = false;
             state.status = "fulfilled"
             state.data_status = 'load_now';
@@ -80,7 +80,7 @@ const extraReducers = (builder) => {
             state.busy = true;
             state.status = "loading"
         })
-        .addCase(addOrUpdate.fulfilled, (state, action) => {
+        .addCase(addOrUpdate.fulfilled, (state) => {
             state.busy = false;
             state.status = "fulfilled"
             state.data_status = 'load_now';
@@ -220,6 +220,7 @@ export const deleteRecord = createAsyncThunk(
 
 export const addOrUpdate = createAsyncThunk(
     'knowledgeBases/addOrUpdate',
+
     async ({session_id, data},{rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
@@ -237,6 +238,7 @@ export const addOrUpdate = createAsyncThunk(
 
 export const optimizeIndexes = createAsyncThunk(
     'knowledgeBases/optimizeIndexes',
+
     async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
         const data = {"organisationId": organisation_id, "kbId": kb_id}
         const api_base = window.ENV.api_base;
@@ -254,7 +256,9 @@ export const optimizeIndexes = createAsyncThunk(
 
 export const truncateSlowIndexes = createAsyncThunk(
     'knowledgeBases/truncateSlowIndexes',
+
     async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
+
         const api_base = window.ENV.api_base;
         const url = '/language/truncate-slow-indexes/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
@@ -268,8 +272,10 @@ export const truncateSlowIndexes = createAsyncThunk(
 
 
 export const {
+
     closeErrorMessage,showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
     setViewIds, showOptimizeAskDialog, closeOptimize, updateKB, search, orderBy,
+
     showTruncateIndexesAskDialog, closeTruncateIndexes
 } = knowledgeBaseSlice.actions
 export default knowledgeBaseSlice.reducer;

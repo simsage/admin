@@ -64,7 +64,7 @@ export const deleteSynonym = createAsyncThunk(
 
 const extraReducers = (builder) => {
     builder
-        .addCase(loadSynonyms.pending, (state, action) => {
+        .addCase(loadSynonyms.pending, (state) => {
             state.status = "loading";
             state.data_status = 'loading';
         })
@@ -75,7 +75,7 @@ const extraReducers = (builder) => {
             state.num_synonyms = action.payload.numSynonyms?action.payload.numSynonyms:0;
             state.data_status = 'loaded';
         })
-        .addCase(loadSynonyms.rejected, (state, action) => {
+        .addCase(loadSynonyms.rejected, (state) => {
             state.status = "rejected";
             state.data_status = 'rejected';
             state.show_error_form = true
@@ -84,16 +84,16 @@ const extraReducers = (builder) => {
         })
 
     // update synonym
-        .addCase(updateSynonyms.pending, (state, action) => {
+        .addCase(updateSynonyms.pending, (state) => {
             state.status = "loading";
             state.data_status = 'loading';
         })
 
-        .addCase(updateSynonyms.fulfilled, (state, action) => {
+        .addCase(updateSynonyms.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(updateSynonyms.rejected, (state, action) => {
+        .addCase(updateSynonyms.rejected, (state) => {
             state.status = "rejected";
             state.data_status = 'rejected';
             state.show_error_form = true
@@ -101,15 +101,15 @@ const extraReducers = (builder) => {
             state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
         //delete Synonym
-        .addCase(deleteSynonym.pending, (state, action) => {
+        .addCase(deleteSynonym.pending, (state) => {
             state.status = "loading"
         })
 
-        .addCase(deleteSynonym.fulfilled, (state, action) => {
+        .addCase(deleteSynonym.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
         })
-        .addCase(deleteSynonym.rejected, (state, action) => {
+        .addCase(deleteSynonym.rejected, (state) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "Synonym Delete Failed"
@@ -128,7 +128,7 @@ const synonymSlice = createSlice({
             state.show_synonym_form = action.payload.show;
             state.edit = action.payload.syn;
         },
-        closeSynonymForm:(state, action) => {
+        closeSynonymForm:(state) => {
             state.show_synonym_form = false;
             state.edit = undefined;
         },

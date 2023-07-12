@@ -187,7 +187,7 @@ export default function BotList() {
 
                 <div className="form-group d-flex ms-auto">
                     <div className="btn" onClick={() => refresh_memories()} >
-                        <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh memories" />
+                        <img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh memories" />
                     </div>
                     <button className="btn btn-outline-primary text-nowrap ms-2"
                             onClick={() => handleImport(!show_import_form)}>Import mind
@@ -242,9 +242,10 @@ export default function BotList() {
                                         </td>
                                         <td className="pt-3 px-4 pb-3">
                                             { memory.urlList.map( url => {
+                                                const formatted_url = url.slice(0,8).includes("http") ? url : "https://"+url
                                                 return (
                                                     <div className="mind-text-column text-black-50 small text-truncate mb-1" style={{maxWidth: "250px"}}> 
-                                                        <a href={url} className="text-black-50" title={url}>{url}</a>
+                                                        <a href={formatted_url} target="_blank" className="text-black-50" title={url}>{url}</a>
                                                     </div>
                                                 )
                                             })

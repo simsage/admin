@@ -1,8 +1,9 @@
 import {useDispatch, useSelector} from "react-redux";
-import React, {useState, useEffect} from "react";
+import React, {useEffect} from "react";
 import {closeCategoryForm, updateCategorization} from "./categorizationSlice";
 import CategorizationError from './CategorizationError';
 import {BsFilePdf} from "react-icons/bs";
+import {useForm} from "react-hook-form";
 
 
 export function CategorizationEdit(){
@@ -15,53 +16,35 @@ export function CategorizationEdit(){
     const show_category_form = useSelector( (state) => state.categorizationReducer.show_category_form)
     const selectedCategory = useSelector( (state) => state.categorizationReducer.edit);
     //Synonym details
-    const [categoryLabel, setCategoryLabel] = useState('');
-    const [rule, setRule] = useState('');
 
 
 
-    // Grab synonym details if editing
-    useEffect(()=> {
-        if ( selectedCategory ) {
-            setCategoryLabel(selectedCategory.categorizationLabel);
-            setRule(selectedCategory.rule)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [show_category_form])
-
-    function resetData () {
-        setCategoryLabel('');
-        setRule('')
-    }
+    //Form Hook
+    const {register, handleSubmit, formState: {errors}, reset} = useForm();
 
     const handleClose =  () => {
         dispatch(closeCategoryForm());
-        resetData();
     }
 
-    // function handleError(){
-    //     //Todo: Need to look into presenting response errors
-    // }
+    useEffect(() => {
+        let defaultValues = {};
+        defaultValues.categorizationLabel = selectedCategory ? selectedCategory.categorizationLabel : '';
+        defaultValues.rule = selectedCategory ? selectedCategory.rule : '';
+        reset({...defaultValues});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCategory, show_category_form]);
 
 
-    const handleSave = () => {
+    //on submit store or update
+    const onSubmit = data => {
         const session_id = session.id;
-        const data = {
-            "categorizationLabel": categoryLabel,
-            "kbId": knowledge_base_id,
-            "organisationId": organisation_id,
-            "rule": rule
+        data = {...data,
+                kbId: knowledge_base_id,
+                organisationId: organisation_id,
         }
         dispatch(updateCategorization({session_id, data}));
-        resetData();
-    }
+    };
 
-    function handleKeyDown(e) {
-        if(e.key === 'Enter') {
-            e.preventDefault()
-            handleSave()
-        }
-    }
 
 
     if (show_category_form === false)
@@ -73,10 +56,13 @@ export function CategorizationEdit(){
                     <div className="modal-header px-5 pt-4 bg-light">
                         <h4 className="mb-0">{selectedCategory ? "Edit Category" : "New Category"}</h4>
                     </div>
+
+
+                    <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="modal-body p-0">
                         <div className="tab-content px-5 py-4 overflow-auto">
                             <div className="col-2 offset-10">
-                                <a href="resources/super-search-syntax.pdf" id="dlsuperquery" target="_blank"
+                                <a href="/resources/super-search-syntax.pdf" id="dlsuperquery" target="_blank"
                                    title="Download the SimSage advanced query syntax guide"
                                    className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                                     <BsFilePdf size={25}/>
@@ -87,40 +73,36 @@ export function CategorizationEdit(){
                                 <div className="control-row col-4">
                                     <span className="label-2 small">Category</span>
                                     <span className="text">
-                                        <form>
                                             <input type="text" className="form-control"
                                                     autoComplete="false"
                                                     placeholder=""
-                                                    value={categoryLabel}
-                                                    onChange={(event) => setCategoryLabel(event.target.value)}
-                                                   onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
+                                                   {...register("categorizationLabel", {required: true})}
                                             />
-                                        </form>
                                     </span>
+                                    {errors.categorizationLabel &&
+                                        <span className="text-danger fst-italic small">Category is required </span>}
                                 </div>
                                 <div className="control-row col-8 mb-3">
                                     <span className="label-2 small">SimSage advanced query language</span>
                                     <span className="text">
-                                        <form>
                                             <input type="text" className="form-control"
                                                     autoComplete="false"
                                                     placeholder="SimSage advanced query language expression (e.g. (word(test))  )"
                                                     title="SimSage advanced query language expression (e.g. (word(test))  )"
-                                                    value={rule}
-                                                    onChange={(event) => setRule(event.target.value)}
-                                                   onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
+                                                   {...register("rule", {required: true})}
                                             />
-                                        </form>
                                     </span>
+                                    {errors.rule &&
+                                        <span className="text-danger fst-italic small">SimSage advanced query language is required </span>}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="modal-footer px-5 pb-3">
+                        <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
                         <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>Cancel</button>
-                        <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>
                     </div>
-
+                    </form>
                 </div>
             </div>
         </div>

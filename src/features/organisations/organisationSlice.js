@@ -57,6 +57,7 @@ const reducers = {
         state.show_organisation_form = false;
         state.edit_organisation_id = null;
         state.show_organisation_id = false;
+        state.error = null;
     },
 
     // clearDownloadedBackup: (state) => {
@@ -191,6 +192,7 @@ const extraReducers = (builder) => {
                 state.show_organisation_form = false;
                 state.edit_organisation_id = undefined;
                 state.data_status = 'load_now';
+
         })
         .addCase(updateOrganisation.rejected, (state, action) => {
             state.status = "rejected"

@@ -10,12 +10,12 @@ const initialState = {
     status: false,
     show_synset_form: false,
 
-    //add edit data
+    //add selected_synset data
     error: null,
     show_error_form: false,
 
     show_data_form: false,
-    edit: null,
+    selected_synset: null,
     data_status: 'load_now',//load_now,loading,loaded
 
     //delete
@@ -97,17 +97,17 @@ export const addDefaultSynsets = createAsyncThunk(
 
 const extraReducers = (builder) => {
     builder
-        .addCase(loadSynsets.pending, (state, action) => {
+        .addCase(loadSynsets.pending, (state) => {
             state.status = "pending"
             state.data_status = 'loading';
         })
         .addCase(loadSynsets.fulfilled, (state, action) => {
             state.status = "fulfilled"
-            state.synset_list = action.payload.list ? action.payload.list : []
-            state.synset_total_size = action.payload.totalSize ? action.payload.totalSize : 0
+            state.synset_list = action.payload && action.payload.list ? action.payload.list : []
+            state.synset_total_size = action.payload && action.payload.totalSize ? action.payload.totalSize : 0
             state.data_status = 'loaded';
         })
-        .addCase(loadSynsets.rejected, (state, action) => {
+        .addCase(loadSynsets.rejected, (state) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "SynSet Load Failed"
@@ -115,14 +115,14 @@ const extraReducers = (builder) => {
         })
 
         //deleteRecord
-        .addCase(deleteRecord.pending, (state, action) => {
+        .addCase(deleteRecord.pending, (state) => {
             state.status = "loading"
         })
-        .addCase(deleteRecord.fulfilled, (state, action) => {
+        .addCase(deleteRecord.fulfilled, (state) => {
             state.status = "fulfilled"
             state.data_status = 'load_now';
         })
-        .addCase(deleteRecord.rejected, (state, action) => {
+        .addCase(deleteRecord.rejected, (state) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "Test Query Failed"
@@ -130,14 +130,14 @@ const extraReducers = (builder) => {
         })
 
         //addOrUpdate
-        .addCase(addOrUpdate.pending, (state, action) => {
+        .addCase(addOrUpdate.pending, (state) => {
             state.status = "loading"
         })
         .addCase(addOrUpdate.fulfilled, (state, action) => {
                 state.status = "fulfilled";
                 state.data_status = 'load_now';
         })
-        .addCase(addOrUpdate.rejected, (state, action) => {
+        .addCase(addOrUpdate.rejected, (state) => {
             state.status = "rejected"
             state.show_error_form = true
             state.error_title = "SynSet update Failed"
@@ -146,14 +146,14 @@ const extraReducers = (builder) => {
 
 
         //addDefaultSynsets
-        .addCase(addDefaultSynsets.pending, (state, action) => {
+        .addCase(addDefaultSynsets.pending, (state) => {
             state.status = "loading"
         })
         .addCase(addDefaultSynsets.fulfilled, (state, action) => {
                 state.status = "fulfilled"
                 state.data_status = 'load_now';
         })
-        .addCase(addDefaultSynsets.rejected, (state, action) => {
+        .addCase(addDefaultSynsets.rejected, (state) => {
             state.status = "rejected"
             state.data_status = 'loaded';
             state.show_error_form = true
@@ -174,25 +174,25 @@ const synsetSlice = createSlice({
 
         showEditSynSetForm: (state, action) => {
             state.show_synset_form = true
-            state.edit = action.payload.selected_synset
+            state.selected_synset = action.payload.selected_synset
         },
 
         closeSynSetForm: (state) => {
             state.show_synset_form = false;
-            state.edit = null;
+            state.selected_synset = null;
         },
 
         showDeleteSynSetForm: (state, action) => {
             state.show_delete_form = true;
-            state.edit = action.payload.selected_synset;
+            state.selected_synset = action.payload.selected_synset;
         },
 
         closeDeleteForm: (state) => {
             state.show_delete_form = false;
-            state.edit = undefined;
+            state.selected_synset = undefined;
         },
 
-        showAddDefaultAskForm: (state, action) => {
+        showAddDefaultAskForm: (state) => {
             state.show_add_default_form = true;
         },
 
@@ -222,7 +222,6 @@ export const {
     closeErrorMessage,
     showAddSynSetForm,
     showEditSynSetForm,
-    closeSynSetForm,
     showDeleteSynSetForm,
     closeDeleteForm,
     showAddDefaultAskForm,

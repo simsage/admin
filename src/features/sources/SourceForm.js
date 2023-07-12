@@ -33,6 +33,7 @@ import CrawlerSearchForm2 from "./forms/CrawlerSearchForm2";
 import CrawlerServiceNow from "./forms/CrawlerServiceNow";
 import ProcessorSetup from "../../common/processor-setup";
 import SourceTest from "./SourceTest";
+import {data} from "msw";
 
 
 export default function SourceForm() {
@@ -218,15 +219,6 @@ export default function SourceForm() {
         getValues
     } = useForm({mode: 'onChange'});
 
-    const handleClose = () => {
-        dispatch(closeForm());
-    }
-
-    const handleTest = () => {
-        dispatch(testSource({session_id:session_id, organisation_id: selected_organisation_id, knowledgeBase_id: selected_knowledge_base_id, source_id:selected_source.sourceId}))
-        //console.log('Test source data', {session_id:session_id, organisation_id: selected_organisation_id, knowledgeBase_id: selected_knowledge_base_id, source_id:selected_source.sourceId})
-    }
-
     // Set form defaultValues
     useEffect(() => {
         let defaultValues = {};
@@ -387,14 +379,62 @@ export default function SourceForm() {
         return false;
     }
 
-    const onSubmit = data => {
 
+    const handleClose = () => {
+        dispatch(closeForm());
+    }
+
+    const handleTest = () => {
+        let data = getValues()
+
+        if (data.crawlerType === undefined) {
+            data = {...data, crawlerType: form_data.crawlerType}
+        }
+
+        // Properties in data will overwrite those in form_data.
+        let new_data = {...form_data, ...data}
+
+        let is_valid = onSubmitValidate(new_data)
+        if (is_valid) {
+            onSubmitAsync(new_data).then(() =>
+                dispatch(testSource({
+                    session_id: session_id,
+                    organisation_id: selected_organisation_id,
+                    knowledgeBase_id: selected_knowledge_base_id,
+                    source_id: selected_source.sourceId
+                }))
+            )
+        }
+    }
+
+
+    function handleFormSubmit(data) {
+        if (data.crawlerType === undefined) {
+            data = {...data, crawlerType: form_data.crawlerType}
+        }
+
+        // Properties in data will overwrite those in form_data.
+        let new_data = {...form_data, ...data}
+
+        let is_valid = onSubmitValidate(new_data)
+        if (is_valid) {
+            onSubmitAsync(new_data).then(() => handleClose())
+        }
+        // handleClose()
+    }
+
+    async function onSubmitAsync(data) {
+        await dispatch(updateSources({session_id: session.id, data: data}))
+    }
+
+    const onSubmitValidate = data => {
+
+        let is_valid = false;
         // for existing data form returns data.crawlerType as undefined because the form field is disabled
         // thus merge form_data.crawlerType to data
         if (data.crawlerType === undefined) {
             data = {...data, crawlerType: form_data.crawlerType}
         }
-
 
         // Properties in data will overwrite those in form_data.
         let new_data = {...form_data, ...data}
@@ -590,8 +630,12 @@ export default function SourceForm() {
             // takes care of itself
 
         } else {
-            dispatch(updateSources({session_id: session.id, data: new_data}))
+            is_valid = true
+            // dispatch(updateSources({session_id: session.id, data: new_data}))
+            // dispatch(closeForm())
         }
+
+        return is_valid;
     };
 
     //update the crawlerType
@@ -629,7 +673,7 @@ export default function SourceForm() {
                  style={{display: "inline", 'zIndex': 1060, background: "#202731bb"}}>
                 <div className={"modal-dialog modal-xl"} role="document">
                     <div className="modal-content">
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form onSubmit={handleSubmit(handleFormSubmit)}>
                             <div className="modal-header px-5 pt-4 bg-light">
                                 <h4 className="mb-0" id="staticBackdropLabel">{title}</h4>
                                 {/* <button onClick={handleClose} type="button" className="btn-close"
@@ -890,8 +934,9 @@ export default function SourceForm() {
                                 <button onClick={handleClose} type="button" className="btn btn-white px-4"
                                         data-bs-dismiss="modal">Close
                                 </button>
-                                { selected_source && selected_source.sourceId > 0 &&
-                                    <button onClick={handleTest} type="button" title='Test Source Connection' className={`btn btn-primary px-4 ${(externalCrawlers.includes(selected_source.crawlerType))?'disabled' : ''}`}
+                                {selected_source && selected_source.sourceId > 0 &&
+                                    <button onClick={handleTest} type="button" title='Test Source Connection'
+                                            className={`btn btn-primary px-4 ${(externalCrawlers.includes(selected_source.crawlerType)) ? 'disabled' : ''}`}
                                             data-bs-dismiss="modal">Test
                                     </button>
                                 }

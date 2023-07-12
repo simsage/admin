@@ -17,8 +17,6 @@ export default function SynonymsHome(props) {
     const status = useSelector((state) => state.synonymReducer.status);
     const load_data = useSelector( (state) => state.synonymReducer.data_status)
 
-    const synonym_list = useSelector((state)=>state.synonymReducer.synonym_list)
-    const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
 
     let data = {
         "organisationId": selected_organisation_id,

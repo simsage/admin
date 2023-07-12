@@ -4,18 +4,21 @@ import Comms from "../../common/comms";
 
 
 const initialState = {
-  text_to_search_list: [],
-  num_of_text_to_search: 0,
-  page_size: 10,
-  page: 0,
-  status: true,
-  data_status: 'load_now',
-  show_text_to_search_form: false,
-  show_test_form: false,
-  test_response: undefined,
-  show_delete_form: false,
-  edit: undefined,
+    text_to_search_list: [],
+    num_of_text_to_search: 0,
+    page_size: 10,
+    page: 0,
+    status: true,
+    data_status: 'load_now',
+    show_text_to_search_form: false,
+    show_test_form: false,
+    test_response: undefined,
+    show_delete_form: false,
+    edit: undefined,
+    show_error_form: false,
+    error: ''
 };
+
 
 export const loadTextToSearch = createAsyncThunk( "TextToSearch/load",
     async ({ session_id, data}, {rejectWithValue}) => {
@@ -36,13 +39,14 @@ export const addOrUpdateTextToSearch = createAsyncThunk( "TextToSearch/update",
         const api_base = window.ENV.api_base;
         const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}`
 
-        return axios.put( url, data, Comms.getHeaders(session_id))
+        return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
             })
     })
+
 
 export const deleteTextToSearch = createAsyncThunk( "TextToSearch/delete",
     async({session_id, organisation_id, kb_id, word}, {rejectWithValue}) => {
@@ -50,7 +54,7 @@ export const deleteTextToSearch = createAsyncThunk( "TextToSearch/delete",
         const api_base = window.ENV.api_base;
         const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}/${encodeURIComponent(word)}`
 
-        return axios.delete( url, Comms.getHeaders(session_id))
+        return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch((err) => {
@@ -58,11 +62,12 @@ export const deleteTextToSearch = createAsyncThunk( "TextToSearch/delete",
             })
     })
 
+
 export const testTextToSearch = createAsyncThunk( "TextToSearch/Test",
         async({session_id, data}, {rejectWithValue}) => {
 
-            const api_base= window.ENV.api_base;
-            const url = api_base + `/semantic/text-to-search-try`
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/semantic/text-to-search-try`
 
             return axios.put(url, data, Comms.getHeaders(session_id))
                 .then((response) => {
@@ -139,35 +144,38 @@ const extraReducers = (builder) => {
 };
 
 const textToSearchSlice = createSlice({
-  name: "textToSearch",
-  initialState,
-  reducers: {
-    showAddForm:(state) => {
-      state.show_text_to_search_form = true
-    },
-    showEditForm:(state, action) => {
-        state.show_text_to_search_form = true;
-        state.edit = action.payload;
-    },
-    closeEditForm:(state, action) => {
-        state.show_text_to_search_form = false;
-        state.edit = undefined;
-    },
-      showDeleteForm:(state, action) => {
-          state.show_delete_form = true;
-          state.edit = action.payload;
-      },
+    name: "textToSearch",
+    initialState,
+    reducers: {
+        showAddForm: (state) => {
+            state.show_text_to_search_form = true
+        },
+        showEditForm: (state, action) => {
+            state.show_text_to_search_form = true;
+            state.edit = action.payload;
+        },
+        closeEditForm: (state) => {
+            state.show_text_to_search_form = false;
+            state.edit = undefined;
+            state.show_error_form = false;
+            state.error = '';
+        },
+        showDeleteForm: (state, action) => {
+            state.show_delete_form = true;
+            state.edit = action.payload;
+        },
 
-      closeDeleteForm:(state) => {
-          state.show_delete_form = false;
-          state.edit = undefined;
-      },
-      showTestForm:(state, action) => {
-        state.show_test_form = true;
-      },
-      closeTestForm:(state, action) => {
-        state.show_test_form = false;
-      },
+        closeDeleteForm: (state) => {
+            state.show_delete_form = false;
+            state.edit = undefined;
+        },
+        showTestForm: (state) => {
+            state.show_test_form = true;
+        },
+        closeTestForm: (state) => {
+            state.show_test_form = false;
+        }
+    },
       closeErrorMessage: (state, action) => {
           state.show_error_form = false;
           state.error_message = undefined;
@@ -178,4 +186,7 @@ const textToSearchSlice = createSlice({
 });
 
 export const {closeErrorMessage, showAddForm, showEditForm, closeEditForm, showDeleteForm, closeDeleteForm, showTestForm, closeTestForm} = textToSearchSlice.actions;
+    extraReducers
+});
+
 export default textToSearchSlice.reducer;

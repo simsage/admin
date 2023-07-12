@@ -12,7 +12,7 @@ const reducers = {}
 
 const extraReducers = (builder) => {
         builder
-            .addCase(getSimSageStatus.pending, (state, action) => {
+            .addCase(getSimSageStatus.pending, (state) => {
                 state.status = "loading"
             })
 
@@ -20,7 +20,7 @@ const extraReducers = (builder) => {
                 state.status = "fulfilled";
                 state.status_list = action.payload;
             })
-            .addCase(getSimSageStatus.rejected, (state, action) => {
+            .addCase(getSimSageStatus.rejected, (state) => {
                 state.status = "rejected"
             })
 }
@@ -38,7 +38,7 @@ export const getSimSageStatus = createAsyncThunk(
     'status/getSimSageStatus',
     async ({session_id, organisation_id}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/stats/status/'+ encodeURIComponent(organisation_id);;
+        const url = api_base + '/stats/status/'+ encodeURIComponent(organisation_id);
         return axios.put(url,{},Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data

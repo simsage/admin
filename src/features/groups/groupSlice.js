@@ -83,7 +83,7 @@ const extraReducers = (builder) => {
             state.status = "Loading";
             state.data_status = "loading";
         })
-        .addCase(updateGroup.fulfilled, (state, action) => {
+        .addCase(updateGroup.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
@@ -99,7 +99,7 @@ const extraReducers = (builder) => {
             state.status = "Loading";
             state.data_status = "loading";
         })
-        .addCase(deleteGroup.fulfilled, (state, action) => {
+        .addCase(deleteGroup.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
         })
