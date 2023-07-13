@@ -17,7 +17,7 @@ export const PageLayout = (props) => {
     const isAuthenticated = useIsAuthenticated();
     const dispatch = useDispatch();
 
-    const {session, error_text, error_title} = useSelector((state) => state.authReducer)
+    const {session} = useSelector((state) => state.authReducer)
     const {instance, accounts} = useMsal();
 
     // actual SimSage/MSAL sign-in happens here
@@ -54,16 +54,6 @@ export const PageLayout = (props) => {
             <nav>
                 {isAuthenticated ? <></> : <SignInButton/>}
             </nav>
-            {error_text && error_text.length > 1 &&
-                <ErrorMessage error_text={error_text} error_title={error_title}
-                              handleClose={() => {
-                                  instance.logoutRedirect().catch(e => {
-                                      console.error("logoutRequest error", e);
-                                  });
-                              }}
-
-                />
-            }
             {props.children}
         </>
     );

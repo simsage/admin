@@ -7,6 +7,7 @@ import Home from "../features/home/Home";
 import OrganisationEdit from "../features/organisations/OraganisationEdit";
 import ErrorMessage from "../common/ErrorMessage";
 import {closeError} from "../features/auth/authSlice";
+import {useMsal} from "@azure/msal-react";
 
 function MainSection(){
 
@@ -16,10 +17,14 @@ function MainSection(){
     const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form);
     const {is_error, error_text, error_title} = useSelector((state) => state.authReducer);
     const error_obj = {code: error_title, message: error_text};
+    const {instance} = useMsal();
 
     function authErrorClose(error_obj) {
         if (error_obj && error_obj.message.indexOf('cannot sign-in') >= 0) {
-            window.location = "/";
+            // window.location = "/";
+            instance.logoutRedirect().catch(e => {
+                console.error("MainSection: logoutRequest error", e);
+            });
         } else {
             dispatch(closeError());
         }
