@@ -22,7 +22,7 @@ export default function BkOrganisationBackupHome() {
 
     if (!organisation_backup_list.length)
         return (<div>
-            No data BkOrganisationBackupHome
+            No backups available
         </div>);
     return (
         <div>
