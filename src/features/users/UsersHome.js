@@ -4,7 +4,7 @@ import {
     showAddUserForm,
     showDeleteUserAsk,
     showEditUserForm,
-    showUserBulkForm, getUserListPaginated, showPasswordResetForm
+    showUserBulkForm, getUserListPaginated, showPasswordResetForm, setUserTextFilter
 } from "./usersSlice";
 import {Pagination} from "../../common/pagination";
 import Api from "../../common/api";
@@ -18,11 +18,11 @@ import {UserErrorDialog} from "./UserErrorDialog";
 
 export function UsersHome() {
     const user_roles = useSelector((state) => state.usersReducer.roles);
+    const user_text_filter = useSelector((state) => state.usersReducer.user_text_filter);
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
     // const [selectedUser, setSelectedUser] = useState();
-    const [searchFilter, setSearchFilter] = useState('');
     const [userFilter, setUserFilter] = useState('all-users');
 
     const theme = null;
@@ -49,7 +49,7 @@ export function UsersHome() {
             organization_id: selected_organisation_id,
             page: page,
             page_size: page_size,
-            filter: null
+            filter: user_text_filter ? user_text_filter : null
         }))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === "load_now", page, page_size])
@@ -61,15 +61,14 @@ export function UsersHome() {
                 organization_id: selected_organisation_id,
                 page: page,
                 page_size: page_size,
-                filter: searchFilter === '' ? null : searchFilter
+                filter: user_text_filter === '' ? null : user_text_filter
             }))
-            setSearchFilter('');
         }
     }
 
     function handleSearchTextChange(e) {
         if (selected_organisation_id) {
-            setSearchFilter(e.target.value);
+            dispatch(setUserTextFilter({"user_text_filter": e.target.value}));
         }
     }
 
@@ -134,7 +133,7 @@ export function UsersHome() {
             <div className="d-flex justify-content-beteween w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true}
+                        <input type="text" placeholder={"Filter..."} value={user_text_filter} autoFocus={true}
                                className={"form-control filter-search-input " + theme}
                                onKeyDown={(e) => handleSearchTextKeydown(e)}
                                onChange={(e) => handleSearchTextChange(e)}

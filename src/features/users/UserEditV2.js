@@ -351,6 +351,7 @@ export function UserEditV2() {
                                             <div className="control-row col-6">
                                                 <label className="label-2 small">First name</label>
                                                 <input
+                                                    autoFocus={true}
                                                     className="form-control" {...register("firstName", {required: true})} />
                                                 {errors.firstName &&
                                                     <span className="text-danger fst-italic small">First name is required </span>}
@@ -376,7 +377,6 @@ export function UserEditV2() {
                                             <div className="control-row col-6">
                                                 <label className="label-2 small">Email</label>
                                                 <input
-                                                    autoFocus={true}
                                                     autoComplete="false"
                                                     className="form-control"
                                                     {...register("email", {
@@ -392,23 +392,21 @@ export function UserEditV2() {
                                                         className="text-danger fst-italic small">{error_message}</span>}
                                             </div>
                                         </div>
-                                                <div className="form-check form-switch">
-                                                    <label className="form-check-label">SSO</label>
-                                                    <input className="form-check-input"
-                                                           type="checkbox"
-                                                           checked={sso}
-                                                           onChange={()=> {
-                                                                console.log('switching', sso)
-                                                                setSso(!sso)}
-                                                            }/>
-                                                </div>
+                                                {/*<div className="form-check form-switch">*/}
+                                                {/*    <label className="form-check-label">SSO</label>*/}
+                                                {/*    <input className="form-check-input"*/}
+                                                {/*           type="checkbox"*/}
+                                                {/*           checked={sso}*/}
+                                                {/*           onChange={()=> {*/}
+                                                {/*                setSso(!sso)}*/}
+                                                {/*            }/>*/}
+                                                {/*</div>*/}
 
                                         {!user_id && !sso &&
                                             <div className="row mb-3">
                                                 <div className="control-row col-6">
                                                     <label className="label-2 small">Password</label>
                                                     <input type="password" className="form-control"
-                                                           autoFocus={true}
                                                            autoComplete="false"
                                                            name="password"
                                                            {...register('password', {
@@ -431,7 +429,6 @@ export function UserEditV2() {
                                                 <div className="control-row col-6">
                                                     <label className="label-2 small">Confirm Password</label>
                                                     <input type="password" className="form-control"
-                                                           autoFocus={true}
                                                            autoComplete="false"
                                                            name="password_repeat"
                                                            {...register('password_repeat', {

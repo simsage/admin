@@ -184,10 +184,6 @@ export function BotEdit(){
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
 
-            {/*{ error &&*/}
-            {/*    <ErrorMessage error_title="Error" error_text={error} handleClose={() => setError('')} />*/}
-            {/*}*/}
-
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
                     <div className="modal-header px-5 pt-4 bg-light">

@@ -331,7 +331,7 @@ export default function SourceHome(props) {
                     {selected_knowledge_base_id.length > 0 &&
                         <div className="d-flex">
                             <div className="btn" onClick={() => refresh_sources()} ><img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh source-list" /></div>
-                            <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleImportCrawler()} >Upload Crawler</button>
+                            <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleImportCrawler()} >Import Crawler</button>
                             <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddForm()}> + Add Source</button>
                         </div>
                     }

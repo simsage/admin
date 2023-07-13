@@ -64,7 +64,7 @@ export default function OrganisationFormV2(props) {
     useEffect(() => {
         let defaultValues = {};
         defaultValues.name = organisation ? organisation.name : '';
-        defaultValues.enabled = organisation ? organisation.enabled : false;
+        defaultValues.enabled = organisation ? organisation.enabled : true;
         defaultValues.id = organisation ? organisation.id : undefined;
         defaultValues.autoCreateSSOUsers = organisation ? organisation.autoCreateSSOUsers : false;
         defaultValues.autoCreateSSODomainListStr = organisation ? organisation.autoCreateSSODomainList.toString() : "";

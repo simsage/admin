@@ -44,7 +44,7 @@ export default function UserDeleteAsk(){
                                 <span className="label-wide">Are you sure you wish to delete {message}?</span>
                             </div>
                             <div className="control-row">
-                                <button onClick={ handleClose } type="button" className="btn btn-white px-4" data-bs-dismiss="modal">Close</button>
+                                <button onClick={ handleClose } type="button" className="btn btn-white px-4" data-bs-dismiss="modal">Cancel</button>
                                 <button onClick={ handleDelete } type="button" className="btn btn-danger px-4">Delete</button>
                             </div>
                         </div>
