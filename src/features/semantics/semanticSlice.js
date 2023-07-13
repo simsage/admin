@@ -53,7 +53,7 @@ export const deleteSemantic = createAsyncThunk(
         async ({session_id, organisation_id, knowledge_base_id, word, semantic}, {rejectWithValue}) => {
 
             const api_base = window.ENV.api_base;
-            const url = api_base + `/1language/delete-semantic/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(word)}/${encodeURIComponent(semantic)}`
+            const url = api_base + `/language/delete-semantic/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(word)}/${encodeURIComponent(semantic)}`
 
             return axios.delete(url, Comms.getHeaders(session_id))
                 .then( (response) => {
