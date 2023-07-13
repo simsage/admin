@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {clearErrorMessage} from "./organisationSlice";
+import {clearOrgErrorMessage} from "./organisationSlice";
 
 
 export default function OrganisationError(){
@@ -7,21 +7,19 @@ export default function OrganisationError(){
     const dispatch = useDispatch();
 
     const show_error_form = useSelector((state) => state.organisationReducer.show_error_form)
-    const error = useSelector((state) => state.organisationReducer.error)
     const error_title = useSelector((state) => state.organisationReducer.error_title);
     const error_message = useSelector((state) => state.organisationReducer.error_message);
-    // const error= error_obj && error_obj.response ? error_obj.response.data.error : ''
 
 
     //handle form close or cancel
     const handleClose = () => {
-        dispatch(clearErrorMessage());
+        dispatch(clearOrgErrorMessage());
     }
-
 
 
     if (!show_error_form)
         return (<div />);
+
     return(
         <div className="org_error">
             <div className="modal" tabIndex="1" role="dialog" style={{display: "inline", zIndex: 1061}}>

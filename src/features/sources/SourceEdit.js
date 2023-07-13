@@ -25,17 +25,11 @@ export default function SourceEdit() {
     return (
         <>
 
-
             <SourceForm/>
             {test_result &&
                 <SourceTest/>
             }
 
-            {/*{error &&*/}
-            {/*    <ErrorMessage error={error} close={handleClose}/>*/}
-            {/*}*/}
-
-            {/*<AlertDialogHome />*/}
         </>
 
     );

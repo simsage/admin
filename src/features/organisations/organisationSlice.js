@@ -16,7 +16,7 @@ const initialState = {
     edit_organisation_id: null,
     data_status: 'load_now',//load_now,loading,loaded
     show_organisation_id: false,
-    show_delete_form:false,
+    show_delete_form: false,
 
     //for backups
     organisation_original_backup_list: [],
@@ -40,7 +40,7 @@ const initialState = {
     downloaded_backup: null,
 
     //restore
-    restore_status:null, //uploading, uploaded, ready_to_upload
+    restore_status: null, //uploading, uploaded, ready_to_upload
 }
 
 const reducers = {
@@ -57,7 +57,6 @@ const reducers = {
         state.show_organisation_form = false;
         state.edit_organisation_id = null;
         state.show_organisation_id = false;
-        state.error = null;
     },
 
     // clearDownloadedBackup: (state) => {
@@ -154,7 +153,7 @@ const reducers = {
         state.show_delete_form = false;
         state.edit_organisation_id = null;
     },
-    clearErrorMessage:(state) => {
+    clearOrgErrorMessage: (state) => {
         state.show_error_form = false;
         state.error_message = undefined;
         state.error_title = undefined;
@@ -188,10 +187,10 @@ const extraReducers = (builder) => {
             state.status = "loading"
             state.data_status = 'loading';
         })
-        .addCase(updateOrganisation.fulfilled, (state,action) => {
-                state.show_organisation_form = false;
-                state.edit_organisation_id = undefined;
-                state.data_status = 'load_now';
+        .addCase(updateOrganisation.fulfilled, (state, action) => {
+            state.show_organisation_form = false;
+            state.edit_organisation_id = undefined;
+            state.data_status = 'load_now';
 
         })
         .addCase(updateOrganisation.rejected, (state, action) => {
@@ -380,7 +379,7 @@ export const getOrganisationBackupList = createAsyncThunk(
 
 export const downloadBackup = createAsyncThunk(
     'organisations/downloadBackup',
-    async ({session, organisation_id,backup_id}, {rejectWithValue}) => {
+    async ({session, organisation_id, backup_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
         const {id} = session
@@ -455,9 +454,21 @@ const organisationSlice = createSlice({
 });
 
 export const {
-    showAddOrganisationForm, showEditOrganisationForm,
-    closeOrganisationForm, setOrganisationList, search,
-    showBackupForm, closeBackupForm, closeBackupProgressMessage,
-    showDeleteBackupForm, closeBackupDeleteMessage, showDownloadBackupForm, closeBackupDownloadMessage, showOrganisationId, showDeleteForm, closeDeleteForm, clearErrorMessage
+    showAddOrganisationForm,
+    showEditOrganisationForm,
+    closeOrganisationForm,
+    setOrganisationList,
+    search,
+    showBackupForm,
+    closeBackupForm,
+    closeBackupProgressMessage,
+    showDeleteBackupForm,
+    closeBackupDeleteMessage,
+    showDownloadBackupForm,
+    closeBackupDownloadMessage,
+    showOrganisationId,
+    showDeleteForm,
+    closeDeleteForm,
+    clearOrgErrorMessage
 } = organisationSlice.actions
 export default organisationSlice.reducer;
