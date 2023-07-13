@@ -105,7 +105,6 @@ export function UserPasswordResetForm() {
                                     <div className="control-row col-6">
                                         <label className="label-2 small">Confirm Password</label>
                                         <input type="password" className="form-control"
-                                               autoFocus={true}
                                                autoComplete="false"
                                                name="password_repeat"
                                                {...register('password_repeat', {
