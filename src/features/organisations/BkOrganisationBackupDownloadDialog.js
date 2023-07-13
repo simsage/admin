@@ -1,9 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
 import {
-     closeBackupDownloadMessage,
-     downloadBackup,
+    closeBackupDownloadMessage,
+    downloadBackup, getOrganisationList,
 } from "./organisationSlice";
 import Api from "../../common/api";
+import {useEffect} from "react";
 
 export default function BkOrganisationBackupDownloadDialog() {
 
@@ -21,9 +22,10 @@ export default function BkOrganisationBackupDownloadDialog() {
 
     const handleDownload = () => {
         dispatch(downloadBackup({session:session, organisation_id: selected_backup.organisationId, backup_id:selected_backup.backupId}))
-        dispatch(closeBackupDownloadMessage());
+    }
 
-        if(downloaded_backup && downloaded_backup.backupId && downloaded_backup.data){
+    useEffect(() => {
+        if (downloaded_backup && downloaded_backup.backupId && downloaded_backup.data){
             let element = document.createElement('a');
             // let dateStr = Api.unixTimeForFilename(downloaded_backup.backupId);
             let dateStr = 'org'
@@ -35,8 +37,13 @@ export default function BkOrganisationBackupDownloadDialog() {
             document.body.appendChild(element);
             element.click();
             document.body.removeChild(element);
+
+            dispatch(closeBackupDownloadMessage());
         }
-    }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [downloaded_backup])
+
 
     if (!show_download_backup_form)
         return (<div/>);

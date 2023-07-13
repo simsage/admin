@@ -142,8 +142,12 @@ const reducers = {
     },
 
     closeBackupDownloadMessage: (state) => {
-        state.show_download_backup_form = false;
-        state.selected_backup = null;
+        return {
+            ...state,
+            show_download_backup_form: false,
+            selected_backup: null,
+            downloaded_backup: null,
+        }
     },
     showDeleteForm: (state, action) => {
         state.show_delete_form = true;
