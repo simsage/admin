@@ -63,7 +63,6 @@ export function UsersHome() {
                 page_size: page_size,
                 filter: searchFilter === '' ? null : searchFilter
             }))
-            setSearchFilter('');
         }
     }
 
