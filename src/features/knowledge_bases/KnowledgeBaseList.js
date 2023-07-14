@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Pagination} from "../../common/pagination";
 import {
@@ -57,6 +57,10 @@ export default function KnowledgeBaseList() {
         dispatch(showAddForm(true));
     }
 
+    const handleRefresh = () => {
+        dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
+    }
+
     const handleEditForm = (kb_id) => {
         dispatch(showEditForm({kb_id: kb_id}));
     }
@@ -102,7 +106,10 @@ export default function KnowledgeBaseList() {
 
                         </div>
 
-                        <div className="form-group ms-auto">
+                        <div className="form-group d-flex ms-auto">
+                            <div className="btn" onClick={() => handleRefresh()} >
+                                <img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh memories" />
+                            </div>
                             {organisation_id && organisation_id.length > 0 &&
                                 <button onClick={() => handleAddForm()} className={"btn btn-primary text-nowrap"}>+ Add
                                     Knowledge Base</button>
