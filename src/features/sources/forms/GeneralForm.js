@@ -42,7 +42,7 @@ export default function GeneralForm(props) {
 
 
     const selected_source = props.source;
-    const selected_source_type = selected_source.crawlerType
+    const selected_source_type = props.crawler_type
     const internal_crawler = selected_source.internalCrawler;
 
 
@@ -187,25 +187,6 @@ export default function GeneralForm(props) {
             </div>
 
             <div className="row mb-3 pt-3 border-top">
-                {(selected_source_type === 'database' || selected_source_type === 'restfull') &&
-                    <div className="col-4">
-                        <div className="form-check form-switch"
-                            title="Restful and DB crawlers have optional custom-rendering flags.">
-                            <input className="form-check-input" type="checkbox" {...props.register("customRender")}  />
-                            <label className="form-check-label small">Custom render</label>
-                        </div>
-
-                    </div>
-                }
-                {(selected_source_type === 'restfull') &&
-                    <div className="col-4">
-                        <div className="form-check form-switch" title="Restful crawlers can be internal to the platform.">
-                            <input className="form-check-input" type="checkbox" {...props.register("internalCrawler")}  />
-                            <label className="form-check-label small">Internal crawler</label>
-
-                        </div>
-                    </div>
-                }
                 <div className="col-4">
                     <div className="form-check form-switch" title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
                         <input className="form-check-input" type="checkbox" {...props.register("deleteFiles")}/>
@@ -271,6 +252,25 @@ export default function GeneralForm(props) {
                         <label className="form-check-label small">External source</label>
                     </div>
                 </div>
+                {(selected_source_type === 'database' || selected_source_type === 'restfull') &&
+                    <div className="col-4">
+                        <div className="form-check form-switch"
+                             title="Restful and DB crawlers have optional custom-rendering flags.">
+                            <input className="form-check-input" type="checkbox" {...props.register("customRender")}  />
+                            <label className="form-check-label small">Custom render</label>
+                        </div>
+
+                    </div>
+                }
+                {(selected_source_type === 'restfull') &&
+                    <div className="col-4">
+                        <div className="form-check form-switch" title="Restful crawlers can be internal to the platform.">
+                            <input className="form-check-input" type="checkbox" {...props.register("internalCrawler")}  />
+                            <label className="form-check-label small">Internal crawler</label>
+
+                        </div>
+                    </div>
+                }
             </div>
 
             <div className="row mb-4 pt-3 border-top">
