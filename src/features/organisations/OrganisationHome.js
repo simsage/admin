@@ -78,6 +78,11 @@ export function OrganisationHome() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backup_data_status === 'load_now', org_id != null])
 
+    const handleRefresh = () => {
+        dispatch(getOrganisationList({session: session, filter: filter}))
+        dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
+    }
+
 
 
     function handleSelectOrganisation(session_id, org) {
@@ -145,6 +150,9 @@ export function OrganisationHome() {
                         </div> */}
                     </div>
                     <div className="form-group d-flex ms-auto">
+                        <div className="btn" onClick={() => handleRefresh()} >
+                            <img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh organisations" />
+                        </div>
                         <button data-testid="add-new-organisation"
                                 onClick={() => setShowRestoreOrganisationForm(!show_restore_organisation_form)}
                                 className="btn btn-outline-primary text-nowrap ms-2">Import
