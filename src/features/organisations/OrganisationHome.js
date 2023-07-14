@@ -24,6 +24,7 @@ import {hasRole} from "../../common/helpers";
 import api from "../../common/api";
 import {ShowInvalidSession} from "./ShowInvalidSession";
 import {useMsal} from "@azure/msal-react";
+import {getGroupList} from "../groups/groupSlice";
 
 
 export function OrganisationHome() {
@@ -84,6 +85,7 @@ export function OrganisationHome() {
         const org_id = org.id
         dispatch(setSelectedOrganisation(org));
         dispatch(getKBList({session_id: session.id, organization_id: org_id}));
+        dispatch(getGroupList({session_id:session_id, organization_id:org_id}))
         dispatch(selectTab('home'))
     }
 
