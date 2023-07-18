@@ -122,16 +122,10 @@ const reducers = {
 
     searchSource: (state, action) => {
         if (action.payload.keyword.length > 0) {
-            let temp = state.source_original_ist.filter(list_item => {
+            state.source_list = state.source_original_ist.filter(list_item => {
                 return list_item.name.match(new RegExp(action.payload.keyword, "i"))
             });
-            if (temp.length > 0) {
-                state.source_list = temp;
-                state.status = "fulfilled";
-            } else {
-                state.source_list = state.source_original_ist;
-                state.status = "fulfilled";
-            }
+            state.status = 'fulfilled';
         } else {
             state.source_list = state.source_original_ist;
             state.status = "fulfilled";
