@@ -60,7 +60,7 @@ export default function SynsetList() {
         e.preventDefault()
         dispatch(loadSynsets(data));
         dispatch(noResultsMessage(true))
-        setSynSetFilter('');
+
     }
 
     const handleEdit = (synset) => {
