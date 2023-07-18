@@ -1,17 +1,24 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
 import {closeErrorMessage} from "./synsetSlice";
+import {simsageLogOut} from "../auth/authSlice";
+import {useMsal} from "@azure/msal-react";
 
 export function SynsetErrorDialog() {
     const dispatch = useDispatch();
-
+    const session = useSelector((state) => state.authReducer.session)
     const show_error_form = useSelector((state) => state.synsetReducer.show_error_form);
     const error_title = useSelector((state) => state.synsetReducer.error_title);
     const error_message = useSelector((state) => state.synsetReducer.error_message);
-
+    const {instance} = useMsal();
 
     const handleClose = () => {
         dispatch(closeErrorMessage());
+
+        dispatch(simsageLogOut({session_id: session.id}))
+        instance.logoutRedirect({
+            postLogoutRedirectUri: "/",
+        });
     }
 
 
@@ -19,7 +26,7 @@ export function SynsetErrorDialog() {
         return (<div/>);
 
     return (<div>
-        <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline",  zIndex: 1061}}>
+        <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", zIndex: 1061}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content shadow p-3 mb-5 bg-white rounded">
 
