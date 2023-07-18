@@ -9,6 +9,7 @@ import {
 import {setSelectedOrganisation, simsageLogOut} from "../features/auth/authSlice";
 import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
 import {selectTab} from "../features/home/homeSlice";
+import {getGroupList} from "../features/groups/groupSlice";
 
 /**
  * this is the main DMS page
@@ -31,6 +32,7 @@ const AccountDropdown = () => {
             const org_id = org.id
             dispatch(setSelectedOrganisation(org));
             dispatch(getKBList({session_id: session_id, organization_id: org_id}));
+            dispatch(getGroupList({session_id:session_id, organization_id:org_id}))
             dispatch(selectTab('home'))
         }
     }
