@@ -5,7 +5,6 @@ import {Pagination} from "../../common/pagination";
 import {hasRole} from "../../common/helpers";
 import GroupEdit from "./groupEdit";
 import GroupDeleteAsk from "./GroupDeleteAsk";
-import groupError from "./GroupErrorDialog";
 import api from "../../common/api";
 
 
@@ -77,12 +76,7 @@ export default function GroupList(){
     }
 
     function deleteGroupAsk(group){
-        if (group.userIdList.length === 0) {
-            dispatch(showGroupDeleteAsk({show: true, group: group}))
-        } else {
-            const message = 'Please remove users from group before deleting'
-            dispatch(showErrorMessage(message))
-        }
+        dispatch(showGroupDeleteAsk({show: true, group: group}))
     }
 
     return(
