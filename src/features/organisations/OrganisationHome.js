@@ -24,6 +24,7 @@ import {hasRole} from "../../common/helpers";
 import api from "../../common/api";
 import {ShowInvalidSession} from "./ShowInvalidSession";
 import {useMsal} from "@azure/msal-react";
+import {getGroupList} from "../groups/groupSlice";
 
 
 export function OrganisationHome() {
@@ -78,12 +79,18 @@ export function OrganisationHome() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backup_data_status === 'load_now', org_id != null])
 
+    const handleRefresh = () => {
+        dispatch(getOrganisationList({session: session, filter: filter}))
+        dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
+    }
+
 
 
     function handleSelectOrganisation(session_id, org) {
         const org_id = org.id
         dispatch(setSelectedOrganisation(org));
         dispatch(getKBList({session_id: session.id, organization_id: org_id}));
+        dispatch(getGroupList({session_id:session_id, organization_id:org_id}))
         dispatch(selectTab('home'))
     }
 
@@ -145,6 +152,9 @@ export function OrganisationHome() {
                         </div> */}
                     </div>
                     <div className="form-group d-flex ms-auto">
+                        <div className="btn" onClick={() => handleRefresh()} >
+                            <img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh organisations" />
+                        </div>
                         <button data-testid="add-new-organisation"
                                 onClick={() => setShowRestoreOrganisationForm(!show_restore_organisation_form)}
                                 className="btn btn-outline-primary text-nowrap ms-2">Import

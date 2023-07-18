@@ -702,6 +702,7 @@ export default function SourceForm() {
                                         errors={errors}
                                         register={register}
                                         source={selected_source}
+                                        crawler_type={form_data ? form_data.crawlerType : null}
                                         getValues={getValues}/>
                                 }
 
