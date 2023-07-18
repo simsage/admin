@@ -15,10 +15,10 @@ export function SynsetErrorDialog() {
     const handleClose = () => {
         dispatch(closeErrorMessage());
 
-        dispatch(simsageLogOut({session_id: session.id}))
-        instance.logoutRedirect({
-            postLogoutRedirectUri: "/",
-        });
+        // dispatch(simsageLogOut({session_id: session.id}))
+        // instance.logoutRedirect({
+        //     postLogoutRedirectUri: "/",
+        // });
     }
 
 

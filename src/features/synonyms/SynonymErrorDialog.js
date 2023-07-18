@@ -1,6 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
 import {closeErrorMessage} from "./synonymSlice";
+import {useMsal} from "@azure/msal-react";
+import {simsageLogOut} from "../auth/authSlice";
 
 export function SynonymErrorDialog() {
     const dispatch = useDispatch();
@@ -8,10 +10,15 @@ export function SynonymErrorDialog() {
     const show_error_form = useSelector((state) => state.synonymReducer.show_error_form);
     const error_title = useSelector((state) => state.synonymReducer.error_title);
     const error_message = useSelector((state) => state.synonymReducer.error_message);
-
+    const session = useSelector((state) => state.authReducer.session)
+    const {instance} = useMsal();
 
     const handleClose = () => {
         dispatch(closeErrorMessage());
+        // dispatch(simsageLogOut({session_id: session.id}))
+        // instance.logoutRedirect({
+        //     postLogoutRedirectUri: "/",
+        // });
     }
 
 

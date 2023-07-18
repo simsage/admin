@@ -1,6 +1,8 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {closeErrorForm} from "./categorizationSlice";
+import {useMsal} from "@azure/msal-react";
+import {simsageLogOut} from "../auth/authSlice";
 
 export default function CategorizationError(){
 
@@ -10,8 +12,15 @@ export default function CategorizationError(){
     const error_title = useSelector((state) => state.categorizationReducer.error_title);
     const error_message = useSelector((state) => state.categorizationReducer.error_message);
 
+    const session = useSelector((state) => state.authReducer.session)
+    const {instance} = useMsal();
+
     const handleOk = () => {
         dispatch(closeErrorForm());
+        // dispatch(simsageLogOut({session_id: session.id}))
+        // instance.logoutRedirect({
+        //     postLogoutRedirectUri: "/",
+        // });
     }
 
     if (!show_error_form)
