@@ -35,6 +35,7 @@ export default function OrganisationFormV2(props) {
     const [selected_roles, setSelectedRoles] = useState(organisation ? api.getPrettyRoles(organisation.autoCreateSSORoleList) : []);
     const [selected_groups, setSelectedGroups] = useState(organisation ? organisation.autoCreateSSOACLList : []);
 
+    const [show_enable_domain_error, setShowEnableDomainError] = useState(false);
 
     const handleClose = () => {
         dispatch(closeOrganisationForm());
@@ -42,6 +43,7 @@ export default function OrganisationFormV2(props) {
         setSelectedGroups([])
         setSelectedTab('general');
     }
+
 
     const handleDelete = () => {
         dispatch(deleteOrganisation({session_id: props.session.id, organisation_id: organisation.id}))
@@ -57,6 +59,9 @@ export default function OrganisationFormV2(props) {
         handleSubmit,
         formState: {errors},
         reset,
+        getValues,
+        trigger,
+        watch,
         // watch,
     } = useForm();
 
@@ -82,22 +87,47 @@ export default function OrganisationFormV2(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [group_data_status === 'load_now', organisation])
 
+
+    useEffect(() => {
+        let [x_enable, x_auto_create_SSO_domain_list_str] = getValues(['enabled', 'autoCreateSSODomainListStr'])
+        if (x_enable) {
+            if (x_auto_create_SSO_domain_list_str.length < 4) {
+                setShowEnableDomainError(true)
+            } else {
+                setShowEnableDomainError(false)
+            }
+        } else {
+            setShowEnableDomainError(false)
+        }
+        console.log("x_auto_create_SSO_domain_list_str", x_enable)
+        console.log("x_auto_create_SSO_domain_list_str", x_auto_create_SSO_domain_list_str.length)
+        console.log("x_auto_create_SSO_domain_list_str error", show_enable_domain_error)
+    }, [getValues(['enabled'])])
+
 //on submit store or update
     const onSubmit = data => {
-        data.autoCreateSSORoleList = selected_roles.map(role => {
-            return role.role
-        });
-        data.autoCreateSSOACLList = selected_groups;
-        //convert domain string to array
-        data.autoCreateSSODomainList = data.autoCreateSSODomainListStr.split(',');
 
-        //form data
-        const {autoCreateSSODomainListStr, ...form_data} = data;
+        if (show_enable_domain_error) {
+            setSelectedTab('sso')
+        } else {
 
-        dispatch(updateOrganisation({session_id: props.session.id, data: form_data}))
-        setSelectedRoles([])
-        setSelectedGroups([])
-        setSelectedTab('general');
+
+            data.autoCreateSSORoleList = selected_roles.map(role => {
+                return role.role
+            });
+            data.autoCreateSSOACLList = selected_groups;
+            //convert domain string to array
+            data.autoCreateSSODomainList = data.autoCreateSSODomainListStr.split(',');
+
+            //form data
+            const {autoCreateSSODomainListStr, ...form_data} = data;
+
+            dispatch(updateOrganisation({session_id: props.session.id, data: form_data}))
+            setSelectedRoles([])
+            setSelectedGroups([])
+            setSelectedTab('general');
+        }
+
     };
 
     function handleTabChange(slug) {
@@ -147,70 +177,6 @@ export default function OrganisationFormV2(props) {
         })
         setSelectedRoles(temp_list)
     }
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-// group/ACL management
-//
-//     function addGroupToUser(group) {
-//         setSelectedGroups([...(selected_groups || []), group])
-//         // setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
-//     }
-//
-//     function removeGroupFromUser(group) {
-//
-//         const temp_list = selected_groups.filter(g => {
-//             return g !== group
-//         })
-//         setSelectedGroups(temp_list)
-//
-//     }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-// group/ACL management
-//
-//     function addGroupToUser(group) {
-//         setSelectedGroups([...(selected_groups || []), group])
-//         // setAutoCreateSSOACLList([...(autoCreateSSOACLList || []) , groupToAdd])
-//     }
-//
-//     function removeGroupFromUser(group) {
-//
-//         const temp_list = selected_groups.filter(g => {
-//             return g !== group
-//         })
-//         setSelectedGroups(temp_list)
-//
-//     }
-//
-//     const getAvailableGroups = () => {
-//
-//         let temp_list = []
-//         available_groups.forEach((group) => {
-//             if (!selected_groups.includes(group)) {
-//                 temp_list.push(group)
-//             }
-//         })
-//
-//         return available_group_filter.length > 0 ? temp_list.filter(group => {
-//                 return group.toLowerCase().includes(available_group_filter.toLowerCase())
-//             })
-//             :
-//             temp_list;
-//
-//     }
-//
-//     function getSelectedGroups() {
-//         let temp_list = [];
-//         if (selected_group_filter.length > 0) {
-//             temp_list = selected_groups.filter((group) => {
-//                 return Api.getPrettyRole(group).toLowerCase().includes(selected_group_filter.toLowerCase())
-//             })
-//         } else {
-//             temp_list = selected_groups
-//         }
-//         return temp_list;
-//     }
 
 
     const getAvailableGroups = () => {
@@ -292,7 +258,8 @@ export default function OrganisationFormV2(props) {
                                                     <span
                                                         className="text-danger fst-italic small">This field is required </span>}
                                                 {show_error_form &&
-                                                    <span className="text-danger fst-italic small"> {error_message} </span>}
+                                                    <span
+                                                        className="text-danger fst-italic small"> {error_message} </span>}
                                             </div>
                                         </div>
                                     </div>
@@ -323,9 +290,12 @@ export default function OrganisationFormV2(props) {
                                                 <textarea className="form-control"
                                                           placeholder="Valid domain names (e.g. simsage.co.uk)"
                                                           rows="3"
-                                                          {...register("autoCreateSSODomainListStr", {required: false})}
+                                                          {...register("autoCreateSSODomainListStr", {required: getValues('enabled') ? true : false})}
                                                 />
                                             </div>
+                                            {(errors.autoCreateSSODomainListStr || show_enable_domain_error )&&
+                                                <span
+                                                    className="text-danger fst-italic small">This field is required </span>}
                                         </div>
 
                                         <div>
