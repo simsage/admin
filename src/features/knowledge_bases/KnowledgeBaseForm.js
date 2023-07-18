@@ -3,10 +3,11 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {useForm} from "react-hook-form";
 import Api from "../../common/api";
-import {addOrUpdate, closeForm} from "./knowledgeBaseSlice";
+import {addOrUpdate, closeForm, showSecurityPrompt} from "./knowledgeBaseSlice";
 import {showErrorAlert} from "../alerts/alertSlice";
 import {KnowledgeBaseFormTab} from "./KnowledgeBaseFormTab";
 import TimeSelect from "../../common/time-select";
+import {KnowledgeBaseSecurityDialog} from "./KnowledgeBaseSecurityDialog";
 
 export default function KnowledgeBaseForm() {
 
@@ -20,6 +21,8 @@ export default function KnowledgeBaseForm() {
     const show_kb_form = useSelector((state) => state.kbReducer.show_form);
     const session = useSelector((state) => state.authReducer.session);
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
+
+
 
     const [security_id, setSecurityId] = useState();
     const [selected_tab, setSelectedTab] = useState('general')
@@ -53,6 +56,10 @@ export default function KnowledgeBaseForm() {
         const id = Api.createGuid();
         setSecurityId(id);
         return id;
+    }
+
+    const refreshSecurityIdPrompt = () => {
+        dispatch(showSecurityPrompt())
     }
 
 
@@ -173,7 +180,7 @@ export default function KnowledgeBaseForm() {
                                                            readOnly="readonly" {...register("securityId", {required: true})} />
                                                     <img title="generate new security id" alt="refresh"
                                                          src={theme === 'light' ? "images/refresh.svg" : "images/refresh.svg"}
-                                                         onClick={() => refreshSecurityId()}
+                                                         onClick={() => refreshSecurityIdPrompt()}
                                                          className="image-size form-icon"/>
                                                 </div>
                                                 {errors.securityId && <span className="text-danger fst-italic small"> Security id is required</span>}
@@ -278,6 +285,7 @@ export default function KnowledgeBaseForm() {
                     </div>
                 </div>
             </div>
+            <KnowledgeBaseSecurityDialog setSecurityId={setSecurityId}/>
         </div>
     );
 }

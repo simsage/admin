@@ -30,6 +30,9 @@ const initialState = {
     // ask truncate indexes
     show_truncate_indexes_form: false,
     truncate_indexes_data: null,    // {session and kb}
+
+    //security ID
+    show_securityID_prompt: false
 }
 
 
@@ -146,6 +149,15 @@ const knowledgeBaseSlice = createSlice({
             state.show_error_form = false;
             state.error_message = undefined;
             state.error_title = undefined;
+        },
+        showSecurityPrompt: (state) => {
+            return {
+                ...state,
+                show_securityID_prompt: true
+            }
+        },
+        closeSecurityPrompt:(state) => {
+            return{...state, show_securityID_prompt: false}
         },
         //
         search: (state, action) => {
@@ -273,7 +285,7 @@ export const truncateSlowIndexes = createAsyncThunk(
 
 export const {
 
-    closeErrorMessage,showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
+    showSecurityPrompt, closeSecurityPrompt, closeErrorMessage,showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
     setViewIds, showOptimizeAskDialog, closeOptimize, updateKB, search, orderBy,
 
     showTruncateIndexesAskDialog, closeTruncateIndexes
