@@ -53,7 +53,7 @@ export function UserEditV2() {
     useEffect(()=>{
         kbValidation();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[kbs])
+    },[roles, kbs])
 
     useEffect(() => {
         if (user_id) {
