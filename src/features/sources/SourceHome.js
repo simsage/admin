@@ -330,7 +330,7 @@ export default function SourceHome(props) {
                 <div className="form-group ms-auto">
                     {selected_knowledge_base_id.length > 0 &&
                         <div className="d-flex">
-                            <div className="btn" onClick={() => refresh_sources()} ><img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh source-list" /></div>
+                            <div className="btn" onClick={() => refresh_sources()} ><img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh source-list" /></div>
                             <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleImportCrawler()} >Import Crawler</button>
                             <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddForm()}> + Add Source</button>
                         </div>
@@ -408,7 +408,7 @@ export default function SourceHome(props) {
                                                 </button>
                                             </div>
                                             {/*<div className="link-button" onClick={() => editCrawler(crawler)}>*/}
-                                            {/*    <img src="../../images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>*/}
+                                            {/*    <img src="images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>*/}
                                             {/*</div>*/}
                                             {/*<div className="link-button" onClick={() => deleteCrawlerAsk(crawler)}>*/}
                                             {/*    <img src="images/delete.svg" className="image-size" title="remove crawler" alt="remove"/>*/}

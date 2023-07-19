@@ -153,7 +153,7 @@ export function OrganisationHome() {
                     </div>
                     <div className="form-group d-flex ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
-                            <img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh organisations" />
+                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh organisations" />
                         </div>
                         <button data-testid="add-new-organisation"
                                 onClick={() => setShowRestoreOrganisationForm(!show_restore_organisation_form)}

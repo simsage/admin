@@ -36,8 +36,8 @@ const Header = () => {
                 <div className="account" title="Sign out and Organisation menu">
                     <button className={(accounts_dropdown ? "active" : "") + " btn nav-btn"}
                             onClick={(e) => toggleAccountsMenu(e,accounts_dropdown)}>
-                        <img src="/images/icon/icon_n-account.svg" alt="" className={accounts_dropdown ? "d-none" : ""} />
-                        <img src="/images/icon/icon_n-account.svg" alt="" className={!accounts_dropdown ? "d-none" : ""} />
+                        <img src="images/icon/icon_n-account.svg" alt="" className={accounts_dropdown ? "d-none" : ""} />
+                        <img src="images/icon/icon_n-account.svg" alt="" className={!accounts_dropdown ? "d-none" : ""} />
                     </button>
                 </div>
 
