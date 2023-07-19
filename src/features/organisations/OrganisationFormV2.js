@@ -99,14 +99,10 @@ export default function OrganisationFormV2(props) {
         } else {
             setShowEnableDomainError(false)
         }
-        console.log("x_auto_create_SSO_domain_list_str", x_enable)
-        console.log("x_auto_create_SSO_domain_list_str", x_auto_create_SSO_domain_list_str.length)
-        console.log("x_auto_create_SSO_domain_list_str error", show_enable_domain_error)
     }, [getValues(['enabled'])])
 
 //on submit store or update
     const onSubmit = data => {
-
         if (show_enable_domain_error) {
             setSelectedTab('sso')
         } else {
@@ -272,7 +268,8 @@ export default function OrganisationFormV2(props) {
                                             <div className="col-12">
                                                 <div className="form-check form-switch">
                                                     <input className="form-check-input"
-                                                           type="checkbox" {...register('autoCreateSSOUsers')}/>
+                                                           type="checkbox" {...register('autoCreateSSOUsers')}
+                                                    />
                                                     <label className="form-check-label">Allow single
                                                         sign-on users to be
                                                         auto-created with a default set of group ACLs
@@ -290,7 +287,7 @@ export default function OrganisationFormV2(props) {
                                                 <textarea className="form-control"
                                                           placeholder="Valid domain names (e.g. simsage.co.uk)"
                                                           rows="3"
-                                                          {...register("autoCreateSSODomainListStr", {required: getValues('enabled') ? true : false})}
+                                                          {...register("autoCreateSSODomainListStr", {required: getValues('autoCreateSSOUsers')})}
                                                 />
                                             </div>
                                             {(errors.autoCreateSSODomainListStr || show_enable_domain_error )&&
