@@ -89,7 +89,7 @@ export default function OrganisationFormV2(props) {
 
 
     useEffect(() => {
-        let [x_enable, x_auto_create_SSO_domain_list_str] = getValues(['enabled', 'autoCreateSSODomainListStr'])
+        let [x_enable, x_auto_create_SSO_domain_list_str] = getValues(['autoCreateSSOUsers', 'autoCreateSSODomainListStr'])
         if (x_enable) {
             if (x_auto_create_SSO_domain_list_str.length < 4) {
                 setShowEnableDomainError(true)
@@ -99,7 +99,7 @@ export default function OrganisationFormV2(props) {
         } else {
             setShowEnableDomainError(false)
         }
-    }, [getValues(['enabled'])])
+    }, [getValues(['autoCreateSSOUsers'])])
 
 //on submit store or update
     const onSubmit = data => {
