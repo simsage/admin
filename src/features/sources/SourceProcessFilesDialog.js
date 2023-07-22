@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import React from "react";
+import React, {useState} from "react";
 import {closeForm, processFiles} from "./sourceSlice";
 
 export function SourceProcessFilesDialog() {
@@ -10,6 +10,8 @@ export function SourceProcessFilesDialog() {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const session = useSelector((state) => state.authReducer.session)
+
+    const [url_list, setUrlList] = useState('');
 
     const session_id = session.id;
 
@@ -33,6 +35,7 @@ export function SourceProcessFilesDialog() {
 
 
     const handleOk = () => {
+        data["urlList"] = url_list;
         dispatch(processFiles({session_id:session_id, data:data}))
         dispatch(closeForm());
     }
@@ -58,6 +61,17 @@ export function SourceProcessFilesDialog() {
                             {message2}
                             </div>
                         </div>
+
+                        <label className="label-2 small">URL csv list (empty for all)</label>
+                        <div>
+                            <textarea className="form-control" placeholder="specific urls only... (leave blank to process all)"
+                                      spellCheck="false" rows="5"
+                                      style={{width: '100%'}}
+                                      value={url_list}
+                                      onChange={(event) => {setUrlList(event.target.value)}}
+                                      />
+                        </div>
+                        <br/>
 
                         <div className="control-row">
                             <button onClick={handleClose} type="button" className="btn btn-white px-4"
