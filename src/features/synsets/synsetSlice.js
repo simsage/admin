@@ -207,11 +207,13 @@ const synsetSlice = createSlice({
             state.show_synset_form = false;
             state.show_delete_form = false;
             state.show_add_default_form = false;
+            state.selected_synset = undefined;
         },
         closeErrorMessage: (state) => {
             state.show_error_form = false;
             state.error_message = undefined;
             state.error_title = undefined;
+            state.selected_synset = undefined;
         },
 
     },
