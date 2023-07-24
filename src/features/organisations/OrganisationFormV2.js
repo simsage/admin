@@ -35,7 +35,8 @@ export default function OrganisationFormV2(props) {
     const [selected_roles, setSelectedRoles] = useState(organisation ? api.getPrettyRoles(organisation.autoCreateSSORoleList) : []);
     const [selected_groups, setSelectedGroups] = useState(organisation ? organisation.autoCreateSSOACLList : []);
 
-    const [show_enable_domain_error, setShowEnableDomainError] = useState(false);
+    const [show_enable_domain_error, setShowEnableDomainError] = useState(true);
+    const [role_error, setRoleError] = useState(true);
 
     const handleClose = () => {
         dispatch(closeOrganisationForm());
@@ -43,6 +44,7 @@ export default function OrganisationFormV2(props) {
         setSelectedGroups([])
         setSelectedTab('general');
     }
+
 
 
     const handleDelete = () => {
@@ -88,8 +90,18 @@ export default function OrganisationFormV2(props) {
     }, [group_data_status === 'load_now', organisation])
 
 
+//Role validation
+    useEffect(()=>{
+        if(selected_roles.length > 0){
+            setRoleError(false)
+        }else{
+            setRoleError(true)
+        }
+    },[selected_roles,props.show_organisation_form,selected_organisation_id])
+
+    //autoCreateSSODomainListStr validation
     useEffect(() => {
-        let [x_enable, x_auto_create_SSO_domain_list_str] = getValues(['autoCreateSSOUsers', 'autoCreateSSODomainListStr'])
+        let [x_enable, x_auto_create_SSO_domain_list_str] = getValues(['enabled', 'autoCreateSSODomainListStr'])
         if (x_enable) {
             if (x_auto_create_SSO_domain_list_str.length < 4) {
                 setShowEnableDomainError(true)
@@ -99,11 +111,13 @@ export default function OrganisationFormV2(props) {
         } else {
             setShowEnableDomainError(false)
         }
-    }, [getValues(['autoCreateSSOUsers'])])
+    }, [getValues(['enabled'])])
 
 //on submit store or update
     const onSubmit = data => {
         if (show_enable_domain_error) {
+            setSelectedTab('sso')
+        } else if (selected_roles.length < 1 ){
             setSelectedTab('sso')
         } else {
 
@@ -316,6 +330,11 @@ export default function OrganisationFormV2(props) {
                                                             })
                                                         }
                                                     </div>
+
+                                                    {(role_error )&&
+                                                        <span
+                                                            className="text-danger fst-italic small">This field is required </span>}
+
                                                 </div>
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">Available</h6>
