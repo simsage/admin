@@ -38,6 +38,7 @@ export function UserEditV2() {
     const [kbFilter, setKbFilter] = useState('');
 
     const [kb_error, setKBError] = useState(true);
+    const [role_error, setRoleError] = useState(true);
 
     //Form
     const {
@@ -50,10 +51,34 @@ export function UserEditV2() {
     } = useForm();
 
 
+    // Form validation for Roles and KBs
     useEffect(()=>{
         kbValidation();
+        roleValidation()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[roles, kbs])
+
+
+    function kbValidation() {
+        console.log('here', showKbs)
+        if (showKbs && kbs.length < 1) {
+            setKBError(true);
+        } else {
+            setKBError(false)
+        }
+        // alert("A knowledge operator must have at least 1 Knowledge base assigned");
+
+    }
+
+    function roleValidation() {
+        if (roles.length < 1) {
+            setRoleError(true);
+        } else {
+            setRoleError(false)
+        }
+        // alert("A knowledge operator must have at least 1 Knowledge base assigned");
+    }
+
 
     useEffect(() => {
         if (user_id) {
@@ -220,16 +245,6 @@ export function UserEditV2() {
         }))
     }
 
-    function kbValidation() {
-        console.log('here', showKbs)
-        if (showKbs && kbs.length < 1) {
-            setKBError(true);
-        } else {
-            setKBError(false)
-        }
-        // alert("A knowledge operator must have at least 1 Knowledge base assigned");
-
-    }
 
     //Groups functions
 
@@ -287,7 +302,7 @@ export function UserEditV2() {
     const onSubmit = data => {
 
 
-        if(kb_error === false){
+        if(!kb_error && !role_error){
             const session_id = session.id;
             data = {
                 ...data,
@@ -299,7 +314,10 @@ export function UserEditV2() {
 
             dispatch(updateUser({session_id, organisation_id, data}));
             handleClose();
+        }else{
+            setSelectedTab('roles')
         }
+
 
     }
 
@@ -474,6 +492,8 @@ export function UserEditV2() {
                                                     })
                                                 }
                                             </div>
+                                            {role_error && <span
+                                                className="text-danger fst-italic small">To proceed, a user needs to be assigned at least one role.</span>}
                                         </div>
                                         <div className="role-block col-6">
                                             <h6 className="role-label text-center">Available</h6>
@@ -490,6 +510,7 @@ export function UserEditV2() {
                                                     })
                                                 }
                                             </div>
+
                                         </div>
                                     </div>
                                     {showKbs &&
@@ -514,7 +535,7 @@ export function UserEditV2() {
                                                 </div>
 
                                                 {kb_error && <span
-                                                    className="text-danger fst-italic small">A knowledge operator must have at least 1 Knowledge base assigned.</span>}
+                                                    className="text-danger fst-italic small">To be a knowledge operator, it is necessary to have at least one assigned knowledge base.</span>}
                                             </div>
                                             <div className="role-block col-6">
                                                 <h6 className="role-label text-center">Available</h6>
