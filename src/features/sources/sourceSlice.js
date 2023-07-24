@@ -98,7 +98,7 @@ const reducers = {
         state.show_start_crawler_prompt = false
         state.show_zip_crawler_prompt = false
         state.show_process_files_prompt = false
-
+        state.data_status = 'load_now';
     },
 
     closeTestMessage: (state, action) => {
@@ -182,8 +182,6 @@ const extraReducers = (builder) => {
         .addCase(updateSources.fulfilled, (state, action) => {
             state.busy = false;
             state.show_import_form = false
-            state.show_data_form = false;
-            state.selected_source = null;
             state.data_status = 'load_now';
         })
 
