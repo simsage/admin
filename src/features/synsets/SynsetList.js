@@ -54,7 +54,7 @@ export default function SynsetList() {
     useEffect(() => {
         dispatch(loadSynsets(data));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [load_data === 'load_now', page, page_size])
+    }, [load_data === 'load_now', page, page_size, selected_knowledge_base_id])
 
     function filterRecords(e) {
         e.preventDefault()
