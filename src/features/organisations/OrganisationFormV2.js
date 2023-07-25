@@ -62,8 +62,6 @@ export default function OrganisationFormV2(props) {
         formState: {errors},
         reset,
         getValues,
-        trigger,
-        watch,
         // watch,
     } = useForm();
 
@@ -97,6 +95,7 @@ export default function OrganisationFormV2(props) {
         }else{
             setRoleError(true)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[selected_roles,props.show_organisation_form,selected_organisation_id])
 
     //autoCreateSSODomainListStr validation
@@ -111,6 +110,7 @@ export default function OrganisationFormV2(props) {
         } else {
             setShowEnableDomainError(false)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getValues(['enabled'])])
 
 //on submit store or update
@@ -154,6 +154,8 @@ export default function OrganisationFormV2(props) {
         let temp_available_rolls = roles_list_full.filter(role => {
             if (!roleNames.includes(role.role)) {
                 return role
+            }else {
+                return false;
             }
         })
 

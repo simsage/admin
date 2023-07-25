@@ -2,7 +2,6 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect} from "react";
 import {getGroupList} from "./groupSlice";
 import GroupList from "./GroupList";
-import GroupIntro from "./GroupIntro";
 import {GroupErrorDialog} from "./GroupErrorDialog";
 
 
@@ -26,19 +25,21 @@ export default function SynonymsHome() {
     return (
         <div className="">
 
-            {status === null &&
-                <GroupIntro />
+            <GroupList />
 
-            }
-            {/*Intro message when there are no bot items loaded*/}
-            {status !== null && group_list.length === 0 &&
-                <GroupIntro />
+            {/*{status === null &&*/}
+            {/*    <GroupIntro />*/}
 
-            }
-            {status !== null && group_list.length > 0 &&
-                <GroupList />
+            {/*}*/}
+            {/*/!*Intro message when there are no bot items loaded*!/*/}
+            {/*{status !== null && group_list.length === 0 &&*/}
+            {/*    <GroupIntro />*/}
 
-            }
+            {/*}*/}
+            {/*{status !== null && group_list.length > 0 &&*/}
+            {/*    <GroupList />*/}
+
+            {/*}*/}
 
             <GroupErrorDialog/>
         </div>
