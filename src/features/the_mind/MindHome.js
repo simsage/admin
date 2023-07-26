@@ -8,7 +8,7 @@ import CategorizationHome from "../categorization/CategorizationHome";
 import TextToSearchHome from "../text_to_search/TextToSearchHome";
 
 export default function MindHome(){
-    const [selected_sub_nav, setSelectedSubNav] = useState('bot')
+    const [selected_sub_nav, setSelectedSubNav] = useState('synonyms')
 
     const sub_nav = [
         {label: "Synonyms", slug:"synonyms" },
