@@ -11,12 +11,10 @@ export default function MindHome(){
     const [selected_sub_nav, setSelectedSubNav] = useState('bot')
 
     const sub_nav = [
-        {label: "Bot", slug:"bot" },
         {label: "Synonyms", slug:"synonyms" },
         {label: "Semantics", slug:"semantics" },
         {label: "Synsets", slug:"synsets" },
         {label: "Categorization", slug:"categorization" },
-        {label: "Text to Search", slug:"textToSearch"},
     ]
 
 
