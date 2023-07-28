@@ -6,6 +6,7 @@ import '../css/sign-in.css';
 import '../css/spinner.css';
 import {loginRequest} from "../authConfig";
 import {useMsal} from "@azure/msal-react";
+import Api from "../common/api";
 
 
 // sign-in screen
@@ -23,7 +24,7 @@ export const SignIn = () => {
                                  className="auth-logo" onClick={() => { window.location = window.ENV.api_base.replace('/api', '/'); }} />
                             <p className="mb-1 fw-bold auth-text-primary fst-italic">ADMIN</p>
                         </div>
-                        <div className="version">Version {window.ENV.version}</div>
+                        <div className="version">Version {Api.pretty_version()}</div>
                     </div>
 
                     <div className="form-group">

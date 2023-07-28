@@ -10,6 +10,16 @@ export class Api {
         return (value !== null && value !== undefined);
     }
 
+
+    static pretty_version() {
+        const parts = window.ENV.version.split(".");
+        console.log("parts = " + parts.length)
+        if (parts.length === 3 || parts.length === 4) {
+            return parts[0] + "." + parts[1] + " (build " + parts[2] + ")";
+        }
+        return window.ENV.version;
+    }
+
     // generate a guid
     static createGuid() {
         function s4() {

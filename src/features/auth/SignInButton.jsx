@@ -4,6 +4,7 @@ import {loginRequest} from "./authConfig";
 
 import "../../css/sign-in.css";
 import OpenSourceSoftwareLicenses from "../home/OpenSourceSoftwareLicenses";
+import Api from "../../common/api";
 
 function handleLogin(instance) {
     instance.loginRedirect(loginRequest).catch(e => {
@@ -36,7 +37,7 @@ export const SignInButton = () => {
                                     <img src="images/brand/simsage-logo-no-strapline.svg" alt="" className="auth-logo" />
                                     <p className="mb-1 fw-bold auth-text-primary fst-italic">ADMIN</p>
                                 </div>
-                                <div className="version small fw-300 text-black-50 text-end">Version {window.ENV.version}</div>
+                                <div className="version small fw-300 text-black-50 text-end">Version {Api.pretty_version()}</div>
                             </div>
 
                             <div className="form-group">

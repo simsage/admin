@@ -5,6 +5,7 @@ import {bindActionCreators} from "redux";
 import {appCreators} from "../actions/appActions";
 
 import '../css/app-menu.css';
+import Api from "../common/api";
 
 export class AppMenu extends Component {
     constructor(props){
@@ -61,7 +62,7 @@ export class AppMenu extends Component {
                         <span className="home-image-container">
                             <img src={theme === 'light' ? "images/home.svg" : "images/home-light.svg"} alt="home" title="home" onClick={() => this.goWeb()}
                                  className="home-image" />
-                             <div className="version-text">version {window.ENV.version}</div>
+                             <div className="version-text">version {Api.pretty_version()}</div>
                         </span>
                     }
                     {
