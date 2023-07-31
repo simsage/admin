@@ -189,7 +189,10 @@ export function UserEditV2() {
         setRoles(roles.filter(r => {
             return r.role !== roleToRemove.role
         }))
-        if (roleToRemove.role === "operator") setShowKBs(false);
+        if (roleToRemove.role === "operator") {
+            setShowKBs(false);
+            setKBs([])
+        }
     }
 
     //Knowledge base functions
