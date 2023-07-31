@@ -79,8 +79,8 @@ export default function GroupEdit(){
          userIdList: activeUsers.map( u => u.id )
         }
         dispatch(updateGroup({session_id, data}));
-        dispatch(closeGroupForm());
-        dispatch(getGroupList({session_id:session.id, organization_id: organisation_id}))
+        // dispatch(closeGroupForm());
+        // dispatch(getGroupList({session_id:session.id, organization_id: organisation_id}))
     }
 
 

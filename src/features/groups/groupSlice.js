@@ -86,6 +86,7 @@ const extraReducers = (builder) => {
         .addCase(updateGroup.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = "load_now";
+            state.show_group_form = false;
         })
         .addCase(updateGroup.rejected, (state, action) => {
             state.status = "rejected";
