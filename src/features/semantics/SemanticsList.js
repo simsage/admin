@@ -82,13 +82,6 @@ export default function SemanticsHome() {
         dispatch(loadSemantics({ session_id, data }));
     }
 
-    // function handleSearchTextKeydown(event)
-    // {
-    //     if (event.key === "Enter") {
-    //         filterSemantic();
-    //     }
-    // }
-
     function handleEditSemantic(semantic)
     {
     dispatch(showEditSemanticForm( {session_id, semantic}))
