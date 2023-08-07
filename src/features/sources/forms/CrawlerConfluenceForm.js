@@ -77,7 +77,7 @@ export default function CrawlerConfluenceForm(props) {
                         <div className="col-6">
                             <div className="form-group">
                                 <label className="small d-flex justify-content-between">
-                                    Categories to crawl
+                                    Spaces to crawl
                                     <span className="fst-italic fw-light small">(separate spaces labels by comma)</span>
                                 </label>
                                 <textarea className="form-control"
