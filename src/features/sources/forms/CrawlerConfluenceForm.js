@@ -82,7 +82,7 @@ export default function CrawlerConfluenceForm(props) {
                                 </label>
                                 <textarea className="form-control"
                                     disabled={specific_json.crawlAllSites}
-                                    placeholder="labels of spaces, separated by commas (leave empty to crawl all categories / spaces)"
+                                    placeholder="labels of spaces, case insensitive, separated by commas (leave empty to crawl all categories / spaces)"
                                     rows={3}
                                     value={specific_json.categories}
                                     onChange={(event) => {
@@ -101,7 +101,7 @@ export default function CrawlerConfluenceForm(props) {
                                 </label>
                                 <textarea className="form-control"
                                     disabled={specific_json.crawlAllSites}
-                                    placeholder="keys of spaces, separated by commas (leave empty to crawl all spaces)"
+                                    placeholder="keys of spaces, case insensitive, separated by commas (leave empty to crawl all spaces)"
                                     rows={3}
                                     value={specific_json.includeSpaces}
                                     onChange={(event) => {
@@ -118,7 +118,7 @@ export default function CrawlerConfluenceForm(props) {
                                 </label>
                                 <textarea className="form-control"
                                     disabled={specific_json.crawlAllSites}
-                                    placeholder="keys of spaces, separated by commas (leave empty to not exclude any spaces)"
+                                    placeholder="keys of spaces, case insensitive, separated by commas (leave empty to not exclude any spaces)"
                                     rows={3}
                                     value={specific_json.excludeSpaces}
                                     onChange={(event) => {
