@@ -30,12 +30,12 @@ export default function CrawlerConfluenceForm(props) {
             <div className="row mb-4">
                 <div className="col-9">
                     <div className="row mb-4">
-                        <div className="form-group col-8">
+                        <div className="form-group col-8" title="base url (e.g. https://simsage.atlassian.net)">
                             <label className="small">Confluence Base Url</label>
                             <form>
                                 <input type="text" className="form-control"
-                                    // placeholder="Base Url of the Atlassian installation"
                                     autoFocus={true}
+                                    placeholder="base url (e.g. https://simsage.atlassian.net)"
                                     value={specific_json.baseUrl}
                                     onChange={(event) => {
                                         setData({baseUrl: event.target.value})
@@ -48,7 +48,6 @@ export default function CrawlerConfluenceForm(props) {
                             <form>
                                 <input type="text" className="form-control"
                                     // placeholder="User id to use to log into Confluence"
-                                    autoFocus={true}
                                     value={specific_json.userId}
                                     onChange={(event) => {
                                         setData({userId: event.target.value})
@@ -63,7 +62,6 @@ export default function CrawlerConfluenceForm(props) {
                             <form>
                                 <div className="form-control d-flex align-items-center">
                                     <input type={form_show_password ? "text" : "password"} className="border-0 p-0 w-100"
-                                        autoFocus={true}
                                         placeholder="********"
                                         value={specific_json.accessToken}
                                         onChange={(event) => {
@@ -80,11 +78,11 @@ export default function CrawlerConfluenceForm(props) {
                             <div className="form-group">
                                 <label className="small d-flex justify-content-between">
                                     Categories to crawl
-                                    <span className="fst-italic fw-light small">(separate categories by comma)</span>
+                                    <span className="fst-italic fw-light small">(separate spaces labels by comma)</span>
                                 </label>
                                 <textarea className="form-control"
                                     disabled={specific_json.crawlAllSites}
-                                    placeholder="(leave empty to crawl all categories)"
+                                    placeholder="labels of spaces, separated by commas (leave empty to crawl all categories / spaces)"
                                     rows={3}
                                     value={specific_json.categories}
                                     onChange={(event) => {
@@ -103,7 +101,7 @@ export default function CrawlerConfluenceForm(props) {
                                 </label>
                                 <textarea className="form-control"
                                     disabled={specific_json.crawlAllSites}
-                                    placeholder="(leave empty to crawl all spaces)"
+                                    placeholder="keys of spaces, separated by commas (leave empty to crawl all spaces)"
                                     rows={3}
                                     value={specific_json.includeSpaces}
                                     onChange={(event) => {
@@ -120,7 +118,7 @@ export default function CrawlerConfluenceForm(props) {
                                 </label>
                                 <textarea className="form-control"
                                     disabled={specific_json.crawlAllSites}
-                                    placeholder="(leave empty to not exclude any spaces)"
+                                    placeholder="keys of spaces, separated by commas (leave empty to not exclude any spaces)"
                                     rows={3}
                                     value={specific_json.excludeSpaces}
                                     onChange={(event) => {
