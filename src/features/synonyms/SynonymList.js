@@ -11,6 +11,7 @@ import {
 import {SynonymEdit} from "./SynonymEdit";
 import SynonymDeleteAsk from "./SynonymDeleteAsk";
 import api from "../../common/api";
+import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 
 export default function SynonymsHome() {
 
@@ -78,6 +79,9 @@ export default function SynonymsHome() {
     function getSynonymList() {
         return synonym_list ? synonym_list : [];
     }
+    const handleRefresh = () => {
+        dispatch(loadSynonyms({session_id, data }))
+    }
 
     //
     // function handleKeyDown(event) {
@@ -138,7 +142,10 @@ export default function SynonymsHome() {
                     </div>
                 </div>
 
-                <div className="form-group col ms-auto">
+                <div className="form-group d-flex col ms-auto">
+                    <div className="btn" onClick={() => handleRefresh()} >
+                        <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of synonyms" />
+                    </div>
                     <button className="btn btn-primary text-nowrap" onClick={() => newSynonym()}>
                         + Add Synonym
                     </button>
