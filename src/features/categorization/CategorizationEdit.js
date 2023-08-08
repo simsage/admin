@@ -62,7 +62,7 @@ export function CategorizationEdit(){
                     <div className="modal-body p-0">
                         <div className="tab-content px-5 py-4 overflow-auto">
                             <div className="col-2 offset-10">
-                                <a href="/resources/super-search-syntax.pdf" id="dlsuperquery" target="_blank"
+                                <a href="resources/super-search-syntax.pdf" id="dlsuperquery" target="_blank"
                                    title="Download the SimSage advanced query syntax guide"
                                    className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                                     <BsFilePdf size={25}/>
