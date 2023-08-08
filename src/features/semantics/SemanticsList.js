@@ -82,6 +82,10 @@ export default function SemanticsHome() {
         dispatch(loadSemantics({ session_id, data }));
     }
 
+    const handleRefresh = () => {
+        dispatch(loadSemantics({session_id, data}))
+    }
+
     function handleEditSemantic(semantic)
     {
     dispatch(showEditSemanticForm( {session_id, semantic}))
@@ -123,7 +127,10 @@ export default function SemanticsHome() {
                         </div>
                     </div>
 
-                    <div className="form-group col ms-auto">
+                    <div className="form-group d-flex col ms-auto">
+                        <div className="btn" onClick={() => handleRefresh()} >
+                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of semantics" />
+                        </div>
                         <button className="btn btn-primary text-nowrap" onClick={() => handleAddSemantic()}>
                             + Add Semantic
                         </button>

@@ -90,6 +90,10 @@ export default function CategorizationHome() {
         return iterable_list ? iterable_list : [];
     }
 
+    const handleRefresh = () => {
+        dispatch(loadCategorizations(data))
+    }
+
     function newCategory() {
         dispatch(showAddCategoryForm(true));
     }
@@ -173,7 +177,10 @@ export default function CategorizationHome() {
                         </div>
                     </div>
 
-                    <div className="form-group col ms-auto">
+                    <div className="form-group d-flex col ms-auto">
+                        <div className="btn" onClick={() => handleRefresh()} >
+                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of categories" />
+                        </div>
                         <button className="btn btn-primary text-nowrap" onClick={() => newCategory()}>
                             + Add Category
                         </button>

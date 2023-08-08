@@ -63,6 +63,10 @@ export default function SynsetList() {
 
     }
 
+    const handleRefresh = () => {
+        dispatch(loadSynsets(data))
+    }
+
     const handleEdit = (synset) => {
         dispatch(showEditSynSetForm({selected_synset: synset}));
     }
@@ -126,6 +130,9 @@ export default function SynsetList() {
                     </div>
 
                     <div className="form-group d-flex ms-auto">
+                        <div className="btn" onClick={() => handleRefresh()} >
+                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of synsets" />
+                        </div>
                         <button className="btn btn-outline-primary text-nowrap ms-2"
                                 onClick={() => handleAddDefaultSynSet()}
                                 title="add all default syn-sets">Defaults
