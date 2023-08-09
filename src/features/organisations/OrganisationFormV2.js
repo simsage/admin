@@ -25,6 +25,7 @@ export default function OrganisationFormV2(props) {
     });
     // const available_roles = useSelector((state) => state.usersReducer.roles);
     const roles_list_full = api.getPrettyRoles(useSelector((state) => state.usersReducer.roles));
+    const sso_enabled = organisation ? organisation.autoCreateSSOUsers : false;
 
     //filters
     const [selected_role_filter, setRoleFilter] = useState('');
@@ -90,7 +91,7 @@ export default function OrganisationFormV2(props) {
 
 //Role validation
     useEffect(()=>{
-        if(selected_roles.length > 0){
+        if(selected_roles.length > 0 || !sso_enabled){
             setRoleError(false)
         }else{
             setRoleError(true)
@@ -101,7 +102,7 @@ export default function OrganisationFormV2(props) {
     //autoCreateSSODomainListStr validation
     useEffect(() => {
         let [x_enable, x_auto_create_SSO_domain_list_str] = getValues(['enabled', 'autoCreateSSODomainListStr'])
-        if (x_enable) {
+        if (x_enable && sso_enabled) {
             if (x_auto_create_SSO_domain_list_str.length < 4) {
                 setShowEnableDomainError(true)
             } else {
@@ -117,11 +118,9 @@ export default function OrganisationFormV2(props) {
     const onSubmit = data => {
         if (show_enable_domain_error) {
             setSelectedTab('sso')
-        } else if (selected_roles.length < 1 ){
+        } else if (selected_roles.length < 1 && sso_enabled){
             setSelectedTab('sso')
         } else {
-
-
             data.autoCreateSSORoleList = selected_roles.map(role => {
                 return role.role
             });
