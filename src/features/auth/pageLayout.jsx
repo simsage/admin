@@ -31,7 +31,17 @@ export const PageLayout = (props) => {
                         dispatch(login(data));
                         dispatch(setOrganisationList(data))
                     }, on_fail: (error_message) => {
-                        dispatch(showError({"message": "cannot sign-in: " + error_message, "title": "sign-in error"}));
+                        if (error_message.indexOf("code 500") > 0) {
+                            dispatch(showError({
+                                "message": "cannot sign-in: your account has insufficient privileges",
+                                "title": "sign-in error"
+                            }));
+                        } else {
+                            dispatch(showError({
+                                "message": "cannot sign-in: " + error_message,
+                                "title": "sign-in error"
+                            }));
+                        }
                     }
                 }));
             }
