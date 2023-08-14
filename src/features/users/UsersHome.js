@@ -202,7 +202,8 @@ export function UsersHome() {
                                 <td className="pt-3 px-4 pb-2">
                                     <div className="d-flex flex-wrap">
                                         {user.roles.map((r, key) => {
-                                            if (r.organisationId !== selected_organisation_id) {
+                                            // admin always displays
+                                            if (r.organisationId !== selected_organisation_id && r.role !== "admin") {
                                                 return null
                                             } else {
                                                 return <div key={key}
