@@ -4,7 +4,7 @@ import {SignInButton} from "./SignInButton";
 import {useDispatch, useSelector} from "react-redux";
 import {login, showError, simsageSignIn} from "./authSlice";
 import {setOrganisationList} from "../organisations/organisationSlice";
-import ErrorMessage from "../../common/ErrorMessage";
+// import ErrorMessage from "../../common/ErrorMessage";
 
 // global variable - bad - but controls the process
 let signing_in = false;

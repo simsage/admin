@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect} from "react";
 import {closeCategoryForm, updateCategorization} from "./categorizationSlice";
-import CategorizationError from './CategorizationError';
 import {BsFilePdf} from "react-icons/bs";
 import {useForm} from "react-hook-form";
 
@@ -9,15 +8,12 @@ import {useForm} from "react-hook-form";
 export function CategorizationEdit(){
 
     const dispatch = useDispatch();
-
     const session = useSelector((state) => state.authReducer.session);
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const show_category_form = useSelector( (state) => state.categorizationReducer.show_category_form)
     const selectedCategory = useSelector( (state) => state.categorizationReducer.edit);
     //Synonym details
-
-
 
     //Form Hook
     const {register, handleSubmit, formState: {errors}, reset} = useForm();

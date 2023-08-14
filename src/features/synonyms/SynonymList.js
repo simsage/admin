@@ -11,7 +11,6 @@ import {
 import {SynonymEdit} from "./SynonymEdit";
 import SynonymDeleteAsk from "./SynonymDeleteAsk";
 import api from "../../common/api";
-import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 
 export default function SynonymsHome() {
 

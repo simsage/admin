@@ -7,13 +7,11 @@ import {
     showAddSynSetForm,
     showAddDefaultAskForm,
     noResultsMessage,
-    closeForm
 } from "./synsetSlice";
 import {showEditSynSetForm} from "./synsetSlice"
 import SynsetDelete from "./SynsetDelete";
 import SynsetDefault from "./SynsetDefault";
 import api from "../../common/api";
-import ShowErrorForm from "../../components/ShowErrorForm";
 import SynsetForm from "./SynsetForm";
 
 export default function SynsetList() {
@@ -34,8 +32,6 @@ export default function SynsetList() {
     let [synset_filter, setSynSetFilter] = useState('');
 
     const load_data = useSelector((state) => state.synsetReducer.data_status)
-    const show_error_form = useSelector((state) => state.synsetReducer.show_error_form)
-    const error_message = useSelector((state) => state.synsetReducer.error)
 
     const show_synset_form = useSelector((state) => state.synsetReducer.show_synset_form)
 
@@ -95,10 +91,6 @@ export default function SynsetList() {
         return synset_list ? synset_list : [];
     }
 
-    const handleClose = () => {
-        // alert("alert called")
-        dispatch(closeForm());
-    }
 
 
 
@@ -131,7 +123,7 @@ export default function SynsetList() {
 
                     <div className="form-group d-flex ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
-                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of synsets" />
+                            <img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of synsets" />
                         </div>
                         <button className="btn btn-outline-primary text-nowrap ms-2"
                                 onClick={() => handleAddDefaultSynSet()}
