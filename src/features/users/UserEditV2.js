@@ -5,6 +5,7 @@ import {closeUserForm, updateUser} from "./usersSlice";
 import {useForm} from "react-hook-form";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
+import {getGroupList} from "../groups/groupSlice";
 
 export function UserEditV2() {
 
@@ -81,6 +82,7 @@ export function UserEditV2() {
 
 
     useEffect(() => {
+        dispatch(getGroupList({session_id: session.id, organization_id: organisation_id}))
         if (user_id) {
             const temp_user = (user_list.filter((user) => user.id === user_id));
             setSelectedUser(temp_user.length === 1 ? temp_user[0] : {})
