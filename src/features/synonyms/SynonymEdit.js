@@ -27,6 +27,9 @@ export function SynonymEdit(){
         if ( synonym ) {
             setSynonymList(synonym.words);
         }
+        else {
+            resetData()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_synonym_form])
 
@@ -59,8 +62,6 @@ export function SynonymEdit(){
                 "words": synonymList
             }
             dispatch(updateSynonyms({session_id, organisation_id, knowledge_base_id, data}));
-            dispatch(closeSynonymForm());
-            resetData();
         }else {
             setError("An input is required");
         }

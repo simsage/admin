@@ -92,6 +92,8 @@ const extraReducers = (builder) => {
         .addCase(updateSynonyms.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = 'load_now';
+            state.show_synonym_form = false;
+            state.edit = undefined;
         })
         .addCase(updateSynonyms.rejected, (state, action) => {
             state.status = "rejected";
