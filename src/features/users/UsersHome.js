@@ -201,11 +201,17 @@ export function UsersHome() {
                                 <td className="pt-3 px-4 pb-3 fw-light">{user.email}</td>
                                 <td className="pt-3 px-4 pb-2">
                                     <div className="d-flex flex-wrap">
+                                        {isAdmin?
+                                            <div
+                                                 className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole('System Administrator')}</div>
+                                            :<></>}
+
                                         {user.roles.map((r, key) => {
-                                            // admin always displays
-                                            if (r.organisationId !== selected_organisation_id && r.role !== "admin") {
+                                            // admin always displays &&
+                                            if (r.organisationId !== selected_organisation_id ) {
                                                 return null
                                             } else {
+                                                if(r.role !== "admin")
                                                 return <div key={key}
                                                             className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole(r.role)}</div>
                                             }
