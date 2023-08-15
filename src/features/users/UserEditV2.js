@@ -316,7 +316,6 @@ export function UserEditV2() {
             }
 
             dispatch(updateUser({session_id, organisation_id, data}));
-            handleClose();
         }else{
             setSelectedTab('roles')
         }

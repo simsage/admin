@@ -114,6 +114,8 @@ const extraReducers = (builder) => {
         .addCase(updateUser.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.data_status = "load_now"
+            state.show_user_form = false;
+            state.edit_id = undefined;
         })
         .addCase(updateUser.rejected, (state, action) => {
             state.status = "rejected";
