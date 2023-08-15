@@ -113,6 +113,8 @@ export default function GroupEdit(){
                                                         value={editName}
                                                         onChange={(event) => setEditName(event.target.value)}
                                                     />
+
+
                                                     </form>
                                             </span>
                                             {activeUsers.map(user => {
