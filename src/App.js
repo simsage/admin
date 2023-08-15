@@ -22,7 +22,7 @@ function App() {
     const busy = busy1 || busy2;
     return (
         <PageLayout>
-            <AuthenticatedTemplate>
+            {/*<AuthenticatedTemplate>*/}
                 <div className={busy ? "dms wait-cursor" : "dms"} onClick={() => localCloseAllMenus()}>
                     <LeftNavbar/>
                     <div className="outer">
@@ -30,7 +30,7 @@ function App() {
                         <MainSection/>
                     </div>
                 </div>
-            </AuthenticatedTemplate>
+            {/*</AuthenticatedTemplate>*/}
         </PageLayout>
     );
 }
