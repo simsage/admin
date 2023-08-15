@@ -87,6 +87,8 @@ const extraReducers = (builder) => {
             state.busy = false;
             state.status = "fulfilled"
             state.data_status = 'load_now';
+            state.show_form = false;
+            state.edit_id = undefined;
         })
         .addCase(addOrUpdate.rejected, (state, action) => {
             state.busy = false;
