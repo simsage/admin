@@ -321,6 +321,7 @@ export default function CrawlerMetadataForm(props) {
 
                 <thead>
                 <tr className='table-header'>
+                    <td className="small text-black-50 px-0"></td>
                     <td className="small text-black-50 px-4 metadata-column">Data-type</td>
                     <td className="small text-black-50 px-4 display-column">UI Display-name</td>
                     <td className="small text-black-50 px-4 metadata-field-column">Metadata name</td>
@@ -338,18 +339,38 @@ export default function CrawlerMetadataForm(props) {
                     get_md_list().map(function (md, index) {
                         return (<tr key={index}>
 
-                            <td className="pt-3 ps-4 pe-0 pb-3">
-                                <select className="form-select text-capitalize" onChange={(event) => {
-                                    set_md_type(md, index, event.target.value)
-                                }}
-                                        defaultValue={md.key}
-                                        aria-label="select what kind of metadata field to use">
-                                    {
-                                        metadata_list.map((value, j) => {
-                                            return (<option key={j} value={value.key}>{value.key}</option>)
-                                        })
+                            <td className="px-0">
+                                <div className="d-flex">
+                                    <div className="d-flex flex-column justify-content-center">
+                                    {index > 0 &&
+                                        <button className="up-arrow btn btn-white py-0" title="move row up (change UI ordering)"
+                                            onClick={() => {
+                                                move_row_up(md, index)
+                                            }}>&#9651;</button>
                                     }
-                                </select>
+                                    {index + 1 < num_rows &&
+                                        <button className="up-arrow btn btn-white py-0" title="move row down (change UI ordering)"
+                                            onClick={() => {
+                                                move_row_down(md, index)
+                                            }}>&#9661;</button>
+                                    }
+                                    </div>
+                                </div>
+                            </td>
+                            <td className="pt-3 pe-0 pb-3">
+                                    <div className="w-100">
+                                        <select className="form-select text-capitalize" onChange={(event) => {
+                                            set_md_type(md, index, event.target.value)
+                                        }}
+                                                defaultValue={md.key}
+                                                aria-label="select what kind of metadata field to use">
+                                            {
+                                                metadata_list.map((value, j) => {
+                                                    return (<option key={j} value={value.key}>{value.key}</option>)
+                                                })
+                                            }
+                                        </select>
+                                    </div>
                             </td>
 
                             <td className="pt-3 ps-4 pe-0 pb-3">
@@ -414,6 +435,7 @@ export default function CrawlerMetadataForm(props) {
 
                             <td className="pt-3 ps-4 pe-0 pb-3">
                                 {md.sort !== "" &&
+                                    <div className="py-2">
                                     <div className="form-check form-switch">
                                         <input className="form-check-input" title="Enable result sorting over this field?"
                                                type="checkbox" checked={md.sort === "true"}
@@ -422,30 +444,35 @@ export default function CrawlerMetadataForm(props) {
                                                }}/>
                                         {/* <label className="form-check-label" for="enableKnowledgeBase">Knowledge Base</label> */}
                                     </div>
+                                    </div>
                                 }
                                 {md.sort === "true" &&
                                     <div className=""
                                          title="Set this descending field as the default sort field for the UI">
-                                        {'\u2190'}
-                                        <input type="checkbox"
+                                        {/* {'\u2190'} */}
+                                        <div className="py-2">
+                                            <input className="form-check-input" type="checkbox"
                                                checked={md.sortDefault === "desc"}
                                                onChange={(event) => {
                                                    setDefaultSort(md, index, "desc", event.target.checked);
                                                }}
-                                        />
+                                            />
+                                        </div>
                                     </div>
                                 }
 
                                 {md.sort === "true" &&
                                     <div className=""
                                          title="Set this ascending field as the default sort field for the UI">
-                                        {'\u2190'}
-                                        <input type="checkbox"
+                                        {/* {'\u2190'} */}
+                                        <div className="py-2">
+                                            <input className="form-check-input" type="checkbox"
                                                checked={md.sortDefault === "asc"}
                                                onChange={(event) => {
                                                    setDefaultSort(md, index, "asc", event.target.checked);
                                                }}
-                                        />
+                                            />
+                                        </div>
                                     </div>
                                 }
                             </td>
@@ -458,7 +485,7 @@ export default function CrawlerMetadataForm(props) {
                                     </button>
                                 </div>
 
-                                {index > 0 &&
+                                {/* {index > 0 &&
                                     <span className="up-arrow" title="move row up (change UI ordering)"
                                           onClick={() => {
                                               move_row_up(md, index)
@@ -469,7 +496,7 @@ export default function CrawlerMetadataForm(props) {
                                           onClick={() => {
                                               move_row_down(md, index)
                                           }}>&#8681;</span>
-                                }
+                                } */}
                             </td>
 
                         </tr>)
