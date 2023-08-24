@@ -33,7 +33,13 @@ export function UserPasswordResetForm() {
 
     useEffect(() => {
         let defaultValues = {}
-
+        defaultValues.id = selectedUser ? selectedUser.id : '';
+        defaultValues.email = selectedUser ? selectedUser.email : '';
+        defaultValues.firstName = selectedUser ? selectedUser.firstName : '';
+        defaultValues.surname = selectedUser ? selectedUser.surname : '';
+        defaultValues.roles = selectedUser ? selectedUser.roles : '';
+        defaultValues.operatorKBList = selectedUser ? selectedUser.operatorKBList : '';
+        defaultValues.groupList = selectedUser ? selectedUser.groupList : [];
         defaultValues.password = selectedUser ? selectedUser.password : '';
         defaultValues.password_repeat = selectedUser ? selectedUser.password : '';
 
