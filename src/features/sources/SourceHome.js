@@ -340,7 +340,7 @@ export default function SourceHome(props) {
 
                 </div>
             </div>
-            {source_list_status !== undefined && source_list && source_list.length > 0 &&
+            {
                 <div className="source-page">
                     <table className="table">
                         <thead>
