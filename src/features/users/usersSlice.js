@@ -114,6 +114,8 @@ const extraReducers = (builder) => {
         .addCase(updateUser.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.data_status = "load_now"
+            state.show_user_form = false;
+            state.edit_id = undefined;
         })
         .addCase(updateUser.rejected, (state, action) => {
             state.status = "rejected";
@@ -149,6 +151,8 @@ const extraReducers = (builder) => {
         .addCase(deleteUser.fulfilled, (state) => {
             state.status = "fulfilled";
             state.data_status = "load_now"
+            state.show_delete_form = false;
+            state.edit_id = undefined;
         })
         .addCase(deleteUser.rejected, (state, action) => {
             state.status = "rejected";

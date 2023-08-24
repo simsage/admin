@@ -120,7 +120,6 @@ export default function KnowledgeBaseForm() {
         dispatch(addOrUpdate({session_id: session.id, data: data}))
 
         // dispatch(getKBList({session_id: session.id, organization_id: organisation_id}));
-        handleClose()
     };
 
     function handleTabChange(slug) {
