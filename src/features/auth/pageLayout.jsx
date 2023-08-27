@@ -53,6 +53,12 @@ export const PageLayout = (props) => {
             };
             instance.acquireTokenSilent(request).then((response) => {
                 sign_in(response)
+            }).catch((error) => {
+                console.error(error);
+                // sign out the user
+                instance.logoutRedirect().catch(e => {
+                    console.error("logoutRequest error", e);
+                });
             });
         }
 

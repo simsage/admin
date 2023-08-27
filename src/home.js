@@ -66,10 +66,12 @@ export class Home extends Component {
                         () => {
                             this.props.history.push("/error");
                         });
-                }).catch((e) => {
-                    this.setState({jwt: null});
-                    this.props.setError("acquire-token", e);
-                    this.props.history.push("/error");
+                }).catch((error) => {
+                    console.error(error);
+                    // sign out the user
+                    instance.logoutRedirect().catch(e => {
+                        console.error("logoutRequest error", e);
+                    });
                 });
             }
         }
