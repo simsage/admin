@@ -113,20 +113,12 @@ export default function GeneralForm(props) {
                 <div className="col-6">
                     <label className="label-left small">Processing Level</label>
                     <div className="d-flex btn-group" role="group" aria-label="Basic radio toggle button group">
-                        {/* <input type="radio" className="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked/>
-                        <label className="btn btn-outline-primary" for="btnradio1">Radio 1</label>
-                    </div>
-                    <div className={"flex space-x-3"}> */}
                         {[
-                            // {label: "discovery", value: "FILES"},
-                            // {label: "GDPR", value: "GDPR"},
-                            // {label: "search", value: "SEARCH"},
-                            // {label: "NLU", value: "NLU"},
-                            {value: "CONVERT", label: "Convert to Text"},
-                            {value: "PARSE", label: "Process Text"},
-                            {value: "INDEX", label: "Create Indexes"},
+                            {value: "CONVERT", label: "Document Inventory", help: "Step 1: Convert the documents to text and collect their basic information."},
+                            {value: "PARSE", label: "Document Analysis", help: "Step 2: Apply fully processing and collect similarities and other statistics for each document."},
+                            {value: "INDEX", label: "Document Finding", help: "Step 3: Make the information in the documents findable."},
                         ].map((item, i) => {
-                            return <label key={i} style={{borderColor: "#ced4da"}} className="w-100 px-3 py-2 btn btn-sm" ><input className="form-check-input me-1" {...props.register("processingLevel")}
+                            return <label key={i} title={item.help} style={{borderColor: "#ced4da"}} className="w-100 px-3 py-2 btn btn-sm" ><input className="form-check-input me-1" {...props.register("processingLevel")}
                                         type="radio"
                                         value={item.value}/> {item.label}
                             </label>
