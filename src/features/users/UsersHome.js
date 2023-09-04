@@ -194,6 +194,12 @@ export function UsersHome() {
                             const editYes = canEdit(user, isAdmin, isManager);
                             const deleteYes = canDelete(user, session, isAdmin, isManager);
 
+                            const user_roles = user.roles.map((role) => { return role.role });
+                            const isUser_an_Admin = user_roles.includes('admin');
+
+                            console.log("Siva Roles", user_roles);
+                            // console.log("Siva Roles", );
+
                             return <tr key={user.id}>
                                 <td className="pt-3 px-4 pb-3 fw-500">{user.firstName} {user.surname} <span
                                     className="fw-light fst-italic pt-2 text-black-50">{user.email === user_account.email ? '(you)' : ""}</span>
@@ -201,7 +207,7 @@ export function UsersHome() {
                                 <td className="pt-3 px-4 pb-3 fw-light">{user.email}</td>
                                 <td className="pt-3 px-4 pb-2">
                                     <div className="d-flex flex-wrap">
-                                        {isAdmin?
+                                        {isUser_an_Admin?
                                             <div
                                                  className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole('System Administrator')}</div>
                                             :<></>}
