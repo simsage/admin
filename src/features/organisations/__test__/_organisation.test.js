@@ -56,7 +56,7 @@ describe("Show / close forms", () => {
 
 
 //OrganisationEdit Testing
-describe(OrganisationHome, () => {
+describe("OrganisationHome", () => {
     it('organisation home with no data', () => {
         render(<OrganisationHome/>);
         expect(screen.getByText(/no data/i)).toBeInTheDocument();

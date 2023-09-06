@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
 import {closeErrorMessage} from "./synonymSlice";
-import {useMsal} from "@azure/msal-react";
+// import {useMsal} from "@azure/msal-react";
 // import {simsageLogOut} from "../auth/authSlice";
 
 export function SynonymErrorDialog() {

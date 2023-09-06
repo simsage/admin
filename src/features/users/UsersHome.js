@@ -217,9 +217,13 @@ export function UsersHome() {
                                             if (r.organisationId !== selected_organisation_id ) {
                                                 return null
                                             } else {
-                                                if(r.role !== "admin")
-                                                return <div key={key}
-                                                            className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole(r.role)}</div>
+                                                if(r.role !== "admin") {
+                                                    return <div key={key}
+                                                                className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole(r.role)}</div>
+                                                }else {
+                                                    return null
+                                                }
+
                                             }
                                         })}
                                     </div>

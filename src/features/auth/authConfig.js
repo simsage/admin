@@ -12,7 +12,7 @@ import { LogLevel } from "@azure/msal-browser";
  */
 let wl = "" + window.location;
 if (wl.lastIndexOf('/') > 8) {
-    wl = wl.substr(0, wl.lastIndexOf('/#'));
+    wl = wl.substring(0, wl.lastIndexOf('/#'));
 }
 //
 // wl = "http://localhost:4210";

@@ -1,6 +1,6 @@
 import reducer,{showAddForm} from '../inventorySlice'
-import {configureStore} from "@reduxjs/toolkit";
-import inventorySlice from "../inventorySlice";
+// import {configureStore} from "@reduxjs/toolkit";
+// import inventorySlice from "../inventorySlice";
 
 
 

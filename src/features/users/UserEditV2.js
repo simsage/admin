@@ -299,9 +299,6 @@ export function UserEditV2() {
         setSelectedTab('details')
     }
 
-    // function allowSSO() {
-    //
-    // }
 
 
     const onSubmit = data => {
@@ -414,15 +411,6 @@ export function UserEditV2() {
                                                         className="text-danger fst-italic small">{error_message}</span>}
                                             </div>
                                         </div>
-                                                {/*<div className="form-check form-switch">*/}
-                                                {/*    <label className="form-check-label">SSO</label>*/}
-                                                {/*    <input className="form-check-input"*/}
-                                                {/*           type="checkbox"*/}
-                                                {/*           checked={sso}*/}
-                                                {/*           onChange={()=> {*/}
-                                                {/*                setSso(!sso)}*/}
-                                                {/*            }/>*/}
-                                                {/*</div>*/}
 
                                         {!user_id && !sso &&
                                             <div className="row mb-3">

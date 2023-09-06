@@ -591,43 +591,43 @@ export class Home extends Component {
     }
 }
 
-const mapStateToProps = function(state) {
-    return {
-        error: state.appReducer.error,
-        error_title: state.appReducer.error_title,
-
-        operator_wait_timeout_in_ms: state.appReducer.operator_wait_timeout_in_ms,
-
-        busy: state.appReducer.busy,
-        theme: state.appReducer.theme,
-
-        user: state.appReducer.user,
-        selected_tab: state.appReducer.selected_tab,
-        session: state.appReducer.session,
-        operator_connected: state.appReducer.operator_connected,
-        operators: state.appReducer.operators,
-
-        organisation_list: state.appReducer.organisation_list,
-        knowledge_base_list: state.appReducer.knowledge_base_list,
-        enable_vectorizer: state.appReducer.enable_vectorizer,
-
-        html5_notifications: state.appReducer.html5_notifications,
-
-        selected_organisation: state.appReducer.selected_organisation,
-        selected_organisation_id: state.appReducer.selected_organisation_id,
-        selected_knowledgebase: state.appReducer.selected_knowledgebase,
-        selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
-
-        // list of edge devices
-        edge_device_list: state.appReducer.edge_device_list,
-        selected_edge_device: state.appReducer.selected_edge_device,
-        selected_edge_device_id: state.appReducer.selected_edge_device_id,
-
-        text2search_list: state.appReducer.text2search_list,
-        num_text2search: state.appReducer.num_text2search,
-        text2search_page: state.appReducer.text2search_page,
-        text2search_page_size: state.appReducer.text2search_page_size,
-        text2search_try_reply: state.appReducer.text2search_try_reply,
-        text2search_try_text: state.appReducer.text2search_try_text,
-    };
-};
+// const mapStateToProps = function(state) {
+//     return {
+//         error: state.appReducer.error,
+//         error_title: state.appReducer.error_title,
+//
+//         operator_wait_timeout_in_ms: state.appReducer.operator_wait_timeout_in_ms,
+//
+//         busy: state.appReducer.busy,
+//         theme: state.appReducer.theme,
+//
+//         user: state.appReducer.user,
+//         selected_tab: state.appReducer.selected_tab,
+//         session: state.appReducer.session,
+//         operator_connected: state.appReducer.operator_connected,
+//         operators: state.appReducer.operators,
+//
+//         organisation_list: state.appReducer.organisation_list,
+//         knowledge_base_list: state.appReducer.knowledge_base_list,
+//         enable_vectorizer: state.appReducer.enable_vectorizer,
+//
+//         html5_notifications: state.appReducer.html5_notifications,
+//
+//         selected_organisation: state.appReducer.selected_organisation,
+//         selected_organisation_id: state.appReducer.selected_organisation_id,
+//         selected_knowledgebase: state.appReducer.selected_knowledgebase,
+//         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
+//
+//         // list of edge devices
+//         edge_device_list: state.appReducer.edge_device_list,
+//         selected_edge_device: state.appReducer.selected_edge_device,
+//         selected_edge_device_id: state.appReducer.selected_edge_device_id,
+//
+//         text2search_list: state.appReducer.text2search_list,
+//         num_text2search: state.appReducer.num_text2search,
+//         text2search_page: state.appReducer.text2search_page,
+//         text2search_page_size: state.appReducer.text2search_page_size,
+//         text2search_try_reply: state.appReducer.text2search_try_reply,
+//         text2search_try_text: state.appReducer.text2search_try_text,
+//     };
+// };
