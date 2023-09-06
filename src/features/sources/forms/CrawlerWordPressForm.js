@@ -1,6 +1,5 @@
 import React, {useEffect} from "react";
 import RestoreWPArchive from "../../../common/restore-wp-archive";
-import Comms from "../../../common/comms";
 
 export default function CrawlerWordPressForm(props) {
 

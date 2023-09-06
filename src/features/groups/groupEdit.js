@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux";
-import {closeGroupForm, getGroupList, updateGroup} from "./groupSlice";
+import {closeGroupForm, updateGroup} from "./groupSlice";
 import {getUserListPaginated} from "../users/usersSlice";
 
 export default function GroupEdit(){

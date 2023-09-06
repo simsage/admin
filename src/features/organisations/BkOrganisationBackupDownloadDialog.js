@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {
     closeBackupDownloadMessage,
-    downloadBackup, getOrganisationList,
+    downloadBackup,
 } from "./organisationSlice";
 import Api from "../../common/api";
 import {useEffect} from "react";

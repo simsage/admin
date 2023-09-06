@@ -151,7 +151,8 @@ export default function CrawlerMetadataForm(props) {
     useEffect(()=>{
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
-    },[ specific_json])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[specific_json])
 
 
 

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from "axios";
 import Comms from "../../common/comms";
-import {loadSemantics} from "../semantics/semanticSlice";
 
 const initialState = {
     selected_tab: 'home',

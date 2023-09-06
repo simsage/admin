@@ -1,7 +1,4 @@
 import axios from "axios/index";
-import {loadState} from "../common/helpers";
-
-// import {loadState} from '../state/stateLoader'
 
 
 // communications common to all components

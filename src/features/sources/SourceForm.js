@@ -32,8 +32,7 @@ import CrawlerDiscourseForm2 from "./forms/CrawlerDiscourseForm2";
 import CrawlerSearchForm2 from "./forms/CrawlerSearchForm2";
 import CrawlerServiceNow from "./forms/CrawlerServiceNow";
 import ProcessorSetup from "../../common/processor-setup";
-import SourceTest from "./SourceTest";
-import {data} from "msw";
+// import {data} from "msw";
 
 
 export default function SourceForm() {
@@ -105,7 +104,7 @@ export default function SourceForm() {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const show_form = useSelector((state) => state.sourceReducer.show_data_form);
-    const test_result = useSelector((state) => state.sourceReducer.test_result);
+    // const test_result = useSelector((state) => state.sourceReducer.test_result);
 
     useEffect(() => {
         const page = 0;
@@ -124,6 +123,7 @@ export default function SourceForm() {
             organization_id: selected_organisation_id,
             filter: null
         }))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show_form, selected_organisation_id, selected_knowledge_base_id]);
 
 
@@ -266,6 +266,7 @@ export default function SourceForm() {
     useEffect(() => {
         if (has_error && has_error.message && has_error.message.length > 0)
             dispatch(showErrorAlert(has_error))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [has_error])
 
     function is_valid_metadata(list, is_db) {

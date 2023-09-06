@@ -4,7 +4,6 @@ import LeftNavbar from "./includes/left-navbar";
 import Header from "./includes/header";
 import {useDispatch, useSelector} from "react-redux";
 import {PageLayout} from "./features/auth/pageLayout";
-import {AuthenticatedTemplate} from "@azure/msal-react";
 import {closeAllMenus} from "./features/auth/authSlice";
 import MainSection from "./components/MainSection";
 

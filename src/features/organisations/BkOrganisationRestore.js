@@ -1,6 +1,5 @@
 import {useForm} from "react-hook-form";
 import {restoreOrganisation} from "./organisationSlice";
-import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 export default function BkOrganisationRestore(props) {

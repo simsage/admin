@@ -14,7 +14,7 @@ export class AclSetup extends Component {
             availableFilter: '',
         };
     }
-    UNSAFE_componentWillReceiveProps(props) {
+    componentDidUpdate(props) {
         this.setState({
             acl_list: props.acl_list ? props.acl_list: [],
         })

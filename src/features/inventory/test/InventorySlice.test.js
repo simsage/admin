@@ -1,14 +1,10 @@
-import reducer,{showAddForm, showEditForm, closeForm} from '../inventorySlice'
-import inventoryReducer from "../inventorySlice";
-import MockAdapter from "axios-mock-adapter";
-import axios from "axios/index";
-import {parquets} from "../../sources/test/TestData";
+import reducer,{showAddForm} from '../inventorySlice'
 import {configureStore} from "@reduxjs/toolkit";
 import inventorySlice from "../inventorySlice";
 
 
 
-const store = configureStore({reducer:{inventoryReducer:inventorySlice}})
+// const store = configureStore({reducer:{inventoryReducer:inventorySlice}})
 const previousState  = {
     inventory_list: [],
     inventor_busy: false,

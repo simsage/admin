@@ -41,14 +41,14 @@ export default function SourceHome(props) {
     const show_error_form = useSelector((state) => state.sourceReducer.show_error_form)
 
     let source_list = useSelector((state) => state.sourceReducer.source_list);
-    const source_list_status = useSelector((state) => state.sourceReducer.status);
+    // const source_list_status = useSelector((state) => state.sourceReducer.status);
 
     // const show_form_source = useSelector((state) => state.sourceReducer.show_data_form);
     const show_export_form = useSelector((state) => state.sourceReducer.show_export_form);
     const show_import_form = useSelector((state) => state.sourceReducer.show_import_form);
 
-    const error_title = useSelector((state) => state.sourceReducer.error_title);
-    const error_message = useSelector((state) => state.sourceReducer.error_message);
+    // const error_title = useSelector((state) => state.sourceReducer.error_title);
+    // const error_message = useSelector((state) => state.sourceReducer.error_message);
 
 
     const data_status = useSelector((state) => state.sourceReducer.data_status);

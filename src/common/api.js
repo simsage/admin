@@ -237,11 +237,11 @@ export class Api {
 
     //return array of pretty roles
     static getPrettyRoles(roles){
-        const pretty_roles = roles.map(role => {
+        return roles.map(role => {
             return {'role':role, 'label':this.getPrettyRole(role)}
         })
 
-        return pretty_roles;
+        // return pretty_roles;
         // return ['admin', 'operator', 'dms', 'manager', 'discover', 'search'];
     }
 

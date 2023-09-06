@@ -1,17 +1,17 @@
-import {getOrganisationList, showAddOrganisationForm} from "../organisationSlice";
+import {showAddOrganisationForm} from "../organisationSlice";
 import organisationReducer from "../organisationSlice";
 import {Provider} from 'react-redux'
 import {fireEvent, render as rtlRender, screen} from '@testing-library/react'
 import {configureStore} from '@reduxjs/toolkit';
 import {OrganisationHome} from "../OrganisationHome";
 import authReducer from "../../auth/authSlice";
-import OrganisationEdit from "../OraganisationEdit";
+// import OrganisationEdit from "../OraganisationEdit";
 import { setupServer } from 'msw/node'
 import { rest } from 'msw'
 import {fetch_data} from "./_test_data";
 
 const filter = null;
-const api_base = 'https://adminux.simsage.ai/api';
+// const api_base = 'https://adminux.simsage.ai/api';
 const url = 'https://adminux.simsage.ai/api/auth/user/organisations/' + encodeURIComponent(filter);
 
 export const handlers = [
@@ -48,7 +48,7 @@ const render = (ui, { initialState = initial_state, store = app_store, ...render
 
 
 describe("Show / close forms", () => {
-    it("Organisation: Form: Show Add ", () => {
+    it("Organisation: Form: Show Add",() => {
         const showForm = ({...initial_state, "show_organisation_form": true});
         expect(organisationReducer(initial_state, showAddOrganisationForm({"show_form": true}))).toEqual(showForm);
     });

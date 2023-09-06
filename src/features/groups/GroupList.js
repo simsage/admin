@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState, useEffect} from "react";
-import {showAddGroupForm, showEditGroupForm, showErrorMessage, showGroupDeleteAsk} from "./groupSlice";
+import {showAddGroupForm, showEditGroupForm, showGroupDeleteAsk} from "./groupSlice";
 import {Pagination} from "../../common/pagination";
 import {hasRole} from "../../common/helpers";
 import GroupEdit from "./groupEdit";

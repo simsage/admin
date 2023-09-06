@@ -12,6 +12,7 @@ export default function StatusHome() {
 
     useEffect(()=>{
         dispatch(getSimSageStatus({session_id:session_id,organisation_id:organisation_id}))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     const status_list = useSelector((state) => state.statusReducer.status_list)

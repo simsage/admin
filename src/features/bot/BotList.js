@@ -245,7 +245,7 @@ export default function BotList() {
                                                 const formatted_url = url.slice(0,8).includes("http") ? url : "https://"+url
                                                 return (
                                                     <div className="mind-text-column text-black-50 small text-truncate mb-1" style={{maxWidth: "250px"}}> 
-                                                        <a href={formatted_url} target="_blank" className="text-black-50" title={url}>{url}</a>
+                                                        <a href={formatted_url} rel="noreferrer" target="_blank" className="text-black-50" title={url}>{url}</a>
                                                     </div>
                                                 )
                                             })

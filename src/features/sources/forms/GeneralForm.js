@@ -55,7 +55,7 @@ export default function GeneralForm(props) {
 
     //todo:: filteredEdgeDevices
     function filteredEdgeDevices() {
-        let list = [{"key": "none", "value": "n/a"}];
+        return [{"key": "none", "value": "n/a"}];
         // if (props.edge_device_list) {
         //     for (let edge_device of this.props.edge_device_list) {
         //         if (edge_device.organisationId === this.state.organisation_id && edge_device.edgeId) {
@@ -63,7 +63,7 @@ export default function GeneralForm(props) {
         //         }
         //     }
         // }
-        return list;
+        // return list;
     }
 
 

@@ -299,9 +299,9 @@ export function UserEditV2() {
         setSelectedTab('details')
     }
 
-    function allowSSO() {
-
-    }
+    // function allowSSO() {
+    //
+    // }
 
 
     const onSubmit = data => {
