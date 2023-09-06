@@ -192,7 +192,7 @@ export class Organisations extends React.Component {
                     <span className="filter-label">filter</span>
                     <span className="filter-find-text">
                             <input type="text" value={this.props.user_filter} autoFocus={true} className={"filter-text-width " + theme}
-                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                   onKeyDown={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setOrganisationFilter(event.target.value)
                                    }}/>

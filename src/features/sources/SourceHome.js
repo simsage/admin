@@ -302,7 +302,7 @@ export default function SourceHome(props) {
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
                         {/*<input type="text" placeholder={"Filter..."} value={searchFilter} autoFocus={true} className={"form-control filter-search-input " + theme}*/}
-                        {/*       onKeyPress={(e) => handleSearchFilter(e)}*/}
+                        {/*       onKeyDown={(e) => handleSearchFilter(e)}*/}
                         {/*       onChange={(e) => setSearchFilter(e.target.value)}/>*/}
 
                         <input onKeyUp={(event) => handleSearchFilter(event)} type="text"

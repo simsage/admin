@@ -106,7 +106,7 @@ export class Text2Search extends React.Component {
                             <span className="text2search-label">try text-to-search queries here</span>
                             <span className="try-text2search-box">
                                 <input type="text" value={this.props.text2search_try_text} className="try-text2search-box"
-                                       onKeyPress={(event) => this.handleTrySearchTextKeydown(event)}
+                                       onKeyDown={(event) => this.handleTrySearchTextKeydown(event)}
                                        placeholder="press [enter] to try"
                                        onChange={(event) => {
                                            this.props.setText2SearchTryText(event.target.value)
@@ -126,7 +126,7 @@ export class Text2Search extends React.Component {
                         <span className="filter-label">find</span>
                         <span className="filter-find-text">
                             <input type="text" value={this.props.text2search_filter} autoFocus={true} className={"filter-text-width " + theme}
-                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                   onKeyDown={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setText2SearchFilter(event.target.value)
                                    }}/>

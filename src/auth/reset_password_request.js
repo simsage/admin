@@ -41,7 +41,7 @@ export class ResetPasswordRequest extends Component {
             this.showError('Error', 'Input field value is missing');
         }
     }
-    onKeyPress(event) {
+    onKeyDown(event) {
         if (event.key === "Enter") {
             this.resetPasswordRequest();
         }
@@ -74,7 +74,7 @@ export class ResetPasswordRequest extends Component {
                             <div className="form-group form-label">
                                 <input type="text" className="form-control"
                                     autoFocus={true}
-                                    onKeyPress={(event) => this.onKeyPress(event)}
+                                    onKeyDown={(event) => this.onKeyDown(event)}
                                     placeholder="Enter your email Address"
                                     onChange = {(event) => this.setState({email: event.target.value})} />
                             </div>

@@ -33,7 +33,7 @@ export const PasswordSignIn = () => {
             )
     }
 
-    function onKeyPress(event) {
+    function onKeyDown(event) {
         if (event.key === "Enter") {
             doSignIn();
         }
@@ -62,7 +62,7 @@ export const PasswordSignIn = () => {
                         <label className="label-text">Email address</label>
                         <input type="email" className="form-control" placeholder="Enter email" autoFocus={true}
                                value={username}
-                               onKeyPress={(event) => onKeyPress(event)}
+                               onKeyDown={(event) => onKeyDown(event)}
                                onChange = {(event) => setUsername(event.target.value) }
                         />
                     </div>
@@ -71,7 +71,7 @@ export const PasswordSignIn = () => {
                         <label className="label-text">Password</label>
                         <input type="password" className="form-control" placeholder="Enter password"
                                value={password}
-                               onKeyPress={(event) => this.onKeyPress(event)}
+                               onKeyDown={(event) => this.onKeyDown(event)}
                                onChange = {(event) => setPassword(event.target.value) }
                         />
                     </div>

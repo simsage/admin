@@ -130,7 +130,7 @@ export class Synonyms extends React.Component {
                         <span className="filter-label">find relationship</span>
                         <span className="filter-find-text">
                             <input type="text" value={this.props.synonym_filter} autoFocus={true} className={"filter-text-width " + theme}
-                                   onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                                   onKeyDown={(event) => this.handleSearchTextKeydown(event)}
                                    onChange={(event) => {
                                        this.props.setSynonymFilter(event.target.value)
                                    }}/>

@@ -58,7 +58,7 @@ export class ResetPasswordResponse extends Component {
             this.showError('Error', 'Input field value(s) missing or incorrect.');
         }
     }
-    onKeyPress(event) {
+    onKeyDown(event) {
         if (event.key === "Enter") {
             this.resetPassword();
         }
@@ -111,7 +111,7 @@ export class ResetPasswordResponse extends Component {
                                         autoFocus={true}
                                         autoComplete="off"
                                         onChange = {(event) => this.setState({password: event.target.value})}
-                                        onKeyPress = {this.onKeyPress.bind(this)} />
+                                        onKeyDown = {this.onKeyDown.bind(this)} />
                             </div>
 
                             <div className="form-group spacer-height">

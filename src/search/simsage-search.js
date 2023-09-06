@@ -161,7 +161,7 @@ export class SimsageSearch extends Component {
                         <input type="text" className="search-text"
                             autoFocus={true}
                             onChange={(event) => this.setState({searchText: event.target.value})}
-                            onKeyPress={(event) => this.handleSearchTextKeydown(event)}
+                            onKeyDown={(event) => this.handleSearchTextKeydown(event)}
                             disabled={this.state.busy}
                             value={this.state.searchText}
                         />
