@@ -37,7 +37,7 @@ export default function CrawlerIManageForm(props) {
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label label className="small">Server</label>
+                            <label  className="small">Server</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder="Server FQDN (e.g. imanage.simsage.ai)"
@@ -50,7 +50,7 @@ export default function CrawlerIManageForm(props) {
                     </div>
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label label className="small">Admin username</label>
+                            <label  className="small">Admin username</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
@@ -61,7 +61,7 @@ export default function CrawlerIManageForm(props) {
                             </form>
                         </div>
                         <div className="form-group col-6">
-                            <label label className="small">Admin password</label>
+                            <label  className="small">Admin password</label>
                             <form>
                                 <input type="password" className="form-control"
                                     placeholder="********"
@@ -74,7 +74,7 @@ export default function CrawlerIManageForm(props) {
                     </div>
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label label className="small">Client ID</label>
+                            <label  className="small">Client ID</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
@@ -85,7 +85,7 @@ export default function CrawlerIManageForm(props) {
                             </form>
                         </div>
                         <div className="form-group col-6">
-                            <label label className="small">Client secret</label>
+                            <label  className="small">Client secret</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder="aka. API secret"
@@ -98,7 +98,7 @@ export default function CrawlerIManageForm(props) {
                     </div>
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label label className="small">Library ID</label>
+                            <label  className="small">Library ID</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder="e.g. Active"
