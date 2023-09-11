@@ -207,20 +207,35 @@ export default function CrawlerMetaMapperForm(props) {
 
 
     return (
-        <div className="crawler-page">
+        <div className="px-5 py-4" style={{maxHeight: "600px"}}>
 
-            <div className="instructions-label">All rows in order of UI.  Use 'actions' arrows to re-arrange existing rows.</div>
+            <div className="row mb-3">
+                <div className="col-6 d-flex">
+                    <div className="alert alert-warning small py-2" role="alert">
+                        All rows in order of UI. Use 'actions' arrows to re-arrange existing rows.
+                    </div>
+                </div>
+                <div className="col-6 d-flex justify-content-end">
+                    <div>
+                        <button onClick={addNewMetadataMapping} type="button" className="btn btn-primary btn-small"
+                                title="+ Add Metadata Mapping"
+                                data-bs-dismiss="modal">+ Add Metadata Mapping
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-            <table className="table">
+            <table className="table w-100">
 
                 <thead>
                 <tr className='table-header'>
-                    <th className="table-header metadata-column">data-type</th>
-                    <th className="table-header db-field-column">source field</th>
-                    <th className="table-header display-column">UI display-name</th>
-                    <th className="table-header metadata-field-column">metadata name</th>
-                    <th className="table-header sort-field-column">sortable</th>
-                    <th className="table-header action-field-column">actions</th>
+                    <td className="small text-black-50 px-0"></td>
+                    <th className="small text-black-50 px-4 metadata-column">data-type</th>
+                    <th className="small text-black-50 px-4 db-field-column">source field</th>
+                    <th className="small text-black-50 px-4 display-column">UI display-name</th>
+                    <th className="small text-black-50 px-4 metadata-field-column">metadata name</th>
+                    <th className="small text-black-50 px-4 sort-field-column">sortable</th>
+                    <td className="small text-black-50 px-4 action-field-column"></td>
                 </tr>
                 </thead>
 
@@ -229,8 +244,28 @@ export default function CrawlerMetaMapperForm(props) {
                 {
                     get_md_list().map(function(md, index) {
                         return (<tr key={index}>
+                            <td className="px-0">
+                                <div className="d-flex">
+                                    <div className="d-flex flex-column justify-content-center">
+                                        {index > 0 &&
+                                            <button className="up-arrow btn btn-white py-0" title="move row up (change UI ordering)"
+                                                    onClick={() => {
+                                                        move_row_up(md, index)
+                                                    }}>&#9651;</button>
+                                        }
+                                        {index + 1 < num_rows &&
+                                            <button className="up-arrow btn btn-white py-0" title="move row down (change UI ordering)"
+                                                    onClick={() => {
+                                                        move_row_down(md, index)
+                                                    }}>&#9661;</button>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
 
-                            <td className="selector-column">
+
+                            <td className="pt-3 pe-0 pb-3">
+                                <div className="w-100">
                                 <select className="form-select metadata-field-column" onChange={(event) => { set_md_type(md, index, event.target.value) }}
                                         disabled={("" + source_id) !== "0"} aria-label="select what kind of metadata field to use"
                                         defaultValue={md.key}>
@@ -240,6 +275,7 @@ export default function CrawlerMetaMapperForm(props) {
                                         })
                                     }
                                 </select>
+                                </div>
                             </td>
 
                             {md.key !== "two level category" &&
@@ -370,47 +406,47 @@ export default function CrawlerMetaMapperForm(props) {
                                 }
                             </td>
 
-                            <td className="td-action">
-                                <button onClick={() => deleteMetadataItem(index)} type="button"
-                                        className="btn btn-secondary" title="remove this metadata mapping"
-                                        data-bs-dismiss="modal">remove
-                                </button>
-                                {/*<span className="delete-box" onClick={() => deleteMetadataItem(index)} title="remove this metadata item">*/}
-                                {/*    <img src={theme === 'light' ? "images/delete.svg" : "images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>*/}
-                                {/*</span>*/}
-                                {index > 0 &&
-                                    <span className="up-arrow" title="move row up (change UI ordering)"
-                                          onClick={() => {
-                                              move_row_up(md, index)
-                                          }}>&#8679;</span>
-                                }
-                                {index + 1 < num_rows &&
-                                    <span className="up-arrow" title="move row down (change UI ordering)"
-                                          onClick={() => {
-                                              move_row_down(md, index)
-                                          }}>&#8681;</span>
-                                }
-                            </td>
+                            {/*<td className="td-action">*/}
+                            {/*    <button onClick={() => deleteMetadataItem(index)} type="button"*/}
+                            {/*            className="btn btn-secondary" title="remove this metadata mapping"*/}
+                            {/*            data-bs-dismiss="modal">remove*/}
+                            {/*    </button>*/}
+                            {/*    /!*<span className="delete-box" onClick={() => deleteMetadataItem(index)} title="remove this metadata item">*!/*/}
+                            {/*    /!*    <img src={theme === 'light' ? "images/delete.svg" : "images/delete-dark.svg"} className="image-size" title="remove this metadata mapping" alt="remove this metadata mapping"/>*!/*/}
+                            {/*    /!*</span>*!/*/}
+                            {/*    {index > 0 &&*/}
+                            {/*        <span className="up-arrow" title="move row up (change UI ordering)"*/}
+                            {/*              onClick={() => {*/}
+                            {/*                  move_row_up(md, index)*/}
+                            {/*              }}>&#8679;</span>*/}
+                            {/*    }*/}
+                            {/*    {index + 1 < num_rows &&*/}
+                            {/*        <span className="up-arrow" title="move row down (change UI ordering)"*/}
+                            {/*              onClick={() => {*/}
+                            {/*                  move_row_down(md, index)*/}
+                            {/*              }}>&#8681;</span>*/}
+                            {/*    }*/}
+                            {/*</td>*/}
 
                         </tr>)
                     })
                 }
 
-                <tr>
-                    <td colSpan={6}>&nbsp;</td>
-                </tr>
+                {/*<tr>*/}
+                {/*    <td colSpan={6}>&nbsp;</td>*/}
+                {/*</tr>*/}
 
-                <tr>
-                    <td colSpan={6} align={"right"}>
-                        {/*<div className="image-button" onClick={() => addNewMetadataMapping()}><img*/}
-                        {/*    className="image-size" src={theme === 'light' ? "images/add.svg" : "images/add-dark.svg"} title="add new metadata mapping"*/}
-                        {/*    alt="add new metadata mapping"/></div>*/}
-                        <button onClick={addNewMetadataMapping} type="button" className="btn btn-secondary"
-                                title="add new metadata mapping"
-                                data-bs-dismiss="modal">add new metadata mapping
-                        </button>
-                    </td>
-                </tr>
+                {/*<tr>*/}
+                {/*    <td colSpan={6} align={"right"}>*/}
+                {/*        /!*<div className="image-button" onClick={() => addNewMetadataMapping()}><img*!/*/}
+                {/*        /!*    className="image-size" src={theme === 'light' ? "images/add.svg" : "images/add-dark.svg"} title="add new metadata mapping"*!/*/}
+                {/*        /!*    alt="add new metadata mapping"/></div>*!/*/}
+                {/*        <button onClick={addNewMetadataMapping} type="button" className="btn btn-secondary"*/}
+                {/*                title="add new metadata mapping"*/}
+                {/*                data-bs-dismiss="modal">add new metadata mapping*/}
+                {/*        </button>*/}
+                {/*    </td>*/}
+                {/*</tr>*/}
 
                 <tr>
                     <td colSpan={6}>&nbsp;</td>

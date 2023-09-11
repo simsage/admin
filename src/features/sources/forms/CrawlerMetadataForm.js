@@ -201,7 +201,8 @@ export default function CrawlerMetadataForm(props) {
     }
 
 
-    function move_row_up(md, index) {
+    function move_row_up(e, md, index) {
+        e.preventDefault();
         if (index > 0) {
             const md_list = get_md_list();
             const temp = md_list[index - 1];
@@ -213,7 +214,8 @@ export default function CrawlerMetadataForm(props) {
     }
 
 
-    function move_row_down(md, index) {
+    function move_row_down(e, md, index) {
+        e.preventDefault();
         const md_list = get_md_list();
         if (index + 1 < md_list.length) {
             const temp = md_list[index + 1];
@@ -345,14 +347,14 @@ export default function CrawlerMetadataForm(props) {
                                     <div className="d-flex flex-column justify-content-center">
                                     {index > 0 &&
                                         <button className="up-arrow btn btn-white py-0" title="move row up (change UI ordering)"
-                                            onClick={() => {
-                                                move_row_up(md, index)
+                                            onClick={(e) => {
+                                                move_row_up(e, md, index)
                                             }}>&#9651;</button>
                                     }
                                     {index + 1 < num_rows &&
                                         <button className="up-arrow btn btn-white py-0" title="move row down (change UI ordering)"
-                                            onClick={() => {
-                                                move_row_down(md, index)
+                                            onClick={(e) => {
+                                                move_row_down(e, md, index)
                                             }}>&#9661;</button>
                                     }
                                     </div>
