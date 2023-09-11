@@ -197,7 +197,7 @@ export function UsersHome() {
                             const user_roles = user.roles.map((role) => { return role.role });
                             const isUser_an_Admin = user_roles.includes('admin');
 
-                            console.log("Siva Roles", user_roles);
+                            console.log("Siva Roles",user.firstName,': ', user_roles);
                             // console.log("Siva Roles", );
 
                             return <tr key={user.id}>
@@ -219,9 +219,7 @@ export function UsersHome() {
                                             } else {
                                                 if(r.role !== "admin") {
                                                     return <div key={key}
-                                                                className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole(r.role)}</div>
-                                                }else {
-                                                    return null
+                                                                className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{r.role}</div>
                                                 }
 
                                             }
