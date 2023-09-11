@@ -36,6 +36,8 @@ export function OrganisationHome() {
     const user = useSelector((state) => state.authReducer.user);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
 
+    const selected_organisation_id = selected_organisation?selected_organisation.id:null;
+
     //use one org id to load the backups
     const org_id = organisation_list[0] ? organisation_list[0].id : null;
 
@@ -209,10 +211,13 @@ export function OrganisationHome() {
                                                     onClick={() => handleEditOrganisation(item.id)}>Edit
                                             </button>
 
-                                            <button className={"btn text-danger btn-sm"}
-                                                    title={"remove organisation " + item.name}
+
+                                             <button className={"btn text-danger btn-sm"} disabled={selected_organisation_id === item.id ? "true" : ""}
+                                                    title={selected_organisation_id === item.id ? "cannot remove organisation" :  "remove organisation " + item.name }
                                                     onClick={() => handleRemoveOrganisation(item)}>Delete
                                             </button>
+
+
                                         </div>
                                     </td>
                                 </tr>

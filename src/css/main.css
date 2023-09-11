@@ -578,3 +578,7 @@ input, button, textarea {
     float: left;
     width: 200px;
 }
+
+.btn:disabled, .btn.disabled, fieldset:disabled .btn {
+    color: grey !important;
+}
