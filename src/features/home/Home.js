@@ -12,12 +12,21 @@ export default function Home() {
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
+    const roles = useSelector((state) => state.authReducer.roles)
+    const isAdmin = roles.includes('admin')
 
-    const sub_nav = [
+    console.log("Siva isAdmin", isAdmin)
+
+    //Standard menu
+    let sub_nav = [
         {label: "Knowledge Bases", slug:"knowledge-bases" },
-        {label: "Logs", slug:"logs" },
-        {label: "Organisations", slug:"org" },
     ]
+
+    //Add admin menu options
+    if(isAdmin){
+
+        sub_nav.push({label: "Logs", slug:"logs" }, {label: "Organisations", slug:"org" })
+    }
 
 
     function changeNav(slug) {

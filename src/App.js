@@ -18,6 +18,8 @@ function App() {
         dispatch(closeAllMenus())
     }
 
+    console.log()
+
     const busy = busy1 || busy2;
     return (
         <PageLayout>

@@ -5,6 +5,7 @@ import axios from "axios";
 
 const initialState = {
     user: {},
+    roles: [],
     session: {},
 
     selected_organisation: {},
@@ -94,6 +95,7 @@ const authSlice = createSlice({
             return {
                 ...state,
                 user: action.payload.user,
+                roles: action.payload.user?.roles?.map((role) => { return role.role; }),
                 message: '',
                 session: action.payload.session,
                 status: 'logged_in',
