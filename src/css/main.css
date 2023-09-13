@@ -582,3 +582,7 @@ input, button, textarea {
 .btn:disabled, .btn.disabled, fieldset:disabled .btn {
     color: grey !important;
 }
+
+.justify-content-end{
+    gap: 3px;
+}

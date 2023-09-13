@@ -282,7 +282,7 @@ export function UsersHome() {
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
                         component="div"
-                        count={getUserList().length}
+                        count={isAdmin?count:getUserList().length}
                         rowsPerPage={page_size}
                         page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
