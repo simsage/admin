@@ -7,6 +7,7 @@ const initialState = {
     user: {},
     roles: [],
     session: {},
+    is_admin:false,
 
     selected_organisation: {},
     selected_organisation_id: null,
@@ -77,8 +78,12 @@ const authSlice = createSlice({
         login: (state, action) => {
 
             const org_list = action.payload.organisationList
+
             let selected_org = null;
             let selected_org_id = null;
+            const logged_user_roles = action.payload.user?.roles?.map((role) => { return role.role; })
+            const is_logged_user_admin = logged_user_roles.includes('admin')
+
             if (org_list.length) {
                 for (let i = 0; i < org_list.length; i++) {
                     if (org_list[i] && org_list[i]['id'] === action.payload.organisationId) {
@@ -93,9 +98,12 @@ const authSlice = createSlice({
             }
 
             return {
+
+
                 ...state,
                 user: action.payload.user,
-                roles: action.payload.user?.roles?.map((role) => { return role.role; }),
+                roles: logged_user_roles,
+                is_admin: is_logged_user_admin,
                 message: '',
                 session: action.payload.session,
                 status: 'logged_in',

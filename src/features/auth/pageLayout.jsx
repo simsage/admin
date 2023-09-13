@@ -28,6 +28,7 @@ export const PageLayout = (props) => {
                 signing_in = true;
                 dispatch(simsageSignIn({
                     id_token: response.idToken, on_success: (data) => {
+
                         dispatch(login(data));
                         dispatch(setOrganisationList(data))
                     }, on_fail: (error_message) => {
