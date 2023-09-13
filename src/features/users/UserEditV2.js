@@ -6,6 +6,7 @@ import {useForm} from "react-hook-form";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import {getGroupList} from "../groups/groupSlice";
+import {hasRole} from "../../common/helpers";
 
 export function UserEditV2() {
 
@@ -18,7 +19,7 @@ export function UserEditV2() {
     const user_id = useSelector((state) => state.usersReducer.edit_id);
     const user_list = useSelector((state) => state.usersReducer.user_list);
 
-    const available_roles = useSelector((state) => state.usersReducer.roles);
+    let available_roles = useSelector((state) => state.usersReducer.roles);
     const available_KBs = useSelector((state) => state.kbReducer.kb_list);
     const group_list_full = useSelector(((state) => state.groupReducer.group_list))
 
@@ -40,6 +41,14 @@ export function UserEditV2() {
 
     const [kb_error, setKBError] = useState(true);
     const [role_error, setRoleError] = useState(true);
+
+    const isUserAdmin = useSelector((state) => state.authReducer.is_admin)
+
+
+    available_roles = available_roles.filter((role) => {
+       return isUserAdmin ? role : role !== 'admin'
+    })
+
 
     //Form
     const {
@@ -171,7 +180,8 @@ export function UserEditV2() {
     }
 
     function getUserRoles() {
-        return roleFilter.length > 0 ? roles.filter(role => {
+        return roleFilter.length > 0 ? roles.filter(role =>
+            {
                 return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
             })
             :

@@ -12,10 +12,8 @@ export function UserManagementHome(){
 
     let sub_nav = [
         {label: "Users", slug:"users" },
+        {label: "Groups", slug:"groups" }
     ]
-    if(isUserAdmin){
-        sub_nav.push({label: "Groups", slug:"groups" })
-    }
 
     function changeNav(slug){
         setSelectedSubNav(slug);
