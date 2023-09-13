@@ -215,13 +215,14 @@ export function UsersHome() {
                                         {user.roles.map((r, key) => {
                                             // admin always displays &&
                                             if (r.organisationId !== selected_organisation_id ) {
-                                                return null
+                                                return (<div />)
                                             } else {
                                                 if(r.role !== "admin") {
                                                     return <div key={key}
                                                                 className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{r.role}</div>
+                                                } else {
+                                                    return (<div />);
                                                 }
-
                                             }
                                         })}
                                     </div>

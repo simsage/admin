@@ -28,7 +28,7 @@ export function UserEditV2() {
     const [kbs, setKBs] = useState([]);
     const [showKbs, setShowKBs] = useState(false);
     const [selectedUser, setSelectedUser] = useState({})
-    const [sso, setSso] = useState(false);
+    const [sso] = useState(false);
 
     //filters
     const [roleFilter, setRoleFilter] = useState('');
