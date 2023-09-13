@@ -212,8 +212,9 @@ export function OrganisationHome() {
                                             </button>
 
 
-                                             <button className={"btn text-danger btn-sm"} disabled={selected_organisation_id === item.id ? "true" : ""}
-                                                    title={selected_organisation_id === item.id ? "cannot remove organisation" :  "remove organisation " + item.name }
+                                             <button className={"btn text-danger btn-sm"}
+                                                    title={selected_organisation_id === item.id ? "cannot remove the organisation" :  "remove organisation " + item.name }
+                                                     disabled={selected_organisation_id === item.id ? "true" : ""}
                                                     onClick={() => handleRemoveOrganisation(item)}>Delete
                                             </button>
 
