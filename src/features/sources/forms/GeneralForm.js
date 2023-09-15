@@ -46,27 +46,6 @@ export default function GeneralForm(props) {
     const internal_crawler = selected_source.internalCrawler;
 
 
-    //methods
-    function canHaveEdgeDevice() {
-        const crawler_type = props.getValues("crawlerType");
-        return !['exchange365', 'wordpress', 'gdrive', 'onedrive', 'sharepoint365'].includes(crawler_type)
-    }
-
-
-    //todo:: filteredEdgeDevices
-    function filteredEdgeDevices() {
-        return [{"key": "none", "value": "n/a"}];
-        // if (props.edge_device_list) {
-        //     for (let edge_device of this.props.edge_device_list) {
-        //         if (edge_device.organisationId === this.state.organisation_id && edge_device.edgeId) {
-        //             list.push({"key": edge_device.edgeId, "value": edge_device.name});
-        //         }
-        //     }
-        // }
-        // return list;
-    }
-
-
     function handleTestCrawler() {
         const name = selected_source.name;
         if (this.props.testCrawler) {
@@ -298,31 +277,6 @@ export default function GeneralForm(props) {
                     </div>
                 </div>
             </div>
-
-
-            {canHaveEdgeDevice() &&
-                <div className="row border-top pt-3">
-                    <div className="col-3">
-                        <div className="form-group ">
-                            <label className="small"
-                                title="you can connect this source to a SimSage Edge device if you have one.  Select it here.">
-                                Edge device
-                            </label>
-                            <span className="select-box-after-label">
-                                <select className="form-select" {...props.register("edgeDeviceId", {
-                                    required: true,
-                                    disabled: props.getValues("sourceId") !== 0
-                                })} >
-                                    {filteredEdgeDevices().map((value) => {
-                                            return (<option key={value.key} value={value.key}>{value.value}</option>)
-                                        }
-                                    )}
-                                </select>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            }
 
 
             <div className="form-group">
