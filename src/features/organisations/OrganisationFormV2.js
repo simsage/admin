@@ -38,6 +38,8 @@ export default function OrganisationFormV2(props) {
 
     const [show_enable_domain_error, setShowEnableDomainError] = useState(true);
     const [role_error, setRoleError] = useState(true);
+    const isUserAdmin = useSelector((state) => state.authReducer.is_admin)
+
 
     const handleClose = () => {
         dispatch(closeOrganisationForm());
@@ -419,7 +421,7 @@ export default function OrganisationFormV2(props) {
                                 </button>
                                 <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
 
-                                {organisation !== null &&
+                                {organisation !== null && isUserAdmin &&
                                     <button onClick={handleDelete} type="button"
                                             className="btn btn-danger px-4">Delete</button>
                                 }
