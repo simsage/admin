@@ -26,7 +26,6 @@ const AccountDropdown = () => {
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
     const organisation_list_status = useSelector((state) => state.organisationReducer.status);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
-
     const isAdminUser = useSelector((state) => state.authReducer.is_admin)
 
     // menu selects a different organisation
@@ -56,6 +55,17 @@ const AccountDropdown = () => {
         });
     }
 
+    function getOrganisationList(){
+        let org_list = []
+
+        if(isAdminUser) {
+            org_list = organisation_list
+        } else {
+            org_list.push(selected_organisation)
+        }
+        return org_list;
+
+    }
 
     return (
         <div className={(accounts_dropdown ? "d-flex" : "d-none") + " account-dropdown"}>
@@ -67,7 +77,7 @@ const AccountDropdown = () => {
                 }
 
                 {organisation_list_status === "fulfilled" && organisation_list.length > 0 && selected_organisation &&
-                organisation_list.map((item ,i) => {
+                    getOrganisationList().map((item ,i) => {
                         return(
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
                             <li key={item.id}
