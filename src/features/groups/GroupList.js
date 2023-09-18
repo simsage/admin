@@ -30,6 +30,10 @@ export default function GroupList(){
     const isManager = hasRole(user, ['manager']);
     const [filter, setFilter] = useState('');
 
+
+    console.log("Siva group_list", group_list)
+
+
     useEffect(()=>{
             // dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
         // eslint-disable-next-line react-hooks/exhaustive-deps

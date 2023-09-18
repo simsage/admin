@@ -47,7 +47,6 @@ export default function LeftNavbar(){
                 })}
 
 
-
                 {(kb_list !== {} && kb_list.length > 0) &&
                 <>
                     <li className="px-3 pt-3 pb-2 border-top">

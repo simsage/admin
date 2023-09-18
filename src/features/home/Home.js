@@ -6,19 +6,25 @@ import {useDispatch, useSelector} from "react-redux";
 import {OrganisationHome} from "../organisations/OrganisationHome";
 import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import AlertDialogHome from "../alerts/AlertDialogHome";
+import {isAdmin} from "../auth/authSlice";
 
 export default function Home() {
     const [selected_sub_nav, setSelectedSubNav] = useState('knowledge-bases')
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
+    const isAdminUser = useSelector((state) => state.authReducer.is_admin)
 
-    const sub_nav = [
+
+    //Standard menu
+    let sub_nav = [
         {label: "Knowledge Bases", slug:"knowledge-bases" },
-        {label: "Logs", slug:"logs" },
-        {label: "Organisations", slug:"org" },
     ]
 
+    //Add admin menu options
+    if(isAdminUser){
+        sub_nav.push({label: "Logs", slug:"logs" }, {label: "Organisations", slug:"org" })
+    }
 
     function changeNav(slug) {
 

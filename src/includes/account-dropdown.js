@@ -11,6 +11,7 @@ import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
 import {selectTab} from "../features/home/homeSlice";
 import {getGroupList} from "../features/groups/groupSlice";
 
+
 /**
  * this is the main DMS page
  */
@@ -25,6 +26,8 @@ const AccountDropdown = () => {
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list);
     const organisation_list_status = useSelector((state) => state.organisationReducer.status);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
+
+    const isAdminUser = useSelector((state) => state.authReducer.is_admin)
 
     // menu selects a different organisation
     function handleSelectOrganisation(session_id, org) {
@@ -80,12 +83,13 @@ const AccountDropdown = () => {
                     })
                 }
 
-
+                {isAdminUser &&
                 <li className="px-3 py-3 pointer-cursor" onClick={() => handleAddOrganisation()}>
                     <span className='py-2 btn btn-outline-primary w-100'>
                     <label className="pointer-cursor fw-500" title="add a new organisation">+ Add Organisation</label>
                     </span>
                 </li>
+                }
 
                 <hr className="my-0" />
                 <li className="acc-item px-4 py-3 pointer-cursor fw-500" title="Sign Out"

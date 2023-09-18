@@ -15,6 +15,7 @@ import api from "../../common/api";
 import {UserEditV2} from "./UserEditV2";
 import {UserPasswordResetForm} from "./UserPasswordResetForm";
 import {UserErrorDialog} from "./UserErrorDialog";
+import {retry} from "@reduxjs/toolkit/query";
 
 export function UsersHome() {
     const user_roles = useSelector((state) => state.usersReducer.roles);
@@ -120,12 +121,38 @@ export function UsersHome() {
         return isManager;
     }
 
+
+    function canView(user, signedInUser, isAdmin, isManager) {
+        console.log("Siva signedInUser",signedInUser)
+        console.log("Siva user",user)
+
+        const sameOrg = user.roles.filter((role)  => {
+            return role.organisationId === signedInUser.organisationId
+        })
+        console.log("Siva sameOrg",sameOrg)
+
+        if (user.email === signedInUser.email) return true;
+        if (sameOrg.length) return true;
+        if (isAdmin) return true;
+    }
+
     //Filtering out users according to 'Role' drop down.
     function filterRoles(userRoles, role) {
         if (role === 'all-users') {
             return true
         }
         return userRoles.some(role_obj => role_obj.organisationId === selected_organisation_id && role_obj.role === role)
+    }
+
+    function getUserList(){
+        let x_user_list = []
+
+        x_user_list = user_list.filter((user) => {
+
+            return canView(user,session,isAdmin,isManager);
+        })
+
+        return x_user_list
     }
 
     return(
@@ -184,7 +211,7 @@ export function UsersHome() {
 
                     {
 
-                        user_list && user_list.map((user) => {
+                        getUserList && getUserList().map((user) => {
 
                             //user does not have chosen role then skip.
                             if (!filterRoles(user.roles, userFilter)) {
@@ -197,8 +224,10 @@ export function UsersHome() {
                             const user_roles = user.roles.map((role) => { return role.role });
                             const isUser_an_Admin = user_roles.includes('admin');
 
-                            console.log("Siva Roles",user.firstName,': ', user_roles);
+
+                            // console.log("Siva Roles",user.firstName,': ', user_roles);
                             // console.log("Siva Roles", );
+
 
                             return <tr key={user.id}>
                                 <td className="pt-3 px-4 pb-3 fw-500">{user.firstName} {user.surname} <span
@@ -220,8 +249,10 @@ export function UsersHome() {
                                                 if(r.role !== "admin") {
                                                     return <div key={key}
                                                                 className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{r.role}</div>
-                                                } else {
-                                                    return (<div />);
+
+                                                }else {
+                                                    return <></>;
+
                                                 }
                                             }
                                         })}
@@ -229,15 +260,15 @@ export function UsersHome() {
                                 </td>
                                 <td className="pt-3 px-4 pb-0">
                                     <div className="d-flex  justify-content-end">
-                                        <button
-                                            className={(editYes) ? "btn text-primary btn-sm" : "btn btn-secondary disabled"}
+                                        <button disabled={editYes? "" : "true"}
+                                            className={(editYes) ? "btn text-primary btn-sm" : "btn text-secondary btn-sm"}
                                             onClick={() => handlePasswordReset(user)}>Reset password
                                         </button>
-                                        <button
-                                            className={(editYes) ? "btn text-primary btn-sm" : "btn btn-secondary disabled"}
+                                        <button disabled={editYes? "" : "true"}
+                                            className={(editYes) ? "btn text-primary btn-sm" : "btn text-secondary btn-sm "}
                                             onClick={() => handleEditUser(user)}>Edit
                                         </button>
-                                        <button className={(deleteYes) ? "btn text-danger btn-sm" : "d-none"}
+                                        <button className={(deleteYes) ? "btn text-danger btn-sm" : "btn text-secondary btn-sm d-none"}
                                                 onClick={() => deleteUserAsk(user)}>Delete
                                         </button>
                                     </div>
@@ -247,12 +278,12 @@ export function UsersHome() {
                     }
                     </tbody>
                 </table>
-                {user_list &&
+                {getUserList &&
                     <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
                         component="div"
-                        count={count}
+                        count={isAdmin?count:getUserList().length}
                         rowsPerPage={page_size}
                         page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
