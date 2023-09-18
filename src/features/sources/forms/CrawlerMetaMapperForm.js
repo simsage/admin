@@ -84,21 +84,6 @@ export default function CrawlerMetaMapperForm(props) {
     }
 
 
-    function deleteMetadataItem(index) {
-        const md_list = [];
-        const i_index = '' + index
-        const existing_md_list = get_md_list();
-        for (let i in existing_md_list) {
-            if (i !== i_index) {
-                if (existing_md_list.hasOwnProperty(i))
-                    md_list.push(existing_md_list[i]);
-            }
-        }
-
-        setSpecificJson({...specific_json, metadata_list: existing_md_list})
-    }
-
-
     function move_row_up(md, index) {
         if (index > 0) {
             const md_list = get_md_list();

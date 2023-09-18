@@ -47,7 +47,6 @@ export default function SourceForm() {
         "nodeId": 0,
         "maxItems": 0,
         "maxQNAItems": "0",
-        "edgeDeviceId": "none",
         "qaMatchStrength": 0.8125,
         "numResults": 5,
         "numFragments": 3,
@@ -237,7 +236,6 @@ export default function SourceForm() {
         defaultValues.qaMatchStrength = selected_source ? selected_source.qaMatchStrength : default_qna_threshold;
         defaultValues.errorThreshold = selected_source ? selected_source.errorThreshold : default_error_threshold;
         defaultValues.numResults = selected_source ? selected_source.numResults : default_num_results;
-        defaultValues.edgeDeviceId = selected_source && selected_source.edgeDeviceId !== '' ? selected_source.edgeDeviceId : 'none';
         //
         defaultValues.sourceId = selected_source ? selected_source.sourceId : 0;
         defaultValues.documentSimilarityThreshold = selected_source ? selected_source.documentSimilarityThreshold : 0.95;
