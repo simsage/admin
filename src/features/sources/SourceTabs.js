@@ -12,11 +12,7 @@ export default function SourceTabs(props) {
                 props.source_tabs.map((item, index) => {
                     // show core tabs [general, acls, schedules]
                     // show the crawler tab
-                    // show the meta tab if crawler is not wordpress
-                    if (item.type === 'core' ||
-                        (item.type === 'optional' && item.slug === props.crawler_type) ||
-                        (item.type === 'meta' && props.crawler_type !== 'wordpress') ||
-                        (item.type === 'schedule' && props.crawler_type !== 'wordpress'))
+                    if (item.type === 'core' || (item.type === 'optional' && item.slug === props.crawler_type))
                     {
 
                         return (

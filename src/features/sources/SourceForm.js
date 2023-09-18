@@ -18,12 +18,12 @@ import CrawlerExternalForm from "./forms/CrawlerExternalForm";
 import CrawlerFileForm from "./forms/CrawlerFileForm";
 import CrawlerGDriveForm from "./forms/CrawlerGDriveForm";
 import CrawlerIManageForm from "./forms/CrawlerIManageForm";
+import CrawlerJiraForm from "./forms/CrawlerJiraForm";
 import CrawlerNfsForm from "./forms/CrawlerNfsForm";
 import CrawlerOnedriveForm from "./forms/CrawlerOnedriveForm";
 import CrawlerRestfulForm from "./forms/CrawlerRestfulForm";
 import CrawlerSharepoint365Form from "./forms/CrawlerSharepoint365Form";
 import CrawlerWebForm from "./forms/CrawlerWebForm";
-import CrawlerWordPressForm from "./forms/CrawlerWordPressForm";
 import CrawlerMetaMapperForm from "./forms/CrawlerMetaMapperForm";
 import {showErrorAlert} from "../alerts/alertSlice";
 import Api from "../../common/api";
@@ -176,6 +176,8 @@ export default function SourceForm() {
         {label: "google-drive crawler", slug: "gdrive", type: "optional"},
         {label: "iManage crawler", slug: "imanage", type: "optional"},
 
+        {label: "Jira crawler", slug: "jira", type: "optional"},
+
         {label: "nfs crawler", slug: "nfs", type: "optional"},
         {label: "one-drive crawler", slug: "onedrive", type: "optional"},
 
@@ -185,7 +187,6 @@ export default function SourceForm() {
         {label: "sharepoint 365 crawler", slug: "sharepoint365", type: "optional"},
         {label: "service-now crawler", slug: "servicenow", type: "optional"},
         {label: "web crawler", slug: "web", type: "optional"},
-        {label: "wordpress crawler", slug: "wordpress", type: "optional"},
 
         {label: "search crawler", slug: "search", type: "optional"},
         //crawlers
@@ -616,7 +617,7 @@ export default function SourceForm() {
 
         } else if (new_data.crawlerType !== 'web' && new_data.crawlerType !== 'file' && new_data.crawlerType !== 'database' &&
             new_data.crawlerType !== 'exchange365' && new_data.crawlerType !== 'dropbox' &&
-            new_data.crawlerType !== 'nfs' && new_data.crawlerType !== 'wordpress' && new_data.crawlerType !== 'gdrive' &&
+            new_data.crawlerType !== 'nfs' && new_data.crawlerType !== 'jira' && new_data.crawlerType !== 'gdrive' &&
             new_data.crawlerType !== 'onedrive' && new_data.crawlerType !== 'sharepoint365' &&
             new_data.crawlerType !== 'restfull' && new_data.crawlerType !== 'rss' && new_data.crawlerType !== 'external' &&
             new_data.crawlerType !== 'box' && new_data.crawlerType !== 'imanage' && new_data.crawlerType !== 'discourse' &&
@@ -789,6 +790,15 @@ export default function SourceForm() {
                                 }
 
 
+                                {selected_source_tab === 'jira' &&
+                                    <CrawlerJiraForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+
                                 {selected_source_tab === 'nfs' &&
                                     <CrawlerNfsForm
                                         source={selected_source}
@@ -856,14 +866,6 @@ export default function SourceForm() {
 
                                 }
 
-                                {selected_source_tab === 'wordpress' &&
-                                    <CrawlerWordPressForm
-                                        source={selected_source}
-                                        form_data={form_data}
-                                        setFormData={setFormData}/>
-
-                                }
-
                                 {selected_source_tab === 'servicenow' &&
                                     <CrawlerServiceNow
                                         source={selected_source}
@@ -881,7 +883,7 @@ export default function SourceForm() {
                                         setFormData={setFormData}/>
 
                                 }
-                                {selected_source_tab === 'metadata' && selected_source.crawlerType !== "restfull" && selected_source.crawlerType !== "database" && selected_source.crawlerType !== "wordpress" &&
+                                {selected_source_tab === 'metadata' && selected_source.crawlerType !== "restfull" && selected_source.crawlerType !== "database" &&
                                     <CrawlerMetadataForm
                                         source={selected_source}
                                         form_data={form_data}
@@ -926,7 +928,6 @@ export default function SourceForm() {
 
                                 {/* Page 6: schedule TimeSelect  */}
                                 {selected_source_tab === 'schedule' &&
-                                    // {selected_source_tab === 'schedule' && c_type !== "wordpress" &&
                                     <div className="time-tab-content px-5 py-4">
                                         <TimeSelect time={form_data.schedule}
                                                     onSave={(time) => updateSchedule(time)}/>

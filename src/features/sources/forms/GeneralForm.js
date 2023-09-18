@@ -26,6 +26,7 @@ export default function GeneralForm(props) {
         {"key": "file", "value": "File (SMB) crawler"},
         {"key": "gdrive", "value": "Google-drive crawler"},
         {"key": "imanage", "value": "iManage crawler"},
+        {"key": "jira", "value": "Jira crawler"},
 
         {"key": "nfs", "value": "NFS external crawler"},
         {"key": "onedrive", "value": "One-drive crawler"},
@@ -36,7 +37,6 @@ export default function GeneralForm(props) {
         {"key": "servicenow", "value": "Service-now crawler"},
         {"key": "sharepoint365", "value": "Sharepoint 365 crawler"},
         {"key": "web", "value": "Web crawler"},
-        {"key": "wordpress", "value": "WordPress external crawler"},
         {"key": "search", "value": "Search crawler"},
     ];
 
