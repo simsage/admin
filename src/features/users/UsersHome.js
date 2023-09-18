@@ -123,17 +123,13 @@ export function UsersHome() {
 
 
     function canView(user, signedInUser, isAdmin, isManager) {
-        console.log("Siva signedInUser",signedInUser)
-        console.log("Siva user",user)
-
         const sameOrg = user.roles.filter((role)  => {
             return role.organisationId === signedInUser.organisationId
         })
-        console.log("Siva sameOrg",sameOrg)
 
         if (user.email === signedInUser.email) return true;
-        if (sameOrg.length) return true;
-        if (isAdmin) return true;
+        else if (sameOrg.length) return true;
+        else return !!isAdmin;
     }
 
     //Filtering out users according to 'Role' drop down.

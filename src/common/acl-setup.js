@@ -6,6 +6,7 @@ export default function AclSetup(props) {
     const [selected_filter, setSelectedFilter] = useState('')
     const [available_filter, setAvailableFilter] = useState('')
 
+
     function handleOnChange(acl_list) {
         if (props.onChange) {
             props.onChange(acl_list);
@@ -46,7 +47,25 @@ export default function AclSetup(props) {
     }
 
     function getAllUsers() {
-        return props.user_list ? props.user_list : [];
+        return props.user_list ? props.user_list.filter((user) => {
+            console.log("Siva canview",user,'--',canView(user, props.session, props.is_admin))
+            // return false
+            return canView(user, props.session, props.is_admin)
+        }) : [];
+    }
+
+    console.log("Siva getAllUsers", getAllUsers())
+
+    function canView(user, signedInUser, isAdmin) {
+
+        const sameOrg = user.roles.filter((role)  => {
+            return role.organisationId === signedInUser.organisationId
+        })
+        console.log("Siva sameOrg",sameOrg)
+
+        if (user.email === signedInUser.email) return true;
+        else if (sameOrg.length) return true;
+        else return !!isAdmin;
     }
 
     function getAvailableGroupsOrUsers() {
@@ -160,7 +179,7 @@ export default function AclSetup(props) {
         return <h1>acl-setup.js: Something went wrong.</h1>;
     }
 
-    console.log("Siva acl_list", acl_list)
+    // console.log("Siva acl_list", acl_list)
     return (
         <div className="row pb-5">
 

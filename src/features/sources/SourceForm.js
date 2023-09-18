@@ -104,6 +104,7 @@ export default function SourceForm() {
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const show_form = useSelector((state) => state.sourceReducer.show_data_form);
     // const test_result = useSelector((state) => state.sourceReducer.test_result);
+    const isUserAdmin = useSelector((state) => state.authReducer.is_admin)
 
     useEffect(() => {
         const page = 0;
@@ -129,6 +130,8 @@ export default function SourceForm() {
     const user_list = useSelector((state) => state.usersReducer.user_list);
     const group_list = useSelector((state) => state.groupReducer.group_list);
 
+    // console.log("Siva user_list", user_list)
+    // console.log("Siva group_list", group_list)
     /**
      Set Form Data
      */
@@ -903,7 +906,10 @@ export default function SourceForm() {
                                             acl_list={form_data.acls}
                                             onChange={(acl_list) => updateAclList(acl_list)}
                                             user_list={user_list}
-                                            group_list={group_list}/>
+                                            group_list={group_list}
+                                            session={session}
+                                            is_admin={isUserAdmin}
+                                        />
                                     </div>
                                 }
 
