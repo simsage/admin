@@ -316,6 +316,18 @@ const extraReducers = (builder) => {
             state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
 
+
+        .addCase(resetSourceDelta.pending, (state, action) => {
+            state.busy = true;
+        })
+        .addCase(resetSourceDelta.fulfilled, (state, action) => {
+            state.busy = false;
+            alert("source delta-token reset successful");
+        })
+        .addCase(resetSourceDelta.rejected, (state, action) => {
+            state.busy = false;
+        })
+
 }
 
 
@@ -464,6 +476,21 @@ export const testSource = createAsyncThunk(
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 console.log( 'testing test response', response.data)
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    });
+
+
+
+export const resetSourceDelta = createAsyncThunk(
+    'sources/reset-delta',
+    async ({session_id, organisation_id, knowledgeBase_id, source_id}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/crawler/crawler/reset-delta/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}/${encodeURIComponent(source_id)}`;
+        return axios.post(url, {}, Comms.getHeaders(session_id))
+            .then((response) => {
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)

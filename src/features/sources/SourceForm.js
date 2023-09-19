@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
-import {closeForm, testSource, updateSources} from "./sourceSlice";
+import {closeForm, resetSourceDelta, testSource, updateSources} from "./sourceSlice";
 import SourceTabs from "./SourceTabs";
 import React, {useEffect, useState} from "react";
 import GeneralForm from "./forms/GeneralForm";
@@ -408,6 +408,16 @@ export default function SourceForm() {
                 }))
             )
         }
+    }
+
+
+    const handleResetDelta = () => {
+        dispatch(resetSourceDelta({
+            session_id: session_id,
+            organisation_id: selected_organisation_id,
+            knowledgeBase_id: selected_knowledge_base_id,
+            source_id: selected_source.sourceId
+        }));
     }
 
 
@@ -945,6 +955,12 @@ export default function SourceForm() {
                                     <button onClick={handleTest} type="button" title='Test Source Connection'
                                             className={`btn btn-primary px-4 ${(externalCrawlers.includes(selected_source.crawlerType)) ? 'disabled' : ''}`}
                                             data-bs-dismiss="modal">Test
+                                    </button>
+                                }
+                                {selected_source && selected_source.sourceId > 0 &&
+                                    <button onClick={handleResetDelta} type="button" title='Reset Source Delta'
+                                            className={`btn btn-primary px-4 ${(externalCrawlers.includes(selected_source.crawlerType)) ? 'disabled' : ''}`}
+                                            data-bs-dismiss="modal">Reset Delta
                                     </button>
                                 }
                                 <input type="submit" value="Save" className={"btn btn-primary px-4"}/>
