@@ -197,7 +197,7 @@ export default function SourceForm() {
         //rest
         {label: "ACLs", slug: "acls", type: "core"},
         {label: "Processors", slug: "processors", type: "core"},
-        {label: "schedule", slug: "schedule", type: "schedule"},
+        {label: "schedule", slug: "schedule", type: "core"},
 
     ]
 
