@@ -176,7 +176,17 @@ export default function CrawlerMetadataForm(props) {
 
     //functions
     function get_md_list() {
-        return specific_json && specific_json.metadata_list ? specific_json.metadata_list : [];
+        const md_list = (specific_json && specific_json.metadata_list && specific_json.metadata_list.length > 0) ?
+                    specific_json.metadata_list : [];
+        if (typeof md_list === 'string' || md_list instanceof String) {
+            try {
+                return JSON.parse(md_list);
+            } catch (e) {
+                return [];
+            }
+        } else {
+            return md_list;
+        }
     }
 
 
@@ -300,7 +310,6 @@ export default function CrawlerMetadataForm(props) {
         }
     }
 
-
     return (
         <div className="px-5 py-4" style={{maxHeight: "600px"}}>
 
@@ -339,7 +348,7 @@ export default function CrawlerMetadataForm(props) {
                 </tr> */}
 
                 {
-                    get_md_list().map(function (md, index) {
+                    get_md_list().map((md, index) => {
                         return (<tr key={index}>
 
                             <td className="px-0">
@@ -368,7 +377,7 @@ export default function CrawlerMetadataForm(props) {
                                                 defaultValue={md.key}
                                                 aria-label="select what kind of metadata field to use">
                                             {
-                                                metadata_list.map((value, j) => {
+                                                get_md_list().map((value, j) => {
                                                     return (<option key={j} value={value.key}>{value.key}</option>)
                                                 })
                                             }

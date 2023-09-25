@@ -192,7 +192,7 @@ export default function SourceForm() {
         //crawlers
 
         //metadata
-        {label: "metadata", slug: "metadata", type: "meta"},
+        {label: "metadata", slug: "metadata", type: "core"},
 
         //rest
         {label: "ACLs", slug: "acls", type: "core"},

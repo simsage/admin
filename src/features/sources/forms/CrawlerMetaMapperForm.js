@@ -73,7 +73,7 @@ export default function CrawlerMetaMapperForm(props) {
     }
     //functions
     function get_md_list() {
-        return specific_json && specific_json.metadata_list ? specific_json.metadata_list : [];
+        return specific_json && specific_json.metadata_list && specific_json.metadata_list.length > 0 ? specific_json.metadata_list : [];
     }
 
 
