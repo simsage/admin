@@ -22,9 +22,6 @@ const initialState = {
     show_export_form: false,
     show_import_form: false,
 
-    // LGPL library support / installation
-    has_jcifs: false,
-
     //error
     show_error_form: false,
     error_title: undefined,
@@ -251,47 +248,6 @@ const extraReducers = (builder) => {
         })
 
 
-        // JCIFS check
-        .addCase(checkJcifsLibrary.pending, (state) => {
-            state.busy = true;
-            state.status = "loading"
-            state.data_status = 'loading'
-        })
-        .addCase(checkJcifsLibrary.fulfilled, (state, action) => {
-            state.busy = false;
-            state.has_jcifs = (action.payload.information === "true" || action.payload.information === "True");
-            state.data_status = 'loaded';
-        })
-        .addCase(checkJcifsLibrary.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.data_status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Error"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
-        })
-
-
-        // JCIFS install
-        .addCase(installJcifsLibrary.pending, (state) => {
-            state.busy = true;
-            state.status = "loading"
-            state.data_status = 'loading'
-        })
-        .addCase(installJcifsLibrary.fulfilled, (state, action) => {
-            state.busy = false;
-            state.has_jcifs = true;
-            state.data_status = 'loaded';
-        })
-        .addCase(installJcifsLibrary.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.data_status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Error"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
-        })
-
         //testSource
         .addCase(testSource.pending, (state) => {
             state.busy = true;
@@ -440,33 +396,6 @@ export const processFiles = createAsyncThunk(
             })
     });
 
-
-export const checkJcifsLibrary = createAsyncThunk(
-    'sources/checkJcifsLibrary',
-    async ({session_id, organisation_id, callback}, {rejectWithValue}) => {
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/crawler/has-jcifs/' + encodeURIComponent(organisation_id);
-        return axios.get(url, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
-            })
-    });
-
-
-export const installJcifsLibrary = createAsyncThunk(
-    'sources/installJcifsLibrary',
-    async ({session_id, organisation_id, callback}, {rejectWithValue}) => {
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/crawler/install-jcifs/' + encodeURIComponent(organisation_id);
-        return axios.get(url, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
-            })
-    });
 
 export const testSource = createAsyncThunk(
     'sources/test',
