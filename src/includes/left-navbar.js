@@ -34,8 +34,6 @@ export default function LeftNavbar(){
 
     }
 
-    console.log("selected_kb_id:" + selected_kb_id);
-
     return (
         <div className="sidebar no-select">
             <div className="sb-logo d-flex justify-content-center align-items-center pointer-cursor"
