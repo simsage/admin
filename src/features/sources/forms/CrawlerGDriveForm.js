@@ -82,6 +82,23 @@ export default function CrawlerGDriveForm(props) {
                         </div>
                     </div>
                     <div className="row mb-4">
+                        <div className="form-group col-12">
+                            <label className="small d-flex justify-content-between">
+                                Folder list
+                                <span className="fst-italic fw-light small">(list of folders to filter by, case insensitive, comma separated).
+                                <span className="text-danger ms-1">Optional</span></span>
+                            </label>
+                            <textarea className="form-control"
+                                      placeholder=""
+                                      rows={3}
+                                      value={specific_json.drive_folder_csv}
+                                      onChange={(event) => {
+                                          setData({drive_folder_csv: event.target.value})
+                                      }}
+                            />
+                        </div>
+                    </div>
+                    <div className="row mb-4">
                         <div className="form-group col-6">
                             <label className="small">Drive ID</label>
                             <form>
