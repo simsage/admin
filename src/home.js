@@ -12,17 +12,9 @@ import Semantics from "./semantics/semantics";
 import Categories from "./categories/categories";
 import Logs from "./reports/logs";
 import Groups from "./users/groups";
-
-// import SockJsClient from 'react-stomp';
-// import {connect} from "react-redux";
-// import {bindActionCreators} from "redux";
-
 import './css/home.css';
 import { MsalContext } from "@azure/msal-react";
 import {Text2Search} from "./test2search/text2search";
-
-// if not defined, use this one
-const default_operator_wait_timeout_in_ms = 10000;
 
 
 export class Home extends Component {
@@ -85,43 +77,8 @@ export class Home extends Component {
             this.props.setupManager();
         }
 
-        // /ops/refresh every operator_wait_timeout_in_ms interval
         const isAdminOrManager = Home.hasRole(this.props.user, ['admin', 'manager']);
-        const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
         const self = this;
-        let timeout = (this.props.operator_wait_timeout_in_ms && this.props.operator_wait_timeout_in_ms >= 1000) ?
-            this.props.operator_wait_timeout_in_ms : default_operator_wait_timeout_in_ms;
-        if (isAdminOrManager || isOperator) {
-            // refresh notifications and operator at interval
-            setInterval(() => { self.refreshOperator(self); }, timeout);
-        }
-
-        if (isOperator) {
-            // if this user has an operator role at all - we need to ask for events
-            if (!this.props.html5_notifications || this.props.html5_notifications.length === 0) {
-                this.props.getHtml5Notifications();
-            }
-        }
-    }
-    refreshOperator(self) {
-        // keep operator alive if they're active and ready
-        if (self.props.selected_organisation_id.length > 0 &&
-            self.props.operators && self.props.operators.length > 0) {
-            const operatorList = [];
-            for (const op of self.props.operators) {
-                if (op.operator_ready) {
-                    operatorList.push({"operatorId": op.id, "isTyping": op.is_typing, "clientId": op.client_id});
-                }
-            }
-            if (operatorList.length > 0) {
-                const data = {
-                    sessionId: self.props.session.id,
-                    organisationId: self.props.selected_organisation_id,
-                    operatorList: operatorList,
-                };
-                this.props.sendOperatorMessage('/ops/refresh', data);
-            }
-        }
     }
     getStyle(tab, disabled) {
         const theme = this.props.theme;
@@ -252,8 +209,6 @@ export class Home extends Component {
         this.setState({dialog_open: false, message: "", message_title: "", message_callback: null});
     }
     connectionError(error) {
-        this.props.setOperatorConnected(false);
-        this.props.setError("Operator Connection", error);
     }
     convertOrganisationList(list) {
         const new_list = [];
@@ -284,15 +239,6 @@ export class Home extends Component {
     }
     render() {
         const isAdmin = Home.hasRole(this.props.user, ['admin']);
-        const isOperator = Home.hasRoleInOrganisation(this.props.user, this.props.selected_organisation_id, ['operator']);
-        // const operator_id_list = [];
-        // if (this.props.operators) {
-        //     for (const operator of this.props.operators) {
-        //         if (operator && operator.id) {
-        //             operator_id_list.push('/chat/' + operator.id);
-        //         }
-        //     }
-        // }
         const theme = this.props.theme;
         const isPasswordSignIn = (window.ENV.authentication === "password");
         return (
@@ -307,13 +253,6 @@ export class Home extends Component {
                                theme={this.props.theme}
                                message={this.state.message}
                                title={this.state.message_title} />
-
-                {/*<SockJsClient url={window.ENV.ws_base} topics={operator_id_list}*/}
-                {/*              ref={ (client) => { this.clientRef = client }}*/}
-                {/*              onMessage={(msg) => { this.props.processOperatorMessage(msg) }}*/}
-                {/*              onConnect={() => this.props.setOperatorConnected(true)}*/}
-                {/*              onDisconnect={() => this.props.setOperatorConnected(false)}*/}
-                {/*              onError={(error) => this.connectionError(error)} />*/}
 
                  <div>
 
@@ -367,11 +306,6 @@ export class Home extends Component {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
                              <div className={this.getStyle('groups', false)} 
                                   onClick={() => this.props.selectTab('groups')}>group manager</div>
-                         }
-                         {
-                             Home.hasRole(this.props.user, ['operator']) && this.props.enable_vectorizer &&
-                             <div className={this.getStyle('operator', !this.props.operator_connected || !isOperator)}
-                                  onClick={() => { if (isOperator) this.props.selectTab('operator')}} >operator</div>
                          }
                          {
                              Home.hasRole(this.props.user, ['admin', 'manager']) &&
@@ -439,7 +373,7 @@ export class Home extends Component {
                      <div className="page-content">
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
-                          this.props.selected_tab !== 'status' && this.props.selected_tab !== 'operator' &&
+                          this.props.selected_tab !== 'status' &&
                           this.props.selected_tab !== 'license' && this.props.selected_tab !== 'logs' &&
                              isAdmin  &&
                              <div className="organisation-select">
@@ -458,7 +392,7 @@ export class Home extends Component {
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' &&
                              this.props.selected_tab !== 'status' && this.props.selected_tab !== 'license' &&
-                             this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'logs' &&
+                             this.props.selected_tab !== 'logs' &&
                              !isAdmin  &&
                              <div className="organisation-select">
                                  <div className="lhs">organisation</div>
@@ -469,7 +403,7 @@ export class Home extends Component {
                          }
 
                          {this.props.selected_tab !== 'organisations' && this.props.selected_tab !== 'os' && this.props.selected_tab !== 'users' &&
-                          this.props.selected_tab !== 'groups' && this.props.selected_tab !== 'operator' && this.props.selected_tab !== 'license' &&
+                          this.props.selected_tab !== 'groups' && this.props.selected_tab !== 'license' &&
                           this.props.selected_tab !== 'knowledge bases' && this.props.selected_tab !== 'logs' && this.props.selected_tab !== 'edge devices' &&
                           this.props.selected_tab !== 'edge commands' &&  this.props.selected_tab !== 'status' &&
                              <div className="knowledgebase-select">
@@ -591,43 +525,3 @@ export class Home extends Component {
     }
 }
 
-// const mapStateToProps = function(state) {
-//     return {
-//         error: state.appReducer.error,
-//         error_title: state.appReducer.error_title,
-//
-//         operator_wait_timeout_in_ms: state.appReducer.operator_wait_timeout_in_ms,
-//
-//         busy: state.appReducer.busy,
-//         theme: state.appReducer.theme,
-//
-//         user: state.appReducer.user,
-//         selected_tab: state.appReducer.selected_tab,
-//         session: state.appReducer.session,
-//         operator_connected: state.appReducer.operator_connected,
-//         operators: state.appReducer.operators,
-//
-//         organisation_list: state.appReducer.organisation_list,
-//         knowledge_base_list: state.appReducer.knowledge_base_list,
-//         enable_vectorizer: state.appReducer.enable_vectorizer,
-//
-//         html5_notifications: state.appReducer.html5_notifications,
-//
-//         selected_organisation: state.appReducer.selected_organisation,
-//         selected_organisation_id: state.appReducer.selected_organisation_id,
-//         selected_knowledgebase: state.appReducer.selected_knowledgebase,
-//         selected_knowledgebase_id: state.appReducer.selected_knowledgebase_id,
-//
-//         // list of edge devices
-//         edge_device_list: state.appReducer.edge_device_list,
-//         selected_edge_device: state.appReducer.selected_edge_device,
-//         selected_edge_device_id: state.appReducer.selected_edge_device_id,
-//
-//         text2search_list: state.appReducer.text2search_list,
-//         num_text2search: state.appReducer.num_text2search,
-//         text2search_page: state.appReducer.text2search_page,
-//         text2search_page_size: state.appReducer.text2search_page_size,
-//         text2search_try_reply: state.appReducer.text2search_try_reply,
-//         text2search_try_text: state.appReducer.text2search_try_text,
-//     };
-// };

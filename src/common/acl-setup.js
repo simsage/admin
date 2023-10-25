@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 
 export default function AclSetup(props) {
-    const [has_error, setHasError] = useState(false)
     const [acl_list, setACLList] = useState(props.acl_list ? props.acl_list : [])
     const [selected_filter, setSelectedFilter] = useState('')
     const [available_filter, setAvailableFilter] = useState('')
@@ -109,7 +108,6 @@ export default function AclSetup(props) {
     }
 
     function getAcls() {
-        const temp_acl_list = acl_list;
         const selected_acl_list = [];
         const filter = selected_filter.trim().toLowerCase();
         const seen_set = {};
@@ -130,7 +128,6 @@ export default function AclSetup(props) {
         event.preventDefault();
         event.stopPropagation();
         let acl_copy = JSON.parse(JSON.stringify(acl));
-        const acl_list = acl_list;
         if (acl_copy && acl_copy.access && acl_copy.access.indexOf(attribute) >= 0) {
             acl_copy.access = acl_copy.access.replace(attribute, "");
         } else {
@@ -173,10 +170,6 @@ export default function AclSetup(props) {
         } else {
             return "acl-no-access";
         }
-    }
-
-    if (has_error) {
-        return <h1>acl-setup.js: Something went wrong.</h1>;
     }
 
     // console.log("Siva acl_list", acl_list)

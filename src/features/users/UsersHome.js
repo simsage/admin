@@ -15,7 +15,6 @@ import api from "../../common/api";
 import {UserEditV2} from "./UserEditV2";
 import {UserPasswordResetForm} from "./UserPasswordResetForm";
 import {UserErrorDialog} from "./UserErrorDialog";
-import {retry} from "@reduxjs/toolkit/query";
 
 export function UsersHome() {
     const user_roles = useSelector((state) => state.usersReducer.roles);
@@ -137,17 +136,18 @@ export function UsersHome() {
         if (role === 'all-users') {
             return true
         }
-        return userRoles.some(role_obj => role_obj.organisationId === selected_organisation_id && role_obj.role === role)
+
+        return userRoles.some(
+            role_obj => role_obj.organisationId === selected_organisation_id && role_obj.role === role)
     }
 
-    function getUserList(){
-        let x_user_list = []
-
-        x_user_list = user_list.filter((user) => {
-
-            return canView(user,session,isAdmin,isManager);
-        })
-
+    function getUserList() {
+        let x_user_list = [];
+        for (const user of user_list) {
+            if (!filterRoles(user.roles, userFilter) && canView(user,session,isAdmin,isManager)) {
+                x_user_list.push(user);
+            }
+        }
         return x_user_list
     }
 
@@ -209,21 +209,11 @@ export function UsersHome() {
 
                         getUserList && getUserList().map((user) => {
 
-                            //user does not have chosen role then skip.
-                            if (!filterRoles(user.roles, userFilter)) {
-                                return null
-                            }
-
                             const editYes = canEdit(user, isAdmin, isManager);
                             const deleteYes = canDelete(user, session, isAdmin, isManager);
 
                             const user_roles = user.roles.map((role) => { return role.role });
                             const isUser_an_Admin = user_roles.includes('admin');
-
-
-                            // console.log("Siva Roles",user.firstName,': ', user_roles);
-                            // console.log("Siva Roles", );
-
 
                             return <tr key={user.id}>
                                 <td className="pt-3 px-4 pb-3 fw-500">{user.firstName} {user.surname} <span
@@ -279,7 +269,7 @@ export function UsersHome() {
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
                         component="div"
-                        count={isAdmin?count:getUserList().length}
+                        count={getUserList().length}
                         rowsPerPage={page_size}
                         page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}

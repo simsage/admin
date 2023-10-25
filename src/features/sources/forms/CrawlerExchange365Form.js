@@ -25,10 +25,6 @@ export default function CrawlerExchange365Form(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
-    function handleResetDelta(e) {
-        e.preventDefault()
-        setData({deltaIndicator: ''})
-    }
 
 
     return (
@@ -99,28 +95,19 @@ export default function CrawlerExchange365Form(props) {
                             </div>
                         </div>
                     </div>
-                    <div className="row border-top pt-4">
-                        <div className="form-group col-6">
-                            <label className="small">Re-crawl all of Exchange</label>
-                            <button className="btn bt-sm btn-primary ms-2"
-                                    disabled={!specific_json.deltaIndicator || specific_json.deltaIndicator.length === 0}
-                                    title=""
-                                    onClick={(e) => handleResetDelta(e)}>Reset delta</button>
-                        </div>
-                    </div>
                 </div>
                 <div className="col-2 offset-1">
                     <a href="resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank"
                     title="Download the SimSage Exchange 365 setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                     <BsFilePdf size={25}/>
-                    <span className="me-2 mt-2"></span>Exchange 365 <br/>Setup Guide 
+                    <span className="me-2 mt-2"></span>Exchange 365 <br/>Setup Guide
                     </a>
                 </div>
             </div>
     
 
 
-     
+
 
 
             {/*<div className="form-group">*/}

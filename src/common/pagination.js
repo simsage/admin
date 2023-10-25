@@ -5,12 +5,11 @@ import '../css/pagination.css';
 
 export class Pagination extends Component {
     render() {
-            let num_pages = this.props.count / this.props.rowsPerPage;
+        let num_pages = this.props.count / this.props.rowsPerPage;
         if (num_pages !== parseInt("" + num_pages)) {
             num_pages += 1;
         }
         num_pages = parseInt("" + num_pages);
-        let count = parseInt("" + this.props.count);
 
         return (
             <div className="d-flex justify-content-between mb-5 pb-5 pt-3" aria-label="Page navigation example">
@@ -34,7 +33,7 @@ export class Pagination extends Component {
                     <li className="page-item">
                         <span className="page-display">
                             <label>{"page " + (this.props.page + 1) + " of " + num_pages}</label>
-                            <label className="small fst-italic ms-1 opacity-50">{"(" + count + " items)"}</label>
+                            <label className="small fst-italic ms-1 opacity-50">{"(" + this.props.count + " items)"}</label>
                         </span>
                     </li>
                 </ul>

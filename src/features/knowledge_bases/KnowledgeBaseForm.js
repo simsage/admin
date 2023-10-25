@@ -96,7 +96,6 @@ export default function KnowledgeBaseForm() {
         defaultValues.analyticsWindowInMonths = kb ? kb.analyticsWindowInMonths : 0;
 
         defaultValues.enabled = kb ? kb.enabled : true;
-        defaultValues.operatorEnabled = kb ? kb.operatorEnabled : false;
         defaultValues.capacityWarnings = kb ? kb.capacityWarnings : false;
 
         defaultValues.indexSchedule = kb ? kb.indexSchedule : '';
@@ -216,15 +215,6 @@ export default function KnowledgeBaseForm() {
                                                            id="enableKnowledgeBase"
                                                            {...register('enabled')}/>
                                                     <label className="form-check-label">Knowledge Base</label>
-                                                </div>
-
-                                                {/* <span className="label-3">operator enabled?</span>
-                                            <input type="checkbox" {...register('operatorEnabled')}  /> */}
-                                                <div className="form-check form-switch">
-                                                    <input className="form-check-input" type="checkbox"
-                                                           id="enableOperator"
-                                                           {...register('operatorEnabled')}/>
-                                                    <label className="form-check-label">Operator</label>
                                                 </div>
 
                                                 {/* <span className="label-3">capacity-warnings on?</span>

@@ -20,8 +20,7 @@ const initialState = {
     show_delete_form: false,
     show_password_reset_form: false,
     edit_id: undefined,
-    roles: ['admin', 'operator', 'dms', 'manager', 'discover', 'search'],
-    // roles: [{'admin':'Admin'}, {'operator':'Operator'}, {'dms':'DMS'}, {'manager':'Manager'},{'discover':'Discover'}],
+    roles: ['admin', 'dms', 'manager', 'discover', 'search'],
     data_status: "load_now"
 }
 

@@ -51,7 +51,8 @@ export default function SourceForm() {
         "numResults": 5,
         "numFragments": 3,
         "errorThreshold": 10,
-        "specificJson": "{\"metadata_list\":[{\"key\":\"created date range\",\"display\":\"created\",\"metadata\":\"created\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"true\",\"sortDefault\":\"desc\",\"sortAscText\":\"oldest documents first\",\"sortDescText\":\"newest documents first\",\"fieldOrder\":\"0\"}," +
+        "specificJson":
+            "{\"metadata_list\":[{\"key\":\"created date range\",\"display\":\"created\",\"metadata\":\"created\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"true\",\"sortDefault\":\"desc\",\"sortAscText\":\"oldest documents first\",\"sortDescText\":\"newest documents first\",\"fieldOrder\":\"0\"}," +
             "{\"key\":\"last modified date ranges\",\"display\":\"last modified\",\"metadata\":\"last-modified\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"true\",\"sortDefault\":\"\",\"sortAscText\":\"least recently modified\",\"sortDescText\":\"most recently modified\",\"fieldOrder\":\"1\"}," +
             "{\"key\":\"document type\",\"display\":\"document type\",\"metadata\":\"document-type\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"\",\"sortDefault\":\"\",\"sortAscText\":\"\",\"sortDescText\":\"\",\"fieldOrder\":\"2\"}]}",
         "schedule": "",
@@ -70,7 +71,7 @@ export default function SourceForm() {
         "versioned": false,
         "writeToCassandra": true,
         "useOCR": false,
-        "useSTT": false,
+        "useSTT": true,
         "enableDocumentSimilarity": true,
         "isExternal": false,
 
@@ -565,10 +566,11 @@ export default function SourceForm() {
                 message: 'you must supply tenant-id, client-id, client-secret, and redirect-url as a minimum.'
             });
 
-        } else if (new_data.crawlerType === 'dropbox' && (!sj.clientId || sj.clientId.length === 0 || !sj.clientSecret || sj.clientSecret.length === 0)) {
+        } else if (new_data.crawlerType === 'dropbox' && (!sj.clientId || sj.clientId.length === 0 ||
+            !sj.clientSecret || sj.clientSecret.length === 0 || !sj.oidcKey || sj.oidcKey.length === 0)) {
             setError({
                 title: 'invalid parameters',
-                message: 'dropbox crawler: you must supply a client-id, client-secret, and a start folder.'
+                message: 'dropbox crawler: you must supply a client-id, client-secret, oidc-key, and a start folder.'
             });
 
         } else if (new_data.crawlerType === 'discourse' && (!sj.apiToken || sj.apiToken.length === 0 || !sj.server || sj.server.length === 0)) {

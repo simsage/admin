@@ -6,7 +6,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {OrganisationHome} from "../organisations/OrganisationHome";
 import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import AlertDialogHome from "../alerts/AlertDialogHome";
-import {isAdmin} from "../auth/authSlice";
 
 export default function Home() {
     const [selected_sub_nav, setSelectedSubNav] = useState('knowledge-bases')

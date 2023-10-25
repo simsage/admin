@@ -42,7 +42,7 @@ export class RoleSelector extends Component {
     }
     getAllRoles() {
         return this.props.allowed_roles ? this.props.allowed_roles :
-                ['admin', 'search', 'manager', 'operator', 'dms', 'discover'];
+                ['admin', 'search', 'manager', 'dms', 'discover'];
     }
     getAvailableRoles() {
         const list = [];

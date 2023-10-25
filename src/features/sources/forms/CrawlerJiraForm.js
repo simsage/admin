@@ -66,6 +66,19 @@ export default function CrawlerJiraForm(props) {
                 </div>
             </div>
 
+            <div className="row mb-4">
+                <div className="form-group col-3">
+                    <label className="small">board key</label>
+                    <form>
+                        <input type="text" className="form-control nfs-width"
+                               placeholder="board key"
+                               value={specific_json.board_key}
+                               onChange={(event) => {setData({board_key: event.target.value})}}
+                        />
+                    </form>
+                </div>
+            </div>
+
         </div>
     )
 }

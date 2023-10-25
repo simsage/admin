@@ -2,12 +2,10 @@ import React, {useState} from "react";
 import {UsersHome} from "./UsersHome";
 import SubNav from "../../includes/sub-nav";
 import GroupHome from "../groups/GroupHome";
-import {useSelector} from "react-redux";
 
 export function UserManagementHome(){
 
     const [selected_sub_nav, setSelectedSubNav] = useState('users')
-    const isUserAdmin= useSelector((state) => state.authReducer.is_admin)
 
 
     let sub_nav = [

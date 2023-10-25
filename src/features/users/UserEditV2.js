@@ -6,7 +6,6 @@ import {useForm} from "react-hook-form";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
 import {getGroupList} from "../groups/groupSlice";
-import {hasRole} from "../../common/helpers";
 
 export function UserEditV2() {
 
@@ -20,14 +19,11 @@ export function UserEditV2() {
     const user_list = useSelector((state) => state.usersReducer.user_list);
 
     let available_roles = useSelector((state) => state.usersReducer.roles);
-    const available_KBs = useSelector((state) => state.kbReducer.kb_list);
     const group_list_full = useSelector(((state) => state.groupReducer.group_list))
 
     const [selected_tab, setSelectedTab] = useState('details');
     const [roles, setRoles] = useState([]);
     const [groups, setGroups] = useState([]);
-    const [kbs, setKBs] = useState([]);
-    const [showKbs, setShowKBs] = useState(false);
     const [selectedUser, setSelectedUser] = useState({})
     const [sso] = useState(false);
 
@@ -36,17 +32,13 @@ export function UserEditV2() {
     const [availableRoleFilter, setAvailableRoleFilter] = useState('');
     const [availableGroupFilter, setAvailableGroupFilter] = useState('');
     const [groupFilter, setGroupFilter] = useState('');
-    const [availableKbFilter, setAvailableKbFilter] = useState('');
-    const [kbFilter, setKbFilter] = useState('');
-
-    const [kb_error, setKBError] = useState(true);
     const [role_error, setRoleError] = useState(true);
 
     const isUserAdmin = useSelector((state) => state.authReducer.is_admin)
 
 
     available_roles = available_roles.filter((role) => {
-       return isUserAdmin ? role : role !== 'admin'
+        return isUserAdmin ? role : role !== 'admin'
     })
 
 
@@ -63,22 +55,10 @@ export function UserEditV2() {
 
     // Form validation for Roles and KBs
     useEffect(()=>{
-        kbValidation();
         roleValidation()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[roles, kbs])
+    },[roles])
 
-
-    function kbValidation() {
-        console.log('here', showKbs)
-        if (showKbs && kbs.length < 1) {
-            setKBError(true);
-        } else {
-            setKBError(false)
-        }
-        // alert("A knowledge operator must have at least 1 Knowledge base assigned");
-
-    }
 
     function roleValidation() {
         if (roles.length < 1) {
@@ -86,7 +66,6 @@ export function UserEditV2() {
         } else {
             setRoleError(false)
         }
-        // alert("A knowledge operator must have at least 1 Knowledge base assigned");
     }
 
 
@@ -107,17 +86,9 @@ export function UserEditV2() {
                 return roleObj.organisationId === organisation_id
             }))
             setGroups(selectedUser.groupList)
-            setKBs(!selectedUser.operatorKBList ? [] : selectedUser.operatorKBList.filter(KBObj => {
-                return KBObj.organisationId === organisation_id
-            }))
-            setShowKBs(!selectedUser.roles ? false : selectedUser.roles.filter(roleObj => {
-                return roleObj.organisationId === organisation_id
-            }).map(r => r.role).includes('operator'))
         } else {
             setRoles([])
             setGroups([])
-            setKBs([])
-            setShowKBs(false)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedUser, user_id])
@@ -193,73 +164,13 @@ export function UserEditV2() {
             organisation_id: organisation_id,
             role: roleToAdd
         }])
-
-        if (roleToAdd === "operator") setShowKBs(true);
     }
 
     function removeRoleFromUser(roleToRemove) {
         setRoles(roles.filter(r => {
             return r.role !== roleToRemove.role
         }))
-        if (roleToRemove.role === "operator") {
-            setShowKBs(false);
-            setKBs([])
-        }
     }
-
-    //Knowledge base functions
-    function getKbName(kbID) {
-        const temp_list = available_KBs.filter((obj) => {
-            return obj.kbId === kbID
-        })
-        if (temp_list.length < 1) return "No KBs"
-        return temp_list[0].name
-    }
-
-    function getKbs() {
-        return kbFilter.length > 0 ? kbs.filter(kb => {
-                console.log('pre-test', kb)
-                console.log('testing', getKbName(kb.kbId))
-                return getKbName(kb.kbId).toLowerCase().includes(kbFilter.toLowerCase())
-            })
-            :
-            kbs
-    }
-
-    const getAvailableKnowledgeBases = () => {
-        const userKbName = kbs ? kbs.map(kb => getKbName(kb.kbId)) : [];
-        const availableKbNames = available_KBs.map(kb => kb.name)
-        let tempKBsList = [];
-        availableKbNames.forEach(kb => {
-            if (!userKbName.includes(kb)) {
-                tempKBsList.push(kb);
-            }
-        })
-        return availableKbFilter.length > 0 ? tempKBsList.filter(kb => {
-                return kb.toLowerCase().includes(availableKbFilter.toLowerCase())
-            })
-            :
-            tempKBsList
-    }
-
-    function addKbToUser(kb) {
-        const kbObj = available_KBs.filter(k => {
-            return k.name === kb;
-        })
-        setKBs([...(kbs || []), {
-            userId: user_id,
-            organisationId: organisation_id,
-            kbId: kbObj[0].kbId
-        }])
-
-    }
-
-    function removeKbFromUser(kb) {
-        setKBs(kbs.filter(k => {
-            return k.kbId !== kb
-        }))
-    }
-
 
     //Groups functions
 
@@ -314,13 +225,12 @@ export function UserEditV2() {
     const onSubmit = data => {
 
 
-        if(!kb_error && !role_error){
+        if(!role_error){
             const session_id = session.id;
             data = {
                 ...data,
                 groupList: groups,
                 id: user_id,
-                operatorKBList: kbs,
                 roles: roles,
             }
 
@@ -515,48 +425,6 @@ export function UserEditV2() {
 
                                         </div>
                                     </div>
-                                    {showKbs &&
-                                        <div className="row pb-5">
-                                            <div className="role-block col-6">
-                                                <h6 className="role-label text-center">Operator's Knowledge Bases</h6>
-                                                <div className="role-area bg-light border rounded h-100">
-                                                    <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                           placeholder="Filter..." value={kbFilter}
-
-                                                           onChange={(e) => setKbFilter(e.target.value)}/>
-                                                    {
-                                                        kbs && getKbs().map((kb, i) => {
-                                                            return (<Chip key={i} color="secondary"
-                                                                          onClick={() => removeKbFromUser(kb.kbId)}
-                                                                          label={getKbName(kb.kbId)} variant="outlined"/>)
-                                                        })
-                                                    }
-
-
-
-                                                </div>
-
-                                                {kb_error && <span
-                                                    className="text-danger fst-italic small">To be a knowledge operator, it is necessary to have at least one assigned knowledge base.</span>}
-                                            </div>
-                                            <div className="role-block col-6">
-                                                <h6 className="role-label text-center">Available</h6>
-                                                <div className="role-area bg-light border rounded h-100">
-                                                    <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                           placeholder="Filter..." value={availableKbFilter}
-                                                           onChange={(e) => setAvailableKbFilter(e.target.value)}/>
-                                                    {
-                                                        getAvailableKnowledgeBases().map((kb, i) => {
-                                                            return (<Chip key={i} color="primary"
-                                                                          onClick={() => addKbToUser(kb)}
-                                                                          label={kb} variant="outlined"/>)
-                                                        })
-                                                    }
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
                                 </div>
 
                             }

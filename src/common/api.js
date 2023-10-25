@@ -30,18 +30,6 @@ export class Api {
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     };
 
-    // create an empty operator packet
-    static createOperator() {
-        return {id: Api.createGuid(),
-            conversation_list: [], operator_ready: false,
-            question_id: '', question: '', answer_id: '', answer: '',
-            // operator connected clients
-            client_id: '', client_kb_id: '', client_kb_name: '', is_typing: false, typing_time: 0,
-            // operator previous answer
-            current_question: '', prev_answer: '',
-        }
-    };
-
     static formatSizeUnits(bytes) {
         if      (bytes >= 1073741824) { bytes = (bytes / 1073741824).toFixed(2) + " GB"; }
         else if (bytes >= 1048576)    { bytes = (bytes / 1048576).toFixed(2) + " MB"; }
@@ -240,16 +228,12 @@ export class Api {
         return roles.map(role => {
             return {'role':role, 'label':this.getPrettyRole(role)}
         })
-
-        // return pretty_roles;
-        // return ['admin', 'operator', 'dms', 'manager', 'discover', 'search'];
     }
 
     // pretty print a role
     static getPrettyRole(role) {
-        // 'admin', 'operator', 'dms', 'manager'
+        // 'admin', 'dms', 'manager'
         if (role === 'admin') return "System Administrator";
-        else if (role === 'operator') return "Knowledgebase Operator";
         else if (role === 'dms') return "DMS User";
         else if (role === 'manager') return "Organisational Manager";
         else if (role === 'discover') return "Discover User";
