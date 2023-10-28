@@ -144,12 +144,14 @@ export function UsersHome() {
     function getUserList() {
         let x_user_list = [];
         for (const user of user_list) {
-            if (!filterRoles(user.roles, userFilter) && canView(user,session,isAdmin,isManager)) {
+            if (filterRoles(user.roles, userFilter) && canView(user,session,isAdmin,isManager)) {
                 x_user_list.push(user);
             }
         }
         return x_user_list
     }
+
+    const total_size = (userFilter === 'all-users') ? count : (getUserList().length);
 
     return(
         <div className="section px-5 pt-4">
@@ -207,7 +209,7 @@ export function UsersHome() {
 
                     {
 
-                        getUserList && getUserList().map((user) => {
+                        getUserList().map((user) => {
 
                             const editYes = canEdit(user, isAdmin, isManager);
                             const deleteYes = canDelete(user, session, isAdmin, isManager);
@@ -224,7 +226,7 @@ export function UsersHome() {
                                     <div className="d-flex flex-wrap">
                                         {isUser_an_Admin?
                                             <div
-                                                 className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole('System Administrator')}</div>
+                                                className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole('System Administrator')}</div>
                                             :<></>}
 
                                         {user.roles.map((r, key) => {
@@ -247,12 +249,12 @@ export function UsersHome() {
                                 <td className="pt-3 px-4 pb-0">
                                     <div className="d-flex  justify-content-end">
                                         <button disabled={editYes? "" : "true"}
-                                            className={(editYes) ? "btn text-primary btn-sm" : "btn text-secondary btn-sm"}
-                                            onClick={() => handlePasswordReset(user)}>Reset password
+                                                className={(editYes) ? "btn text-primary btn-sm" : "btn text-secondary btn-sm"}
+                                                onClick={() => handlePasswordReset(user)}>Reset password
                                         </button>
                                         <button disabled={editYes? "" : "true"}
-                                            className={(editYes) ? "btn text-primary btn-sm" : "btn text-secondary btn-sm "}
-                                            onClick={() => handleEditUser(user)}>Edit
+                                                className={(editYes) ? "btn text-primary btn-sm" : "btn text-secondary btn-sm "}
+                                                onClick={() => handleEditUser(user)}>Edit
                                         </button>
                                         <button className={(deleteYes) ? "btn text-danger btn-sm" : "btn text-secondary btn-sm d-none"}
                                                 onClick={() => deleteUserAsk(user)}>Delete
@@ -269,7 +271,7 @@ export function UsersHome() {
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
                         component="div"
-                        count={getUserList().length}
+                        count={total_size}
                         rowsPerPage={page_size}
                         page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
