@@ -14,6 +14,7 @@ export default function SynonymsHome() {
     const load_data = useSelector( (state) => state.groupReducer.data_status)
 
     useEffect(()=>{
+        if (!session || !selected_organisation_id) return;
         dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[load_data === 'load_now', selected_organisation_id])
@@ -21,23 +22,7 @@ export default function SynonymsHome() {
 
     return (
         <div className="">
-
             <GroupList />
-
-            {/*{status === null &&*/}
-            {/*    <GroupIntro />*/}
-
-            {/*}*/}
-            {/*/!*Intro message when there are no bot items loaded*!/*/}
-            {/*{status !== null && group_list.length === 0 &&*/}
-            {/*    <GroupIntro />*/}
-
-            {/*}*/}
-            {/*{status !== null && group_list.length > 0 &&*/}
-            {/*    <GroupList />*/}
-
-            {/*}*/}
-
             <GroupErrorDialog/>
         </div>
     )

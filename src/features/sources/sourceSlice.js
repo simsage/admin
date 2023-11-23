@@ -239,7 +239,7 @@ const extraReducers = (builder) => {
             // }
         })
         .addCase(startSource.rejected, (state, action) => {
-            console.log('action rejected', action)
+            console.error('action rejected', action)
             state.busy = false;
             state.status = "rejected"
             state.show_error_form = true
@@ -404,7 +404,6 @@ export const testSource = createAsyncThunk(
         const url = api_base + `/crawler/crawler/test/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}/${encodeURIComponent(source_id)}`;
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
-                console.log( 'testing test response', response.data)
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)

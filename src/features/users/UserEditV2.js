@@ -54,10 +54,10 @@ export function UserEditV2() {
 
 
     // Form validation for Roles and KBs
-    useEffect(()=>{
+    useEffect(() => {
         roleValidation()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[roles])
+    }, [roles])
 
 
     function roleValidation() {
@@ -100,38 +100,6 @@ export function UserEditV2() {
     ]
 
 
-    //Roles and Groups
-
-    // function fillNames() {
-    //     function capitalizeFirstLetter(string) {
-    //         if (string.length > 0) {
-    //             return string.slice(0, 1).toUpperCase() + string.slice(1);
-    //         }
-    //         return string;
-    //     }        // if there is an email address and there is no first-surname - try and use the email address to complete
-    //     if (email.length > 0 && email.indexOf('@') > 0) {
-    //         const firstPart = email.split('@')[0];
-    //         const firstNameSurname = firstPart.split('.');
-    //         let newFirst = "";
-    //         let newSur = "";
-    //         if (firstName.length === 0) {
-    //             newFirst = capitalizeFirstLetter(firstNameSurname[0]);
-    //         }
-    //         if (lastName.length === 0 && firstNameSurname.length > 1) {
-    //             newSur = capitalizeFirstLetter(firstNameSurname[1]);
-    //         }
-    //         if (newFirst.length > 0 && newSur.length > 0) {
-    //             setFirstName(newFirst);
-    //             setLastName(newSur);
-    //         } else if (newFirst.length > 0) {
-    //             setFirstName(newFirst);
-    //         } else if (newSur.length > 0) {
-    //             setLastName(newSur);
-    //         }
-    //     }
-    // }
-
-
     //Roles functions
 
     const getAvailableRoles = () => {
@@ -151,8 +119,7 @@ export function UserEditV2() {
     }
 
     function getUserRoles() {
-        return roleFilter.length > 0 ? roles.filter(role =>
-            {
+        return roleFilter.length > 0 ? roles.filter(role => {
                 return Api.getPrettyRole(role.role).toLowerCase().includes(roleFilter.toLowerCase())
             })
             :
@@ -206,7 +173,7 @@ export function UserEditV2() {
 
 
     function changeNav(slug) {
-        trigger(["firstName", "surname", 'email', 'password', 'password_repeat']).then(
+        trigger(["firstName", "surname", 'email', 'password', 'password_repeat', 'jwtMatchNameValueCSV']).then(
             (is_valid) => {
                 if (is_valid) {
                     setSelectedTab(slug);
@@ -221,11 +188,8 @@ export function UserEditV2() {
     }
 
 
-
     const onSubmit = data => {
-
-
-        if(!role_error){
+        if (!role_error) {
             const session_id = session.id;
             data = {
                 ...data,
@@ -233,13 +197,10 @@ export function UserEditV2() {
                 id: user_id,
                 roles: roles,
             }
-
             dispatch(updateUser({session_id, organisation_id, data}));
-        }else{
+        } else {
             setSelectedTab('roles')
         }
-
-
     }
 
 
@@ -252,6 +213,7 @@ export function UserEditV2() {
         defaultValues.surname = selectedUser ? selectedUser.surname : '';
         defaultValues.password = selectedUser ? selectedUser.password : '';
         defaultValues.password_repeat = selectedUser ? selectedUser.password : '';
+        defaultValues.jwtMatchNameValueCSV = selectedUser ? selectedUser.jwtMatchNameValueCSV : '';
 
         // Role
         // Group
@@ -309,9 +271,8 @@ export function UserEditV2() {
                                                     <span
                                                         className="text-danger fst-italic small">{error_message}</span>}
                                             </div>
-
-
                                         </div>
+
                                         <div className="row mb-3">
                                             <div className="control-row col-6">
                                                 <label className="label-2 small">Email</label>
@@ -319,8 +280,7 @@ export function UserEditV2() {
                                                     autoComplete="false"
                                                     className="form-control"
                                                     {...register("email", {
-                                                        required: true,
-                                                        pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+                                                        required: true
                                                     })}
                                                     // onBlur={() => fillNames()}
 
@@ -329,6 +289,18 @@ export function UserEditV2() {
                                                 {error_message && error_message.includes('email') &&
                                                     <span
                                                         className="text-danger fst-italic small">{error_message}</span>}
+                                            </div>
+                                        </div>
+
+                                        <div className="row mb-3">
+                                            <div className="control-row col-12">
+                                                <label className="label-2 small">JWT match criteria</label>
+                                                <input
+                                                    autoComplete="false"
+                                                    className="form-control"
+                                                    placeholder="optional csv list of name=value fields for JWT matching"
+                                                    {...register("jwtMatchNameValueCSV", {required: false})}
+                                                />
                                             </div>
                                         </div>
 

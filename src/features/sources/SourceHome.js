@@ -292,12 +292,6 @@ export default function SourceHome(props) {
                 onError={(title, errStr) => setError(title, errStr)}
             />
 
-            {/*<MessageDialog callback={(action) => message_callback(action)}*/}
-            {/*               open={message.length > 0}*/}
-            {/*               theme={theme}*/}
-            {/*               message={message}*/}
-            {/*               title={message_title}/>*/}
-
             <div className="d-flex justify-content-beteween w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
@@ -330,7 +324,7 @@ export default function SourceHome(props) {
                 </div>
 
                 <div className="form-group ms-auto">
-                    {selected_knowledge_base_id.length > 0 &&
+                    {selected_knowledge_base_id && selected_knowledge_base_id.length > 0 &&
                         <div className="d-flex">
                             <div className="btn" onClick={() => refresh_sources()} ><img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh source-list" /></div>
                             <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleImportCrawler()} >Import Crawler</button>

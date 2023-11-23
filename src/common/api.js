@@ -1,4 +1,4 @@
-import {Comms} from "../common/comms";
+import {Comms} from "./comms";
 
 // api wrappers
 export class Api {
@@ -13,7 +13,6 @@ export class Api {
 
     static pretty_version() {
         const parts = window.ENV.version.split(".");
-        console.log("parts = " + parts.length)
         if (parts.length === 3 || parts.length === 4) {
             return parts[0] + "." + parts[1] + " (build " + parts[2] + ")";
         }
@@ -242,5 +241,37 @@ export class Api {
     }
 
 }
+
+// convert js response to its error output equivalent
+export function get_error(action) {
+    const str1 = action?.error?.message?.toString() ?? '';
+    const str2 = action?.payload?.message?.toString() ?? '';
+    const str3 = action?.type?.toString() ?? '';
+    const str4 = action?.payload?.response?.data?.error ?? '';
+    let final_str = "";
+    if (str1 !== '') {
+        final_str += str1;
+    }
+    if (str2 !== '') {
+        if (final_str !== '')
+            final_str += ", " + str2;
+        else
+            final_str = str2;
+    }
+    if (str3 !== '') {
+        if (final_str !== '')
+            final_str += " (" + str3 + ")";
+        else
+            final_str = str3;
+    }
+    if (str4 !== '') {
+        if (final_str !== '')
+            final_str += "\n\n" + str4;
+        else
+            final_str = str4;
+    }
+    return final_str;
+}
+
 
 export default Api;

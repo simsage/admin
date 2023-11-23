@@ -44,6 +44,7 @@ export function UsersHome() {
     const show_user_bulk_form = useSelector((state) => state.usersReducer.show_user_bulk_form)
 
     useEffect(() => {
+        if (!session || !selected_organisation_id) return;
         dispatch(getUserListPaginated({
             session_id: session.id,
             organization_id: selected_organisation_id,
@@ -55,7 +56,8 @@ export function UsersHome() {
     }, [load_data === "load_now", page, page_size])
 
     function handleSearchTextKeydown(e) {
-        if (e.key === "Enter" && selected_organisation_id) {
+        if (!session || !selected_organisation_id) return;
+        if (e.key === "Enter") {
             dispatch(getUserListPaginated({
                 session_id: session.id,
                 organization_id: selected_organisation_id,
@@ -78,6 +80,7 @@ export function UsersHome() {
     }
 
     function handleEditUser(u) {
+        if (!session || !selected_organisation_id) return;
         // setSelectedUser(u)
         dispatch(showEditUserForm({show: true, user_id: u.id}));
     }
@@ -181,7 +184,6 @@ export function UsersHome() {
                 </div>
 
                 <div className="d-flex">
-
                     <button className="btn btn-outline-primary text-nowrap ms-2" onClick={() => handleUserBulk()}>
                         Import
                     </button>
@@ -189,6 +191,7 @@ export function UsersHome() {
                         + Add User
                     </button>
                 </div>
+
             </div>
 
 

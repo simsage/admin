@@ -246,4 +246,35 @@ export class Comms {
     }
 
 }
+
+// rudimentary email verification
+export function is_valid_email(email) {
+    if (email && typeof email === "string") {
+        const email_str = email.trim();
+        const len = email_str.length;
+        const at_pos = email_str.indexOf('@');
+        const last_dot = email_str.lastIndexOf('.');
+        if (at_pos === -1 || last_dot === -1)
+            return false;
+        if (last_dot < at_pos)
+            return false;
+        return (last_dot + 2 < len);
+    }
+    return false;
+}
+
+export function getSearchParameterMap() {
+    let pairs = window.location.search.substring(1).split("&"),
+        obj = {},
+        pair,
+        i;
+
+    for (i in pairs) {
+        if ( pairs[i] === "" ) continue;
+        pair = pairs[i].split("=");
+        obj[ decodeURIComponent( pair[0] ) ] = decodeURIComponent( pair[1] );
+    }
+    return obj;
+}
+
 export default Comms;

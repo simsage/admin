@@ -47,20 +47,16 @@ export default function AclSetup(props) {
 
     function getAllUsers() {
         return props.user_list ? props.user_list.filter((user) => {
-            console.log("Siva canview",user,'--',canView(user, props.session, props.is_admin))
             // return false
             return canView(user, props.session, props.is_admin)
         }) : [];
     }
-
-    console.log("Siva getAllUsers", getAllUsers())
 
     function canView(user, signedInUser, isAdmin) {
 
         const sameOrg = user.roles.filter((role)  => {
             return role.organisationId === signedInUser.organisationId
         })
-        console.log("Siva sameOrg",sameOrg)
 
         if (user.email === signedInUser.email) return true;
         else if (sameOrg.length) return true;
@@ -172,7 +168,6 @@ export default function AclSetup(props) {
         }
     }
 
-    // console.log("Siva acl_list", acl_list)
     return (
         <div className="row pb-5">
 

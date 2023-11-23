@@ -57,10 +57,8 @@ export function UserPasswordResetForm() {
             email:selectedUser.email
         }
 
-        console.log('Saving...', data);
         dispatch(updateUser({session_id, organisation_id, data}));
         handleClose();
-        console.log("UserEditV2 form submit", data)
     }
 
     if (show_password_reset_form === false)

@@ -20,15 +20,12 @@ export default function SynsetForm() {
     //Form Hook
     const {register,
         handleSubmit,
-        watch,
         getValues,
         formState: {errors},
         reset} = useForm();
 
     const [wordCloudFields, setWordCloudFields] = useState(selected_synset ? selected_synset.wordCloudCsvList : [])
-    const [word_could_error, setWordCloudError] = useState(false);
 
-    console.log("synset11 selected_synset", word_could_error)
     //set default value
     useEffect(() => {
         let defaultValues = {};
@@ -66,11 +63,6 @@ export default function SynsetForm() {
     const onSubmit = data => {
         let list = data.wordCloudCsvList.filter(o => o !== '');
         if(list.length > 1){
-            setWordCloudError(true)
-        }else {
-            setWordCloudError(false)
-        }
-        if(list.length > 1){
             data.lemma = data.word;
             dispatch(addOrUpdate({
                 organisation_id: selected_organisation_id,
@@ -87,8 +79,6 @@ export default function SynsetForm() {
         dispatch(closeForm());
         setWordCloudFields(['', '']);
     }
-
-    console.log("errors",watch(errors))
 
     if (!show_synset_form)
         return (<div/>);

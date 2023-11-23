@@ -27,6 +27,7 @@ const initialState = {
 export const getUserListPaginated = createAsyncThunk(
     'users/getUserListPaginated',
     async ({session_id, organization_id, page = 0, page_size = 100, filter}, {rejectWithValue}) => {
+
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/users-paginated/' + encodeURIComponent(organization_id) + '/' + encodeURIComponent(page) + '/' + encodeURIComponent(page_size) + '/' + encodeURIComponent(filter);
         return axios.get(url, Comms.getHeaders(session_id))
@@ -42,6 +43,7 @@ export const updateUser = createAsyncThunk(
     'users/update',
     async ({session_id, organisation_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
+        console.log("DATA", data);
         const url = '/auth/user/';
         return axios.put(api_base + url + encodeURIComponent(organisation_id), data, Comms.getHeaders(session_id))
             .then((response) => {

@@ -6,7 +6,7 @@
 }
 
 .auth-inner {
-    width: 400px;
+    width: 500px;
 }
 
 
@@ -27,6 +27,14 @@
 .text-right {
     margin-top: 4px;
     margin-left: 220px;
+    cursor: pointer;
+    color: #1c9bd2;
+}
+
+.forgot-password {
+    display: inline-block;
+    width: 300px;
+    padding-left: 150px;
     cursor: pointer;
     color: #1c9bd2;
 }

@@ -50,9 +50,11 @@ const AccountDropdown = () => {
 
     function handleSignOut(){
         dispatch(simsageLogOut({session_id:session.id}))
-        instance.logoutRedirect({
-            postLogoutRedirectUri: "/",
-        });
+        if (window.ENV.authentication !== 'password') {
+            instance.logoutRedirect({
+                postLogoutRedirectUri: "/",
+            });
+        }
     }
 
     function getOrganisationList(){

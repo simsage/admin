@@ -19,8 +19,6 @@ export function TextToSearchEdit(){
 
     const {register, handleSubmit, formState: {errors}, reset} = useForm();
 
-    console.log("selected_item", selected_item)
-
     function handleClose(){
         dispatch(closeEditForm());
     }
@@ -138,13 +136,6 @@ export function TextToSearchEdit(){
 
                 </div>
             </div>
-
-            {/*{show_error_form &&*/}
-            {/*    <>*/}
-            {/*        <ShowErrorForm show_error_form={show_error_form} error={errors} closeForm={handleClose} />*/}
-            {/*    </>*/}
-            {/*}*/}
-
 
         </div>
 

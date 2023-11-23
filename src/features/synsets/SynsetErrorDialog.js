@@ -6,21 +6,13 @@ import {closeErrorMessage} from "./synsetSlice";
 
 export function SynsetErrorDialog() {
     const dispatch = useDispatch();
-    // const session = useSelector((state) => state.authReducer.session)
     const show_error_form = useSelector((state) => state.synsetReducer.show_error_form);
     const error_title = useSelector((state) => state.synsetReducer.error_title);
     const error_message = useSelector((state) => state.synsetReducer.error_message);
-    // const {instance} = useMsal();
 
     const handleClose = () => {
         dispatch(closeErrorMessage());
-
-        // dispatch(simsageLogOut({session_id: session.id}))
-        // instance.logoutRedirect({
-        //     postLogoutRedirectUri: "/",
-        // });
     }
-
 
     if (!show_error_form)
         return (<div/>);

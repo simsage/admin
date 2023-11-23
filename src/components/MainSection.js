@@ -32,10 +32,11 @@ function MainSection(){
 
     function authErrorClose(error_obj) {
         if (error_obj && error_obj.message.indexOf('cannot sign-in') >= 0) {
-            // window.location = "/";
-            instance.logoutRedirect().catch(e => {
-                console.error("MainSection: logoutRequest error", e);
-            });
+            if (window.ENV.authentication !== 'password') {
+                instance.logoutRedirect().catch(e => {
+                    console.error("MainSection: logoutRequest error", e);
+                });
+            }
         } else {
             dispatch(closeError());
             dispatch(clearOrgErrorMessage());

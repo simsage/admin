@@ -123,7 +123,7 @@ export default function SynsetList() {
 
                     <div className="form-group d-flex ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
-                            <img src="/images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of synsets" />
+                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of synsets" />
                         </div>
                         <button className="btn btn-outline-primary text-nowrap ms-2"
                                 onClick={() => handleAddDefaultSynSet()}
@@ -222,8 +222,6 @@ export default function SynsetList() {
 
             </div>
 
-
-
             {/*Edit form*/}
 
             {show_synset_form &&
@@ -236,12 +234,6 @@ export default function SynsetList() {
             {/* add default   */}
             <SynsetDefault/>
 
-            {/*{show_error_form &&*/}
-            {/*    <>*/}
-            {/*    console.log("show_error_form",show_error_form)*/}
-            {/*    <ShowErrorForm show_error_form={show_error_form} error={error_message} closeForm={handleClose} />*/}
-            {/*    </>*/}
-            {/*}*/}
         </div>
     )
 }

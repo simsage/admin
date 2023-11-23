@@ -1,11 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {BsFilePdf} from 'react-icons/bs'
-import Api from "../../../common/api";
 
 export default function CrawlerBoxForm(props) {
-
-    // 2020-01-01 00:00 GMT (without milliseconds)
-    const time2020 = 1577836800;
 
     const selected_source = props.source;
 
@@ -14,22 +10,11 @@ export default function CrawlerBoxForm(props) {
     const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
     const l_form_data = props.form_data;
-    let date_time_str = "complete crawl";
-
-    if (specific_json.deltaIndicator > time2020)
-        date_time_str = Api.toPrettyDateTime(new Date(specific_json.deltaIndicator * 1000));
-
 
     //update local variable specific_json when data is changed
     function setData(data) {
         setSpecificJson({...specific_json,...data})
     }
-
-    function setTimeToNow(e) {
-        e.preventDefault()
-        setData({deltaIndicator: Math.floor(Date.now() / 1000)});
-    }
-
 
     //update setFormData when specific_json is changed
     useEffect(() => {
@@ -79,21 +64,6 @@ export default function CrawlerBoxForm(props) {
                                        onChange={(event) => {setData({enterpriseId: event.target.value})}}
                                 />
                             </form>
-                        </div>
-                    </div>
-                    <div className="row border-top pt-4 mb-4">
-                        <div className="form-group col-6">
-                            <label className="small">Time to check from</label>
-                            <div className="d-flex align-items-center">
-                                <input type="text" className="form-control"
-                                    placeholder=""
-                                    autoFocus={true}
-                                    value={specific_json.deltaIndicator}
-                                               onChange={(event) => {setData({deltaIndicator: event.target.value})}}
-                                />
-                                <div className="btn bt-sm btn-primary ms-2" onClick={(e) => setTimeToNow(e)}>Now</div>
-                                <span className="small text-nowrap ms-3 text-capitalize">{date_time_str}</span>
-                            </div>
                         </div>
                     </div>
                     <div className="row border-top pt-4">

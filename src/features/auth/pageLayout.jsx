@@ -14,7 +14,7 @@ let signing_in = false;
  * Renders the navbar component with a sign-in button if a user is not authenticated
  */
 export const PageLayout = (props) => {
-    const isAuthenticated = useIsAuthenticated();
+    const isAuthenticated = useIsAuthenticated() || window.ENV.authentication === 'password';
     const dispatch = useDispatch();
 
     const {session} = useSelector((state) => state.authReducer)
@@ -28,7 +28,6 @@ export const PageLayout = (props) => {
                 signing_in = true;
                 dispatch(simsageSignIn({
                     id_token: response.idToken, on_success: (data) => {
-
                         dispatch(login(data));
                         dispatch(setOrganisationList(data))
                     }, on_fail: (error_message) => {
@@ -48,7 +47,7 @@ export const PageLayout = (props) => {
             }
         }
 
-        if (accounts && accounts.length > 0) {
+        if (isAuthenticated && accounts && accounts.length > 0) {
             const request = {
                 account: accounts[0]
             };
@@ -63,7 +62,7 @@ export const PageLayout = (props) => {
             });
         }
 
-    }, [instance, accounts, dispatch, session])
+    }, [instance, accounts, dispatch, session, isAuthenticated])
 
 
     return (

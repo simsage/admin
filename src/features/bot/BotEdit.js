@@ -30,8 +30,6 @@ export function BotEdit(){
     const [errorQ, setErrorQ] = useState();
     const [errorA, setErrorA] = useState();
 
-    // console.log("error",error)
-
     // Grab memory details if editing
     let selectedMemory = {}
     useEffect(()=> {
@@ -81,16 +79,13 @@ export function BotEdit(){
 
         let final_questions = (questions)?[...questions,newQuestion]:(newQuestion)?[newQuestion]:[];
         let final_links = (links)?[...links,newLink]:[newLink];
-        console.log("final_questions",final_questions)
         if (!final_questions || final_questions.length === 0) {
-            console.log("answer",answer)
             // setError("empty Question(s) not allowed");
             setErrorQ("empty Question(s) not allowed");
         } else if (!answer || answer.length === 0) {
             // setError("empty Answer not allowed");
             setErrorA("empty Answer not allowed");
         } else {
-            console.log("updating",final_questions)
             //begin updating user
             const session_id = session.id;
             const data = {

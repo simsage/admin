@@ -11,8 +11,6 @@ import api from "../../common/api";
 
 export default function GroupList(){
 
-    // const [page, setPage] = useState(useSelector((state) => state.groupReducer.page))
-    // const [page_size, setPageSize] = useState(useSelector((state) => state.groupReducer.page_size))
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
@@ -20,22 +18,17 @@ export default function GroupList(){
     const dispatch = useDispatch();
     const load_data = useSelector((state) => state.groupReducer.data_status)
 
-
     const user = useSelector((state) => state.authReducer.user)
     const group_list = useSelector((state) => state.groupReducer.group_list)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
-
 
     const isAdmin = hasRole(user, ['admin']);
     const isManager = hasRole(user, ['manager']);
     const [filter, setFilter] = useState('');
 
 
-    console.log("Siva group_list", group_list)
-
-
     useEffect(()=>{
-            // dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+        // dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[load_data === 'load_now',page, page_size, selected_organisation_id])
 

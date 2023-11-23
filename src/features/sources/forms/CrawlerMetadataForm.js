@@ -231,7 +231,6 @@ export default function CrawlerMetadataForm(props) {
             const temp = md_list[index + 1];
             md_list[index + 1] = md;
             md_list[index] = temp;
-
             setSpecificJson({...specific_json, metadata_list: md_list})
         }
     }
@@ -377,7 +376,7 @@ export default function CrawlerMetadataForm(props) {
                                                 defaultValue={md.key}
                                                 aria-label="select what kind of metadata field to use">
                                             {
-                                                get_md_list().map((value, j) => {
+                                                metadata_list.map((value, j) => {
                                                     return (<option key={j} value={value.key}>{value.key}</option>)
                                                 })
                                             }

@@ -23,12 +23,12 @@ export default function GeneralForm(props) {
         {"key": "exchange365", "value": "Exchange 365 crawler"},
         {"key": "external", "value": "External crawler"},
 
-        {"key": "file", "value": "File (SMB) crawler"},
+        {"key": "file", "value": "Microsoft FileShare crawler"},
         {"key": "gdrive", "value": "Google-drive crawler"},
         {"key": "imanage", "value": "iManage crawler"},
         {"key": "jira", "value": "Jira crawler"},
 
-        {"key": "nfs", "value": "NFS external crawler"},
+        {"key": "localfile", "value": "Local file crawler"},
         {"key": "onedrive", "value": "One-drive crawler"},
 
         {"key": "restfull", "value": "REST-full crawler"},
@@ -280,7 +280,7 @@ export default function GeneralForm(props) {
 
 
             <div className="form-group">
-                {selected_source && selected_source.id > 0 && selected_source_type !== 'nfs' &&
+                {selected_source && selected_source.id > 0 && selected_source_type !== 'localfile' &&
                     selected_source_type !== 'database' && selected_source_type !== 'restfull' &&
                     <div>
                         <button className="btn btn-primary btn-block"

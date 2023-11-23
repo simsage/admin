@@ -61,13 +61,26 @@ export default function CrawlerConfluenceForm(props) {
                             <label className="small">Access Token</label>
                             <form>
                                 <div className="form-control d-flex align-items-center">
-                                    <input type={form_show_password ? "text" : "password"} className="border-0 p-0 w-100"
-                                        placeholder="********"
-                                        value={specific_json.accessToken}
-                                        onChange={(event) => {
-                                            setData({accessToken: event.target.value})
-                                        }}
-                                    />
+                                    {
+                                        form_show_password &&
+                                        <textarea className="border-0 p-0" rows="3" cols="90"
+                                                  placeholder="********"
+                                                  value={specific_json.accessToken}
+                                                  onChange={(event) => {
+                                                      setData({accessToken: event.target.value})
+                                                  }}
+                                        />
+                                    }
+                                    {
+                                        !form_show_password &&
+                                        <input type="password" className="border-0 p-1 w-100 overflow-hidden"
+                                               placeholder="********"
+                                               value={specific_json.accessToken}
+                                               onChange={(event) => {
+                                                   setData({accessToken: event.target.value})
+                                               }}
+                                        />
+                                    }
                                     <span className='small text-primary' onClick={() => setShowPassword(!form_show_password)}>{!form_show_password?'Show':'Hide'}</span>
                                 </div>
                             </form>
@@ -77,12 +90,12 @@ export default function CrawlerConfluenceForm(props) {
                         <div className="col-6">
                             <div className="form-group">
                                 <label className="small d-flex justify-content-between">
-                                    Spaces to crawl
-                                    <span className="fst-italic fw-light small">(separate spaces labels by comma)</span>
+                                    Categories (type of space, aka. labels)
+                                    <span className="fst-italic fw-light small">(separate category (aka. labels) by comma)</span>
                                 </label>
                                 <textarea className="form-control"
                                     disabled={specific_json.crawlAllSites}
-                                    placeholder="labels of spaces, case insensitive, separated by commas (leave empty to crawl all categories / spaces)"
+                                    placeholder="labels of categories, aka. types, case insensitive, separated by commas (leave empty to crawl all categories), e.g. knowledge-bases"
                                     rows={3}
                                     value={specific_json.categories}
                                     onChange={(event) => {

@@ -110,7 +110,6 @@ export default function KnowledgeBaseForm() {
     //on submit store or update
     const onSubmit = data => {
 
-        console.log("data", data)
         data = {
             ...data,
             organisationId: organisation_id,
@@ -165,8 +164,7 @@ export default function KnowledgeBaseForm() {
                                                 <label className="label-2 small">Email Queries</label>
                                                 <input className="form-control"
                                                        placeholder="example@email.com" {...register("email", {
-                                                    required: true,
-                                                    pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+                                                    required: true
                                                 })} />
                                                 {errors.email && <span className="text-danger fst-italic small"> Email is required</span>}
                                             </div>

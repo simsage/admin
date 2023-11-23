@@ -19,7 +19,7 @@ import CrawlerFileForm from "./forms/CrawlerFileForm";
 import CrawlerGDriveForm from "./forms/CrawlerGDriveForm";
 import CrawlerIManageForm from "./forms/CrawlerIManageForm";
 import CrawlerJiraForm from "./forms/CrawlerJiraForm";
-import CrawlerNfsForm from "./forms/CrawlerNfsForm";
+import CrawlerLocalFileForm from "./forms/CrawlerLocalFileForm";
 import CrawlerOnedriveForm from "./forms/CrawlerOnedriveForm";
 import CrawlerRestfulForm from "./forms/CrawlerRestfulForm";
 import CrawlerSharepoint365Form from "./forms/CrawlerSharepoint365Form";
@@ -32,8 +32,11 @@ import CrawlerDiscourseForm2 from "./forms/CrawlerDiscourseForm2";
 import CrawlerSearchForm2 from "./forms/CrawlerSearchForm2";
 import CrawlerServiceNow from "./forms/CrawlerServiceNow";
 import ProcessorSetup from "../../common/processor-setup";
+import CrawlerExternalCrawlerConfigurationForm from "./forms/CrawlerExternalCrawlerConfigurationForm";
 // import {data} from "msw";
 
+
+const externalCrawlers = ['database', 'localfile', 'restful']
 
 export default function SourceForm() {
 
@@ -131,13 +134,12 @@ export default function SourceForm() {
     const user_list = useSelector((state) => state.usersReducer.user_list);
     const group_list = useSelector((state) => state.groupReducer.group_list);
 
-    // console.log("Siva user_list", user_list)
-    // console.log("Siva group_list", group_list)
     /**
      Set Form Data
      */
         // load the selected source
     let selected_source = useSelector((state) => state.sourceReducer.selected_source);
+
     // if selected_source === '' then show add form otherwise show edit form
     const title = selected_source ? "Edit Source: " + selected_source.name : "Add Source";
     //if selected_source is null then this is a new source
@@ -173,13 +175,13 @@ export default function SourceForm() {
         // external crawler is needed for external API sources
         {label: "external crawler", slug: "external", type: "optional"},
 
-        {label: "file (SMB) crawler", slug: "file", type: "optional"},
         {label: "google-drive crawler", slug: "gdrive", type: "optional"},
         {label: "iManage crawler", slug: "imanage", type: "optional"},
 
         {label: "Jira crawler", slug: "jira", type: "optional"},
 
-        {label: "nfs crawler", slug: "nfs", type: "optional"},
+        {label: "local file crawler", slug: "localfile", type: "optional"},
+        {label: "microsoft file share crawler", slug: "file", type: "optional"},
         {label: "one-drive crawler", slug: "onedrive", type: "optional"},
 
         {label: "rest-full crawler", slug: "restfull", type: "optional"},
@@ -198,11 +200,11 @@ export default function SourceForm() {
         //rest
         {label: "ACLs", slug: "acls", type: "core"},
         {label: "Processors", slug: "processors", type: "core"},
+        {label: "Set up", slug: "external-crawler", type: "external-crawler"},
         {label: "schedule", slug: "schedule", type: "core"},
 
     ]
 
-    const externalCrawlers = ['database', 'nfs', 'restful']
     const [selected_source_tab, setSelectedSourceTab] = useState('general')
 
     function changeNav(slug) {
@@ -258,7 +260,7 @@ export default function SourceForm() {
         defaultValues.useOCR = selected_source && selected_source.useOCR === true;
         defaultValues.useSTT = selected_source && selected_source.useSTT === true;
         defaultValues.enableDocumentSimilarity = selected_source && selected_source.enableDocumentSimilarity === true;
-        defaultValues.isExternal = selected_source && selected_source.isExternal === true;
+        defaultValues.isExternal = (selected_source && selected_source.isExternal === true) || (selected_source && externalCrawlers.includes(selected_source.crawlerType));
 
         reset({...defaultValues});
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -351,22 +353,9 @@ export default function SourceForm() {
         return true;
     }
 
-    function valid_fqdn(fqdn) {
-        if (fqdn && fqdn.length > 0) {
-            // valid characters ., a..z A..Z 0..9
-            for (let i = 0; i < fqdn.length; i++) {
-                const ch = fqdn.charAt(i);
-                if (ch !== '.' && !((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9'))) {
-                    return false;
-                }
-            }
-            // must have at least one . in it and it can't be the first or last item in the string
-            return fqdn.indexOf('.') > 0 && (fqdn.indexOf('.') + 1 < fqdn.length);
-        }
-        return false;
-    }
 
-
+    // check box/dropbox folder items are valid - this list is allowed to be empty
+    // but all items must all start with / if set
     function validDropBoxFolderList(folder_list) {
         if (folder_list && folder_list.length > 0) {
             for (const i of folder_list.split(",")) {
@@ -374,13 +363,11 @@ export default function SourceForm() {
                 if (item.length > 0) {
                     if (!item.startsWith("/"))
                         return false;
-                    if (item.lastIndexOf("/") > 0)
-                        return false;
                 }
             }
             return true;
         }
-        return false;
+        return true;
     }
 
 
@@ -462,13 +449,15 @@ export default function SourceForm() {
             sj = JSON.parse(new_data.specificJson);
         }
 
-        if (new_data.qaMatchStrength < 0.0 || new_data.qaMatchStrength > 1.0) {
+        // box crawler - set delta to "0" if not defined
+        if (new_data.crawlerType === 'box' && (!Api.defined(sj.deltaIndicator) || sj.deltaIndicator.length === 0)) {
+            sj.deltaIndicator = "0";
+        }
 
+        if (new_data.qaMatchStrength < 0.0 || new_data.qaMatchStrength > 1.0) {
             setError({title: 'invalid parameters', message: 'Q&A threshold must be between 0.0 and 1.0.'});
         } else if (new_data.name.length === 0) {
             setError({title: 'invalid parameters', message: 'you must supply a crawler name.'});
-        } else if (new_data.crawlerType === 'none') {
-            setError({title: 'invalid parameters', message: 'you must select a crawler-type.'});
         } else if (!sj) {
             setError({title: 'invalid parameters', message: 'crawler specific data not set'});
         } else if (!validAcls && !new_data.crawlerType === 'discourse') {
@@ -477,12 +466,12 @@ export default function SourceForm() {
                 message: 'This source does not have valid ACLs.\nThis source won\'t be usable.  Please add ACLs to this source.'
             });
         } else if (new_data.crawlerType === 'file' && (
-            (!sj.username || sj.username.length === 0) || (!sj.server || sj.server.length === 0) ||
-            !valid_fqdn(sj.fqdn) || (!sj.shareName || sj.shareName.length === 0))) {
+            (!sj.username || sj.username.length === 0) || (!sj.server || sj.server.length === 0)
+            || (!sj.shareName || sj.shareName.length === 0))) {
 
             setError({
                 title: 'invalid parameters',
-                message: 'file crawler: you must supply a name, username, server, valid FQDN and share path as a minimum.'
+                message: 'file crawler: you must supply a name, username, server and share path as a minimum.'
             });
 
         } else if (new_data.crawlerType === 'servicenow' && (
@@ -585,12 +574,6 @@ export default function SourceForm() {
                 message: 'dropbox crawler: you have invalid values in your start folder.'
             });
 
-        } else if (new_data.crawlerType === 'box' && !validDropBoxFolderList(sj.folderList)) {
-            setError({
-                title: 'invalid parameters',
-                message: 'box crawler: you have invalid values in your start folder.'
-            });
-
         } else if (new_data.crawlerType === 'imanage' && !validDropBoxFolderList(sj.folderList)) {
             setError({
                 title: 'invalid parameters',
@@ -599,10 +582,10 @@ export default function SourceForm() {
 
         } else if (new_data.crawlerType === 'box' && (!sj.clientId || sj.clientId.length === 0 ||
             !sj.clientSecret || sj.clientSecret.length === 0 || !sj.enterpriseId || sj.enterpriseId.length === 0 ||
-            !Api.defined(sj.deltaIndicator) || sj.deltaIndicator.length === 0)) {
+            !validDropBoxFolderList(sj.folderList))) {
             setError({
                 title: 'invalid parameters',
-                message: 'box crawler: you have invalid values for clientId / clientSecret / enterpriseId / time-to-check-from.'
+                message: 'box crawler: you have invalid values for clientId / clientSecret / enterpriseId.'
             });
 
         } else if (new_data.crawlerType === 'imanage' && (!sj.clientId || sj.clientId.length === 0 ||
@@ -621,15 +604,15 @@ export default function SourceForm() {
                 message: 'you must supply values for all fields, and select one user as a minimum.'
             });
 
-        } else if (new_data.crawlerType === 'nfs' && (!sj.nfs_local_folder || sj.nfs_local_folder.length === 0)) {
-            setError({title: 'invalid parameters', message: 'nfs: you must set a local folder.'});
+        } else if (new_data.crawlerType === 'localfile' && (!sj.local_folder_csv || sj.local_folder_csv.length === 0)) {
+            setError({title: 'invalid parameters', message: 'local file crawler: you must set a local folder csv.'});
 
         } else if (new_data.crawlerType === 'rss' && (!sj.endpoint || sj.endpoint.length < 5)) {
             setError({title: 'invalid parameters', message: 'RSS: you must supply a value for endpoint.'});
 
         } else if (new_data.crawlerType !== 'web' && new_data.crawlerType !== 'file' && new_data.crawlerType !== 'database' &&
             new_data.crawlerType !== 'exchange365' && new_data.crawlerType !== 'dropbox' &&
-            new_data.crawlerType !== 'nfs' && new_data.crawlerType !== 'jira' && new_data.crawlerType !== 'gdrive' &&
+            new_data.crawlerType !== 'localfile' && new_data.crawlerType !== 'jira' && new_data.crawlerType !== 'gdrive' &&
             new_data.crawlerType !== 'onedrive' && new_data.crawlerType !== 'sharepoint365' &&
             new_data.crawlerType !== 'restfull' && new_data.crawlerType !== 'rss' && new_data.crawlerType !== 'external' &&
             new_data.crawlerType !== 'box' && new_data.crawlerType !== 'imanage' && new_data.crawlerType !== 'discourse' &&
@@ -706,6 +689,7 @@ export default function SourceForm() {
                                     <SourceTabs
                                         source_tabs={source_tabs}
                                         selected_source_tab={selected_source_tab}
+                                        isExternal={selected_source.isExternal}
                                         onClick={changeNav}
                                         crawler_type={form_data ? form_data.crawlerType : null}/>
                                 </div>
@@ -811,8 +795,8 @@ export default function SourceForm() {
                                 }
 
 
-                                {selected_source_tab === 'nfs' &&
-                                    <CrawlerNfsForm
+                                {selected_source_tab === 'localfile' &&
+                                    <CrawlerLocalFileForm
                                         source={selected_source}
                                         form_data={form_data}
                                         setFormData={setFormData}/>
@@ -909,7 +893,7 @@ export default function SourceForm() {
                                          style={{maxHeight: "600px", minHeight: "400px"}}>
                                         <div className="row mb-3">
                                             <div className="col-6 d-flex">
-                                                <div class="alert alert-warning small py-2" role="alert">
+                                                <div className="alert alert-warning small py-2" role="alert">
                                                     This list sets a default set of Access Control for this source
                                                 </div>
                                             </div>
@@ -937,6 +921,12 @@ export default function SourceForm() {
                                     </div>
                                 }
 
+                                {selected_source_tab === 'external-crawler' &&
+                                    <div className="time-tab-content px-5 py-4 overflow-auto">
+                                        <CrawlerExternalCrawlerConfigurationForm
+                                            source={selected_source} />
+                                    </div>
+                                }
 
                                 {/* Page 6: schedule TimeSelect  */}
                                 {selected_source_tab === 'schedule' &&
@@ -961,7 +951,7 @@ export default function SourceForm() {
                                 }
                                 {selected_source && selected_source.sourceId > 0 &&
                                     <button onClick={handleResetDelta} type="button" title='Reset Source Delta'
-                                            className={`btn btn-primary px-4 ${(externalCrawlers.includes(selected_source.crawlerType)) ? 'disabled' : ''}`}
+                                            className='btn btn-primary px-4'
                                             data-bs-dismiss="modal">Reset Delta
                                     </button>
                                 }

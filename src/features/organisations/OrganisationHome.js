@@ -61,9 +61,11 @@ export function OrganisationHome() {
 
     function  handleSignOut() {
         dispatch(simsageLogOut({session_id: session.id}))
-        instance.logoutRedirect({
-            postLogoutRedirectUri: "/",
-        });
+        if (window.ENV.authentication !== 'password') {
+            instance.logoutRedirect({
+                postLogoutRedirectUri: "/",
+            });
+        }
     }
 
 
@@ -72,16 +74,19 @@ export function OrganisationHome() {
     // }
 
     useEffect(() => {
+        if (!session || !org_id) return;
         dispatch(getOrganisationList({session: session, filter: filter}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === 'load_now'])
 
     useEffect(() => {
+        if (!session || !org_id) return;
         dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backup_data_status === 'load_now', org_id != null])
 
     const handleRefresh = () => {
+        if (!org_id) return;
         dispatch(getOrganisationList({session: session, filter: filter}))
         dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
     }
@@ -89,6 +94,7 @@ export function OrganisationHome() {
 
 
     function handleSelectOrganisation(session_id, org) {
+        if (!org) return;
         const org_id = org.id
         dispatch(setSelectedOrganisation(org));
         dispatch(getKBList({session_id: session.id, organization_id: org_id}));
@@ -97,6 +103,7 @@ export function OrganisationHome() {
     }
 
     function handleViewOrganisationID(org_id) {
+        if (!session || !org_id) return;
         dispatch(showOrganisationId({org_id: org_id}))
     }
 
@@ -105,16 +112,19 @@ export function OrganisationHome() {
     }
 
     function handleEditOrganisation(org_id) {
+        if (!session || !org_id) return;
         dispatch(showEditOrganisationForm({show_form: true, org_id: org_id}))
     }
 
 
     function handleRemoveOrganisation(org_id) {
+        if (!session || !org_id) return;
         dispatch(showDeleteForm({org_id}))
     }
 
 
     function handleBackupOrganisation(org_id) {
+        if (!session || !org_id) return;
         dispatch(showBackupForm({show_form: true, org_id: org_id}))
     }
 
@@ -182,7 +192,7 @@ export function OrganisationHome() {
                     </thead>
                     <tbody>
 
-                    {organisation_list &&
+                    {organisation_list && selected_organisation &&
                         getOrganisations().map((item) => {
                             return (
                                 <tr key={item.id} className={(item.id === selected_organisation.id) ? "active" : ""}>

@@ -18,20 +18,16 @@ function App() {
         dispatch(closeAllMenus())
     }
 
-    console.log()
-
     const busy = busy1 || busy2;
     return (
         <PageLayout>
-            {/*<AuthenticatedTemplate>*/}
-                <div className={busy ? "dms wait-cursor" : "dms"} onClick={() => localCloseAllMenus()}>
-                    <LeftNavbar/>
-                    <div className="outer">
-                        <Header/>
-                        <MainSection/>
-                    </div>
+            <div className={busy ? "dms wait-cursor" : "dms"} onClick={() => localCloseAllMenus()}>
+                <LeftNavbar/>
+                <div className="outer">
+                    <Header/>
+                    <MainSection/>
                 </div>
-            {/*</AuthenticatedTemplate>*/}
+            </div>
         </PageLayout>
     );
 }
