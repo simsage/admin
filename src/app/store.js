@@ -8,13 +8,10 @@ import {logger} from "redux-logger/src";
 import sourceReducer from "../features/sources/sourceSlice";
 import groupReducer from "../features/groups/groupSlice"
 import inventoryReducer from "../features/inventory/inventorySlice";
-import statusSlice from "../features/status/statusSlice";
 import documentSlice from "../features/document_management/documentSlice";
-import botSlice from "../features/bot/botSlice";
 import synonymSlice from "../features/synonyms/synonymSlice";
 import semanticSlice from "../features/semantics/semanticSlice";
 import synsetSlice from "../features/synsets/synsetSlice";
-import categorizationSlice from "../features/categorization/categorizationSlice";
 import alertSlice from "../features/alerts/alertSlice"
 import textToSearchSlice from "../features/text_to_search/TextToSearchSlice";
 /**
@@ -32,13 +29,10 @@ export const store = configureStore({
     sourceReducer: sourceReducer,
     groupReducer: groupReducer,
     inventoryReducer:inventoryReducer,
-    statusReducer:statusSlice,
     documentReducer:documentSlice,
-    botReducer:botSlice,
     synonymReducer:synonymSlice,
     semanticReducer:semanticSlice,
     synsetReducer:synsetSlice,
-    categorizationReducer:categorizationSlice,
     alertReducer:alertSlice,
     textToSearchReducer: textToSearchSlice,
 

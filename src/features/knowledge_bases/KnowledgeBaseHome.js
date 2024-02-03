@@ -24,7 +24,7 @@ export default function KnowledgeBaseHome() {
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const session = useSelector((state) => state).authReducer.session;
-    const session_id = session.id;
+    const session_id = (session && session.id) ? session.id : "";
 
     const dispatch = useDispatch()
 

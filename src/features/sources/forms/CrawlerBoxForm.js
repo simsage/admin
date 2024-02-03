@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {BsFilePdf} from 'react-icons/bs'
+import SensitiveCredential from "../../../components/SensitiveCredential";
 
 export default function CrawlerBoxForm(props) {
 
@@ -31,7 +32,7 @@ export default function CrawlerBoxForm(props) {
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label className="small">Client ID</label>
+                            <label className="small required">Client ID</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
@@ -42,20 +43,26 @@ export default function CrawlerBoxForm(props) {
                             </form>
                         </div>
                         <div className="form-group col-6">
-                            <label className="small">Client secret</label>
-                            <form>
-                                <input type="text" className="form-control"
-                                    placeholder=""
-                                    autoFocus={true}
-                                    value={specific_json.clientSecret}
-                                       onChange={(event) => {setData({clientSecret: event.target.value})}}
-                                />
-                            </form>
+                            <SensitiveCredential
+                                selected_source={selected_source}
+                                specific_json={specific_json.clientSecret}
+                                onChange={(event) => {setData({clientSecret: event.target.value})}}
+                                name="Client secret"
+                            />
+                            {/*<label className="small required">Client secret</label>*/}
+                            {/*<form>*/}
+                            {/*    <input type="text" className="form-control"*/}
+                            {/*        placeholder=""*/}
+                            {/*        autoFocus={true}*/}
+                            {/*        value={specific_json.clientSecret}*/}
+                            {/*           onChange={(event) => {setData({clientSecret: event.target.value})}}*/}
+                            {/*    />*/}
+                            {/*</form>*/}
                         </div>
                     </div>
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label className="small">Enterprise ID</label>
+                            <label className="small required">Enterprise ID</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""

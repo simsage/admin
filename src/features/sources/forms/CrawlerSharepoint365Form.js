@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {BsFilePdf} from 'react-icons/bs'
+import SensitiveCredential from "../../../components/SensitiveCredential";
 
 export default function CrawlerSharepoint365Form(props) {
 
@@ -33,7 +34,7 @@ export default function CrawlerSharepoint365Form(props) {
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-6">
-                            <label className="small">Tenant ID</label>
+                            <label className="small required">Tenant ID</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
@@ -44,7 +45,7 @@ export default function CrawlerSharepoint365Form(props) {
                             </form>
                         </div>
                         <div className="form-group col-6">
-                            <label className="small">Client ID</label>
+                            <label className="small required">Client ID</label>
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
@@ -56,14 +57,14 @@ export default function CrawlerSharepoint365Form(props) {
                     </div>
                     <div className="row mb-4">
                         <div className="form-group col-12">
-                            <label className="small">Client secret</label>
-                            <form>
-                                <input type="text" className="form-control"
-                                    placeholder=""
-                                    value={specific_json.clientSecret}
-                                    onChange={(event) => {setData({clientSecret: event.target.value})}}
-                                />
-                            </form>
+                            <SensitiveCredential
+                                selected_source={selected_source}
+                                specific_json={specific_json.clientSecret}
+                                onChange={(event) => {
+                                    setData({clientSecret: event.target.value})
+                                }}
+                                name="Client Secret"
+                            />
                         </div>
                     </div>
                     <div className="row border-top pt-4">

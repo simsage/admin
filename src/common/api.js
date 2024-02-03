@@ -10,6 +10,9 @@ export class Api {
         return (value !== null && value !== undefined);
     }
 
+    static hasSourceId(source) {
+        return source && Api.defined(source.sourceId) && "" + source.sourceId !== "0" && "" + source.sourceId !== ""
+    }
 
     static pretty_version() {
         const parts = window.ENV.version.split(".");
@@ -272,6 +275,8 @@ export function get_error(action) {
     }
     return final_str;
 }
+
+
 
 
 export default Api;

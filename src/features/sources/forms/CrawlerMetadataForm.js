@@ -5,194 +5,70 @@ export default function CrawlerMetadataForm(props) {
     const selected_source = props.source;
 
     //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
+    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ?
+        props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
 
     // const self = this;
     // const theme = props.theme;
-    const num_rows = get_md_list().length;
     const l_form_data = props.form_data;
 
 
-    const metadata_list = [
-        {
-            "key": "none",
-            "display": null,
-            "metadata": null,
-            "db1": "",
-            "db2": "",
-            "sort": "",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
-        {
-            "key": "author list",
-            "display": "",
-            "metadata": "",
-            "db1": "",
-            "db2": "",
-            "sort": "",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
-        {
-            "key": "created date range",
-            "display": "",
-            "metadata": "",
-            "db1": "",
-            "db2": "",
-            "sort": "false",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
-        {
-            "key": "last modified date ranges",
-            "display": "",
-            "metadata": "",
-            "db1": "",
-            "db2": "",
-            "sort": "false",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
-        {
-            "key": "document type",
-            "display": "",
-            "metadata": "",
-            "db1": "",
-            "db2": "",
-            "sort": "",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
-        {
-            "key": "people list",
-            "display": "",
-            "metadata": "",
-            "db1": "",
-            "db2": "",
-            "sort": "",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
-        {
-            "key": "hashtag list",
-            "display": "",
-            "metadata": "",
-            "db1": "",
-            "db2": "",
-            "sort": "",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
-        {
-            "key": "location list",
-            "display": "",
-            "metadata": "",
-            "db1": "",
-            "db2": "",
-            "sort": "",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
-        {
-            "key": "money range",
-            "display": "",
-            "metadata": "",
-            "db1": "",
-            "db2": "",
-            "sort": "false",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
-        {
-            "key": "number range",
-            "display": "",
-            "metadata": "",
-            "db1": "",
-            "db2": "",
-            "sort": "false",
-            "sortDefault": "",
-            "sortAscText": "",
-            "sortDescText": "",
-            "sourceId": 0,
-            "fieldOrder": 0
-        },
+    const data_type_list = [
+        "none",
+        "string",
+        "long",
     ];
 
+    const empty_metadata_mapper_item = {"dataType": "none", "extMetadata": "", "metadata": "", "display": ""};
 
-    useEffect(()=>{
+
+    useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
-        props.setFormData({...l_form_data, specificJson:specific_json_stringify})
+        props.setFormData({...l_form_data, specificJson: specific_json_stringify})
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[specific_json])
-
-
-
-    function set_md_type(record, index, value) {
-        const md_list = get_md_list();
-        if (index >= 0 && index < md_list.length) {
-            let match_item = null;
-            for (const item of metadata_list) {
-                if (item.key === value) {
-                    match_item = item;
-                    break;
-                }
-            }
-            if (match_item != null) {
-                md_list[index] = JSON.parse(JSON.stringify(match_item));
-                setSpecificJson({...specific_json, metadata_list: md_list})
-            }
-        }
-    }
+    }, [specific_json])
 
 
     //functions
     function get_md_list() {
-        const md_list = (specific_json && specific_json.metadata_list && specific_json.metadata_list.length > 0) ?
-                    specific_json.metadata_list : [];
+        let md_list = (specific_json && specific_json.metadata_list && specific_json.metadata_list.length > 0) ?
+            specific_json.metadata_list : [];
         if (typeof md_list === 'string' || md_list instanceof String) {
             try {
-                return JSON.parse(md_list);
+                md_list = JSON.parse(md_list);
             } catch (e) {
-                return [];
+                md_list = [];
             }
-        } else {
-            return md_list;
         }
+        let counter = 0;
+        for (let item of md_list) {
+            if (counter >= 3)
+                continue;
+            item.readonly = (item.metadata === "last-modified" || item.metadata === "created" ||
+                item.metadata === "document-type" || item.metadata === "{hashtag}");
+            if (item.metadata === "last-modified") {
+                item.dataType = "long";
+                item.extMetadata = "last-modified";
+                item.display = "last modified"
+            } else if(item.metadata === "created") {
+                item.dataType = "long";
+                item.extMetadata = "created";
+                item.display = "created"
+            } else if(item.metadata === "document-type") {
+                item.dataType = "string";
+                item.extMetadata = "document-type";
+                item.display = "document type"
+            }
+            counter += 1;
+        }
+        return md_list;
     }
 
 
     function addNewMetadataMapping() {
         const md_list = get_md_list();
-        md_list.push(JSON.parse(JSON.stringify(metadata_list[0]))); // add a copy of item 0
+        md_list.push(JSON.parse(JSON.stringify(empty_metadata_mapper_item))); // add a copy
         setSpecificJson({...specific_json, metadata_list: md_list})
     }
 
@@ -211,61 +87,8 @@ export default function CrawlerMetadataForm(props) {
     }
 
 
-    function move_row_up(e, md, index) {
-        e.preventDefault();
-        if (index > 0) {
-            const md_list = get_md_list();
-            const temp = md_list[index - 1];
-            md_list[index - 1] = md;
-            md_list[index] = temp;
-
-            setSpecificJson({...specific_json, metadata_list: md_list})
-        }
-    }
-
-
-    function move_row_down(e, md, index) {
-        e.preventDefault();
-        const md_list = get_md_list();
-        if (index + 1 < md_list.length) {
-            const temp = md_list[index + 1];
-            md_list[index + 1] = md;
-            md_list[index] = temp;
-            setSpecificJson({...specific_json, metadata_list: md_list})
-        }
-    }
-
-
-    function setDefaultSort(record, index, direction, value) {
-        const md_list = get_md_list();
-        if (index >= 0 && index < md_list.length) {
-            md_list[index].sortDefault = (value ? direction : "");
-            for (const i in md_list) {
-                if ("" + i !== "" + index && md_list.hasOwnProperty(i)) {
-                    md_list[i].sortDefault = "";
-                }
-            }
-
-            setSpecificJson({...specific_json, metadata_list: md_list})
-        }
-    }
-
-
-    function setSort(record, index, value) {
-        const md_list = get_md_list();
-        if (index >= 0 && index < md_list.length) {
-            md_list[index].sort = value ? "true" : "false";
-
-            setSpecificJson({...specific_json, metadata_list: md_list})
-        }
-    }
-
-
-    function needs_metadata_field(md) {
-        return (md.metadata !== null);
-    }
-
     function check_metadata_name(event) {
+        const value = event?.target?.value;
         // only allow valid characters to propagate for metadata names
         if ((event.key >= 'a' && event.key <= 'z') ||
             (event.key >= 'A' && event.key <= 'Z') ||
@@ -280,21 +103,28 @@ export default function CrawlerMetadataForm(props) {
     }
 
 
-    function setUserMetadataName1(record, index, value) {
+    function setDataType(record, index, value) {
         const md_list = get_md_list();
         if (index >= 0 && index < md_list.length) {
-            md_list[index].metadata = value;
-
+            md_list[index].dataType = value;
             setSpecificJson({...specific_json, metadata_list: md_list})
         }
     }
 
 
-    function setValue(record, index, field_name, value) {
+    function setMetadata(record, index, value) {
         const md_list = get_md_list();
         if (index >= 0 && index < md_list.length) {
-            md_list[index][field_name] = value;
+            md_list[index].metadata = value;
+            setSpecificJson({...specific_json, metadata_list: md_list})
+        }
+    }
 
+
+    function setExtMetadata(record, index, value) {
+        const md_list = get_md_list();
+        if (index >= 0 && index < md_list.length) {
+            md_list[index].extMetadata = value;
             setSpecificJson({...specific_json, metadata_list: md_list})
         }
     }
@@ -304,7 +134,6 @@ export default function CrawlerMetadataForm(props) {
         const md_list = get_md_list();
         if (index >= 0 && index < md_list.length) {
             md_list[index].display = value;
-
             setSpecificJson({...specific_json, metadata_list: md_list})
         }
     }
@@ -314,9 +143,6 @@ export default function CrawlerMetadataForm(props) {
 
             <div className="row mb-3">
                 <div className="col-6 d-flex">
-                    <div className="alert alert-warning small py-2" role="alert">
-                        All rows in order of UI. Use 'actions' arrows to re-arrange existing rows.
-                    </div>
                 </div>
                 <div className="col-6 d-flex justify-content-end">
                     <div>
@@ -333,63 +159,50 @@ export default function CrawlerMetadataForm(props) {
                 <thead>
                 <tr className='table-header'>
                     <td className="small text-black-50 px-0"></td>
-                    <td className="small text-black-50 px-4 metadata-column">Data-type</td>
+                    <td className="small text-black-50 px-4 metadata-column">data-type</td>
                     <td className="small text-black-50 px-4 display-column">UI Display-name</td>
-                    <td className="small text-black-50 px-4 metadata-field-column">Metadata name</td>
-                    <td className="small text-black-50 px-4 sort-field-column">Sortable</td>
+                    <td className="small text-black-50 px-4 metadata-field-column">SimSage Metadata name</td>
+                    <td className="small text-black-50 px-4 sort-field-column">Source metadata name</td>
                     <td className="small text-black-50 px-4 action-field-column"></td>
                 </tr>
                 </thead>
 
                 <tbody>
-                {/* <tr>
-                    <td colSpan={5}>&nbsp;</td>
-                </tr> */}
-
                 {
                     get_md_list().map((md, index) => {
-                        return (<tr key={index}>
+                        const help_text = (md.readonly ? "SimSage default.  Not editable." : "");
+                        return (<tr key={index} title={help_text}>
 
                             <td className="px-0">
                                 <div className="d-flex">
                                     <div className="d-flex flex-column justify-content-center">
-                                    {index > 0 &&
-                                        <button className="up-arrow btn btn-white py-0" title="move row up (change UI ordering)"
-                                            onClick={(e) => {
-                                                move_row_up(e, md, index)
-                                            }}>&#9651;</button>
-                                    }
-                                    {index + 1 < num_rows &&
-                                        <button className="up-arrow btn btn-white py-0" title="move row down (change UI ordering)"
-                                            onClick={(e) => {
-                                                move_row_down(e, md, index)
-                                            }}>&#9661;</button>
-                                    }
                                     </div>
                                 </div>
                             </td>
                             <td className="pt-3 pe-0 pb-3">
-                                    <div className="w-100">
-                                        <select className="form-select text-capitalize" onChange={(event) => {
-                                            set_md_type(md, index, event.target.value)
-                                        }}
-                                                defaultValue={md.key}
-                                                aria-label="select what kind of metadata field to use">
-                                            {
-                                                metadata_list.map((value, j) => {
-                                                    return (<option key={j} value={value.key}>{value.key}</option>)
-                                                })
-                                            }
-                                        </select>
-                                    </div>
+                                <div className="w-100">
+                                    <select className="form-select text-capitalize" onChange={(event) => {
+                                        setDataType(md, index, event.target.value)
+                                    }}
+                                            defaultValue={md.dataType}
+                                            disabled={md.readonly}
+                                            aria-label="the data-type of the metadata to be mapped">
+                                        {
+                                            data_type_list.map((value, j) => {
+                                                return (<option key={j} value={value}>{value}</option>)
+                                            })
+                                        }
+                                    </select>
+                                </div>
                             </td>
 
                             <td className="pt-3 ps-4 pe-0 pb-3">
                                 {
-                                    md.display !== null &&
                                     <span>
                                         <input type="text"
                                                className="theme form-control"
+                                               readOnly={md.readonly}
+                                               disabled={md.readonly}
                                                placeholder="UI display-name"
                                                title="name displayed in the UI for this item"
                                                value={md.display}
@@ -400,114 +213,54 @@ export default function CrawlerMetadataForm(props) {
                                 }
                             </td>
 
-
                             <td className="pt-3 ps-4 pe-0 pb-3">
                                 {
-                                    needs_metadata_field(md) &&
                                     <div className="">
                                         <input type="text"
                                                className="theme form-control"
+                                               readOnly={md.readonly}
+                                               disabled={md.readonly}
                                                placeholder="Metadata name"
                                                value={md.metadata}
-                                               title="metadata names should only contain 0..9, a..z, and A..Z"
+                                               title="SimSage metadata names should only contain 0..9, a..z, and A..Z"
                                                onKeyDown={(event) => {
                                                    return check_metadata_name(event)
                                                }}
                                                onChange={(event) => {
-                                                   setUserMetadataName1(md, index, event.target.value)
-                                               }}/>
-                                    </div>
-                                }
-                                {md.sort === "true" &&
-                                    <div className="d-flex align-items-center mt-1">
-                                        <input type="text"
-                                               placeholder="Sort descending UI text"
-                                               className="theme form-control"
-                                               value={md.sortDescText}
-                                               title="The text to display for this field if a descending sort is selected of this type"
-                                               onChange={(event) => {
-                                                   setValue(md, index, "sortDescText", event.target.value)
-                                               }}/>
-                                    </div>
-                                }
-                                {md.sort === "true" &&
-                                    <div className="d-flex align-items-center mt-1">
-                                        <input type="text"
-                                               className="theme form-control"
-                                               placeholder="Sort ascending UI text"
-                                               value={md.sortAscText}
-                                               title="The text to display for this field if an ascending sort is selected of this type"
-                                               onChange={(event) => {
-                                                   setValue(md, index, "sortAscText", event.target.value)
+                                                   setMetadata(md, index, event.target.value)
                                                }}/>
                                     </div>
                                 }
                             </td>
 
                             <td className="pt-3 ps-4 pe-0 pb-3">
-                                {md.sort !== "" &&
-                                    <div className="py-2">
-                                    <div className="form-check form-switch">
-                                        <input className="form-check-input" title="Enable result sorting over this field?"
-                                               type="checkbox" checked={md.sort === "true"}
+                                {
+                                    <div className="">
+                                        <input type="text"
+                                               className="theme form-control"
+                                               readOnly={md.readonly}
+                                               disabled={md.readonly}
+                                               placeholder="Source metadata name"
+                                               value={md.extMetadata}
+                                               title="the source's own metadata name to map"
                                                onChange={(event) => {
-                                                   setSort(md, index, event.target.checked);
+                                                   setExtMetadata(md, index, event.target.value)
                                                }}/>
-                                        {/* <label className="form-check-label" for="enableKnowledgeBase">Knowledge Base</label> */}
-                                    </div>
                                     </div>
                                 }
-                                {md.sort === "true" &&
-                                    <div className=""
-                                         title="Set this descending field as the default sort field for the UI">
-                                        {/* {'\u2190'} */}
-                                        <div className="py-2">
-                                            <input className="form-check-input" type="checkbox"
-                                               checked={md.sortDefault === "desc"}
-                                               onChange={(event) => {
-                                                   setDefaultSort(md, index, "desc", event.target.checked);
-                                               }}
-                                            />
-                                        </div>
-                                    </div>
-                                }
+                            </td>
 
-                                {md.sort === "true" &&
-                                    <div className=""
-                                         title="Set this ascending field as the default sort field for the UI">
-                                        {/* {'\u2190'} */}
-                                        <div className="py-2">
-                                            <input className="form-check-input" type="checkbox"
-                                               checked={md.sortDefault === "asc"}
-                                               onChange={(event) => {
-                                                   setDefaultSort(md, index, "asc", event.target.checked);
-                                               }}
-                                            />
-                                        </div>
-                                    </div>
-                                }
+                            <td className="pt-3 ps-4 pe-0 pb-3">
                             </td>
 
                             <td className="pt-3 px-4 pb-0">
                                 <div className="link-button d-flex justify-content-end">
                                     <button onClick={() => delete_metadata_item(index)} type="button"
                                             className="btn text-danger btn-sm" title="remove this metadata mapping"
+                                            disabled={md.readonly}
                                             data-bs-dismiss="modal">Delete
                                     </button>
                                 </div>
-
-                                {/* {index > 0 &&
-                                    <span className="up-arrow" title="move row up (change UI ordering)"
-                                          onClick={() => {
-                                              move_row_up(md, index)
-                                          }}>&#8679;</span>
-                                }
-                                {index + 1 < num_rows &&
-                                    <span className="up-arrow" title="move row down (change UI ordering)"
-                                          onClick={() => {
-                                              move_row_down(md, index)
-                                          }}>&#8681;</span>
-                                } */}
                             </td>
 
                         </tr>)

@@ -40,17 +40,18 @@ export default function CrawlerWebForm(props) {
         <div className="tab-content px-5 py-4 overflow-auto">
             <div className="row mb-3">
                 <div className="form-group col-6">
-                    
-                    <label className="small">http/s base url</label>
-                        <input type="text"
-                                placeholder="(e.g. https://simsage.ai)"
-                                autoFocus={true}
-                                className="form-control"
-                                value={specific_json.baseUrlList}
-                                onChange={(event) => {
-                                    setData({baseUrlList: event.target.value})
-                                }}
-                        />
+
+                    <label className="small required">http/s base url</label>
+                    <input type="text"
+                           placeholder="(e.g. https://simsage.ai)"
+                           title="web site start url"
+                           autoFocus={true}
+                           className="form-control"
+                           value={specific_json.baseUrlList}
+                           onChange={(event) => {
+                               setData({baseUrlList: event.target.value})
+                           }}
+                    />
                 </div>
             </div>
 
@@ -71,7 +72,7 @@ export default function CrawlerWebForm(props) {
 
             <div className="row mb-3">
                 <div className="form-group col-3">
-                    <label className="small">Valid extensions</label>
+                    <label className="small">Valid extensions (html is always valid)</label>
                     <input type="text" className="form-control"
                             value={specific_json.validExtensions}
                             onChange={(event) => {
@@ -81,7 +82,7 @@ export default function CrawlerWebForm(props) {
                 </div>
                 
                 <div className="form-group col-3">
-                    <label className="small">Ignore extensions</label>
+                    <label className="small">Ignore extensions (html cannot be ignored)</label>
                     <input type="text" className="form-control"
                             value={specific_json.validExtensionsIgnore}
                             onChange={(event) => {

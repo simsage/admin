@@ -250,7 +250,7 @@ export function UserEditV2() {
 
                                         <div className="row mb-3">
                                             <div className="control-row col-6">
-                                                <label className="label-2 small">First name</label>
+                                                <label className="label-2 small required">First name</label>
                                                 <input
                                                     autoFocus={true}
                                                     className="form-control" {...register("firstName", {required: true})} />
@@ -263,7 +263,7 @@ export function UserEditV2() {
                                             </div>
 
                                             <div className="control-row col-6">
-                                                <label className="label-2 small">Last name</label>
+                                                <label className="label-2 small required">Last name</label>
                                                 <input
                                                     className="form-control" {...register("surname", {required: true})} />
                                                 {errors.surname && <span className="text-danger fst-italic small">Last name is required </span>}
@@ -275,7 +275,7 @@ export function UserEditV2() {
 
                                         <div className="row mb-3">
                                             <div className="control-row col-6">
-                                                <label className="label-2 small">Email</label>
+                                                <label className="label-2 small required">Email</label>
                                                 <input
                                                     autoComplete="false"
                                                     className="form-control"
@@ -307,7 +307,7 @@ export function UserEditV2() {
                                         {!user_id && !sso &&
                                             <div className="row mb-3">
                                                 <div className="control-row col-6">
-                                                    <label className="label-2 small">Password</label>
+                                                    <label className="label-2 small required">Password</label>
                                                     <input type="password" className="form-control"
                                                            autoComplete="false"
                                                            name="password"
@@ -329,7 +329,7 @@ export function UserEditV2() {
                                                         className="text-danger fst-italic small">{error_message}</span>}
                                                 </div>
                                                 <div className="control-row col-6">
-                                                    <label className="label-2 small">Confirm Password</label>
+                                                    <label className="label-2 small required">Confirm Password</label>
                                                     <input type="password" className="form-control"
                                                            autoComplete="false"
                                                            name="password_repeat"

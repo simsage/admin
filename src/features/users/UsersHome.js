@@ -68,6 +68,11 @@ export function UsersHome() {
         }
     }
 
+    function handlePageSizeChange(num){
+        setPageSize(num)
+        setPage(0)
+    }
+
     function handleSearchTextChange(e) {
         if (selected_organisation_id) {
             dispatch(setUserTextFilter({"user_text_filter": e.target.value}));
@@ -168,15 +173,15 @@ export function UsersHome() {
                         />
                     </div>
                     <div className="form-group me-2">
-                        <select placeholder={"Filter"} value={userFilter} autoFocus={true}
+                        <select value={userFilter} autoFocus={true}
                                 className={"form-select filter-text-width " + theme}
                                 onChange={(e) => {
                                     setUserFilter(e.target.value);
                                 }}>
-                            <option value="all-users">All Users</option>
-                            {user_roles && user_roles.map(r => {
+                            <option value="all-users" key="all">All Users</option>
+                            {user_roles && user_roles.map((r, idx) => {
                                 return (
-                                    <option value={r}>{Api.getPrettyRole(r)}</option>
+                                    <option key={idx} value={r}>{Api.getPrettyRole(r)}</option>
                                 )
                             })}
                         </select>
@@ -228,17 +233,17 @@ export function UsersHome() {
                                 <td className="pt-3 px-4 pb-2">
                                     <div className="d-flex flex-wrap">
                                         {isUser_an_Admin?
-                                            <div
+                                            <div key="-1"
                                                 className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{api.getPrettyRole('System Administrator')}</div>
                                             :<></>}
 
                                         {user.roles.map((r, key) => {
                                             // admin always displays &&
                                             if (r.organisationId !== selected_organisation_id ) {
-                                                return (<div />)
+                                                return (<div key={r + key} />)
                                             } else {
                                                 if(r.role !== "admin") {
-                                                    return <div key={key}
+                                                    return <div key={r + key}
                                                                 className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{r.role}</div>
 
                                                 }else {
@@ -280,7 +285,7 @@ export function UsersHome() {
                         backIconButtonProps={{'aria-label': 'Previous Page',}}
                         nextIconButtonProps={{'aria-label': 'Next Page',}}
                         onChangePage={(page) => setPage(page)}
-                        onChangeRowsPerPage={(rows) => setPageSize(rows)}
+                        onChangeRowsPerPage={(rows) => handlePageSizeChange(rows)}
                     />
                 }
             </div>

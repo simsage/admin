@@ -103,7 +103,7 @@ export default function SynsetForm() {
                                 <div className="row mb-4">
                                     <div className="control-row col-6">
 
-                                        <span className="label-2">SynSet</span>
+                                        <span className="label-2 required">SynSet</span>
                                         <input
                                             type="text" className="form-control"
                                             autoComplete="false"
@@ -169,7 +169,7 @@ export default function SynsetForm() {
                         <button className="btn btn-white btn-block px-4"
                                 onClick={(e) => handleClose(e)}>Cancel
                         </button>
-                        <input className="btn btn-primary btn-block px-4" type="submit"/>
+                        <button className="btn btn-primary btn-block px-4" type="submit">Save</button>
                     </div>
                     </form>
 

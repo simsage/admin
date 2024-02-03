@@ -3,6 +3,7 @@ import {BsFilePdf} from 'react-icons/bs'
 import {useDispatch, useSelector} from "react-redux";
 import {showErrorAlert} from "../../alerts/alertSlice";
 import Api from "../../../common/api";
+import SensitiveCredential from "../../../components/SensitiveCredential";
 
 export default function CrawlerDropboxForm(props) {
 
@@ -70,7 +71,7 @@ export default function CrawlerDropboxForm(props) {
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-8">
-                            <label className="small">Client id (aka. app key)</label>
+                            <label className="small required">Client id (aka. app key)</label>
                                 <input type="text" className="form-control"
                                     placeholder=""
                                     autoFocus={true}
@@ -81,12 +82,12 @@ export default function CrawlerDropboxForm(props) {
                     </div>
                     <div className="row mb-4">
                         <div className="form-group col-8">
-                            <label className="small">Client secret (aka. app secret)</label>
-                                <input type="text" className="form-control"
-                                       placeholder=""
-                                       value={specific_json.clientSecret}
-                                       onChange={(event) => {setData({clientSecret: event.target.value})}}
-                                />
+                            <SensitiveCredential
+                                selected_source={selected_source}
+                                specific_json={specific_json.clientSecret}
+                                onChange={(event) => {setData({clientSecret: event.target.value})}}
+                                name="Client Secret"
+                            />
                         </div>
                     </div>
                     <div className="row mb-4">

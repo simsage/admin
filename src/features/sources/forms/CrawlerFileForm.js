@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useForm} from "react-hook-form";
+import SensitiveCredential from "../../../components/SensitiveCredential";
 
 export default function CrawlerFileForm(props) {
     const selected_source = props.source;
@@ -25,7 +25,7 @@ export default function CrawlerFileForm(props) {
             {/*************************************-USER & PASSWORD-*************************************/}
             <div className="row mb-4">
                 <div className="form-group col-4">
-                    <label className="small">Username</label>
+                    <label className="small required">Username</label>
                     <input type="text" className="form-control"
                            placeholder="username"
                            autoFocus={true}
@@ -35,19 +35,20 @@ export default function CrawlerFileForm(props) {
                     />
                 </div>
                 <div className="form-group col-4">
-                    <label className="small">Password</label>
-                    <input type="password" className="form-control"
-                           placeholder="********"
-                           value={specific_json.password}
-                           onChange={(event) => {
-                               setData({password: event.target.value})}}
+                    <SensitiveCredential
+                        selected_source={selected_source}
+                        specific_json={specific_json.password}
+                        onChange={(event) => {
+                            setData({password: event.target.value})}}
+                        name="Password"
+                        placeholder="********"
                     />
                 </div>
             </div>
             {/*************************************-SERVER & DOMAIN-*************************************/}
             <div className="row mb-4">
                 <div className="form-group col-4">
-                    <label className="small">Server</label>
+                    <label className="small required">Server</label>
                     <input type="text" className="form-control"
                            placeholder="(hostname or IP-address)"
                            value={specific_json.server}
@@ -56,7 +57,7 @@ export default function CrawlerFileForm(props) {
                     />
                 </div>
                 <div className="form-group col-4">
-                    <label className="small">Share name</label>
+                    <label className="small required">Share name</label>
                     <input type="text" className="form-control"
                            placeholder="share name"
                            value={specific_json.shareName}

@@ -1,10 +1,10 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from "axios";
 import Comms from "../../common/comms";
 
 const initialState = {
     selected_tab: 'home',
-    status_list:undefined,
+    status_list: undefined,
     theme: null,
     license: undefined,          // system license
     uploading: undefined,       // program busy uploading
@@ -14,9 +14,9 @@ const initialState = {
 
     // log settings
     log_list: [],           // list of all the logs
-    log_hours: 1,           // number of hours back in time
+    log_lines: 100,         // number of lines to fetch from log
     log_type: 'All',        // error/debug/info
-    log_service: 'All',     // service to view
+    log_service: 'Auth',    // default service to view
     log_refresh: 0,         // refresh in seconds
 
 };
@@ -25,33 +25,28 @@ const initialState = {
 // {}
 export const getLogs = createAsyncThunk(
     'home/getLogs',
-    async ({session_id, organisation_id, log_type, log_service, log_hours}, {rejectWithValue}) => {
+    async ({session_id, organisation_id, log_type, log_service, log_lines}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
 
-        // calculate the correct time for the server
-        const localDate = new Date();
-        const date = new Date((localDate.valueOf() + localDate.getTimezoneOffset() * 60000) - ((log_hours - 1) * 3600_000));
-        let year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const hour = date.getHours();
-
-        const url = '/stats/system-logs/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(year) + '/' +
-            encodeURIComponent(month) + '/' + encodeURIComponent(day) + '/' + encodeURIComponent(hour) + '/' +
-            encodeURIComponent(log_hours)
+        const url = '/stats/system-logs/' + encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(log_service) + '/' + encodeURIComponent(log_lines)
 
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 const log_list = response.data.logList ? response.data.logList : [];
                 const list = [];
+                console.log("log_type", log_type);
+                const log_type_lwr = log_type.toLowerCase();
+                const log_service_lwr = log_service.toLowerCase();
                 for (let i = 0; i < log_list.length; i++) {
                     const item = log_list[i];
-                    if ((log_type === 'All' || item.type === log_type) &&
-                        (log_service === 'All' || item.service === log_service)) {
+                    if ((log_type_lwr === 'all' || item.type.toLowerCase() === log_type_lwr) &&
+                        item.service.toLowerCase() === log_service_lwr) {
                         list.push(item);
                     }
                 }
-                return list;
+                response.data.list = list;
+                return response.data;
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
             })
@@ -68,7 +63,9 @@ const extraReducers = (builder) => {
         .addCase(getLogs.fulfilled, (state, action) => {
             state.status = "fulfilled";
             state.data_status = "loaded";
-            state.log_list = action.payload;
+            console.log(action);
+            const list = action.payload.list;
+            state.log_list = list ? list : [];
         })
         .addCase(getLogs.rejected, (state, action) => {
             state.status = "rejected"
@@ -80,16 +77,11 @@ const extraReducers = (builder) => {
 }
 
 
-
 export const homeSlice = createSlice({
     name: 'home',
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
-
-        setLogHours: (state, action) => {
-            state.log_hours = action.payload;
-        },
 
         selectTab: (state, action) => {
             state.selected_tab = action.payload;
@@ -97,6 +89,10 @@ export const homeSlice = createSlice({
 
         setLogService: (state, action) => {
             state.log_service = action.payload;
+        },
+
+        setNumLogLines: (state, action) => {
+            state.log_lines = action.payload;
         },
 
         setLogType: (state, action) => {
@@ -108,14 +104,17 @@ export const homeSlice = createSlice({
             state.error_title = undefined;
         },
 
-        // closeAllMenus(){
-        // }
-
     },
     extraReducers
 });
 
 
-export const {closeErrorMessage, selectTab, setLogHours, setLogService, setLogType, closeAllMenus, showDeleteAskForm } = homeSlice.actions;
+export const {
+    closeErrorMessage,
+    selectTab,
+    setNumLogLines,
+    setLogService,
+    setLogType,
+} = homeSlice.actions;
 
 export default homeSlice.reducer;

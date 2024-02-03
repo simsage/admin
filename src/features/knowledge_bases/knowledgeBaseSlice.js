@@ -172,8 +172,7 @@ const knowledgeBaseSlice = createSlice({
                     state.kb_list = temp
                     state.status = "fulfilled";
                 } else {
-                    // dispatchEvent(ErrorAlert({title:"Search",message:"No matching record found"}))
-                    state.kb_list = state.kb_original_list;
+                    state.kb_list = [];
                     state.status = "fulfilled";
                 }
             } else {

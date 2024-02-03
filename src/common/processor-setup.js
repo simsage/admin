@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 
 import '../css/acl-setup.css';
 import Api from "./api";
+import {Editor} from "@monaco-editor/react";
+import {configureMonacoYaml} from "monaco-yaml";
+import {configureMonaco} from "./monaco";
 
 
 // create acls from groups
@@ -23,7 +26,6 @@ export class ProcessorSetup extends Component {
         this.setState({ has_error: true });
     }
 
-
     change_callback(data) {
 
         this.setState(data);
@@ -43,15 +45,21 @@ export class ProcessorSetup extends Component {
                     <div className="">
                         <label className="label-2 small">Processor Configuration</label>
                         <form>
-                            <textarea className="form-control"
-                                    spellCheck={false}
-                                    rows={10}
-                                    placeholder="Processor Configuration JSON..."
-                                    value={this.state.processorConfig}
-                                    onChange={(event) => {
-                                        this.change_callback({processorConfig: event.target.value})
-                                    }}
+
+                            <Editor
+                                className={"monaco_yaml"}
+                                beforeMount={configureMonaco}
+                                path="processor.yml"
+                                height="400px"
+                                placeholder="Processor Configuration YAML..."
+                                language="yaml"
+                                value={this.state.processorConfig}
+                                onChange={(value, event) => {
+                                    this.change_callback({processorConfig: value})
+                                }}
                             />
+
+
                         </form>
                     </div>
                 </div>

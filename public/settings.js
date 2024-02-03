@@ -1,24 +1,21 @@
 
 window.ENV = {
     // SimSage platform version (used for display only in UI)
-    version: '7.12',
+    version: '7.13',
     // api version of api_base
     api_version: 1,
     // is this a production build or not?
     debug: true,
-    // either single-sign-on, or password
-    authentication: 'single-sign-on',
     // dark or light theme?
     theme: 'light',
     // the service layer end-point, change "localhost:8080" to ...
     api_base: 'http://localhost:8080/api',
     // date picker display format
     date_format: 'yyyy/MM',
-    // msal/jwt clientId and authority
-    client_id: "a7c09973-7853-48f6-a067-5a14a5e7b210",
-    authority: "https://simsageapi.b2clogin.com/simsageapi.onmicrosoft.com/B2C_1_simsage",
-    // msal/jwt clientId and authority
-    full_authority: "https://simsageapi.b2clogin.com/simsageapi.onmicrosoft.com/B2C_1_simsage",
-    known_authority: "https://simsageapi.b2clogin.com",
+    // cookie storage length
+    session_length_in_minutes: 60,
+    // keycloak real, client_id and server
+    kc_realm: "simsage-test",
+    kc_client_id: "simsage-test-client",
+    kc_endpoint: "https://security.simsage.ai",
 };
-

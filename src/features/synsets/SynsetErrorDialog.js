@@ -1,8 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
 import {closeErrorMessage} from "./synsetSlice";
-// import {simsageLogOut} from "../auth/authSlice";
-// import {useMsal} from "@azure/msal-react";
 
 export function SynsetErrorDialog() {
     const dispatch = useDispatch();

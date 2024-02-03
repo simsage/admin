@@ -29,7 +29,7 @@ export default function CrawlerRssForm(props) {
 
             <div className="row mb-4">
                 <div className="form-group col-6">
-                    <label className="small">Main RSS Feed</label>
+                    <label className="small required">Main RSS Feed</label>
                     <form>
                         <input type="text" className="form-control"
                             placeholder="RSS endpoint"
@@ -43,16 +43,16 @@ export default function CrawlerRssForm(props) {
                     </ul>
                 </div>
                 <div className="form-group col-6">
-                    <label className="small">Initial RSS Feed <span className="fst-italic text-black-50">(optional)</span></label>
+                    <label className="small">Initial RSS Feed CSV list <span className="fst-italic text-black-50"> (optional)</span></label>
                     <form>
-                        <input type="text" className="form-control"
-                            placeholder="RSS endpoint"
+                        <textarea className="form-control"
+                            placeholder="RSS endpoint CSV list"
                             autoFocus={true}
                             value={specific_json.initial_feed}
                             onChange={(event) => setData({initial_feed: event.target.value})} />
                     </form>
                     <ul class="alert alert-warning small py-2 mt-3 ps-4" role="alert">
-                        <li className="">The contents of this RSS endpoint will be processed once when the crawler starts and is meant to act as an initial set up..</li>
+                        <li className="">The contents of this RSS endpoint is a CSV list and each item will be processed once when the crawler starts and is meant to act as an initial set up..</li>
                     </ul>
                 </div>
             </div>

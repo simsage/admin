@@ -60,7 +60,7 @@ export default function CrawlerSearchForm2(props){
 
             <div className="row mb-4">
                 <div className="form-group col-4">
-                    <label className="small">Target Organisation</label>
+                    <label className="small required">Target Organisation</label>
                     <form>
                         <input type="text" className="form-control"
                             placeholder="ID to query"
@@ -73,7 +73,7 @@ export default function CrawlerSearchForm2(props){
                     </form>
                 </div>
                 <div className="form-group col-4">
-                    <label className="small">Target Knowledgebase</label>
+                    <label className="small required">Target Knowledgebase</label>
                     <form>
                         <input type="text" className="form-control"
                             placeholder="ID to search across"

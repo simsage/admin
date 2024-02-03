@@ -59,6 +59,11 @@ export default function SynsetList() {
 
     }
 
+    function handlePageSizeChange(num){
+        setPageSize(num)
+        setPage(0)
+    }
+
     const handleRefresh = () => {
         dispatch(loadSynsets(data))
     }
@@ -214,7 +219,7 @@ export default function SynsetList() {
                             rowsPerPage={page_size}
                             page={page}
                             onChangePage={(page) => setPage(page)}
-                            onChangeRowsPerPage={(rows) => setPageSize(rows)}
+                            onChangeRowsPerPage={(rows) => handlePageSizeChange(rows)}
                         />
 
                     </div>

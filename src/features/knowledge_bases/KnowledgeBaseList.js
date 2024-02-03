@@ -19,7 +19,7 @@ export default function KnowledgeBaseList() {
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const session = useSelector((state) => state).authReducer.session;
-    const session_id = session.id;
+    const session_id = (session && session.id) ? session.id : "";
 
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
@@ -29,7 +29,7 @@ export default function KnowledgeBaseList() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (organisation_id && data_status==='load_now')
+        if (organisation_id && data_status === 'load_now')
             dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [organisation_id, data_status])
@@ -89,7 +89,7 @@ export default function KnowledgeBaseList() {
     function handleSelectKb(kb) {
         let kb_select = document.getElementById("kb-selector");
         kb_select.value = kb.kbId
-        dispatch(setSelectedKB(kb.kbId))
+        dispatch(setSelectedKB(kb))
     }
 
     return (
@@ -107,8 +107,9 @@ export default function KnowledgeBaseList() {
                         </div>
 
                         <div className="form-group d-flex ms-auto">
-                            <div className="btn" onClick={() => handleRefresh()} >
-                                <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh memories" />
+                            <div className="btn" onClick={() => handleRefresh()}>
+                                <img src="images/refresh.svg" className="refresh-image" alt="refresh"
+                                     title="refresh memories"/>
                             </div>
                             {organisation_id && organisation_id.length > 0 &&
                                 <button onClick={() => handleAddForm()} className={"btn btn-primary text-nowrap"}>+ Add
@@ -118,7 +119,6 @@ export default function KnowledgeBaseList() {
                     </div>
 
                     <div>
-
 
 
                         <table className="table">
@@ -132,6 +132,13 @@ export default function KnowledgeBaseList() {
                             </thead>
                             <tbody>
 
+                            <tr>
+                                {getKnowledgeBases().length === 0 &&
+                                    <td className={"pt-3 px-4 pb-3 fw-light"} colSpan={3}>No records found.</td>
+                                }
+                            </tr>
+
+
                             {
                                 getKnowledgeBases().map((knowledge_base) => {
                                     return (
@@ -139,7 +146,7 @@ export default function KnowledgeBaseList() {
                                             {/* <td className="pt-3 ps-4 pe-0 pb-3"></td> */}
                                             <td className="pt-3 px-4 pb-3 pointer-cursor">
                                                 <div className="kb-label fw-500"
-                                                     onClick={() => handleSelectKb(knowledge_base) }>{knowledge_base.name}</div>
+                                                     onClick={() => handleSelectKb(knowledge_base)}>{knowledge_base.name}</div>
                                             </td>
                                             <td className="pt-3 px-4 pb-3 fw-light pointer-cursor">
                                                 <div className="kb-label"
@@ -156,10 +163,6 @@ export default function KnowledgeBaseList() {
                                                     <button title="optimize indexes"
                                                             onClick={() => handleOptimizeIndexesAsk(knowledge_base)}
                                                             className={"btn text-primary btn-sm"}>Optimize indexes
-                                                    </button>
-                                                    <button title="truncate slow indexes"
-                                                            onClick={() => handleTruncateSlowIndexesAsk(knowledge_base)}
-                                                            className={"btn text-primary btn-sm"}>Truncate slow indexes
                                                     </button>
                                                     <button title="edit knowledge base"
                                                             onClick={() => handleEditForm(knowledge_base.kbId)}

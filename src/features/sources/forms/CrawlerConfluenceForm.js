@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {BsFilePdf} from 'react-icons/bs'
+import SensitiveCredential from "../../../components/SensitiveCredential";
 
 // import '../css/crawler.css';
 // import {useForm} from "react-hook-form";
@@ -31,7 +32,7 @@ export default function CrawlerConfluenceForm(props) {
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-8" title="base url (e.g. https://simsage.atlassian.net)">
-                            <label className="small">Confluence Base Url</label>
+                            <label className="small required">Confluence Base Url</label>
                             <form>
                                 <input type="text" className="form-control"
                                     autoFocus={true}
@@ -44,10 +45,10 @@ export default function CrawlerConfluenceForm(props) {
                             </form>
                         </div>
                         <div className="form-group col-4">
-                            <label className="small">Confluence User</label>
+                            <label className="small required">Confluence User</label>
                             <form>
                                 <input type="text" className="form-control"
-                                    // placeholder="User id to use to log into Confluence"
+                                    placeholder="e.g., john@simsage.co.uk"
                                     value={specific_json.userId}
                                     onChange={(event) => {
                                         setData({userId: event.target.value})
@@ -58,32 +59,15 @@ export default function CrawlerConfluenceForm(props) {
                     </div>
                     <div className="row mb-4">
                         <div className="form-group col-12">
-                            <label className="small">Access Token</label>
-                            <form>
-                                <div className="form-control d-flex align-items-center">
-                                    {
-                                        form_show_password &&
-                                        <textarea className="border-0 p-0" rows="3" cols="90"
-                                                  placeholder="********"
-                                                  value={specific_json.accessToken}
-                                                  onChange={(event) => {
-                                                      setData({accessToken: event.target.value})
-                                                  }}
-                                        />
-                                    }
-                                    {
-                                        !form_show_password &&
-                                        <input type="password" className="border-0 p-1 w-100 overflow-hidden"
-                                               placeholder="********"
-                                               value={specific_json.accessToken}
-                                               onChange={(event) => {
-                                                   setData({accessToken: event.target.value})
-                                               }}
-                                        />
-                                    }
-                                    <span className='small text-primary' onClick={() => setShowPassword(!form_show_password)}>{!form_show_password?'Show':'Hide'}</span>
-                                </div>
-                            </form>
+                            <SensitiveCredential
+                                selected_source={selected_source}
+                                specific_json={specific_json.accessToken}
+                                onChange={(event) => {
+                                    setData({accessToken: event.target.value})
+                                }}
+                                name="Access Token"
+                                placeholder="***********"
+                            />
                         </div>
                     </div>
                     <div className="row border-top pt-4 mb-4">

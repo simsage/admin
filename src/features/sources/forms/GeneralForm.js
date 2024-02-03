@@ -1,9 +1,6 @@
-import React from "react";
 // import {useSelector} from "react-redux";
 
 export default function GeneralForm(props) {
-
-
     // a few defaults
     // marker for an external node
     // const default_error_threshold = 10;
@@ -14,37 +11,39 @@ export default function GeneralForm(props) {
     const crawler_list = [
         {"key": "none", "value": "Select Crawler Type..."},
         {"key": "box", "value": "Box crawler"},
-        {"key": "confluence", "value": "Confluence crawler"},
-        {"key": "database", "value": "Database crawler"},
+        {"key": "confluence", "value": "Confluence Crawler"},
+        {"key": "database", "value": "Database Crawler"},
 
-        {"key": "discourse", "value": "Discourse crawler"},
-        {"key": "dropbox", "value": "Dropbox crawler"},
+        {"key": "discourse", "value": "Discourse Crawler"},
+        {"key": "dropbox", "value": "Dropbox Crawler"},
 
-        {"key": "exchange365", "value": "Exchange 365 crawler"},
-        {"key": "external", "value": "External crawler"},
+        {"key": "exchange365", "value": "Exchange 365 Crawler"},
+        {"key": "external", "value": "External Crawler"},
 
-        {"key": "file", "value": "Microsoft FileShare crawler"},
-        {"key": "gdrive", "value": "Google-drive crawler"},
-        {"key": "imanage", "value": "iManage crawler"},
-        {"key": "jira", "value": "Jira crawler"},
+        {"key": "file", "value": "Microsoft FileShare Crawler"},
+        {"key": "gdrive", "value": "Google Drive Crawler"},
+        {"key": "imanage", "value": "iManage Crawler"},
+        {"key": "jira", "value": "Jira Crawler"},
+        {"key": "aws", "value": "AWS Crawler"},
+        {"key": "egnyte", "value": "Egnyte Crawler"},
 
-        {"key": "localfile", "value": "Local file crawler"},
-        {"key": "onedrive", "value": "One-drive crawler"},
+        {"key": "localfile", "value": "Local file Crawler"},
+        {"key": "onedrive", "value": "One Drive Crawler"},
 
-        {"key": "restfull", "value": "REST-full crawler"},
-        {"key": "rss", "value": "RSS crawler"},
-
-        {"key": "servicenow", "value": "Service-now crawler"},
-        {"key": "sharepoint365", "value": "Sharepoint 365 crawler"},
-        {"key": "web", "value": "Web crawler"},
-        {"key": "search", "value": "Search crawler"},
+        {"key": "restfull", "value": "REST-full Crawler"},
+        {"key": "rss", "value": "RSS Crawler"},
+        {"key": "search", "value": "Search Crawler"},
+        {"key": "servicenow", "value": "Service Now Crawler"},
+        {"key": "sharepoint365", "value": "Sharepoint 365 Crawler"},
+        {"key": "structured", "value": "Structured Data Crawler"},
+        {"key": "web", "value": "Web Crawler"},
     ];
+
 
 
     const selected_source = props.source;
     const selected_source_type = props.crawler_type
     const internal_crawler = selected_source.internalCrawler;
-
 
     function handleTestCrawler() {
         const name = selected_source.name;
@@ -63,9 +62,9 @@ export default function GeneralForm(props) {
         }
     }
 
-
     return (
         <div className="w-100 tab-content px-5 pt-4 pb-5 overflow-auto"  style={{maxHeight: "600px", minHeight: "400px"}}>
+            {/***********************************-CRAWLER TYPE & NAME-***********************************/}
             <div className="row mb-4">
                 {/* crawlerType */}
                 <div className="control-row col-3">
@@ -80,14 +79,14 @@ export default function GeneralForm(props) {
                     </select>
                 </div>
                 <div className="control-row col-3">
-                    <label className="label-left small">Crawler Name</label>
+                    <label className="label-left small required">Crawler Name</label>
                     <input className="form-control" {...props.register("name", {required: true})} disabled={false}
                         placeholder={"Crawler Name..."}/>
                     {props.errors.name && <span className="text-danger small fw-light fst-italic"> Name is required <br/></span>}
                 </div>
             </div>
 
-
+            {/***********************************-PROCESSING LEVEL-***********************************/}
             <div className="row mb-4 pt-3 border-top">
                 <div className="col-6">
                     <label className="label-left small">Processing Level</label>
@@ -107,7 +106,7 @@ export default function GeneralForm(props) {
                 </div>
             </div>
 
-            
+            {/***********************************-FILE OPTIONS-***********************************/}
             <div className="row mb-4 pt-3 border-top">
                 <div className="col-2">
                     <div className="form-group">
@@ -142,21 +141,38 @@ export default function GeneralForm(props) {
                 </div>
             </div>
 
+            {/***********************************-SIMILARITY ENABLE & THRESHOLD-***********************************/}
             <div className="row mb-4 pt-3 border-top"> 
                 <div className="col-4">
                     <div className="form-check form-switch" title="If checked, SimSage perform similarity calculations on all items in this source against all other enabled sources and itself.">
-                        <input className="form-check-input" type="checkbox" {...props.register("enableDocumentSimilarity")} />
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            {...props.register("enableDocumentSimilarity")}
+                        />
                         <label className="form-check-label small">Enable similarity checking for documents</label>
                     </div>
                 </div>
                 <div className="col-2">
                     <label className="small">Similarity Threshold</label>
-                    <input className="form-control"
-                        type="text" {...props.register("documentSimilarityThreshold")} />
-
+                    <div className="input-group">
+                        <input
+                            hidden={!props.getValues("enableDocumentSimilarity")}
+                            className="form-control"
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="1"
+                            {...props.register("documentSimilarityThreshold")}
+                        />
+                        <span
+                            hidden={!props.getValues("enableDocumentSimilarity")}
+                            className="input-group-text">%</span>
+                    </div>
                 </div>
             </div>
 
+            {/***********************************-MISC CRAWLER OPTIONS-***********************************/}
             <div className="row mb-3 pt-3 border-top">
                 <div className="col-4">
                     <div className="form-check form-switch" title="At the end of a run through your data we can optionally check if files have been removed by seeing which files weren't seen during a run.  Check this option if you want files that no longer exist removed automatically from SimSage.">
@@ -244,6 +260,7 @@ export default function GeneralForm(props) {
                 }
             </div>
 
+            {/***********************************-DEPRECATED OPTIONS??-***********************************/}
             <div className="row mb-4 pt-3 border-top">
                 <div className="col-2">
                     <div className="left-column">

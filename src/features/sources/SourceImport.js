@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 // import {closeAlert} from "../alerts/alertSlice";
-import {closeForm, updateSources} from "./sourceSlice";
+import {closeForm, safeSourceForImportOrExport, updateSource} from "./sourceSlice";
 // import {useState} from "react";
 import {useForm} from "react-hook-form";
 
@@ -28,13 +28,13 @@ export function SourceImport() {
 
 
     const onSubmit = data => {
-        let crawler = JSON.parse(data.source_str);
-        delete crawler.sourceId;
-        crawler = {...crawler, organisationId:selected_organisation_id, kbId:selected_knowledge_base_id}
-        dispatch(updateSources({session_id:session_id, data: crawler}))
+        let crawler = safeSourceForImportOrExport(JSON.parse(data.source_str), {
+            organisationId: selected_organisation_id,
+            kbId: selected_knowledge_base_id
+        });
+
+        dispatch(updateSource({session_id: session_id, data: crawler}))
     };
-
-
 
     return (
         <div>
@@ -44,42 +44,43 @@ export function SourceImport() {
                     <div className="modal-content">
 
                         <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="modal-header px-5 pt-4 bg-light">
-                            <h4 className="mb-0" id="staticBackdropLabel">{title}</h4>
-                            {/* <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
+                            <div className="modal-header px-5 pt-4 bg-light">
+                                <h4 className="mb-0" id="staticBackdropLabel">{title}</h4>
+                                {/* <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button> */}
-                        </div>
+                            </div>
 
-                        <div className="modal-body p-0">
-                            <div className="tab-content px-5 py-4 overflow-auto">
-                                <div className="row mb-3">
-                                    <div className="control-row col-12">
-                                        <div>
-                                            <label className="label-2 small">Data</label>
+                            <div className="modal-body p-0">
+                                <div className="tab-content px-5 py-4 overflow-auto">
+                                    <div className="row mb-3">
+                                        <div className="control-row col-12">
                                             <div>
-                                                <textarea className="form-control" placeholder="Crawler data JSON..." spellCheck="true" rows="10"
-                                                        style={{width: '100%'}} {...register("source_str", {required: true})} />
+                                                <label className="label-2 small">Data</label>
+                                                <div>
+                                                <textarea className="form-control" placeholder="Crawler data JSON..."
+                                                          spellCheck="true" rows="10"
+                                                          style={{width: '100%'}} {...register("source_str", {required: true})} />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                {show_error_form && error_message.length > 2 &&
-                                    <div className="control-row alert-danger">
-                                        <p className={"alert alert-danger"}>{error_message}</p>
-                                    </div>
-                                }
+                                        {show_error_form && error_message.length > 2 &&
+                                            <div className="control-row alert-danger">
+                                                <p className={"alert alert-danger"}>{error_message}</p>
+                                            </div>
+                                        }
 
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="modal-footer px-5 pb-4">
-                            <button onClick={handleClose} type="button" className="btn btn-white px-4"
-                                    data-bs-dismiss="modal">Cancel
-                            </button>
+                            <div className="modal-footer px-5 pb-4">
+                                <button onClick={handleClose} type="button" className="btn btn-white px-4"
+                                        data-bs-dismiss="modal">Cancel
+                                </button>
 
-                            <input type="submit" value="Import" className="btn btn-primary px-4" />
+                                <input type="submit" value="Import" className="btn btn-primary px-4"/>
 
-                        </div>
+                            </div>
                         </form>
                     </div>
                 </div>

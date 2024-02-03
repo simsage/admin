@@ -58,7 +58,7 @@ export function SemanticEdit(){
                             <div className="tab-content px-5 py-4 overflow-auto">
                                 <div className="row mb-3">
                                     <div className="control-row col-6">
-                                        <span className="label-2 small">Word</span>
+                                        <span className="label-2 small required">Word</span>
                                         <span className="text">
                                         {/*<form>*/}
                                             <input type="text" className="form-control"
@@ -75,7 +75,7 @@ export function SemanticEdit(){
                                         {errors.word && <span className="text-danger fst-italic small"> Word is required</span>}
                                     </div>
                                     <div className="control-row col-6">
-                                        <span className="label-2 small">Semantic</span>
+                                        <span className="label-2 small required">Semantic</span>
                                         <span className="text">
                                         {/*<form>*/}
                                             <input type="text" className="form-control"

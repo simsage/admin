@@ -6,7 +6,7 @@ export default function OrganisationDeleteAsk(){
 
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session);
-    const session_id = session.id;
+    const session_id = session?.id;
 
     const show_delete_form = useSelector((state) => state.organisationReducer.show_delete_form)
     //const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)

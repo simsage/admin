@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
-import {closeForm, resetSourceDelta, testSource, updateSources} from "./sourceSlice";
+import {closeForm, resetSourceDelta, testSource, updateSource} from "./sourceSlice";
 import SourceTabs from "./SourceTabs";
 import React, {useEffect, useState} from "react";
 import GeneralForm from "./forms/GeneralForm";
@@ -19,12 +19,12 @@ import CrawlerFileForm from "./forms/CrawlerFileForm";
 import CrawlerGDriveForm from "./forms/CrawlerGDriveForm";
 import CrawlerIManageForm from "./forms/CrawlerIManageForm";
 import CrawlerJiraForm from "./forms/CrawlerJiraForm";
+import CrawlerAWSForm from "./forms/CrawlerAWSForm.js";
 import CrawlerLocalFileForm from "./forms/CrawlerLocalFileForm";
 import CrawlerOnedriveForm from "./forms/CrawlerOnedriveForm";
 import CrawlerRestfulForm from "./forms/CrawlerRestfulForm";
 import CrawlerSharepoint365Form from "./forms/CrawlerSharepoint365Form";
 import CrawlerWebForm from "./forms/CrawlerWebForm";
-import CrawlerMetaMapperForm from "./forms/CrawlerMetaMapperForm";
 import {showErrorAlert} from "../alerts/alertSlice";
 import Api from "../../common/api";
 import CrawlerConfluenceForm from "./forms/CrawlerConfluenceForm";
@@ -33,10 +33,11 @@ import CrawlerSearchForm2 from "./forms/CrawlerSearchForm2";
 import CrawlerServiceNow from "./forms/CrawlerServiceNow";
 import ProcessorSetup from "../../common/processor-setup";
 import CrawlerExternalCrawlerConfigurationForm from "./forms/CrawlerExternalCrawlerConfigurationForm";
-// import {data} from "msw";
+import CrawlerStructuredDataForm from "./forms/CrawlerStructuredDataForm";
+import CrawlerEgnyteForm from "./forms/CrawlerEgnyteForm";
 
 
-const externalCrawlers = ['database', 'localfile', 'restful']
+const externalCrawlers = ['localfile']
 
 export default function SourceForm() {
 
@@ -55,13 +56,14 @@ export default function SourceForm() {
         "numFragments": 3,
         "errorThreshold": 10,
         "specificJson":
-            "{\"metadata_list\":[{\"key\":\"created date range\",\"display\":\"created\",\"metadata\":\"created\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"true\",\"sortDefault\":\"desc\",\"sortAscText\":\"oldest documents first\",\"sortDescText\":\"newest documents first\",\"fieldOrder\":\"0\"}," +
-            "{\"key\":\"last modified date ranges\",\"display\":\"last modified\",\"metadata\":\"last-modified\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"true\",\"sortDefault\":\"\",\"sortAscText\":\"least recently modified\",\"sortDescText\":\"most recently modified\",\"fieldOrder\":\"1\"}," +
-            "{\"key\":\"document type\",\"display\":\"document type\",\"metadata\":\"document-type\",\"db1\":\"\",\"db2\":\"\",\"sort\":\"\",\"sortDefault\":\"\",\"sortAscText\":\"\",\"sortDescText\":\"\",\"fieldOrder\":\"2\"}]}",
+            "{\"metadata_list\":[" +
+            "{\"extMetadata\":\"created\",\"display\":\"created\",\"metadata\":\"created\",\"dataType\":\"long\"}," +
+            "{\"extMetadata\":\"last-modified\",\"display\":\"last modified\",\"metadata\":\"last-modified\",\"dataType\":\"long\"}," +
+            "{\"extMetadata\":\"document-type\",\"display\":\"document type\",\"metadata\":\"document-type\",\"dataType\":\"string\"}]}",
         "schedule": "",
         "acls": [],
         "kbId": "",
-        "documentSimilarityThreshold": 0.95,
+        "documentSimilarityThreshold": 95,
         "processorConfig": "",
 
         "deleteFiles": true,
@@ -89,7 +91,9 @@ export default function SourceForm() {
         "numParsedDocuments": 0,
         "numIndexedDocuments": 0,
         "numFinishedDocuments": 0,
+        "numErroredDocuments": 0,
         "numTotalDocuments": 0,
+        "numTotalErroredDocuments": 0,
         "isBusy": false
     }
 
@@ -179,6 +183,8 @@ export default function SourceForm() {
         {label: "iManage crawler", slug: "imanage", type: "optional"},
 
         {label: "Jira crawler", slug: "jira", type: "optional"},
+        {label: "AWS crawler", slug: "aws", type: "optional"},
+        {label: "Egnyte crawler", slug: "egnyte", type: "optional"},
 
         {label: "local file crawler", slug: "localfile", type: "optional"},
         {label: "microsoft file share crawler", slug: "file", type: "optional"},
@@ -189,9 +195,10 @@ export default function SourceForm() {
 
         {label: "sharepoint 365 crawler", slug: "sharepoint365", type: "optional"},
         {label: "service-now crawler", slug: "servicenow", type: "optional"},
+        {label: "search crawler", slug: "search", type: "optional"},
+        {label: "structured data crawler", slug: "structured", type: "optional"},
         {label: "web crawler", slug: "web", type: "optional"},
 
-        {label: "search crawler", slug: "search", type: "optional"},
         //crawlers
 
         //metadata
@@ -222,7 +229,8 @@ export default function SourceForm() {
         formState: {errors},
         reset,
         // control,
-        getValues
+        setValue,
+        getValues,
     } = useForm({mode: 'onChange'});
 
     // Set form defaultValues
@@ -245,7 +253,8 @@ export default function SourceForm() {
         defaultValues.numResults = selected_source ? selected_source.numResults : default_num_results;
         //
         defaultValues.sourceId = selected_source ? selected_source.sourceId : 0;
-        defaultValues.documentSimilarityThreshold = selected_source ? selected_source.documentSimilarityThreshold : 0.95;
+        defaultValues.documentSimilarityThreshold =
+            (selected_source ? selected_source.documentSimilarityThreshold : 95);
 
         // boolean flags
         defaultValues.customRender = selected_source && selected_source.customRender === true;
@@ -274,7 +283,7 @@ export default function SourceForm() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [has_error])
 
-    function is_valid_metadata(list, is_db) {
+    function is_valid_metadata(list) {
         //  "key": "none", "display": null, "metadata": "", "field2": "", "db1": "", "db2":"", "sort": ""
         const metadata_name_map = {};
         let sort_counter = 0;
@@ -285,47 +294,28 @@ export default function SourceForm() {
         }
         for (const item of list) {
             const name = item.metadata;
-            if (!name || name.length === 0) {
-                setError({title: 'invalid parameters', message: "metadata field missing metadata-field-name"});
-                return false;
-            }
-            const db_name = item.db1;
-            if (is_db && (!db_name || db_name.length === 0)) {
-                setError({
-                    title: 'invalid parameters',
-                    message: "database field missing for database-field-name \"" + name + "\""
-                });
-                return false;
-            }
-            if (item.key === "two level category") {
-                const db_name2 = item.db2;
-                if (!db_name2 || db_name2.length === 0) {
-                    setError({
-                        title: 'invalid parameters',
-                        message: "database field missing for database-field-name \"" + name + "\""
-                    });
-                    return false;
-                }
-            }
+            const extName = item.extMetadata;
+            const dataType = item.dataType;
             const display = item.display;
-            if (display !== null && display.length === 0) {
-                setError({
-                    title: 'invalid parameters',
-                    message: "database field missing display-name \"" + name + "\""
-                });
+            if (!name || name.trim().length === 0) {
+                setError({title: 'invalid parameters', message: "SimSage metadata field empty"});
+                return false;
+            }
+            if (!extName || extName.trim().length === 0) {
+                item.extMetadata = name;
+            }
+            if (!display || display.trim().length === 0) {
+                setError({title: 'invalid parameters', message: "metadata display field empty"});
+                return false;
+            }
+            if (!dataType || dataType.trim().length === 0 || dataType.toLowerCase() === "none") {
+                setError({title: 'invalid parameters', message: "metadata data-type not selected"});
                 return false;
             }
             if (!metadata_name_map[name]) {
                 metadata_name_map[name] = 1;
             } else {
                 metadata_name_map[name] += 1;
-            }
-            // sorting checks
-            if (item.sort === "true") {
-                sort_counter += 1;
-                if (item.sortAscText.trim().length === 0) empty_sort_field_counter += 1;
-                if (item.sortDescText.trim().length === 0) empty_sort_field_counter += 1;
-                if (item.sortDefault.trim() !== "") default_sort_counter += 1;
             }
         }
         for (const key in metadata_name_map) {
@@ -425,7 +415,7 @@ export default function SourceForm() {
     }
 
     async function onSubmitAsync(data) {
-        await dispatch(updateSources({session_id: session.id, data: data}))
+        await dispatch(updateSource({session_id: session.id, data: data}))
     }
 
     const onSubmitValidate = data => {
@@ -450,13 +440,11 @@ export default function SourceForm() {
         }
 
         // box crawler - set delta to "0" if not defined
-        if (new_data.crawlerType === 'box' && (!Api.defined(sj.deltaIndicator) || sj.deltaIndicator.length === 0)) {
+        if ((new_data.crawlerType === 'box' || new_data.crawlerType === 'gdrive') && (!Api.defined(sj.deltaIndicator) || sj.deltaIndicator.length === 0)) {
             sj.deltaIndicator = "0";
         }
 
-        if (new_data.qaMatchStrength < 0.0 || new_data.qaMatchStrength > 1.0) {
-            setError({title: 'invalid parameters', message: 'Q&A threshold must be between 0.0 and 1.0.'});
-        } else if (new_data.name.length === 0) {
+        if (new_data.name.length === 0) {
             setError({title: 'invalid parameters', message: 'you must supply a crawler name.'});
         } else if (!sj) {
             setError({title: 'invalid parameters', message: 'crawler specific data not set'});
@@ -495,11 +483,12 @@ export default function SourceForm() {
                 message: 'you must supply a base-url starting with https://sites.google.com/'
             });
 
-        } else if (new_data.crawlerType === 'database' && (
+        }
+        else if (new_data.crawlerType === 'database' && (
             !sj.jdbc || sj.jdbc.length === 0 ||
             !sj.type || sj.type.length === 0 || !sj.type || sj.type === 'none' ||
             !sj.query || sj.query.length === 0 || !sj.pk || sj.pk.length === 0 ||
-            !sj.template || sj.template.length === 0 || !sj.text || sj.text.length === 0)) {
+            ((!sj.html || sj.html.length === 0) && (!sj.text || sj.text.length === 0)))) {
             setError({
                 title: 'invalid parameters',
                 message: 'you must supply a jdbc connection string, database-type, a query, a primary-key, a text-template, and a SQL-template as a minimum.'
@@ -523,7 +512,7 @@ export default function SourceForm() {
                 });
 
         } else if (new_data.crawlerType === 'database' && sj.metadata_list && sj.metadata_list.length > 0 &&
-            !is_valid_metadata(sj.metadata_list, true)) {
+            !is_valid_metadata(sj.metadata_list)) {
 
             // isValidDBMetadata will set the error
 
@@ -597,11 +586,10 @@ export default function SourceForm() {
                 message: 'iManage crawler: you have invalid values for server / username / clientId / clientSecret / libraryId / cursor.'
             });
 
-        } else if (new_data.crawlerType === 'gdrive' && (!sj.drive_user_csv || sj.drive_user_csv.length === 0 ||
-            !sj.deltaIndicator || sj.deltaIndicator.length === 0)) {
+        } else if (new_data.crawlerType === 'gdrive' && (!sj.drive_user_csv || sj.drive_user_csv.length === 0)) {
             setError({
                 title: 'invalid parameters',
-                message: 'you must supply values for all fields, and select one user as a minimum.'
+                message: 'you must supply values for all fields: User list empty.'
             });
 
         } else if (new_data.crawlerType === 'localfile' && (!sj.local_folder_csv || sj.local_folder_csv.length === 0)) {
@@ -612,25 +600,25 @@ export default function SourceForm() {
 
         } else if (new_data.crawlerType !== 'web' && new_data.crawlerType !== 'file' && new_data.crawlerType !== 'database' &&
             new_data.crawlerType !== 'exchange365' && new_data.crawlerType !== 'dropbox' &&
-            new_data.crawlerType !== 'localfile' && new_data.crawlerType !== 'jira' && new_data.crawlerType !== 'gdrive' &&
+            new_data.crawlerType !== 'localfile' && new_data.crawlerType !== 'jira' && new_data.crawlerType !== 'aws'
+            && new_data.crawlerType !== 'egnyte' && new_data.crawlerType !== 'gdrive' &&
             new_data.crawlerType !== 'onedrive' && new_data.crawlerType !== 'sharepoint365' &&
             new_data.crawlerType !== 'restfull' && new_data.crawlerType !== 'rss' && new_data.crawlerType !== 'external' &&
             new_data.crawlerType !== 'box' && new_data.crawlerType !== 'imanage' && new_data.crawlerType !== 'discourse' &&
             new_data.crawlerType !== 'googlesite' && new_data.crawlerType !== 'servicenow' &&
-            new_data.crawlerType !== 'search' && new_data.crawlerType !== 'confluence') {
+            new_data.crawlerType !== 'search' && new_data.crawlerType !== 'confluence' &&
+            new_data.crawlerType !== 'structured') {
 
             setError({title: 'invalid parameters', message: 'you must select a crawler-type first.'});
 
         } else if (isNaN(new_data.filesPerSecond)) {
             setError({title: 'invalid parameters', message: 'files-per-second must be a number'});
 
-        } else if (!is_valid_metadata(sj.metadata_list, false)) {
+        } else if (!is_valid_metadata(sj.metadata_list)) {
             // takes care of itself
 
         } else {
             is_valid = true
-            // dispatch(updateSources({session_id: session.id, data: new_data}))
-            // dispatch(closeForm())
         }
 
         return is_valid;
@@ -702,7 +690,9 @@ export default function SourceForm() {
                                         register={register}
                                         source={selected_source}
                                         crawler_type={form_data ? form_data.crawlerType : null}
-                                        getValues={getValues}/>
+                                        setValue={setValue}
+                                        getValues={getValues}
+                                    />
                                 }
 
 
@@ -794,6 +784,21 @@ export default function SourceForm() {
 
                                 }
 
+                                {selected_source_tab === 'aws' &&
+                                    <CrawlerAWSForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
+
+                                {selected_source_tab === 'egnyte' &&
+                                    <CrawlerEgnyteForm
+                                        source={selected_source}
+                                        form_data={form_data}
+                                        setFormData={setFormData}/>
+
+                                }
 
                                 {selected_source_tab === 'localfile' &&
                                     <CrawlerLocalFileForm
@@ -869,17 +874,16 @@ export default function SourceForm() {
                                         setFormData={setFormData}/>
                                 }
 
-
-                                {/* Page 3: CrawlerMetadataForm  */}
-                                {selected_source_tab === 'metadata' && (selected_source.crawlerType === "database" || selected_source.crawlerType === "restfull") &&
-
-                                    <CrawlerMetaMapperForm
+                                {selected_source_tab === 'structured' &&
+                                    <CrawlerStructuredDataForm
                                         source={selected_source}
                                         form_data={form_data}
                                         setFormData={setFormData}/>
-
                                 }
-                                {selected_source_tab === 'metadata' && selected_source.crawlerType !== "restfull" && selected_source.crawlerType !== "database" &&
+
+
+                                {/* Page 3: CrawlerMetadataForm  */}
+                                {selected_source_tab === 'metadata' &&
                                     <CrawlerMetadataForm
                                         source={selected_source}
                                         form_data={form_data}
@@ -924,7 +928,7 @@ export default function SourceForm() {
                                 {selected_source_tab === 'external-crawler' &&
                                     <div className="time-tab-content px-5 py-4 overflow-auto">
                                         <CrawlerExternalCrawlerConfigurationForm
-                                            source={selected_source} />
+                                            source={selected_source}/>
                                     </div>
                                 }
 

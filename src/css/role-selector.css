@@ -55,6 +55,8 @@
 .role-block .role-area {
     padding: 20px;
     cursor: pointer;
+    max-height: 300px;
+    overflow: auto;
 }
 
 .role-controls {

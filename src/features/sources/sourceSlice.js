@@ -5,7 +5,9 @@ import axios from "axios";
 const initialState = {
     source_list: [],
     source_original_ist: [],
-    source_filter: null,
+    failed_documents: [],
+    failed_document_total: 0,
+    source_filter: '',
     source_page: 0,
     source_page_size: 10,
 
@@ -21,6 +23,7 @@ const initialState = {
     show_data_form: false,
     show_export_form: false,
     show_import_form: false,
+    show_failed_docs: false,
 
     //error
     show_error_form: false,
@@ -49,6 +52,12 @@ const reducers = {
 
     showEditForm: (state, action) => {
         state.show_data_form = true
+        state.selected_source = action.payload.source
+        state.selected_source_id = state.selected_source.sourceId
+    },
+
+    showFailedDocuments: (state, action) => {
+        state.show_failed_docs = true
         state.selected_source = action.payload.source
         state.selected_source_id = state.selected_source.sourceId
     },
@@ -84,13 +93,10 @@ const reducers = {
     closeForm: (state) => {
         state.show_data_form = false
         state.show_export_form = false
+        state.show_failed_docs = false
         state.selected_source = null
         state.selected_source_id = null
         state.show_import_form = false
-
-        state.show_error_form = false
-        state.error_title = undefined
-        state.error_message = undefined
 
         state.show_start_crawler_prompt = false
         state.show_zip_crawler_prompt = false
@@ -104,29 +110,17 @@ const reducers = {
     },
 
     closeErrorMessage: (state, action) => {
-      state.show_error_form = false;
-      state.error_message = undefined;
-      state.error_title = undefined;
+        state.show_error_form = false;
+        state.error_message = undefined;
+        state.error_title = undefined;
     },
 
     setSelectedSourceTab: (state, action) => {
         state.selected_source_tab = action.payload
     },
 
-    // setSelectedSourceType:(state,action) => {
-    //     state.selected_source_type = action.payload
-    // },
-
     searchSource: (state, action) => {
-        if (action.payload.keyword.length > 0) {
-            state.source_list = state.source_original_ist.filter(list_item => {
-                return list_item.name.match(new RegExp(action.payload.keyword, "i"))
-            });
-            state.status = 'fulfilled';
-        } else {
-            state.source_list = state.source_original_ist;
-            state.status = "fulfilled";
-        }
+        return {...state, source_filter: action.payload.keyword};
     },
 
 }
@@ -176,13 +170,13 @@ const extraReducers = (builder) => {
         })
 
 
-        .addCase(updateSources.fulfilled, (state, action) => {
+        .addCase(updateSource.fulfilled, (state, action) => {
             state.busy = false;
             state.show_import_form = false
             state.data_status = 'load_now';
         })
 
-        .addCase(updateSources.rejected, (state, action) => {
+        .addCase(updateSource.rejected, (state, action) => {
             state.busy = false;
             state.data_status = 'load_now';
             state.status = "rejected"
@@ -190,6 +184,13 @@ const extraReducers = (builder) => {
             state.error_title = "Source Update Failed"
             state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
         })
+
+        .addCase(getFailedDocuments.fulfilled, (state, action) => {
+            state.busy = false;
+            state.failed_documents = action.payload.results
+            state.failed_document_total = action.payload.total
+        })
+
 
 
         //deleteRecord
@@ -229,17 +230,8 @@ const extraReducers = (builder) => {
             state.busy = false;
             state.status = "fulfilled"
             state.data_status = 'load_now';
-            // if (action.payload.code === "ERR_BAD_RESPONSE") {
-            //     state.show_error_form = true
-            //     state.error_title = "Error"
-            //     state.error_message = action.payload.response.data.error
-            // } else {
-            //     state.status = "fulfilled"
-            //     state.data_status = 'load_now';
-            // }
         })
         .addCase(startSource.rejected, (state, action) => {
-            console.error('action rejected', action)
             state.busy = false;
             state.status = "rejected"
             state.show_error_form = true
@@ -287,11 +279,18 @@ const extraReducers = (builder) => {
 }
 
 
-export const getSources = createAsyncThunk(
-    'sources/getSources',
-    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
+export const getFailedDocuments = createAsyncThunk(
+    'sources/getFailedDocuments',
+    async (
+        {session_id, organisation_id, kb_id, source_id, page, pageSize},
+        {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        const url = '/crawler/faileddocs/' +
+            encodeURIComponent(organisation_id) + '/' +
+            encodeURIComponent(kb_id) + '/' +
+            encodeURIComponent(source_id) + "/" +
+            page + "/" +
+            pageSize;
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -301,6 +300,21 @@ export const getSources = createAsyncThunk(
     }
 );
 
+export const getSources = createAsyncThunk(
+    'sources/getSources',
+    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        return axios.get(api_base + url, Comms.getHeaders(session_id))
+            .then((response) => {
+                if (response.data.documentSimilarityThreshold < 1.0)
+                    response.data.documentSimilarityThreshold = response.data.documentSimilarityThreshold * 100
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    }
+);
 
 export const getSource = createAsyncThunk(
     'sources/getSource',
@@ -309,23 +323,26 @@ export const getSource = createAsyncThunk(
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
+                if (response.data.documentSimilarityThreshold < 1.0)
+                    response.data.documentSimilarityThreshold = response.data.documentSimilarityThreshold * 100
                 return response.data
             }).catch((err) => {
-            return rejectWithValue(err?.response?.data)
-        })
+                return rejectWithValue(err?.response?.data)
+            })
     }
 );
 
 
 // https://uat.simsage.ai/api/crawler/crawler
 // POST
-export const updateSources = createAsyncThunk(
-    'sources/updateSources',
+export const updateSource = createAsyncThunk(
+    'sources/updateSource',
     async ({session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
+                response.data.documentSimilarityThreshold = response.data.documentSimilarityThreshold / 100
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
@@ -411,7 +428,6 @@ export const testSource = createAsyncThunk(
     });
 
 
-
 export const resetSourceDelta = createAsyncThunk(
     'sources/reset-delta',
     async ({session_id, organisation_id, knowledgeBase_id, source_id}, {rejectWithValue}) => {
@@ -426,7 +442,6 @@ export const resetSourceDelta = createAsyncThunk(
     });
 
 
-
 const sourceSlice = createSlice({
     name: 'sources',
     initialState,
@@ -435,7 +450,41 @@ const sourceSlice = createSlice({
 });
 
 export const {
-    closeErrorMessage, closeTestMessage, showAddForm, showEditForm, closeForm, showExportForm, showImportForm,
-    showStartCrawlerAlert, showProcessFilesAlert, showZipCrawlerAlert, searchSource
+    closeErrorMessage,
+    closeTestMessage,
+    showAddForm,
+    showEditForm,
+    showFailedDocuments,
+    closeForm,
+    showExportForm,
+    showImportForm,
+    showStartCrawlerAlert,
+    showProcessFilesAlert,
+    showZipCrawlerAlert,
+    searchSource
 } = sourceSlice.actions
+
+// assure we clear any operational values from the source before importing or exporting
+export const safeSourceForImportOrExport = (source, overlay={}) => {
+    const clone = {...source, ...overlay}
+
+    clone.deltaIndicator = ""
+    clone.startTime = 0
+    clone.endTime = 0
+    clone.numErrors = 0
+    clone.numCrawledDocuments = 0
+    clone.numConvertedDocuments = 0
+    clone.numParsedDocuments = 0
+    clone.numIndexedDocuments = 0
+    clone.numFinishedDocuments = 0
+    clone.numErroredDocuments = 0
+    clone.numTotalDocuments = 0
+    clone.numTotalErroredDocuments = 0
+
+    delete clone.sourceId
+
+    return clone
+}
+
+
 export default sourceSlice.reducer;

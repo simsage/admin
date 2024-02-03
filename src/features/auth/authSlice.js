@@ -1,14 +1,14 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import Comms from "../../common/comms";
 import axios from "axios";
-import {get_error} from "../../common/api";
+import {Api, get_error} from "../../common/api";
 
 
 const initialState = {
     user: {},
     roles: [],
     session: {},
-    is_admin:false,
+    is_admin: false,
 
     selected_organisation: {},
     selected_organisation_id: null,
@@ -33,11 +33,68 @@ const initialState = {
 
 
 // get the location of the current page without any query parameters - e.g. http://localhost/test/
-const location = function() {
+const location = function () {
     return window.location.protocol + '//' + window.location.host + window.location.pathname;
 }
 
 
+const login_helper = function (login_obj) {
+
+    let selected_org = null;
+    let selected_org_id = null;
+    let is_logged_user_admin = false;
+    let session = null;
+    let user = null;
+    let organisation_list = [];
+    let logged_user_roles = [];
+
+    if (login_obj && login_obj.organisationList && login_obj.session && login_obj.session.id && login_obj.user) {
+        const org_list = login_obj.organisationList
+
+        user = login_obj.user;
+        session = login_obj.session;
+        organisation_list = login_obj.organisationList;
+
+        let logged_user_roles = login_obj.user?.roles?.map((role) => {
+            return role.role;
+        })
+        is_logged_user_admin = logged_user_roles?.includes('admin');
+        if (!Api.defined(is_logged_user_admin)) {
+            is_logged_user_admin = false;
+        }
+
+        if (org_list && org_list.length) {
+            for (let i = 0; i < org_list.length; i++) {
+                if (org_list[i] && org_list[i]['id'] === login_obj.organisationId) {
+                    selected_org = org_list[i];
+                    selected_org_id = org_list[i].id;
+                    break;
+                }
+            }
+        } else {
+            selected_org = login_obj.organisationId;
+            selected_org_id = login_obj.organisationId;
+        }
+    }
+    return {
+        selected_org: selected_org,
+        selected_org_id: selected_org_id,
+        logged_user_roles: logged_user_roles,
+        is_logged_user_admin: is_logged_user_admin,
+        user: user,
+        session: session,
+        organisation_list: organisation_list,
+        shared_secret_salt: login_obj.sharedSecretSalt,
+    }
+}
+
+export const logout = (keycloak) => {
+    keycloak.logout({redirectUri: window.location.protocol + "//" + window.location.host}).then((success) => {
+        console.log("--> log: logout success ", success);
+    }).catch((error) => {
+        console.log("--> log: logout error ", error);
+    });
+}
 
 const authSlice = createSlice({
     name: 'auth',
@@ -65,9 +122,11 @@ const authSlice = createSlice({
         },
 
         setSelectedKB: (state, action) => {
+            const kb = action.payload;
             return {
                 ...state,
-                selected_knowledge_base_id: action.payload
+                selected_knowledge_base: kb,
+                selected_knowledge_base_id: kb?.kbId
             }
         },
 
@@ -93,37 +152,28 @@ const authSlice = createSlice({
 
         login: (state, action) => {
 
-            const org_list = action.payload.organisationList
+            const result = login_helper(action.payload);
 
-            let selected_org = null;
-            let selected_org_id = null;
-            const logged_user_roles = action.payload.user?.roles?.map((role) => { return role.role; })
-            const is_logged_user_admin = logged_user_roles.includes('admin')
-
-            if (org_list.length) {
-                for (let i = 0; i < org_list.length; i++) {
-                    if (org_list[i] && org_list[i]['id'] === action.payload.organisationId) {
-                        selected_org = org_list[i];
-                        selected_org_id = org_list[i].id;
-                        break;
-                    }
-                }
-            } else {
-                selected_org = action.payload.organisationId;
-                selected_org_id = action.payload.organisationId;
+            let selected_organisation = state.selected_organisation;
+            let selected_organisation_id = state.selected_organisation_id;
+            if (!selected_organisation_id && result.selected_org) {
+                selected_organisation = result.selected_org;
+                selected_organisation_id = result.selected_org_id;
             }
 
             return {
                 ...state,
-                user: action.payload.user,
-                roles: logged_user_roles,
-                is_admin: is_logged_user_admin,
+                user: result.user,
+                roles: result.logged_user_roles,
+                is_admin: result.is_logged_user_admin,
                 message: '',
-                session: action.payload.session,
-                shared_secret_salt: action.payload.sharedSecretSalt,
+                session: result.session,
+                shared_secret_salt: result.shared_secret_salt,
                 status: 'logged_in',
-                selected_organisation: selected_org,
-                selected_organisation_id: selected_org_id,
+                organisation_list: result.organisation_list,
+                organisation_original_list: result.organisation_list,
+                selected_organisation: selected_organisation,
+                selected_organisation_id: selected_organisation_id,
             }
         },
 
@@ -156,11 +206,35 @@ const authSlice = createSlice({
                 return {
                     ...state,
                     busy: false,
-                    shared_secret_salt: action.payload?.sharedSecretSalt,
                     status: "fullfilled"
                 }
             })
             .addCase(simsageSignIn.rejected, (state) => {
+                return {
+                    ...state,
+                    busy: false,
+                    status: "rejected"
+                }
+            })
+
+            /////////////////////////////////////////////////////////////////////////////
+
+            .addCase(signInSessionId.pending, (state) => {
+                return {
+                    ...state,
+                    busy: true,
+                    status: "loading"
+                }
+            })
+            .addCase(signInSessionId.fulfilled, (state, action) => {
+                return {
+                    ...state,
+                    message: '',
+                    busy: false,
+                    status: 'logged_in',
+                }
+            })
+            .addCase(signInSessionId.rejected, (state) => {
                 return {
                     ...state,
                     busy: false,
@@ -178,48 +252,10 @@ const authSlice = createSlice({
                 }
             })
             .addCase(simsagePasswordSignIn.fulfilled, (state, action) => {
-                console.log(action.payload);
-                if (action && action.payload && action.payload.session && action.payload.session.id) {
-                    const org_list = action.payload.organisationList;
-
-                    let selected_org = null;
-                    let selected_org_id = null;
-                    const logged_user_roles = action.payload.user?.roles?.map((role) => {
-                        return role.role;
-                    })
-                    const is_logged_user_admin = logged_user_roles.includes('admin');
-
-                    if (org_list.length > 0) {
-                        for (let i = 0; i < org_list.length; i++) {
-                            if (org_list[i] && org_list[i]['id'] === action.payload.organisationId) {
-                                selected_org = org_list[i];
-                                selected_org_id = org_list[i].id;
-                                break;
-                            }
-                        }
-                        if (!selected_org_id) {
-                            selected_org = org_list[0];
-                            selected_org_id = org_list[0].id;
-                        }
-                    }
-
-                    return {
-                        ...state,
-                        user: action.payload.user,
-                        roles: logged_user_roles,
-                        is_admin: is_logged_user_admin,
-                        message: '',
-                        session: action.payload.session,
-                        busy: false,
-                        status: 'logged_in',
-                        selected_organisation: selected_org,
-                        selected_organisation_id: selected_org_id,
-                    }
-                } else {
-                    return {
-                        ...state,
-                        error_text: "simsagePasswordSignIn.fulfilled: invalid parameters, invalid session object returned",
-                    }
+                return {
+                    ...state,
+                    busy: true,
+                    status: "logged_in"
                 }
             })
             .addCase(simsagePasswordSignIn.rejected, (state, action) => {
@@ -317,15 +353,16 @@ const authSlice = createSlice({
 // let abortController;
 export const simsageLogOut = createAsyncThunk(
     'auth/simsageLogOut',
-    async ({session_id}) => {
+    async ({session_id, keycloak}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/sign-out'
-
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                return response.data
+                logout(keycloak);
+                return response
             }).catch(
                 (error) => {
+                    logout(keycloak);
                     return error
                 }
             )
@@ -334,7 +371,7 @@ export const simsageLogOut = createAsyncThunk(
 
 
 export const simsageSignIn = createAsyncThunk(
-    'auth/signIn',
+    'auth/simsageSignIn',
     async ({id_token, on_success, on_fail}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/admin/authenticate/msal';
@@ -350,12 +387,40 @@ export const simsageSignIn = createAsyncThunk(
             .then(function (response2) {
                 if (on_success)
                     on_success(response2.data);
-                return response2.data;
+                return response2;
             })
             .catch((error) => {
                 if (on_fail)
                     on_fail(error.message);
                 return error;
+            });
+
+    }
+)
+
+
+export const signInSessionId = createAsyncThunk(
+    'auth/signInSessionId',
+    async ({session_id, on_success, on_fail}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/auth/admin/authenticate/session-id';
+
+        axios.get(url, {
+            headers: {
+                "API-Version": window.ENV.api_version,
+                "Content-Type": "application/json",
+                "session-id": session_id,
+            },
+        })
+            .then((response) => {
+                if (on_success)
+                    on_success(response.data);
+                return response;
+            })
+            .catch((error) => {
+                if (on_fail)
+                    on_fail(error.message);
+                return rejectWithValue(error?.response?.data)
             });
 
     }
@@ -374,15 +439,15 @@ export const simsagePasswordSignIn = createAsyncThunk(
                 "Content-Type": "application/json",
             },
         })
-        .then(function (response2) {
-            if (on_success) {
-                on_success(response2.data);
-            }
-            return response2.data;
-        })
-        .catch((error) => {
-            return rejectWithValue(error?.response?.data)
-        });
+            .then(function (response2) {
+                if (on_success) {
+                    on_success(response2.data);
+                }
+                return response2.data;
+            })
+            .catch((error) => {
+                return rejectWithValue(error?.response?.data)
+            });
     }
 )
 
@@ -394,7 +459,7 @@ export const requestResetPassword = createAsyncThunk(
         const url = api_base + '/auth/reset-password-request';
         return axios.post(url, {"email": email, "resetUrl": location()}, Comms.getHeaders(null))
             .then((response) => {
-                return response.data;
+                return response;
             }).catch((err) => {
                 return rejectWithValue(err)
             })
@@ -410,7 +475,7 @@ export const resetPassword = createAsyncThunk(
         const url = api_base + '/auth/reset-password';
         return axios.post(url, {"email": email, "password": password, "resetId": reset_id}, Comms.getHeaders(null))
             .then((response) => {
-                return response.data;
+                return response;
             }).catch((err) => {
                 return rejectWithValue(err)
             })
@@ -418,8 +483,13 @@ export const resetPassword = createAsyncThunk(
 );
 
 export const {
-    reset, login, showAccount, closeAllMenus, setSelectedOrganisation, closeError,
-     showError, setSelectedKB, dismiss_auth_message
+    login,
+    showAccount,
+    closeAllMenus,
+    setSelectedOrganisation,
+    closeError,
+    setSelectedKB,
+    dismiss_auth_message
 } = authSlice.actions
 
 export default authSlice.reducer;

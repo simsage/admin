@@ -29,7 +29,7 @@ export default function CrawlerLocalFileForm(props) {
         <div className="tab-content px-5 py-4 overflow-auto">
             <div className="row mb-4">
                 <div className="form-group col-3">
-                    <label className="small">Local folder CSV list</label>
+                    <label className="small required">Local folder CSV list</label>
                     <form>
                         <textarea cols="80" rows="5"
                                 placeholder="csv list of local folders to crawl on the remote system"

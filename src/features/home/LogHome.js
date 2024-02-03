@@ -1,24 +1,22 @@
 import React, {useEffect, useState, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import Api from "../../common/api";
-import {getLogs, setLogHours, setLogType, setLogService} from "./homeSlice";
+import {getLogs, setLogType, setLogService, setNumLogLines} from "./homeSlice";
 import {LogErrorDialog} from "./LogErrorDialog";
 
 const service_list = [
-    {"key": "All", "value": "All services"},
-    {"key": "Auth", "value": "Auth service only"},
-    {"key": "Conversion", "value": "Conversion service only"},
-    {"key": "Crawler", "value": "Crawler service only"},
-    {"key": "Document", "value": "Document service only"},
-    {"key": "Discovery", "value": "Discovery service only"},
-    {"key": "Index", "value": "Index service only"},
-    {"key": "KB", "value": "Knowledge base service only"},
-    {"key": "Language", "value": "Language service only"},
-    {"key": "Mind", "value": "Mind service only"},
-    {"key": "Operator", "value": "Operator service only"},
-    {"key": "Search", "value": "Search service only"},
-    {"key": "Stats", "value": "Stats service only"},
-    {"key": "Web", "value": "Web/Cloud service only"},
+    {"key": "Auth", "value": "Auth service"},
+    {"key": "Conv", "value": "Conversion service"},
+    {"key": "Crawler", "value": "Crawler service"},
+    {"key": "DataProject", "value": "Data Project service"},
+    {"key": "Document", "value": "Document service"},
+    {"key": "Discovery", "value": "Discovery service"},
+    {"key": "Index", "value": "Index service"},
+    {"key": "KB", "value": "Knowledge base service"},
+    {"key": "Language", "value": "Language service"},
+    {"key": "Search", "value": "Search service"},
+    {"key": "Stats", "value": "Stats service"},
+    {"key": "Cloud", "value": "Web/Cloud service"},
 ];
 
 
@@ -30,19 +28,19 @@ export default function LogHome(){
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const log_type = useSelector((state) => state.homeReducer.log_type)
     const log_service = useSelector((state) => state.homeReducer.log_service)
-    const log_hours = useSelector((state) => state.homeReducer.log_hours)
+    const log_lines = useSelector((state) => state.homeReducer.log_lines)
     const log_list = useSelector((state) => state.homeReducer.log_list);
     const [log_refresh, setRefresh] = useState(0);
     const lastItemRef = useRef();
 
-    function getLogsLocal(log_type, log_service, log_hours) {
+    function getLogsLocal(log_type, log_service, log_lines) {
         if (session && session.id && organisation_id) {
-            dispatch(getLogs({session_id: session.id, organisation_id, log_type, log_service, log_hours}));
+            dispatch(getLogs({session_id: session.id, organisation_id, log_type, log_service, log_lines}));
         }
     }
 
     useEffect(()=> {
-        getLogsLocal(log_type, log_service, log_hours)
+        getLogsLocal(log_type, log_service, log_lines)
 
         return function cleanup() {
             if (window.log_timer) {
@@ -55,21 +53,10 @@ export default function LogHome(){
 
     // convert a log-type to a css class for display purposes
     function getClassForType(type) {
-        if (type === 'Debug') return "log-type-debug";
-        else if (type === 'Info') return "log-type-info";
-        else if (type === 'Error') return "log-type-error";
+        if (type === 'DEBUG') return "log-type-debug";
+        else if (type === 'INFO') return "log-type-info";
+        else if (type === 'ERROR') return "log-type-error";
         else return "log-type-warn";
-    }
-
-    function getHourTitle(hours) {
-        if (hours === 1) return "display logs from the current hour as shown above";
-        else if (hours === 2) return "display logs for the last two hours from the time shown";
-        else return "display logs for the last " + hours + " hours from the time shown";
-    }
-
-    function getSelectedHourStyle(selected) {
-        if (selected) return "btn btn-primary small-button-spacer btn-block"
-        else return "btn btn-outline-primary small-button-spacer btn-block";
     }
 
     function getSelectedLogStyle(selected) {
@@ -82,14 +69,19 @@ export default function LogHome(){
         else return "btn btn-outline-primary small-button-spacer btn-block";
     }
 
-    function setHours(log_hours) {
-        dispatch(setLogHours(log_hours));
-        getLogsLocal(log_type, log_service, log_hours);
+    function getSelectedLineCount(selected) {
+        if (selected) return "btn btn-primary small-button-spacer btn-block"
+        else return "btn btn-outline-primary small-button-spacer btn-block";
     }
 
     function setLogTypeLocal(log_type) {
         dispatch(setLogType(log_type));
-        getLogsLocal(log_type, log_service, log_hours);
+        getLogsLocal(log_type, log_service, log_lines);
+    }
+
+    function setNumLines(num_lines) {
+        dispatch(setNumLogLines(num_lines));
+        getLogsLocal(log_type, log_service, log_lines);
     }
 
     function setLogRefresh(time) {
@@ -102,14 +94,14 @@ export default function LogHome(){
         }
         if (time > 0) {
             window.log_timer = setInterval(() => {
-                getLogsLocal(log_type, log_service, log_hours);
+                getLogsLocal(log_type, log_service, log_lines);
             }, time * 1000);
         }
     }
 
     function setLogServiceLocal(log_service) {
         dispatch(setLogService(log_service));
-        getLogsLocal(log_type, log_service, log_hours);
+        getLogsLocal(log_type, log_service, log_lines);
     }
 
     window.setTimeout(() => {
@@ -132,17 +124,17 @@ export default function LogHome(){
                 
                 <div className="d-flex">
                     <div className="me-3">
-                        <span className="small text-black-50">Logs</span>
+                        <span className="small text-black-50">Top number of lines</span>
                         <br/>
                         <div className="btn-group">
-                            <span title={getHourTitle(1)} className={getSelectedHourStyle(log_hours === 1) + " btn-sm text-nowrap"}
-                                onClick={() => setHours(1)}>This hour</span>
-                            <span title={getHourTitle(2)} className={getSelectedHourStyle(log_hours === 2) + " btn-sm text-nowrap"}
-                                onClick={() => setHours(2)}>Last 2 hours</span>
-                            <span title={getHourTitle(12)} className={getSelectedHourStyle(log_hours === 12) + " btn-sm text-nowrap"}
-                                onClick={() => setHours(12)}>Last 12 hours</span>
-                            <span title={getHourTitle(24)} className={getSelectedHourStyle(log_hours === 24) + " btn-sm text-nowrap"}
-                                onClick={() => setHours(24)}>Last 24 hours</span>
+                            <span title='last 100 lines' className={getSelectedLineCount(log_lines === 100) + " btn-sm text-nowrap"}
+                                onClick={() => setNumLines(100)}>100</span>
+                            <span title='last 250 lines' className={getSelectedLineCount(log_lines === 250) + " btn-sm text-nowrap"}
+                                onClick={() => setNumLines(250)}>250</span>
+                            <span title='last 500 lines' className={getSelectedLineCount(log_lines === 500) + " btn-sm text-nowrap"}
+                                onClick={() => setNumLines(500)}>500</span>
+                            <span title='all lines' className={getSelectedLineCount(log_lines === 0) + " btn-sm text-nowrap"}
+                                onClick={() => setNumLines(0)}>All</span>
                         </div>
                     </div>
 
@@ -153,17 +145,17 @@ export default function LogHome(){
                             <span title="display all log-types" className={getSelectedLogStyle(log_type === "All") + " btn-sm text-nowrap"}
                                 onClick={() => setLogTypeLocal("All")}>All</span>
                             <span title="display only 'info' log-types"
-                                className={getSelectedLogStyle(log_type === "Info") + " btn-sm text-nowrap"}
-                                onClick={() => setLogTypeLocal("Info")}>Info</span>
+                                className={getSelectedLogStyle(log_type === "INFO") + " btn-sm text-nowrap"}
+                                onClick={() => setLogTypeLocal("INFO")}>Info</span>
                             <span title="display only 'debug' log-types"
-                                className={getSelectedLogStyle(log_type === "Debug") + " btn-sm text-nowrap"}
-                                onClick={() => setLogTypeLocal("Debug")}>Debug</span>
+                                className={getSelectedLogStyle(log_type === "DEBUG") + " btn-sm text-nowrap"}
+                                onClick={() => setLogTypeLocal("DEBUG")}>Debug</span>
                             <span title="display only 'error' log-types"
-                                className={getSelectedLogStyle(log_type === "Error") + " btn-sm text-nowrap"}
-                                onClick={() => setLogTypeLocal("Error")}>Error</span>
+                                className={getSelectedLogStyle(log_type === "ERROR") + " btn-sm text-nowrap"}
+                                onClick={() => setLogTypeLocal("ERROR")}>Error</span>
                             <span title="display only 'warning' log-types"
-                                className={getSelectedLogStyle(log_type === "Warn") + " btn-sm text-nowrap"}
-                                onClick={() => setLogTypeLocal("Warn")}>Warn</span>
+                                className={getSelectedLogStyle(log_type === "WARN") + " btn-sm text-nowrap"}
+                                onClick={() => setLogTypeLocal("WARN")}>Warn</span>
                         </div>
                     </div>
 

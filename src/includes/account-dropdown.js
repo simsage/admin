@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {useDispatch, useSelector} from "react-redux";
-import {useMsal} from "@azure/msal-react";
 import {
     showAddOrganisationForm,
     showEditOrganisationForm
@@ -10,6 +9,7 @@ import {setSelectedOrganisation, simsageLogOut} from "../features/auth/authSlice
 import {getKBList} from "../features/knowledge_bases/knowledgeBaseSlice";
 import {selectTab} from "../features/home/homeSlice";
 import {getGroupList} from "../features/groups/groupSlice";
+import {useKeycloak} from "@react-keycloak/web";
 
 
 /**
@@ -18,8 +18,8 @@ import {getGroupList} from "../features/groups/groupSlice";
 
 const AccountDropdown = () => {
 
-    const { instance } = useMsal();
     const dispatch = useDispatch();
+    const { keycloak } = useKeycloak();
 
     const accounts_dropdown = useSelector((state) => state.authReducer.accounts_dropdown)
     const session = useSelector((state) => state.authReducer.session)
@@ -49,12 +49,7 @@ const AccountDropdown = () => {
 
 
     function handleSignOut(){
-        dispatch(simsageLogOut({session_id:session.id}))
-        if (window.ENV.authentication !== 'password') {
-            instance.logoutRedirect({
-                postLogoutRedirectUri: "/",
-            });
-        }
+        dispatch(simsageLogOut({session_id:session.id, keycloak}))
     }
 
     function getOrganisationList(){
@@ -82,7 +77,7 @@ const AccountDropdown = () => {
                     getOrganisationList().map((item ,i) => {
                         return(
                             // <div className={props.busy ? "dms wait-cursor" : "dms"} onClick={() => closeMenus()}>
-                            <li key={item.id}
+                            <li key={i}
                                 className={((item.id === selected_organisation.id)? "active" : "") + " acc-item px-4 py-2 d-flex justify-content-between align-items-center"}>
                                 <span className="organisation-menu-item pointer-cursor" title={"select " + item.name} style={{"width": "90%", "padding": "10px"}}
                                       onClick={() => handleSelectOrganisation(session.id, item)}>{item.name}</span>

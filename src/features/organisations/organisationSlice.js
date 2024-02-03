@@ -87,7 +87,7 @@ const reducers = {
                 state.status = "fulfilled";
             } else {
                 // dispatchEvent(ErrorAlert({title:"Search",message:"No matching record found"}))
-                state.organisation_list = state.organisation_original_list;
+                state.organisation_list = [];
                 state.status = "fulfilled";
             }
         } else {

@@ -155,13 +155,13 @@ export default function KnowledgeBaseForm() {
                                          style={{maxHeight: "600px", minHeight: "400px"}}>
                                         <div className="row mb-5">
                                             <div className="control-row col-4">
-                                                <label className="label-2 small">Name</label>
+                                                <label className="label-2 small required">Name</label>
                                                 <input
                                                     className="form-control" {...register("name", {required: true})} />
                                                 {errors.name && <span className="text-danger fst-italic small">Name is required </span>}
                                             </div>
                                             <div className="control-row col-4">
-                                                <label className="label-2 small">Email Queries</label>
+                                                <label className="label-2 small required">Email Queries</label>
                                                 <input className="form-control"
                                                        placeholder="example@email.com" {...register("email", {
                                                     required: true
@@ -169,7 +169,7 @@ export default function KnowledgeBaseForm() {
                                                 {errors.email && <span className="text-danger fst-italic small"> Email is required</span>}
                                             </div>
                                             <div className="control-row col-4">
-                                                <label className="label-2 small">Security ID</label>
+                                                <label className="label-2 small required">Security ID</label>
 
                                                 <div className="form-control d-flex">
                                                     <input className="border-0 p-0 w-100 sid-box" value={security_id}

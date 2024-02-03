@@ -254,7 +254,7 @@ export default function OrganisationFormV2(props) {
                                         <div className="row mb-4">
 
                                             <div className={"control-row col-10 name" + (errors.name ? " error " : "")}>
-                                                <label className="label-2 small">Name</label>
+                                                <label className="label-2 small required">Name</label>
                                                 <div className="d-flex align-items-center">
                                                     <input
                                                         className="form-control me-3" {...register("name", {required: true})} />

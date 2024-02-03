@@ -25,6 +25,17 @@ const compose = "version: \"3.9\"\n" +
     "     - shared_secret_salt=<secret>\n" +
     "     - simsage_endpoint=<server>\n";
 
+const docker = "docker run -d --name crawler-<source> --net=host --restart always \\\n" +
+    "     -e api_version=1 \\\n" +
+    "     -e crawler_type=<ct> \\\n" +
+    "     -e source_id=<source> \\\n" +
+    "     -e organisation_id=<org>  \\\n" +
+    "     -e kb_id=<kb> \\\n" +
+    "     -e sid=<sid>  \\\n" +
+    "     -e shared_secret_salt=<secret> \\\n" +
+    "     -e simsage_endpoint=<server>  \\\n" +
+    "     simsage/external-crawler:<version>\n";
+
 const bash = "#!/bin/bash\n" +
     "\n" +
     "if [ \"$JAVA_HOME\" == \"\" ]; then\n" +
@@ -144,14 +155,14 @@ export default function CrawlerExternalCrawlerConfigurationForm(props) {
             sid = selected_kb.securityId;
         }
         return str
-            .replace("<source>", "" + source.sourceId)
-            .replace("<org>", "" + source.organisationId)
-            .replace("<kb>", "" + source.kbId)
-            .replace("<sid>", "" + sid)
-            .replace("<ct>", "" + source.crawlerType)
-            .replace("<version>", "" + window.ENV.version)
-            .replace("<secret>", "" + shared_secret_salt)
-            .replace("<server>", "" + window.ENV.api_base)
+            .replaceAll("<source>", "" + source.sourceId)
+            .replaceAll("<org>", "" + source.organisationId)
+            .replaceAll("<kb>", "" + source.kbId)
+            .replaceAll("<sid>", "" + sid)
+            .replaceAll("<ct>", "" + source.crawlerType)
+            .replaceAll("<version>", "" + window.ENV.version)
+            .replaceAll("<secret>", "" + shared_secret_salt)
+            .replaceAll("<server>", "" + window.ENV.api_base)
     }
 
     function selectMenu(e, menu) {
@@ -162,6 +173,8 @@ export default function CrawlerExternalCrawlerConfigurationForm(props) {
     }
 
     let selected_code = contentToText(compose);
+    if (menu === "docker")
+        selected_code = contentToText(docker);
     if (menu === "bash")
         selected_code = contentToText(bash);
     else if (menu === "bat")
@@ -172,6 +185,8 @@ export default function CrawlerExternalCrawlerConfigurationForm(props) {
             <div className="tab">
                 <button className={"tablinks " + (menu === 'compose' ? "active" : "")}
                    onClick={(e) => selectMenu(e, "compose")}>Docker compose</button>
+                <button className={"tablinks " + (menu === 'docker' ? "active" : "")}
+                    onClick={(e) => selectMenu(e, "docker")}>Docker</button>
                 <button className={"tablinks " + (menu === 'bash' ? "active" : "")}
                    onClick={(e) => selectMenu(e, "bash")}>bash</button>
                 <button className={"tablinks " + (menu === 'bat' ? "active" : "")}

@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {BsFilePdf} from 'react-icons/bs'
+import SensitiveCredential from "../../../components/SensitiveCredential";
 
 export default function CrawlerDiscourseForm2(props){
 
@@ -29,7 +30,7 @@ export default function CrawlerDiscourseForm2(props){
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-4">
-                            <label className="small">Server hostname</label>
+                            <label className="small required">Server hostname</label>
                             <form>
                                 <input type="text" className="form-control"
                                     autoFocus={true}
@@ -40,15 +41,12 @@ export default function CrawlerDiscourseForm2(props){
                             </form>
                         </div>
                         <div className="form-group col-8">
-                            <label className="small">API token</label>
-                            <form>
-                                <input type="text" className="form-control"
-                                    autoFocus={true}
-                                    placeholder=""
-                                    value={specific_json.apiToken}
-                                    onChange={(event) => {setData({apiToken: event.target.value})}}
-                                />
-                            </form>
+                            <SensitiveCredential
+                                selected_source={selected_source}
+                                specific_json={specific_json.apiToken}
+                                onChange={(event) => {setData({apiToken: event.target.value})}}
+                                name="API Token"
+                            />
                         </div>
                     </div>
                 </div>

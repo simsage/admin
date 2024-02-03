@@ -42,7 +42,12 @@ html, body, #root, .App, .dms {
     font-weight: 500;
 }
 
-
+.required:after {
+    content:" *";
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+}
 
 /* Auth */
 .auth-wrapper {
@@ -585,4 +590,24 @@ input, button, textarea {
 
 .justify-content-end{
     gap: 3px;
+}
+
+.failed_documents {
+    padding: 10px;
+}
+
+.failed_documents .ssi {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.failed_documents .error_message {
+    line-break: anywhere;
+}
+
+.error_doc_link {
+    text-decoration: underline;
+    font-size: 14px;
+    color:  rgb(13, 110, 253);
 }

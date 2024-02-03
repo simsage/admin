@@ -82,7 +82,7 @@ export function SynonymEdit(){
 
                             <div className="row mb-3">
                                 <div className="control-row col-12">
-                                    <label className="label-2 small">Synonyms <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span>
+                                    <label className="label-2 small required">Synonyms <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span>
                                     </label>
                                     <span className="text">
                                         <form>

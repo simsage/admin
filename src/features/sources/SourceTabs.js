@@ -20,7 +20,7 @@ export default function SourceTabs(props) {
                                 {item.label}
                             </li>)
                     } else {
-                        return (<div />)
+                        return (<div key={index}/>)
                     }
                 })
             }

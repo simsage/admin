@@ -23,12 +23,12 @@ import BkOrganisationRestore from "./BkOrganisationRestore";
 import {hasRole} from "../../common/helpers";
 import api from "../../common/api";
 import {ShowInvalidSession} from "./ShowInvalidSession";
-import {useMsal} from "@azure/msal-react";
 import {getGroupList} from "../groups/groupSlice";
+import {useKeycloak} from "@react-keycloak/web";
 
 
 export function OrganisationHome() {
-    const {instance} = useMsal();
+    const { keycloak } = useKeycloak();
     const theme = null
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
     const load_data = useSelector((state) => state.organisationReducer.data_status)
@@ -40,7 +40,6 @@ export function OrganisationHome() {
 
     //use one org id to load the backups
     const org_id = organisation_list[0] ? organisation_list[0].id : null;
-
 
     const session = useSelector((state) => state.authReducer.session)
     const dispatch = useDispatch();
@@ -60,27 +59,17 @@ export function OrganisationHome() {
     // const group_data_status = useSelector((state) => state.groupReducer.data_status)
 
     function  handleSignOut() {
-        dispatch(simsageLogOut({session_id: session.id}))
-        if (window.ENV.authentication !== 'password') {
-            instance.logoutRedirect({
-                postLogoutRedirectUri: "/",
-            });
-        }
+        dispatch(simsageLogOut({session_id: session.id, keycloak}))
     }
 
-
-    // const handleClose = () => {
-    //     dispatch(closeForm());
-    // }
-
     useEffect(() => {
-        if (!session || !org_id) return;
+        if (!session || !org_id || !session.id) return;
         dispatch(getOrganisationList({session: session, filter: filter}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === 'load_now'])
 
     useEffect(() => {
-        if (!session || !org_id) return;
+        if (!session || !org_id || !session.id) return;
         dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backup_data_status === 'load_now', org_id != null])
@@ -156,12 +145,6 @@ export function OrganisationHome() {
                             <input onKeyUp={(event) => handleSearchFilter(event)} type="text"
                                    placeholder={"Filter..."} className="form-control filter-search-input"/>
                         </div>
-                        {/* <div className="form-group me-2">
-                            <select placeholder={"Filter"} className="form-select filter-text-width" onChange={(e)=>handleOrderBy(e)}>
-                                <option value="alphabetical">Alphabetical</option>
-                                <option value="recently_added">Recently added</option>
-                            </select>
-                        </div> */}
                     </div>
                     <div className="form-group d-flex ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
@@ -191,12 +174,18 @@ export function OrganisationHome() {
                     </tr>
                     </thead>
                     <tbody>
+                    <tr>
+                        {getOrganisations().length === 0 &&
+                            <td className={"pt-3 px-4 pb-3 fw-light"} colSpan={3}>No records found.</td>
+                        }
+                    </tr>
 
                     {organisation_list && selected_organisation &&
                         getOrganisations().map((item) => {
                             return (
                                 <tr key={item.id} className={(item.id === selected_organisation.id) ? "active" : ""}>
-                                    <td className={`${(item.id === selected_organisation.id) ? "fw-500" : ""} pt-3 px-4 pb-3`} title={"organisation " + item.name}
+                                    <td className={`${(item.id === selected_organisation.id) ? "fw-500" : ""} pt-3 px-4 pb-3`}
+                                        title={"organisation " + item.name}
                                         onClick={() => handleSelectOrganisation(session.id, item)}>
                                         {item.name}
                                     </td>
@@ -222,9 +211,9 @@ export function OrganisationHome() {
                                             </button>
 
 
-                                             <button className={"btn text-danger btn-sm"}
-                                                    title={selected_organisation_id === item.id ? "cannot remove the organisation" :  "remove organisation " + item.name }
-                                                     disabled={selected_organisation_id === item.id ? "true" : ""}
+                                            <button className={"btn text-danger btn-sm"}
+                                                    title={selected_organisation_id === item.id ? "cannot remove the organisation" : "remove organisation " + item.name}
+                                                    disabled={selected_organisation_id === item.id}
                                                     onClick={() => handleRemoveOrganisation(item)}>Delete
                                             </button>
 

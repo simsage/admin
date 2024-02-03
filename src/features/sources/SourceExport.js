@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 // import {closeAlert} from "../alerts/alertSlice";
-import {closeForm} from "./sourceSlice";
+import {closeForm, safeSourceForImportOrExport} from "./sourceSlice";
 // import {useState} from "react";
 
 export function SourceExport() {
@@ -13,6 +13,7 @@ export function SourceExport() {
     const handleClose = () => {
         dispatch(closeForm())
     }
+
 
     return (
         <div>
@@ -34,7 +35,7 @@ export function SourceExport() {
                                         <label className="label-2 small">Data</label>
                                             <div>
                                                 <textarea className="form-control" placeholder="Crawler data..." spellCheck="true" rows="10"
-                                                        style={{width: '100%'}} defaultValue={JSON.stringify(selected_source)} />
+                                                        style={{width: '100%'}} defaultValue={JSON.stringify(safeSourceForImportOrExport(selected_source))} />
                                             </div>
                                         </div>
                                     </div>

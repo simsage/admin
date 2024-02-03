@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import SensitiveCredential from "../../../components/SensitiveCredential";
 
 const CrawlerServiceNow = (props) => {
 
@@ -30,7 +31,7 @@ const CrawlerServiceNow = (props) => {
         <div className="tab-content px-5 py-4 overflow-auto">
             <div className="row mb-4">
                 <div className="form-group col-3">
-                    <label className="small">Username</label>
+                    <label className="small required">Username</label>
                     <form>
                         <input type="text" className="form-control"
                             placeholder=""
@@ -41,14 +42,16 @@ const CrawlerServiceNow = (props) => {
                     </form>
                 </div>
                 <div className="form-group col-3">
-                    <label className="small">Password</label>
-                    <form>
-                        <input type="password" className="form-control"
-                            placeholder="********"
-                            value={specific_json.password}
-                        onChange={(event) => {setData({password: event.target.value})}}
-                        />
-                    </form>
+                    <SensitiveCredential
+                        selected_source={selected_source}
+                        specific_json={specific_json.password}
+                        onChange={(event) => {
+                            setData({password: event.target.value})
+                        }}
+                        name="Password"
+                        placeholder="********"
+
+                    />
                 </div>
                 <div className="form-group col-3">
                     <label className="small">Instance Name</label>

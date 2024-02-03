@@ -1,21 +1,48 @@
 import React, {useEffect, useState} from "react";
+import Api from "../../../common/api";
+import SensitiveCredential from "../../../components/SensitiveCredential";
 
 export default function CrawlerDatabaseForm(props) {
+
+    const [placeholder, setPlaceholder] = useState({ type: 'none' });
+    const [templateType, setTemplateType] = useState(false)
 
     const type_list = [
         {"key": "none", "value": "Please select database type..."},
         {"key": "postgresql", "value": "Postgresql"},
         {"key": "microsoftsql", "value": "Microsoft SQL"},
-    ];
+        {"key": "mysql", "value": "Meria DB"}
+    ]
 
-    const selected_source = props.source;
+    const placeholder_JDBC = [
+        {"key": "none", "value": "e.g. jdbc:microsoft:sqlserver://HOST:1433;DatabaseName=DATABASEs"},
+        {"key": "microsoftsql", "value": "jdbc:microsoft.sqlserver://<server>:1433;DatabaseName=<db>"},
+        {"key": "postgresql", "value": "jdbc:postgresql://<server>:5432/<db>"},
+        {"key": "mysql", "value": "jdbc:mariadb:Database=<db>;Server=<server>;Port=3306"}
+    ]
+
+    const handleTemplateChange = (event) => {
+        const selected = event.target.checked;
+        setTemplateType(selected)
+    }
+
+    const handleTypeChange = (event) => {
+        const selectedType = event.target.value
+        setPlaceholder({ type: selectedType })
+        setData({type: event.target.value})
+    }
+
+    const selected_source = props.source
+    const has_saved_source = Api.hasSourceId(selected_source);
 
     // const [form_error, setFormError] = useState();
     //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
+    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ?
+        props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
+
     const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
 
-    //form defaults
+    // form defaults
     const default_template_val = '<div class="ms-3 w-100">\n' +
         '  <div class="d-flex align-items-center text-align-end mb-1">\n' +
         '    <p class="mb-0 result-breadcrumb me-2">BREADCRUMB</p>\n' +
@@ -39,12 +66,12 @@ export default function CrawlerDatabaseForm(props) {
 
     const l_form_data = props.form_data;
 
-    //update local variable specific_json when data is changed
+    // update local variable specific_json when data is changed
     function setData(data) {
         setSpecificJson({...specific_json,...data})
     }
 
-    //update setFormData when specific_json is changed
+    // update setFormData when specific_json is changed
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
         props.setFormData({...l_form_data, specificJson:specific_json_stringify})
@@ -53,47 +80,62 @@ export default function CrawlerDatabaseForm(props) {
 
 
     return (
-
         <div className="tab-content px-5 py-4 overflow-auto">
+            {/*****************************************-USERNAME & PASSWORD-*****************************************/}
             <div className="row mb-3">
                 <div className="form-group col-4">
-                    <label className="small">Username</label>
-                        <input type="text"
-                                placeholder="For DB access"
-                                autoFocus={true}
-                                className="form-control"
-                                value={specific_json.username}
-                                       onChange={(event) => {setData({username: event.target.value})}}
-                        />
+                    <label className="small required">Username</label>
+                    <input type="text"
+                           placeholder="For DB access"
+                           autoFocus={true}
+                           className="form-control"
+                           value={specific_json.username}
+                           onChange={(event) => {
+                               setData({username: event.target.value})
+                           }}
+                           required
+                    />
                 </div>
                 <div className="form-group col-4">
-                    <label className="small">Password</label>
-                        <input type="password"
-                                placeholder="********"
-                                autoFocus={true}
-                                className="form-control"
-                                value={specific_json.password}
-                                       onChange={(event) => {setData({password: event.target.value})}}
-                        />
+                    <SensitiveCredential
+                        selected_source={selected_source}
+                        specific_json={specific_json.password}
+                        onChange={(event) => {
+                            setData({password: event.target.value})
+                        }}
+                        name="Password"
+                        placeholder="**********"
+
+                    />
                 </div>
             </div>
+
+            {/******************************************-JDBC STRING-******************************************/}
             <div className="row mb-3">
                 <div className="form-group col-8">
-                    <label className="small">JDBC string</label>
-                        <input type="text"
-                                placeholder="e.g. jdbc:microsoft:sqlserver://HOST:1433;DatabaseName=DATABASEs"
-                                autoFocus={true}
-                                className="form-control"
-                                value={specific_json.jdbc}
-                                   onChange={(event) => {setData({jdbc: event.target.value})}}
-                        />
+                    <label className="small required">JDBC string</label>
+                    <input type="text"
+                           placeholder={placeholder_JDBC.find(
+                               (item) => item.key === placeholder.type)?.value}
+                           className="form-control"
+                           value={specific_json.jdbc}
+                           onChange={(event) => {
+                               setData({jdbc: event.target.value})
+                           }}
+                           required
+                    />
                 </div>
             </div>
+
+            {/******************************************-DB & P-KEY-******************************************/}
             <div className="row mb-3">
                 <div className="form-group col-4">
-                    <label className="small">Database</label>
-                    <select className="form-select" onChange={(event) => {setData({type: event.target.value})}}
-                            defaultValue={specific_json.type}>
+                    <label className="small required">Database</label>
+                    <select
+                        required
+                        className="form-select"
+                        onChange={handleTypeChange}
+                        defaultValue={specific_json.type}>
                         {
                             type_list.map((value) => {
                                 return (<option key={value.key} value={value.key}>{value.value}</option>)
@@ -102,63 +144,95 @@ export default function CrawlerDatabaseForm(props) {
                     </select>
                 </div>
                 <div className="form-group col-4">
-                    <label className="small">Primary key field</label>
-                        <input type="text"
-                                placeholder=""
-                                autoFocus={true}
-                                className="form-control"
-                                value={specific_json.pk}
-                                       onChange={(event) => {setData({pk: event.target.value})}}
-                        />
-                </div>
-            </div>
-            <div className="row mb-3">
-                <div className="form-group col-8">
-                    <label className="small">Web fields</label>
-                        <input type="text"
-                                placeholder="Document http/https reference SQL fields in square brackets [FIELD-NAME]"
-                                autoFocus={true}
-                                className="form-control"
-                                disabled={specific_json.customRender}
-                                       value={specific_json.content_url}
-                                       onChange={(event) => {setData({content_url: event.target.value})}}
-                        />
-                </div>
-            </div>
-            <div className="row mb-3">
-                <div className="form-group col-6">
-                    <label className="small">Select</label>
-                    <textarea className="form-control"
-                            placeholder="SQL query, a valid SELECT statement, no other allowed"
-                            rows="3"
-                            value={specific_json.query}
-                                  onChange={(event) => {setData({query: event.target.value})}}
+                    <label className="small required">Primary key field</label>
+                    <input type="text"
+                           placeholder="Primary key for database..."
+                           className="form-control"
+                           value={specific_json.pk}
+                           onChange={(event) => {
+                               setData({pk: event.target.value})}}
+                           required
                     />
-                </div>
-                <div className="form-group col-6">
-                    <label className="small">Text index template</label>
-                    <textarea className="form-control"
-                            placeholder="SQL text index template, an text template referencing SQL fields in square brackets [FIELD-NAME]"
-                            disabled={!specific_json.customRender}
-                                  rows={3}
-                                  value={specific_json.text}
-                                  onChange={(event) => {setData({text: event.target.value})}}
-                    />
-                </div>
-            </div>
-            <div className="row mb-3">
-                <div className="form-group col-12">
-                    <label className="small">HTML template</label>
-                    <textarea className="form-control"
-                                  placeholder="SQL html render template, an html template referencing SQL fields in square brackets [FIELD-NAME]"
-                                  disabled={!specific_json.customRender}
-                                  rows={10}
-                                  value={specific_json.template?specific_json.template:default_template_val}
-                                  onChange={(event) => {setData({template: event.target.value})}}
-                        />
                 </div>
             </div>
 
+            {/******************************************-WEB FIELDS-******************************************/}
+            <div className="row mb-3">
+                <div className="form-group col-8">
+                    <label className="small required">SQL Columns</label>
+                    <input type="text"
+                           placeholder="SQL Select column names (csv)."
+                           className="form-control"
+                           value={specific_json.column_csv}
+                           onChange={(event) => {
+                               setData({column_csv: event.target.value})
+                           }}
+                           required
+                    />
+                </div>
+            </div>
+
+            {/************************************-SELECT-************************************/}
+            <div className="row mb-3">
+                <div className="form-group col-6">
+                    <label className="small required">Select</label>
+                    <textarea className="form-control"
+                              placeholder="SQL query, a valid SELECT statement, no other allowed"
+                              rows="3"
+                              value={specific_json.query}
+                              onChange={(event) => {
+                                  setData({query: event.target.value})}}
+                              required
+                    />
+                </div>
+            </div>
+            {/*************************************-CHECK BOX-*************************************/}
+            <div className="row mb-3">
+                <div className="col-4">
+                    <div className="form-check form-switch"
+                         title="If checked, HTML template will be provided instead.">
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            onChange={(event) => {
+                                handleTemplateChange(event)}
+                            }
+                        />
+                        <label className="form-check-label small">HTML Template</label>
+                    </div>
+                </div>
+            </div>
+            {/***********************************-HTML TEMPLATE / TEXT TEMPLATE-***********************************/}
+            <div className="row mb-3">
+                {!templateType &&
+                    <div className="form-group col-12">
+                        <label className="small required">Text Template</label>
+                        <textarea className="form-control"
+                                  placeholder="SQL text index template, an text template
+                                            referencing SQL fields in square brackets [FIELD-NAME]"
+                                  rows={10}
+                                  value={specific_json.text}
+                                  onChange={(event) => {
+                                      setData({text: event.target.value})}}
+                                  required
+                        />
+                    </div>
+                }
+                {templateType &&
+                    <div className="form-group col-12" >
+                        <label className="small required">HTML Template</label>
+                        <textarea className="form-control"
+                                  placeholder="SQL html render template, an html template
+                                                referencing SQL fields in square brackets [FIELD-NAME]"
+                                  rows={20}
+                                  value={specific_json.html?specific_json.html:default_template_val}
+                                  onChange={(event) => {
+                                      setData({html: event.target.value})}}
+                                  required
+                        />
+                    </div>
+                }
+            </div>
         </div>
     )
 }
