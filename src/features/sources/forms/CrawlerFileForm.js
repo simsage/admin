@@ -1,12 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import SensitiveCredential from "../../../components/SensitiveCredential";
+import {BsFilePdf} from "react-icons/bs";
+import { DOCUMENTATION, useSelectedSource } from './common.js';
+
 
 export default function CrawlerFileForm(props) {
-    const selected_source = props.source;
 
-    const specific_json_from_form_data = (props.form_data && props.form_data.specific_json) ? props.form_data.specific_json : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-    const l_form_data = props.form_data;
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        selected_source,
+        source_saved,
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -31,7 +38,8 @@ export default function CrawlerFileForm(props) {
                            autoFocus={true}
                            value={specific_json.username}
                            onChange={(event) => {
-                               setData({username: event.target.value})}}
+                               setData({username: event.target.value})
+                           }}
                     />
                 </div>
                 <div className="form-group col-4">
@@ -39,10 +47,20 @@ export default function CrawlerFileForm(props) {
                         selected_source={selected_source}
                         specific_json={specific_json.password}
                         onChange={(event) => {
-                            setData({password: event.target.value})}}
+                            setData({password: event.target.value})
+                        }}
                         name="Password"
                         placeholder="********"
+                        required={!source_saved}
                     />
+                </div>
+                <div className="col-2 offset-2">
+                    <a href={DOCUMENTATION.MS_FILESHARE} id="dlMSFileshare" target="_blank"
+                       title="Download the SimSage Microsoft Fileshare setup guide"
+                       className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                        <BsFilePdf size={25}/>
+                        <span className="me-2 mt-2"></span>Microsoft Fileshare <br/>Setup Guide
+                    </a>
                 </div>
             </div>
             {/*************************************-SERVER & DOMAIN-*************************************/}

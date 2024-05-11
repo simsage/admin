@@ -1,17 +1,18 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
+
+import {Pagination} from "../../common/pagination";
 import {
     loadCategorizations,
-    showAddCategoryForm,
+    showAddCategorizationForm,
+    showEditCategorizationForm,
     showDeleteCategorizationForm,
-    showEditCategoryForm
 } from "./categorizationSlice";
+import api, {IMAGES} from "../../common/api";
 import {CategorizationEdit} from "./CategorizationEdit";
 import CategorizationDeleteAsk from "./CategorizationDeleteAsk";
-import {Pagination} from "../../common/pagination";
-import api from "../../common/api";
 
-export default function CategorizationHome() {
+export default function CategorizationList() {
 
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
@@ -20,45 +21,45 @@ export default function CategorizationHome() {
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
     const load_data = useSelector( (state) => state.categorizationReducer.data_status)
+    const {llm_model} = useSelector((state) => state.llmReducer)
+    const has_llm = llm_model && (llm_model.llm === "gemini" || llm_model.llm === "openai")
 
-    // const parent_category_list = useSelector((state) => state.categorizationReducer.category_list);
+    const categorization_list = useSelector((state)=>state.categorizationReducer.categorization_list)
+    const num_categorizations = useSelector((state)=>state.categorizationReducer.num_categorizations)
 
-    const category_list = useSelector((state) => state.categorizationReducer.category_list);
-    const total_count = useSelector((state) => state.categorizationReducer.total_count);
-    const [cat_page_size,setPageSize] = useState(api.initial_page_size)
-    const [cat_page,setPage] = useState(api.initial_page)
-    const [filter, setFilter] = useState('');
+    const [page, setPage] = useState(api.initial_page);
+    const [page_size, setPageSize] = useState(api.initial_page_size);
 
     const [page_history,setPageHistory] = useState([])
-    const [prev_label,setPrevLabel] = useState(null)
+    const [prev_id,setPrevID] = useState(0)
 
     const dispatch = useDispatch();
 
-    let data = {
-        session_id: session_id,
-        organisation_id:selected_organisation_id,
-        kb_id:selected_knowledge_base_id,
-        prevCategorizationLabel: prev_label,
-        pageSize: cat_page_size};
-
-    useEffect(()=>{
-        dispatch(loadCategorizations(data))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[load_data === "load_now",selected_knowledge_base_id,cat_page_size,cat_page])
-
+    useEffect(() => {
+        if (selected_organisation_id && selected_knowledge_base_id) {
+            dispatch(loadCategorizations({
+                session_id: session_id,
+                organisation_id: selected_organisation_id,
+                kb_id: selected_knowledge_base_id,
+                page: page, page_size: page_size
+            }));
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }
+    }, [load_data === "load_now", page, page_size, session_id, selected_organisation_id, selected_knowledge_base_id])
 
 
     function handlePageChange(next_page){
-        if(next_page > cat_page){
+        if(next_page > page){
             // last list item is used for next page
-            const last_row = category_list.slice(-1)[0]
-            const temp_last_word = last_row['categorizationLabel']
-            setPrevLabel(temp_last_word);
-            setPageHistory([...page_history, {page: next_page, label: prev_label}]);
+            const last_row = categorization_list.slice(-1)[0]
+            const temp_last_id = last_row['id']
+            setPrevID(temp_last_id);
+            setPageHistory([...page_history,{page:next_page,id:prev_id}]);
+
         }else{
             const temp_prev_row = page_history.slice(-1)
-            const temp_word = temp_prev_row && temp_prev_row.length === 1?temp_prev_row[0]["label"]:0
-            setPrevLabel(temp_word);
+            const temp_id = temp_prev_row && temp_prev_row.length === 1?temp_prev_row[0]["id"]:0
+            setPrevID(temp_id);
             setPageHistory([...page_history.slice(0,-1)]);
         }
         setPage(next_page);
@@ -67,198 +68,117 @@ export default function CategorizationHome() {
 
     function handlePageSizeChange(row){
         setPageHistory([])
-        setPrevLabel(null)
+        setPrevID(0)
         setPage(0)
         setPageSize(row)
     }
 
-
-
-    function filterCategories() {
-        let filteredGroup = []
-        category_list && category_list.forEach( cat => {
-            if(cat.categorizationLabel.toLowerCase().includes(filter.toLowerCase())) {
-                filteredGroup.push(cat)
-            }
-        })
-        return filteredGroup
+    function getCategorizationList() {
+        return categorization_list ? categorization_list : [];
     }
-
-
-    function getCategoryList(){
-        const iterable_list = filter.length > 0 ? filterCategories() : category_list
-        return iterable_list ? iterable_list : [];
-    }
-
     const handleRefresh = () => {
-        dispatch(loadCategorizations(data))
+        if (selected_organisation_id && selected_knowledge_base_id) {
+            dispatch(loadCategorizations({
+                session_id: session_id,
+                organisation_id: selected_organisation_id,
+                kb_id: selected_knowledge_base_id,
+                page: page, page_size: page_size
+            }));
+        }
     }
 
-    function newCategory() {
-        dispatch(showAddCategoryForm(true));
+    function editCategorization(s) {
+       dispatch(showEditCategorizationForm({show:true, syn: s}))
     }
 
-    function editCategory(category) {
-        dispatch(showEditCategoryForm({show:true, category:category}));
+    function newCategorization() {
+        dispatch(showAddCategorizationForm(true));
     }
 
-    function deleteCategoryAsk(category) {
-        dispatch(showDeleteCategorizationForm({show:true, category:category}));
+    function deleteCategorizationAsk(categorization) {
+        dispatch(showDeleteCategorizationForm({show: true, categorization: categorization}))
     }
 
-
-    function isVisible() {
+     function isVisible() {
         return selected_organisation_id !== null && selected_organisation_id.length > 0 &&
             selected_organisation !== null && selected_organisation.id === selected_organisation_id &&
             selected_knowledge_base_id !== null && selected_knowledge_base_id.length > 0;
     }
 
-    // function handleSearchTextKeydown(event)
-    // {
-    //     if (event.key === "Enter") {
-    //         filterRecords();
-    //     }
-    // }
-
-    function filterRecords() {
-        data.filter = filter
-        // data.pageSize = cat_page_size
-        dispatch(loadCategorizations(data))
-    }
-
 
     return (
         <div className="section px-5 pt-4">
-
-            {/*<div className="synset-cat_page">*/}
-            {/*    <div className="d-flex w-100">*/}
-            {/*        <div className="form-group me-2">*/}
-            {/*            <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control " + theme} value={filter} onChange={(e) => setFilter(e.target.value)}*/}
-            {/*            />*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-
-            {/*    {*/}
-
-
-            <div>
-                {/* {
-                    isVisible() &&
-                    <div className="filter-find-box">
-                        <span className="filter-label">find </span>
-                        <span className="filter-find-text">
-                            <input type="text" value={filter} autoFocus={true}
-                                   className={"filter-text-width " + theme}
-                                   onKeyDown={(event) => handleSearchTextKeydown(event)}
-                                   onChange={(event) => {
-                                       setFilter(event.target.value);
-                                   }}/>
-                        </span> &nbsp;
-                        <span className="filter-find-image">
-                            <button className="btn btn-secondary"
-                                    onClick={() => filterRecords()}
-                                    src="images/dark-magnifying-glass.svg" title="search" alt="search">search</button>
-                        </span>
-                    </div>
-                } */}
-
-                <div className="d-flex justify-content-between w-100 mb-4">
-                    <div className="d-flex w-100">
-                        <div className="d-flex form-group me-2">
-                            <input type="text" placeholder={"Search Category..."} autoFocus={true} className={"form-control me-2 filter-search-input " + theme} value={filter} onChange={(event) => {setFilter(event.target.value);}}
-                            />
-                            <button className="btn btn-secondary"
-                                    onClick={() => filterRecords()}
-                                    // src="images/dark-magnifying-glass.svg"
-                                    // alt="search"
-                                    title="search" >
-                                Search
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="form-group d-flex col ms-auto">
-                        <div className="btn" onClick={() => handleRefresh()} >
-                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of categories" />
-                        </div>
-                        <button className="btn btn-primary text-nowrap" onClick={() => newCategory()}>
-                            + Add Category
-                        </button>
-                    </div>
+            {!has_llm &&
+            <div className="d-flex justify-content-between w-100 mb-4">
+                <div className="d-flex w-100">
+                    <label className="small">Categorizations require an Large Language Model (LLM) to be set up in <i>&nbsp;AI set up&nbsp;</i> to operate.</label>
                 </div>
-
-                {/* <br clear="both"/> */}
-                {
-
-                    isVisible() &&
-                    <div>
-                        <table className="table">
-                            <thead>
-                            <tr className=''>
-                                <td className='small text-black-50 px-4'>Category</td>
-                                <td className='small text-black-50 px-4'>Rule</td>
-                                <td className='small text-black-50 px-4'></td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                getCategoryList().map((category, i) => {
-                                    return (
-                                        <tr key={i}>
-                                            <td className="pt-3 px-4 pb-3">
-                                                <div className="synset-label">{category.categorizationLabel} </div>
-                                            </td>
-                                            <td className="pt-3 px-4 pb-3">
-                                                <div className="synset-label">{category.rule}</div>
-                                            </td>
-                                            <td className="pt-3 px-4 pb-0">
-                                                <div className="d-flex  justify-content-end">
-                                                    <button className="btn text-primary btn-sm" title="edit syn-set"
-                                                            onClick={() => editCategory(category)}>Edit
-                                                    </button>&nbsp;
-                                                    <button className="btn text-danger btn-sm" title="remove syn-set"
-                                                            onClick={() => deleteCategoryAsk(category)}>
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                            {/* <tr>
-                                <td/>
-                                <td/>
-                                <td>
-                                    {isVisible() &&
-                                        <button className="btn btn-secondary" onClick={() => newCategory()}
-                                                title="add a new categpry">new</button>
-                                    }
-                                </td>
-                            </tr> */}
-
-                            </tbody>
-
-                        </table>
-                        <Pagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            theme={theme}
-                            component="div"
-                            count={total_count}
-                            rowsPerPage={cat_page_size}
-                            page={cat_page}
-                            backIconButtonProps={{'aria-label': 'Previous Page',}}
-                            nextIconButtonProps={{'aria-label': 'Next Page',}}
-                            onChangePage={(page) => handlePageChange(page)}
-                            onChangeRowsPerPage={(rows) => handlePageSizeChange(rows)}
-                        />
-                    </div>
-                }
-
             </div>
+            }
+            <div className="d-flex justify-content-between w-100 mb-4">
+                <div className="d-flex w-100" />
+                <div className="form-group d-flex col ms-auto">
+                    <div className="btn" onClick={() => handleRefresh()} >
+                        <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of categorizations" />
+                    </div>
+                    <button className="btn btn-primary text-nowrap" onClick={() => newCategorization()}>
+                        + Add Categorization
+                    </button>
+                </div>
+            </div>
+            {
+                isVisible() &&
+                <div>
+                    <table className="table">
+                        <thead>
+                        <tr className=''>
+                            <td className='small text-black-50 px-4 categorization-column-width'>Categorizations</td>
+                            <td className='small text-black-50 px-4'></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            getCategorizationList().map((categorization) => {
+                                return (
+                                    <tr key={categorization.name}>
+                                        <td className="pt-3 px-4 pb-2">
+                                            <div className="d-flex flex-wrap">
+                                                <div className="me-2">{categorization.name}</div>
+                                            </div>
+                                        </td>
+                                        <td className="pt-3 px-4 pb-0">
+                                            <div className="d-flex  justify-content-end">
+                                                <button className="btn text-primary btn-sm" title="edit categorization" onClick={() => editCategorization(categorization)}>Edit</button> &nbsp;
+                                                <button className="btn text-danger btn-sm" title="remove categorization" onClick={() => deleteCategorizationAsk(categorization)}>Delete</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
+
+                        </tbody>
+
+                    </table>
+
+
+                    <Pagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        theme={theme}
+                        component="div"
+                        count={num_categorizations}
+                        rowsPerPage={page_size}
+                        page={page}
+                        backIconButtonProps={{'aria-label': 'Previous Page',}}
+                        nextIconButtonProps={{'aria-label': 'Next Page',}}
+                        onChangePage={(page) => handlePageChange(page)}
+                        onChangeRowsPerPage={(rows) => handlePageSizeChange(rows)}
+                    />
+
+                </div>
+            }
             <CategorizationEdit />
             <CategorizationDeleteAsk />
         </div>
-
     )
 }

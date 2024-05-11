@@ -1,17 +1,21 @@
-import React, {useEffect, useState} from "react";
-import Api from "../../../common/api";
+import React, {useEffect} from "react";
 import {BsFilePdf} from "react-icons/bs";
+import SensitiveCredential from "../../../components/SensitiveCredential";
+import { DOCUMENTATION, useSelectedSource } from './common.js';
+
 
 export default function CrawlerEgnyteForm(props) {
 
-    const selected_source = props.source;
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        selected_source,
+        source_saved,
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-    const l_form_data = props.form_data;
-
-    //update local variable specific_json when data is changed
+    // update local variable specific_json when data is changed
     function setData(data) {
         setSpecificJson({...specific_json,...data})
     }
@@ -28,7 +32,7 @@ export default function CrawlerEgnyteForm(props) {
             {/**********************************-USERNAME, DOMAIN & PDF-**********************************/}
             <div className="row mb-4">
                 <div className="form-group col-4">
-                    <label className="small required">username</label>
+                    <label className="small required">Username</label>
                     <form>
                         <input type="text" className="form-control nfs-width"
                                autoFocus={true}
@@ -42,10 +46,10 @@ export default function CrawlerEgnyteForm(props) {
                     </form>
                 </div>
                 <div className="form-group col-4">
-                    <label className="small required">domain</label>
+                    <label className="small required">Domain</label>
                     <form>
                         <input type="text" className="form-control nfs-width"
-                               placeholder="domain"
+                               placeholder="E.g., app4simsage (exclude https:// & egnyte.com)"
                                value={specific_json.domain}
                                onChange={(event) => {
                                    setData({domain: event.target.value})
@@ -55,8 +59,9 @@ export default function CrawlerEgnyteForm(props) {
                     </form>
                 </div>
                 <div className="col-2 offset-1">
-                    <a href="resources/simsage-jira-crawler-setup.pdf" id="dlGDrive" target="_blank"
-                       title="Download the SimSage Confluence setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <a href={DOCUMENTATION.EGNYTE} id="dlGDrive" target="_blank"
+                       title="Download the SimSage Egnyte setup guide"
+                       className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
                         <span className="me-2 mt-2"></span>Egnyte <br/>Setup Guide
                     </a>
@@ -65,25 +70,18 @@ export default function CrawlerEgnyteForm(props) {
             {/**********************************-PASSWORD & CLIENT ID-**********************************/}
             <div className="row mb-4">
                 <div className="form-group col-6">
-                    <label className={`small ${Api.hasSourceId(selected_source) ? '' : 'required'}`}>
-                        password
-                    </label>
-                    <span className="fst-italic fw-light small">
-                        {Api.hasSourceId(selected_source) ? ' (leave blank to keep previous)' : ''}
-                    </span>
-                    <form>
-                        <input type="password" className="form-control nfs-width"
-                               placeholder=""
-                               value={specific_json.password}
-                               onChange={(event) => {
-                                   setData({password: event.target.value})
-                               }}
-                               required
-                        />
-                    </form>
+                    <SensitiveCredential
+                        selected_source={selected_source}
+                        specific_json={specific_json.password}
+                        onChange={(event) => {
+                            setData({password: event.target.value})
+                        }}
+                        name="Password"
+                        required={!source_saved}
+                    />
                 </div>
-                <div className="form-group col-2">
-                    <label className="small required">client ID</label>
+                <div className="form-group col-4">
+                    <label className="small required">Client ID</label>
                     <form>
                         <input type="text" className="form-control nfs-width"
                                placeholder="client ID"
@@ -99,38 +97,17 @@ export default function CrawlerEgnyteForm(props) {
             {/**********************************-CLIENT SECRET, GRANT TYPE & PATH-**********************************/}
             <div className="row mb-4">
                 <div className="form-group col-6">
-                    <label className={`small ${Api.hasSourceId(selected_source) ? '' : 'required'}`}>
-                        client secret
-                    </label>
-                    <span className="fst-italic fw-light small">
-                        {Api.hasSourceId(selected_source) ? ' (leave blank to keep previous)' : ''}
-                    </span>
-                    <form>
-                        <input type="password" className="form-control nfs-width"
-                               placeholder=""
-                               value={specific_json.client_secret}
-                               onChange={(event) => {
-                                   setData({client_secret: event.target.value})
-                               }}
-                               required
-                        />
-                    </form>
+                    <SensitiveCredential
+                        selected_source={selected_source}
+                        specific_json={specific_json.client_secret}
+                        onChange={(event) => {
+                            setData({client_secret: event.target.value})
+                        }}
+                        name="Client Secret"
+                    />
                 </div>
-                <div className="form-group col-2">
-                    <label className="small required">grant type</label>
-                    <form>
-                        <input type="text" className="form-control nfs-width"
-                               placeholder="grant type"
-                               value={specific_json.grant_type}
-                               onChange={(event) => {
-                                   setData({grant_type: event.target.value})
-                               }}
-                               required
-                        />
-                    </form>
-                </div>
-                <div className="form-group col-2">
-                    <label className="small required">root path</label>
+                <div className="form-group col-4">
+                    <label className="small required">Root Path</label>
                     <form>
                         <input type="text" className="form-control nfs-width"
                                placeholder="root path"

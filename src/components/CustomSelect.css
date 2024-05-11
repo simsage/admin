@@ -1,0 +1,76 @@
+.custom-select {
+    position: relative;
+    width: 240px;
+    color: #000000;
+}
+
+.select-value {
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;  /* This ensures the text and caret are spaced apart */
+    align-items: center;
+}
+
+.select-value-disabled {
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: default;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;  /* This ensures the text and caret are spaced apart */
+    align-items: center;
+    color: #888;
+}
+
+.select-value-open {
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #90b6fa;
+    border-radius: 4px;
+    cursor: default;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;  /* This ensures the text and caret are spaced apart */
+    align-items: center;
+    color: #888;
+}
+
+.caret {
+    color: #666;
+    transition: transform 0.1s;
+    font-size: 10px;
+    /* No need to set margin-left if you want the caret right aligned */
+}
+
+.caret.open {
+    transform: rotate(90deg);
+}
+
+.options-container {
+    position: absolute;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    z-index: 1;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.option-item {
+    padding: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.option-item:hover, .option-item.selected {
+    background-color: #e1e1e1;
+}

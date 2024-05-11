@@ -8,7 +8,7 @@ export default function CategorizationDeleteAsk(){
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
     const show_delete_form = useSelector((state) => state.categorizationReducer.show_delete_form)
-    const category = useSelector( (state) => state.categorizationReducer.edit);
+    const categorization = useSelector( (state) => state.categorizationReducer.edit);
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const knowledgeBase_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
 
@@ -18,15 +18,19 @@ export default function CategorizationDeleteAsk(){
     }
 
     const handleDelete = () => {
-        // const data = {"session_id": session_id, "organisation_id": organisation_id, "knowledge_base_id": knowledgeBase_id, "metadata": category.metadata };
-        dispatch(deleteCategorization({session_id: session_id, organisation_id: organisation_id, knowledge_base_id: knowledgeBase_id, categorizationLabel: category.categorizationLabel }))
-        dispatch(closeDeleteForm())
+        const data = {"session_id": session_id, "organisation_id": organisation_id,
+            "knowledge_base_id": knowledgeBase_id,
+            "name": categorization.name };
+
+            dispatch(deleteCategorization(data));
+            dispatch(closeDeleteForm());
     }
 
 
     if (!show_delete_form)
         return (<div />);
-    const message = category && category.categorizationLabel ? ` Category item: ${category.categorizationLabel}` : ` all of the Category items`;
+
+    const message = categorization && categorization.name ? ` Categorization: ${categorization.name}` : ` all categorizations`;
     return(
         <div>
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>

@@ -1,17 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
+import { useSelectedSource } from './common.js';
+
 
 export default function CrawlerMetadataForm(props) {
 
-    const selected_source = props.source;
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        selected_source,
+        source_saved,
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ?
-        props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-
-    // const self = this;
-    // const theme = props.theme;
-    const l_form_data = props.form_data;
+    const is_xml_crawler = selected_source && selected_source.crawlerType === 'xml';
 
 
     const data_type_list = [
@@ -30,7 +32,6 @@ export default function CrawlerMetadataForm(props) {
     }, [specific_json])
 
 
-    //functions
     function get_md_list() {
         let md_list = (specific_json && specific_json.metadata_list && specific_json.metadata_list.length > 0) ?
             specific_json.metadata_list : [];
@@ -41,26 +42,26 @@ export default function CrawlerMetadataForm(props) {
                 md_list = [];
             }
         }
-        let counter = 0;
-        for (let item of md_list) {
-            if (counter >= 3)
-                continue;
-            item.readonly = (item.metadata === "last-modified" || item.metadata === "created" ||
-                item.metadata === "document-type" || item.metadata === "{hashtag}");
-            if (item.metadata === "last-modified") {
-                item.dataType = "long";
-                item.extMetadata = "last-modified";
-                item.display = "last modified"
-            } else if(item.metadata === "created") {
-                item.dataType = "long";
-                item.extMetadata = "created";
-                item.display = "created"
-            } else if(item.metadata === "document-type") {
-                item.dataType = "string";
-                item.extMetadata = "document-type";
-                item.display = "document type"
+        if (!is_xml_crawler) {
+            for (let item of md_list) {
+                item.readonly = (
+                    (item.metadata === "last-modified" || item.metadata === "created" || item.metadata === "document-type" || item.metadata === "{hashtag}") &&
+                    !source_saved && !is_xml_crawler
+                );
+                if (item.metadata === "last-modified") {
+                    item.dataType = "long";
+                    item.extMetadata = "last-modified";
+                    item.display = "last modified"
+                } else if (item.metadata === "created") {
+                    item.dataType = "long";
+                    item.extMetadata = "created";
+                    item.display = "created"
+                } else if (item.metadata === "document-type") {
+                    item.dataType = "string";
+                    item.extMetadata = "document-type";
+                    item.display = "document type"
+                }
             }
-            counter += 1;
         }
         return md_list;
     }
@@ -88,7 +89,6 @@ export default function CrawlerMetadataForm(props) {
 
 
     function check_metadata_name(event) {
-        const value = event?.target?.value;
         // only allow valid characters to propagate for metadata names
         if ((event.key >= 'a' && event.key <= 'z') ||
             (event.key >= 'A' && event.key <= 'Z') ||
@@ -139,7 +139,7 @@ export default function CrawlerMetadataForm(props) {
     }
 
     return (
-        <div className="px-5 py-4" style={{maxHeight: "600px"}}>
+        <div className="px-5 py-4" style={{ maxHeight: "600px", overflow:"auto"}}>
 
             <div className="row mb-3">
                 <div className="col-6 d-flex">
@@ -160,7 +160,7 @@ export default function CrawlerMetadataForm(props) {
                 <tr className='table-header'>
                     <td className="small text-black-50 px-0"></td>
                     <td className="small text-black-50 px-4 metadata-column">data-type</td>
-                    <td className="small text-black-50 px-4 display-column">UI Display-name</td>
+                    <td className="small text-black-50 px-4 display-column">UI Display-name (optional)</td>
                     <td className="small text-black-50 px-4 metadata-field-column">SimSage Metadata name</td>
                     <td className="small text-black-50 px-4 sort-field-column">Source metadata name</td>
                     <td className="small text-black-50 px-4 action-field-column"></td>
@@ -266,12 +266,8 @@ export default function CrawlerMetadataForm(props) {
                         </tr>)
                     })
                 }
-
                 </tbody>
-
             </table>
         </div>
     )
-
-
 }

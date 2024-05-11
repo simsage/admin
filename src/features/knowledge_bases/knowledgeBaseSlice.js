@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import axios from "axios";
+import {get_error} from "../../common/api";
 // import ErrorAlert from "../alerts/ErrorAlert";
 
 const initialState = {
@@ -31,6 +32,10 @@ const initialState = {
     show_truncate_indexes_form: false,
     truncate_indexes_data: null,    // {session and kb}
 
+    // error handling
+    is_error: false,
+    error_text: '',
+
     //security ID
     show_securityID_prompt: false
 }
@@ -40,62 +45,90 @@ const extraReducers = (builder) => {
     builder
         //getKBList
         .addCase(getKBList.pending, (state) => {
-            state.busy = true;
-            state.status = "loading";
-            state.data_status = 'loading';
+            return {
+                ...state,
+                busy: true,
+                status: "loading",
+                is_error: false,
+                error_text: '',
+            }
         })
         .addCase(getKBList.fulfilled, (state, action) => {
-            state.busy = false;
-            state.status = "fulfilled";
-            state.kb_list = action.payload;
-            state.kb_original_list = action.payload;
-            state.data_status = 'loaded';
+            return {
+                ...state,
+                busy: false,
+                status: "fulfilled",
+                is_error: false,
+                error_text: '',
+                kb_list: action.payload,
+                kb_original_list: action.payload,
+            }
         })
         .addCase(getKBList.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected";
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "KnowledgeBase Load Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                is_error: true,
+                error_text: get_error(action),
+                error_title: "KnowledgeBase Load Failed"
+            }
         })
 
         //deleteRecord
         .addCase(deleteRecord.pending, (state) => {
-            state.busy = true;
-            state.status = "loading"
+            return {
+                ...state,
+                busy: true,
+                status: "loading"
+            }
         })
         .addCase(deleteRecord.fulfilled, (state) => {
-            state.busy = false;
-            state.status = "fulfilled"
-            state.data_status = 'load_now';
+            return {
+                ...state,
+                busy: false,
+                status: "fulfilled",
+                data_status: 'load_now'
+            }
         })
         .addCase(deleteRecord.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = "KnowledgeBase Delete Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                show_error_form: true,
+                error_title: "KnowledgeBase Delete Failed",
+                error_message: action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //addOrUpdate
         .addCase(addOrUpdate.pending, (state) => {
-            state.busy = true;
-            state.status = "loading"
+            return {
+                ...state,
+                busy: true,
+                status: "loading"
+            }
         })
         .addCase(addOrUpdate.fulfilled, (state) => {
-            state.busy = false;
-            state.status = "fulfilled"
-            state.data_status = 'load_now';
-            state.show_form = false;
-            state.edit_id = undefined;
+            return {
+                ...state,
+                busy: false,
+                status: "fulfilled",
+                data_status: 'load_now',
+                show_form: false,
+                edit_id: undefined
+            }
         })
         .addCase(addOrUpdate.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = "KnowledgeBase Update Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                show_error_form: true,
+                error_title: "KnowledgeBase Update Failed",
+                error_message: action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 }
 
@@ -105,52 +138,92 @@ const knowledgeBaseSlice = createSlice({
     initialState,
     reducers: {
         showAddForm: (state) => {
-            state.show_form = true
+            return {
+                ...state,
+                show_form: true,
+            }
         },
         showEditForm: (state, action) => {
-            state.show_form = true
-            state.edit_id = action.payload.kb_id
+            return {
+                ...state,
+                show_form: true,
+                edit_id: action.payload.kb_id
+            }
         },
         showDeleteAskForm: (state, action) => {
-            state.show_delete_form = true;
-            state.delete_data = action.payload;
+            return {
+                ...state,
+                show_delete_form: true,
+                delete_data: action.payload
+            }
         },
         closeDelete: (state) => {
-            state.show_delete_form = false;
-            state.show_delete_info_form = false;
-            state.delete_data = null;
+            return {
+                ...state,
+                show_delete_form: false,
+                show_delete_info_form: false,
+                delete_data: null
+            }
         },
         showDeleteInfo: (state) => {
-            state.show_delete_form = false;
-            state.show_delete_info_form = true;
+            return {
+                ...state,
+                show_delete_form: false,
+                show_delete_info_form: true
+            }
         },
         setViewIds: (state, action) => {
-            state.view_id = action.payload ? action.payload : null;
+            return {
+                ...state,
+                view_id: action.payload ? action.payload : null,
+            }
         },
         closeForm: (state) => {
-            state.show_form = false;
-            state.edit_id = undefined;
+            return {
+                ...state,
+                show_form: false,
+                edit_id: undefined,
+            }
         },
         showOptimizeAskDialog: (state, action) => {
-            state.optimize_data = action.payload;
+            state.optimize_data = {...action.payload, "action": "optimize"};
             state.show_optimize_form = true;
         },
+        showOptimizeAbortDialog: (state, action) => {
+            return {
+                ...state,
+                show_optimize_form: true,
+                optimize_data: {...action.payload, "action": "abort"},
+            }
+        },
         closeOptimize: (state) => {
-            state.show_optimize_form = false;
-            state.optimize_data = null;
+            return {
+                ...state,
+                show_optimize_form: false,
+                optimize_data: null,
+            }
         },
         showTruncateIndexesAskDialog: (state, action) => {
-            state.truncate_indexes_data = action.payload;
-            state.show_truncate_indexes_form = true;
+            return {
+                ...state,
+                show_truncate_indexes_form: true,
+                truncate_indexes_data: action.payload,
+            }
         },
         closeTruncateIndexes: (state) => {
-            state.show_truncate_indexes_form = false;
-            state.truncate_indexes_data = null;
+            return {
+                ...state,
+                show_truncate_indexes_form: false,
+                truncate_indexes_data: null,
+            }
         },
         closeErrorMessage: (state, action) => {
-            state.show_error_form = false;
-            state.error_message = undefined;
-            state.error_title = undefined;
+            return {
+                ...state,
+                show_error_form: false,
+                error_message: undefined,
+                error_title: undefined
+            }
         },
         showSecurityPrompt: (state) => {
             return {
@@ -159,7 +232,7 @@ const knowledgeBaseSlice = createSlice({
             }
         },
         closeSecurityPrompt:(state) => {
-            return{...state, show_securityID_prompt: false}
+            return {...state, show_securityID_prompt: false}
         },
         //
         search: (state, action) => {
@@ -169,15 +242,21 @@ const knowledgeBaseSlice = createSlice({
                     return kb_list_item.name.match(new RegExp(action.payload.keyword, "i"))
                 });
                 if (temp.length > 0) {
-                    state.kb_list = temp
-                    state.status = "fulfilled";
+                    return {...state,
+                        kb_list: temp,
+                        status: "fulfilled"
+                    }
                 } else {
-                    state.kb_list = [];
-                    state.status = "fulfilled";
+                    return {...state,
+                        kb_list: [],
+                        status: "fulfilled"
+                    }
                 }
             } else {
-                state.kb_list = state.kb_original_list;
-                state.status = "fulfilled";
+                return {...state,
+                    kb_list: state.kb_original_list,
+                    status: "fulfilled"
+                }
             }
         },
 
@@ -210,8 +289,8 @@ export const getKBList = createAsyncThunk(
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
+            }).catch((error) => {
+                return rejectWithValue(error)
             })
     }
 );
@@ -267,6 +346,24 @@ export const optimizeIndexes = createAsyncThunk(
 )
 
 
+export const optimizeIndexesAbort = createAsyncThunk(
+    'knowledgeBases/optimizeIndexesAbort',
+
+    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
+        const data = {"organisationId": organisation_id, "kbId": kb_id}
+        const api_base = window.ENV.api_base;
+        const url = '/language/optimize-indexes-abort';
+        return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                // thunkAPI.dispatch(updateKB(response.data));
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    }
+)
+
+
 export const truncateSlowIndexes = createAsyncThunk(
     'knowledgeBases/truncateSlowIndexes',
 
@@ -287,7 +384,7 @@ export const truncateSlowIndexes = createAsyncThunk(
 export const {
 
     showSecurityPrompt, closeSecurityPrompt, closeErrorMessage,showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
-    setViewIds, showOptimizeAskDialog, closeOptimize, updateKB, search, orderBy,
+    setViewIds, showOptimizeAskDialog, showOptimizeAbortDialog, closeOptimize, updateKB, search, orderBy,
 
     showTruncateIndexesAskDialog, closeTruncateIndexes
 } = knowledgeBaseSlice.actions

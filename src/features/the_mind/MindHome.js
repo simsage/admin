@@ -4,11 +4,15 @@ import SynonymsHome from "../synonyms/SynonymsHome";
 import SemanticsHome from "../semantics/SemanticsHome";
 import SynsetsHome from "../synsets/SynsetsHome";
 import TextToSearchHome from "../text_to_search/TextToSearchHome";
+import LLMHome from "../llms/LLMHome";
+import CategorizationHome from "../categorization/CategorizationHome";
 
 export default function MindHome(){
-    const [selected_sub_nav, setSelectedSubNav] = useState('synonyms')
+    const [selected_sub_nav, setSelectedSubNav] = useState('ai')
 
     const sub_nav = [
+        {label: "AI set up", slug:"ai" },
+        {label: "AI categorization", slug:"categorization" },
         {label: "Synonyms", slug:"synonyms" },
         {label: "Semantics", slug:"semantics" },
         {label: "Synsets", slug:"synsets" },
@@ -33,9 +37,16 @@ export default function MindHome(){
             {selected_sub_nav === 'synsets' &&
                 <SynsetsHome tab={selected_sub_nav} />
             }
+            {selected_sub_nav === 'ai' &&
+                <LLMHome tab={selected_sub_nav} />
+            }
             {selected_sub_nav === 'textToSearch' &&
                 <TextToSearchHome/>
             }
+            {selected_sub_nav === 'categorization' &&
+                <CategorizationHome/>
+            }
+
         </div>
     )
 }

@@ -21,9 +21,13 @@ export class TimeSelect extends Component {
             has_error: false,
         };
     }
+
+
     componentDidCatch(error, info) {
         this.setState({ has_error: true });
     }
+
+
     handleSave() {
         let time = '';
         for (let key in this.state.time_map) {
@@ -38,11 +42,8 @@ export class TimeSelect extends Component {
             this.state.onSave(time);
         }
     }
-    handleCancel() {
-        if (this.state.onSave) {
-            this.state.onSave(null);
-        }
-    }
+
+
     UNSAFE_componentWillReceiveProps(nextProps) {
         // see if we have data to start this dialog
         if (nextProps !== null) {
@@ -54,6 +55,8 @@ export class TimeSelect extends Component {
             })
         }
     }
+
+
     setupTimeMap(time_str) {
         // "mon-1,tue-3" etc.
         let time_map = {};
@@ -61,6 +64,8 @@ export class TimeSelect extends Component {
             time_str.split(',').map((item) => {time_map[item] = 1; return time_map[item];});
         return time_map;
     }
+
+
     gs(cell) {
         if (this.state.time_map[cell] === 1) {
             return "active";
@@ -68,6 +73,8 @@ export class TimeSelect extends Component {
             return "inactive";
         }
     }
+
+
     clearAll(e) {
         e.preventDefault();
         this.setState({time_map: this.setupTimeMap(''), time: ''});
@@ -75,6 +82,8 @@ export class TimeSelect extends Component {
             this.state.onSave('');
         }
     }
+
+
     selectAll(e) {
         e.preventDefault();
         this.setState({time_map: this.setupTimeMap(defaultAllTimesSelected), time: defaultAllTimesSelected});
@@ -82,6 +91,8 @@ export class TimeSelect extends Component {
             this.state.onSave(defaultAllTimesSelected);
         }
     }
+
+
     select(item) {
         let tm = this.state.time_map;
         if (item === "all") {
@@ -130,7 +141,12 @@ export class TimeSelect extends Component {
         this.setState({time_map: tm});
         this.handleSave();
     }
-    // return a pretty version of GMT time (eg. Tue, 10:21)
+
+
+    /**
+     *
+     * @returns a pretty version of GMT time (e.g., Tue, 10:21)
+     */
     timeStr() {
         const gmtTime = new Date().toGMTString();
         const day = gmtTime.split(",")[0];
@@ -138,6 +154,8 @@ export class TimeSelect extends Component {
         const time_no_seconds = time[0] + ":" + time[1];
         return day + ", " + time_no_seconds;
     }
+
+
     render() {
         if (this.state.has_error) {
             return <h1>time-select.js: Something went wrong.</h1>;

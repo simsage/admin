@@ -11,7 +11,7 @@ import {
 import {showEditSynSetForm} from "./synsetSlice"
 import SynsetDelete from "./SynsetDelete";
 import SynsetDefault from "./SynsetDefault";
-import api from "../../common/api";
+import api, {IMAGES} from "../../common/api";
 import SynsetForm from "./SynsetForm";
 
 export default function SynsetList() {
@@ -128,7 +128,7 @@ export default function SynsetList() {
 
                     <div className="form-group d-flex ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
-                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of synsets" />
+                            <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of synsets" />
                         </div>
                         <button className="btn btn-outline-primary text-nowrap ms-2"
                                 onClick={() => handleAddDefaultSynSet()}

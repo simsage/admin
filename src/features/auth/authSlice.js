@@ -21,6 +21,7 @@ const initialState = {
 
     // error dialog
     is_error: false,
+    is_sign_in_error: false,
     error_title: '',
     error_text: '',
     system_message: '',
@@ -117,10 +118,6 @@ const authSlice = createSlice({
             return state;
         },
 
-        dismiss_auth_message: (state) => {
-            return {...state, system_message: ''}
-        },
-
         setSelectedKB: (state, action) => {
             const kb = action.payload;
             return {
@@ -199,6 +196,7 @@ const authSlice = createSlice({
                 return {
                     ...state,
                     busy: true,
+                    is_sign_in_error: false,
                     status: "loading"
                 }
             })
@@ -206,13 +204,18 @@ const authSlice = createSlice({
                 return {
                     ...state,
                     busy: false,
+                    is_sign_in_error: false,
                     status: "fullfilled"
                 }
             })
-            .addCase(simsageSignIn.rejected, (state) => {
+            .addCase(simsageSignIn.rejected, (state, action) => {
                 return {
                     ...state,
                     busy: false,
+                    error_text: get_error(action),
+                    error_title: "Sign in error",
+                    is_error: true,
+                    is_sign_in_error: true,
                     status: "rejected"
                 }
             })
@@ -223,6 +226,7 @@ const authSlice = createSlice({
                 return {
                     ...state,
                     busy: true,
+                    is_sign_in_error: false,
                     status: "loading"
                 }
             })
@@ -231,6 +235,7 @@ const authSlice = createSlice({
                     ...state,
                     message: '',
                     busy: false,
+                    is_sign_in_error: false,
                     status: 'logged_in',
                 }
             })
@@ -238,6 +243,7 @@ const authSlice = createSlice({
                 return {
                     ...state,
                     busy: false,
+                    is_sign_in_error: true,
                     status: "rejected"
                 }
             })
@@ -248,6 +254,7 @@ const authSlice = createSlice({
                 return {
                     ...state,
                     busy: true,
+                    is_sign_in_error: false,
                     status: "loading"
                 }
             })
@@ -255,6 +262,7 @@ const authSlice = createSlice({
                 return {
                     ...state,
                     busy: true,
+                    is_sign_in_error: false,
                     status: "logged_in"
                 }
             })
@@ -262,15 +270,20 @@ const authSlice = createSlice({
                 return {
                     ...state,
                     busy: false,
-                    error_text: action.payload?.error,
-                    status: "rejected"
+                    is_sign_in_error: true,
+                    status: "rejected",
                 }
             })
 
             /////////////////////////////////////////////////////////////////////////////
 
             .addCase(requestResetPassword.pending, (state, action) => {
-                state.error_text = '';
+                return {
+                    ...state,
+                    busy: true,
+                    error_text: '',
+                    is_sign_in_error: false,
+                }
             })
 
             .addCase(requestResetPassword.fulfilled, (state, action) => {
@@ -278,6 +291,7 @@ const authSlice = createSlice({
                     ...state,
                     busy: false,
                     system_message: "we've emailed you a link for resetting your password.",
+                    is_sign_in_error: false,
                     status: "rejected"
                 }
             })
@@ -287,6 +301,7 @@ const authSlice = createSlice({
                     ...state,
                     busy: false,
                     error_text: get_error(action),
+                    is_sign_in_error: false,
                     status: "rejected"
                 }
             })
@@ -294,15 +309,30 @@ const authSlice = createSlice({
             /////////////////////////////////////////////////////////////////////////////
 
             .addCase(resetPassword.pending, (state, action) => {
-                state.error_message = '';
+                return {
+                    ...state,
+                    busy: true,
+                    error_text: '',
+                    is_sign_in_error: false,
+                }
             })
 
             .addCase(resetPassword.fulfilled, (state, action) => {
                 const error_str = action.payload?.error;
                 if (error_str && error_str.length > 0) {
-                    state.search_error_text = error_str;
+                    return {
+                        ...state,
+                        busy: false,
+                        error_text: error_str,
+                        is_sign_in_error: false,
+                    }
                 } else {
-                    state.system_message = "Password reset.  Click 'Back to sign in' to sign-in.";
+                    return {
+                        ...state,
+                        busy: false,
+                        error_text: "Password reset.  Click 'Back to sign in' to sign-in.",
+                        is_sign_in_error: false,
+                    }
                 }
             })
 
@@ -311,6 +341,7 @@ const authSlice = createSlice({
                     ...state,
                     busy: false,
                     error_text: action.payload.response?.data?.error,
+                    is_sign_in_error: false,
                     status: "rejected"
                 }
             })
@@ -318,7 +349,13 @@ const authSlice = createSlice({
             /////////////////////////////////////////////////////////////////////////////
 
             .addCase(simsageLogOut.pending, (state, action) => {
-                state.error_message = '';
+                return {
+                    ...state,
+                    busy: true,
+                    error_text: '',
+                    is_sign_in_error: false,
+                    status: "pending"
+                }
             })
 
             .addCase(simsageLogOut.fulfilled, (state, action) => {
@@ -326,6 +363,7 @@ const authSlice = createSlice({
                     ...state,
                     busy: false,
                     session: null,
+                    is_sign_in_error: false,
                     selected_organisation: {},
                     selected_organisation_id: null,
                     selected_knowledge_base: {},
@@ -339,6 +377,7 @@ const authSlice = createSlice({
                     ...state,
                     busy: false,
                     session: null,
+                    is_sign_in_error: false,
                     selected_organisation: {},
                     selected_organisation_id: null,
                     selected_knowledge_base: {},
@@ -372,11 +411,11 @@ export const simsageLogOut = createAsyncThunk(
 
 export const simsageSignIn = createAsyncThunk(
     'auth/simsageSignIn',
-    async ({id_token, on_success, on_fail}) => {
+    async ({id_token, on_success, on_fail}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/admin/authenticate/msal';
 
-        axios.get(url, {
+        return axios.get(url, {
             headers: {
                 "API-Version": window.ENV.api_version,
                 "Content-Type": "application/json",
@@ -387,17 +426,21 @@ export const simsageSignIn = createAsyncThunk(
             .then(function (response2) {
                 if (on_success)
                     on_success(response2.data);
-                return response2;
+                return response2.data;
             })
             .catch((error) => {
                 if (on_fail)
                     on_fail(error.message);
-                return error;
+                return rejectWithValue(error?.response?.data);
             });
 
     }
 )
 
+
+export const getSessionId = (state) => {
+    return state.authReducer.session.id
+};
 
 export const signInSessionId = createAsyncThunk(
     'auth/signInSessionId',
@@ -489,7 +532,6 @@ export const {
     setSelectedOrganisation,
     closeError,
     setSelectedKB,
-    dismiss_auth_message
 } = authSlice.actions
 
 export default authSlice.reducer;

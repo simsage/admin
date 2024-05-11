@@ -17,6 +17,9 @@ function App() {
     const dispatch = useDispatch();
     const busy1 = useSelector((state) => state.kbReducer.busy)
     const busy2 = useSelector((state) => state.authReducer.busy)
+    const busy3 = useSelector((state) => state.sourceReducer.busy)
+    const busy4 = useSelector((state) => state.llmReducer.busy)
+    const busy5 = useSelector((state) => state.categorizationReducer.busy)
 
     const {initialized, keycloak} = useKeycloak()
 
@@ -72,7 +75,7 @@ function App() {
         return <div>loading...</div>;
     }
 
-    const busy = busy1 || busy2;
+    const busy = busy1 || busy2 || busy3 || busy4 || busy5;
     return (
         <div className={busy ? "dms wait-cursor" : "dms"} onClick={() => localCloseAllMenus()}>
             <LeftNavbar/>

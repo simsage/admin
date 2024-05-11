@@ -42,44 +42,52 @@ export default function UserBulk() {
         }
     };
 
+    const downloadFile = ({ data, fileName, fileType }) => {
+        const blob = new Blob([data], { type: fileType })
 
-    const handleFormClose = () => {
-        dispatch(closeUserBulkForm())
+        const a = document.createElement('a')
+        a.download = fileName
+        a.href = window.URL.createObjectURL(blob)
+        const clickEvt = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+        })
+        a.dispatchEvent(clickEvt)
+        a.remove()
+    }
+
+    const exportToCsv = e => {
+        e.preventDefault()
+
+        // Headers for each column
+        let headers = ['firstname,surname,email,groups,roles']
+
+        downloadFile({
+            data: [...headers].join('\n'),
+            fileName: 'importUsers.csv',
+            fileType: 'text/csv',
+        })
     }
 
     return (
         <div className="backup-upload">
-
             <form onSubmit={handleSubmit(onSubmit)} className="upload-container">
-                {/*<form onSubmit={(e) => handleSubmit(e)} className="upload-container">*/}
-                <div>
-
-
-                    {/*<input className="upload-control-position"*/}
-                    {/*       type="file"*/}
-                    {/*       onChange={(e) => handleImageChange(e)}/>*/}
-
-                    <input className="bg-light p-4 w-100 border rounded" type="file" {...register("file",{required: true})}  />
-                    {errors.file && 
-                    <div className="text-end text-danger small fst-italic mb-4 mt-2">Please select a backup file</div>}
-                    <div className="upload-button mt-4">
-                        <div className="control-row upload-input">
-                            {/*<button className="btn btn-primary btn-block"*/}
-                            {/*        disabled={this.state.binary_data === null || this.props.uploading}*/}
-                            {/*        onClick={this.upload.bind(this)}>restore</button>*/}
-                            {/*{this.props.uploading &&*/}
-                            {/*    <div className="upload-wheel"><img src="images/busy2.gif" alt="busy" className="busy-image" /></div>*/}
-                            {/*}*/}
-
-                            <button type="button" className="btn btn-white px-4" onClick={()=> handleFormClose()}
-                                    data-bs-dismiss="modal">Cancel
-                            </button>
-                            <input type="submit" className={"btn btn-primary px-4"}/>
-                        </div>
-                    </div>
+                <div className="mb-3">
+                    <input type="file" className={`form-control ${errors.file ? "is-invalid" : ""}`}
+                           {...register("file", { required: true })}
+                    />
+                    {errors.file && <small className="invalid-feedback d-block">Please select a backup file</small>}
+                </div>
+                <div className="upload-button mt-4 d-flex justify-content-between">
+                    <button className="btn-secondary px-4 btn" onClick={exportToCsv}>
+                        Download Template
+                    </button>
+                    <input type="submit" className={"btn btn-primary px-4"} />
                 </div>
             </form>
         </div>
     )
+
 
 }

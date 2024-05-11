@@ -119,3 +119,32 @@
     width: 16px;
     height: 16px;
 }
+
+.warning-span {
+    width: 20px;
+    height: 100%;
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: top;
+}
+
+.warning-text {
+    width: 90%;
+    height: 100%;
+    display: inline-block;
+}
+
+.error-text {
+    font-size: 13px;
+    font-weight: 300;
+    color: #cc1010;
+    cursor: default;
+}
+
+.source-name-column-width {
+    width: 300px;
+}
+
+.warning-image {
+    transform: scale(50%);
+}

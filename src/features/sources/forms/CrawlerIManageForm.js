@@ -1,17 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {BsFilePdf} from 'react-icons/bs'
 import SensitiveCredential from "../../../components/SensitiveCredential";
+import { DOCUMENTATION, useSelectedSource } from './common.js';
+
 
 export default function CrawlerIManageForm(props) {
 
-
-    const selected_source = props.source;
-
-    // const [form_error, setFormError] = useState();
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-    const l_form_data = props.form_data;
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        selected_source,
+        source_saved,
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -69,6 +71,7 @@ export default function CrawlerIManageForm(props) {
                                 onChange={(event) => {setData({password: event.target.value})}}
                                 name="Admin Password"
                                 placeholder="**********"
+                                required={!source_saved}
                             />
                         </div>
                     </div>
@@ -92,6 +95,7 @@ export default function CrawlerIManageForm(props) {
                                 onChange={(event) => {setData({clientSecret: event.target.value})}}
                                 name="Client Secret"
                                 placeholder="**********"
+                                required={!source_saved}
                             />
                         </div>
                     </div>
@@ -136,7 +140,7 @@ export default function CrawlerIManageForm(props) {
                                    onChange={(event) => {setData({folderList: event.target.value})}}
                                 />
                             </form>
-                            <ul class="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                            <ul className="alert alert-warning small py-2 mt-3 ps-4" role="alert">
                                 <li className="">Each folder must be part of the root folder and not contain any sub-folders.</li>
                                 <li className="">
                                 Each folder name must start with '/'.
@@ -146,7 +150,7 @@ export default function CrawlerIManageForm(props) {
                     </div>
                 </div>
                 <div className="col-2 offset-1">
-                    <a href="resources/imanage-setup.pdf" id="dlIManage" target="_blank"
+                    <a href={DOCUMENTATION.IMANAGE} id="dlIManage" target="_blank"
                     title="Download the SimSage iManage setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                     <BsFilePdf size={25}/>
                     <span className="me-2 mt-2"></span>iManage <br/>Setup Guide 

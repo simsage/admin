@@ -10,9 +10,10 @@ export function Pagination(props){
     num_pages = parseInt("" + num_pages);
 
     return (
-        <div className="d-flex justify-content-between mb-5 pb-5 pt-3" aria-label="Page navigation example">
+        <div className="d-flex justify-content-between mb-1 pt-1" aria-label="Page navigation example">
             <ul className="pagination">
                 <li className="page-item">
+                    { props.onChangeRowsPerPage &&
                     <div>
                         <span className="page-size-label">Show</span>
                         <span className="page-size-select mx-1">
@@ -27,6 +28,7 @@ export function Pagination(props){
                                 </select>
                             </span>
                     </div>
+                    }
                 </li>
                 <li className="page-item">
                         <span className="page-display">
@@ -68,6 +70,7 @@ export class Pagination1 extends Component {
             <div className="d-flex justify-content-between mb-5 pb-5 pt-3" aria-label="Page navigation example">
                 <ul className="pagination">
                     <li className="page-item">
+                        { this.props.onChangeRowsPerPage &&
                         <div>
                             <span className="page-size-label">Show</span>
                             <span className="page-size-select mx-1">
@@ -82,6 +85,7 @@ export class Pagination1 extends Component {
                                 </select>
                             </span>
                         </div>
+                        }
                     </li>
                     <li className="page-item">
                         <span className="page-display">

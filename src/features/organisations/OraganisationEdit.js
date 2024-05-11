@@ -5,7 +5,7 @@ export default function OrganisationEdit() {
 
     let organisation = null;
     const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form);
-    const session = useSelector((state) => state).authReducer.session;
+    const session = useSelector((state) => state.authReducer.session);
     const organisation_id = useSelector((state) => state.organisationReducer.edit_organisation_id);
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
 

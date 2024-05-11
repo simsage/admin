@@ -7,10 +7,11 @@ import {
     showEditForm,
     showDeleteAskForm,
     showOptimizeAskDialog,
-    search, showTruncateIndexesAskDialog, getKBList
+    search, getKBList, showOptimizeAbortDialog
 } from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
-import api from "../../common/api";
+import api, {IMAGES} from "../../common/api";
+import {ProgressBar} from "../../common/progress-bar";
 
 export default function KnowledgeBaseList() {
 
@@ -18,7 +19,7 @@ export default function KnowledgeBaseList() {
     const data_status = useSelector((state) => state.kbReducer.data_status);
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-    const session = useSelector((state) => state).authReducer.session;
+    const session = useSelector((state) => state.authReducer.session);
     const session_id = (session && session.id) ? session.id : "";
 
     const [page, setPage] = useState(api.initial_page);
@@ -32,7 +33,7 @@ export default function KnowledgeBaseList() {
         if (organisation_id && data_status === 'load_now')
             dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [organisation_id, data_status])
+    }, [session_id, organisation_id, data_status])
 
     function getKnowledgeBases() {
         const paginated_list = [];
@@ -77,8 +78,8 @@ export default function KnowledgeBaseList() {
         dispatch(showOptimizeAskDialog({session_id, kb: knowledge_base}));
     }
 
-    function handleTruncateSlowIndexesAsk(knowledge_base) {
-        dispatch(showTruncateIndexesAskDialog({session_id, kb: knowledge_base}));
+    function handleOptimizeIndexesAbort(knowledge_base) {
+        dispatch(showOptimizeAbortDialog({session_id, kb: knowledge_base}));
     }
 
     function handleSearchFilter(event) {
@@ -108,7 +109,7 @@ export default function KnowledgeBaseList() {
 
                         <div className="form-group d-flex ms-auto">
                             <div className="btn" onClick={() => handleRefresh()}>
-                                <img src="images/refresh.svg" className="refresh-image" alt="refresh"
+                                <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh"
                                      title="refresh memories"/>
                             </div>
                             {organisation_id && organisation_id.length > 0 &&
@@ -160,10 +161,28 @@ export default function KnowledgeBaseList() {
                                                             onClick={() => handleViewIds(knowledge_base.kbId)}
                                                             className={"btn text-primary btn-sm"}>View IDs
                                                     </button>
-                                                    <button title="optimize indexes"
-                                                            onClick={() => handleOptimizeIndexesAsk(knowledge_base)}
-                                                            className={"btn text-primary btn-sm"}>Optimize indexes
-                                                    </button>
+                                                    {
+                                                        !knowledge_base.isOptimizing &&
+                                                        <button title="optimize indexes"
+                                                                onClick={() => handleOptimizeIndexesAsk(knowledge_base)}
+                                                                className={"btn text-primary btn-sm"}>Optimize indexes
+                                                        </button>
+                                                    }
+                                                    {
+                                                        knowledge_base.isOptimizing &&
+                                                        <button
+                                                            title={"click to abort: index optimization in progress @ " + knowledge_base.optimizationProgress + "%"}
+                                                            onClick={() => handleOptimizeIndexesAbort(knowledge_base)}
+                                                            className={"btn text-primary btn-sm"}>
+                                                            Abort Optimization
+                                                        </button>
+                                                    }
+                                                    {
+                                                        knowledge_base.isOptimizing &&
+                                                        <ProgressBar percent={knowledge_base.optimizationProgress}
+                                                                     width={80}
+                                                                     title={"progress @ " + knowledge_base.optimizationProgress + "%"}/>
+                                                    }
                                                     <button title="edit knowledge base"
                                                             onClick={() => handleEditForm(knowledge_base.kbId)}
                                                             className={"btn text-primary btn-sm"}>Edit

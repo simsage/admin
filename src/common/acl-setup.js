@@ -170,13 +170,8 @@ export default function AclSetup(props) {
 
     return (
         <div className="row pb-5">
-
             <div className="role-block col-6">
                 <h6 className="role-label text-center">ACLs </h6>
-                {/* <span className="filter-text-box"><input type="text" className="filter-text" value={selected_filter}
-                                                                 onChange={(event) => { setState({selected_filter: event.target.value})}} />
-                            <span className="clear" title="clear filter" onClick={() => setState({selected_filter: ''})}>&times;</span>
-                        </span> */}
                 <div className="role-area bg-light border rounded h-100">
                     <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center bg-white'>
                         <input type="text" className="filter-text w-100 px-2 py-2 border-0" placeholder="Filter..."
@@ -214,11 +209,6 @@ export default function AclSetup(props) {
 
             <div className="role-block col-6">
                 <h6 className="role-label text-center">Available</h6>
-                {/* <span className="available-filter-label">filter </span>
-                        <span className="filter-text-box"><input type="text" className="filter-text" value={state.available_filter}
-                                                                 onChange={(event) => { setState({available_filter: event.target.value})}} />
-                            <span className="clear" title="clear filter" onClick={() => setState({available_filter: ''})}>&times;</span>
-                        </span> */}
                 <div className="role-area bg-light border rounded h-100">
                     <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center bg-white'>
                         <input type="text" className="filter-text w-100 px-2 py-2 border-0" placeholder="Filter..."
@@ -243,5 +233,5 @@ export default function AclSetup(props) {
             </div>
 
         </div>
-    );
+    )
 }

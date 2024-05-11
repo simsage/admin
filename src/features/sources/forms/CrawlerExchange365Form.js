@@ -1,17 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {BsFilePdf} from 'react-icons/bs'
 import SensitiveCredential from "../../../components/SensitiveCredential";
+import { DOCUMENTATION, useSelectedSource } from './common.js';
+
 
 export default function CrawlerExchange365Form(props) {
 
-
-    const selected_source = props.source;
-
-    // const [form_error, setFormError] = useState();
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-    const l_form_data = props.form_data;
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        selected_source,
+        source_saved,
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -50,7 +52,6 @@ export default function CrawlerExchange365Form(props) {
                             <form>
                                 <input type="text" className="form-control"
                                     placeholder=""
-                                    autoFocus={true}
                                     value={specific_json.clientId}
                                     onChange={(event) => {setData({clientId: event.target.value})}}
                                 />
@@ -64,6 +65,7 @@ export default function CrawlerExchange365Form(props) {
                                 specific_json={specific_json.clientSecret}
                                 onChange={(event) => {setData({clientSecret: event.target.value})}}
                                 name="Client Secret"
+                                required={!source_saved}
                             />
                         </div>
                     </div>
@@ -95,34 +97,13 @@ export default function CrawlerExchange365Form(props) {
                     </div>
                 </div>
                 <div className="col-2 offset-1">
-                    <a href="resources/simsage-exchange365-setup.pdf" id="dlOffice365" target="_blank"
+                    <a href={DOCUMENTATION.EXCHANGE365} id="dlOffice365" target="_blank"
                     title="Download the SimSage Exchange 365 setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                     <BsFilePdf size={25}/>
                     <span className="me-2 mt-2"></span>Exchange 365 <br/>Setup Guide
                     </a>
                 </div>
             </div>
-    
-
-
-
-
-
-            {/*<div className="form-group">*/}
-            {/*        <span className="full-column">*/}
-            {/*            <span className="small-label-right">redirect url</span>*/}
-            {/*            <span className="bigger-text">*/}
-            {/*                <form>*/}
-            {/*                    <input type="text" className="form-control"*/}
-            {/*                           placeholder="redirect url: the SimSage interface url to return-to after MS sign-in completes."*/}
-            {/*                           value={specific_json.redirectUrl}*/}
-            {/*                           onChange={(event) => {setData({redirectUrl: event.target.value})}}*/}
-            {/*                    />*/}
-            {/*                </form>*/}
-            {/*            </span>*/}
-            {/*        </span>*/}
-            {/*</div>*/}
-
         </div>
     )
 }

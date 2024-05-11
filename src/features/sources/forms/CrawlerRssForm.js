@@ -1,14 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
+import {useSelectedSource} from "./common";
 
 export default function CrawlerRssForm(props) {
 
 
-    const selected_source = props.source;
-
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-    const l_form_data = props.form_data;
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
 
     //update local variable specific_json when data is changed
@@ -37,7 +38,7 @@ export default function CrawlerRssForm(props) {
                             value={specific_json.endpoint}
                         onChange={(event) => setData({endpoint: event.target.value})} />
                     </form>
-                    <ul class="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                    <ul className="alert alert-warning small py-2 mt-3 ps-4" role="alert">
                         <li className="">This is the main endpoint for any RSS
                             feed. Be sure to uncheck.</li>
                     </ul>
@@ -51,7 +52,7 @@ export default function CrawlerRssForm(props) {
                             value={specific_json.initial_feed}
                             onChange={(event) => setData({initial_feed: event.target.value})} />
                     </form>
-                    <ul class="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                    <ul className="alert alert-warning small py-2 mt-3 ps-4" role="alert">
                         <li className="">The contents of this RSS endpoint is a CSV list and each item will be processed once when the crawler starts and is meant to act as an initial set up..</li>
                     </ul>
                 </div>

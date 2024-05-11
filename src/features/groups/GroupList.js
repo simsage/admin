@@ -6,6 +6,7 @@ import {hasRole} from "../../common/helpers";
 import GroupEdit from "./groupEdit";
 import GroupDeleteAsk from "./GroupDeleteAsk";
 import api from "../../common/api";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
 
@@ -66,7 +67,7 @@ export default function GroupList(){
     }
 
     function handleEditGroup(group) {
-        dispatch(showEditGroupForm({show:true, name:group.name}));
+        dispatch(showEditGroupForm({show: true, name: group.displayName, userIdList: group.userIdList, ssoSource: group.ssoSource}));
     }
     function handleAddGroup() {
         dispatch(showAddGroupForm(true));
@@ -115,12 +116,20 @@ export default function GroupList(){
                             return (
                                 <tr key={group.name} >
                                     <td className="pt-3 px-4 pb-2 d-flex">
-                                        <div className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{group.name}</div>
-                                    </td>
-                                    <td className="pt-3 px-4 pb-0">
-                                        <div className="d-flex  justify-content-end">
-                                            <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"} onClick={() => handleEditGroup(group)}>Edit</button>
-                                            <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteGroupAsk(group)}>Delete</button>
+                                        <div
+                                            className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">
+                                            {group.ssoSource &&
+                                                <img src="images/icon/icon_sso_GOOGLE.svg" className={"sso_icon"}
+                                                     title="SSO Group"/>}
+                                            {group.displayName}
+                                        </div>
+                                                </td>
+                                                <td className="pt-3 px-4 pb-0">
+                                                <div className="d-flex  justify-content-end">
+                                                <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"}
+                                            onClick={() => handleEditGroup(group)}>{group.ssoSource?"View":"Edit"}
+                                        </button>
+                                        <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteGroupAsk(group)}>Delete</button>
                                         </div>
                                     </td>
                                 </tr>

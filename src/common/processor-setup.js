@@ -44,7 +44,6 @@ export class ProcessorSetup extends Component {
                 <div className="form-group">
                     <div className="">
                         <label className="label-2 small">Processor Configuration</label>
-                        <form>
 
                             <Editor
                                 className={"monaco_yaml"}
@@ -59,8 +58,6 @@ export class ProcessorSetup extends Component {
                                 }}
                             />
 
-
-                        </form>
                     </div>
                 </div>
 

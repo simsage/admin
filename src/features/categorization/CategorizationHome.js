@@ -2,40 +2,43 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect} from "react";
 import {loadCategorizations} from "./categorizationSlice";
 import CategorizationList from "./CategorizationList";
-import api from "../../common/api";
-import CategorizationError from "./CategorizationError";
+// import SynonymIntro from "./SynonymIntro";
+// import SynonymList from "./SynonymList";
+//
+// import {SynonymErrorDialog} from "./SynonymErrorDialog";
 
-export default function CategorizationHome() {
+export default function CategorizationHome(props) {
 
-    const dispatch = useDispatch();
-    const session = useSelector((state) => state.authReducer.session);
-    const session_id = session.id;
-    const load_data = useSelector( (state) => state.categorizationReducer.data_status)
+    const dispatch = useDispatch()
 
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
-
-    const page_size = api.initial_page_size;
-    let prev_cat_label = null;
+    const session = useSelector((state) => state.authReducer.session);
+    const session_id = session.id;
+    const status = useSelector((state) => state.categorizationReducer.status);
+    const load_data = useSelector( (state) => state.categorizationReducer.data_status)
 
     let data = {
-        session_id: session_id,
-        organisation_id:selected_organisation_id,
-        kb_id:selected_knowledge_base_id,
-        prevCategorizationLabel: prev_cat_label,
-        pageSize: page_size};
-
-    useEffect(()=>{
-        dispatch(loadCategorizations(data))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[load_data === "load_now",selected_knowledge_base_id])
-
+        "organisationId": selected_organisation_id,
+        "kbId": selected_knowledge_base_id,
+        "prevId": null,
+        "filter": "",
+        "pageSize": 10
+    };
 
     return (
         <div className="">
-            <CategorizationList />
-            <CategorizationError/>
-        </div>
 
+            {/*{status === null &&*/}
+            {/*    <SynonymIntro />*/}
+
+            {/*}*/}
+            {/*Intro message when there are no bot items loaded*/}
+            {status !== null &&
+                <CategorizationList />
+
+            }
+            {/*<SynonymErrorDialog/>*/}
+        </div>
     )
 }

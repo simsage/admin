@@ -13,6 +13,7 @@ const initialState = {
     show_error_message: false,
     error_message: undefined,
     edit_group: undefined,
+    edit_group_user_id_list: [],
     data_status: "load_now"
 }
 
@@ -88,6 +89,7 @@ const extraReducers = (builder) => {
             state.data_status = "load_now";
             state.show_group_form = false;
             state.edit_group = undefined;
+            state.edit_group_user_id_list = [];
         })
         .addCase(updateGroup.rejected, (state, action) => {
             state.status = "rejected";
@@ -122,6 +124,9 @@ const groupSlice = createSlice({
         showEditGroupForm: (state, action) => {
             state.show_group_form = action.payload.show
             state.edit_group = action.payload.name
+            state.edit_group = action.payload.name
+            state.sso_source = action.payload.ssoSource
+            state.edit_group_user_id_list = action.payload.userIdList;
         },
         showAddGroupForm: (state, action) => {
             state.show_group_form = action.payload;
@@ -129,6 +134,7 @@ const groupSlice = createSlice({
         closeGroupForm: (state) => {
             state.show_group_form = false;
             state.edit_group = undefined;
+            state.edit_group_user_id_list = [];
         },
         showGroupDeleteAsk: (state, action) => {
             state.show_delete_form = action.payload.show;

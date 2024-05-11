@@ -34,3 +34,9 @@
     float: left;
 }
 
+.scrollable-view {
+    height: 400px;
+    overflow-y: auto;
+    text-wrap: normal;
+    overflow-x: hidden;
+}

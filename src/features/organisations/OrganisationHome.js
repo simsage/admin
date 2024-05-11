@@ -21,7 +21,7 @@ import OrganisationDeleteAsk from "./OrganisationDeleteAsk";
 import OrganisationError from "./OrganisationError";
 import BkOrganisationRestore from "./BkOrganisationRestore";
 import {hasRole} from "../../common/helpers";
-import api from "../../common/api";
+import api, {IMAGES} from "../../common/api";
 import {ShowInvalidSession} from "./ShowInvalidSession";
 import {getGroupList} from "../groups/groupSlice";
 import {useKeycloak} from "@react-keycloak/web";
@@ -148,7 +148,7 @@ export function OrganisationHome() {
                     </div>
                     <div className="form-group d-flex ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
-                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh organisations" />
+                            <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh organisations" />
                         </div>
                         <button data-testid="add-new-organisation"
                                 onClick={() => setShowRestoreOrganisationForm(!show_restore_organisation_form)}

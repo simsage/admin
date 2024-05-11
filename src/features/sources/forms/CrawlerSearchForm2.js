@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from "react";
+import {useSelectedSource} from "./common";
 
 export default function CrawlerSearchForm2(props){
 
-    const selected_source = props.source;
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-    const l_form_data = props.form_data;
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
     const [query_list, setQueryList] = useState(specific_json.queryList?specific_json.queryList:[''])
     //update local variable specific_json when data is changed
@@ -57,7 +60,6 @@ export default function CrawlerSearchForm2(props){
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
-
             <div className="row mb-4">
                 <div className="form-group col-4">
                     <label className="small required">Target Organisation</label>
@@ -95,9 +97,9 @@ export default function CrawlerSearchForm2(props){
                             placeholder="User ID the search will run"
                             autoFocus={true}
                             value={specific_json.userId}
-                                        onChange={(event) => {
-                                            setData({userId: event.target.value})
-                                        }}
+                               onChange={(event) => {
+                                   setData({userId: event.target.value})
+                               }}
                         />
                     </form>
                 </div>
@@ -108,7 +110,6 @@ export default function CrawlerSearchForm2(props){
                     </form>
                 </div>
             </div>
-
         </div>
     );
 }

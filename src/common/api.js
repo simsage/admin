@@ -1,13 +1,27 @@
 import {Comms} from "./comms";
 
+
+
+
+
+export const IMAGES = {
+    REFRESH_IMAGE: "images/refresh.svg",
+}
+
+
 // api wrappers
 export class Api {
 
     static initial_page_size = 10;
     static initial_page = 0;
 
+
     static defined(value) {
         return (value !== null && value !== undefined);
+    }
+
+    static definedAndNotBlank = (txt) => {
+        return !!txt && txt.trim().length > 0
     }
 
     static hasSourceId(source) {
@@ -29,21 +43,29 @@ export class Api {
                 .toString(16)
                 .substring(1);
         }
+
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     };
 
     static formatSizeUnits(bytes) {
-        if      (bytes >= 1073741824) { bytes = (bytes / 1073741824).toFixed(2) + " GB"; }
-        else if (bytes >= 1048576)    { bytes = (bytes / 1048576).toFixed(2) + " MB"; }
-        else if (bytes >= 1024)       { bytes = (bytes / 1024).toFixed(2) + " KB"; }
-        else if (bytes > 1)           { bytes = bytes + " bytes"; }
-        else if (bytes === 1)          { bytes = bytes + " byte"; }
-        else                          { bytes = "0 bytes"; }
+        if (bytes >= 1073741824) {
+            bytes = (bytes / 1073741824).toFixed(2) + " GB";
+        } else if (bytes >= 1048576) {
+            bytes = (bytes / 1048576).toFixed(2) + " MB";
+        } else if (bytes >= 1024) {
+            bytes = (bytes / 1024).toFixed(2) + " KB";
+        } else if (bytes > 1) {
+            bytes = bytes + " bytes";
+        } else if (bytes === 1) {
+            bytes = bytes + " byte";
+        } else {
+            bytes = "0 bytes";
+        }
         return bytes;
     };
 
     // convert unix timestamp to string if it's for a reasonable time in the future
-    static unixTimeConvert(timestamp){
+    static unixTimeConvert(timestamp) {
         if (timestamp > 1000) {
             const a = new Date(timestamp);
             const year = a.getUTCFullYear();
@@ -57,7 +79,7 @@ export class Api {
         return "";
     }
 
-    // get current time in milli-seconds
+    // get current time in milliseconds
     static getSystemTime() {
         return new Date().getTime();
     }
@@ -115,7 +137,7 @@ export class Api {
         return ("" + item).padStart(2, '0');
     }
 
-    // setup the timer
+    // set up the timer
     static setupTimer() {
         return true;
     }
@@ -161,11 +183,14 @@ export class Api {
     static passwordResetRequest(email, success, fail) {
         if (email && email.length > 0) {
             Comms.http_post('/auth/reset-password-request', {"email": email},
-                (response) => { success(response.data.session, response.data.user) },
-                (errStr) => { fail(errStr) }
+                (response) => {
+                    success(response.data.session, response.data.user)
+                },
+                (errStr) => {
+                    fail(errStr)
+                }
             )
-        }
-        else{
+        } else {
             fail('you must provide your SimSage email address');
         }
     };
@@ -175,11 +200,14 @@ export class Api {
         if (email && email.length > 0 && newPassword.length > 0) {
             const payload = {"email": email, "password": newPassword, "resetId": reset_id};
             Comms.http_post('/auth/reset-password', payload,
-                (response) => { success(response.data.session, response.data.user) },
-                (errStr) => { fail(errStr) }
+                (response) => {
+                    success(response.data.session, response.data.user)
+                },
+                (errStr) => {
+                    fail(errStr)
+                }
             )
-        }
-        else{
+        } else {
             fail('please complete and check all fields');
         }
     };
@@ -196,13 +224,17 @@ export class Api {
     // upload data to the system
     static uploadDocument(payload, success, fail) {
         Comms.http_put('/document/upload', payload,
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
+            (response) => {
+                success(response.data)
+            },
+            (errStr) => {
+                fail(errStr)
+            }
         )
     };
 
     // perform a semantic search
-    static semanticSearch(organisationId, kb_id, keywords, num_results=10, score_threshold=0.1, success, fail) {
+    static semanticSearch(organisationId, kb_id, keywords, num_results = 10, score_threshold = 0.1, success, fail) {
         Comms.http_put('/semantic/search', {
                 organisationId: organisationId,
                 kbId: kb_id,
@@ -211,8 +243,12 @@ export class Api {
                 numResults: num_results,
                 scoreThreshold: score_threshold,
             },
-            (response) => { success(response.data) },
-            (errStr) => { fail(errStr) }
+            (response) => {
+                success(response.data)
+            },
+            (errStr) => {
+                fail(errStr)
+            }
         )
     }
 
@@ -226,9 +262,9 @@ export class Api {
     }
 
     //return array of pretty roles
-    static getPrettyRoles(roles){
+    static getPrettyRoles(roles) {
         return roles.map(role => {
-            return {'role':role, 'label':this.getPrettyRole(role)}
+            return {'role': role, 'label': this.getPrettyRole(role)}
         })
     }
 
@@ -248,7 +284,7 @@ export class Api {
 // convert js response to its error output equivalent
 export function get_error(action) {
     const str1 = action?.error?.message?.toString() ?? '';
-    const str2 = action?.payload?.message?.toString() ?? '';
+    const str2 = action?.payload?.error?.toString() ?? action?.payload?.message?.toString() ?? '';
     const str3 = action?.type?.toString() ?? '';
     const str4 = action?.payload?.response?.data?.error ?? '';
     let final_str = "";
@@ -275,8 +311,6 @@ export function get_error(action) {
     }
     return final_str;
 }
-
-
 
 
 export default Api;

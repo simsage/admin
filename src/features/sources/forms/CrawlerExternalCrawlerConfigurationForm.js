@@ -6,7 +6,7 @@ import Api from "../../../common/api";
 const compose = "version: \"3.9\"\n" +
     "services:\n" +
     "  web:\n" +
-    "    build: simsage/external-crawler:<version>\n" +
+    "    image: simsage/external-crawler:<version>\n" +
     "    deploy:\n" +
     "      resources:\n" +
     "        limits:\n" +
@@ -21,7 +21,11 @@ const compose = "version: \"3.9\"\n" +
     "     - source_id=<source>\n" +
     "     - organisation_id=<org>\n" +
     "     - kb_id=<kb>\n" +
+    "     - exit_after_crawl=false\n" +
+    "     - external_crawler_use_encryption=true\n" +
     "     - sid=<sid>\n" +
+    "     - max_errors=0\n" +
+    "     - exit_after_crawl=false\n" +
     "     - shared_secret_salt=<secret>\n" +
     "     - simsage_endpoint=<server>\n";
 
@@ -34,6 +38,11 @@ const docker = "docker run -d --name crawler-<source> --net=host --restart alway
     "     -e sid=<sid>  \\\n" +
     "     -e shared_secret_salt=<secret> \\\n" +
     "     -e simsage_endpoint=<server>  \\\n" +
+    "     -e exit_after_crawl=false\n" +
+    "     -e external_crawler_use_encryption=true\n" +
+    "     -e max_errors=0  \\\n" +
+    "     -e exit_after_crawl=false  \\\n" +
+    "     --memory=2g --memory-reservation=1536m \\\n" +
     "     simsage/external-crawler:<version>\n";
 
 const bash = "#!/bin/bash\n" +
@@ -50,6 +59,9 @@ const bash = "#!/bin/bash\n" +
     "export source_id=<source>\n" +
     "export shared_secret_salt=<secret>\n" +
     "export api_version=1\n" +
+    "export max_errors=0\n" +
+    "export external_crawler_use_encryption=true\n" +
+    "export exit_after_crawl=false\n" +
     "# SimSage location\n" +
     "export simsage_endpoint=<server>\n" +
     "\n" +
@@ -79,7 +91,7 @@ const bash = "#!/bin/bash\n" +
     "    --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED \\\n" +
     "    --add-opens java.management/sun.management=ALL-UNNAMED \\\n" +
     "    -XX:+ExitOnOutOfMemoryError -XX:+CompactStrings -cp $CP -Dsimsage.external.crawler=true \\\n" +
-    "    -XX:MaxRAMPercentage=50.0 \\\n" +
+    "    -Xms2G -Xmx2G \\\n" +
     "     nz.simsage.external.crawler.MainKt \"$@\"\n";
 
 const bat = "REM\n" +
@@ -94,6 +106,9 @@ const bat = "REM\n" +
     "set source_id=<source>\n" +
     "set shared_secret_salt=<secret>\n" +
     "set api_version=1\n" +
+    "set max_errors=0\n" +
+    "set exit_after_crawl=false\n" +
+    "set external_crawler_use_encryption=true\n" +
     "\n" +
     "REM this is your instance / server endpoint\n" +
     "set simsage_endpoint=<server>\n" +
@@ -122,7 +137,7 @@ const bat = "REM\n" +
     "    --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED ^\n" +
     "    --add-opens java.management/sun.management=ALL-UNNAMED ^\n" +
     "    -XX:+ExitOnOutOfMemoryError -XX:+CompactStrings -cp \"lib/*\" -Dsimsage.external.crawler=true ^\n" +
-    "    -XX:MaxRAMPercentage=50.0 ^\n" +
+    "    -Xms2G -Xmx2G ^\n" +
     "     nz.simsage.external.crawler.MainKt\n";
 
 export default function CrawlerExternalCrawlerConfigurationForm(props) {

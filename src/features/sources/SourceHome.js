@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import Api from "../../common/api";
+import Api, {IMAGES} from "../../common/api";
 import api from "../../common/api";
 import {Pagination} from "../../common/pagination";
 import CrawlerImportExport from "./crawler-import-export";
@@ -20,10 +20,8 @@ import {
     showImportForm,
     showProcessFilesAlert,
     showStartCrawlerAlert,
-    showZipCrawlerAlert,
 } from "./sourceSlice";
 import {SourceStartDialog} from "./SourceStartDialog";
-import {SourceZipDialog} from "./SourceZipDialog";
 import {SourceProcessFilesDialog} from "./SourceProcessFilesDialog";
 import {SourceErrorDialog} from "./SourceErrorDialog";
 import "../../css/home.css";
@@ -32,7 +30,7 @@ import SourceFailures from "./SourceFailures";
 
 //TODO:: No need to list documents anymore.
 
-export default function SourceHome(props) {
+export default function SourceHome() {
 
     const dispatch = useDispatch();
     const theme = '';
@@ -43,7 +41,6 @@ export default function SourceHome(props) {
     const show_start_crawler_prompt = useSelector((state) => state.sourceReducer.show_start_crawler_prompt);
     const source_filter = useSelector((state) => state.sourceReducer.source_filter);
 
-    const show_zip_crawler_prompt = useSelector((state) => state.sourceReducer.show_zip_crawler_prompt);
     const show_process_files_prompt = useSelector((state) => state.sourceReducer.show_process_files_prompt);
     const show_error_form = useSelector((state) => state.sourceReducer.show_error_form);
     const show_failed_documents = useSelector((state) => state.sourceReducer.show_failed_docs);
@@ -70,6 +67,7 @@ export default function SourceHome(props) {
         {slug: 'name_desc', label: 'Name Desc'}
     ];
 
+    const WARNING_IMAGE = "../images/warning.png"
 
     useEffect(() => {
         dispatch(getSources({
@@ -229,10 +227,6 @@ export default function SourceHome(props) {
         dispatch(showImportForm())
     }
 
-    function handleZipSource(source) {
-        dispatch(showZipCrawlerAlert({source: source}))
-    }
-
     function handleProcessFiles(source) {
         dispatch(showProcessFilesAlert({source: source}))
     }
@@ -259,12 +253,10 @@ export default function SourceHome(props) {
             if (crawler.endTime > crawler.startTime) {
                 if (Api.defined(crawler.schedule) && crawler.schedule.length === 0 && crawler.endTime > 0)
                     return "schedule disabled: last finished " + Api.unixTimeConvert(crawler.endTime);
-                if (crawler.numErrors === 0)
-                    return "finished at " + Api.unixTimeConvert(crawler.startTime);
-                else if (crawler.numErrors > crawler.errorThreshold)
-                    return "failed with " + crawler.numErrors + " errors at " + Api.unixTimeConvert(crawler.startTime);
+                if (crawler.numErrors > crawler.errorThreshold)
+                    return "failed with " + crawler.numErrors + " errors at " + Api.unixTimeConvert(crawler.endTime);
                 else
-                    return "finished at " + Api.unixTimeConvert(crawler.startTime);
+                    return "finished at " + Api.unixTimeConvert(crawler.endTime);
             }
         }
         return "?";
@@ -319,11 +311,11 @@ export default function SourceHome(props) {
                     <div className="form-group me-2 small text-black-50 px-4">Order by</div>
                     <div className="form-group me-2">
 
-                        <select placeholder={"Filter"} value={order_by} autoFocus={true}
+                        <select placeholder="Filter" value={order_by} autoFocus={true}
                                 className={"form-select filter-text-width " + theme}
                                 onChange={(e) => setOrderBy(e.target.value)}>
-                            {order_by_options.map((item) => {
-                                return <option value={item.slug}>{item.label}</option>
+                            {order_by_options.map((item, i) => {
+                                return <option key={i} value={item.slug}>{item.label}</option>
                             })}
 
                         </select>
@@ -333,10 +325,12 @@ export default function SourceHome(props) {
                 <div className="form-group ms-auto">
                     {selected_knowledge_base_id && selected_knowledge_base_id.length > 0 &&
                         <div className="d-flex">
-                            <div className="btn" onClick={() => refresh_sources()}><img src="images/refresh.svg"
-                                                                                        className="refresh-image"
-                                                                                        alt="refresh"
-                                                                                        title="refresh source-list"/>
+                            <div className="btn" onClick={() => refresh_sources()}>
+                                <img src={IMAGES.REFRESH_IMAGE}
+                                     className="refresh-image"
+                                     alt="refresh"
+                                     title="refresh source-list"
+                                />
                             </div>
                             <button className="btn btn-outline-primary text-nowrap ms-2"
                                     onClick={() => handleImportCrawler()}>Import Crawler
@@ -368,11 +362,21 @@ export default function SourceHome(props) {
                                 const description = getCrawlerStatus(crawler);
                                 return (
                                     <tr key={crawler.sourceId}>
-                                        <td className="pt-3 px-4 pb-3 fw-500">
+                                        <td className="pt-3 px-4 pb-3 fw-500 source-name-column-width">
                                             <div className="source-label">{crawler.name}</div>
+                                            { crawler.sourceError && crawler.sourceError.created > 0 && crawler.sourceError.message &&
+                                            <div className="row error-text m-1" title={Api.unixTimeConvert(crawler.sourceError.created) + "  :  " + crawler.sourceError.message}>
+                                                <span className="col-2 d-flex warning-span">
+                                                    <img alt="warning image" src={WARNING_IMAGE} className="warning-image"/>
+                                                </span>
+                                                <span className="col-10 d-flex warning-text mt-1">
+                                                {"" + crawler.sourceError.message}
+                                                </span>
+                                            </div>
+                                            }
                                         </td>
                                         <td className="pt-3 px-4 pb-3 fw-light">
-                                            <div className="source-label">{crawler.sourceId}</div>
+                                        <div className="source-label">{crawler.sourceId}</div>
                                         </td>
                                         <td className="pt-3 px-4 pb-3">
                                             <div className="source-label">{crawler.crawlerType}</div>
@@ -381,28 +385,29 @@ export default function SourceHome(props) {
                                             <div className="source-label small-label-size"
                                                  title={description}>{description}</div>
                                         </td>
-                                        <td className="pt-3 px-4 pb-3 fw-light">
+                                        <td className="pt-3 px-4 pb-3 fw-light w-25">
                                             {/*<div className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>*/}
                                             <div>
                                                 <div>{`collected: ${crawler.numCrawledDocuments.toLocaleString()}`}</div>
                                                 <div>{`converted: ${crawler.numConvertedDocuments.toLocaleString()}`}</div>
                                                 <div>{`analyzed: ${crawler.numParsedDocuments.toLocaleString()}`}</div>
                                                 <div>{`indexed: ${crawler.numIndexedDocuments.toLocaleString()}`}</div>
+                                                <div>{`translated: ${crawler.numTranslatedDocuments.toLocaleString()}`}</div>
                                                 <div>{`completed: ${crawler.numFinishedDocuments.toLocaleString()}`}</div>
                                                 <div>{`failed: ${crawler.numErroredDocuments.toLocaleString()}`}</div>
                                                 <div>{`total documents: ${crawler.numTotalDocuments.toLocaleString()}`}</div>
 
                                                 <div>{`total failed:`}{crawler.numTotalErroredDocuments > 0 &&
-                                                        <button title="view failed documents"
-                                                                onClick={() => handleShowFailedDocuments(crawler)}
-                                                                className={"btn error_doc_link"}>{crawler.numTotalErroredDocuments.toLocaleString()}
-                                                        </button>}
+                                                    <button title="view failed documents"
+                                                            onClick={() => handleShowFailedDocuments(crawler)}
+                                                            className={"btn error_doc_link"}>{crawler.numTotalErroredDocuments.toLocaleString()}
+                                                    </button>}
                                                     {crawler.numTotalErroredDocuments === 0 &&
                                                         <span> {crawler.numTotalErroredDocuments.toLocaleString()}</span>}
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="pt-3 px-4 pb-0">
+                                        <td className="pt-3 px-2 pb-0">
                                             <div className="d-flex justify-content-end">
                                                 <button title="start crawler"
                                                         onClick={() => handleStartCrawler(crawler)}
@@ -419,27 +424,11 @@ export default function SourceHome(props) {
                                                         onClick={() => handleExportCrawler(crawler)}
                                                         className={"btn text-primary btn-sm"}>Export
                                                 </button>
-                                                <button title="zip all files in a source"
-                                                        onClick={() => handleZipSource(crawler)}
-                                                        className={"btn text-primary btn-sm"}>Zip
-                                                </button>
                                                 <button title="remove crawler"
                                                         onClick={() => handleDeleteCrawler(crawler)}
                                                         className={"btn text-danger btn-sm"}>Remove
                                                 </button>
                                             </div>
-                                            {/*<div className="link-button" onClick={() => editCrawler(crawler)}>*/}
-                                            {/*    <img src="images/edit.svg" className="image-size" title="edit crawler" alt="edit"/>*/}
-                                            {/*</div>*/}
-                                            {/*<div className="link-button" onClick={() => deleteCrawlerAsk(crawler)}>*/}
-                                            {/*    <img src="images/delete.svg" className="image-size" title="remove crawler" alt="remove"/>*/}
-                                            {/*</div>*/}
-                                            {/*<div className="link-button" onClick={() => exportCrawler(crawler)}>*/}
-                                            {/*    <img src="images/download.svg" className="image-size" title="get crawler JSON for export" alt="export"/>*/}
-                                            {/*</div>*/}
-                                            {/*<div className="link-button" onClick={() => zipSourceAsk(crawler)}>*/}
-                                            {/*    <img src="images/zip.svg" className="image-size" title="zip all files in a source" alt="zip files"/>*/}
-                                            {/*</div>*/}
                                         </td>
                                     </tr>
                                 )
@@ -467,9 +456,6 @@ export default function SourceHome(props) {
 
             {show_start_crawler_prompt &&
                 <SourceStartDialog/>
-            }
-            {show_zip_crawler_prompt &&
-                <SourceZipDialog/>
             }
 
             {show_process_files_prompt &&

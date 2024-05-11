@@ -307,9 +307,21 @@
     width: 800px;
 }
 
+.drive_row {
+    border-bottom: 1px #dee2e6 solid;
+}
+
+.drive_row div, .drive_row svg{
+    display: inline-block;
+}
 
 
 .monaco_yaml {
     height: 500px;
     margin-top: 20px;
+}
+
+.gdrive-drives-scroll-section {
+    max-height: 120px;
+    overflow: auto;
 }

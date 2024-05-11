@@ -1,16 +1,18 @@
-import React, {useEffect, useState} from "react";
-import Api from "../../../common/api";
+import React, {useEffect} from "react";
 import {BsFilePdf} from "react-icons/bs";
 import SensitiveCredential from "../../../components/SensitiveCredential";
+import { DOCUMENTATION, useSelectedSource } from './common.js';
 
 export default function CrawlerAWSForm(props) {
 
-    const selected_source = props.source;
-
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-    const l_form_data = props.form_data;
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        selected_source,
+        source_saved,
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -29,43 +31,55 @@ export default function CrawlerAWSForm(props) {
             {/**********************************-BUCKET-NAME, ACCESS-KEY & PDF-**********************************/}
             <div className="row mb-4">
                 <div className="form-group col-4">
-                    <label className="small required">bucket name</label>
+                    <label className="small required">Bucket Name</label>
                     <form>
                         <input type="email" className="form-control nfs-width"
                                autoFocus={true}
-                               placeholder="e.g., data"
-                               value={specific_json.username}
+                               placeholder="e.g., simsagedev1"
+                               value={specific_json.bucket_name}
                                onChange={(event) => {
-                                   setData({username: event.target.value})
+                                   setData({bucket_name: event.target.value})
                                }}
                                required
                         />
                     </form>
                 </div>
                 <div className="form-group col-4">
-                    <div className="form-group col-6">
-                        <SensitiveCredential
-                            selected_source={selected_source}
-                            specific_json={specific_json.access_key}
-                            placeholder="*****************"
-                            onChange={(event) => {
-                                setData({access_key: event.target.value})
-                            }}
-                            name="Access Key"
-                        />
-                    </div>
+                    <SensitiveCredential
+                        selected_source={selected_source}
+                        specific_json={specific_json.access_key}
+                        placeholder="*****************"
+                        onChange={(event) => {
+                            setData({access_key: event.target.value})
+                        }}
+                        name="Access Key"
+                    />
                 </div>
                 <div className="col-2 offset-1">
-                    <a href="resources/simsage-aws-crawler-setup.pdf" id="dlGDrive" target="_blank"
-                       title="Download the SimSage Confluence setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <a href={DOCUMENTATION.AWS} id="dlGDrive" target="_blank"
+                       title="Download the SimSage AWS setup guide"
+                       className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
                         <span className="me-2 mt-2"></span>AWS <br/>Setup Guide
                     </a>
                 </div>
             </div>
-            {/**********************************-API TOKEN & BOARD KEY-**********************************/}
+            {/**********************************-SECRET KEY & REGION-**********************************/}
             <div className="row mb-4">
-                <div className="form-group col-6">
+                <div className="form-group col-4">
+                    <label className="small required">Region</label>
+                    <form>
+                        <input type="text" className="form-control nfs-width"
+                               placeholder="e.g., eu-west-2"
+                               value={specific_json.region}
+                               onChange={(event) => {
+                                   setData({region: event.target.value})
+                               }}
+                               required
+                        />
+                    </form>
+                </div>
+                <div className="form-group col-4">
                     <SensitiveCredential
                         selected_source={selected_source}
                         specific_json={specific_json.secret_key}
@@ -74,19 +88,8 @@ export default function CrawlerAWSForm(props) {
                             setData({secret_key: event.target.value})
                         }}
                         name="Secret Key"
+                        required={!source_saved}
                     />
-                </div>
-                <div className="form-group col-2">
-                    <label className="small required">Region</label>
-                    <form>
-                        <input type="text" className="form-control nfs-width"
-                               value={specific_json.Region}
-                               onChange={(event) => {
-                                   setData({Region: event.target.value})
-                               }}
-                               required
-                        />
-                    </form>
                 </div>
             </div>
         </div>

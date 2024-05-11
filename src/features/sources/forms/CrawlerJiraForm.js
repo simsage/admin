@@ -1,16 +1,19 @@
-import React, {useEffect, useState} from "react";
-import Api from "../../../common/api";
+import React, {useEffect} from "react";
 import {BsFilePdf} from "react-icons/bs";
 import SensitiveCredential from "../../../components/SensitiveCredential";
+import { DOCUMENTATION, useSelectedSource } from './common.js';
+
 
 export default function CrawlerJiraForm(props) {
 
-    const selected_source = props.source;
-
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-    const l_form_data = props.form_data;
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        selected_source,
+        source_saved,
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -56,8 +59,8 @@ export default function CrawlerJiraForm(props) {
                     </form>
                 </div>
                 <div className="col-2 offset-1">
-                    <a href="resources/simsage-jira-crawler-setup.pdf" id="dlGDrive" target="_blank"
-                       title="Download the SimSage Confluence setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <a href={DOCUMENTATION.JIRA} id="dlGDrive" target="_blank"
+                       title="Download the SimSage Jira setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
                         <span className="me-2 mt-2"></span>Jira <br/>Setup Guide
                     </a>
@@ -73,6 +76,7 @@ export default function CrawlerJiraForm(props) {
                             setData({api_token: event.target.value})
                         }}
                         name="API Token"
+                        required={!source_saved}
                     />
                 </div>
                 <div className="form-group col-2">

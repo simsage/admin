@@ -5,7 +5,6 @@ import {closeUserForm, updateUser} from "./usersSlice";
 import {useForm} from "react-hook-form";
 import {Chip} from "../../components/Chip";
 import Api from "../../common/api";
-import {getGroupList} from "../groups/groupSlice";
 
 export function UserEditV2() {
 
@@ -19,19 +18,15 @@ export function UserEditV2() {
     const user_list = useSelector((state) => state.usersReducer.user_list);
 
     let available_roles = useSelector((state) => state.usersReducer.roles);
-    const group_list_full = useSelector(((state) => state.groupReducer.group_list))
 
     const [selected_tab, setSelectedTab] = useState('details');
     const [roles, setRoles] = useState([]);
-    const [groups, setGroups] = useState([]);
     const [selectedUser, setSelectedUser] = useState({})
     const [sso] = useState(false);
 
     //filters
     const [roleFilter, setRoleFilter] = useState('');
     const [availableRoleFilter, setAvailableRoleFilter] = useState('');
-    const [availableGroupFilter, setAvailableGroupFilter] = useState('');
-    const [groupFilter, setGroupFilter] = useState('');
     const [role_error, setRoleError] = useState(true);
 
     const isUserAdmin = useSelector((state) => state.authReducer.is_admin)
@@ -70,7 +65,6 @@ export function UserEditV2() {
 
 
     useEffect(() => {
-        dispatch(getGroupList({session_id: session.id, organization_id: organisation_id}))
         if (user_id) {
             const temp_user = (user_list.filter((user) => user.id === user_id));
             setSelectedUser(temp_user.length === 1 ? temp_user[0] : {})
@@ -85,18 +79,15 @@ export function UserEditV2() {
             setRoles(!selectedUser.roles ? [] : selectedUser.roles.filter(roleObj => {
                 return roleObj.organisationId === organisation_id
             }))
-            setGroups(selectedUser.groupList)
         } else {
             setRoles([])
-            setGroups([])
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedUser, user_id])
 
     const sub_nav = [
         {label: "Details", slug: "details"},
-        {label: "Roles", slug: "roles"},
-        {label: "Groups", slug: "groups"},
+        {label: "Roles", slug: "roles"}
     ]
 
 
@@ -139,37 +130,7 @@ export function UserEditV2() {
         }))
     }
 
-    //Groups functions
 
-    const getAvailableGroups = () => {
-        const groupNames = groups ? groups.map(g => g.name) : []
-        const availableGroups = group_list_full.filter(grp => {
-            return !groupNames.includes(grp.name)
-        })
-        return availableGroupFilter.length > 0 ? availableGroups.filter(grp => {
-                return grp.name.toLowerCase().includes(availableGroupFilter.toLowerCase())
-            })
-            :
-            availableGroups
-    }
-
-    function getGroups() {
-        return groupFilter.length > 0 ? groups.filter(grp => {
-                return grp.name.toLowerCase().includes(groupFilter.toLowerCase())
-            })
-            :
-            groups
-    }
-
-    function addGroupToUser(groupToAdd) {
-        setGroups([...(groups || []), groupToAdd])
-    }
-
-    function removeGroupFromUser(groupToRemove) {
-        setGroups(groups.filter(grp => {
-            return grp.name !== groupToRemove.name
-        }))
-    }
 
 
     function changeNav(slug) {
@@ -193,7 +154,6 @@ export function UserEditV2() {
             const session_id = session.id;
             data = {
                 ...data,
-                groupList: groups,
                 id: user_id,
                 roles: roles,
             }
@@ -401,49 +361,6 @@ export function UserEditV2() {
 
                             }
 
-
-                            {
-                                selected_tab === 'groups' &&
-                                <div className="tab-content container px-5 py-4 overflow-auto"
-                                     style={{maxHeight: "600px"}}>
-                                    <div className="row pb-5">
-                                        <div className="role-block col-6">
-                                            <h6 className="role-label text-center">SimSage Groups</h6>
-                                            <div className="role-area bg-light border rounded h-100">
-                                                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                       placeholder="Filter..." value={groupFilter}
-                                                       onChange={(e) => setGroupFilter(e.target.value)}/>
-                                                {
-                                                    groups && getGroups().map((grp, i) => {
-                                                        return (
-
-                                                            <Chip key={i} color="secondary"
-                                                                  onClick={() => removeGroupFromUser(grp)}
-                                                                  label={grp.name} variant="outlined"/>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className="role-block col-6">
-                                            <h6 className="role-label text-center">Available</h6>
-                                            <div className="role-area bg-light border rounded h-100">
-                                                <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                       placeholder="Filter..." value={availableGroupFilter}
-                                                       onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
-                                                {
-                                                    getAvailableGroups().map((grp, i) => {
-                                                        return (<Chip key={i} color="primary"
-                                                                      onClick={() => addGroupToUser(grp)}
-                                                                      label={grp.name}
-                                                                      variant="outlined"/>)
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
 
                         </div>
 

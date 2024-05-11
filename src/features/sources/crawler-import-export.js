@@ -46,7 +46,7 @@ export class CrawlerImportExport extends Component {
             return <h1>mind-edit.js: Something went wrong.</h1>;
         }
         if (!this.state.open) {
-            return (<div />);
+            return <div />
         }
         return (
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline"}}>

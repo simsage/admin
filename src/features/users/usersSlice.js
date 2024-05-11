@@ -12,6 +12,12 @@ const initialState = {
     page_size: 10,
     count: 0,
 
+    // group edit
+    active_user_list: [],
+    active_user_list_size: 0,
+    available_user_list: [],
+    available_user_list_size: 0,
+
     //new states
     status: undefined,
     error: undefined,
@@ -20,6 +26,7 @@ const initialState = {
     show_delete_form: false,
     show_password_reset_form: false,
     edit_id: undefined,
+
     roles: ['admin', 'dms', 'manager', 'discover', 'search'],
     data_status: "load_now"
 }
@@ -38,6 +45,40 @@ export const getUserListPaginated = createAsyncThunk(
             })
     }
 );
+
+
+export const getGroupEditInformation = createAsyncThunk(
+    'users/getGroupEditInformation',
+    async ({
+               session_id,
+               organization_id,
+               active_users_page,
+               active_users_filter,
+               active_users_id_list,
+               available_users_page,
+               available_users_filter,
+               page_size = 10
+               }, {rejectWithValue}) => {
+
+        const api_base = window.ENV.api_base;
+        const data = {
+            "userIdList": active_users_id_list,
+            "activeUsersPage": active_users_page,
+            "activeUsersFilter": active_users_filter,
+            "availableUsersPage": available_users_page,
+            "availableUsersFilter": available_users_filter,
+            "pageSize": page_size
+        };
+        const url = api_base + '/auth/group-edit-info/' + encodeURIComponent(organization_id);
+        return axios.post(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    }
+);
+
 
 export const updateUser = createAsyncThunk(
     'users/update',
@@ -99,6 +140,29 @@ const extraReducers = (builder) => {
             state.data_status = "loaded"
         })
         .addCase(getUserListPaginated.rejected, (state, action) => {
+            state.status = "rejected"
+            state.data_status = "rejected"
+            state.show_error_form = true
+            state.error_title = "User Load Failed"
+            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+        })
+
+        //Get Users Paginated
+        .addCase(getGroupEditInformation.pending, (state) => {
+            state.status = "loading";
+            state.data_status = "loading";
+        })
+        .addCase(getGroupEditInformation.fulfilled, (state, action) => {
+            state.status = "fulfilled"
+            state.data_status = "loaded"
+            // activeUserList : List<CMUser>, activeSize = 0
+            // availableUserList : List<CMUser>, availableSize = 0
+            state.active_user_list = action.payload.activeUserList;
+            state.active_user_list_size = action.payload.activeSize;
+            state.available_user_list = action.payload.availableUserList;
+            state.available_user_list_size = action.payload.availableSize;
+        })
+        .addCase(getGroupEditInformation.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected"
             state.show_error_form = true

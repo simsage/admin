@@ -611,3 +611,17 @@ input, button, textarea {
     font-size: 14px;
     color:  rgb(13, 110, 253);
 }
+
+.sso_icon {
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    margin-top: -2px
+}
+
+.sso_icon_group_view {
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    margin-top: -4px
+}

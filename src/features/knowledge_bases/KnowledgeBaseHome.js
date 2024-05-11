@@ -23,7 +23,7 @@ export default function KnowledgeBaseHome() {
     const kb_show_truncate_indexes_form = useSelector((state) => state.kbReducer.show_truncate_indexes_form)
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-    const session = useSelector((state) => state).authReducer.session;
+    const session = useSelector((state) => state.authReducer.session);
     const session_id = (session && session.id) ? session.id : "";
 
     const dispatch = useDispatch()

@@ -4,11 +4,10 @@ import {Pagination} from "../../common/pagination";
 import {loadSemantics, showAddSemanticForm, showDeleteSemanticAsk, showEditSemanticForm} from "./semanticSlice";
 import {SemanticEdit} from "./SemanticEdit";
 import SemanticDeleteAsk from "./SemanticDeleteAsk";
-import api from "../../common/api";
+import api, {IMAGES} from "../../common/api";
 
 
 export default function SemanticsHome() {
-    // const title = "Semantics";
     const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
@@ -129,7 +128,7 @@ export default function SemanticsHome() {
 
                     <div className="form-group d-flex col ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
-                            <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh list of semantics" />
+                            <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of semantics" />
                         </div>
                         <button className="btn btn-primary text-nowrap" onClick={() => handleAddSemantic()}>
                             + Add Semantic
@@ -151,13 +150,6 @@ export default function SemanticsHome() {
                             </tr>
                             </thead>
                             <tbody>
-                            {/*{getSemanticList().length === 0 &&*/}
-                            {/*    <tr>*/}
-                            {/*        <td className="pt-3 px-4 pb-2" colSpan={3}>*/}
-                            {/*            <div></div>*/}
-                            {/*        </td>*/}
-                            {/*    </tr>*/}
-                            {/*}*/}
                             {
                                 getSemanticList().map((semantic) => {
                                     return (
@@ -184,15 +176,6 @@ export default function SemanticsHome() {
                                     )
                                 })
                             }
-                            {/* <tr>
-                                <td/>
-                                <td/>
-                                <td>
-                                    {isVisible() &&
-                                        <button className="btn btn-outline-primary" title="new semantic" onClick={() => handleAddSemantic()}>new semantic</button>
-                                    }
-                                </td>
-                            </tr> */}
                             </tbody>
                         </table>
 

@@ -57,8 +57,8 @@ export default function SourceFailures() {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {documentList.map(doc => {
-                                    return <tr>
+                                {documentList.map((doc, i) => {
+                                    return <tr key={i}>
                                         <td
                                             title={doc.sourceSystemId}
                                             className="small text-black-50 px-4 ssi">

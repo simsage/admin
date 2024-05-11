@@ -4,7 +4,6 @@ import axios from "axios";
 
 const initialState = {
     source_list: [],
-    source_original_ist: [],
     failed_documents: [],
     failed_document_total: 0,
     source_filter: '',
@@ -37,7 +36,6 @@ const initialState = {
 
     //_crawler warning
     show_start_crawler_prompt: false,
-    show_zip_crawler_prompt: false,
     show_process_files_prompt: false,
 
     //test
@@ -47,80 +45,118 @@ const initialState = {
 
 const reducers = {
     showAddForm: (state) => {
-        state.show_data_form = true
+        return {
+            ...state,
+            show_data_form: true
+        }
     },
 
     showEditForm: (state, action) => {
-        state.show_data_form = true
-        state.selected_source = action.payload.source
-        state.selected_source_id = state.selected_source.sourceId
+        let selectedSourceId = null;
+        if (state.selected_source && state.selected_source.sourceId) {
+            selectedSourceId = state.selected_source.sourceId;
+        }
+        return {
+            ...state,
+            show_data_form: true,
+            selected_source: action.payload.source,
+            selected_source_id: selectedSourceId
+        }
     },
 
     showFailedDocuments: (state, action) => {
-        state.show_failed_docs = true
-        state.selected_source = action.payload.source
-        state.selected_source_id = state.selected_source.sourceId
+        let selectedSourceId = null;
+        if (state.selected_source && state.selected_source.sourceId) {
+            selectedSourceId = state.selected_source.sourceId;
+        }
+        return {
+            ...state,
+            show_failed_docs: true,
+            selected_source: action.payload.source,
+            selected_source_id: selectedSourceId
+        }
     },
 
     showExportForm: (state, action) => {
-        state.show_export_form = true
-        state.selected_source = action.payload.source
+        return {
+            ...state,
+            show_export_form: true,
+            selected_source: action.payload.source
+        }
     },
 
     showImportForm: (state) => {
-        state.show_import_form = true
+        return {
+            ...state,
+            show_import_form: true
+        }
     },
 
     showStartCrawlerAlert: (state, action) => {
-        state.show_start_crawler_prompt = true
-        state.selected_source = action.payload.source
-        state.selected_source_id = state.selected_source.sourceId
-    },
-
-    showZipCrawlerAlert: (state, action) => {
-        state.show_zip_crawler_prompt = true
-        state.selected_source = action.payload.source
-        state.selected_source_id = state.selected_source.sourceId
+        let selectedSourceId = null;
+        if (state.selected_source && state.selected_source.sourceId) {
+            selectedSourceId = state.selected_source.sourceId;
+        }
+        return {
+            ...state,
+            show_start_crawler_prompt: true,
+            selected_source: action.payload.source,
+            selected_source_id: selectedSourceId
+        }
     },
 
     showProcessFilesAlert: (state, action) => {
-        state.show_process_files_prompt = true
-        state.selected_source = action.payload.source
-        state.selected_source_id = state.selected_source.sourceId
+        let selectedSourceId = null;
+        if (state.selected_source && state.selected_source.sourceId) {
+            selectedSourceId = state.selected_source.sourceId;
+        }
+        return {
+            ...state,
+            show_process_files_prompt: true,
+            selected_source: action.payload.source,
+            selected_source_id: selectedSourceId
+        }
     },
 
 
     closeForm: (state) => {
-        state.show_data_form = false
-        state.show_export_form = false
-        state.show_failed_docs = false
-        state.selected_source = null
-        state.selected_source_id = null
-        state.show_import_form = false
+        return {
+            ...state,
+            show_data_form: false,
+            show_export_form: false,
+            show_failed_docs: false,
+            selected_source: null,
+            selected_source_id: null,
+            show_import_form: false,
 
-        state.show_start_crawler_prompt = false
-        state.show_zip_crawler_prompt = false
-        state.show_process_files_prompt = false
-        state.data_status = 'load_now';
+            show_start_crawler_prompt: false,
+            show_process_files_prompt: false,
+            data_status: 'load_now'
+        }
     },
 
-    closeTestMessage: (state, action) => {
-        state.test_result = false
-        state.error = false;
+    closeTestMessage: (state) => {
+        return {
+            ...state,
+            test_result: false,
+            error: false
+        }
     },
 
-    closeErrorMessage: (state, action) => {
-        state.show_error_form = false;
-        state.error_message = undefined;
-        state.error_title = undefined;
-    },
-
-    setSelectedSourceTab: (state, action) => {
-        state.selected_source_tab = action.payload
+    closeErrorMessage: (state) => {
+        return {
+            ...state,
+            show_error_form: false,
+            error_message: undefined,
+            error_title: undefined
+        }
     },
 
     searchSource: (state, action) => {
-        return {...state, source_filter: action.payload.keyword};
+        return {
+            ...state, source_filter:
+            action.payload.keyword
+        }
     },
 
 }
@@ -128,154 +164,238 @@ const reducers = {
 const extraReducers = (builder) => {
     builder
         .addCase(getSources.pending, (state) => {
-            state.busy = true;
-            state.status = "loading"
-            state.data_status = 'loading'
+            return {
+                ...state,
+                busy: true,
+                status: "loading",
+                data_status: "loading"
+            }
         })
         .addCase(getSources.fulfilled, (state, action) => {
-            state.busy = false;
-            state.status = "fulfilled"
-            state.source_list = action.payload
-            state.source_original_ist = action.payload
-            state.data_status = 'loaded';
+            return {
+                ...state,
+                busy: false,
+                status: "fulfilled",
+                source_list: action.payload,
+                data_status: 'loaded'
+            }
         })
         .addCase(getSources.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.data_status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Could not get sources"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                data_status: "rejected",
+                show_error_form: true,
+                error_title: "Could not get sources",
+                error_message: action?.payload?.error ??
+                    "Please contact the SimSage Support team if the problem persists"
+            }
         })
-
-
         .addCase(getSource.pending, (state) => {
-            state.busy = true;
-            state.status = "loading"
-            state.data_status = 'loading'
+            return {
+                ...state,
+                busy: true,
+                status: "loading",
+                data_status: 'loading'
+            }
         })
         .addCase(getSource.fulfilled, (state, action) => {
-            state.busy = false;
-            state.status = "fulfilled"
-            state.selected_source = action.payload
-            state.data_status = 'loaded';
+
+            return {
+                ...state,
+                busy: false,
+                status: "fulfilled",
+                selected_source: action.payload,
+                data_status: 'loaded'
+            }
         })
         .addCase(getSource.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.data_status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Could not get source"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                data_status: "rejected",
+                show_error_form: true,
+                error_title: "Could not get source",
+                error_message: action?.payload?.error ??
+                    "Please contact the SimSage Support team if the problem persists"
+            }
         })
-
-
-        .addCase(updateSource.fulfilled, (state, action) => {
-            state.busy = false;
-            state.show_import_form = false
-            state.data_status = 'load_now';
+        .addCase(updateSource.fulfilled, (state) => {
+            return {
+                ...state,
+                busy: false,
+                show_import_form: false,
+                data_status: 'load_now'
+            }
         })
-
+        .addCase(updateSource.pending, (state) => {
+            return {
+                ...state,
+                busy: true,
+                status: "loading",
+                data_status: "loading",
+                show_error_form: false,
+                error_title: "",
+                error_message: ""
+            }
+        })
         .addCase(updateSource.rejected, (state, action) => {
-            state.busy = false;
-            state.data_status = 'load_now';
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Source Update Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                data_status: 'load_now',
+                status: "rejected",
+                show_error_form: true,
+                error_title: "Source Update Failed",
+                error_message: action?.payload?.error ??
+                    "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         .addCase(getFailedDocuments.fulfilled, (state, action) => {
-            state.busy = false;
-            state.failed_documents = action.payload.results
-            state.failed_document_total = action.payload.total
+            return {
+                ...state,
+                busy: false,
+                failed_documents: action.payload.results,
+                failed_document_total: action.payload.total
+            }
         })
-
-
-
-        //deleteRecord
-        .addCase(deleteSource.pending, (state) => {
-            state.busy = true;
-            state.status = "loading"
+        .addCase(deleteSource.pending, (state) => { //deleteRecord
+            return {
+                ...state,
+                busy: true,
+                status: "loading"
+            }
         })
-        .addCase(deleteSource.fulfilled, (state, action) => {
-            state.busy = false;
-            state.status = "fulfilled"
-            state.data_status = 'load_now';
+        .addCase(deleteSource.fulfilled, (state) => {
+            return {
+                ...state,
+                busy: false,
+                status: "fulfilled",
+                data_status: "load_now"
+            }
         })
         .addCase(deleteSource.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Source Delete Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                show_error_form: true,
+                error_title: "Source Delete Failed",
+                error_message: action?.payload?.error ??
+                    "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //processFiles
-        .addCase(processFiles.fulfilled, (state, action) => {
-            state.busy = false;
-            state.status = "fulfilled"
-            state.data_status = 'load_now';
+        .addCase(processFiles.fulfilled, (state) => {
+            return {
+                ...state,
+                busy: false,
+                status: "fulfilled",
+                data_status: "load_now"
+            }
         })
         .addCase(processFiles.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Cannot Process Files"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                show_error_form: true,
+                error_title: "Cannot Process Files",
+                error_message: action?.payload?.error ??
+                    "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //startSource
-        .addCase(startSource.fulfilled, (state, action) => {
-            state.busy = false;
-            state.status = "fulfilled"
-            state.data_status = 'load_now';
+        .addCase(startSource.fulfilled, (state) => {
+            return {
+                ...state,
+                busy: false,
+                status: "fulfilled",
+                data_status: 'load_now'
+            }
         })
         .addCase(startSource.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = 'Error'
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                show_error_form: true,
+                error_title: 'Error',
+                error_message: action?.payload?.error ??
+                    "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
 
         //testSource
         .addCase(testSource.pending, (state) => {
-            state.busy = true;
-            state.status = "loading"
-            state.data_status = 'loading'
+            return {
+                ...state,
+                busy: true,
+                status: "loading",
+                data_status: "loading"
+            }
         })
-        .addCase(testSource.fulfilled, (state, action) => {
-            state.busy = false;
-            state.data_status = 'loaded';
-            state.test_result = 'Success'
+        .addCase(testSource.fulfilled, (state) => {
+            return {
+                ...state,
+                busy: false,
+                data_status: 'loaded',
+                test_result: 'Success'
+            }
         })
         .addCase(testSource.rejected, (state, action) => {
-            state.busy = false;
-            state.status = "rejected"
-            state.data_status = "rejected"
-            // state.error = {
-            //     code: 'Test Failed',
-            //     message: 'Please double check your configuration'
-            // }
-            state.test_result = 'Failed'
-            state.error_title = "Connection Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                data_status: "rejected",
+                test_result: 'Failed',
+                error_title: "Connection Failed",
+                error_message: action?.payload?.error ??
+                    "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
 
-        .addCase(resetSourceDelta.pending, (state, action) => {
-            state.busy = true;
+        .addCase(resetSourceDelta.pending, (state) => {
+            return {
+                ...state,
+                busy: true
+            }
         })
         .addCase(resetSourceDelta.fulfilled, (state, action) => {
-            state.busy = false;
+            // reset indicators locally
+            const source_id = action.payload.sourceId;
+            const kb_id = action.payload.kbId;
+            if (state.selected_source && state.selected_source.sourceId === source_id && state.selected_source.kbId === kb_id) {
+                state.selected_source.deltaIndicator = "";
+            }
+            if (state.source_list && state.source_list.length > 0) {
+                for (let source of state.source_list) {
+                    if (source.sourceId === source_id && source.kbId === kb_id) {
+                        source.deltaIndicator = "";
+                    }
+                }
+            }
             alert("source delta-token reset successful");
+            return {
+                ...state,
+                busy: false,
+                source_list: state.source_list
+            };
         })
-        .addCase(resetSourceDelta.rejected, (state, action) => {
-            state.busy = false;
+        .addCase(resetSourceDelta.rejected, (state) => {
+            return {
+                ...state,
+                busy: false
+            }
         })
-
 }
 
 
@@ -291,12 +411,11 @@ export const getFailedDocuments = createAsyncThunk(
             encodeURIComponent(source_id) + "/" +
             page + "/" +
             pageSize;
-        return axios.get(api_base + url, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
-            })
+        return axios.get(api_base + url, Comms.getHeaders(session_id)).then((response) => {
+            return response.data
+        }).catch((err) => {
+            return rejectWithValue(err?.response?.data)
+        })
     }
 );
 
@@ -305,32 +424,30 @@ export const getSources = createAsyncThunk(
     async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-        return axios.get(api_base + url, Comms.getHeaders(session_id))
-            .then((response) => {
-                if (response.data.documentSimilarityThreshold < 1.0)
-                    response.data.documentSimilarityThreshold = response.data.documentSimilarityThreshold * 100
-                return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
-            })
+        return axios.get(api_base + url, Comms.getHeaders(session_id)).then((response) => {
+            if (response.data.documentSimilarityThreshold < 1.0)
+                response.data.documentSimilarityThreshold = response.data.documentSimilarityThreshold * 100
+            return response.data
+        }).catch((err) => {
+            return rejectWithValue(err?.response?.data)
+        })
     }
-);
+)
 
 export const getSource = createAsyncThunk(
     'sources/getSource',
     async ({session_id, organisation_id, kb_id, source_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = '/crawler/crawlers/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
-        return axios.get(api_base + url, Comms.getHeaders(session_id))
-            .then((response) => {
-                if (response.data.documentSimilarityThreshold < 1.0)
-                    response.data.documentSimilarityThreshold = response.data.documentSimilarityThreshold * 100
-                return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
-            })
+        return axios.get(api_base + url, Comms.getHeaders(session_id)).then((response) => {
+            if (response.data.documentSimilarityThreshold < 1.0)
+                response.data.documentSimilarityThreshold = response.data.documentSimilarityThreshold * 100
+            return response.data
+        }).catch((err) => {
+            return rejectWithValue(err?.response?.data)
+        })
     }
-);
+)
 
 
 // https://uat.simsage.ai/api/crawler/crawler
@@ -382,23 +499,9 @@ export const deleteSource = createAsyncThunk(
 )
 
 
-// https://uat.simsage.ai/api/document/zip/source/
-// POST
-export const zipSource = createAsyncThunk(
-    'sources/zipSource',
-    async ({session_id, data}, {rejectWithValue}) => {
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/document/zip/source';
-        return axios.post(url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
-            })
-    });
-
-
-//crawler/process-all-files
+/**
+ * crawler/process-all-files
+ */
 export const processFiles = createAsyncThunk(
     'sources/processFiles',
     async ({session_id, data}, {rejectWithValue}) => {
@@ -435,6 +538,10 @@ export const resetSourceDelta = createAsyncThunk(
         const url = api_base + `/crawler/crawler/reset-delta/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledgeBase_id)}/${encodeURIComponent(source_id)}`;
         return axios.post(url, {}, Comms.getHeaders(session_id))
             .then((response) => {
+                // send parameters to success call
+                response.data.organisationId = organisation_id;
+                response.data.kbId = knowledgeBase_id;
+                response.data.sourceId = source_id;
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
@@ -460,11 +567,16 @@ export const {
     showImportForm,
     showStartCrawlerAlert,
     showProcessFilesAlert,
-    showZipCrawlerAlert,
     searchSource
 } = sourceSlice.actions
 
-// assure we clear any operational values from the source before importing or exporting
+
+/**
+ * Assure we clear any operational values from the source before importing or exporting
+ * @param source
+ * @param overlay
+ * @returns {*}
+ */
 export const safeSourceForImportOrExport = (source, overlay={}) => {
     const clone = {...source, ...overlay}
 

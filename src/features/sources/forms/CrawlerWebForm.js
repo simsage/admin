@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from "react";
 import {BsFilePdf} from "react-icons/bs";
+import {DOCUMENTATION, useSelectedSource} from "./common";
 
 export default function CrawlerWebForm(props) {
 
-    const selected_source = props.source;
-
-    // const [form_error, setFormError] = useState();
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ? props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        selected_source,
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
     const [webCssIgnore, setWebCssIgnore] = useState(specific_json.webCssIgnore?specific_json.webCssIgnore:selected_source?'':'header, footer');
 
@@ -18,9 +20,6 @@ export default function CrawlerWebForm(props) {
     }
 
 
-    // const self = this;
-    // const theme = props.theme;
-    const l_form_data = props.form_data;
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -41,7 +40,7 @@ export default function CrawlerWebForm(props) {
             <div className="row mb-3">
                 <div className="form-group col-6">
 
-                    <label className="small required">http/s base url</label>
+                    <label className="small required">http/s or file:// base url (non-file paths must end with /)</label>
                     <input type="text"
                            placeholder="(e.g. https://simsage.ai)"
                            title="web site start url"
@@ -52,6 +51,22 @@ export default function CrawlerWebForm(props) {
                                setData({baseUrlList: event.target.value})
                            }}
                     />
+                </div>
+                <div className="col-2 offset-2">
+                    <a href={DOCUMENTATION.WEB} id="dlGDrive" target="_blank"
+                       title="Download the SimSage web crawler setup guide"
+                       className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                        <BsFilePdf size={25}/>
+                        <span className="me-2 mt-2"></span>Web Crawler <br/>Setup Guide
+                    </a>
+                </div>
+                <div className="col-2">
+                    <a href={DOCUMENTATION.GOOGLE_DRIVE} id="dlGDrive" target="_blank"
+                       title="Download the SimSage Google Drive setup guide"
+                       className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                        <BsFilePdf size={25}/>
+                        <span className="me-2 mt-2"></span>Google Drive <br/>Setup Guide
+                    </a>
                 </div>
             </div>
 
@@ -74,20 +89,20 @@ export default function CrawlerWebForm(props) {
                 <div className="form-group col-3">
                     <label className="small">Valid extensions (html is always valid)</label>
                     <input type="text" className="form-control"
-                            value={specific_json.validExtensions}
-                            onChange={(event) => {
-                                setData({validExtensions: event.target.value})
-                            }}
+                           value={specific_json.validExtensions}
+                           onChange={(event) => {
+                               setData({validExtensions: event.target.value})
+                           }}
                     />
                 </div>
-                
+
                 <div className="form-group col-3">
                     <label className="small">Ignore extensions (html cannot be ignored)</label>
                     <input type="text" className="form-control"
-                            value={specific_json.validExtensionsIgnore}
-                            onChange={(event) => {
-                                setData({validExtensionsIgnore: event.target.value})
-                            }}
+                           value={specific_json.validExtensionsIgnore}
+                           onChange={(event) => {
+                               setData({validExtensionsIgnore: event.target.value})
+                           }}
                     />
                 </div>
 
@@ -111,12 +126,12 @@ export default function CrawlerWebForm(props) {
                 <div className="form-group col-3">
                     <label className="small">Username</label>
                     <input type="text" className="form-control"
-                            value={specific_json.basicUsername}
-                            placeholder="optional basic auth username"
-                            title="(optional) basic auth username"
-                            onChange={(event) => {
-                                setData({basicUsername: event.target.value})
-                            }}
+                           value={specific_json.basicUsername}
+                           placeholder="optional basic auth username"
+                           title="(optional) basic auth username"
+                           onChange={(event) => {
+                               setData({basicUsername: event.target.value})
+                           }}
                     />
                 </div>
                 <div className="form-group col-3">
@@ -125,38 +140,38 @@ export default function CrawlerWebForm(props) {
                         <span className="fst-italic fw-light small">(leave blank to keep previous)</span>
                     </label>
                     <input type="password" className="form-control"
-                        placeholder="basic auth password"
-                        title="(optional) basic auth password (leave blank to keep previous)"
-                        value={specific_json.password}
-                        onChange={(event) => {
-                            setData({password: event.target.value})
-                        }}
+                           placeholder="basic auth password"
+                           title="(optional) basic auth password (leave blank to keep previous)"
+                           value={specific_json.password}
+                           onChange={(event) => {
+                               setData({password: event.target.value})
+                           }}
                     />
                 </div>
             </div>
-                
+
             <div className="row mb-3 pt-5 border-top">
                 <div className="form-group col-6">
                     <label className="small">Include css csv</label>
                     <textarea className="form-control"
-                            placeholder="css/html root fragments to include csv"
-                            rows="3"
-                            value={specific_json.webCss}
-                            onChange={(event) => {
-                                setData({webCss: event.target.value})
-                            }}
+                              placeholder="css/html root fragments to include csv"
+                              rows="3"
+                              value={specific_json.webCss}
+                              onChange={(event) => {
+                                  setData({webCss: event.target.value})
+                              }}
                     />
                 </div>
 
                 <div className="form-group col-6">
                     <label className="small">Exclude css csv</label>
                     <textarea className="form-control"
-                            placeholder="css/html root fragments to exclude csv (e.g. header, footer, div.class-name)"
-                            rows="3"
-                            value={webCssIgnore}
-                            onChange={(event) => {
-                                handleWebCssIgnore(event.target.value)
-                            }}
+                              placeholder="css/html root fragments to exclude csv (e.g. header, footer, div.class-name)"
+                              rows="3"
+                              value={webCssIgnore}
+                              onChange={(event) => {
+                                  handleWebCssIgnore(event.target.value)
+                              }}
                     />
                 </div>
             </div>
@@ -165,24 +180,24 @@ export default function CrawlerWebForm(props) {
                 <div className="form-group col-6">
                     <label className="small">csv include words</label>
                     <textarea className="form-control"
-                            placeholder="csv words, include articles by words [optional]"
-                            rows="3"
-                            value={specific_json.articleIncludeWordsCsv}
-                            onChange={(event) => {
-                                setData({articleIncludeWordsCsv: event.target.value})
-                            }}
+                              placeholder="csv words, include articles by words [optional]"
+                              rows="3"
+                              value={specific_json.articleIncludeWordsCsv}
+                              onChange={(event) => {
+                                  setData({articleIncludeWordsCsv: event.target.value})
+                              }}
                     />
                 </div>
 
                 <div className="form-group col-6">
                     <label className="small">csv exclude words</label>
                     <textarea className="form-control"
-                            placeholder="csv words, exclude articles by words [optional]"
-                            rows="3"
-                            value={specific_json.articleExcludeWordsCsv}
-                            onChange={(event) => {
-                                setData({articleExcludeWordsCsv: event.target.value})
-                            }}
+                              placeholder="csv words, exclude articles by words [optional]"
+                              rows="3"
+                              value={specific_json.articleExcludeWordsCsv}
+                              onChange={(event) => {
+                                  setData({articleExcludeWordsCsv: event.target.value})
+                              }}
                     />
                 </div>
             </div>
@@ -191,20 +206,20 @@ export default function CrawlerWebForm(props) {
                 <div className="form-group col-6">
                     <label className="small">csv allowed domains</label>
                     <textarea className="form-control"
-                            placeholder="csv prefix list of other domains to crawl (e.g. https://drive.google.com) [optional]"
-                            rows="3"
-                            value={specific_json.validDomainCSV}
-                            onChange={(event) => {setData({validDomainCSV: event.target.value})}}
+                              placeholder="csv prefix list of other domains to crawl (e.g. https://drive.google.com) [optional]"
+                              rows="3"
+                              value={specific_json.validDomainCSV}
+                              onChange={(event) => {setData({validDomainCSV: event.target.value})}}
                     />
                 </div>
 
                 <div className="form-group col-6">
                     <label className="small">exclude paths (csv list)</label>
                     <textarea className="form-control"
-                            placeholder="a set of possible paths values, separated by commas (csv) to exclude pages (e.g. /images/) [optional]"
-                            rows="3"
-                            value={specific_json.pagePrefixesToIgnore}
-                            onChange={(event) => {setData({pagePrefixesToIgnore: event.target.value})}}
+                              placeholder="a set of possible paths values, separated by commas (csv) to exclude pages (e.g. /images/) [optional]"
+                              rows="3"
+                              value={specific_json.pagePrefixesToIgnore}
+                              onChange={(event) => {setData({pagePrefixesToIgnore: event.target.value})}}
                     />
                 </div>
             </div>
@@ -275,13 +290,6 @@ export default function CrawlerWebForm(props) {
                                       onChange={(event) => {setData({googleJsonKeyFile: event.target.value})}}
                             />
                         </div>
-                    </div>
-                    <div className="col-2 offset-1">
-                        <a href="resources/simsage-google-drive-setup.pdf" id="dlGDrive" target="_blank"
-                           title="Download the SimSage Google Drive setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
-                            <BsFilePdf size={25}/>
-                            <span className="me-2 mt-2"></span>Google Drive <br/>Setup Guide
-                        </a>
                     </div>
                 </div>
 

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import Api from "../../common/api";
+import Api, {IMAGES} from "../../common/api";
 import Comms from "../../common/comms";
 import {
     loadInventoryList,
@@ -18,7 +18,6 @@ import {InventoryErrorDialog} from "./InventoryErrorDialog";
 
 
 export default function InventoryHome(props) {
-    // const title = "Inventory";
     const theme = '';
     const selected_organisation = "ORg1"
 
@@ -74,13 +73,6 @@ export default function InventoryHome(props) {
         return paginated_list;
     }
 
-
-    // function programConverted(program) {
-    //     if (program) {
-    //         window.open().document.body.innerHTML += program.replace(/\n/g, "<br />");
-    //     }
-    // }
-
     function inventorizeDump(dateTime) {
         if (session && session.id)
             Comms.download_inventorize_dump(selected_organisation_id, selected_knowledge_base_id, dateTime, session.id);
@@ -134,7 +126,7 @@ export default function InventoryHome(props) {
                         <div className="d-flex">
                             {selected_organisation_id.length > 0 &&
                                 <div className="btn" onClick={() => refresh_inventory()} >
-                                    <img src="images/refresh.svg" className="refresh-image" alt="refresh" title="refresh inventory-list" />
+                                    <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh inventory-list" />
                                 </div>
                             }
                             {selected_organisation_id.length > 0 &&
@@ -165,7 +157,6 @@ export default function InventoryHome(props) {
                         </tr>
                         </thead>
                         <tbody>
-                        {/*{inventory_list && inventory_list.timeList && inventory_list.timeList.map((item, i) => {*/}
                         { inventory_list && inventory_list.timeList && getList().map((item,i) => {
                             return (
                                 <tr key={i}>

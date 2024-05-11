@@ -39,12 +39,6 @@ export function InventoryIndexSnapshotPrompt() {
         <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered"} role="document">
                 <div className="modal-content p-4">
-
-                    {/* <div className="modal-header">
-                        <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
-                        <button onClick={handleClose} type="button" className="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                    </div> */}
                     <div className="modal-body text-center">
                         <div className="control-row mb-4">
                             <span className="label-wide">{message}</span>

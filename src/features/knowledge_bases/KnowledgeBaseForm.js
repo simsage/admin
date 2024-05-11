@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import {useForm} from "react-hook-form";
-import Api from "../../common/api";
+import Api, {IMAGES} from "../../common/api";
 import {addOrUpdate, closeForm, showSecurityPrompt} from "./knowledgeBaseSlice";
 import {showErrorAlert} from "../alerts/alertSlice";
 import {KnowledgeBaseFormTab} from "./KnowledgeBaseFormTab";
@@ -14,7 +14,6 @@ export default function KnowledgeBaseForm() {
     const dispatch = useDispatch();
     //get the data from slices
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
-    const theme = null;
 
     //load kb
     const kb_id = useSelector((state) => state.kbReducer.edit_id);
@@ -175,7 +174,7 @@ export default function KnowledgeBaseForm() {
                                                     <input className="border-0 p-0 w-100 sid-box" value={security_id}
                                                            readOnly="readonly" {...register("securityId", {required: true})} />
                                                     <img title="generate new security id" alt="refresh"
-                                                         src={theme === 'light' ? "images/refresh.svg" : "images/refresh.svg"}
+                                                         src={IMAGES.REFRESH_IMAGE}
                                                          onClick={() => refreshSecurityIdPrompt()}
                                                          className="image-size form-icon"/>
                                                 </div>

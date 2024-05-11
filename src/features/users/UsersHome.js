@@ -247,7 +247,7 @@ export function UsersHome() {
                                                                 className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{r.role}</div>
 
                                                 }else {
-                                                    return <></>;
+                                                    return <div key={r + key}></div>;
 
                                                 }
                                             }
@@ -304,7 +304,9 @@ export function UsersHome() {
             {show_password_reset_form &&
                 <UserPasswordResetForm/>
             }
+
             <UserErrorDialog/>
+
         </div>
     )
 }

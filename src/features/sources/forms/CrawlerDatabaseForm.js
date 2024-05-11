@@ -1,8 +1,18 @@
 import React, {useEffect, useState} from "react";
-import Api from "../../../common/api";
 import SensitiveCredential from "../../../components/SensitiveCredential";
+import { useSelectedSource } from './common.js';
+
 
 export default function CrawlerDatabaseForm(props) {
+
+    // Fetch selected source and calculate source_saved using custom hook
+    const {
+        selected_source,
+        source_saved,
+        specific_json,
+        setSpecificJson,
+        l_form_data
+    } = useSelectedSource(props);
 
     const [placeholder, setPlaceholder] = useState({ type: 'none' });
     const [templateType, setTemplateType] = useState(false)
@@ -32,16 +42,6 @@ export default function CrawlerDatabaseForm(props) {
         setData({type: event.target.value})
     }
 
-    const selected_source = props.source
-    const has_saved_source = Api.hasSourceId(selected_source);
-
-    // const [form_error, setFormError] = useState();
-    //get specific_json from 'form_data'; if 'form_data' is null then get it from 'selected_source'
-    const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ?
-        props.form_data.specificJson : selected_source.specificJson ? selected_source.specificJson : "{}"
-
-    const [specific_json, setSpecificJson] = useState(JSON.parse(specific_json_from_form_data))
-
     // form defaults
     const default_template_val = '<div class="ms-3 w-100">\n' +
         '  <div class="d-flex align-items-center text-align-end mb-1">\n' +
@@ -63,8 +63,6 @@ export default function CrawlerDatabaseForm(props) {
         '  </div>\n' +
         '  <div class="d-flex align-items-center flex-wrap"></div>\n' +
         '</div>\n';
-
-    const l_form_data = props.form_data;
 
     // update local variable specific_json when data is changed
     function setData(data) {
@@ -105,7 +103,7 @@ export default function CrawlerDatabaseForm(props) {
                         }}
                         name="Password"
                         placeholder="**********"
-
+                        required={!source_saved}
                     />
                 </div>
             </div>
