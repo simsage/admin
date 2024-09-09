@@ -26,6 +26,11 @@ export default function CrawlerStructuredDataForm(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
+    // this crawler doesn't need the verify system
+    useEffect(() => {
+        if (props.set_verify) props.set_verify('n/a')
+    }, [props.set_verify])
+
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
@@ -46,7 +51,7 @@ export default function CrawlerStructuredDataForm(props) {
 
                 </div>
                 <div className="col-2">
-                    <a href={DOCUMENTATION.STRUCTURED} id="dlBox" target="_blank"
+                    <a href={DOCUMENTATION.STRUCTURED} id="dlBox" target="_blank" rel="noreferrer"
                        title="Download the SimSage Structured Data Crawler setup guide"
                        className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>

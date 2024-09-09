@@ -1,156 +1,147 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
-export default function AclSetup(props) {
-    const [acl_list, setACLList] = useState(props.acl_list ? props.acl_list : [])
-    const [selected_filter, setSelectedFilter] = useState('')
+import '../css/acl-setup.css';
+import {getACLEditInformation} from "../features/groups/groupSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {Pagination} from "./pagination";
+
+export default function ACLSetup(props) {
+
+    const dispatch = useDispatch();
+    const session = useSelector((state) => state.authReducer.session)
+    const select_crud = props.select_acl_crud // use RWDM / CRUD selector?
+
+    const {available_group_list, available_group_list_size,
+        active_group_list, active_group_list_size} = useSelector((state) => state.groupReducer)
+
+    // fixed
+    const page_size = props.page_size ? props.page_size : 10;
+    const selected_organisation_id = props.organisation_id;
+    const session_id = session.id;
+
+    const [active_page, setActivePage] = useState(0)
+    const [active_filter, setActiveFilter] = useState('')
+    const [initialized, setInitialized] = useState(false)
+
+    const [available_page, setAvailablePage] = useState(0)
     const [available_filter, setAvailableFilter] = useState('')
+    const [acl_map, setACLMap] = useState(new Map())
 
-
-    function handleOnChange(acl_list) {
-        if (props.onChange) {
-            props.onChange(acl_list);
-        }
-    }
-
-    function removeAcl(acl) {
-        const new_acls = [];
-        for (const s_acl of acl_list) {
-            if (s_acl.acl !== acl.acl) {
-                new_acls.push(s_acl);
-            }
-        }
-        setACLList(new_acls);
-        handleOnChange(new_acls);
-    }
-
-
-    function addAcl(group) {
-        const new_acls = JSON.parse(JSON.stringify(acl_list));
-        const acl = {"acl": group.name, "access": "R", isUser: group.isUser ? group.isUser : false};
-        let exists = false;
-        for (const s_acl of acl_list) {
-            if (s_acl.acl === group.name) {
-                exists = true;
-                break;
-            }
-        }
-        if (!exists) {
-            new_acls.push(acl);
-            setACLList(new_acls);
-            handleOnChange(new_acls);
-        }
-    }
-
-    function getAllGroups() {
-        return props.group_list ? props.group_list : [];
-    }
-
-    function getAllUsers() {
-        return props.user_list ? props.user_list.filter((user) => {
-            // return false
-            return canView(user, props.session, props.is_admin)
-        }) : [];
-    }
-
-    function canView(user, signedInUser, isAdmin) {
-
-        const sameOrg = user.roles.filter((role)  => {
-            return role.organisationId === signedInUser.organisationId
-        })
-
-        if (user.email === signedInUser.email) return true;
-        else if (sameOrg.length) return true;
-        else return !!isAdmin;
-    }
-
-    function getAvailableGroupsOrUsers() {
-        const list = [];
-        const filter = available_filter.trim().toLowerCase();
-        for (let group of getAllGroups()) {
-            let found = false;
-            for (const s_acl of acl_list) {
-                if (group.name === s_acl.acl) {
-                    found = true;
+    // set initial active group
+    useEffect(() => {
+        let use_acl_map = acl_map
+        if (!initialized) {
+            let new_acl_map = new Map()
+            for (const acl of props.active_acl_list) {
+                if (acl && acl.acl && acl.access) {
+                    new_acl_map.set(acl.acl, acl.access)
                 }
             }
-            if (!found) { // still available (i.e. not found)?
-                if (filter.length === 0 || group.name.toLowerCase().indexOf(filter) >= 0) {
-                    //todo: Cannot add property isUser - check this with rock
-                    // group.isUser = false;
-                    list.push(group);
-                }
-            }
+            setACLMap(new_acl_map)
+            use_acl_map = new_acl_map
+            setInitialized(true)
         }
-        for (const user of getAllUsers()) {
-            let found = false;
-            for (const s_acl of acl_list) {
-                if (user.email === s_acl.acl) {
-                    found = true;
-                }
-            }
-            if (!found) { // still available (i.e. not found)?
-                const user_name = user.email;
-                if (filter.length === 0 || user_name.toLowerCase().indexOf(filter) >= 0) {
-                    list.push({
-                        organisationId: props.organisation_id,
-                        name: user_name,
-                        isUser: true,
-                        userIdList: []
-                    });
-                }
-            }
+
+        const acl_list = [];
+        for (const acl of use_acl_map.keys()) {
+            acl_list.push(acl)
         }
-        return list;
+
+        dispatch(getACLEditInformation({
+            session_id: session_id,
+            organization_id: selected_organisation_id,
+            active_groups_page: active_page,
+            active_groups_filter: active_filter,
+            active_groups_list: acl_list,
+            available_groups_page: available_page,
+            available_groups_filter: available_filter,
+            page_size: page_size
+        }))
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [acl_map, initialized, selected_organisation_id, session_id, active_page, available_page, active_filter, available_filter]);
+
+
+    function setFilter1(e, text) {
+        if (e && e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+        } else if (text !== null) {
+            setActiveFilter(text)
+        }
     }
 
-    function getAcls() {
-        const selected_acl_list = [];
-        const filter = selected_filter.trim().toLowerCase();
-        const seen_set = {};
-        for (const acl of acl_list) {
-            if (acl && acl.acl) {
-                if (filter.length === 0 || acl.acl.toLowerCase().indexOf(filter) >= 0) {
-                    if (!seen_set.hasOwnProperty(acl.acl)) {
-                        seen_set[acl.acl] = true;
-                        selected_acl_list.push(acl);
-                    }
-                }
+    function clearFilter1() {
+        setActiveFilter('')
+    }
+
+    function setFilter2(e, text) {
+        if (e && e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+        } else if (text !== null) {
+            setAvailableFilter(text)
+        }
+    }
+
+    function clearFilter2() {
+        setAvailableFilter('')
+    }
+
+    // convert a map of ACLs to a list of ACLs
+    function to_acl_list(map) {
+        const acl_list = []
+        if (map && map.keys) {
+            for (const key of map.keys()) {
+                acl_list.push({acl: key, access: map.get(key), isUser: false})
             }
         }
-        return selected_acl_list;
+        return acl_list
+    }
+
+    function removeGroup(group) {
+        let new_map = new Map(acl_map)
+        new_map.delete(group.name)
+        setACLMap(new_map)
+        if (props.on_update)
+            props.on_update(to_acl_list(new_map))
+    }
+
+    function addGroup(group) {
+        let new_map = new Map(acl_map)
+        new_map.set(group.name, "R")
+        setACLMap(new_map)
+        if (props.on_update)
+            props.on_update(to_acl_list(new_map))
     }
 
     function invertAccess(event, acl, attribute) {
         event.preventDefault();
         event.stopPropagation();
-        let acl_copy = JSON.parse(JSON.stringify(acl));
-        if (acl_copy && acl_copy.access && acl_copy.access.indexOf(attribute) >= 0) {
-            acl_copy.access = acl_copy.access.replace(attribute, "");
+        let new_map = new Map(acl_map)
+        let acl_access = new_map.get(acl) ?? ""
+        if (acl_access && acl_access.indexOf(attribute) >= 0) {
+            acl_access = acl_access.replace(attribute, "");
         } else {
-            acl_copy.access += attribute;
+            if (!acl_access) acl_access = ""
+            acl_access += attribute;
         }
-        const updated_acl_list = [];
-        for (const all_acl of acl_list) {
-            if (all_acl && all_acl.acl) {
-                if (all_acl.acl === acl.acl) {
-                    updated_acl_list.push(acl_copy);
-                } else {
-                    updated_acl_list.push(all_acl);
-                }
-            }
-        }
-
-        setACLList(updated_acl_list);
-        handleOnChange(updated_acl_list);
+        new_map.set(acl, acl_access)
+        setACLMap(new_map)
+        if (props.on_update)
+            props.on_update(to_acl_list(new_map))
     }
 
     function getAccess(acl, attribute) {
-        return attribute;
+        // let acl_access = acl_map.get(acl) ?? ""
+        // return acl_access.indexOf(attribute) >= 0 ? attribute : "";
+        return attribute
     }
 
     function getTitle(acl, attribute) {
         let str = "do not have ";
-        if (acl && acl.access && acl.access.indexOf(attribute) >= 0) {
+        let acl_access = acl_map.get(acl) ?? ""
+        if (acl_access && acl_access.indexOf(attribute) >= 0) {
             str = "have ";
         }
         if (attribute === "R") str += "read access";
@@ -161,7 +152,8 @@ export default function AclSetup(props) {
     }
 
     function getAclClassName(acl, attribute) {
-        if (acl && ((acl.access && acl.access.indexOf(attribute) >= 0) || (acl.acl === 'R'))) {
+        let acl_access = acl_map.get(acl) ?? ""
+        if ((acl_access && acl_access.indexOf(attribute) >= 0) || (acl.acl === 'R')) {
             return "acl-access";
         } else {
             return "acl-no-access";
@@ -171,65 +163,88 @@ export default function AclSetup(props) {
     return (
         <div className="row pb-5">
             <div className="role-block col-6">
-                <h6 className="role-label text-center">ACLs </h6>
+                <h6 className="role-label text-center">{props.left_title ? props.left_title : "ACLs"} </h6>
                 <div className="role-area bg-light border rounded h-100">
                     <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center bg-white'>
                         <input type="text" className="filter-text w-100 px-2 py-2 border-0" placeholder="Filter..."
-                               value={selected_filter}
-                               onChange={(event) => {
-                                   setSelectedFilter(event.target.value)
-                               }}/>
-                        <span className="clear px-3" title="clear filter"
-                              onClick={() => setSelectedFilter('')}>&times;</span>
+                               value={active_filter}
+                               onKeyDown={(event) => setFilter1(event, null)}
+                               onChange={(event) => setFilter1(event, event.target.value)}/>
+                        <span className="clear px-3" title="clear filter" onClick={() => clearFilter1()}>&times;</span>
                     </div>
                     {
-                        getAcls().map((acl, i) => {
+                        active_group_list.map((acl, i) => {
                             return (<div key={i} className="role-chip d-flex justify-content-between align-items-center"
-                                         title={(acl.isUser ? "user " : "group ") + acl.acl}>
-                                    <span className="w-100" onClick={() => removeAcl(acl)}>
+                                         title={"group " + acl.displayName ? acl.displayName : acl.name}>
+                                    <span className="w-100" onClick={() => removeGroup(acl)}>
                                         <span className="user-group-image-box"><img className="user-group-image me-3"
-                                                                                    src={acl.isUser ? "images/user.svg" : "images/group.svg"}
-                                                                                    alt="user"/></span><span>{acl.acl}</span>
+                                                                                    src={"images/group.svg"}
+                                                                                    alt="group"/></span><span>{acl.displayName ? acl.displayName : acl.name}</span>
                                     </span>
+                                { select_crud &&
                                 <div className="d-flex flex-nowrap">
-                                    <span className={getAclClassName(acl, "R")}
-                                          title={getTitle(acl, "R")}>{getAccess(acl, "R")}</span>
-                                    <span className={getAclClassName(acl, "W")} title={getTitle(acl, "W")}
-                                          onClick={(event) => invertAccess(event, acl, "W")}>{getAccess(acl, "W")}</span>
-                                    <span className={getAclClassName(acl, "D")} title={getTitle(acl, "D")}
-                                          onClick={(event) => invertAccess(event, acl, "D")}>{getAccess(acl, "D")}</span>
-                                    <span className={getAclClassName(acl, "M")} title={getTitle(acl, "M")}
-                                          onClick={(event) => invertAccess(event, acl, "M")}>{getAccess(acl, "M")}</span>
+                                    <span className={getAclClassName(acl.name, "R")}
+                                          title={getTitle(acl.name, "R")}>{getAccess(acl.name, "R")}</span>
+                                    <span className={getAclClassName(acl.name, "W")} title={getTitle(acl.name, "W")}
+                                          onClick={(event) => invertAccess(event, acl.name, "W")}>{getAccess(acl.name, "W")}</span>
+                                    <span className={getAclClassName(acl.name, "D")} title={getTitle(acl, "D")}
+                                          onClick={(event) => invertAccess(event, acl.name, "D")}>{getAccess(acl.name, "D")}</span>
+                                    <span className={getAclClassName(acl.name, "M")} title={getTitle(acl, "M")}
+                                          onClick={(event) => invertAccess(event, acl.name, "M")}>{getAccess(acl.name, "M")}</span>
                                 </div>
+                                }
                             </div>)
                         })
                     }
                 </div>
+                <Pagination
+                    rowsPerPageOptions={[]}
+                    component="div"
+                    count={active_group_list_size}
+                    theme={null}
+                    rowsPerPage={page_size}
+                    page={active_page}
+                    backIconButtonProps={{'aria-label': 'Previous Page',}}
+                    nextIconButtonProps={{'aria-label': 'Next Page',}}
+                    onChangePage={(page) => setActivePage(page)}
+                />
             </div>
 
             <div className="role-block col-6">
-                <h6 className="role-label text-center">Available</h6>
+                <h6 className="role-label text-center">{props.right_title ? props.right_title : "Available"}</h6>
                 <div className="role-area bg-light border rounded h-100">
                     <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center bg-white'>
                         <input type="text" className="filter-text w-100 px-2 py-2 border-0" placeholder="Filter..."
                                value={available_filter}
-                               onChange={(event) => {
-                                   setAvailableFilter(event.target.value)
-                               }}/>
-                        <span className="clear px-3" title="clear filter"
-                              onClick={() => setAvailableFilter('')}>&times;</span>
+                               onKeyDown={(event) => setFilter2(event, null)}
+                               onChange={(event) => setFilter2(event, event.target.value)}/>
+                        <span className="clear px-3" title="clear filter" onClick={() => clearFilter2()}>&times;</span>
                     </div>
                     {
-                        getAvailableGroupsOrUsers().map((u_group, i) => {
-                            return (<div key={i} className="role-chip" onClick={() => addAcl(u_group)}
-                                         title={(u_group.isUser ? "user " : "group ") + u_group.name}>
+                        available_group_list.map((u_group, i) => {
+                            return (<div key={i} className="role-chip" onClick={() => addGroup(u_group)}
+                                         title={"group " + u_group.name}>
                                 <span className="user-group-image-box me-3"><img className="user-group-image"
-                                                                                 src={u_group.isUser ? "images/user.svg" : "images/group.svg"}
-                                                                                 alt="user"/></span><span>{u_group.name}</span>
+                                                                                 src={"images/group.svg"}
+                                                                                 alt="group"/></span>
+                                <span>
+                                    {u_group.displayName ? u_group.displayName : u_group.name}
+                                </span>
                             </div>)
                         })
                     }
                 </div>
+                <Pagination
+                    rowsPerPageOptions={[]}
+                    component="div"
+                    count={available_group_list_size}
+                    theme={null}
+                    rowsPerPage={page_size}
+                    page={available_page}
+                    backIconButtonProps={{'aria-label': 'Previous Page',}}
+                    nextIconButtonProps={{'aria-label': 'Next Page',}}
+                    onChangePage={(page) => setAvailablePage(page)}
+                />
             </div>
 
         </div>

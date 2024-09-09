@@ -5,7 +5,8 @@ import {useForm} from "react-hook-form";
 import {OrganisationTab} from "./OrganisationFormTab";
 import {Chip} from "../../components/Chip";
 import {getGroupList} from "../groups/groupSlice";
-import api from "../../common/api";
+import api, {Api} from "../../common/api";
+import ACLSetup from "../../common/acl-setup";
 
 export default function OrganisationFormV2(props) {
     const dispatch = useDispatch();
@@ -20,21 +21,15 @@ export default function OrganisationFormV2(props) {
     const [selected_tab, setSelectedTab] = useState('general');
     const group_data_status = useSelector((state) => state.groupReducer.data_status);
     //group_list_full should be in ['Admin','Managers',..] format
-    const group_list_full = useSelector((state) => state.groupReducer.group_list).map(g => {
-        return g.name
-    });
-    // const available_roles = useSelector((state) => state.usersReducer.roles);
     const roles_list_full = api.getPrettyRoles(useSelector((state) => state.usersReducer.roles));
     const sso_enabled = organisation ? organisation.autoCreateSSOUsers : false;
 
     //filters
     const [selected_role_filter, setRoleFilter] = useState('');
     const [available_role_filter, setAvailableRoleFilter] = useState('');
-    const [available_group_filter, setAvailableGroupFilter] = useState('');
-    const [selected_group_filter, setSelectedGroupFilter] = useState('');
 
     const [selected_roles, setSelectedRoles] = useState(organisation ? api.getPrettyRoles(organisation.autoCreateSSORoleList) : []);
-    const [selected_groups, setSelectedGroups] = useState(organisation ? organisation.autoCreateSSOACLList : []);
+    const [selected_groups, setSelectedGroups] = useState(organisation ? Api.stringListToACLList(organisation.autoCreateSSOACLList) : []);
 
     const [show_enable_domain_error, setShowEnableDomainError] = useState(true);
     const [role_error, setRoleError] = useState(true);
@@ -49,16 +44,15 @@ export default function OrganisationFormV2(props) {
     }
 
 
-
     const handleDelete = () => {
         dispatch(deleteOrganisation({session_id: props.session.id, organisation_id: organisation.id}))
         handleClose();
     }
 
-// set title
+    // set title
     const title = (organisation === null) ? "New Organisation" : "Edit Organisation";
 
-//Form Hook
+    //Form Hook
     const {
         register,
         handleSubmit,
@@ -68,7 +62,7 @@ export default function OrganisationFormV2(props) {
         // watch,
     } = useForm();
 
-//set default value depends on organisation and show_organisation_form
+    //set default value depends on organisation and show_organisation_form
     useEffect(() => {
         let defaultValues = {};
         defaultValues.name = organisation ? organisation.name : '';
@@ -85,21 +79,21 @@ export default function OrganisationFormV2(props) {
 
     useEffect(() => {
         if (selected_organisation_id !== null && selected_organisation_id !== undefined) {
-            dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id}))
+            dispatch(getGroupList({session_id: session.id, organization_id: selected_organisation_id, filter: null}))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [group_data_status === 'load_now', organisation])
 
 
-//Role validation
-    useEffect(()=>{
-        if(selected_roles.length > 0 || !sso_enabled){
+    //Role validation
+    useEffect(() => {
+        if (selected_roles.length > 0 || !sso_enabled) {
             setRoleError(false)
-        }else{
+        } else {
             setRoleError(true)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[selected_roles,props.show_organisation_form,selected_organisation_id])
+    }, [selected_roles, props.show_organisation_form, selected_organisation_id])
 
     //autoCreateSSODomainListStr validation
     useEffect(() => {
@@ -116,17 +110,19 @@ export default function OrganisationFormV2(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getValues(['enabled'])])
 
-//on submit store or update
+    //on submit store or update
     const onSubmit = data => {
         if (show_enable_domain_error) {
             setSelectedTab('sso')
-        } else if (selected_roles.length < 1 && sso_enabled){
+        } else if (selected_roles.length < 1 && sso_enabled) {
             setSelectedTab('sso')
         } else {
             data.autoCreateSSORoleList = selected_roles.map(role => {
                 return role.role
             });
-            data.autoCreateSSOACLList = selected_groups;
+            data.autoCreateSSOACLList = selected_groups.map(acl => {
+                return acl.acl
+            })
             //convert domain string to array
             data.autoCreateSSODomainList = data.autoCreateSSODomainListStr.split(',');
 
@@ -146,8 +142,8 @@ export default function OrganisationFormV2(props) {
     }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-// SimSage role management
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    // SimSage role management
 
 
     const getAvailableRoles = () => {
@@ -155,7 +151,7 @@ export default function OrganisationFormV2(props) {
         let temp_available_rolls = roles_list_full.filter(role => {
             if (!roleNames.includes(role.role)) {
                 return role
-            }else {
+            } else {
                 return false;
             }
         })
@@ -191,39 +187,7 @@ export default function OrganisationFormV2(props) {
         setSelectedRoles(temp_list)
     }
 
-
-    const getAvailableGroups = () => {
-        // const groupNames = selected_groups ? selected_groups.map(g => g.name) : []
-        const availableGroups = group_list_full.filter(grp => {
-            return !selected_groups.includes(grp)
-
-        })
-        return available_group_filter.length > 0 ? availableGroups.filter(grp => {
-                return grp.toLowerCase().includes(available_group_filter.toLowerCase())
-            })
-            :
-            availableGroups
-    }
-
-    function getSelectedGroups() {
-        return selected_groups.length > 0 ? selected_groups.filter(grp => {
-                return grp.toLowerCase().includes(selected_group_filter.toLowerCase())
-            })
-            :
-            selected_groups
-    }
-
-    function addGroupToUser(groupToAdd) {
-        setSelectedGroups([...(selected_groups || []), groupToAdd])
-    }
-
-    function removeGroupFromUser(groupToRemove) {
-        setSelectedGroups(selected_groups.filter(grp => {
-            return grp !== groupToRemove
-        }))
-    }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (!props.show_organisation_form)
         return (<div/>);
@@ -238,9 +202,6 @@ export default function OrganisationFormV2(props) {
 
                             <div className="modal-header px-5 pt-4 bg-light">
                                 <h4 className="modal-title" id="staticBackdropLabel">{title}</h4>
-                                {/* <button onClick={handleClose} type="button" className="btn-close"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"></button> */}
                             </div>
                             <div className="modal-body p-0">
 
@@ -307,7 +268,7 @@ export default function OrganisationFormV2(props) {
                                                           {...register("autoCreateSSODomainListStr", {required: getValues('autoCreateSSOUsers')})}
                                                 />
                                             </div>
-                                            {(errors.autoCreateSSODomainListStr || show_enable_domain_error )&&
+                                            {(errors.autoCreateSSODomainListStr || show_enable_domain_error) &&
                                                 <span
                                                     className="text-danger fst-italic small">This field is required </span>}
                                         </div>
@@ -315,7 +276,7 @@ export default function OrganisationFormV2(props) {
                                         <div>
                                             <div className="row pb-5 mb-3">
                                                 <div className="role-block col-6">
-                                                    <h6 className="role-label text-center">SimSage
+                                                    <h6 className="role-label text-center">SSO assigned
                                                         Roles</h6>
                                                     <div
                                                         className="role-area bg-light border rounded h-100">
@@ -334,13 +295,13 @@ export default function OrganisationFormV2(props) {
                                                         }
                                                     </div>
 
-                                                    {(role_error )&&
+                                                    {(role_error) &&
                                                         <span
                                                             className="text-danger fst-italic small">This field is required </span>}
 
                                                 </div>
                                                 <div className="role-block col-6">
-                                                    <h6 className="role-label text-center">Available</h6>
+                                                    <h6 className="role-label text-center">Available Roles</h6>
                                                     <div
                                                         className="role-area bg-light border rounded h-100">
                                                         <input
@@ -363,51 +324,15 @@ export default function OrganisationFormV2(props) {
 
                                         {organisation &&
                                             <div>
-                                                <div className="row pb-5">
-                                                    <div className="role-block col-6">
-                                                        <h6 className="role-label text-center">SimSage
-                                                            Groups</h6>
-                                                        <div
-                                                            className="role-area bg-light border rounded h-100">
-                                                            <input
-                                                                className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                                placeholder="Filter..."
-                                                                value={selected_group_filter}
-                                                                onChange={(e) => setSelectedGroupFilter(e.target.value)}/>
-                                                            {
-                                                                getSelectedGroups().map((grp, i) => {
-                                                                    return (
-
-                                                                        <Chip key={i} color="secondary"
-                                                                              onClick={() => removeGroupFromUser(grp)}
-                                                                              label={grp}
-                                                                              variant="outlined"/>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                    <div className="role-block col-6">
-                                                        <h6 className="role-label text-center">Available</h6>
-                                                        <div
-                                                            className="role-area bg-light border rounded h-100">
-                                                            <input
-                                                                className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                                                placeholder="Filter..."
-                                                                value={available_group_filter}
-                                                                onChange={(e) => setAvailableGroupFilter(e.target.value)}/>
-                                                            {
-                                                                getAvailableGroups().map((grp, i) => {
-                                                                    return (
-                                                                        <Chip key={i} color="primary"
-                                                                              onClick={() => addGroupToUser(grp)}
-                                                                              label={grp}
-                                                                              variant="outlined"/>)
-                                                                })
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <ACLSetup
+                                                    left_title={"SSO assigned ACLs"}
+                                                    right_title={"Available ACLs"}
+                                                    select_acl_crud={false}
+                                                    active_acl_list={selected_groups}
+                                                    on_update={(ACLs) => setSelectedGroups(ACLs)}
+                                                    organisation_id={organisation.id}
+                                                    page_size={5}
+                                                />
                                             </div>
                                         }
                                     </div>
@@ -432,6 +357,5 @@ export default function OrganisationFormV2(props) {
                 </div>
             </div>
         </div>
-    );
-
+    )
 }

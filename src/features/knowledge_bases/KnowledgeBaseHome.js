@@ -33,41 +33,24 @@ export default function KnowledgeBaseHome() {
         if (organisation_id)
             dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [organisation_id, status==='load_now'])
+    }, [organisation_id, status==='load_now', kb_show_form])
 
 
 
     return (
-
         <div className="section px-5 pt-4">
-
             <KnowledgeBaseList/>
 
             {/*show kb add/edit form*/}
-            {kb_show_form === true &&
-                <KnowledgeBaseEdit/>
-            }
-            {kb_show_delete_form === true &&
-                <KnowledgeBaseDelete />
-            }
-            {kb_show_delete_info_form === true &&
-                <KnowledgeBaseDeleteInfo />
-            }
+            {kb_show_form === true && <KnowledgeBaseEdit/>}
+            {kb_show_delete_form === true && <KnowledgeBaseDelete/>}
+            {kb_show_delete_info_form === true && <KnowledgeBaseDeleteInfo/>}
+
             {/*show view list*/}
-            { (kb_view_id !== null) &&
-                <KnowledgeBaseViewIds />
-            }
-            {kb_show_optimize_form === true &&
-                <KnowledgeBaseOptimize />
-            }
-            {kb_show_truncate_indexes_form === true &&
-                <KnowledgeBaseTruncateIndexes />
-            }
-
+            { (kb_view_id !== null) && <KnowledgeBaseViewIds/>}
+            {kb_show_optimize_form === true && <KnowledgeBaseOptimize/>}
+            {kb_show_truncate_indexes_form === true && <KnowledgeBaseTruncateIndexes/>}
             <KnowledgeBaseErrorDialog/>
-
         </div>
     )
-
-
 }

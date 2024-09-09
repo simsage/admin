@@ -17,8 +17,7 @@ export function SharepointSiteAndLibraries(props) {
     }
 
     const isValid = () => {
-        // return (isSharedDrive && Api.definedAndNotBlank(driveId)) ||
-        //     (!isSharedDrive && Api.definedAndNotBlank(driveEmail))
+        // TODO: Pointless???
         return true
     }
 

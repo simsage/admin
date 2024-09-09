@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {BsFilePdf} from "react-icons/bs";
-import {DOCUMENTATION, useSelectedSource} from "./common";
+import {DOCUMENTATION, invalid_credential, useSelectedSource, validDropBoxFolderList} from "./common";
 
 export default function CrawlerWebForm(props) {
 
@@ -12,13 +12,12 @@ export default function CrawlerWebForm(props) {
         l_form_data
     } = useSelectedSource(props);
 
-    const [webCssIgnore, setWebCssIgnore] = useState(specific_json.webCssIgnore?specific_json.webCssIgnore:selected_source?'':'header, footer');
+    const [webCssIgnore, setWebCssIgnore] = useState(specific_json.webCssIgnore ? specific_json.webCssIgnore : selected_source ? '' : 'header, footer');
 
-    function handleWebCssIgnore(data){
+    function handleWebCssIgnore(data) {
         setWebCssIgnore(data);
-        setData({webCssIgnore:data})
+        setData({webCssIgnore: data})
     }
-
 
 
     //update local variable specific_json when data is changed
@@ -35,12 +34,27 @@ export default function CrawlerWebForm(props) {
     }, [specific_json])
 
 
+    useEffect(() => {
+
+        const validate_web = () => {
+            const {baseUrlList} = specific_json
+            return invalid_credential(baseUrlList) || (!baseUrlList.startsWith("http://") &&
+                !baseUrlList.startsWith("https://") && !baseUrlList.startsWith("file://")) ?
+                "Web Crawler: you must supply a base url of type http://, file:// or https://" : null
+        }
+
+        if (props.set_verify) props.set_verify(() => validate_web)
+    }, [props.set_verify, specific_json])
+
+
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
             <div className="row mb-3">
                 <div className="form-group col-6">
 
-                    <label className="small required">http/s or file:// base url (non-file paths must end with /)</label>
+                    <label className="small required">
+                        http/s or file:// base url (non-file paths must end with /)
+                    </label>
                     <input type="text"
                            placeholder="(e.g. https://simsage.ai)"
                            title="web site start url"
@@ -53,7 +67,7 @@ export default function CrawlerWebForm(props) {
                     />
                 </div>
                 <div className="col-2 offset-2">
-                    <a href={DOCUMENTATION.WEB} id="dlGDrive" target="_blank"
+                    <a href={DOCUMENTATION.WEB} id="dlGDrive" target="_blank" rel="noreferrer"
                        title="Download the SimSage web crawler setup guide"
                        className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
@@ -61,7 +75,7 @@ export default function CrawlerWebForm(props) {
                     </a>
                 </div>
                 <div className="col-2">
-                    <a href={DOCUMENTATION.GOOGLE_DRIVE} id="dlGDrive" target="_blank"
+                    <a href={DOCUMENTATION.GOOGLE_DRIVE} id="dlGDrive" target="_blank" rel="noreferrer"
                        title="Download the SimSage Google Drive setup guide"
                        className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
@@ -209,7 +223,9 @@ export default function CrawlerWebForm(props) {
                               placeholder="csv prefix list of other domains to crawl (e.g. https://drive.google.com) [optional]"
                               rows="3"
                               value={specific_json.validDomainCSV}
-                              onChange={(event) => {setData({validDomainCSV: event.target.value})}}
+                              onChange={(event) => {
+                                  setData({validDomainCSV: event.target.value})
+                              }}
                     />
                 </div>
 
@@ -219,7 +235,9 @@ export default function CrawlerWebForm(props) {
                               placeholder="a set of possible paths values, separated by commas (csv) to exclude pages (e.g. /images/) [optional]"
                               rows="3"
                               value={specific_json.pagePrefixesToIgnore}
-                              onChange={(event) => {setData({pagePrefixesToIgnore: event.target.value})}}
+                              onChange={(event) => {
+                                  setData({pagePrefixesToIgnore: event.target.value})
+                              }}
                     />
                 </div>
             </div>
@@ -287,7 +305,9 @@ export default function CrawlerWebForm(props) {
                                       placeholder="the Google drive json key identifying the service account to use to access and impersonate user-drive data.  Leave empty if you've already set this value previously and don't want to change it."
                                       rows="3"
                                       value={specific_json.googleJsonKeyFile}
-                                      onChange={(event) => {setData({googleJsonKeyFile: event.target.value})}}
+                                      onChange={(event) => {
+                                          setData({googleJsonKeyFile: event.target.value})
+                                      }}
                             />
                         </div>
                     </div>

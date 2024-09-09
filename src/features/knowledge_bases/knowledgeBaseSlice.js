@@ -2,7 +2,6 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import axios from "axios";
 import {get_error} from "../../common/api";
-// import ErrorAlert from "../alerts/ErrorAlert";
 
 const initialState = {
     kb_original_list: [],
@@ -37,7 +36,8 @@ const initialState = {
     error_text: '',
 
     //security ID
-    show_securityID_prompt: false
+    show_securityID_prompt: false,
+    scheduleEnable: false
 }
 
 
@@ -203,13 +203,6 @@ const knowledgeBaseSlice = createSlice({
                 optimize_data: null,
             }
         },
-        showTruncateIndexesAskDialog: (state, action) => {
-            return {
-                ...state,
-                show_truncate_indexes_form: true,
-                truncate_indexes_data: action.payload,
-            }
-        },
         closeTruncateIndexes: (state) => {
             return {
                 ...state,
@@ -217,7 +210,7 @@ const knowledgeBaseSlice = createSlice({
                 truncate_indexes_data: null,
             }
         },
-        closeErrorMessage: (state, action) => {
+        closeErrorMessage: (state, _) => {
             return {
                 ...state,
                 show_error_form: false,
@@ -238,8 +231,9 @@ const knowledgeBaseSlice = createSlice({
         search: (state, action) => {
 
             if (action.payload.keyword.length > 0) {
+                const regex = new RegExp(action.payload.keyword, "i")
                 let temp = state.kb_original_list.filter(kb_list_item => {
-                    return kb_list_item.name.match(new RegExp(action.payload.keyword, "i"))
+                    return kb_list_item.name.match(regex) || kb_list_item.kbId === action.payload.keyword
                 });
                 if (temp.length > 0) {
                     return {...state,
@@ -259,26 +253,9 @@ const knowledgeBaseSlice = createSlice({
                 }
             }
         },
-
-        orderBy: (state, action) => {
-
-            switch (action.payload.order_by) {
-                default:
-                case 'alphabetical':
-                    state.kb_list = state.kb_original_list.sort((a, b) => (a.name > b.name) ? 1 : -1);
-                    state.status = "fulfilled";
-                    break;
-                case 'recently_added':
-                    state.kb_list = state.kb_original_list.sort((a, b) => (a.created > b.created) ? 1 : -1);
-                    state.status = "fulfilled";
-                    break
-            }
-        }
-
-
     },
     extraReducers
-});
+})
 
 
 export const getKBList = createAsyncThunk(
@@ -293,7 +270,7 @@ export const getKBList = createAsyncThunk(
                 return rejectWithValue(error)
             })
     }
-);
+)
 
 export const deleteRecord = createAsyncThunk(
     'knowledgeBases/deleteRecord',
@@ -319,7 +296,6 @@ export const addOrUpdate = createAsyncThunk(
         const url = api_base + '/knowledgebase/save';
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                // thunkAPI.dispatch(updateKB(response.data));
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
@@ -337,7 +313,6 @@ export const optimizeIndexes = createAsyncThunk(
         const url = '/language/optimize-indexes';
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                // thunkAPI.dispatch(updateKB(response.data));
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
@@ -355,7 +330,6 @@ export const optimizeIndexesAbort = createAsyncThunk(
         const url = '/language/optimize-indexes-abort';
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
-                // thunkAPI.dispatch(updateKB(response.data));
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
@@ -382,10 +356,20 @@ export const truncateSlowIndexes = createAsyncThunk(
 
 
 export const {
-
-    showSecurityPrompt, closeSecurityPrompt, closeErrorMessage,showAddForm, showEditForm, closeForm, showDeleteAskForm, showDeleteInfo, closeDelete,
-    setViewIds, showOptimizeAskDialog, showOptimizeAbortDialog, closeOptimize, updateKB, search, orderBy,
-
-    showTruncateIndexesAskDialog, closeTruncateIndexes
+    showSecurityPrompt,
+    closeSecurityPrompt,
+    closeErrorMessage,
+    showAddForm,
+    showEditForm,
+    closeForm,
+    showDeleteAskForm,
+    showDeleteInfo,
+    closeDelete,
+    setViewIds,
+    showOptimizeAskDialog,
+    showOptimizeAbortDialog,
+    closeOptimize,
+    search,
+    closeTruncateIndexes
 } = knowledgeBaseSlice.actions
 export default knowledgeBaseSlice.reducer;

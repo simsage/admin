@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Cell, Pie, PieChart, ResponsiveContainer, Tooltip} from "recharts";
-import {formatCountSize, formatStorageSize} from "./chart-utils";
+import {formatCountSize} from "./chart-utils";
 
 
 export default function DocumentBreakdown(props) {

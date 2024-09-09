@@ -1,0 +1,53 @@
+.log-line-enter {
+    opacity: 0;
+}
+
+.log-line-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
+.log-line-exit {
+    opacity: 1;
+}
+
+.log-line-exit-active {
+    opacity: 0;
+    transition: opacity 300ms ease-in;
+}
+
+.log-line {
+    /* Additional styles for your log line */
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+
+.log-type-debug,
+.log-type-info,
+.log-type-error {
+    font-weight: bold;
+}
+
+.log-type-debug {
+    color: #51B274;
+}
+
+.log-type-info {
+    color: #0e70a5;
+}
+
+.log-type-error {
+    color: darkred;
+}
+
+.log-type-warn {
+    color: darkmagenta;
+}
+
+.highlight {
+    background-color: yellow;
+}

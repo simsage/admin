@@ -1,5 +1,26 @@
 import React, {useEffect} from "react";
-import { useSelectedSource } from './common.js';
+import {useSelectedSource} from './common.js';
+import CustomSelect from "../../../components/CustomSelect";
+
+const metadata_source_list = [
+    {key: "none", value: "none"},
+    {key: "title", value: "title"},
+    {key: "url", value: "url / id"},
+    {key: "author", value: "author"}
+]
+
+const metadata_destination_list = [
+    {key: "none", value: "none"},
+    {key: "title", value: "title"},
+    {key: "author", value: "author"},
+    {key: "body", value: "document content"}
+]
+
+const add_text_list = [
+    { key: "after", value: "after" },
+    { key: "before", value: "before" },
+    { key: "replace", value: "replace" }
+]
 
 
 export default function CrawlerMetadataForm(props) {
@@ -11,19 +32,11 @@ export default function CrawlerMetadataForm(props) {
         specific_json,
         setSpecificJson,
         l_form_data
-    } = useSelectedSource(props);
+    } = useSelectedSource(props)
 
-    const is_xml_crawler = selected_source && selected_source.crawlerType === 'xml';
-
-
-    const data_type_list = [
-        "none",
-        "string",
-        "long",
-    ];
-
-    const empty_metadata_mapper_item = {"dataType": "none", "extMetadata": "", "metadata": "", "display": ""};
-
+    const is_xml_crawler = selected_source && selected_source.crawlerType === 'xml'
+    const empty_metadata_mapper_item = {"extMetadata": "", "metadata": "", "display": ""}
+    const empty_transform = {source: 'none', destination: 'none', text_action: 'after', text: '', regex: ''}
 
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
@@ -31,6 +44,11 @@ export default function CrawlerMetadataForm(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
+
+    function get_transform_list() {
+        return (specific_json && specific_json.transform_list && specific_json.transform_list.length > 0) ?
+            specific_json.transform_list : [];
+    }
 
     function get_md_list() {
         let md_list = (specific_json && specific_json.metadata_list && specific_json.metadata_list.length > 0) ?
@@ -49,15 +67,12 @@ export default function CrawlerMetadataForm(props) {
                     !source_saved && !is_xml_crawler
                 );
                 if (item.metadata === "last-modified") {
-                    item.dataType = "long";
                     item.extMetadata = "last-modified";
                     item.display = "last modified"
                 } else if (item.metadata === "created") {
-                    item.dataType = "long";
                     item.extMetadata = "created";
                     item.display = "created"
                 } else if (item.metadata === "document-type") {
-                    item.dataType = "string";
                     item.extMetadata = "document-type";
                     item.display = "document type"
                 }
@@ -90,24 +105,13 @@ export default function CrawlerMetadataForm(props) {
 
     function check_metadata_name(event) {
         // only allow valid characters to propagate for metadata names
-        if ((event.key >= 'a' && event.key <= 'z') ||
-            (event.key >= 'A' && event.key <= 'Z') ||
-            (event.key >= '0' && event.key <= '9') || event.key === '-') {
+        const validChars = /^[a-zA-Z0-9-]+$/;
+        if (validChars.test(event.key)) {
             return true;
-
         } else {
             event.preventDefault();
             event.stopPropagation();
             return false;
-        }
-    }
-
-
-    function setDataType(record, index, value) {
-        const md_list = get_md_list();
-        if (index >= 0 && index < md_list.length) {
-            md_list[index].dataType = value;
-            setSpecificJson({...specific_json, metadata_list: md_list})
         }
     }
 
@@ -122,24 +126,46 @@ export default function CrawlerMetadataForm(props) {
 
 
     function setExtMetadata(record, index, value) {
-        const md_list = get_md_list();
+        const md_list = get_md_list()
         if (index >= 0 && index < md_list.length) {
-            md_list[index].extMetadata = value;
+            md_list[index].extMetadata = value
             setSpecificJson({...specific_json, metadata_list: md_list})
         }
     }
 
 
     function setDisplayName(record, index, value) {
-        const md_list = get_md_list();
+        const md_list = get_md_list()
         if (index >= 0 && index < md_list.length) {
-            md_list[index].display = value;
+            md_list[index].display = value
             setSpecificJson({...specific_json, metadata_list: md_list})
         }
     }
 
+    function setTransform(index, value) {
+        const transform_list = get_transform_list()
+        if (index >= 0 && index >= transform_list.length) {
+            transform_list.push(empty_transform)
+        }
+        transform_list[index] = {...transform_list[index], ...value}
+        setSpecificJson({...specific_json, transform_list: transform_list})
+    }
+
+    function getTransform(index) {
+        const transform_list = get_transform_list()
+        if (index >= 0 && index >= transform_list.length) {
+            transform_list.push(empty_transform)
+        }
+        return transform_list[0]
+    }
+
+    // this crawler doesn't need the verify system
+    useEffect(() => {
+        if (props.set_verify) props.set_verify('n/a')
+    }, [props.set_verify])
+
     return (
-        <div className="px-5 py-4" style={{ maxHeight: "600px", overflow:"auto"}}>
+        <div className="px-5 py-4" style={{maxHeight: "600px", overflow: "auto"}}>
 
             <div className="row mb-3">
                 <div className="col-6 d-flex">
@@ -159,7 +185,6 @@ export default function CrawlerMetadataForm(props) {
                 <thead>
                 <tr className='table-header'>
                     <td className="small text-black-50 px-0"></td>
-                    <td className="small text-black-50 px-4 metadata-column">data-type</td>
                     <td className="small text-black-50 px-4 display-column">UI Display-name (optional)</td>
                     <td className="small text-black-50 px-4 metadata-field-column">SimSage Metadata name</td>
                     <td className="small text-black-50 px-4 sort-field-column">Source metadata name</td>
@@ -177,22 +202,6 @@ export default function CrawlerMetadataForm(props) {
                                 <div className="d-flex">
                                     <div className="d-flex flex-column justify-content-center">
                                     </div>
-                                </div>
-                            </td>
-                            <td className="pt-3 pe-0 pb-3">
-                                <div className="w-100">
-                                    <select className="form-select text-capitalize" onChange={(event) => {
-                                        setDataType(md, index, event.target.value)
-                                    }}
-                                            defaultValue={md.dataType}
-                                            disabled={md.readonly}
-                                            aria-label="the data-type of the metadata to be mapped">
-                                        {
-                                            data_type_list.map((value, j) => {
-                                                return (<option key={j} value={value}>{value}</option>)
-                                            })
-                                        }
-                                    </select>
                                 </div>
                             </td>
 
@@ -268,6 +277,71 @@ export default function CrawlerMetadataForm(props) {
                 }
                 </tbody>
             </table>
+
+            <div className="row mt-4">
+                <div className="form-group col-12">
+                    <label className="small bi-arrow-left-right">&nbsp;Metadata Transform  (optional)</label>
+                </div>
+            </div>
+            <div className="row mt-4">
+                <div className="form-group col-2">
+                    <label className="small">Metadata Source</label>
+                    <CustomSelect
+                        options={metadata_source_list}
+                        defaultValue={getTransform(0).source}
+                        onChange={(value) => setTransform(0, { source: value })}
+                        autoFocus={false}
+                        className="form-select"
+                    />
+                </div>
+                <div className="form-group col-2">
+                    <label className="small">Metadata Destination</label>
+                    <CustomSelect
+                        options={metadata_destination_list}
+                        defaultValue={getTransform(0).destination}
+                        onChange={(event) => setTransform(0, {destination: event})}
+                        autoFocus={false}
+                        className="form-select"
+                    />
+                </div>
+
+                <div className="form-group col-8">
+                    <label className="small">Matching Regular Expression</label>
+                    <input type="text"
+                           className="theme form-control"
+                           placeholder='regex, e.g. "http(s)?:\/\/domain.com\/(?<param>.*)\/'
+                           value={getTransform(0).regex}
+                           title="the regular expression to apply"
+                           onChange={(event) => {
+                               setTransform(0, {regex: event.target.value})
+                           }}/>
+                </div>
+            </div>
+
+            <div className="row mt-4">
+                <div className="form-group col-2">
+                    <label className="small">Action</label>
+                    <CustomSelect
+                        options={add_text_list}
+                        defaultValue={getTransform(0).text_action}
+                        onChange={(value) => setTransform(0, { text_action: value })}
+                        autoFocus={false}
+                        className="form-select"
+                    />
+                </div>
+
+                <div className="form-group col-10">
+                    <label className="small">{"the Text (including regex <group> names in diamond brackets)"}</label>
+                    <input type="text"
+                           className="theme form-control"
+                           placeholder='text to add (e.g. "ID <param>")'
+                           value={getTransform(0).text}
+                           onChange={(event) => {
+                               setTransform(0, {text: event.target.value})
+                           }}/>
+                </div>
+            </div>
+
         </div>
     )
 }

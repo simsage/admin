@@ -22,9 +22,7 @@ export default function SourceFailures() {
     const [pageSize, setPageSize] = useState(5)
     const [page, setPage] = useState(0)
 
-    const handleClose = () => {
-        dispatch(closeForm());
-    }
+    const handleClose = () => dispatch(closeForm())
 
     useEffect(() => {
         dispatch(getFailedDocuments({
@@ -52,18 +50,28 @@ export default function SourceFailures() {
                             <table className="table">
                                 <thead>
                                 <tr>
-                                    <td className="small text-black-50 px-4 ssi">Source System Identifier</td>
+                                    <td className="small text-black-50 px-4 ssi">Document</td>
                                     <td className="small text-black-50 px-4 error_message">Error Message</td>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {documentList.map((doc, i) => {
                                     return <tr key={i}>
-                                        <td
-                                            title={doc.sourceSystemId}
-                                            className="small text-black-50 px-4 ssi">
-                                            <a href={doc.webUrl} target={"_blank"} rel="noreferrer">{doc.sourceSystemId}</a>
-                                        </td>
+                                        {doc.webUrl &&
+                                            <td
+                                                title={doc.webUrl}
+                                                className="small text-black-50 px-4 ssi">
+                                                <a href={doc.webUrl} target={"_blank"}
+                                                   rel="noreferrer">{doc.webUrl}</a>
+                                            </td>
+                                        }
+                                        {!doc.webUrl &&
+                                            <td
+                                                title={doc.sourceSystemId}
+                                                className="small text-black-50 px-4 ssi">
+                                                <div>{doc.sourceSystemId}</div>
+                                            </td>
+                                        }
                                         <td className="small text-black-50 px-4 error_message">{doc.errorMessage}</td>
                                     </tr>
                                 })}

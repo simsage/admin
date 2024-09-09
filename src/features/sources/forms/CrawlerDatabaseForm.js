@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import SensitiveCredential from "../../../components/SensitiveCredential";
-import { useSelectedSource } from './common.js';
+import {is_valid_metadata, useSelectedSource} from './common.js';
 
 
 export default function CrawlerDatabaseForm(props) {
@@ -76,6 +76,12 @@ export default function CrawlerDatabaseForm(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
+
+    useEffect(() => {
+        const validate_database = () => is_valid_metadata(specific_json.metadata_list)
+
+        if (props.set_verify) props.set_verify(() => validate_database)
+    }, [props.set_verify, specific_json])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">

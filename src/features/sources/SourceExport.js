@@ -21,14 +21,10 @@ export function SourceExport() {
 
     const title = "Export Crawler";
 
-    const handleClose = () => {
-        dispatch(closeForm());
-    };
+    const handleClose = () => dispatch(closeForm())
 
     // Function to handle changes in the textarea
-    const handleChange = (event) => {
-        textareaRef.current.value = event.target.value;
-    };
+    const handleChange = (event) => textareaRef.current.value = event.target.value
 
     // Function to convert textarea text to JSON
     const convertToJSON = () => {

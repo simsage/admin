@@ -1,0 +1,62 @@
+.tags-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px; /* Equal padding on all sides */
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.tags-input-container:focus-within {
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+.tag-bubble {
+    display: flex;
+    align-items: center;
+    background-color: #007bff;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin: 4px; /* Uniform margin on all sides */
+    font-size: 14px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.tag-bubble:hover {
+    background-color: #0056b3;
+}
+
+.remove-tag {
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    transition: color 0.3s ease-in-out;
+}
+
+.remove-tag:hover {
+    color: #ffc107;
+}
+
+.tags-input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 6px;
+    font-size: 14px;
+    min-width: 150px;
+    background-color: transparent;
+    margin: 4px; /* Align input's vertical spacing with tags */
+}
+
+.tags-input::placeholder {
+    color: #6c757d;
+    opacity: 0.8;
+}
+
+.tags-input-container:hover {
+    border-color: #007bff;
+}

@@ -1,6 +1,4 @@
 import React from "react";
-// import {setSelectedSourceTab} from "./sourceSlice";
-// import {useDispatch, useSelector} from "react-redux";
 
 export default function SourceTabs(props) {
 
@@ -10,17 +8,21 @@ export default function SourceTabs(props) {
         <ul className="nav px-5">
             {
                 props.source_tabs.map((item, index) => {
-                    // show core tabs [general, acls, schedules]
+                    // show core tabs [general, ACLs, schedules]
                     // show the crawler tab
                     if (item.type === 'core' || (item.type === 'optional' && item.slug === props.crawler_type) ||
                         (item.type === 'external-crawler' && props.isExternal))
                     {
                         return (
-                            <li key={index} className={((selected_tab === item.slug) ? "active" : "")+" nav-item px-5 pt-3 pb-2 no-select text-capitalize"} onClick={() => props.onClick(item.slug)}>
+                            <li key={index}
+                                className={((selected_tab === item.slug) ? "active" : "")+
+                                    " nav-item px-5 pt-3 pb-2 no-select text-capitalize"}
+                                onClick={() => props.onClick(item.slug)}>
                                 {item.label}
-                            </li>)
+                            </li>
+                        )
                     } else {
-                        return (<div key={index}/>)
+                        return <div key={index}/>
                     }
                 })
             }

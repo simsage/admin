@@ -30,7 +30,7 @@ export class CrawlerImportExport extends Component {
         }
     }
     UNSAFE_componentWillReceiveProps(props) {
-        var data = (props.crawler) ? JSON.stringify(props.crawler) : "";
+        let data = (props.crawler) ? JSON.stringify(props.crawler) : "";
         if (data === "{}") {
             data = "";
         }

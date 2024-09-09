@@ -362,6 +362,7 @@ const extraReducers = (builder) => {
             }
         })
 
+        ///////////////////////////////////////////////////////////////
 
         .addCase(resetSourceDelta.pending, (state) => {
             return {
@@ -373,11 +374,13 @@ const extraReducers = (builder) => {
             // reset indicators locally
             const source_id = action.payload.sourceId;
             const kb_id = action.payload.kbId;
-            if (state.selected_source && state.selected_source.sourceId === source_id && state.selected_source.kbId === kb_id) {
-                state.selected_source.deltaIndicator = "";
+            let selected_source = JSON.parse(JSON.stringify(state.selected_source));
+            if (selected_source && selected_source.sourceId === source_id && selected_source.kbId === kb_id) {
+                selected_source.deltaIndicator = "";
             }
-            if (state.source_list && state.source_list.length > 0) {
-                for (let source of state.source_list) {
+            let source_list = JSON.parse(JSON.stringify(state.source_list));
+            if (source_list && source_list.length > 0) {
+                for (let source of source_list) {
                     if (source.sourceId === source_id && source.kbId === kb_id) {
                         source.deltaIndicator = "";
                     }
@@ -387,7 +390,8 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 busy: false,
-                source_list: state.source_list
+                selected_source: selected_source,
+                source_list: source_list
             };
         })
         .addCase(resetSourceDelta.rejected, (state) => {
@@ -396,6 +400,33 @@ const extraReducers = (builder) => {
                 busy: false
             }
         })
+
+        ///////////////////////////////////////////////////////////////////
+
+        // synchronizeGroups done
+        .addCase(synchronizeGroups.fulfilled, (state) => {
+            return {
+                ...state,
+                busy: false,
+                status: "fulfilled",
+                data_status: 'load_now'
+            }
+        })
+        // synchronizeGroups error
+        .addCase(synchronizeGroups.rejected, (state, action) => {
+            return {
+                ...state,
+                busy: false,
+                status: "rejected",
+                show_error_form: true,
+                error_title: 'Error',
+                error_message: action?.payload?.error ??
+                    "Please contact the SimSage Support team if the problem persists"
+            }
+        })
+
+
+
 }
 
 
@@ -454,12 +485,15 @@ export const getSource = createAsyncThunk(
 // POST
 export const updateSource = createAsyncThunk(
     'sources/updateSource',
-    async ({session_id, data}, {rejectWithValue}) => {
+    async ({session_id, data, on_success}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler';
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 response.data.documentSimilarityThreshold = response.data.documentSimilarityThreshold / 100
+                if (on_success) {
+                    on_success()
+                }
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
@@ -486,11 +520,14 @@ export const startSource = createAsyncThunk(
 
 export const deleteSource = createAsyncThunk(
     'sources/deleteSource',
-    async ({session_id, organisation_id, kb_id, source_id}, {rejectWithValue}) => {
+    async ({session_id, organisation_id, kb_id, source_id, on_success}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/crawler/crawler/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
+                if (on_success) {
+                    on_success()
+                }
                 return response.data
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
@@ -555,6 +592,30 @@ const sourceSlice = createSlice({
     reducers,
     extraReducers
 });
+
+
+export const synchronizeGroups = createAsyncThunk(
+    'sources/synchronizeGroups',
+    async ({session_id, organisation_id, kb_id, source_id, on_success}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + "/crawler/syncgdrivegroups";
+
+        const data = {
+            organisationId: organisation_id,
+            kbId: kb_id,
+            sourceId: source_id
+        }
+
+        return axios.post(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                if (on_success) {
+                    on_success()
+                }
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    });
 
 export const {
     closeErrorMessage,

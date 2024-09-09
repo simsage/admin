@@ -40,53 +40,63 @@ const initialState = {
     downloaded_backup: null,
 
     //restore
-    restore_status: null, //uploading, uploaded, ready_to_upload
+    restore_status: null //uploading, uploaded, ready_to_upload
 }
 
 const reducers = {
     showAddOrganisationForm: (state, action) => {
-        state.show_organisation_form = action.payload.show_form;
+        return {
+            ...state,
+            show_organisation_form: action.payload.show_form
+        }
     },
 
     showEditOrganisationForm: (state, action) => {
-        state.show_organisation_form = true;
-        state.edit_organisation_id = action.payload.org_id;
+        return {
+            ...state,
+            show_organisation_form: true,
+            edit_organisation_id: action.payload.org_id
+        }
     },
 
     closeOrganisationForm: (state) => {
-        state.show_organisation_form = false;
-        state.edit_organisation_id = null;
-        state.show_organisation_id = false;
+        return {
+            ...state,
+            show_organisation_form: false,
+            edit_organisation_id: null,
+            show_organisation_id: false
+        }
     },
 
-    // clearDownloadedBackup: (state) => {
-    //     state.downloaded_backup = null;
-    // },
-
     setOrganisationList: (state, action) => {
-        state.organisation_list = action.payload.organisationList
-        state.organisation_original_list = action.payload.organisationList
-        state.status = "fulfilled";
-        state.data_status = 'loaded';
+        return {
+            ...state,
+            organisation_list: action.payload.organisationList,
+            organisation_original_list: action.payload.organisationList,
+            status: "fulfilled",
+            data_status: 'loaded'
+        }
     },
 
     showOrganisationId: (state, action) => {
-        state.show_organisation_id = true;
-        state.edit_organisation_id = action.payload.org_id;
+        return {
+            ...state,
+            show_organisation_id: true,
+            edit_organisation_id: action.payload.org_id
+        }
     },
 
-    //
-    search: (state, action) => {
 
+    search: (state, action) => {
         if (action.payload.keyword.length > 0) {
+            const regex = new RegExp(action.payload.keyword, "i")
             let temp = state.organisation_original_list.filter(list_item => {
-                return list_item.name.match(new RegExp(action.payload.keyword, "i"))
+                return list_item.name.match(regex) || list_item.id === action.payload.keyword
             });
             if (temp.length > 0) {
                 state.organisation_list = temp
                 state.status = "fulfilled";
             } else {
-                // dispatchEvent(ErrorAlert({title:"Search",message:"No matching record found"}))
                 state.organisation_list = [];
                 state.status = "fulfilled";
             }
@@ -96,49 +106,51 @@ const reducers = {
         }
     },
 
-    // orderBy: (state, action) => {
-    //
-    //     switch (action.payload.order_by) {
-    //         default:
-    //         case 'alphabetical':
-    //             state.organisation_list = state.organisation_original_list.sort((a, b) => (a.name > b.name) ? 1 : -1);
-    //             state.status = "fulfilled";
-    //             break;
-    //         case 'recently_added':
-    //             state.organisation_list = state.organisation_original_list.sort((a, b) => (a.created > b.created) ? 1 : -1);
-    //             state.status = "fulfilled";
-    //             break
-    //     }
-    // },
-
     showBackupForm: (state, action) => {
-        state.show_backup_form = action.payload.show_form;
-        state.backup_organisation_id = action.payload.org_id;
+        return {
+            ...state,
+            show_backup_form: action.payload.show_form,
+            backup_organisation_id: action.payload.org_id
+        }
     },
 
     closeBackupForm: (state) => {
-        state.show_backup_form = false;
-        state.backup_organisation_id = null;
+        return {
+            ...state,
+            show_backup_form: false,
+            backup_organisation_id: null
+        }
     },
 
     closeBackupProgressMessage: (state) => {
-        state.show_backup_progress_message = false;
+        return {
+            ...state,
+            show_backup_progress_message: false
+        }
     },
 
     showDeleteBackupForm: (state, action) => {
-        state.show_delete_backup_form = action.payload.show_form;
-        // state.backup_organisation_id = action.payload.org_id;
-        state.selected_backup = action.payload.selected_backup;
+        return {
+            ...state,
+            show_delete_backup_form: action.payload.show_form,
+            selected_backup: action.payload.selected_backup
+        }
     },
 
     closeBackupDeleteMessage: (state) => {
-        state.show_delete_backup_form = false;
-        state.selected_backup = null;
+        return {
+            ...state,
+            show_delete_backup_form: false,
+            selected_backup: null
+        }
     },
 
     showDownloadBackupForm: (state, action) => {
-        state.show_download_backup_form = action.payload.show_form;
-        state.selected_backup = action.payload.selected_backup;
+        return {
+            ...state,
+            show_download_backup_form: action.payload.show_form,
+            selected_backup: action.payload.selected_backup
+        }
     },
 
     closeBackupDownloadMessage: (state) => {
@@ -150,17 +162,26 @@ const reducers = {
         }
     },
     showDeleteForm: (state, action) => {
-        state.show_delete_form = true;
-        state.edit_organisation_id = action.payload.org_id;
+        return {
+            ...state,
+            show_delete_form: true,
+            edit_organisation_id: action.payload.org_id
+        }
     },
     closeDeleteForm: (state) => {
-        state.show_delete_form = false;
-        state.edit_organisation_id = null;
+        return {
+            ...state,
+            show_delete_form: false,
+            edit_organisation_id: null
+        }
     },
     clearOrgErrorMessage: (state) => {
-        state.show_error_form = false;
-        state.error_message = undefined;
-        state.error_title = undefined;
+        return {
+            ...state,
+            show_error_form: false,
+            error_message: undefined,
+            error_title: undefined
+        }
     }
 
 
@@ -169,147 +190,226 @@ const reducers = {
 const extraReducers = (builder) => {
     builder
         .addCase(getOrganisationList.pending, (state) => {
-            state.status = "loading"
-            state.data_status = 'loading';
+            return {
+                ...state,
+                status: "loading",
+                data_status: 'loading'
+            }
         })
         .addCase(getOrganisationList.fulfilled, (state, action) => {
-            state.organisation_list = action.payload;
-            state.organisation_original_list = action.payload;
-            state.status = "fulfilled";
-            state.data_status = 'loaded';
+            return {
+                ...state,
+                organisation_list: action.payload,
+                organisation_original_list: action.payload,
+                status: "fulfilled",
+                data_status: 'loaded'
+            }
         })
         .addCase(getOrganisationList.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Failed to load organisation list"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Failed to load organisation list",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //update Organisation
         .addCase(updateOrganisation.pending, (state) => {
-            state.status = "loading"
-            state.data_status = 'loading';
+            return {
+                ...state,
+                status: "loading",
+                data_status: 'loading'
+            }
         })
-        .addCase(updateOrganisation.fulfilled, (state, action) => {
-            state.show_organisation_form = false;
-            state.edit_organisation_id = undefined;
-            state.data_status = 'load_now';
-
+        .addCase(updateOrganisation.fulfilled, (state, _) => {
+            return {
+                ...state,
+                show_organisation_form: false,
+                edit_organisation_id: undefined,
+                data_status: 'load_now'
+            }
         })
         .addCase(updateOrganisation.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Organisation update Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Organisation update Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //delete Organisation
         .addCase(deleteOrganisation.pending, (state) => {
-            state.status = "loading"
-            state.data_status = 'loading';
+            return {
+                ...state,
+                status: "loading",
+                data_status: 'loading'
+            }
         })
         .addCase(deleteOrganisation.fulfilled, (state, action) => {
-            state.status = "fulfilled";
-            state.data_status = 'load_now';
-            state.error = action.payload
-            state.show_error_form = action.payload.response
+            return {
+                ...state,
+                status: "fulfilled",
+                data_status: 'load_now',
+                error: action.payload,
+                show_error_form: action.payload.response
+            }
         })
         .addCase(deleteOrganisation.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Organisation Delete Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Organisation Delete Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //load backup list
         .addCase(getOrganisationBackupList.pending, (state) => {
-            state.status = "loading"
-            state.data_status = 'loading';
+            return {
+                ...state,
+                status: "loading",
+                data_status: 'loading'
+            }
         })
         .addCase(getOrganisationBackupList.fulfilled, (state, action) => {
-            state.status = "fulfilled";
-            state.organisation_backup_list = action.payload;
-            state.organisation_original_backup_list = action.payload;
-            state.backup_data_status = 'loaded';
+            return {
+                ...state,
+                status: "fulfilled",
+                organisation_backup_list: action.payload,
+                organisation_original_backup_list: action.payload,
+                backup_data_status: 'loaded'
+            }
         })
         .addCase(getOrganisationBackupList.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Failed to load backup list"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Failed to load backup list",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //Create Backup
         .addCase(backupOrganisation.pending, (state) => {
-            state.show_backup_progress_message = true;
-
+            return {
+                ...state,
+                show_backup_progress_message: true
+            }
         })
         .addCase(backupOrganisation.fulfilled, (state) => {
-            state.show_backup_progress_message = true;
-            state.backup_data_status = 'load_now';
+            return {
+                ...state,
+                show_backup_progress_message: true,
+                backup_data_status: 'load_now'
+            }
         })
         .addCase(backupOrganisation.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Failed to Create Backup"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Failed to Create Backup",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //delete Backup
         .addCase(deleteBackup.pending, (state) => {
-            state.status = "loading"
-            state.data_status = 'loading';
-            state.backup_data_status = 'loading';
+            return {
+                ...state,
+                status: "loading",
+                data_status: 'loading',
+                backup_data_status: 'loading'
+            }
         })
         .addCase(deleteBackup.fulfilled, (state) => {
-            state.backup_data_status = 'load_now';
+            return {
+                ...state,
+                backup_data_status: 'load_now'
+            }
         })
         .addCase(deleteBackup.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Backup Delete Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Backup Delete Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //Download Backup
         .addCase(downloadBackup.pending, (state) => {
-            state.status = "loading"
-            state.data_status = 'loading';
+            return {
+                ...state,
+                status: "loading",
+                data_status: 'loading'
+            }
+
         })
         .addCase(downloadBackup.fulfilled, (state, action) => {
-            state.show_download_backup_form = false;
-            state.downloaded_backup = action.payload;
+            return {
+                ...state,
+                show_download_backup_form: false,
+                downloaded_backup: action.payload
+            }
         })
         .addCase(downloadBackup.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Backup Download Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Backup Download Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //restore organisation
         .addCase(restoreOrganisation.pending, (state) => {
-            state.restore_status = 'uploading';
-            state.status = "loading"
-            state.data_status = 'loading';
+            return {
+                ...state,
+                restore_status: 'uploading',
+                status: "loading",
+                data_status: 'loading'
+            }
         })
         .addCase(restoreOrganisation.fulfilled, (state) => {
-            state.restore_status = 'uploaded';
-            state.data_status = "load_now";
+            return {
+                ...state,
+                restore_status: 'uploaded',
+                data_status: "load_now"
+            }
         })
         .addCase(restoreOrganisation.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Organisation restore Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Organisation restore Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 }
 

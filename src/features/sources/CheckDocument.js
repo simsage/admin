@@ -16,6 +16,7 @@ export function CheckDocument(props) {
     const [document_url, setDocumentUrl] = useState('')
     const [document_key_list, setDocumentKeyList] = useState([])
     const [document_data, setDocumentData] = useState({})
+    const [user_metadata, setUserMetadata] = useState([])
 
     function handleFindDocument() {
         if (document_url && document_url.trim().length > 0) {
@@ -49,12 +50,13 @@ export function CheckDocument(props) {
         }
 
         if (document && props.source && props.source.sourceId === document.sourceId) {
+            let key_list = [
+                'url', 'url id', 'source ACLs', 'document ACLs', 'title', 'author', 'binary size', 'change hash',
+                'content hash', 'uploaded', 'crawled', 'converted', 'parsed', 'indexed', 'previewed', 'created',
+                'last modified', 'document type', 'filename', 'folder id', 'number of relationships',
+                'number of sentences', 'number of tokens', 'parent url', 'type description', '-eod-'
+            ]
 
-            let key_list = ['url', 'url id', 'source ACLs', 'document ACLs', 'title', 'author', 'binary size', 'change hash', 'content hash',
-                'uploaded', 'crawled', 'converted', 'parsed', 'indexed', 'previewed', 'created', 'last modified',
-                'document type', 'filename', 'folder id', 'number of relationships', 'number of sentences', 'number of tokens',
-                'parent url', 'type description', '-eod-'
-            ];
             const document_key_values = {};
             document_key_values['url'] = document.url;
             document_key_values['url id'] = document.urlId;
@@ -91,13 +93,30 @@ export function CheckDocument(props) {
                     if ((key === '{created}' || key === '{lastmod}') && parseInt(value) > 0) {
                         value = value + "  (" + Api.unixTimeConvert(parseInt(value)) + ")";
                     }
+                    // skip user defined values here
+                    if (key.indexOf(Api.user_metadata_marker) === 0) continue
                     document_key_values[key] = value;
                     key_list.push(key);
                 }
             }
 
-            setDocumentKeyList(key_list);
-            setDocumentData(document_key_values);
+            // user defined metadata
+            const user_metadata_list = []
+            for (const key of Object.keys(document.metadata)) {
+                if (document.metadata.hasOwnProperty(key)) {
+                    let value = document.metadata[key];
+                    if (key.indexOf(Api.user_metadata_marker) === 0) {
+                        user_metadata_list.push(
+                            {
+                                key: key,
+                                value: value
+                            })
+                    }
+                }
+            }
+            setUserMetadata(user_metadata_list)
+            setDocumentKeyList(key_list)
+            setDocumentData(document_key_values)
 
         } else {
             setDocumentKeyList([]);
@@ -120,6 +139,15 @@ export function CheckDocument(props) {
         }
 
         let sb = [];
+        if (user_metadata && user_metadata.length > 0) {
+            sb.push("-- user defined metadata --\n")
+            user_metadata.map((kv) => {
+                sb.push(add_spaces(kv.key, 40) + kv.value);
+                return 0
+            })
+            sb.push("")
+        }
+        sb.push("-- SimSage data --\n")
         document_key_list.map((key) => {
             if (key === '-eod-') {
                 sb.push("\n-- metadata --\n")
@@ -133,96 +161,120 @@ export function CheckDocument(props) {
     }
 
 
-    return (<div>
-
-        <div className="row mb-3">
-            <div className="col-6 d-flex">
-                <div className="alert alert-warning small py-2" role="alert">
-                    Check the existence and details of a document
+    return (
+        <div>
+            <div className="row mb-3">
+                <div className="col-6 d-flex">
+                    <div className="alert alert-warning small py-2" role="alert">
+                        Check the existence and details of a document
+                    </div>
                 </div>
             </div>
-        </div>
 
 
-        <div className="row mb-4">
-            <div className="form-group col-8">
-                <label className="small">look for your document by specifying its URL (unique SimSage ID)</label>
+            <div className="row mb-4">
+                <div className="form-group col-8">
+                    <label className="small">look for your document by specifying its URL (unique SimSage ID)</label>
+                </div>
             </div>
-        </div>
-        <div className="row mb-4">
-            <div className="form-group col-8">
-                <input type="text" className="form-control"
-                       placeholder="document URL..."
-                       autoFocus={true}
-                       value={document_url}
-                       onKeyDown={(e) => {
-                           if (e.key === 'Enter') {
-                               e.preventDefault();
-                               handleFindDocument();
-                           }
-                       }}
-                       onChange={(event) => {
-                           setDocumentUrl(event.target.value)
-                       }}
-                />
+            <div className="row mb-4">
+                <div className="form-group col-8">
+                    <input type="text" className="form-control"
+                           placeholder="Document URL..."
+                           autoFocus={true}
+                           value={document_url}
+                           onKeyDown={(e) => {
+                               if (e.key === 'Enter') {
+                                   e.preventDefault();
+                                   handleFindDocument();
+                               }
+                           }}
+                           onChange={(event) => {
+                               setDocumentUrl(event.target.value)
+                           }}
+                    />
+                </div>
+                <div className="form-group col-4">
+                    <button onClick={handleFindDocument} type="button"
+                            className="btn btn-primary">Find
+                    </button>
+                </div>
             </div>
-            <div className="form-group col-4">
-                <button onClick={handleFindDocument} type="button"
-                        className="btn btn-primary">Find
-                </button>
-            </div>
-        </div>
 
-        { document && document.urlId &&
-            <>
-                <div className="scrollable-view mb-4">
-                    {document_key_list.map((key, i) => {
-                        if (key === '-eod-') {
+            { document && document.urlId &&
+                <>
+                    <div className="scrollable-view mb-4">
+
+                        {user_metadata && user_metadata.length > 0 &&
+                            <div className="row mb-2 mt-4">
+                                <div className="col-12">
+                                    <label className="fw-bold small">user defined metadata</label>
+                                </div>
+                            </div>
+                        }
+
+                        {user_metadata && user_metadata.length > 0 &&
+                            user_metadata.map((kv, i) => {
+                                return (
+                                <div className="row mb-2" key={i}>
+                                    <div className="form-group col-2">
+                                        <label className="small">{kv.key}</label>
+                                    </div>
+                                    <div className="form-group col-8">
+                                        <label className="">{kv.value}</label>
+                                    </div>
+                                </div>
+                                )
+                            })
+                        }
+
+                        <div className="row mb-2 mt-4">
+                            <div className="col-12">
+                                <label className="fw-bold small">SimSage data</label>
+                            </div>
+                        </div>
+
+                        {document_key_list.map((key, i) => {
+                            if (key === '-eod-') {
+                                return (
+                                    <div className="row mb-2 mt-4" key={i}>
+                                        <div className="col-12">
+                                            <label className="fw-bold small">metadata</label>
+                                        </div>
+                                    </div>
+                                )
+                            }
                             return (
-                                <div className="row mb-2 mt-4" key={i}>
-                                    <div className="col-1">
+                                <div className="row mb-2" key={i}>
+                                    <div className="form-group col-2">
+                                        <label className="small">{key}</label>
                                     </div>
-                                    <div className="col-9">
-                                        <label className="fw-bold small">metadata</label>
-                                    </div>
-                                    <div className="col-1">
+                                    <div className="form-group col-8">
+                                        <label className="">{document_data[key] ? document_data[key] : ''}</label>
                                     </div>
                                 </div>
                             )
-                        }
-                        return (
-                            <div className="row mb-2" key={i}>
-                                <div className="form-group col-2">
-                                    <label className="small">{key}</label>
-                                </div>
-                                <div className="form-group col-8">
-                                    <label className="">{document_data[key] ? document_data[key] : ''}</label>
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
+                        })}
+                    </div>
 
-                <div className="row mb-2">
-                    <div className="form-group col-10">
+                    <div className="row mb-2">
+                        <div className="form-group col-10">
+                        </div>
+                        <div className="form-group col-2">
+                            <CopyButton reference={get_document_str} />
+                        </div>
                     </div>
-                    <div className="form-group col-2">
-                        <CopyButton reference={get_document_str} />
-                    </div>
-                </div>
                 </>
-        }
+            }
 
-        {
-            document && document.message && document_url &&
-            <div className="row mb-2">
-                <div className="form-group col-12">
-                    <label className="small">document not found.</label>
+            {
+                document && document.message && document_url &&
+                <div className="row mb-2">
+                    <div className="form-group col-12">
+                        <label className="small">document not found.</label>
+                    </div>
                 </div>
-            </div>
-        }
-
-
-    </div>)
-
+            }
+        </div>
+    )
 }

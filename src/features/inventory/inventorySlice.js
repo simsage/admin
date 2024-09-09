@@ -8,8 +8,6 @@ const initialState = {
     status: null,
     error: null,
     show_form: false,
-    // edit_id: null,
-    // view_id: null,
     selected_inventory: {},
     data_status: 'load_now',//load_now,loading,loaded
 
@@ -21,45 +19,69 @@ const initialState = {
 
 const reducers = {
     showAddForm(state) {
-        state.show_form = true
+        return {
+            ...state,
+            show_form: true
+        }
     },
 
     showEditForm(state, action) {
-        state.show_form = true
-        state.edit_id = action.payload.edit_id
-        state.selected_inventory = action.payload.selected_inventory
+        return {
+            ...state,
+            show_form: true,
+            edit_id: action.payload.edit_id,
+            selected_inventory: action.payload.selected_inventory
+        }
     },
 
     showDocumentSnapshotForm(state) {
-        state.show_document_snapshot_form = true
+        return {
+            ...state,
+            show_document_snapshot_form: true
+        }
     },
 
     showIndexSnapshotForm(state) {
-        state.show_index_snapshot_form = true
+        return {
+            ...state,
+            show_index_snapshot_form: true
+        }
     },
 
     showDeleteInventoryForm(state,action) {
-        state.show_delete_form = true
-        state.selected_inventory = action.payload.inventory
+        return {
+            ...state,
+            show_delete_form: true,
+            selected_inventory: action.payload.inventory
+        }
     },
 
     showAddInfoForm(state, action) {
-        state.show_add_info_form = action.payload
+        return {
+            ...state,
+            show_add_info_form: action.payload
+        }
     },
 
     closeForm(state) {
-        state.show_form = false;
-        state.edit_id = null;
-        state.selected_inventory = {};
-        state.show_document_snapshot_form = false;
-        state.show_index_snapshot_form = false;
-        state.show_delete_form = false;
-        state.show_add_info_form = false;
+        return {
+            ...state,
+            show_form: false,
+            edit_id: null,
+            selected_inventory: {},
+            show_document_snapshot_form: false,
+            show_index_snapshot_form: false,
+            show_delete_form: false,
+            show_add_info_form: false
+        }
     },
-    closeErrorMessage: (state, action) => {
-        state.show_error_form = false;
-        state.error_message = undefined;
-        state.error_title = undefined;
+    closeErrorMessage: (state, _) => {
+        return {
+            ...state,
+            show_error_form: false,
+            error_message: undefined,
+            error_title: undefined
+        }
     },
 };
 
@@ -67,73 +89,111 @@ const reducers = {
 const extraReducers = (builder) => {
     builder
         .addCase(loadInventoryList.pending, (state) => {
-            state.status = "loading"
+            return {
+                ...state,
+                status: "loading"
+            }
         })
 
         .addCase(loadInventoryList.fulfilled, (state, action) => {
-            state.status = "fulfilled";
-            state.inventory_list = action.payload;
-            state.data_status = 'loaded';
+            return {
+                ...state,
+                status: "fulfilled",
+                inventory_list: action.payload,
+                data_status: 'loaded'
+            }
         })
         .addCase(loadInventoryList.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Failed to load Inventory list"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: "rejected",
+                show_error_form: true,
+                error_title: "Failed to load Inventory list",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
-    //Document Snapshot
+        //Document Snapshot
         .addCase(createDocumentSnapshot.pending, (state) => {
-            state.status = "loading"
+            return {
+                ...state,
+                status: "loading"
+            }
         })
         .addCase(createDocumentSnapshot.fulfilled, (state) => {
-            state.status = "fulfilled";
-            state.data_status = 'load_now';
+            return {
+                ...state,
+                status: "fulfilled",
+                data_status: "load_now"
+            }
         })
         .addCase(createDocumentSnapshot.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = "rejected"
-            state.show_add_info_form = false
-            state.show_error_form = true
-            state.error_title = "Failed to create document snapshot"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: "rejected",
+                show_add_info_form: false,
+                show_error_form: true,
+                error_title: "Failed to create document snapshot",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
-    //Index Snapshot
+        //Index Snapshot
         .addCase(createIndexSnapshot.pending, (state) => {
-            state.status = "loading"
+            return {
+                ...state,
+                status: "loading"
+            }
         })
         .addCase(createIndexSnapshot.fulfilled, (state) => {
-            state.status = "fulfilled";
-            state.data_status = 'load_now';
+            return {
+                ...state,
+                status: "fulfilled",
+                data_status: "load_now"
+            }
         })
         .addCase(createIndexSnapshot.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = "rejected"
-            state.show_add_info_form = false
-            state.show_error_form = true
-            state.error_title = "Failed to create index snapshot"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: "rejected",
+                show_add_info_form: false,
+                show_error_form: true,
+                error_title: "Failed to create index snapshot",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
-    //deleteRecord
+        //deleteRecord
         .addCase(deleteRecord.pending, (state) => {
-            state.status = "loading"
+            return {
+                ...state,
+                status: "loading"
+            }
         })
         .addCase(deleteRecord.fulfilled, (state) => {
-            state.status = "fulfilled";
-            state.data_status = 'load_now';
+            return {
+                ...state,
+                status: "fulfilled",
+                data_status: 'load_now'
+            }
         })
         .addCase(deleteRecord.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Delete Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: "rejected",
+                show_error_form: true,
+                error_title: "Delete Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
-
-
 }
 
 
@@ -208,7 +268,6 @@ export const deleteRecord = createAsyncThunk(
 
 export const {
     showAddForm,
-    showEditForm,
     closeForm,
     closeErrorMessage,
     showDocumentSnapshotForm,

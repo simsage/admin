@@ -54,7 +54,7 @@ export function UserPasswordResetForm() {
         data = {
             ...data,
             id: user_id,
-            email:selectedUser.email
+            email: selectedUser.email
         }
 
         dispatch(updateUser({session_id, organisation_id, data}));
@@ -62,7 +62,8 @@ export function UserPasswordResetForm() {
     }
 
     if (show_password_reset_form === false)
-        return (<div/>);
+        return <div/>
+
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog"
              style={{display: "inline", background: "#202731bb"}}>
@@ -72,15 +73,12 @@ export function UserPasswordResetForm() {
                         <h4 className="mb-0">Reset password</h4>
                     </div>
                     <form onSubmit={handleSubmit(onSubmit)}>
-
                         <div className="modal-body p-0">
-
-
                             <div className="tab-content px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
-
                                 <div className="row mb-3">
                                     <div className="control-row col-6">
-                                        <p className="label-2 small"><strong>User: </strong>  {selectedUser.firstName} {selectedUser.surname}</p>
+                                        <p className="label-2 small">
+                                            <strong>User: </strong> {selectedUser.firstName} {selectedUser.surname}</p>
                                     </div>
                                 </div>
                                 <div className="row mb-3">
@@ -129,21 +127,15 @@ export function UserPasswordResetForm() {
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
-
 
                         <div className="modal-footer px-5 pb-3">
                             <button className="btn btn-white btn-block px-4" onClick={() => handleClose()}>Cancel
                             </button>
-                            {/*<button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>*/}
                             <input className="btn btn-primary btn-block px-4" type="submit" value={"Save"}/>
                         </div>
                     </form>
                 </div>
-
-
             </div>
         </div>
     )

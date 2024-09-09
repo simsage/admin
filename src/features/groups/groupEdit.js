@@ -7,6 +7,8 @@ import {Pagination} from "../../common/pagination";
 
 export default function GroupEdit() {
 
+    const ICON = "images/icon/icon_sso_GOOGLE.svg"
+
     const dispatch = useDispatch();
 
     const session = useSelector((state) => state.authReducer.session);
@@ -14,7 +16,6 @@ export default function GroupEdit() {
     const page_size = 7;
 
     const showGroupForm = useSelector((state) => state.groupReducer.show_group_form);
-    const user_count = useSelector((state) => state.usersReducer.count);
     const groupName = useSelector((state) => state.groupReducer.edit_group)
     const ssoSource = useSelector((state) => state.groupReducer.sso_source)
     const readOnly = !!ssoSource
@@ -90,9 +91,9 @@ export default function GroupEdit() {
     }, [showGroupForm, "" + current_to_list(), activeUserPage, activeUserFilter, availableUserPage, availableUserFilter])
 
     const getAvailableUsers = () => {
-        let num_pages = parseInt("" + (available_user_list_size / page_size));
+        let num_pages = parseInt("" + (available_user_list_size / page_size))
         if (available_user_list_size % page_size !== 0) {
-            num_pages += 1;
+            num_pages += 1
         }
         return {
             "list": available_user_list,
@@ -105,31 +106,40 @@ export default function GroupEdit() {
     const getActiveUsers = () => {
         let num_pages = parseInt("" + (active_user_list_size / page_size));
         if (active_user_list_size % page_size !== 0) {
-            num_pages += 1;
+            num_pages += 1
         }
         return {"list": active_user_list, "size": active_user_list_size, "page_size": page_size, "num_pages": num_pages}
     }
 
     const handleSave = () => {
-        const session_id = session.id;
+        const session_id = session.id
         const data = {
             name: editName,
             originalName: groupName,
             organisationId: organisation_id,
             userIdList: current_to_list()
         }
-        dispatch(updateGroup({session_id, data}));
-        setGroupIdChangeList([]);
+        dispatch(updateGroup({session_id, data}))
+        clear()
     }
 
 
-    function handleClose() {
-        dispatch(closeGroupForm());
-        setGroupIdChangeList([]);
+     const handleClose = () => {
+        dispatch(closeGroupForm())
+        clear()
+     }
+
+
+    const clear = () => {
+        setGroupIdChangeList([])
+        setAvailableUserPage(0)
+        setActiveUserPage(0)
+        setActiveUserFilter('')
+        setAvailableUserFilter('')
     }
 
     if (showGroupForm === false) {
-        return (<div/>);
+        return <div/>
     }
 
     // get the data structures
@@ -152,25 +162,25 @@ export default function GroupEdit() {
                                     <h6 className={readOnly ? "role-label" : "role-label text-center"}>Group</h6>
                                     <span className="text">
                                             {ssoSource &&
-                                                <img src="images/icon/icon_sso_GOOGLE.svg" className={"sso_icon_group_view"}
+                                                <img src={ICON} alt="icon" className={"sso_icon_group_view"}
                                                      title="SSO Group"/>}
 
                                         {readOnly && <span>{editName}</span>}
                                         {!readOnly && <input type="text"
-                                               className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
-                                               autoFocus={true}
-                                               autoComplete="false"
-                                               placeholder="Add a Group Name..."
-                                               value={editName}
-                                               disabled={readOnly}
-                                               onChange={(event) => setEditName(event.target.value)}
+                                                             className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
+                                                             autoFocus={true}
+                                                             autoComplete="false"
+                                                             placeholder="Add a Group Name..."
+                                                             value={editName}
+                                                             disabled={readOnly}
+                                                             onChange={(event) => setEditName(event.target.value)}
                                         />}
                                         </span>
                                 </div>
                                 {!readOnly &&
                                     <div className="role-block col-6">
                                         <span className="role-label text-center">
-                                        {"" + user_count.toLocaleString() + " users in this organisation"}
+                                        {available_user_list_size + " users in this organisation"}
                                         </span>
                                     </div>}
 
@@ -179,7 +189,8 @@ export default function GroupEdit() {
                                 <div
                                     className={readOnly ? "role-block col-12 role-height" : "role-block col-6 role-height"}>
 
-                                    <h6 className={readOnly ? "role-label" : "role-label text-center"}>in this Group</h6>
+                                    <h6 className={readOnly ? "role-label" : "role-label text-center"}>in this
+                                        Group</h6>
 
                                     <div className="role-area bg-light border rounded h-100">
                                         <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
@@ -248,8 +259,10 @@ export default function GroupEdit() {
                         </div>
                     </div>
                     <div className="modal-footer px-5 pb-3">
-                        <button className="btn btn-white btn-block px-4" onClick={(e) => handleClose(e)}>{readOnly?"Close":"Cancel"}</button>
-                        {!readOnly && <button className="btn btn-primary btn-block px-4" onClick={(e) => handleSave(e)}>Save</button>}
+                        <button className="btn btn-white btn-block px-4"
+                                onClick={(e) => handleClose(e)}>{readOnly ? "Close" : "Cancel"}</button>
+                        {!readOnly && <button className="btn btn-primary btn-block px-4"
+                                              onClick={(e) => handleSave(e)}>Save</button>}
                     </div>
 
                 </div>
@@ -257,4 +270,4 @@ export default function GroupEdit() {
         </div>
 
     )
-};
+}

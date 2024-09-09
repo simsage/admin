@@ -25,6 +25,7 @@ const compose = "version: \"3.9\"\n" +
     "     - external_crawler_use_encryption=true\n" +
     "     - sid=<sid>\n" +
     "     - max_errors=0\n" +
+    "     - external_crawler_cmd_timeout_in_seconds=60\n" +
     "     - exit_after_crawl=false\n" +
     "     - shared_secret_salt=<secret>\n" +
     "     - simsage_endpoint=<server>\n";
@@ -38,9 +39,10 @@ const docker = "docker run -d --name crawler-<source> --net=host --restart alway
     "     -e sid=<sid>  \\\n" +
     "     -e shared_secret_salt=<secret> \\\n" +
     "     -e simsage_endpoint=<server>  \\\n" +
-    "     -e exit_after_crawl=false\n" +
-    "     -e external_crawler_use_encryption=true\n" +
+    "     -e exit_after_crawl=false  \\\n" +
+    "     -e external_crawler_use_encryption=true  \\\n" +
     "     -e max_errors=0  \\\n" +
+    "     -e external_crawler_cmd_timeout_in_seconds=60  \\\n" +
     "     -e exit_after_crawl=false  \\\n" +
     "     --memory=2g --memory-reservation=1536m \\\n" +
     "     simsage/external-crawler:<version>\n";
@@ -61,6 +63,7 @@ const bash = "#!/bin/bash\n" +
     "export api_version=1\n" +
     "export max_errors=0\n" +
     "export external_crawler_use_encryption=true\n" +
+    "export external_crawler_cmd_timeout_in_seconds=60\n" +
     "export exit_after_crawl=false\n" +
     "# SimSage location\n" +
     "export simsage_endpoint=<server>\n" +
@@ -107,6 +110,7 @@ const bat = "REM\n" +
     "set shared_secret_salt=<secret>\n" +
     "set api_version=1\n" +
     "set max_errors=0\n" +
+    "set external_crawler_cmd_timeout_in_seconds=60\n" +
     "set exit_after_crawl=false\n" +
     "set external_crawler_use_encryption=true\n" +
     "\n" +
@@ -154,7 +158,7 @@ export default function CrawlerExternalCrawlerConfigurationForm(props) {
         e.preventDefault();
         e.stopPropagation();
         let is_copied = Api.writeToClipboard(selected_id)
-        if(is_copied) setCopiedId(selected_id)
+        if (is_copied) setCopiedId(selected_id)
     }
 
     function contentToText(str) {
@@ -199,29 +203,34 @@ export default function CrawlerExternalCrawlerConfigurationForm(props) {
         <div className="tab-content px-5 py-4 overflow-auto">
             <div className="tab">
                 <button className={"tablinks " + (menu === 'compose' ? "active" : "")}
-                   onClick={(e) => selectMenu(e, "compose")}>Docker compose</button>
+                        onClick={(e) => selectMenu(e, "compose")}>
+                    Docker compose
+                </button>
                 <button className={"tablinks " + (menu === 'docker' ? "active" : "")}
-                    onClick={(e) => selectMenu(e, "docker")}>Docker</button>
+                        onClick={(e) => selectMenu(e, "docker")}>Docker
+                </button>
                 <button className={"tablinks " + (menu === 'bash' ? "active" : "")}
-                   onClick={(e) => selectMenu(e, "bash")}>bash</button>
+                        onClick={(e) => selectMenu(e, "bash")}>bash
+                </button>
                 <button className={"tablinks " + (menu === 'bat' ? "active" : "")}
-                   onClick={(e) => selectMenu(e, "bat")}>Windows batch</button>
+                        onClick={(e) => selectMenu(e, "bat")}>Windows batch
+                </button>
             </div>
             <div>
                 <span className="px-4 position-relative float-end">
-               <span>
-                   { !copied_id &&
-                   <button onClick={(e) => handleCopyIds(e, selected_code)}
-                           className={"btn text-primary btn-sm"}>Copy Code
-                   </button>
-                   }
-                   { copied_id &&
-                       <div className="text-center bg-black text-white small rounded px-2 py-1">Copied!</div>
-                   }
-               </span>
+                    <span>
+                       {!copied_id &&
+                           <button onClick={(e) => handleCopyIds(e, selected_code)}
+                                   className={"btn text-primary btn-sm"}>Copy Code
+                           </button>
+                       }
+                       {copied_id &&
+                           <div className="text-center bg-black text-white small rounded px-2 py-1">Copied!</div>
+                       }
+                    </span>
                 </span>
                 <pre>
-               <code>{selected_code}</code>
+                    <code>{selected_code}</code>
                 </pre>
             </div>
         </div>

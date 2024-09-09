@@ -19,8 +19,7 @@ export function OneDriveUserAndLibraries(props) {
     }
 
     const isValid = () => {
-        // return (isSharedDrive && Api.definedAndNotBlank(driveId)) ||
-        //     (!isSharedDrive && Api.definedAndNotBlank(driveEmail))
+        // TODO: Pointless???
         return true
     }
 
@@ -89,8 +88,11 @@ export function OneDriveUserAndLibraries(props) {
                         <div className="control-row col-12">
                             <label className="small d-flex justify-content-between">
                                 Libraries
-                                <span className="fst-italic fw-light small">(list of Libraries to crawl (leave empty for all), case insensitive, comma separated).
-                                <span className="text-danger ms-1">Optional</span></span>
+                                <span className="fst-italic fw-light small">
+                                    (list of Libraries to crawl (leave empty for all), case insensitive, comma separated).
+                                </span>
+                                <span className="text-danger ms-1">Optional</span>
+                                <span className="text-danger ms-1">Folder IDs are also Valid</span>
                             </label>
                             <textarea
                                 tabIndex={1}

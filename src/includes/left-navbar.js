@@ -27,7 +27,7 @@ export default function LeftNavbar() {
         DOCUMENT_SRC:        "images/icon/icon_document_sources.svg",
         MIND:                "images/icon/icon_the_mind.svg",
         SIMSAGE_LOGO:        "images/brand/simsage-logo-no-strapline.svg"
-    };
+    }
 
     const nav1 = [
         {
@@ -78,44 +78,40 @@ export default function LeftNavbar() {
                  title="SimSage Portal" onClick={() => window.location = "/"}>
                 <img src={ICONS.SIMSAGE_LOGO} alt="SimSage Logo" className="h-75" />
             </div>
-
             <ul className="sb-nav ps-0 h-100 border-end">
                 {nav1.map((item) => (
-                    <LeftSidebarNavItem key={item.slug} label={item.label} slug={item.slug} logo={item.logo} />
+                    <LeftSidebarNavItem key={item.slug} label={item.label} slug={item.slug} logo={item.logo}/>
                 ))}
 
                 {kb_list.length !== 0 && (
                     <>
                         <div className="px-3 pt-3 pb-2 border-top">
                             <CustomSelect
-                                defaultValue={selected_kb_id || "none"}
-                                disabled={false} // Update with your logic for disabling the select
+                                defaultValue={selected_kb_id || ""}
+                                disabled={false}
                                 onChange={(value) => handleSelectKB({ target: { value } })}
-                                options={kb_list.map(item => ({ key: item.kbId, value: item.name }))}
+                                options={[{key: "", value: "Select Knowledge Base"}, ...kb_list.map(item => ({ key: item.kbId, value: item.name }))]}
                                 label="Select Knowledge Base"
                             />
                         </div>
 
-                        {nav2.map((item) => (
+                        {selected_kb_id && nav2.map((item) => (
                             <LeftSidebarNavItem key={item.slug} label={item.label} slug={item.slug} logo={item.logo} />
                         ))}
                     </>
                 )}
             </ul>
         </div>
-    );
-
-
-
+    )
 }
 
 
 export const LeftSidebarNavItem = ({ logo, label, slug }) => {
-    const { selected_tab } = useSelector((state) => state.homeReducer)
+
+    const selected_tab = useSelector((state) => state.homeReducer)
     const is_active = selected_tab === slug
     const dispatch = useDispatch()
-
-    const handleClick = () => { dispatch(selectTab(slug)) }
+    const handleClick = () => dispatch(selectTab(slug))
 
     return (
         <li onClick={handleClick}

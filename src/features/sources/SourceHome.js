@@ -26,6 +26,7 @@ import {SourceProcessFilesDialog} from "./SourceProcessFilesDialog";
 import {SourceErrorDialog} from "./SourceErrorDialog";
 import "../../css/home.css";
 import SourceFailures from "./SourceFailures";
+import CustomSelect from "../../components/CustomSelect";
 
 
 //TODO:: No need to list documents anymore.
@@ -51,8 +52,6 @@ export default function SourceHome() {
     const show_export_form = useSelector((state) => state.sourceReducer.show_export_form);
     const show_import_form = useSelector((state) => state.sourceReducer.show_import_form);
 
-    const data_status = useSelector((state) => state.sourceReducer.data_status);
-
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
@@ -70,17 +69,21 @@ export default function SourceHome() {
     const WARNING_IMAGE = "../images/warning.png"
 
     useEffect(() => {
-        dispatch(getSources({
-            session_id: session.id,
-            organisation_id: selected_organisation_id,
-            kb_id: selected_knowledge_base_id
-        }))
+        if (selected_organisation_id && selected_knowledge_base_id && session) {
+            dispatch(getSources({
+                session_id: session.id,
+                organisation_id: selected_organisation_id,
+                kb_id: selected_knowledge_base_id
+            }))
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selected_organisation_id, selected_knowledge_base_id, session?.id, data_status === "load_now"])
+    }, [
+        selected_organisation_id, selected_knowledge_base_id, session
+    ])
 
 
     function refresh_sources() {
-        if (selected_organisation_id && selected_knowledge_base_id) {
+        if (selected_organisation_id && selected_knowledge_base_id && session?.id) {
             dispatch(getSources({
                 session_id: session.id,
                 organisation_id: selected_organisation_id,
@@ -190,7 +193,14 @@ export default function SourceHome() {
             session_id: session.id,
             organisation_id: selected_organisation_id,
             kb_id: selected_knowledge_base_id,
-            source_id: source_id
+            source_id: source_id,
+            on_success: () => {
+                dispatch(getSources({
+                    session_id: session.id,
+                    organisation_id: selected_organisation_id,
+                    kb_id: selected_knowledge_base_id
+                }))
+            }
         }))
         dispatch(closeAlert())
     }
@@ -236,32 +246,59 @@ export default function SourceHome() {
     }
 
 
+    /**
+     * return a string for the Status column on the Sources home page (list of sources)
+     *
+     * @param crawler the crawler to return a Status description for
+     * @returns {string} a status description for that crawler
+     */
     function getCrawlerStatus(crawler) {
         if (crawler) {
             if (crawler.startTime <= 0)
-                return "never started";
+                return "never started"
+
+            // are we scheduled to do anything?
+            const not_scheduled = ((Api.defined(crawler.schedule) && crawler.schedule.length === 0) || !crawler.scheduleEnable)
+
             if (crawler.endTime > crawler.startTime && crawler.optimizedTime > crawler.endTime)
-                return "up to date since " + Api.unixTimeConvert(crawler.startTime);
+                return "up to date since " + Api.unixTimeConvert(crawler.startTime)
+
             if (crawler.startTime > 0 && crawler.endTime < crawler.startTime) {
-                if (Api.defined(crawler.schedule) && crawler.schedule.length === 0 && crawler.endTime > 0)
-                    return "schedule disabled: last finished " + Api.unixTimeConvert(crawler.endTime);
-                else if (Api.defined(crawler.schedule) && crawler.schedule.length === 0 && crawler.endTime <= 0)
-                    return "schedule disabled";
-                else
+                if (not_scheduled && crawler.endTime > 0) {
+                    if (crawler.scheduleEnable)
+                        return "schedule empty: last finished " + Api.unixTimeConvert(crawler.endTime)
+                    else
+                        return "schedule disabled: last finished " + Api.unixTimeConvert(crawler.endTime)
+
+                } else if (not_scheduled && crawler.endTime <= 0) {
+                    if (crawler.scheduleEnable)
+                        return "schedule empty"
+                    else
+                        return "schedule disabled"
+
+                } else {
                     return "running: started on " + Api.unixTimeConvert(crawler.startTime);
+                }
             }
             if (crawler.endTime > crawler.startTime) {
-                if (Api.defined(crawler.schedule) && crawler.schedule.length === 0 && crawler.endTime > 0)
-                    return "schedule disabled: last finished " + Api.unixTimeConvert(crawler.endTime);
-                if (crawler.numErrors > crawler.errorThreshold)
+                if (not_scheduled && crawler.endTime > 0) {
+                    if (crawler.scheduleEnable)
+                        return "schedule empty: last finished " + Api.unixTimeConvert(crawler.endTime)
+                    else
+                        return "schedule disabled: last finished " + Api.unixTimeConvert(crawler.endTime)
+                }
+
+                if (crawler.numErrors > crawler.errorThreshold) {
                     return "failed with " + crawler.numErrors + " errors at " + Api.unixTimeConvert(crawler.endTime);
-                else
+                } else {
                     return "finished at " + Api.unixTimeConvert(crawler.endTime);
+                }
             }
         }
         return "?";
     }
 
+    
     function saveExport(crawler_str) {
         if (crawler_str && this.state.export_upload) {
             const crawler = JSON.parse(crawler_str);
@@ -309,16 +346,16 @@ export default function SourceHome() {
 
                     </div>
                     <div className="form-group me-2 small text-black-50 px-4">Order by</div>
-                    <div className="form-group me-2">
-
-                        <select placeholder="Filter" value={order_by} autoFocus={true}
-                                className={"form-select filter-text-width " + theme}
-                                onChange={(e) => setOrderBy(e.target.value)}>
-                            {order_by_options.map((item, i) => {
-                                return <option key={i} value={item.slug}>{item.label}</option>
-                            })}
-
-                        </select>
+                    <div className="form-group me-2" style={{ minWidth: "150px" }}>
+                        <CustomSelect
+                            options={order_by_options.map(option => (
+                                { key: option.slug, value: option.label }
+                            ))}
+                            defaultValue={order_by}
+                            onChange={(e) => setOrderBy(e)}
+                            label="Filter"
+                            disabled={false}
+                        />
                     </div>
                 </div>
 
@@ -367,7 +404,7 @@ export default function SourceHome() {
                                             { crawler.sourceError && crawler.sourceError.created > 0 && crawler.sourceError.message &&
                                             <div className="row error-text m-1" title={Api.unixTimeConvert(crawler.sourceError.created) + "  :  " + crawler.sourceError.message}>
                                                 <span className="col-2 d-flex warning-span">
-                                                    <img alt="warning image" src={WARNING_IMAGE} className="warning-image"/>
+                                                    <img alt="warning" src={WARNING_IMAGE} className="warning-image"/>
                                                 </span>
                                                 <span className="col-10 d-flex warning-text mt-1">
                                                 {"" + crawler.sourceError.message}
@@ -416,9 +453,10 @@ export default function SourceHome() {
                                                 <button title="edit crawler" onClick={() => handleEditCrawler(crawler)}
                                                         className={"btn text-primary btn-sm"}>Edit
                                                 </button>
-                                                <button title="process all files for a source"
+                                                <button title={"process all files for a source"}
                                                         onClick={() => handleProcessFiles(crawler)}
-                                                        className={"btn text-primary btn-sm text-nowrap"}>Process files
+                                                        disabled={!crawler.storeBinary}
+                                                        className={"btn text-primary btn-sm text-nowrap"}>Reprocess
                                                 </button>
                                                 <button title="get crawler JSON for export"
                                                         onClick={() => handleExportCrawler(crawler)}

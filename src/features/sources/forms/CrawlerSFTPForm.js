@@ -16,15 +16,20 @@ export default function CrawlerSFTPForm(props) {
 
     //update local variable specific_json when data is changed
     function setData(data) {
-        setSpecificJson({...specific_json,...data})
+        setSpecificJson({...specific_json, ...data})
     }
 
     //update setFormData when specific_json is changed
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
-        props.setFormData({...l_form_data, specificJson:specific_json_stringify})
+        props.setFormData({...l_form_data, specificJson: specific_json_stringify})
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
+
+    // this crawler doesn't need the verify system
+    useEffect(() => {
+        if (props.set_verify) props.set_verify('n/a')
+    }, [props.set_verify])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
@@ -32,17 +37,15 @@ export default function CrawlerSFTPForm(props) {
             <div className="row mb-4">
                 <div className="form-group col-4">
                     <label className="small required">Username</label>
-                    <form>
-                        <input type="email" className="form-control nfs-width"
-                               autoFocus={true}
-                               placeholder="E.g., SFTP User"
-                               value={specific_json.username}
-                               onChange={(event) => {
-                                   setData({username: event.target.value})
-                               }}
-                               required
-                        />
-                    </form>
+                    <input className="form-control nfs-width"
+                           autoFocus={true}
+                           placeholder="E.g., SFTP User"
+                           value={specific_json.username}
+                           onChange={(event) => {
+                               setData({username: event.target.value})
+                           }}
+                           required
+                    />
                 </div>
                 <div className="form-group col-4">
                     <SensitiveCredential
@@ -56,8 +59,9 @@ export default function CrawlerSFTPForm(props) {
                     />
                 </div>
                 <div className="col-2 offset-1">
-                    <a href={DOCUMENTATION.SFTP} id="dlGDrive" target="_blank"
-                       title="Download the SimSage Jira setup guide" className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                    <a href={DOCUMENTATION.SFTP} id="dlGDrive" target="_blank" rel="noreferrer"
+                       title="Download the SimSage Jira setup guide"
+                       className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
                         <span className="me-2 mt-2"></span>SFTP <br/>Setup Guide
                     </a>
@@ -67,42 +71,36 @@ export default function CrawlerSFTPForm(props) {
             <div className="row mb-4">
                 <div className="form-group col-4">
                     <label className="small required">Hostname</label>
-                    <form>
-                        <input type="text" className="form-control nfs-width"
-                               placeholder="E.g., IP"
-                               value={specific_json.host_name}
-                               onChange={(event) => {
-                                   setData({host_name: event.target.value})
-                               }}
-                               required
-                        />
-                    </form>
+                    <input type="text" className="form-control nfs-width"
+                           placeholder="E.g., IP"
+                           value={specific_json.host_name}
+                           onChange={(event) => {
+                               setData({host_name: event.target.value})
+                           }}
+                           required
+                    />
                 </div>
                 <div className="form-group col-2">
                     <label className="small required">Port</label>
-                    <form>
-                        <input type="text" className="form-control nfs-width"
-                               placeholder="22 by default"
-                               value={specific_json.port}
-                               onChange={(event) => {
-                                   setData({port: event.target.value})
-                               }}
-                               required
-                        />
-                    </form>
+                    <input type="text" className="form-control nfs-width"
+                           placeholder="22 by default"
+                           value={specific_json.port}
+                           onChange={(event) => {
+                               setData({port: event.target.value})
+                           }}
+                           required
+                    />
                 </div>
                 <div className="form-group col-2">
                     <label className="small required">Root Path</label>
-                    <form>
-                        <input type="text" className="form-control nfs-width"
-                               placeholder="E.g., /home"
-                               value={specific_json.root_path}
-                               onChange={(event) => {
-                                   setData({root_path: event.target.value})
-                               }}
-                               required={!source_saved}
-                        />
-                    </form>
+                    <input type="text" className="form-control nfs-width"
+                           placeholder="E.g., /home"
+                           value={specific_json.root_path}
+                           onChange={(event) => {
+                               setData({root_path: event.target.value})
+                           }}
+                           required={!source_saved}
+                    />
                 </div>
             </div>
         </div>

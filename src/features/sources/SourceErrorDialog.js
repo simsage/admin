@@ -10,13 +10,11 @@ export function SourceErrorDialog() {
     const error_message = useSelector((state) => state.sourceReducer.error_message);
 
 
-    const handleClose = () => {
-        dispatch(closeErrorMessage());
-    }
+    const handleClose = () => dispatch(closeErrorMessage())
 
 
     if (!show_error_form)
-        return (<div/>);
+        return <div/>
 
     return (<div>
         <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline",  zIndex: 1061}}>

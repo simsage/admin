@@ -69,6 +69,10 @@ export default function CrawlerOneDriveForm(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
+    // this crawler doesn't need the verify system
+    useEffect(() => {
+        if (props.set_verify) props.set_verify('n/a')
+    }, [props.set_verify])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
@@ -87,6 +91,7 @@ export default function CrawlerOneDriveForm(props) {
                                    onChange={(event) => {
                                        setData({tenantId: event.target.value})
                                    }}
+                                   required
                             />
                         </div>
                         <div className="form-group col-6">
@@ -97,6 +102,7 @@ export default function CrawlerOneDriveForm(props) {
                                    onChange={(event) => {
                                        setData({clientId: event.target.value})
                                    }}
+                                   required
                             />
                         </div>
                     </div>
@@ -187,11 +193,11 @@ export default function CrawlerOneDriveForm(props) {
                     }
                 </div>
                 <div className="col-2 offset-1">
-                    <a href={DOCUMENTATION.ONE_DRIVE} id="dlsharepoint" target="_blank"
+                    <a href={DOCUMENTATION.ONE_DRIVE} id="dlsharepoint" target="_blank" rel="noreferrer"
                        title="Download the SimSage Sharepoint365 setup guide"
                        className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
-                        <span className="me-2 mt-2"></span>Sharepoint 365 <br/>Setup Guide
+                        <span className="me-2 mt-2"></span>One Drive <br/>Setup Guide
                     </a>
                 </div>
             </div>

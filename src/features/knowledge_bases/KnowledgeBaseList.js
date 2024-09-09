@@ -15,17 +15,15 @@ import {ProgressBar} from "../../common/progress-bar";
 
 export default function KnowledgeBaseList() {
 
-    const theme = '';
-    const data_status = useSelector((state) => state.kbReducer.data_status);
+    const theme = ''
+    const data_status = useSelector((state) => state.kbReducer.data_status)
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-    const session = useSelector((state) => state.authReducer.session);
-    const session_id = (session && session.id) ? session.id : "";
+    const session = useSelector((state) => state.authReducer.session)
+    const session_id = (session && session.id) ? session.id : ""
 
-    const [page, setPage] = useState(api.initial_page);
-    const [page_size, setPageSize] = useState(api.initial_page_size);
-
-    // const data_status = useSelector((state) => state.kbReducer.data_status)
+    const [page, setPage] = useState(api.initial_page)
+    const [page_size, setPageSize] = useState(api.initial_page_size)
 
     const dispatch = useDispatch()
 
@@ -36,59 +34,50 @@ export default function KnowledgeBaseList() {
     }, [session_id, organisation_id, data_status])
 
     function getKnowledgeBases() {
-        const paginated_list = [];
-        const first = page * page_size;
-        const last = first + parseInt(page_size);
+        const paginated_list = []
+        const first = page * page_size
+        const last = first + parseInt(page_size)
         for (const i in kb_list) {
             if (i >= first && i < last) {
-                paginated_list.push(kb_list[i]);
+                paginated_list.push(kb_list[i])
             }
         }
-        return paginated_list;
+        return paginated_list
     }
 
     function isVisible() {
         //Todo:: verify selected org before display
         // return this.props.organisation_id && this.props.organisation_id.length > 0 &&
         //     this.props.selected_organisation && this.props.selected_organisation.length > 0;
-        return true;
+        return true
     }
 
-    const handleAddForm = () => {
-        dispatch(showAddForm(true));
-    }
-
-    const handleRefresh = () => {
-        dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
-    }
-
-    const handleEditForm = (kb_id) => {
-        dispatch(showEditForm({kb_id: kb_id}));
-    }
-
-    const handleDeleteFormAsk = (kb) => {
-        dispatch(showDeleteAskForm({session_id, kb}));
-    }
+    const handleAddForm = () => dispatch(showAddForm(true))
+    const handleEditForm = (kb_id) => dispatch(showEditForm({kb_id: kb_id}))
+    const handleDeleteFormAsk = (kb) => dispatch(showDeleteAskForm({session_id, kb}))
+    const handleRefresh = () => dispatch(
+        getKBList({session_id: session_id, organization_id: organisation_id})
+    )
 
     function handleViewIds(kb_id) {
         dispatch(setViewIds({kb_id: kb_id}))
     }
 
     function handleOptimizeIndexesAsk(knowledge_base) {
-        dispatch(showOptimizeAskDialog({session_id, kb: knowledge_base}));
+        dispatch(showOptimizeAskDialog({session_id, kb: knowledge_base}))
     }
 
     function handleOptimizeIndexesAbort(knowledge_base) {
-        dispatch(showOptimizeAbortDialog({session_id, kb: knowledge_base}));
+        dispatch(showOptimizeAbortDialog({session_id, kb: knowledge_base}))
     }
 
     function handleSearchFilter(event) {
-        const val = event.target.value;
+        const val = event.target.value
         dispatch(search({keyword: val}))
     }
 
     function handleSelectKb(kb) {
-        let kb_select = document.getElementById("kb-selector");
+        let kb_select = document.getElementById("kb-selector")
         kb_select.value = kb.kbId
         dispatch(setSelectedKB(kb))
     }
@@ -97,14 +86,16 @@ export default function KnowledgeBaseList() {
         <div className="kb-page">
             {isVisible() &&
                 <div>
-
                     <div className="d-flex justify-content-beteween w-100 mb-4">
                         <div className="d-flex w-100">
                             <div className="form-group me-2">
-                                <input onKeyUp={(event) => handleSearchFilter(event)} type="text"
-                                       placeholder={"Filter..."} className="form-control filter-search-input"/>
+                                <input
+                                    onKeyUp={(event) => handleSearchFilter(event)}
+                                    type="text"
+                                    placeholder={"Filter..."}
+                                    className="form-control filter-search-input"
+                                />
                             </div>
-
                         </div>
 
                         <div className="form-group d-flex ms-auto">
@@ -120,16 +111,12 @@ export default function KnowledgeBaseList() {
                     </div>
 
                     <div>
-
-
                         <table className="table">
                             <thead>
-                            <tr>
-                                {/* <td></td> */}
-                                <td className="small text-black-50 px-4">Knowledge Base</td>
-                                <td className="small text-black-50 px-4">Email Queries</td>
-                                <td></td>
-                            </tr>
+                                <tr>
+                                    <td className="small text-black-50 px-4">Knowledge Base</td>
+                                    <td className="small text-black-50 px-4">Email Queries</td>
+                                </tr>
                             </thead>
                             <tbody>
 
@@ -138,8 +125,6 @@ export default function KnowledgeBaseList() {
                                     <td className={"pt-3 px-4 pb-3 fw-light"} colSpan={3}>No records found.</td>
                                 }
                             </tr>
-
-
                             {
                                 getKnowledgeBases().map((knowledge_base) => {
                                     return (
@@ -200,7 +185,6 @@ export default function KnowledgeBaseList() {
                             }
                             </tbody>
                         </table>
-
                         <Pagination
                             rowsPerPageOptions={[5, 10, 25]}
                             theme={theme}
@@ -213,13 +197,10 @@ export default function KnowledgeBaseList() {
                             onChangePage={(page) => setPage(page)}
                             onChangeRowsPerPage={(rows) => setPageSize(rows)}
                         />
-
                     </div>
-
                 </div>
             }
         </div>
-
     )
 }
 

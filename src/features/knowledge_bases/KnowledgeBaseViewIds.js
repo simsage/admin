@@ -27,9 +27,7 @@ export default function KnowledgeBaseViewIds() {
         }
     }
 
-    const handleClose = () => {
-        dispatch(setViewIds(''))
-    }
+    const handleClose = () => dispatch(setViewIds(''))
 
     // get the ids safely
     const organisationId = kb && kb.organisationId ? kb.organisationId : "";

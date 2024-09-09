@@ -21,8 +21,17 @@ export default function BkOrganisationRestore(props) {
                 fileType: file.type,
                 base64Text: reader.result,
             };
-            dispatch(restoreOrganisation({ session_id: session.id, data: payload }));
-            props?.onClose(false);
+
+            // Check if the organization already exists
+            const existingOrganisation = organisationList.find(org => org.id === payload.organisationId);
+            if (existingOrganisation) {
+                // Show warning if the organization already exists
+                alert("Warning: This organization already exists. Restoration aborted.")
+            } else {
+                // Dispatch restoreOrganisation action if organization doesn't exist
+                dispatch(restoreOrganisation({ session_id: session.id, data: payload }));
+                props?.onClose(false);
+            }
         };
         reader.readAsDataURL(file);
     };
@@ -33,14 +42,18 @@ export default function BkOrganisationRestore(props) {
                 <div className="modal-content p-4">
                     <div className="modal-header">
                         <h5 className="modal-title">Restore Organisation</h5>
-                        <button type="button" className="btn-close" aria-label="Close" onClick={() => props.onClose(false)}></button>
+                        <button type="button" className="btn-close" aria-label="Close"
+                                onClick={() => props.onClose(false)}></button>
                     </div>
                     <div className="modal-body text-center">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="mb-3">
                                 <label htmlFor="fileInput" className="form-label">Choose backup file</label>
-                                <input type="file" className={`form-control ${errors.file ? "is-invalid" : ""}`} id="fileInput" {...register("file", { required: true })} />
-                                {errors.file && <small className="invalid-feedback d-block">Please select a backup file</small>}
+                                <input type="file" className={`form-control ${errors.file ? "is-invalid" : ""}`}
+                                       id="fileInput" {...register("file", { required: true })} />
+                                {errors.file && <small className="invalid-feedback d-block">
+                                    Please select a backup file
+                                </small>}
                             </div>
                             <button type="submit" className="btn btn-primary">Restore</button>
                         </form>
@@ -49,5 +62,4 @@ export default function BkOrganisationRestore(props) {
             </div>
         </div>
     );
-
 }

@@ -117,15 +117,15 @@ export class Comms {
             });
     };
 
-    // get a url that can be used to backup the system, regime e {all (backup all orgs), specific (backup specified org)}
-    static download_backup(organisation_id, regime, session_id) {
+    // get an url that can be used to back up the system, regime e {all (backup all orgs), specific (backup specified org)}
+    static download_backup(organisation_id, regime) {
         Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
             const url = window.ENV.api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(regime);
             Comms.download_new_window_post(url, response.data);
         });
     };
 
-    // get a url that can be used to backup the system
+    // get an url that can be used to back up the system
     static download_mind_dump(organisation_id, kb_id, session_id) {
         Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/backup/mind-dump/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
@@ -133,7 +133,7 @@ export class Comms {
         });
     };
 
-    // get a url that can be used to summarize the system
+    // get an url that can be used to summarize the system
     static download_inventorize_dump(organisation_id, kb_id, dateTime, session_id) {
         Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/document/parquet/' + encodeURIComponent(organisation_id) + '/' +
@@ -142,7 +142,7 @@ export class Comms {
         });
     };
 
-    // get a url that can be used to summarize the system using a spreadsheet
+    // get an url that can be used to summarize the system using a spreadsheet
     static download_inventorize_dump_spreadhseet(organisation_id, kb_id, dateTime, session_id) {
         Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/document/spreadsheet/' + encodeURIComponent(organisation_id) + '/' +
@@ -151,7 +151,7 @@ export class Comms {
         });
     };
 
-    // get a url that can be used to get the query-logs
+    // get an url that can be used to get the query-logs
     static download_query_log(organisation_id, kb_id, session_id) {
         const date = new Date();
         const year = "" + date.getFullYear();
@@ -163,7 +163,7 @@ export class Comms {
         });
     };
 
-    // get a url that can be used to get a zip archive of a wp export
+    // get an url that can be used to get a zip archive of a wp export
     static download_export_archive(organisation_id, kb_id, source_id, session_id) {
         Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
             const url = window.ENV.api_base + '/crawler/wp-archive/download/' + encodeURIComponent(organisation_id) + '/' +
@@ -245,36 +245,6 @@ export class Comms {
         };
     }
 
-}
-
-// rudimentary email verification
-export function is_valid_email(email) {
-    if (email && typeof email === "string") {
-        const email_str = email.trim();
-        const len = email_str.length;
-        const at_pos = email_str.indexOf('@');
-        const last_dot = email_str.lastIndexOf('.');
-        if (at_pos === -1 || last_dot === -1)
-            return false;
-        if (last_dot < at_pos)
-            return false;
-        return (last_dot + 2 < len);
-    }
-    return false;
-}
-
-export function getSearchParameterMap() {
-    let pairs = window.location.search.substring(1).split("&"),
-        obj = {},
-        pair,
-        i;
-
-    for (i in pairs) {
-        if ( pairs[i] === "" ) continue;
-        pair = pairs[i].split("=");
-        obj[ decodeURIComponent( pair[0] ) ] = decodeURIComponent( pair[1] );
-    }
-    return obj;
 }
 
 export default Comms;

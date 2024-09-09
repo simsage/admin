@@ -20,13 +20,6 @@ const initialState = {
 }
 
 const reducers = {
-    showUpdateStatsForm: (state) => {
-        state.show_update_stats = true
-    },
-
-    closeUpdateStatsForm: (state) => {
-        state.show_update_stats = false
-    },
 
     clearDocErrorMessage: (state) => {
         state.is_error = false
@@ -58,64 +51,6 @@ const extraReducers = (builder) => {
             }
         })
         .addCase(loadDocumentList.rejected, (state, action) => {
-            return {
-                ...state,
-                busy: false,
-                is_error: true,
-                error_text: get_error(action),
-                status: "rejected"
-            }
-        })
-
-        // calculate stats
-        .addCase(calculateDocumentStats.pending, (state) => {
-            return {
-                ...state,
-                busy: true,
-                is_error: false,
-                error_text: '',
-                status: "loading"
-            }
-        })
-        .addCase(calculateDocumentStats.fulfilled, (state, action) => {
-            return {
-                ...state,
-                busy: false,
-                is_error: false,
-                error_text: '',
-                kb_stats: action.payload,
-                status: "fulfilled"
-            }
-        })
-        .addCase(calculateDocumentStats.rejected, (state, action) => {
-            return {
-                ...state,
-                busy: false,
-                is_error: true,
-                error_text: get_error(action),
-                status: "rejected"
-            }
-        })
-
-        // get all document stats
-        .addCase(getDocumentStats.pending, (state) => {
-            return {
-                ...state,
-                busy: true,
-                is_error: false,
-                status: "loading"
-            }
-        })
-        .addCase(getDocumentStats.fulfilled, (state, action) => {
-            return {
-                ...state,
-                busy: false,
-                is_error: false,
-                kb_stats: action.payload,
-                status: "fulfilled"
-            }
-        })
-        .addCase(getDocumentStats.rejected, (state, action) => {
             return {
                 ...state,
                 busy: false,
@@ -197,52 +132,19 @@ export const getDocumentByUrl = createAsyncThunk(
     async ({session_id, organisation_id, kb_id, document_url},
            {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + `/document/document/${encodeURI(organisation_id)}/${encodeURIComponent(kb_id)}/${btoa(document_url)}`;
 
-        return axios.get(url, Comms.getHeaders(session_id))
+        const url = api_base + '/document/document'
+        const data = {
+            "organisationId": organisation_id,
+            "kbId": kb_id,
+            "url": document_url
+        }
+        return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch(
                 (error) => {
                     return rejectWithValue(error)
-                }
-            )
-    }
-);
-
-
-// /discovery/statistics/refresh/{organisationId}/{kbId}
-export const calculateDocumentStats = createAsyncThunk(
-    'discovery/calculateDocumentStats',
-    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
-        const api_base = window.ENV.api_base;
-        const url = api_base + `/discovery/statistics/refresh/${organisation_id}/${kb_id}`;
-
-        return axios.get(url, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch(
-                (error) => {
-                    return rejectWithValue(error)
-                }
-            )
-    }
-);
-
-
-// /discovery/statistics/{organisationId}/{kbId}
-export const getDocumentStats = createAsyncThunk(
-    'discover/getDocumentStats',
-    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
-        const api_base = window.ENV.api_base;
-        const url = api_base + `/discovery/statistics/${organisation_id}/${kb_id}`;
-
-        return axios.get(url, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch(
-                (error) => {
-                    return rejectWithValue(error?.response?.data);
                 }
             )
     }
@@ -252,8 +154,6 @@ export const getDocumentStats = createAsyncThunk(
 export default documentSlice.reducer;
 
 export const {
-    showUpdateStatsForm,
-    closeUpdateStatsForm,
     clearDocErrorMessage,
 } = documentSlice.actions
 

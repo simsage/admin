@@ -14,11 +14,15 @@ const SourceTest = () => {
 
     const modalRef = useRef();
 
-    const close = () => {
+    function close() {
         dispatch(closeTestMessage());
     }
 
     useEffect(() => {
+        const close= () => {
+            dispatch(closeTestMessage());
+        }
+
         const handleOutsideClick = (event) => {
             if (modalRef.current && !modalRef.current.contains(event.target)) {
                 close();
@@ -30,7 +34,7 @@ const SourceTest = () => {
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
-    }, [close]);
+    }, [dispatch]);
 
     return (
         <div className="modal"  tabIndex="-1" role="dialog" style={{display: "inline", zIndex: 1061}}>

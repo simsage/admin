@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import SensitiveCredential from "../../../components/SensitiveCredential";
 import {BsFilePdf} from "react-icons/bs";
-import { DOCUMENTATION, useSelectedSource } from './common.js';
+import {DOCUMENTATION, useSelectedSource} from './common.js';
 
 
 export default function CrawlerFileForm(props) {
@@ -17,13 +17,13 @@ export default function CrawlerFileForm(props) {
 
     //update local variable specific_json when data is changed
     function setData(data) {
-        setSpecificJson({...specific_json,...data})
+        setSpecificJson({...specific_json, ...data})
     }
 
     //update setFormData when specific_json is changed
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
-        props.setFormData({...l_form_data, specificJson:specific_json_stringify})
+        props.setFormData({...l_form_data, specificJson: specific_json_stringify})
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
@@ -40,6 +40,7 @@ export default function CrawlerFileForm(props) {
                            onChange={(event) => {
                                setData({username: event.target.value})
                            }}
+                           required
                     />
                 </div>
                 <div className="form-group col-4">
@@ -55,11 +56,11 @@ export default function CrawlerFileForm(props) {
                     />
                 </div>
                 <div className="col-2 offset-2">
-                    <a href={DOCUMENTATION.MS_FILESHARE} id="dlMSFileshare" target="_blank"
+                    <a href={DOCUMENTATION.MS_FILESHARE} id="dlMSFileshare" target="_blank" rel="noreferrer"
                        title="Download the SimSage Microsoft Fileshare setup guide"
                        className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
-                        <span className="me-2 mt-2"></span>Microsoft Fileshare <br/>Setup Guide
+                        <span className="me-2 mt-2"></span>Microsoft File-share<br/>Setup Guide
                     </a>
                 </div>
             </div>
@@ -71,7 +72,9 @@ export default function CrawlerFileForm(props) {
                            placeholder="(hostname or IP-address)"
                            value={specific_json.server}
                            onChange={(event) => {
-                               setData({server: event.target.value})}}
+                               setData({server: event.target.value})
+                           }}
+                           required
                     />
                 </div>
                 <div className="form-group col-4">
@@ -80,7 +83,9 @@ export default function CrawlerFileForm(props) {
                            placeholder="share name"
                            value={specific_json.shareName}
                            onChange={(event) => {
-                               setData({shareName: event.target.value})}}
+                               setData({shareName: event.target.value})
+                           }}
+                           required
                     />
                 </div>
             </div>
@@ -92,11 +97,12 @@ export default function CrawlerFileForm(props) {
                            placeholder="path inside share (optional)"
                            value={specific_json.sharePath}
                            onChange={(event) => {
-                               setData({sharePath: event.target.value})}}
+                               setData({sharePath: event.target.value})
+                           }}
                     />
                 </div>
             </div>
-            <hr />
+            <hr/>
             {/*************************************-USE AD & SERVER-*************************************/}
             <div className="row mb-4">
                 <div className="form-group col-4">
@@ -119,7 +125,8 @@ export default function CrawlerFileForm(props) {
                            placeholder="AD server address"
                            value={specific_json.activeServer}
                            onChange={(event) => {
-                               setData({activeServer: event.target.value})}}
+                               setData({activeServer: event.target.value})
+                           }}
                     />
                 </div>
             </div>
@@ -146,7 +153,8 @@ export default function CrawlerFileForm(props) {
                            placeholder="domain (e.g. SIMSAGE)"
                            value={specific_json.domain}
                            onChange={(event) => {
-                               setData({domain: event.target.value})}}
+                               setData({domain: event.target.value})
+                           }}
                     />
                 </div>
             </div>
@@ -160,7 +168,8 @@ export default function CrawlerFileForm(props) {
                            placeholder="AD Path (e.g. DC=simsage,DC=co,DC=uk)"
                            value={specific_json.adPath}
                            onChange={(event) => {
-                               setData({adPath: event.target.value})}}
+                               setData({adPath: event.target.value})
+                           }}
                     />
                 </div>
             </div>

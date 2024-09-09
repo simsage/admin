@@ -14,6 +14,7 @@ const initialState = {
     show_delete_form: false,
     filter: "",
 }
+
 //organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size
 export const loadSynonyms = createAsyncThunk(
     "synonyms/getSynonym",
@@ -65,57 +66,85 @@ export const deleteSynonym = createAsyncThunk(
 const extraReducers = (builder) => {
     builder
         .addCase(loadSynonyms.pending, (state) => {
-            state.status = "loading";
-            state.data_status = 'loading';
+            return {
+                ...state,
+                status: "loading",
+                data_status: 'loading'
+            }
         })
 
         .addCase(loadSynonyms.fulfilled, (state, action) => {
-            state.status = "fulfilled";
-            state.synonym_list = action.payload.synonymList?action.payload.synonymList:[];
-            state.num_synonyms = action.payload.numSynonyms?action.payload.numSynonyms:0;
-            state.data_status = 'loaded';
+            return {
+                ...state,
+                status: "fulfilled",
+                synonym_list: action.payload.synonymList?action.payload.synonymList:[],
+                num_synonyms: action.payload.numSynonyms?action.payload.numSynonyms:0,
+                data_status: 'loaded'
+            }
         })
         .addCase(loadSynonyms.rejected, (state, action) => {
-            state.status = "rejected";
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Synonym Load Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Synonym Load Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
-    // update synonym
+        // update synonym
         .addCase(updateSynonyms.pending, (state) => {
-            state.status = "loading";
-            state.data_status = 'loading';
+            return {
+                ...state,
+                status:  "loading",
+                data_status: 'loading'
+            }
         })
 
         .addCase(updateSynonyms.fulfilled, (state) => {
-            state.status = "fulfilled";
-            state.data_status = 'load_now';
-            state.show_synonym_form = false;
-            state.edit = undefined;
+            return {
+                ...state,
+                status: "fulfilled",
+                data_status: 'load_now',
+                show_synonym_form: false,
+                edit: undefined
+            }
         })
         .addCase(updateSynonyms.rejected, (state, action) => {
-            state.status = "rejected";
-            state.data_status = 'rejected';
-            state.show_error_form = true
-            state.error_title = "Synonym Update Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                data_status: 'rejected',
+                show_error_form: true,
+                error_title: "Synonym Update Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
         //delete Synonym
         .addCase(deleteSynonym.pending, (state) => {
-            state.status = "loading"
+            return {
+                ...state,
+                status: "loading"
+            }
         })
-
         .addCase(deleteSynonym.fulfilled, (state) => {
-            state.status = "fulfilled";
-            state.data_status = 'load_now';
+            return {
+                ...state,
+                status: "fulfilled",
+                data_status: 'load_now'
+            }
         })
         .addCase(deleteSynonym.rejected, (state, action) => {
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Synonym Delete Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                status: "rejected",
+                show_error_form: true,
+                error_title: "Synonym Delete Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 }
 
@@ -124,40 +153,57 @@ const synonymSlice = createSlice({
     initialState,
     reducers: {
         showAddSynonymForm:(state, action) => {
-            state.show_synonym_form = action.payload
+            return {
+                ...state,
+                show_synonym_form: action.payload
+            }
         },
         showEditSynonymForm:(state, action) => {
-            state.show_synonym_form = action.payload.show;
-            state.edit = action.payload.syn;
+            return {
+                ...state,
+                show_synonym_form: action.payload.show,
+                edit: action.payload.syn
+            }
         },
         closeSynonymForm:(state) => {
-            state.show_synonym_form = false;
-            state.edit = undefined;
+            return {
+                show_synonym_form: false,
+                edit: undefined
+            }
         },
         showDeleteSynonymForm:(state, action) => {
-            state.show_delete_form = action.payload.show
-            state.edit = action.payload.synonym
+            return {
+                show_delete_form: action.payload.show,
+                edit: action.payload.synonym
+            }
         },
         closeDeleteForm:(state) => {
-            state.show_delete_form = false;
-            state.edit = undefined;
+            return {
+                ...state,
+                show_delete_form: false,
+                edit: undefined
+            }
         },
-        closeErrorMessage: (state, action) => {
-            state.show_error_form = false;
-            state.error_message = undefined;
-            state.error_title = undefined;
+        closeErrorMessage: (state, _) => {
+            return {
+                ...state,
+                show_error_form: false,
+                error_message: undefined,
+                error_title: undefined
+            }
         },
-        // filterSearch:(state,action) => {
-        //     state.data_status = 'load_now';
-        //     state.filter = action.payload;
-        // }
-
     },
     extraReducers
 })
 
 
+export const {
+    closeErrorMessage,
+    showAddSynonymForm,
+    closeSynonymForm,
+    showEditSynonymForm,
+    showDeleteSynonymForm,
+    closeDeleteForm
+} = synonymSlice.actions;
 
-
-export const {closeErrorMessage,showAddSynonymForm, closeSynonymForm, showEditSynonymForm, showDeleteSynonymForm, closeDeleteForm } = synonymSlice.actions;
 export default synonymSlice.reducer;

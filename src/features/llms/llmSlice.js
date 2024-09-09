@@ -1,10 +1,17 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
-import {loadSemantics} from "../semantics/semanticSlice";
 import {get_error} from "../../common/api";
 
-const empty_llm = {llm: 'none', key: '', model: '', documentQATokens: 1000, summaryTokens: 1000, numSearchResults: 5, perSearchResultTokens: 100};
+const empty_llm = {
+    llm: 'none',
+    key: '',
+    model: '',
+    documentQATokens: 1000,
+    summaryTokens: 1000,
+    numSearchResults: 5,
+    perSearchResultTokens: 100
+}
 
 const initialState = {
     is_error: false,
@@ -12,13 +19,13 @@ const initialState = {
     status: '',
     busy: false,
     llm_model: empty_llm,
-};
+}
 
 
 export const loadLLM = createAsyncThunk(
     "llm/loadLLM",
 
-    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
+    async ({session_id, organisation_id, kb_id, on_success}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/language/llm/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}`;
@@ -68,7 +75,7 @@ const extraReducers = (builder) => {
                 status: "rejected",
                 is_error: true,
                 error_text: get_error(action)
-            };
+            }
         })
 
         ////////////////////////////////////////////////////////////////////////////
@@ -77,13 +84,12 @@ const extraReducers = (builder) => {
             return {...state, busy: true, is_error: false, status: "loading"};
         })
         .addCase(loadLLM.fulfilled, (state, action) => {
-            console.log("action.payload", action.payload);
             return {...state,
                 busy: false,
                 status: "fulfilled",
                 llm_model: action.payload ?
                 action.payload : empty_llm
-            };
+            }
         })
         .addCase(loadLLM.rejected, (state, action) => {
             return {...state,
@@ -91,7 +97,7 @@ const extraReducers = (builder) => {
                 status: "rejected",
                 is_error: true,
                 error_text: get_error(action)
-            };
+            }
         })
 
 }
@@ -104,10 +110,10 @@ const llmSlice = createSlice({
             return {
                 ...state,
                 is_error: true,
-                error_text: action.payload.error_text,
+                error_text: action.payload.error_message,
             }
         },
-        closeErrorMessage: (state, action) => {
+        closeErrorMessage: (state, _) => {
             return {
                 ...state,
                 is_error: false,
@@ -116,8 +122,11 @@ const llmSlice = createSlice({
         },
     },
     extraReducers
-});
+})
 
-export const {showErrorMessage, closeErrorMessage} = llmSlice.actions;
+export const {
+    showErrorMessage,
+    closeErrorMessage
+} = llmSlice.actions;
 
 export default llmSlice.reducer;

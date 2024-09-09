@@ -87,7 +87,7 @@ export function OrganisationHome() {
         const org_id = org.id
         dispatch(setSelectedOrganisation(org));
         dispatch(getKBList({session_id: session.id, organization_id: org_id}));
-        dispatch(getGroupList({session_id:session_id, organization_id:org_id}))
+        dispatch(getGroupList({session_id: session_id, organization_id: org_id, filter: null}))
         dispatch(selectTab('home'))
     }
 

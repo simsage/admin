@@ -9,10 +9,10 @@
  *
  */
 import { useDispatch, useSelector } from "react-redux";
-import {closeForm, safeSourceForImportOrExport, updateSource} from "./sourceSlice";
+import {closeForm, getSources, safeSourceForImportOrExport, updateSource} from "./sourceSlice";
 import { useForm } from "react-hook-form";
 import { FaFileImport } from 'react-icons/fa';
-import {useState} from "react";
+import React, {useState} from "react";
 
 export function SourceImport() {
 
@@ -21,18 +21,14 @@ export function SourceImport() {
     const session_id = session.id;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
-
-    const show_error_form = useSelector((state) => state.sourceReducer.show_error_form);
-    const error_message = useSelector((state) => state.sourceReducer.error_message);
-
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, setValue } = useForm();
     const [isTextPresent, setIsTextPresent] = useState(false);
 
-    const title = "Import Crawler";
+    const handleClose = () => dispatch(closeForm());
 
-    const handleClose = () => {
-        dispatch(closeForm());
-    };
+    const handleDragOver = (event) => event.preventDefault()
+
+    const handleTextareaChange = (event) => setIsTextPresent(event.target.value.trim() !== "")
 
     const handleDrop = (event) => {
         event.preventDefault();
@@ -40,40 +36,52 @@ export function SourceImport() {
         const reader = new FileReader();
         reader.onload = (e) => {
             document.getElementById("sourceTextarea").value = e.target.result;
+            setValue("source_str", e.target.result); // Update form state
             setIsTextPresent(true); // Set text present flag to true
         }
         reader.readAsText(file)
     }
 
-    const handleDragOver = (event) => { event.preventDefault() }
-
-    const handleTextareaChange = (event) => { setIsTextPresent(event.target.value.trim() !== "") }
+    const handleFileInput = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById("sourceTextarea").value = e.target.result;
+            setValue("source_str", e.target.result); // Update form state
+            setIsTextPresent(true); // Set text present flag to true
+        }
+        reader.readAsText(file);
+    }
 
     const onSubmit = (data) => {
-        let crawler = safeSourceForImportOrExport(JSON.parse(data.source_str), {
+        const dataJson = JSON.parse(data.source_str);
+        dataJson.schedule = "";
+
+        const crawler = safeSourceForImportOrExport(dataJson, {
             organisationId: selected_organisation_id,
             kbId: selected_knowledge_base_id,
-        })
+        });
 
-        //dispatch(showEditForm({source: crawler}));
-        dispatch(updateSource({ session_id: session_id, data: crawler }));
+        dispatch(updateSource({ session_id: session_id, data: crawler, on_success: () => {
+                dispatch(getSources({
+                    session_id: session.id,
+                    organisation_id: selected_organisation_id,
+                    kb_id: selected_knowledge_base_id
+                }))
+        }}))
         setIsTextPresent(true); // Set text present flag to true
     }
 
     return (
         <div
-            id={"error_alert"}
             className="modal alert-warning"
-            tabIndex="-1"
             role="dialog"
-            style={{ display: "inline", zIndex: 8000, background: "#202731bb" }}
+            style={{ display: "inline", background: "#202731bb" }}
         >
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <h4 className="modal-header px-5 pt-4 bg-light" id="staticBackdropLabel">
-                            {title}
-                        </h4>
+                        <h4 className="modal-header px-5 pt-4 bg-light" id="staticBackdropLabel">Import Crawler</h4>
                         <div
                             className="tab-content px-5 py-4 overflow-auto"
                             onDrop={handleDrop}
@@ -89,7 +97,7 @@ export function SourceImport() {
                                     rows="10"
                                     style={{
                                         width: '100%',
-                                        minHeight: '300px',
+                                        minHeight: '350px',
                                         fontFamily: 'monospace',
                                         fontSize: '14px',
                                         padding: '10px',
@@ -101,39 +109,35 @@ export function SourceImport() {
                                     {...register("source_str", { required: true })}
                                     onChange={handleTextareaChange} // Call the handler on change
                                 />
-                                {/* Conditionally render the icon based on the text present flag */}
                                 {
                                     !isTextPresent && (
                                         <div style={{ position: "absolute", top: "50%", left: "75%", transform: "translate(-50%, -50%)" }}>
                                             <label className="btn btn-secondary" htmlFor="fileInput">
                                                 <FaFileImport size={24} style={{ marginRight: '5px' }} />
-                                                <span style={{ textDecoration: 'underline', color: '#fff' }}>Browse</span>
+                                                <span style={{ textDecoration: 'underline', color: '#fff' }}>
+                                                    Browse
+                                                </span>
                                             </label>
                                             <input
                                                 id="fileInput"
                                                 type="file"
                                                 accept=".json"
                                                 style={{ display: 'none' }} // Hide the input element visually
-                                                onChange={(e) => {
-                                                    const file = e.target.files[0];
-                                                    const reader = new FileReader();
-                                                    reader.onload = (event) => {
-                                                        document.getElementById("sourceTextarea").value = event.target.result;
-                                                        setIsTextPresent(true); // Set text present flag to true
-                                                    };
-                                                    reader.readAsText(file);
-                                                }}
+                                                onChange={handleFileInput}
                                             />
                                         </div>
                                     )
                                 }
 
                             </div>
-                            {show_error_form && error_message.length > 2 && (
-                                <div className="control-row alert-danger">
-                                    <p className={"alert alert-danger"}>{error_message}</p>
-                                </div>
-                            )}
+                            <ul className="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                                <li>The schedule is always automatically turned off when importing.</li>
+                                <li>
+                                    Sensitive credentials are not provided for security reasons,
+                                    provide once imported to start the crawler successfully.
+                                </li>
+                                <li>Source name <i>MUST be unique.</i></li>
+                            </ul>
                         </div>
                         <div className="modal-footer px-5 pb-4">
                             <button
@@ -144,11 +148,11 @@ export function SourceImport() {
                             >
                                 Cancel
                             </button>
-                            <input type="submit" value="Import" className="btn btn-primary px-4" />
+                            <input type="submit" value="Import" className="btn btn-primary px-4"/>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-    );
+    )
 }

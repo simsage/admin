@@ -14,7 +14,7 @@ export function SourceStartDialog() {
 
     const session_id = session.id;
 
-    if(!selected_source){
+    if(!selected_source) {
         dispatch(closeForm());
     }
 
@@ -28,9 +28,7 @@ export function SourceStartDialog() {
         "sourceId": selected_source.sourceId
     }
 
-    const handleClose = () => {
-        dispatch(closeForm());
-    }
+    const handleClose = () => dispatch(closeForm())
 
 
     const handleOk = () => {
@@ -40,9 +38,9 @@ export function SourceStartDialog() {
 
 
     if (!show_start_crawler_prompt)
-        return (<div/>);
+        return <div/>
 
-    return (<div>
+    return (
         <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered"} role="document">
                 <div className="modal-content p-4">
@@ -60,6 +58,5 @@ export function SourceStartDialog() {
                 </div>
             </div>
         </div>
-    </div>)
-
+    )
 }

@@ -14,6 +14,7 @@ export class Api {
 
     static initial_page_size = 10;
     static initial_page = 0;
+    static user_metadata_marker = "user-"
 
 
     static defined(value) {
@@ -34,6 +35,26 @@ export class Api {
             return parts[0] + "." + parts[1] + " (build " + parts[2] + ")";
         }
         return window.ENV.version;
+    }
+
+    // download an object with session
+    static do_fetch(url, session_id) {
+        if (!session_id || session_id.length === 0)
+            session_id = "";
+
+        fetch(url, {headers: {"session-id": session_id}})
+            .then((response) => response.blob())
+            .then((blob) => { // RETRIEVE THE BLOB AND CREATE LOCAL URL
+                const _url = window.URL.createObjectURL(blob);
+                window.open(_url, "_blank").focus(); // window.open + focus
+            }).catch((error) => {
+                if (error.response === undefined) {
+                    alert('Servers not responding or cannot contact Servers');
+                } else {
+                    alert(get_error(error));
+                }
+            }
+        )
     }
 
     // generate a guid
@@ -271,12 +292,25 @@ export class Api {
     // pretty print a role
     static getPrettyRole(role) {
         // 'admin', 'dms', 'manager'
-        if (role === 'admin') return "System Administrator";
+        if (role === 'admin') return "SimSage Administrator";
         else if (role === 'dms') return "DMS User";
         else if (role === 'manager') return "Organisational Manager";
         else if (role === 'discover') return "Discover User";
+        else if (role === 'tagger') return "Search Tagger";
+        else if (role === 'stepwise') return "Stepwise User";
         else if (role === 'search') return "Search User";
         else return role;
+    }
+
+    // convert a list of strings into a list of DocumentAcl types
+    static stringListToACLList(str_list) {
+        const acl_list = [];
+        if (str_list) {
+            for (const name of str_list) {
+                acl_list.push({"acl": name, "access": "R", isUser: false})
+            }
+        }
+        return acl_list;
     }
 
 }

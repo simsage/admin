@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {BsFilePdf} from "react-icons/bs";
-import { DOCUMENTATION, useSelectedSource } from './common.js';
+import {DOCUMENTATION, invalid_credential, useSelectedSource} from './common.js';
 
 export default function CrawlerXmlForm(props) {
 
@@ -24,6 +24,26 @@ export default function CrawlerXmlForm(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
+    // this crawler doesn't need the verify system
+    useEffect(() => {
+        if (props.set_verify) props.set_verify('n/a')
+    }, [props])
+
+    useEffect(() => {
+
+        const validate_sharepoint = () => {
+            const {seedList} = specific_json
+            let missing = []
+
+            if (invalid_credential(seedList))
+                missing.push("seedList")
+
+            return (missing.length > 0) ? `XML Crawler: please provide the ${missing.join(", ")}` : null
+        }
+
+        if (props.set_verify) props.set_verify(() => validate_sharepoint)
+
+    }, [props.set_verify, specific_json])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
@@ -43,7 +63,7 @@ export default function CrawlerXmlForm(props) {
                     />
                 </div>
                 <div className="col-2 offset-4">
-                    <a href={DOCUMENTATION.XML} id="dlGDrive" target="_blank"
+                    <a href={DOCUMENTATION.XML} id="dlGDrive" target="_blank" rel="noreferrer"
                        title="Download the SimSage xml crawler setup guide"
                        className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>

@@ -33,7 +33,7 @@ export default function InventoryHome(props) {
     const show_add_info_form = useSelector((state) => state.inventoryReducer.show_add_info_form)
 
     const inventory_list = useSelector((state) => state.inventoryReducer.inventory_list);
-    const num_inventory_list_items = inventory_list.totalCount ? inventory_list.totalCount : 0
+    const num_inventory_list_items = (inventory_list && inventory_list.totalCount) ? inventory_list.totalCount : 0
 
     const data_status = useSelector((state) => state.inventoryReducer.data_status);
     // const [error, setError] = useState('')
@@ -63,11 +63,11 @@ export default function InventoryHome(props) {
         const paginated_list = [];
         const first = page * page_size;
         const last = first + parseInt(page_size);
-        const list = inventory_list.timeList;
+        const list = (inventory_list && inventory_list.timeList) ? inventory_list.timeList : [];
         // const list = organisation_list != null ? organisation_list : organisation_original_list;
         for (const i in list) {
             if (i >= first && i < last) {
-                paginated_list.push(inventory_list.timeList[i]);
+                paginated_list.push(list[i]);
             }
         }
         return paginated_list;

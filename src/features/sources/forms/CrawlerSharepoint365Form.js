@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {BsFilePdf} from 'react-icons/bs'
 import SensitiveCredential from "../../../components/SensitiveCredential";
 import {SharepointSiteAndLibraries} from "./SharepointSiteAndLibraries";
-import {DOCUMENTATION, useSelectedSource} from "./common";
+import {DOCUMENTATION, invalid_credential, useSelectedSource} from "./common";
 
 export default function CrawlerSharepoint365Form(props) {
 
@@ -60,7 +60,6 @@ export default function CrawlerSharepoint365Form(props) {
     }
 
 
-
     //update setFormData when specific_json is changed
     useEffect(() => {
         let specific_json_stringify = JSON.stringify(specific_json)
@@ -68,35 +67,60 @@ export default function CrawlerSharepoint365Form(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
+    // this crawler doesn't need the verify system
+    useEffect(() => {
+        if (props.set_verify) props.set_verify('n/a')
+    }, [props])
+
+    useEffect(() => {
+
+        const validate_sharepoint = () => {
+            const {tenantId, clientId} = specific_json
+            let missing = []
+
+            if (invalid_credential(tenantId))
+                missing.push("Tenant ID")
+
+            if (invalid_credential(clientId))
+                missing.push("Client ID")
+
+            return (missing.length > 0) ? `Sharepoint365 Crawler: please provide the ${missing.join(", ")}` : null
+        }
+
+        if (props.set_verify) props.set_verify(() => validate_sharepoint)
+
+    }, [props.set_verify, specific_json])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
             {editSiteDetails &&
-                <SharepointSiteAndLibraries handleClosed={closeEditForm} siteDetails={currentSiteDetails}
-                                        setSiteValue={setSiteValue}/>}
+                <SharepointSiteAndLibraries
+                    handleClosed={closeEditForm} siteDetails={currentSiteDetails} setSiteValue={setSiteValue}
+                />
+            }
             <div className="row mb-4">
                 <div className="col-9">
                     <div className="row mb-4">
                         <div className="form-group col-6">
                             <label className="small required">Tenant ID</label>
-                                <input type="text" className="form-control"
-                                       placeholder=""
-                                       autoFocus={true}
-                                       value={specific_json.tenantId}
-                                       onChange={(event) => {
-                                           setData({tenantId: event.target.value})
-                                       }}
-                                />
+                            <input type="text" className="form-control"
+                                   placeholder=""
+                                   autoFocus={true}
+                                   value={specific_json.tenantId}
+                                   onChange={(event) => {
+                                       setData({tenantId: event.target.value})
+                                   }}
+                            />
                         </div>
                         <div className="form-group col-6">
                             <label className="small required">Client ID</label>
-                                <input type="text" className="form-control"
-                                       placeholder=""
-                                       value={specific_json.clientId}
-                                       onChange={(event) => {
-                                           setData({clientId: event.target.value})
-                                       }}
-                                />
+                            <input type="text" className="form-control"
+                                   placeholder=""
+                                   value={specific_json.clientId}
+                                   onChange={(event) => {
+                                       setData({clientId: event.target.value})
+                                   }}
+                            />
                         </div>
                     </div>
                     <div className="row mb-4">
@@ -160,8 +184,10 @@ export default function CrawlerSharepoint365Form(props) {
                                             <div>{site.siteName}</div>
                                         </div>
                                         <div className={"col-6"}>
-                                            {site && site.libraryCsv.trim().length===0 && <span className={"fst-italic fw-lighter"}>All</span>}
-                                            {site && site.libraryCsv.trim().length>0 && <span>{site.libraryCsv.trim()}</span>}
+                                            {site && site.libraryCsv.trim().length === 0 &&
+                                                <span className={"fst-italic fw-lighter"}>All</span>}
+                                            {site && site.libraryCsv.trim().length > 0 &&
+                                                <span>{site.libraryCsv.trim()}</span>}
                                         </div>
                                         <div className={"col-2"}>
                                             <button className="btn text-primary btn-sm" onClick={(e) => {
@@ -184,7 +210,7 @@ export default function CrawlerSharepoint365Form(props) {
                     }
                 </div>
                 <div className="col-2 offset-1">
-                    <a href={DOCUMENTATION.SHAREPOINT365} id="dlsharepoint" target="_blank"
+                    <a href={DOCUMENTATION.SHAREPOINT365} id="dlsharepoint" target="_blank" rel="noreferrer"
                        title="Download the SimSage Sharepoint365 setup guide"
                        className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>

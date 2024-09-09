@@ -1,16 +1,16 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState, useEffect} from "react";
-import {showAddGroupForm, showEditGroupForm, showGroupDeleteAsk} from "./groupSlice";
+import {getGroupList, setGroupTextFilter, showAddGroupForm, showEditGroupForm, showGroupDeleteAsk} from "./groupSlice";
 import {Pagination} from "../../common/pagination";
 import {hasRole} from "../../common/helpers";
 import GroupEdit from "./groupEdit";
 import GroupDeleteAsk from "./GroupDeleteAsk";
 import api from "../../common/api";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
 
 export default function GroupList(){
+    const ICON = "images/icon/icon_sso_GOOGLE.svg"
 
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
@@ -18,52 +18,46 @@ export default function GroupList(){
     const theme = null;
     const dispatch = useDispatch();
     const load_data = useSelector((state) => state.groupReducer.data_status)
+    const session = useSelector((state) => state.authReducer.session)
+    const group_text_filter = useSelector((state) => state.groupReducer.group_text_filter)
 
     const user = useSelector((state) => state.authReducer.user)
-    const group_list = useSelector((state) => state.groupReducer.group_list)
+    const {group_list, group_count} = useSelector((state) => state.groupReducer)
     const selected_organisation_id = useSelector((state)=>state.authReducer.selected_organisation_id)
 
     const isAdmin = hasRole(user, ['admin']);
     const isManager = hasRole(user, ['manager']);
-    const [filter, setFilter] = useState('');
 
 
-    useEffect(()=>{
-        // dispatch(getGroupList({session_id:session.id, organization_id:selected_organisation_id}))
+    useEffect(() => {
+        if (!session || !selected_organisation_id) return
+        dispatch(getGroupList({
+            session_id: session.id,
+            organization_id: selected_organisation_id,
+            page: page,
+            page_size: page_size,
+            filter: group_text_filter === '' ? null : group_text_filter
+        }))
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[load_data === 'load_now',page, page_size, selected_organisation_id])
+    }, [load_data === "load_now", page, page_size])
 
-    function filterGroups() {
-        let filteredGroup = []
-        group_list.forEach( grp => {
-            if(grp.name.toLowerCase().includes(filter.toLowerCase())) {
-                filteredGroup.push(grp)
-            }
-        })
-        return filteredGroup
+    function handleSearchTextChange(e) {
+        if (selected_organisation_id) {
+            dispatch(setGroupTextFilter({"group_text_filter": e.target.value}))
+        }
     }
 
-    //filterGroups();
-
-    function getGroups(access) {
-        const paginated_list = [];
-        const first = page * page_size;
-        const last = first + parseInt(page_size);
-        let index = 0;
-        const iterable_list = filter.length > 0 ? filterGroups() : group_list
-
-
-        for (const i in iterable_list) {
-            // paginate all users - but only those that have roles in this organisation
-            const group = iterable_list[i];
-            if (access ) { // Has access to view groups.
-                if (index >= first && index < last) {
-                    paginated_list.push(group);
-                }
-                index += 1; // one more user in this set of roles
-            }
+    function handleSearchTextKeydown(e) {
+        if (!session || !selected_organisation_id) return
+        if (e.key === "Enter") {
+            dispatch(getGroupList({
+                session_id: session.id,
+                organization_id: selected_organisation_id,
+                page: page,
+                page_size: page_size,
+                filter: group_text_filter === '' ? null : group_text_filter
+            }))
         }
-        return paginated_list;
     }
 
     function handleEditGroup(group) {
@@ -82,7 +76,11 @@ export default function GroupList(){
             <div className="d-flex justify-content-between w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
-                        <input type="text" placeholder={"Filter..."} autoFocus={true} className={"form-control filter-search-input " + theme} value={filter} onChange={(e) => {setFilter(e.target.value)}}
+                        <input type="text" placeholder={"Filter..."} autoFocus={true}
+                               className={"form-control filter-search-input " + theme}
+                               value={group_text_filter}
+                               onKeyDown={(e) => handleSearchTextKeydown(e)}
+                               onChange={(e) => handleSearchTextChange(e)}
                         />
                     </div>
                 </div>
@@ -108,10 +106,8 @@ export default function GroupList(){
                     </thead>
                     <tbody>
                     {
-                        getGroups((isAdmin || isManager)).map(group => {
-                            //const editYes = canEdit(group, isAdmin, isManager);
+                        group_list.map(group => {
                             const editYes = isAdmin || isManager;
-                            //const deleteYes = canDelete(group, session.user, isAdmin, isManager);
                             const deleteYes = isAdmin || isManager;
                             return (
                                 <tr key={group.name} >
@@ -119,7 +115,7 @@ export default function GroupList(){
                                         <div
                                             className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">
                                             {group.ssoSource &&
-                                                <img src="images/icon/icon_sso_GOOGLE.svg" className={"sso_icon"}
+                                                <img alt="icon" src={ICON} className={"sso_icon"}
                                                      title="SSO Group"/>}
                                             {group.displayName}
                                         </div>
@@ -145,7 +141,7 @@ export default function GroupList(){
                         rowsPerPageOptions={[5, 10, 25]}
                         theme={theme}
                         component="div"
-                        count={group_list.length}
+                        count={group_count}
                         rowsPerPage={page_size}
                         page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page',}}

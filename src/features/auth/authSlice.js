@@ -26,6 +26,13 @@ const initialState = {
     error_text: '',
     system_message: '',
 
+    // various main components / pods enabled (running) or not
+    stt_enabled: true,
+    translate_enabled: true,
+
+    // system status
+    system_status: undefined,
+
     busy: false,
     status: '',
 
@@ -86,6 +93,8 @@ const login_helper = function (login_obj) {
         session: session,
         organisation_list: organisation_list,
         shared_secret_salt: login_obj.sharedSecretSalt,
+        stt_enabled: login_obj.sttEnabled === true,
+        translate_enabled: login_obj.translateEnabled === true,
     }
 }
 
@@ -171,6 +180,8 @@ const authSlice = createSlice({
                 organisation_original_list: result.organisation_list,
                 selected_organisation: selected_organisation,
                 selected_organisation_id: selected_organisation_id,
+                stt_enabled: result.stt_enabled,
+                translate_enabled: result.translate_enabled,
             }
         },
 
@@ -341,6 +352,38 @@ const authSlice = createSlice({
                     ...state,
                     busy: false,
                     error_text: action.payload.response?.data?.error,
+                    is_sign_in_error: false,
+                    status: "rejected"
+                }
+            })
+
+            /////////////////////////////////////////////////////////////////////////////
+
+            .addCase(getSystemStatus.pending, (state, action) => {
+                return {
+                    ...state,
+                    busy: true,
+                    error_text: '',
+                    status: "pending"
+                }
+            })
+
+
+            .addCase(getSystemStatus.fulfilled, (state, action) => {
+                return {
+                    ...state,
+                    busy: false,
+                    error_text: '',
+                    status: "fulfilled",
+                    system_status: action.payload
+                }
+            })
+
+            .addCase(getSystemStatus.rejected, (state, action) => {
+                return {
+                    ...state,
+                    busy: false,
+                    error_text: get_error(action),
                     is_sign_in_error: false,
                     status: "rejected"
                 }
@@ -524,6 +567,23 @@ export const resetPassword = createAsyncThunk(
             })
     }
 );
+
+
+// password reset
+export const getSystemStatus = createAsyncThunk(
+    'authSlice/getSystemStatus',
+    async ({session_id, organisation_id}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/stats/status/' + encodeURIComponent(organisation_id);
+        return axios.put(url, null, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data;
+            }).catch((err) => {
+                return rejectWithValue(err)
+            })
+    }
+);
+
 
 export const {
     login,

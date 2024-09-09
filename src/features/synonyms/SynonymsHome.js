@@ -33,18 +33,11 @@ export default function SynonymsHome(props) {
 
 
     return (
-        <div className="">
-
-            {status === null &&
-                <SynonymIntro />
-
-            }
+        <>
+            {status === null && <SynonymIntro />}
             {/*Intro message when there are no bot items loaded*/}
-            {status !== null &&
-                <SynonymList />
-
-            }
+            {status !== null && <SynonymList />}
             <SynonymErrorDialog/>
-        </div>
+        </>
     )
 }
