@@ -80,7 +80,6 @@ export default function SourceForm() {
         "useSTT": false,
         "enableDocumentSimilarity": false,
         "isExternal": false,
-        "sortByNewestFirst": false,
         "transmitExternalLogs": false,
         "translateForeignLanguages": false,
 
@@ -315,7 +314,6 @@ export default function SourceForm() {
         defaultValues.writeToCassandra = selected_source && selected_source.writeToCassandra === true;
         defaultValues.useOCR = selected_source && selected_source.useOCR === true;
         defaultValues.useSTT = selected_source && selected_source.useSTT === true && stt_enabled;
-        defaultValues.sortByNewestFirst = selected_source && selected_source.sortByNewestFirst === true;
         defaultValues.transmitExternalLogs = selected_source && selected_source.transmitExternalLogs === true;
         defaultValues.translateForeignLanguages = selected_source && selected_source.translateForeignLanguages === true && translate_enabled;
         defaultValues.enableDocumentSimilarity = selected_source && selected_source.enableDocumentSimilarity === true;

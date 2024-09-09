@@ -292,12 +292,10 @@ export class Api {
     // pretty print a role
     static getPrettyRole(role) {
         // 'admin', 'dms', 'manager'
-        if (role === 'admin') return "SimSage Administrator";
+        if (role === 'admin') return "System Administrator";
         else if (role === 'dms') return "DMS User";
         else if (role === 'manager') return "Organisational Manager";
         else if (role === 'discover') return "Discover User";
-        else if (role === 'tagger') return "Search Tagger";
-        else if (role === 'stepwise') return "Stepwise User";
         else if (role === 'search') return "Search User";
         else return role;
     }

@@ -232,7 +232,7 @@ export function UsersHome() {
                                                 key="-1"
                                                 className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill"
                                             >
-                                                {api.getPrettyRole('SimSage Administrator')}
+                                                {api.getPrettyRole("System Administrator")}
                                             </div>
                                         ) : (
                                             <></>

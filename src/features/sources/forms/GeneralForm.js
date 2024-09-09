@@ -302,13 +302,12 @@ export default function GeneralForm(props) {
                     </div>
                 </div>
                 {stt_enabled &&
-                    <div className="col-4">
-                        <div className="form-check form-switch" title="use speech-to-text for this source">
-                            <input className="form-check-input" type="checkbox" {...props.register("useSTT")} />
-                            <label className="form-check-label small">use speech-to-text (videos, audio
-                                transcripts)</label>
-                        </div>
+                <div className="col-4">
+                    <div className="form-check form-switch" title="use speech-to-text for this source">
+                        <input className="form-check-input" type="checkbox" {...props.register("useSTT")} />
+                        <label className="form-check-label small">use speech-to-text (videos, audio transcripts)</label>
                     </div>
+                </div>
                 }
                 <div className="col-4">
                     <div className="form-check form-switch"
@@ -325,23 +324,15 @@ export default function GeneralForm(props) {
                         <label className="form-check-label small">Transmit external logs</label>
                     </div>
                 </div>
+                { translate_enabled &&
                 <div className="col-4">
                     <div className="form-check form-switch"
-                         title="Show newest documents first in searches">
+                         title="translate foreign langauges to English?">
                         <input className="form-check-input"
-                               type="checkbox" {...props.register("sortByNewestFirst")} />
-                        <label className="form-check-label small">Newest Documents first</label>
+                               type="checkbox" {...props.register("translateForeignLanguages")} />
+                        <label className="form-check-label small">Translate foreign languages</label>
                     </div>
                 </div>
-                {translate_enabled &&
-                    <div className="col-4">
-                        <div className="form-check form-switch"
-                             title="translate foreign langauges to English?">
-                            <input className="form-check-input"
-                                   type="checkbox" {...props.register("translateForeignLanguages")} />
-                            <label className="form-check-label small">Translate foreign languages</label>
-                        </div>
-                    </div>
                 }
                 {(selected_source_type === 'database' || selected_source_type === 'restfull') &&
                     <div className="col-4">

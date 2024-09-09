@@ -456,7 +456,7 @@ export default function SourceHome() {
                                                 <button title={"process all files for a source"}
                                                         onClick={() => handleProcessFiles(crawler)}
                                                         disabled={!crawler.storeBinary}
-                                                        className={"btn text-primary btn-sm text-nowrap"}>Reprocess
+                                                        className={"btn text-primary btn-sm text-nowrap"}>Process files
                                                 </button>
                                                 <button title="get crawler JSON for export"
                                                         onClick={() => handleExportCrawler(crawler)}

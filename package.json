@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "7.18",
+  "version": "7.17.17",
   "private": true,
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.5.2",

@@ -27,8 +27,7 @@ const initialState = {
     show_password_reset_form: false,
     edit_id: undefined,
 
-    // valid roles
-    roles: ['admin', 'dms', 'manager', 'discover', 'search', 'tagger', 'stepwise'],
+    roles: ['admin', 'dms', 'manager', 'discover', 'search'],
     data_status: "load_now"
 }
 
