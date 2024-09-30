@@ -8,6 +8,7 @@ const initialState = {
     synset_page: 0,
     synset_list: [],
     status: false,
+    language_busy: false,
     show_synset_form: false,
 
     //add selected_synset data
@@ -26,7 +27,6 @@ const initialState = {
 
     //filter
     allow_no_results: false,
-
 };
 
 
@@ -98,67 +98,115 @@ export const addDefaultSynsets = createAsyncThunk(
 const extraReducers = (builder) => {
     builder
         .addCase(loadSynsets.pending, (state) => {
-            state.status = "pending"
-            state.data_status = 'loading';
+            return {
+                ...state,
+                status: "pending",
+                language_busy: true,
+                data_status: 'loading'
+            }
         })
         .addCase(loadSynsets.fulfilled, (state, action) => {
-            state.status = "fulfilled"
-            state.synset_list = action.payload && action.payload.list ? action.payload.list : []
-            state.synset_total_size = action.payload && action.payload.totalSize ? action.payload.totalSize : 0
-            state.data_status = 'loaded';
+            return {
+                ...state,
+                status: "fulfilled",
+                language_busy: false,
+                data_status: 'loaded',
+                synset_list: action.payload && action.payload.list ? action.payload.list : [],
+                synset_total_size: action.payload && action.payload.totalSize ? action.payload.totalSize : 0
+            }
         })
         .addCase(loadSynsets.rejected, (state, action) => {
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = "SynSet Load Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                language_busy: false,
+                show_error_form: true,
+                error_title: "SynSet Load Failed",
+                error_message: action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //deleteRecord
         .addCase(deleteRecord.pending, (state) => {
-            state.status = "loading"
+            return {
+                ...state,
+                status: "loading",
+                language_busy: true,
+            }
         })
         .addCase(deleteRecord.fulfilled, (state) => {
-            state.status = "fulfilled"
-            state.data_status = 'load_now';
+            return {
+                ...state,
+                status: "fulfilled",
+                language_busy: false,
+                data_status: 'load_now'
+            }
         })
         .addCase(deleteRecord.rejected, (state, action) => {
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = "Test Query Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                language_busy: false,
+                show_error_form: true,
+                error_title: "Test Query Failed",
+                error_message: action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
         //addOrUpdate
         .addCase(addOrUpdate.pending, (state) => {
-            state.status = "loading"
+            return {
+                ...state,
+                status: "loading",
+                language_busy: true,
+            }
         })
         .addCase(addOrUpdate.fulfilled, (state) => {
-                state.status = "fulfilled";
-                state.data_status = 'load_now';
+            return {
+                ...state,
+                status: "fulfilled",
+                language_busy: false,
+                data_status: 'load_now'
+            }
         })
         .addCase(addOrUpdate.rejected, (state, action) => {
-            state.status = "rejected"
-            state.show_error_form = true
-            state.error_title = "SynSet update Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                language_busy: false,
+                show_error_form: true,
+                error_title: "SynSet update Failed",
+                error_message: action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
 
         //addDefaultSynsets
         .addCase(addDefaultSynsets.pending, (state) => {
-            state.status = "loading"
+            return {
+                ...state,
+                status: "loading",
+                language_busy: true,
+            }
         })
         .addCase(addDefaultSynsets.fulfilled, (state) => {
-                state.status = "fulfilled"
-                state.data_status = 'load_now';
+            return {
+                ...state,
+                status: "fulfilled",
+                language_busy: false,
+                data_status: 'load_now'
+            }
         })
         .addCase(addDefaultSynsets.rejected, (state, action) => {
-            state.status = "rejected"
-            state.data_status = 'loaded';
-            state.show_error_form = true
-            state.error_title = "SynSet Delete Failed"
-            state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            return {
+                ...state,
+                status: "rejected",
+                language_busy: false,
+                show_error_form: true,
+                data_status: 'loaded',
+                error_title: "SynSet Delete Failed",
+                error_message: action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
         })
 
 

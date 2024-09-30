@@ -25,6 +25,7 @@ export default function SynsetList() {
 
     const synset_list = useSelector((state) => state.synsetReducer.synset_list)
     const synset_total_size = useSelector((state) => state.synsetReducer.synset_total_size)
+    const language_busy = useSelector((state) => state.synsetReducer.language_busy)
 
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
@@ -65,7 +66,9 @@ export default function SynsetList() {
     }
 
     const handleRefresh = () => {
-        dispatch(loadSynsets(data))
+        if (!language_busy) {
+            dispatch(loadSynsets(data))
+        }
     }
 
     const handleEdit = (synset) => {
@@ -128,13 +131,17 @@ export default function SynsetList() {
 
                     <div className="form-group d-flex ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
-                            <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of synsets" />
+                            <img src={IMAGES.REFRESH_IMAGE} className="refresh-image"
+                                 alt="refresh" title="refresh list of synsets" />
                         </div>
                         <button className="btn btn-outline-primary text-nowrap ms-2"
+                                disabled={language_busy}
                                 onClick={() => handleAddDefaultSynSet()}
                                 title="add all default syn-sets">Defaults
                         </button>
-                        <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddSynSet()}>
+                        <button className="btn btn-primary text-nowrap ms-2"
+                                disabled={language_busy}
+                                onClick={() => handleAddSynSet()}>
                             + Add Syn-set
                         </button>
                     </div>

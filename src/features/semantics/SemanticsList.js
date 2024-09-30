@@ -18,6 +18,7 @@ export default function SemanticsHome() {
 
     const semantic_list = useSelector((state) => state.semanticReducer.semantic_list);
     const num_semantics = useSelector((state) => state.semanticReducer.num_semantics);
+    const semantics_busy = useSelector((state) => state.semanticReducer.semantics_busy);
 
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
@@ -82,7 +83,9 @@ export default function SemanticsHome() {
     }
 
     const handleRefresh = () => {
-        dispatch(loadSemantics({session_id, data}))
+        if (!semantics_busy) {
+            dispatch(loadSemantics({session_id, data}))
+        }
     }
 
     function handleEditSemantic(semantic)
@@ -127,10 +130,12 @@ export default function SemanticsHome() {
                     </div>
 
                     <div className="form-group d-flex col ms-auto">
-                        <div className="btn" onClick={() => handleRefresh()} >
+                        <div className="btn" onClick={() => handleRefresh()}>
                             <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of semantics" />
                         </div>
-                        <button className="btn btn-primary text-nowrap" onClick={() => handleAddSemantic()}>
+                        <button className="btn btn-primary text-nowrap"
+                                disabled={semantics_busy}
+                                onClick={() => handleAddSemantic()}>
                             + Add Semantic
                         </button>
                     </div>

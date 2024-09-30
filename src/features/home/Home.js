@@ -6,7 +6,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {OrganisationHome} from "../organisations/OrganisationHome";
 import {getKBList} from "../knowledge_bases/knowledgeBaseSlice";
 import AlertDialogHome from "../alerts/AlertDialogHome";
-import SystemStatus from "./SystemStatus";
 
 export default function Home() {
     const isAdminUser = useSelector((state) => state.authReducer.is_admin)
@@ -27,7 +26,6 @@ export default function Home() {
     sub_nav.push({label: "Knowledge Bases", slug: "knowledge-bases"})
     if (isAdminUser) {
         sub_nav.push({label: "Logs", slug: "logs"})
-        sub_nav.push({label: "Status", slug: "status"})
     }
 
     useEffect(() => {
@@ -65,7 +63,6 @@ export default function Home() {
             {selected_sub_nav === 'knowledge-bases' && <KnowledgeBaseHome />}
             {selected_sub_nav === 'logs' && <LogHome />}
             {selected_sub_nav === 'org' && <OrganisationHome />}
-            {selected_sub_nav === 'status' && <SystemStatus />}
 
             {/*<ErrorDialog />*/}
             <AlertDialogHome/>

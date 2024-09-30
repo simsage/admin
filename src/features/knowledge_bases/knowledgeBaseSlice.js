@@ -6,6 +6,7 @@ import {get_error} from "../../common/api";
 const initialState = {
     kb_original_list: [],
     kb_list: [],
+    kb_list_loaded: false,
     kb_filter: null,
     kb_page: 0,
     kb_page_size: 10,
@@ -49,6 +50,7 @@ const extraReducers = (builder) => {
                 ...state,
                 busy: true,
                 status: "loading",
+                kb_list_loaded: false,
                 is_error: false,
                 error_text: '',
             }
@@ -58,6 +60,7 @@ const extraReducers = (builder) => {
                 ...state,
                 busy: false,
                 status: "fulfilled",
+                kb_list_loaded: true,
                 is_error: false,
                 error_text: '',
                 kb_list: action.payload,
@@ -69,6 +72,7 @@ const extraReducers = (builder) => {
                 ...state,
                 busy: false,
                 status: "rejected",
+                kb_list_loaded: true,
                 is_error: true,
                 error_text: get_error(action),
                 error_title: "KnowledgeBase Load Failed"

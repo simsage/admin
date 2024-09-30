@@ -6,7 +6,7 @@ import {
     showAddOrganisationForm, showBackupForm, showDeleteForm,
     showEditOrganisationForm, showOrganisationId
 } from "./organisationSlice";
-import { setSelectedOrganisation, simsageLogOut} from "../auth/authSlice";
+import {setSelectedKB, setSelectedOrganisation, simsageLogOut} from "../auth/authSlice";
 import {Pagination} from "../../common/pagination";
 import {selectTab} from "../home/homeSlice";
 import {search} from "./organisationSlice";
@@ -34,7 +34,13 @@ export function OrganisationHome() {
     const load_data = useSelector((state) => state.organisationReducer.data_status)
     const backup_data_status = useSelector((state) => state.organisationReducer.backup_data_status)
     const user = useSelector((state) => state.authReducer.user);
+    let busy = useSelector((state) => state.authReducer.busy);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
+    const kb_list_loaded = useSelector((state) => state.kbReducer.kb_list_loaded);
+    const kb_list = useSelector((state) => state.kbReducer.kb_list);
+    const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+
+    busy = busy | useSelector((state) => state.organisationReducer.organisation_busy);
 
     const selected_organisation_id = selected_organisation?selected_organisation.id:null;
 
@@ -73,6 +79,25 @@ export function OrganisationHome() {
         dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backup_data_status === 'load_now', org_id != null])
+
+    // load kbs?
+    useEffect(() => {
+        if (selected_organisation_id && selected_organisation_id.length > 0 &&
+            session && session.id && !kb_list_loaded) {
+            dispatch(getKBList({session_id: session.id, organization_id: selected_organisation_id}))
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selected_organisation_id, session, kb_list_loaded]);
+
+    useEffect(() => {
+        if (selected_knowledge_base_id === null && kb_list) {
+            const p_kb = kb_list.find((kb) => kb.kbId === window.ENV.preferred_kb_id)
+            if (p_kb && p_kb.kbId === window.ENV.preferred_kb_id) {
+                dispatch(setSelectedKB(p_kb))
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selected_knowledge_base_id, kb_list]);
 
     const handleRefresh = () => {
         if (!org_id) return;
@@ -151,11 +176,13 @@ export function OrganisationHome() {
                             <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh organisations" />
                         </div>
                         <button data-testid="add-new-organisation"
+                                disabled={busy}
                                 onClick={() => setShowRestoreOrganisationForm(!show_restore_organisation_form)}
                                 className="btn btn-outline-primary text-nowrap ms-2">Import
                         </button>
 
                         <button data-testid="add-new-organisation" onClick={() => handleAddOrganisation()}
+                                disabled={busy}
                                 className="btn btn-primary text-nowrap ms-2">+ Add
                             Organisation
                         </button>

@@ -24,6 +24,7 @@ export default function SynonymsHome() {
 
     const synonym_list = useSelector((state)=>state.synonymReducer.synonym_list)
     const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
+    const synonyms_busy = useSelector((state)=>state.synonymReducer.synonyms_busy)
 
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
@@ -51,14 +52,14 @@ export default function SynonymsHome() {
 
 
     function handlePageChange(next_page){
-        if(next_page > page){
+        if (next_page > page) {
             // last list item is used for next page
             const last_row = synonym_list.slice(-1)[0]
             const temp_last_id = last_row['id']
             setPrevID(temp_last_id);
             setPageHistory([...page_history,{page:next_page,id:prev_id}]);
 
-        }else{
+        } else {
             const temp_prev_row = page_history.slice(-1)
             const temp_id = temp_prev_row && temp_prev_row.length === 1?temp_prev_row[0]["id"]:0
             setPrevID(temp_id);
@@ -79,7 +80,9 @@ export default function SynonymsHome() {
         return synonym_list ? synonym_list : [];
     }
     const handleRefresh = () => {
-        dispatch(loadSynonyms({session_id, data }))
+        if (!synonyms_busy) {
+            dispatch(loadSynonyms({session_id, data}))
+        }
     }
 
     //
@@ -145,7 +148,9 @@ export default function SynonymsHome() {
                     <div className="btn" onClick={() => handleRefresh()} >
                         <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of synonyms" />
                     </div>
-                    <button className="btn btn-primary text-nowrap" onClick={() => newSynonym()}>
+                    <button className="btn btn-primary text-nowrap"
+                            disabled={synonyms_busy}
+                            onClick={() => newSynonym()}>
                         + Add Synonym
                     </button>
                 </div>

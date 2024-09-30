@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
-import Api from "../../common/api"
+import Api, {IMAGES} from "../../common/api"
 import {
     getLogs,
     setLogType,
@@ -37,6 +37,7 @@ export default function LogHome() {
     const log_lines = useSelector((state) => state.homeReducer.log_lines)
     const log_list = useSelector((state) => state.homeReducer.log_list)
     const filtered_list = useSelector((state) => state.homeReducer.log_filtered_list)
+    const busy = useSelector((state) => state.homeReducer.busy)
 
     // log filter text
     const [filter, setFilter] = useState('')
@@ -44,7 +45,7 @@ export default function LogHome() {
     const [log_refresh, setLogRefreshState] = useState(0)
 
     const getLogsLocal = (log_type, log_service, log_lines, filter) => {
-        if (session && session.id && organisation_id) {
+        if (session && session.id && organisation_id && !busy) {
             dispatch(
                 getLogs({
                     session_id: session.id,
@@ -78,6 +79,7 @@ export default function LogHome() {
                 window.log_timer = null
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session, organisation_id, log_type, log_service, log_lines, log_refresh])
 
     const check_keydown = (event) => {
@@ -143,7 +145,7 @@ export default function LogHome() {
                         <CustomSelect
                             label="Select Service"
                             defaultValue={log_service}
-                            disabled={false}
+                            disabled={busy}
                             onChange={(value) => setLogServiceLocal(value)}
                             options={service_list}
                             className="form-control"
@@ -153,6 +155,7 @@ export default function LogHome() {
                         <h6 className="small text-black-50">Search</h6>
                         <div className="input-group">
                             <input
+                                disabled={busy}
                                 onChange={(event) => setFilter(event.target.value)}
                                 onKeyDown={check_keydown}
                                 type="text"
@@ -162,6 +165,11 @@ export default function LogHome() {
                             <span className="input-group-text" onClick={applyFilter} style={{cursor: "pointer"}}>
                                 <i title="apply filter" className="bi bi-search"></i>
                             </span>
+                            <div className="btn"
+                                 onClick={() => getLogsLocal(log_type, log_service, log_lines, filter)}>
+                                <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh"
+                                     title="get latest logs"/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -169,6 +177,7 @@ export default function LogHome() {
                     <div className="me-3 mb-3" title={"download logs for " + log_service + " service"}>
                         <h6 className="small text-black-50">{log_service + " log"}</h6>
                         <button
+                            disabled={busy}
                             className="btn btn-primary text-nowrap"
                             onClick={() => download(log_service)}>Download
                         </button>
@@ -177,18 +186,22 @@ export default function LogHome() {
                         <h6 className="small text-black-50">Show Entries</h6>
                         <div className="btn-group">
                             <button title='last 50 lines'
+                                    disabled={busy}
                                     className={`${getSelectedLineCount(log_lines === 50)} btn text-nowrap`}
                                     onClick={() => setNumLines(50)}>50
                             </button>
                             <button title='last 100 lines'
+                                    disabled={busy}
                                     className={`${getSelectedLineCount(log_lines === 100)} btn text-nowrap`}
                                     onClick={() => setNumLines(100)}>100
                             </button>
                             <button title='last 250 lines'
+                                    disabled={busy}
                                     className={`${getSelectedLineCount(log_lines === 250)} btn text-nowrap`}
                                     onClick={() => setNumLines(250)}>250
                             </button>
                             <button title='last 500 lines'
+                                    disabled={busy}
                                     className={`${getSelectedLineCount(log_lines === 500)} btn text-nowrap`}
                                     onClick={() => setNumLines(500)}>500
                             </button>
@@ -199,39 +212,47 @@ export default function LogHome() {
                         <h6 className="small text-black-50">Type</h6>
                         <div className="btn-group">
                             <button title="display all log-types"
+                                    disabled={busy}
                                     className={`${getSelectedLogStyle(log_type === "All")} btn text-nowrap`}
                                     onClick={() => setLogTypeLocal("All")}>All
                             </button>
                             <button title="display only 'info' log-types"
+                                    disabled={busy}
                                     className={`${getSelectedLogStyle(log_type === "INFO")} btn text-nowrap`}
                                     onClick={() => setLogTypeLocal("INFO")}>Info
                             </button>
                             <button title="display only 'debug' log-types"
+                                    disabled={busy}
                                     className={`${getSelectedLogStyle(log_type === "DEBUG")} btn text-nowrap`}
                                     onClick={() => setLogTypeLocal("DEBUG")}>Debug
                             </button>
                             <button title="display only 'error' log-types"
+                                    disabled={busy}
                                     className={`${getSelectedLogStyle(log_type === "ERROR")} btn text-nowrap`}
                                     onClick={() => setLogTypeLocal("ERROR")}>Error
                             </button>
                             <button title="display only 'warning' log-types"
+                                    disabled={busy}
                                     className={`${getSelectedLogStyle(log_type === "WARN")} btn text-nowrap`}
                                     onClick={() => setLogTypeLocal("WARN")}>Warn
                             </button>
                         </div>
                     </div>
                     <div className="mb-3">
-                        <h6 className="small text-black-50">Refresh</h6>
+                        <h6 className="small text-black-50">Auto Refresh</h6>
                         <div className="btn-group">
                             <button title="do not automatically refresh the logs"
+                                    disabled={busy}
                                     className={`${getLogRefreshStyle(log_refresh === 0)} btn text-nowrap`}
                                     onClick={() => setLogRefresh(0)}>Off
                             </button>
                             <button title="automatically refresh this log every five seconds"
+                                    disabled={busy}
                                     className={`${getLogRefreshStyle(log_refresh === 5)} btn text-nowrap`}
                                     onClick={() => setLogRefresh(5)}>5 seconds
                             </button>
                             <button title="automatically refresh this log every 10 seconds"
+                                    disabled={busy}
                                     className={`${getLogRefreshStyle(log_refresh === 10)} btn text-nowrap`}
                                     onClick={() => setLogRefresh(10)}>10 seconds
                             </button>

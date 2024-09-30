@@ -51,6 +51,7 @@ export default function SourceHome() {
     // const show_form_source = useSelector((state) => state.sourceReducer.show_data_form);
     const show_export_form = useSelector((state) => state.sourceReducer.show_export_form);
     const show_import_form = useSelector((state) => state.sourceReducer.show_import_form);
+    const busy = useSelector((state) => state.sourceReducer.busy);
 
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
@@ -83,7 +84,8 @@ export default function SourceHome() {
 
 
     function refresh_sources() {
-        if (selected_organisation_id && selected_knowledge_base_id && session?.id) {
+        if (!busy && selected_organisation_id &&
+            selected_knowledge_base_id && session?.id) {
             dispatch(getSources({
                 session_id: session.id,
                 organisation_id: selected_organisation_id,
@@ -219,7 +221,9 @@ export default function SourceHome() {
             setSelectedSource(crawler)
             setButtonClicked('remove_crawler')
             const warning = {
-                message: "Are you sure you want to remove the crawler named " + crawler.name + "?",
+                message: "Are you sure you want to remove the crawler named\n" + crawler.name +
+                    "?\n\n\nThis will remove all associated Documents/Records on this platform.\n" +
+                    "Data is in this source will no longer be usable.\n",
                 title: "Remove Crawler"
             }
             dispatch(showDeleteAlert(warning))
@@ -298,13 +302,7 @@ export default function SourceHome() {
         return "?";
     }
 
-    
-    function saveExport(crawler_str) {
-        if (crawler_str && this.state.export_upload) {
-            const crawler = JSON.parse(crawler_str);
-            delete crawler.sourceId;
-            this.saveCrawler(crawler);
-        }
+    function saveExport() {
         this.setState({export_open: false, selected_source: {}});
     }
 
@@ -362,7 +360,8 @@ export default function SourceHome() {
                 <div className="form-group ms-auto">
                     {selected_knowledge_base_id && selected_knowledge_base_id.length > 0 &&
                         <div className="d-flex">
-                            <div className="btn" onClick={() => refresh_sources()}>
+                            <div className="btn"
+                                 onClick={() => refresh_sources()}>
                                 <img src={IMAGES.REFRESH_IMAGE}
                                      className="refresh-image"
                                      alt="refresh"
@@ -370,10 +369,12 @@ export default function SourceHome() {
                                 />
                             </div>
                             <button className="btn btn-outline-primary text-nowrap ms-2"
+                                    disabled={busy}
                                     onClick={() => handleImportCrawler()}>Import Crawler
                             </button>
-                            <button className="btn btn-primary text-nowrap ms-2" onClick={() => handleAddForm()}> + Add
-                                Source
+                            <button className="btn btn-primary text-nowrap ms-2"
+                                    disabled={busy}
+                                    onClick={() => handleAddForm()}> + Add Source
                             </button>
                         </div>
                     }
@@ -424,17 +425,35 @@ export default function SourceHome() {
                                         </td>
                                         <td className="pt-3 px-4 pb-3 fw-light w-25">
                                             {/*<div className="source-label">{crawler.numCrawledDocuments + " / " + crawler.numIndexedDocuments}</div>*/}
-                                            <div>
-                                                <div>{`collected: ${crawler.numCrawledDocuments.toLocaleString()}`}</div>
-                                                <div>{`converted: ${crawler.numConvertedDocuments.toLocaleString()}`}</div>
-                                                <div>{`analyzed: ${crawler.numParsedDocuments.toLocaleString()}`}</div>
-                                                <div>{`indexed: ${crawler.numIndexedDocuments.toLocaleString()}`}</div>
-                                                <div>{`translated: ${crawler.numTranslatedDocuments.toLocaleString()}`}</div>
-                                                <div>{`completed: ${crawler.numFinishedDocuments.toLocaleString()}`}</div>
-                                                <div>{`failed: ${crawler.numErroredDocuments.toLocaleString()}`}</div>
-                                                <div>{`total documents: ${crawler.numTotalDocuments.toLocaleString()}`}</div>
+                                            <div className="pointer-default">
+                                                <div
+                                                    title="Files/Records collected by the crawler thus-far (not used by Reprocess)">
+                                                    {`collected: ${crawler.numCrawledDocuments.toLocaleString()}`}</div>
+                                                <div
+                                                    title="Files/Records converted to text by the conversion system">
+                                                    {`converted: ${crawler.numConvertedDocuments.toLocaleString()}`}</div>
+                                                <div
+                                                    title="Files/Records processed by the language analyzer system">
+                                                    {`analyzed: ${crawler.numParsedDocuments.toLocaleString()}`}</div>
+                                                <div
+                                                    title="Files/Records indexed (made searchable) by the indexing system">
+                                                    {`indexed: ${crawler.numIndexedDocuments.toLocaleString()}`}</div>
+                                                <div
+                                                    title="Files/Records translated to English (if applicable)">
+                                                    {`translated: ${crawler.numTranslatedDocuments.toLocaleString()}`}</div>
+                                                <div
+                                                    title="Files/Records completed">
+                                                    {`completed: ${crawler.numFinishedDocuments.toLocaleString()}`}</div>
+                                                <div
+                                                    title="Files/Records failed (not able to process) thus-far">
+                                                    {`failed: ${crawler.numErroredDocuments.toLocaleString()}`}</div>
+                                                <div
+                                                    title="the total number of Files/Records in this source">
+                                                    {`total documents: ${crawler.numTotalDocuments.toLocaleString()}`}</div>
 
-                                                <div>{`total failed:`}{crawler.numTotalErroredDocuments > 0 &&
+                                                <div
+                                                    title="The total number of Files/Record errors in this source.  This number is reset for full-runs through the data, and kept for crawlers that pick up changes only (delta crawlers).">
+                                                    {`total failed:`}{crawler.numTotalErroredDocuments > 0 &&
                                                     <button title="view failed documents"
                                                             onClick={() => handleShowFailedDocuments(crawler)}
                                                             className={"btn error_doc_link"}>{crawler.numTotalErroredDocuments.toLocaleString()}
@@ -446,23 +465,23 @@ export default function SourceHome() {
                                         </td>
                                         <td className="pt-3 px-2 pb-0">
                                             <div className="d-flex justify-content-end">
-                                                <button title="start crawler"
+                                                <button title="Force this crawler to start again if it has finished and hasn't been scheduled yet (requires the schedule to be enabled for this moment in time)."
                                                         onClick={() => handleStartCrawler(crawler)}
-                                                        className={"btn text-primary btn-sm"}>Start
+                                                        className={"btn text-primary border-0 btn-sm"}>Start
                                                 </button>
-                                                <button title="edit crawler" onClick={() => handleEditCrawler(crawler)}
+                                                <button title="Edit/Change the details of this source."
+                                                        onClick={() => handleEditCrawler(crawler)}
                                                         className={"btn text-primary btn-sm"}>Edit
                                                 </button>
-                                                <button title={"process all files for a source"}
+                                                <button title="Reprocess all files for a source (or mark every file in this source as changed).  Requires the schedule to be disabled for this moment in time, as this cannot happen at the same time a crawler is active.  This can only work if store-binaries is enabled."
                                                         onClick={() => handleProcessFiles(crawler)}
-                                                        disabled={!crawler.storeBinary}
-                                                        className={"btn text-primary btn-sm text-nowrap"}>Reprocess
+                                                        className={"btn text-primary border-0 btn-sm text-nowrap"}>Reprocess
                                                 </button>
-                                                <button title="get crawler JSON for export"
+                                                <button title="Create a JSON export of this source's details (will exclude sensitive security information such as passwords)"
                                                         onClick={() => handleExportCrawler(crawler)}
                                                         className={"btn text-primary btn-sm"}>Export
                                                 </button>
-                                                <button title="remove crawler"
+                                                <button title="Remove this source and all its associated files and data."
                                                         onClick={() => handleDeleteCrawler(crawler)}
                                                         className={"btn text-danger btn-sm"}>Remove
                                                 </button>
@@ -506,7 +525,6 @@ export default function SourceHome() {
 
             {show_failed_documents &&
                 <>
-                    <div>Whatever</div>
                     <SourceFailures/>
                 </>
             }

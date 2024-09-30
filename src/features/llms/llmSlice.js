@@ -47,7 +47,6 @@ export const updateLLM = createAsyncThunk(
 
         const api_base = window.ENV.api_base;
         const url = api_base + `/language/llm`;
-        console.log("llm_data", llm_data)
 
         return axios.put(url, llm_data, Comms.getHeaders(session_id))
             .then((response) => {
@@ -69,7 +68,6 @@ const extraReducers = (builder) => {
             return {...state, busy: false, status: "fulfilled", llm_model: action.payload.llm};
         })
         .addCase(updateLLM.rejected, (state, action) => {
-            console.log("action", action);
             return {...state,
                 busy: false,
                 status: "rejected",

@@ -21,6 +21,7 @@ export default function KnowledgeBaseList() {
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const session = useSelector((state) => state.authReducer.session)
     const session_id = (session && session.id) ? session.id : ""
+    const busy = useSelector((state) => state.kbReducer.busy);
 
     const [page, setPage] = useState(api.initial_page)
     const [page_size, setPageSize] = useState(api.initial_page_size)
@@ -46,40 +47,49 @@ export default function KnowledgeBaseList() {
     }
 
     function isVisible() {
-        //Todo:: verify selected org before display
-        // return this.props.organisation_id && this.props.organisation_id.length > 0 &&
-        //     this.props.selected_organisation && this.props.selected_organisation.length > 0;
         return true
     }
 
     const handleAddForm = () => dispatch(showAddForm(true))
     const handleEditForm = (kb_id) => dispatch(showEditForm({kb_id: kb_id}))
     const handleDeleteFormAsk = (kb) => dispatch(showDeleteAskForm({session_id, kb}))
-    const handleRefresh = () => dispatch(
-        getKBList({session_id: session_id, organization_id: organisation_id})
-    )
+    const handleRefresh = () => {
+        if (!busy) {
+            dispatch(
+                getKBList({session_id: session_id, organization_id: organisation_id})
+            )
+        }
+    }
 
     function handleViewIds(kb_id) {
         dispatch(setViewIds({kb_id: kb_id}))
     }
 
     function handleOptimizeIndexesAsk(knowledge_base) {
-        dispatch(showOptimizeAskDialog({session_id, kb: knowledge_base}))
+        if (!busy) {
+            dispatch(showOptimizeAskDialog({session_id, kb: knowledge_base}))
+        }
     }
 
     function handleOptimizeIndexesAbort(knowledge_base) {
-        dispatch(showOptimizeAbortDialog({session_id, kb: knowledge_base}))
+        if (!busy) {
+            dispatch(showOptimizeAbortDialog({session_id, kb: knowledge_base}))
+        }
     }
 
     function handleSearchFilter(event) {
-        const val = event.target.value
-        dispatch(search({keyword: val}))
+        if (!busy) {
+            const val = event.target.value
+            dispatch(search({keyword: val}))
+        }
     }
 
     function handleSelectKb(kb) {
-        let kb_select = document.getElementById("kb-selector")
-        kb_select.value = kb.kbId
-        dispatch(setSelectedKB(kb))
+        if (!busy) {
+            let kb_select = document.getElementById("kb-selector")
+            kb_select.value = kb.kbId
+            dispatch(setSelectedKB(kb))
+        }
     }
 
     return (
@@ -99,13 +109,16 @@ export default function KnowledgeBaseList() {
                         </div>
 
                         <div className="form-group d-flex ms-auto">
-                            <div className="btn" onClick={() => handleRefresh()}>
-                                <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh"
-                                     title="refresh memories"/>
+                            <div className="btn"
+                                 onClick={() => handleRefresh()}>
+                                 <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh"
+                                      title="refresh knowledge-base list"/>
                             </div>
                             {organisation_id && organisation_id.length > 0 &&
-                                <button onClick={() => handleAddForm()} className={"btn btn-primary text-nowrap"}>+ Add
-                                    Knowledge Base</button>
+                                <button
+                                    disabled={busy}
+                                    onClick={() => handleAddForm()} className={"btn btn-primary text-nowrap"}>
+                                    + Add Knowledge Base</button>
                             }
                         </div>
                     </div>

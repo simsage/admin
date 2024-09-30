@@ -6,9 +6,7 @@ const initialState = {
     selected_tab: 'home',
     status_list: undefined,
     theme: null,
-    license: undefined,         // system license
-    uploading: undefined,       // program busy uploading
-    busy: undefined,            // system busy
+    busy: false,            // system busy
     error_title: "Error",       // application error messages
     error: "",
 
@@ -37,7 +35,6 @@ export const getLogs = createAsyncThunk(
             .then((response) => {
                 const log_list = response.data.logList ? response.data.logList : [];
                 const list = [];
-                console.log("log_type", log_type);
                 const log_type_lwr = log_type.toLowerCase();
                 const log_service_lwr = log_service.toLowerCase();
                 for (let i = 0; i < log_list.length; i++) {
@@ -61,6 +58,7 @@ const extraReducers = (builder) => {
         .addCase(getLogs.pending, (state) => {
             return {
                 ...state,
+                busy: true,
                 status: "loading",
                 data_status: "loading"
             }
@@ -68,6 +66,7 @@ const extraReducers = (builder) => {
         .addCase(getLogs.fulfilled, (state, action) => {
             return {
                 ...state,
+                busy: false,
                 status: "fulfilled",
                 data_status: "loaded",
                 log_list: action?.payload?.list ?? []
@@ -77,6 +76,7 @@ const extraReducers = (builder) => {
         .addCase(getLogs.rejected, (state, action) => {
             return {
                 ...state,
+                busy: false,
                 status: "rejected",
                 data_status: "rejected",
                 show_error_form: true,

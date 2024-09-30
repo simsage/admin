@@ -4,10 +4,11 @@ import Comms from "../../common/comms";
 
 const initialState ={
     semantic_list: [],
-    status:null,
-    num_semantics:0,
-    semantic_page_size:10,
-    semantic_page:0,
+    semantics_busy: false,
+    status: null,
+    num_semantics: 0,
+    semantic_page_size: 10,
+    semantic_page: 0,
     data_status: 'load_now',
     show_semantic_form: false,
     edit: undefined,
@@ -68,17 +69,20 @@ const extraReducers = (builder) => {
     builder
         .addCase(loadSemantics.pending, (state) => {
             state.status = "loading";
+            state.semantics_busy = true;
             state.data_status = "loading";
         })
 
         .addCase(loadSemantics.fulfilled, (state, action) => {
             state.status = "fulfilled";
+            state.semantics_busy = false;
             state.semantic_list = action.payload.semanticList?action.payload.semanticList:[];
             state.num_semantics = action.payload.numSemantics?action.payload.numSemantics:0;
             state.data_status = "loaded";
         })
         .addCase(loadSemantics.rejected, (state, action) => {
             state.status = "rejected"
+            state.semantics_busy = false;
             state.data_status = "rejected";
             state.show_error_form = true
             state.error_title = "Semantic Load Failed"
@@ -88,15 +92,18 @@ const extraReducers = (builder) => {
         //update semantics
         .addCase(updateSemantics.pending, (state) => {
             state.status = "loading";
+            state.semantics_busy = true;
             state.data_status = "loading";
         })
         .addCase(updateSemantics.fulfilled, (state) => {
             state.status = "fulfilled";
+            state.semantics_busy = false;
             state.data_status = "load_now";
         })
         .addCase(updateSemantics.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected";
+            state.semantics_busy = false;
             state.show_error_form = true
             state.error_title = "Semantic Update Failed"
             state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
@@ -104,16 +111,19 @@ const extraReducers = (builder) => {
         //delete semantic
         .addCase(deleteSemantic.pending, (state) => {
             state.status = "loading";
+            state.semantics_busy = true;
             state.data_status = "loading";
         })
         .addCase(deleteSemantic.fulfilled, (state) => {
             state.status = "fulfilled";
+            state.semantics_busy = false;
             state.data_status = "load_now";
 
         })
         .addCase(deleteSemantic.rejected, (state, action) => {
             state.status = "rejected"
             state.data_status = "rejected";
+            state.semantics_busy = false;
             state.show_error_form = true
             state.error_title = "Semantic Delete Failed"
             state.error_message = action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"

@@ -5,8 +5,8 @@ import {GroupErrorDialog} from "./GroupErrorDialog";
 export default function GroupHome() {
 
     return (
-        <div className="">
-            <GroupList />
+        <div>
+            <GroupList/>
             <GroupErrorDialog/>
         </div>
     )

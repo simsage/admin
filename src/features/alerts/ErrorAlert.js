@@ -30,7 +30,13 @@ export default function ErrorAlert(props){
                         </div>
                         <div className="modal-body">
                             <div className="control-row">
-                                <span className="label-wide">{message}</span>
+                                {
+                                    message.split("\n").map((str, i) => {
+                                        return (
+                                            <div key={i} className="label-wide mb-2">{str}</div>
+                                        )
+                                    })
+                                }
                             </div>
                         </div>
                         <div className="modal-footer">

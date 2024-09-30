@@ -28,13 +28,21 @@ export default function WarningAlert(props){
                     <div className="modal-content p-4">
                         <div className="modal-body text-center">
                             <div className="control-row mb-4">
-                                <span className="label-wide">
-                                    {/* {alert_type}: */}
-                                    {message}</span>
+                                <div className="control-row">
+                                    {
+                                        message.split("\n").map((str, i) => {
+                                            return (
+                                                <div key={i} className="label-wide mb-2">{str}</div>
+                                            )
+                                        })
+                                    }
+                                </div>
                             </div>
                             <div className="control-row">
-                                <button onClick={ (e) => handleCancel(e) } type="button" className="btn btn-white px-4" data-bs-dismiss="modal">Close</button>
-                                <button onClick={ handleOk } type="button" className="btn btn-danger px-4">Delete</button>
+                                <button onClick={(e) => handleCancel(e)} type="button" className="btn btn-white px-4"
+                                        data-bs-dismiss="modal">Close
+                                </button>
+                                <button onClick={handleOk} type="button" className="btn btn-danger px-4">Delete</button>
                             </div>
 
                         </div>

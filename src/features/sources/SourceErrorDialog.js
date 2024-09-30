@@ -12,7 +12,6 @@ export function SourceErrorDialog() {
 
     const handleClose = () => dispatch(closeErrorMessage())
 
-
     if (!show_error_form)
         return <div/>
 

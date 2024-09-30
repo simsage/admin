@@ -91,6 +91,7 @@ const extraReducers = (builder) => {
         .addCase(loadInventoryList.pending, (state) => {
             return {
                 ...state,
+                inventor_busy: true,
                 status: "loading"
             }
         })
@@ -99,6 +100,7 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 status: "fulfilled",
+                inventor_busy: false,
                 inventory_list: action.payload,
                 data_status: 'loaded'
             }
@@ -107,6 +109,7 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 status: "rejected",
+                inventor_busy: false,
                 data_status: "rejected",
                 show_error_form: true,
                 error_title: "Failed to load Inventory list",
@@ -206,7 +209,7 @@ const inventorySlice = createSlice({
 
 
 export const loadInventoryList = createAsyncThunk(
-    'inventories/getInventoryList',
+    'inventories/loadInventoryList',
     async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/parquets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/0/10';

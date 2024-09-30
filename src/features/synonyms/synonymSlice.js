@@ -5,12 +5,13 @@ import Comms from "../../common/comms";
 const initialState = {
     synonym_list: [],
     num_synonyms: 0,
+    synonyms_busy: false,
     synonym_page_size: 10,
     synonym_page: 0,
     status: null,
     data_status: 'load_now',
     show_synonym_form: false,
-    edit:undefined,
+    edit: undefined,
     show_delete_form: false,
     filter: "",
 }
@@ -69,6 +70,7 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 status: "loading",
+                synonyms_busy: true,
                 data_status: 'loading'
             }
         })
@@ -77,6 +79,7 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 status: "fulfilled",
+                synonyms_busy: false,
                 synonym_list: action.payload.synonymList?action.payload.synonymList:[],
                 num_synonyms: action.payload.numSynonyms?action.payload.numSynonyms:0,
                 data_status: 'loaded'
@@ -86,6 +89,7 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 status: "rejected",
+                synonyms_busy: false,
                 data_status: 'rejected',
                 show_error_form: true,
                 error_title: "Synonym Load Failed",
@@ -99,6 +103,7 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 status:  "loading",
+                synonyms_busy: true,
                 data_status: 'loading'
             }
         })
@@ -107,6 +112,7 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 status: "fulfilled",
+                synonyms_busy: false,
                 data_status: 'load_now',
                 show_synonym_form: false,
                 edit: undefined
@@ -116,6 +122,7 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 status: "rejected",
+                synonyms_busy: false,
                 data_status: 'rejected',
                 show_error_form: true,
                 error_title: "Synonym Update Failed",
@@ -127,6 +134,7 @@ const extraReducers = (builder) => {
         .addCase(deleteSynonym.pending, (state) => {
             return {
                 ...state,
+                synonyms_busy: true,
                 status: "loading"
             }
         })
@@ -134,12 +142,14 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 status: "fulfilled",
+                synonyms_busy: false,
                 data_status: 'load_now'
             }
         })
         .addCase(deleteSynonym.rejected, (state, action) => {
             return {
                 status: "rejected",
+                synonyms_busy: false,
                 show_error_form: true,
                 error_title: "Synonym Delete Failed",
                 error_message:

@@ -36,6 +36,7 @@ export default function InventoryHome(props) {
     const num_inventory_list_items = (inventory_list && inventory_list.totalCount) ? inventory_list.totalCount : 0
 
     const data_status = useSelector((state) => state.inventoryReducer.data_status);
+    const inventor_busy = useSelector((state) => state.inventoryReducer.inventor_busy);
     // const [error, setError] = useState('')
 
     const [page, setPage] = useState(api.initial_page);
@@ -52,11 +53,13 @@ export default function InventoryHome(props) {
              selected_knowledge_base_id, selected_organisation_id, session_id])
 
     function refresh_inventory() {
-        dispatch(loadInventoryList({
-            session_id: session_id,
-            organisation_id: selected_organisation_id,
-            kb_id: selected_knowledge_base_id
-        }))
+        if (!inventor_busy) {
+            dispatch(loadInventoryList({
+                session_id: session_id,
+                organisation_id: selected_organisation_id,
+                kb_id: selected_knowledge_base_id
+            }))
+        }
     }
 
     function getList() {
@@ -130,13 +133,17 @@ export default function InventoryHome(props) {
                                 </div>
                             }
                             {selected_organisation_id.length > 0 &&
-                                <button className="btn btn-primary text-nowrap ms-2" onClick={() => {
+                                <button className="btn btn-primary text-nowrap ms-2"
+                                        disabled={inventor_busy}
+                                        onClick={() => {
                                     handleCreateDocumentSnapshot();
                                 }} title="create a new document snapshot">New Document Snapshot
                                 </button>
                             }
                             {selected_organisation_id.length > 0 &&
-                                <button className="btn btn-primary text-nowrap ms-2" onClick={() => {
+                                <button className="btn btn-primary text-nowrap ms-2"
+                                        disabled={inventor_busy}
+                                        onClick={() => {
                                     handleCreateIndexSnapshot();
                                 }} title="create a new index snapshot">New Index Snapshot
                                 </button>

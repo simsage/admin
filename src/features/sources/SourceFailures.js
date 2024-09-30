@@ -7,14 +7,11 @@ import {Pagination} from "../../common/pagination";
 
 export default function SourceFailures() {
 
-
     const dispatch = useDispatch();
-
 
     // load the selected source
     let selected_source = useSelector((state) => state.sourceReducer.selected_source);
     const session = useSelector((state) => state.authReducer.session);
-
 
     const documentList = useSelector((state) => state.sourceReducer.failed_documents);
     const documentTotal = useSelector((state) => state.sourceReducer.failed_document_total)
@@ -25,16 +22,17 @@ export default function SourceFailures() {
     const handleClose = () => dispatch(closeForm())
 
     useEffect(() => {
-        dispatch(getFailedDocuments({
-            session_id: session.id,
-            organisation_id: selected_source.organisationId,
-            kb_id: selected_source.kbId,
-            source_id: selected_source.sourceId,
-            page: page,
-            pageSize: pageSize
-        }))
-
-    }, [page, pageSize, selected_source, session?.id, dispatch]);
+        if (session && session.id && selected_source) {
+            dispatch(getFailedDocuments({
+                session_id: session.id,
+                organisation_id: selected_source.organisationId,
+                kb_id: selected_source.kbId,
+                source_id: selected_source.sourceId,
+                page: page,
+                pageSize: pageSize
+            }))
+        }
+    }, [page, pageSize, selected_source, session, dispatch]);
 
     return (
         <div>
@@ -56,6 +54,12 @@ export default function SourceFailures() {
                                 </thead>
                                 <tbody>
                                 {documentList.map((doc, i) => {
+                                    let doc_url = doc.sourceSystemId
+                                    const is_url = (doc_url.startsWith("http://") || doc_url.startsWith("https://"))
+                                    const archive_offset = doc_url.indexOf(":::")
+                                    if (is_url && archive_offset > 0) {
+                                        doc_url = doc_url.substring(0, archive_offset)
+                                    }
                                     return <tr key={i}>
                                         {doc.webUrl &&
                                             <td
@@ -65,7 +69,15 @@ export default function SourceFailures() {
                                                    rel="noreferrer">{doc.webUrl}</a>
                                             </td>
                                         }
-                                        {!doc.webUrl &&
+                                        {!doc.webUrl && is_url &&
+                                            <td
+                                                title={doc.sourceSystemId}
+                                                className="small text-black-50 px-4 ssi">
+                                                <a href={doc_url} target={"_blank"}
+                                                   rel="noreferrer">{doc.sourceSystemId}</a>
+                                            </td>
+                                        }
+                                        {!doc.webUrl && !is_url &&
                                             <td
                                                 title={doc.sourceSystemId}
                                                 className="small text-black-50 px-4 ssi">

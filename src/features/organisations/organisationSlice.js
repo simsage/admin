@@ -6,6 +6,7 @@ const initialState = {
     organisation_original_list: [],
     organisation_filter: null,
     organisation_list: [],
+    organisation_busy: false,
 
     status: null,
     show_error_form: false,
@@ -192,6 +193,7 @@ const extraReducers = (builder) => {
         .addCase(getOrganisationList.pending, (state) => {
             return {
                 ...state,
+                organisation_busy: true,
                 status: "loading",
                 data_status: 'loading'
             }
@@ -199,6 +201,7 @@ const extraReducers = (builder) => {
         .addCase(getOrganisationList.fulfilled, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 organisation_list: action.payload,
                 organisation_original_list: action.payload,
                 status: "fulfilled",
@@ -208,6 +211,7 @@ const extraReducers = (builder) => {
         .addCase(getOrganisationList.rejected, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "rejected",
                 data_status: 'rejected',
                 show_error_form: true,
@@ -221,6 +225,7 @@ const extraReducers = (builder) => {
         .addCase(updateOrganisation.pending, (state) => {
             return {
                 ...state,
+                organisation_busy: true,
                 status: "loading",
                 data_status: 'loading'
             }
@@ -228,6 +233,7 @@ const extraReducers = (builder) => {
         .addCase(updateOrganisation.fulfilled, (state, _) => {
             return {
                 ...state,
+                organisation_busy: false,
                 show_organisation_form: false,
                 edit_organisation_id: undefined,
                 data_status: 'load_now'
@@ -236,6 +242,7 @@ const extraReducers = (builder) => {
         .addCase(updateOrganisation.rejected, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "rejected",
                 data_status: 'rejected',
                 show_error_form: true,
@@ -249,6 +256,7 @@ const extraReducers = (builder) => {
         .addCase(deleteOrganisation.pending, (state) => {
             return {
                 ...state,
+                organisation_busy: true,
                 status: "loading",
                 data_status: 'loading'
             }
@@ -256,6 +264,7 @@ const extraReducers = (builder) => {
         .addCase(deleteOrganisation.fulfilled, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "fulfilled",
                 data_status: 'load_now',
                 error: action.payload,
@@ -265,6 +274,7 @@ const extraReducers = (builder) => {
         .addCase(deleteOrganisation.rejected, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "rejected",
                 data_status: 'rejected',
                 show_error_form: true,
@@ -278,6 +288,7 @@ const extraReducers = (builder) => {
         .addCase(getOrganisationBackupList.pending, (state) => {
             return {
                 ...state,
+                organisation_busy: true,
                 status: "loading",
                 data_status: 'loading'
             }
@@ -285,6 +296,7 @@ const extraReducers = (builder) => {
         .addCase(getOrganisationBackupList.fulfilled, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "fulfilled",
                 organisation_backup_list: action.payload,
                 organisation_original_backup_list: action.payload,
@@ -294,6 +306,7 @@ const extraReducers = (builder) => {
         .addCase(getOrganisationBackupList.rejected, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "rejected",
                 data_status: 'rejected',
                 show_error_form: true,
@@ -307,12 +320,14 @@ const extraReducers = (builder) => {
         .addCase(backupOrganisation.pending, (state) => {
             return {
                 ...state,
+                organisation_busy: true,
                 show_backup_progress_message: true
             }
         })
         .addCase(backupOrganisation.fulfilled, (state) => {
             return {
                 ...state,
+                organisation_busy: false,
                 show_backup_progress_message: true,
                 backup_data_status: 'load_now'
             }
@@ -320,6 +335,7 @@ const extraReducers = (builder) => {
         .addCase(backupOrganisation.rejected, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "rejected",
                 data_status: 'rejected',
                 show_error_form: true,
@@ -333,6 +349,7 @@ const extraReducers = (builder) => {
         .addCase(deleteBackup.pending, (state) => {
             return {
                 ...state,
+                organisation_busy: true,
                 status: "loading",
                 data_status: 'loading',
                 backup_data_status: 'loading'
@@ -341,12 +358,14 @@ const extraReducers = (builder) => {
         .addCase(deleteBackup.fulfilled, (state) => {
             return {
                 ...state,
+                organisation_busy: false,
                 backup_data_status: 'load_now'
             }
         })
         .addCase(deleteBackup.rejected, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "rejected",
                 data_status: 'rejected',
                 show_error_form: true,
@@ -360,6 +379,7 @@ const extraReducers = (builder) => {
         .addCase(downloadBackup.pending, (state) => {
             return {
                 ...state,
+                organisation_busy: true,
                 status: "loading",
                 data_status: 'loading'
             }
@@ -368,6 +388,7 @@ const extraReducers = (builder) => {
         .addCase(downloadBackup.fulfilled, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 show_download_backup_form: false,
                 downloaded_backup: action.payload
             }
@@ -375,6 +396,7 @@ const extraReducers = (builder) => {
         .addCase(downloadBackup.rejected, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "rejected",
                 data_status: 'rejected',
                 show_error_form: true,
@@ -388,6 +410,7 @@ const extraReducers = (builder) => {
         .addCase(restoreOrganisation.pending, (state) => {
             return {
                 ...state,
+                organisation_busy: true,
                 restore_status: 'uploading',
                 status: "loading",
                 data_status: 'loading'
@@ -396,6 +419,7 @@ const extraReducers = (builder) => {
         .addCase(restoreOrganisation.fulfilled, (state) => {
             return {
                 ...state,
+                organisation_busy: false,
                 restore_status: 'uploaded',
                 data_status: "load_now"
             }
@@ -403,6 +427,7 @@ const extraReducers = (builder) => {
         .addCase(restoreOrganisation.rejected, (state, action) => {
             return {
                 ...state,
+                organisation_busy: false,
                 status: "rejected",
                 data_status: 'rejected',
                 show_error_form: true,

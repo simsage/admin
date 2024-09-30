@@ -72,6 +72,7 @@ const reducers = {
         return {
             ...state,
             show_failed_docs: true,
+            failed_document_total: action.payload.source.numTotalErroredDocuments,
             selected_source: action.payload.source,
             selected_source_id: selectedSourceId
         }
@@ -258,8 +259,7 @@ const extraReducers = (builder) => {
             return {
                 ...state,
                 busy: false,
-                failed_documents: action.payload.results,
-                failed_document_total: action.payload.total
+                failed_documents: action.payload.results
             }
         })
         .addCase(deleteSource.pending, (state) => { //deleteRecord
@@ -436,7 +436,7 @@ export const getFailedDocuments = createAsyncThunk(
         {session_id, organisation_id, kb_id, source_id, page, pageSize},
         {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = '/crawler/faileddocs/' +
+        const url = '/crawler/failed-docs/' +
             encodeURIComponent(organisation_id) + '/' +
             encodeURIComponent(kb_id) + '/' +
             encodeURIComponent(source_id) + "/" +

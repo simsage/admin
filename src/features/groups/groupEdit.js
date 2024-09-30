@@ -112,6 +112,10 @@ export default function GroupEdit() {
     }
 
     const handleSave = () => {
+        if (current_to_list().length === 0) {
+            alert("You must add at least one user to the group before saving.")
+            return
+        }
         const session_id = session.id
         const data = {
             name: editName,
