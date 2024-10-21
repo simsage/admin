@@ -40,7 +40,7 @@ export default function ErrorMessage( {error, close} ){
                         <button onClick={close} type="button" className="btn-close" data-bs-dismiss="modal"
                                 title="close this error message" aria-label="Close"></button>
                     </div>
-                    <div className="modal-body">
+                    <div className="modal-body overflow-hidden">
                         <div className="control-row">
                             <span title={error_text} className="label-wide">{error_text}</span>
                         </div>

@@ -319,6 +319,13 @@ export default function SourceHome() {
     function setError(title, errStr) {
     }
 
+    function delta(crawler) {
+        if (crawler && crawler.hasDeltaValues) {
+            return "Δ "
+        }
+        return ""
+    }
+
     const export_open = false;
     const export_upload = false;
 
@@ -428,25 +435,25 @@ export default function SourceHome() {
                                             <div className="pointer-default">
                                                 <div
                                                     title="Files/Records collected by the crawler thus-far (not used by Reprocess)">
-                                                    {`collected: ${crawler.numCrawledDocuments.toLocaleString()}`}</div>
+                                                    {`${delta(crawler)}collected: ${crawler.numCrawledDocuments.toLocaleString()}`}</div>
                                                 <div
                                                     title="Files/Records converted to text by the conversion system">
-                                                    {`converted: ${crawler.numConvertedDocuments.toLocaleString()}`}</div>
+                                                    {`${delta(crawler)}converted: ${crawler.numConvertedDocuments.toLocaleString()}`}</div>
                                                 <div
                                                     title="Files/Records processed by the language analyzer system">
-                                                    {`analyzed: ${crawler.numParsedDocuments.toLocaleString()}`}</div>
+                                                    {`${delta(crawler)}analyzed: ${crawler.numParsedDocuments.toLocaleString()}`}</div>
                                                 <div
                                                     title="Files/Records indexed (made searchable) by the indexing system">
-                                                    {`indexed: ${crawler.numIndexedDocuments.toLocaleString()}`}</div>
+                                                    {`${delta(crawler)}indexed: ${crawler.numIndexedDocuments.toLocaleString()}`}</div>
                                                 <div
                                                     title="Files/Records translated to English (if applicable)">
-                                                    {`translated: ${crawler.numTranslatedDocuments.toLocaleString()}`}</div>
+                                                    {`${delta(crawler)}translated: ${crawler.numTranslatedDocuments.toLocaleString()}`}</div>
                                                 <div
-                                                    title="Files/Records completed">
-                                                    {`completed: ${crawler.numFinishedDocuments.toLocaleString()}`}</div>
+                                                    title="Files/Records that have preview generated for them">
+                                                    {`${delta(crawler)}previews: ${crawler.numFinishedDocuments.toLocaleString()}`}</div>
                                                 <div
                                                     title="Files/Records failed (not able to process) thus-far">
-                                                    {`failed: ${crawler.numErroredDocuments.toLocaleString()}`}</div>
+                                                    {`${delta(crawler)}failed: ${crawler.numErroredDocuments.toLocaleString()}`}</div>
                                                 <div
                                                     title="the total number of Files/Records in this source">
                                                     {`total documents: ${crawler.numTotalDocuments.toLocaleString()}`}</div>

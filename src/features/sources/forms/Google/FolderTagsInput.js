@@ -5,7 +5,7 @@ const FolderTagsInput = ({ value, onChange }) => {
     // Initialize the tags state, filtering out any empty or whitespace-only tags
     const [inputValue, setInputValue] = useState("")
     const [tags, setTags] = useState(
-        value.split(",").map(tag => tag.trim()).filter(tag => tag !== "")
+        value ? value.split(",").map(tag => tag.trim()).filter(tag => tag !== "") : []
     )
 
     const handleKeyDown = (e) => {
@@ -15,20 +15,23 @@ const FolderTagsInput = ({ value, onChange }) => {
             if (newTag && !tags.includes(newTag)) {
                 const newTags = [...tags, newTag]
                 setTags(newTags)
-                onChange(newTags.join(","))
+                if (onChange)
+                    onChange(newTags.join(","))
             }
             setInputValue("")
         } else if (e.key === "Backspace" && inputValue === "" && tags.length > 0) {
             const newTags = tags.slice(0, -1)
             setTags(newTags)
-            onChange(newTags.join(","))
+            if (onChange)
+                onChange(newTags.join(","))
         }
     }
 
     const handleRemoveTag = (index) => {
         const newTags = tags.filter((_, i) => i !== index)
         setTags(newTags)
-        onChange(newTags.join(","))
+        if (onChange)
+            onChange(newTags.join(","))
     }
 
     return (
