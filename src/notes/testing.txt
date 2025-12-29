@@ -1,7 +1,0 @@
-npm i axios-mock-adapter
-Axios adaptor that allows to easily mock requests
-
-const mock = new MockAdapter(axios);
-mock.onGet("/users").reply(200, {users:[{id:1,name:"Siva"}]});
-
-axios.get("/users").then((response) => {return response.data});
