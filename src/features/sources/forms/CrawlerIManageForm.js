@@ -45,7 +45,7 @@ export default function CrawlerIManageForm(props) {
 
         if (props.set_verify) props.set_verify(() => validate_imanage)
 
-    }, [props.set_verify, specific_json])
+    }, [props, specific_json])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">

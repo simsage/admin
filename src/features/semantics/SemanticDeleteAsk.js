@@ -25,6 +25,7 @@ export default function SemanticDeleteAsk(){
 
     if (!show_delete_form)
         return (<div />);
+
     const message = semantic  ? ` Semantic item: ${semantic.word}` : ` all of the semantic items`;
     return(
         <div>

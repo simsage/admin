@@ -11,6 +11,7 @@ export default function SynsetForm() {
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const session = useSelector((state) => state.authReducer.session);
+    const theme = useSelector((state) => state.homeReducer.theme);
     const session_id = session.id;
 
     // set title
@@ -88,7 +89,7 @@ export default function SynsetForm() {
              style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header px-5 pt-4 bg-light">
+                    <div className="modal-header px-5 pt-4">
 
                         <h4 className="mb-0">{title}</h4>
 
@@ -106,6 +107,7 @@ export default function SynsetForm() {
                                         <span className="label-2 required">SynSet</span>
                                         <input
                                             type="text" className="form-control"
+                                            autoFocus={true}
                                             autoComplete="false"
                                             placeholder="e.g. Law..."
 
@@ -116,9 +118,9 @@ export default function SynsetForm() {
                                     <div className="row mb-3 py-4">
                                         <div className="d-flex justify-content-between small">
                                             <label className="label-2">Word Cloud <span
-                                                className="small text-black-50 fst-italic fw-light">(Separate by comma) </span></label>
+                                                className={(theme==="light" ? "text-black-50" : "text-white-50") + " small fst-italic fw-light"}>(Separate by comma) </span></label>
                                             <span
-                                                className="small text-black-50 fst-italic fw-light ms-2">(Type &amp; press enter to add another)</span>
+                                                className={(theme==="light" ? "text-black-50" : "text-white-50") + " small fst-italic fw-light ms-2"}>(Type &amp; press enter to add another)</span>
                                         </div>
 
                                         {wordCloudFields.map((item, index) => {

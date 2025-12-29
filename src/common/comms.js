@@ -1,4 +1,5 @@
-import axios from "axios/index";
+import axios from "axios";
+import {uri_esc} from "./api";
 
 // communications common to all components
 export class Comms {
@@ -118,56 +119,23 @@ export class Comms {
     };
 
     // get an url that can be used to back up the system, regime e {all (backup all orgs), specific (backup specified org)}
-    static download_backup(organisation_id, regime) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), {}, (response) => {
-            const url = window.ENV.api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(regime);
-            Comms.download_new_window_post(url, response.data);
-        });
-    };
-
-    // get an url that can be used to back up the system
-    static download_mind_dump(organisation_id, kb_id, session_id) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
-            const url = window.ENV.api_base + '/backup/mind-dump/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
-            Comms.download_new_window_post(url, response.data);
-        });
+    static download_backup(organisation_id, session_id, url, regime) {
+        Comms.http_put(
+            '/auth/ott/' + uri_esc(organisation_id),
+            session_id,
+            {},
+            (response) => {
+                Comms.download_new_window_post(url, response.data);
+            },
+            undefined
+        );
     };
 
     // get an url that can be used to summarize the system
     static download_inventorize_dump(organisation_id, kb_id, dateTime, session_id) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
-            const url = window.ENV.api_base + '/document/parquet/' + encodeURIComponent(organisation_id) + '/' +
-                encodeURIComponent(kb_id) + '/' + encodeURIComponent(dateTime);
-            Comms.download_new_window_post(url, response.data);
-        });
-    };
-
-    // get an url that can be used to summarize the system using a spreadsheet
-    static download_inventorize_dump_spreadhseet(organisation_id, kb_id, dateTime, session_id) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
-            const url = window.ENV.api_base + '/document/spreadsheet/' + encodeURIComponent(organisation_id) + '/' +
-                encodeURIComponent(kb_id) + '/' + encodeURIComponent(dateTime);
-            Comms.download_new_window_post(url, response.data);
-        });
-    };
-
-    // get an url that can be used to get the query-logs
-    static download_query_log(organisation_id, kb_id, session_id) {
-        const date = new Date();
-        const year = "" + date.getFullYear();
-        const month = "" + (date.getMonth() + 1);
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
-            const url = window.ENV.api_base + '/stats/query-logs/' + encodeURIComponent(organisation_id) + '/' +
-                encodeURIComponent(kb_id) + '/' + encodeURIComponent(year) + '/' + encodeURIComponent(month);
-            Comms.download_new_window_post(url, response.data);
-        });
-    };
-
-    // get an url that can be used to get a zip archive of a wp export
-    static download_export_archive(organisation_id, kb_id, source_id, session_id) {
-        Comms.http_put('/auth/ott/' + encodeURIComponent(organisation_id), session_id, {}, (response) => {
-            const url = window.ENV.api_base + '/crawler/wp-archive/download/' + encodeURIComponent(organisation_id) + '/' +
-                encodeURIComponent(kb_id) + '/' + encodeURIComponent(source_id);
+        Comms.http_put('/auth/ott/' + uri_esc(organisation_id), session_id, {}, (response) => {
+            const url = window.ENV.api_base + '/document/parquet/' + uri_esc(organisation_id) + '/' +
+                uri_esc(kb_id) + '/' + uri_esc(dateTime);
             Comms.download_new_window_post(url, response.data);
         });
     };
@@ -183,7 +151,7 @@ export class Comms {
         mapForm.style = "display: none;";
         mapForm.target = "_blank";
         mapForm.method = "POST";
-        mapForm.action = url + "?ott=" + encodeURIComponent(one_time_token);
+        mapForm.action = url + "?ott=" + uri_esc(one_time_token);
         // create a fake element so it posts
         const mapInput = document.createElement("input");
         mapInput.type = "text";

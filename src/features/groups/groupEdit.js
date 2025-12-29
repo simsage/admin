@@ -13,7 +13,7 @@ export default function GroupEdit() {
 
     const session = useSelector((state) => state.authReducer.session);
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
-    const page_size = 7;
+    const page_size = 6;
 
     const showGroupForm = useSelector((state) => state.groupReducer.show_group_form);
     const groupName = useSelector((state) => state.groupReducer.edit_group)
@@ -32,6 +32,17 @@ export default function GroupEdit() {
     const [availableUserPage, setAvailableUserPage] = useState(0);
     // list of items with - or + prefixes (remove or add) for userIds
     const [groupIdChangeList, setGroupIdChangeList] = useState([]);
+
+    // change the available users
+    const on_change_available_user = (filter) => {
+        setAvailableUserFilter(filter)
+        setAvailableUserPage(0)
+    }
+
+    const on_change_active_user = (filter) => {
+        setActiveUserFilter(filter)
+        setActiveUserPage(0)
+    }
 
     function remove_active_user(id) {
         const plusID = "+" + id;
@@ -156,11 +167,11 @@ export default function GroupEdit() {
              style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content dialog-height">
-                    <div className="modal-header px-5 pt-4 bg-light">
+                    <div className="modal-header px-5 pt-4">
                         <h4 className="mb-0">{groupName ? readOnly ? "View Group" : "Edit Group" : "New Group"}</h4>
                     </div>
                     <div className="modal-body p-0">
-                        <div className="tab-content container px-5 py-4 overflow-auto" style={{maxHeight: "600px"}}>
+                        <div className="tab-content container px-5 py-4 overflow-auto" style={{height: "550px"}}>
                             <div className="row pb-5">
                                 <div className={readOnly ? "role-block col-12" : "role-block col-6"}>
                                     <h6 className={readOnly ? "role-label" : "role-label text-center"}>Group</h6>
@@ -193,13 +204,12 @@ export default function GroupEdit() {
                                 <div
                                     className={readOnly ? "role-block col-12 role-height" : "role-block col-6 role-height"}>
 
-                                    <h6 className={readOnly ? "role-label" : "role-label text-center"}>in this
-                                        Group</h6>
+                                    <h6 className={readOnly ? "role-label" : "role-label text-center"}>in this Group</h6>
 
-                                    <div className="role-area bg-light border rounded h-100">
+                                    <div className="role-area border rounded h-100">
                                         <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
                                                placeholder="Find..." value={activeUserFilter}
-                                               onChange={(e) => setActiveUserFilter(e.target.value)}
+                                               onChange={(e) => on_change_active_user(e.target.value)}
                                         />
                                         {active_user_data && active_user_data.list && active_user_data.list.map(user => {
                                             return (
@@ -217,7 +227,6 @@ export default function GroupEdit() {
                                         rowsPerPageOptions={[7]}
                                         component="div"
                                         count={active_user_data.size}
-                                        theme={null}
                                         rowsPerPage={active_user_data.page_size}
                                         page={activeUserPage}
                                         backIconButtonProps={{'aria-label': 'Previous Page',}}
@@ -228,10 +237,10 @@ export default function GroupEdit() {
                                 {!readOnly &&
                                     <div className="role-block col-6 role-height">
                                         <h6 className="role-label text-center">Available</h6>
-                                        <div className="role-area bg-light border rounded h-100">
+                                        <div className="role-area border rounded h-100">
                                             <input className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
                                                    placeholder="Find..." value={availableUserFilter}
-                                                   onChange={(e) => setAvailableUserFilter(e.target.value)}
+                                                   onChange={(e) => on_change_available_user(e.target.value)}
                                             />
                                             {available_user_data && available_user_data.list && available_user_data.list.map(user => {
                                                 return (
@@ -249,7 +258,6 @@ export default function GroupEdit() {
                                             rowsPerPageOptions={[7]}
                                             component="div"
                                             count={available_user_data.size}
-                                            theme={null}
                                             rowsPerPage={available_user_data.page_size}
                                             page={availableUserPage}
                                             backIconButtonProps={{'aria-label': 'Previous Page',}}

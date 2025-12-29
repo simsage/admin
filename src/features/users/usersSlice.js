@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import axios from "axios";
+import {filter_esc, uri_esc} from "../../common/api";
 
 
 const initialState = {
@@ -28,7 +29,7 @@ const initialState = {
     edit_id: undefined,
 
     // valid roles
-    roles: ['admin', 'dms', 'manager', 'discover', 'search', 'tagger', 'stepwise'],
+    roles: ['admin', 'dms', 'manager', 'discover', 'search', 'tagger', 'stepwise', 'api', 'teacher'],
     data_status: "load_now"
 }
 
@@ -36,10 +37,11 @@ export const getUserListPaginated = createAsyncThunk(
     'users/getUserListPaginated',
     async ({session_id, organization_id, page, page_size, filter}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/users-paginated/' + encodeURIComponent(organization_id) + '/' +
-            encodeURIComponent(page ? page : 0) + '/' +
-            encodeURIComponent(page_size ? page_size : 100) + '/' +
-            encodeURIComponent(filter ? filter : 'null');
+        const url = api_base + '/auth/users-paginated/' +
+            uri_esc(organization_id) + '/' +
+            uri_esc(page ? page : 0) + '/' +
+            uri_esc(page_size ? page_size : 100) + '/' +
+            filter_esc(filter);
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -72,7 +74,7 @@ export const getGroupEditInformation = createAsyncThunk(
             "availableUsersFilter": available_users_filter,
             "pageSize": page_size
         };
-        const url = api_base + '/auth/group-edit-info/' + encodeURIComponent(organization_id);
+        const url = api_base + '/auth/group-edit-info/' + uri_esc(organization_id);
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -88,7 +90,7 @@ export const updateUser = createAsyncThunk(
     async ({session_id, organisation_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = '/auth/user/';
-        return axios.put(api_base + url + encodeURIComponent(organisation_id), data, Comms.getHeaders(session_id))
+        return axios.put(api_base + url + uri_esc(organisation_id), data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data;
             }).catch((err) => {
@@ -118,7 +120,7 @@ export const deleteUser = createAsyncThunk(
     async ({session_id, user_id, organisation_id}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
-        const url = api_base + `/auth/organisation/user/${encodeURIComponent(user_id)}/${encodeURIComponent(organisation_id)}`;
+        const url = api_base + `/auth/organisation/user/${uri_esc(user_id)}/${uri_esc(organisation_id)}`;
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {

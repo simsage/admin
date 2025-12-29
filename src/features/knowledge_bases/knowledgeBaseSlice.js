@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import axios from "axios";
-import {get_error} from "../../common/api";
+import {get_error, uri_esc} from "../../common/api";
 
 const initialState = {
     kb_original_list: [],
@@ -21,7 +21,6 @@ const initialState = {
 
     // delete dialog
     show_delete_form: false,
-    show_delete_info_form: false,
     delete_data: null,              // {session and kb}
 
     // ask optimize
@@ -80,14 +79,14 @@ const extraReducers = (builder) => {
         })
 
         //deleteRecord
-        .addCase(deleteRecord.pending, (state) => {
+        .addCase(deleteKnowledgeBase.pending, (state) => {
             return {
                 ...state,
                 busy: true,
                 status: "loading"
             }
         })
-        .addCase(deleteRecord.fulfilled, (state) => {
+        .addCase(deleteKnowledgeBase.fulfilled, (state) => {
             return {
                 ...state,
                 busy: false,
@@ -95,7 +94,7 @@ const extraReducers = (builder) => {
                 data_status: 'load_now'
             }
         })
-        .addCase(deleteRecord.rejected, (state, action) => {
+        .addCase(deleteKnowledgeBase.rejected, (state, action) => {
             return {
                 ...state,
                 busy: false,
@@ -165,15 +164,7 @@ const knowledgeBaseSlice = createSlice({
             return {
                 ...state,
                 show_delete_form: false,
-                show_delete_info_form: false,
                 delete_data: null
-            }
-        },
-        showDeleteInfo: (state) => {
-            return {
-                ...state,
-                show_delete_form: false,
-                show_delete_info_form: true
             }
         },
         setViewIds: (state, action) => {
@@ -237,7 +228,7 @@ const knowledgeBaseSlice = createSlice({
             if (action.payload.keyword.length > 0) {
                 const regex = new RegExp(action.payload.keyword, "i")
                 let temp = state.kb_original_list.filter(kb_list_item => {
-                    return kb_list_item.name.match(regex) || kb_list_item.kbId === action.payload.keyword
+                    return kb_list_item.name.match(regex) || kb_list_item.kbId.indexOf(action.payload.keyword) >= 0
                 });
                 if (temp.length > 0) {
                     return {...state,
@@ -266,7 +257,7 @@ export const getKBList = createAsyncThunk(
     'knowledgeBases/getKBList',
     async ({session_id, organization_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/knowledgebase/' + encodeURIComponent(organization_id);
+        const url = api_base + '/knowledgebase/' + uri_esc(organization_id);
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -276,11 +267,11 @@ export const getKBList = createAsyncThunk(
     }
 )
 
-export const deleteRecord = createAsyncThunk(
+export const deleteKnowledgeBase = createAsyncThunk(
     'knowledgeBases/deleteRecord',
     async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/knowledgebase/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        const url = api_base + '/knowledgebase/' + uri_esc(organisation_id) + '/' + uri_esc(kb_id);
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
@@ -311,11 +302,51 @@ export const addOrUpdate = createAsyncThunk(
 export const optimizeIndexes = createAsyncThunk(
     'knowledgeBases/optimizeIndexes',
 
-    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
-        const data = {"organisationId": organisation_id, "kbId": kb_id}
+    async ({session_id, organisation_id, kb_id, optimize_all}, {rejectWithValue}) => {
+        const data = {
+            "organisationId": organisation_id,
+            "kbId": kb_id,
+            "optimizeAllIndexes": optimize_all
+        }
         const api_base = window.ENV.api_base;
         const url = '/language/optimize-indexes';
         return axios.put(api_base + url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    }
+)
+
+
+export const updateCounters = createAsyncThunk(
+    'knowledgeBases/updateCounters',
+
+    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = '/stats/update-document-counts/'
+            + uri_esc(organisation_id) + "/"
+            + uri_esc(kb_id);
+        return axios.get(api_base + url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    }
+)
+
+
+export const upgradeSimSage = createAsyncThunk(
+    'knowledgeBases/upgradeSimSage',
+
+    async ({session_id, organisation_id, kb_id, documents, indexes}, {rejectWithValue}) => {
+        const data = {}
+        const api_base = window.ENV.api_base;
+        const url = '/knowledgebase/upgrade/' + uri_esc(organisation_id) +
+                           '/' + uri_esc(kb_id) + '/' + uri_esc(documents) + '/' + uri_esc(indexes);
+        return axios.post(api_base + url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch((err) => {
@@ -348,7 +379,7 @@ export const truncateSlowIndexes = createAsyncThunk(
     async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
-        const url = '/language/truncate-slow-indexes/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        const url = '/language/truncate-slow-indexes/' + uri_esc(organisation_id) + '/' + uri_esc(kb_id);
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -367,10 +398,10 @@ export const {
     showEditForm,
     closeForm,
     showDeleteAskForm,
-    showDeleteInfo,
     closeDelete,
     setViewIds,
     showOptimizeAskDialog,
+    showUpgradeAskDialog,
     showOptimizeAbortDialog,
     closeOptimize,
     search,

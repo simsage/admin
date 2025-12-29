@@ -24,7 +24,7 @@ export function KnowledgeBaseSecurityDialog({setSecurityId}) {
     return (<div>
         <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", zIndex: 1062}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                <div className="modal-content shadow p-3 mb-5rounded">
 
                     <div className="modal-header">
                         <h5 className="modal-title" id="staticBackdropLabel">Are you sure you want to refresh the

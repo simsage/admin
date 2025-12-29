@@ -3,7 +3,7 @@ import React, {useState} from "react";
 export function SharepointSiteAndLibraries(props) {
 
     const [siteName, setSiteName] = useState(props.siteDetails.siteName)
-    const [libraryCsv, setLibraryCsv] = useState(props.siteDetails.libraryCsv)
+    const [libraryCsv] = useState(props.siteDetails.libraryCsv)
 
 
     const updateSiteConfig = (e) => {
@@ -27,7 +27,7 @@ export function SharepointSiteAndLibraries(props) {
 
         <div className={"modal-dialog modal-lg"} role="document">
             <div className="modal-content">
-                <div className="modal-header px-5 pt-4 bg-light">
+                <div className="modal-header px-5 pt-4">
                     <h4 className="mb-0">{"Site details"}</h4>
                 </div>
                 <div className="modal-body p-10">
@@ -47,28 +47,6 @@ export function SharepointSiteAndLibraries(props) {
                         </div>
 
                     </div>
-
-                    <div className="row mb-3">
-                        <div className="control-row col-12">
-                            <label className="small d-flex justify-content-between">
-                                Libraries
-                                <span className="fst-italic fw-light small">(list of libraries to crawl (leave empty for all), case insensitive, comma separated).
-                                <span className="text-danger ms-1">Optional</span></span>
-                            </label>
-                            <textarea
-                                tabIndex={1}
-                                value={libraryCsv}
-                                rows={3}
-                                onChange={(e) => {
-                                    setLibraryCsv(e.target.value)
-                                    e.preventDefault()
-                                }}
-                                autoFocus={true}
-                                className="form-control"/>
-                        </div>
-
-                    </div>
-
 
                 </div>
 

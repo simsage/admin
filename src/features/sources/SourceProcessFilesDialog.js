@@ -61,7 +61,7 @@ export function SourceProcessFilesDialog() {
                         <label className="label-2 small">URL csv list (empty for all)</label>
                         <div>
                             <textarea className="form-control"
-                                      placeholder="specific urls only... (leave blank to process all)"
+                                      placeholder="list of csv urls/urlIds,converted before filter: 'before: yyyy/mm/dd hh:mm:ss', or leave blank to process all"
                                       spellCheck="false" rows="5"
                                       style={{width: '100%'}}
                                       value={url_list}

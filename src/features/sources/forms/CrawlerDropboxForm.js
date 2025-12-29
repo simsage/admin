@@ -1,48 +1,72 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {BsFilePdf} from 'react-icons/bs'
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {showErrorAlert} from "../../alerts/alertSlice";
-import Api, {IMAGES} from "../../../common/api";
+import Api, {uri_esc} from "../../../common/api";
 import SensitiveCredential from "../../../components/SensitiveCredential";
-import {DOCUMENTATION, useSelectedSource, validDropBoxFolderList} from './common.js';
+import {DOCUMENTATION, validDropBoxFolderList} from './common.js';
 import {CopyButton} from "../../../components/CopyButton";
 
 
 export default function CrawlerDropboxForm(props) {
 
-    // Fetch selected source and calculate source_saved using custom hook
-    const {
-        selected_source,
-        source_saved,
-        specific_json,
-        setSpecificJson,
-        l_form_data
-    } = useSelectedSource(props, "{\"clientId\": \"\", \"clientSecret\": \"\", \"folderList\": \"/\", \"oidcKey\": \"" + Api.createGuid() + "\"}");
+    const [specific_json, setSpecificJson] = useState(undefined)
+    const [source_saved, setSourceSaved] = useState(false)
+
+    useEffect(() => {
+        if (!specific_json) {
+            const specific_json_from_form_data = (props.form_data && props.form_data.specificJson) ?
+                props.form_data.specificJson : props.source.specificJson ? props.source.specificJson :
+                    "{\"clientId\": \"\", \"clientSecret\": \"\", \"folderList\": \"/\", \"oidcKey\": \"" + Api.createGuid() + "\"}"
+            setSpecificJson(JSON.parse(specific_json_from_form_data))
+            setSourceSaved(props.source && props.source.sourceId > 0)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.source, props.form_data, source_saved, specific_json, setSpecificJson, setSourceSaved])
+
+    //update setFormData when specific_json is changed
+    useEffect(() => {
+        if (specific_json) {
+            let specific_json_stringify = JSON.stringify(specific_json)
+            props.setFormData({...props.form_data, specificJson: specific_json_stringify})
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [specific_json])
+
+    useEffect(() => {
+        const validate_dropbox = () => {
+            const {folderList} = specific_json && specific_json.folderList ? specific_json.folderList : ''
+            let missing = []
+            if (!validDropBoxFolderList(folderList)) missing.push("folderList")
+            return missing.length > 0 ? `Dropbox Crawler: please provide the ${missing.join(", ")}` : null
+        }
+
+        if (props.set_verify) props.set_verify(() => validate_dropbox)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.set_verify, specific_json])
+
+    const theme = useSelector((state) => state.homeReducer.theme);
+    const REFRESH_IMAGE = (theme === "light" ? "images/refresh.svg" : "images/refresh-dark.svg")
 
     const dispatch = useDispatch();
-    const selected_source_id = (selected_source && selected_source.sourceId) ? selected_source.sourceId : null;
+    const selected_source_id = (props.source && props.source.sourceId) ? props.source.sourceId : null;
     const oidc_disabled = (!specific_json || !specific_json.clientId || !specific_json.oidcKey ||
         !selected_source_id || ("" + selected_source_id === "0"));
 
     //update local variable specific_json when data is changed
     function setData(data) {
-        setSpecificJson({...specific_json, ...data})
+        if (specific_json) {
+            setSpecificJson({...specific_json, ...data})
+        }
     }
 
-    //update setFormData when specific_json is changed
-    useEffect(() => {
-        let specific_json_stringify = JSON.stringify(specific_json)
-        props.setFormData({...l_form_data, specificJson: specific_json_stringify})
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [specific_json])
-
     // make sure we have an OIDC key to start with when creating a new source
-    if (!source_saved && !specific_json.oidcKey) {
+    if (!source_saved && specific_json && !specific_json.oidcKey) {
         specific_json.oidcKey = Api.createGuid();
     }
 
     // redirect url for dropbox OIDC
-    const redirect = window.ENV.api_base + "/crawler/dropbox-oidc-code/" + specific_json.oidcKey;
+    const redirect = window.ENV.api_base + "/crawler/dropbox-oidc-code/" + ((specific_json && specific_json.oidcKey) ? specific_json.oidcKey : '');
 
     // get an OIDC code for dropbox
     function get_oidc(e) {
@@ -54,25 +78,14 @@ export default function CrawlerDropboxForm(props) {
             }))
         } else {
             const dropbox_url = "https://www.dropbox.com/oauth2/authorize?client_id=" +
-                encodeURIComponent(specific_json.clientId) + "&redirect_uri=" +
-                encodeURIComponent(redirect) +
+                uri_esc(specific_json.clientId) +
                 "&response_type=code" +
-                "&token_access_type=offline"
+                "&token_access_type=offline" +
+                "&redirect_uri=" + redirect
             window.open(dropbox_url, "_blank");
         }
     }
 
-
-    useEffect(() => {
-        const validate_dropbox = () => {
-            const {folderList} = specific_json
-            let missing = []
-            if (!validDropBoxFolderList(folderList)) missing.push("folderList")
-            return missing.length > 0 ? `Dropbox Crawler: please provide the ${missing.join(", ")}` : null
-        }
-
-        if (props.set_verify) props.set_verify(() => validate_dropbox)
-    }, [props.set_verify, specific_json])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
@@ -84,7 +97,7 @@ export default function CrawlerDropboxForm(props) {
                             <input type="text" className="form-control"
                                    placeholder=""
                                    autoFocus={true}
-                                   value={specific_json.clientId}
+                                   value={specific_json ? specific_json.clientId : ''}
                                    onChange={(event) => {
                                        setData({clientId: event.target.value})
                                    }}
@@ -93,8 +106,8 @@ export default function CrawlerDropboxForm(props) {
                         </div>
                         <div className="form-group col-6">
                             <SensitiveCredential
-                                selected_source={selected_source}
-                                specific_json={specific_json.clientSecret}
+                                selected_source={props.source}
+                                specific_json={specific_json ? specific_json.clientSecret : ''}
                                 onChange={(event) => {
                                     setData({clientSecret: event.target.value})
                                 }}
@@ -109,7 +122,7 @@ export default function CrawlerDropboxForm(props) {
                             <div className="d-flex input-group">
                                 <input type="text" className="form-control"
                                        placeholder="random key indentifying this endpoint"
-                                       value={specific_json.oidcKey}
+                                       value={specific_json && specific_json.oidcKey ? specific_json.oidcKey : ''}
                                        onChange={(event) => {
                                            setData({oidcKey: event.target.value})
                                        }}
@@ -117,7 +130,7 @@ export default function CrawlerDropboxForm(props) {
                                 <span className="input-group-text copied-style"
                                       title="regenerate the OIDC key, you will need to re-set up your dropbox connection if you do."
                                       onClick={() => setData({oidcKey: Api.createGuid()})}>
-                                    <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh"
+                                    <img src={REFRESH_IMAGE} className="refresh-image" alt="refresh"
                                          title="regenerate the oidc key"/>
                                 </span>
                             </div>
@@ -151,7 +164,7 @@ export default function CrawlerDropboxForm(props) {
                                 <span className="fst-italic fw-light small">(separate folders by comma)</span>
                             </label>
                             <input type="text" className="form-control"
-                                   value={specific_json.folderList}
+                                   value={specific_json ? specific_json.folderList: ''}
                                    onChange={(event) => {
                                        setData({folderList: event.target.value})
                                    }}

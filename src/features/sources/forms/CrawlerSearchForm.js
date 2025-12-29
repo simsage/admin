@@ -60,7 +60,7 @@ export default function CrawlerSearchForm(props) {
     // this crawler doesn't need the verify system
     useEffect(() => {
         if (props.set_verify) props.set_verify('n/a')
-    }, [props.set_verify])
+    }, [props])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">

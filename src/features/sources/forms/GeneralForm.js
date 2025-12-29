@@ -7,6 +7,7 @@ export default function GeneralForm(props) {
 
         {"key": "aws", "value": "AWS Crawler"},
         {"key": "alfresco", "value": "Alfresco Crawler"},
+        {"key": "arc", "value": "ArcGIS Crawler"},
         {"key": "box", "value": "Box Crawler"},
 
         {"key": "confluence", "value": "Confluence Crawler"},
@@ -31,6 +32,8 @@ export default function GeneralForm(props) {
         {"key": "localfile", "value": "Local file Crawler"},
         {"key": "onedrive", "value": "One Drive Crawler"},
 
+        {"key": "opentext", "value": "OpenText Content Manager"},
+
         {"key": "restfull", "value": "REST-full Crawler"},
         {"key": "rss", "value": "RSS Crawler"},
 
@@ -44,6 +47,7 @@ export default function GeneralForm(props) {
 
     // SimSage system components enabled?
     const {stt_enabled, translate_enabled} = useSelector((state) => state.authReducer)
+
 
     function sortCrawlerList(c_list){
         const order_by_name_asc = (a, b) => {
@@ -72,6 +76,9 @@ export default function GeneralForm(props) {
     const selected_source_type = props.crawler_type;
     const l_form_data = props.form_data;
     const internal_crawler = selected_source.internalCrawler;
+    const use_ocr = props.getValues("useOCR")
+    const use_translate = props.getValues("translateForeignLanguages")
+    const use_stt = props.getValues("useSTT")
 
     function setCrawlerType(crawlerType) {
         props.setFormData({...l_form_data, crawlerType: crawlerType})
@@ -208,21 +215,21 @@ export default function GeneralForm(props) {
                 </div>
                 <div className="col-2">
                     <div className="left-column">
-                        <label className="small">Error threshold</label>
+                        <label className="small">Expected File Count (0 = any)</label>
                         <input className="form-control"
                                inputMode="numeric"
                                type="number"
                                min="0"
-                               max="100"
+                               max="1000000000"
                                step="1"
-                               {...props.register("errorThreshold", {required: true})}
-                               title="Enter the maximum number of errors allowed before failing"
+                               {...props.register("expectedFileCount", {required: true})}
+                               title="Enter the minimum number of files expected for any non-delta run.  Any number less than this during a crawl will result in no files being removed.  A value if 0 disables this functionality."
                         />
                     </div>
                 </div>
             </div>
 
-            {/***********************************-SIMILARITY ENABLE & THRESHOLD-***********************************/}
+            {/***********************************-SIMILARITY ENABLE-***********************************/}
             <div className="row mb-4 pt-3 border-top">
                 <div className="col-4">
                     <div className="form-check form-switch"
@@ -230,29 +237,13 @@ export default function GeneralForm(props) {
                     <input
                             className="form-check-input"
                             type="checkbox"
-                            disabled={props.getValues("processingLevel") !== "INDEX"}
-                            checked={props.getValues("processingLevel") === "INDEX" && props.getValues("enableDocumentSimilarity")}
+                            disabled={props.source.processingLevel !== "INDEX"}
                             {...props.register("enableDocumentSimilarity")}
                         />
                         <label className="form-check-label small">Enable similarity checking for documents</label>
                     </div>
                 </div>
                 <div className="col-2">
-                    <label className="small">Similarity Threshold</label>
-                    <div className="input-group">
-                        <input
-                            hidden={!props.getValues("enableDocumentSimilarity") || props.getValues("processingLevel") !== "INDEX"}
-                            className="form-control"
-                            type="number"
-                            min="0"
-                            max="100"
-                            step="1"
-                            {...props.register("documentSimilarityThreshold")}
-                        />
-                        <span
-                            hidden={!props.getValues("enableDocumentSimilarity") || props.getValues("processingLevel") !== "INDEX"}
-                            className="input-group-text">%</span>
-                    </div>
                 </div>
             </div>
 
@@ -300,6 +291,11 @@ export default function GeneralForm(props) {
                                title={"use OCR on all documents?"}/>
                         <label className="form-check-label small">use optical-character-recognition (OCR)</label>
                     </div>
+                    { use_ocr &&
+                        <div className="alert alert-warning small py-2" role="alert">
+                            ⚠ OCR adds significant processing time
+                        </div>
+                    }
                 </div>
                 {stt_enabled &&
                     <div className="col-4">
@@ -308,6 +304,11 @@ export default function GeneralForm(props) {
                             <label className="form-check-label small">use speech-to-text (videos, audio
                                 transcripts)</label>
                         </div>
+                        { use_stt &&
+                            <div className="alert alert-warning small py-2" role="alert">
+                                ⚠ Speech-to-text adds significant processing time
+                            </div>
+                        }
                     </div>
                 }
                 <div className="col-4">
@@ -319,18 +320,10 @@ export default function GeneralForm(props) {
                 </div>
                 <div className="col-4">
                     <div className="form-check form-switch"
-                         title="transmit external-crawler log entries to SimSage?">
-                        <input className="form-check-input"
+                         title="transmit external-crawler log entries to SimSage? (only valid if 'External source' is selected)">
+                        <input className="form-check-input" disabled={!props.is_external}
                                type="checkbox" {...props.register("transmitExternalLogs")} />
                         <label className="form-check-label small">Transmit external logs</label>
-                    </div>
-                </div>
-                <div className="col-4">
-                    <div className="form-check form-switch"
-                         title="Show newest documents first in searches">
-                        <input className="form-check-input"
-                               type="checkbox" {...props.register("sortByNewestFirst")} />
-                        <label className="form-check-label small">Newest Documents first</label>
                     </div>
                 </div>
                 {translate_enabled &&
@@ -341,8 +334,21 @@ export default function GeneralForm(props) {
                                    type="checkbox" {...props.register("translateForeignLanguages")} />
                             <label className="form-check-label small">Translate foreign languages</label>
                         </div>
+                        { use_translate &&
+                            <div className="alert alert-warning small py-2" role="alert">
+                                ⚠ Translate adds significant processing time
+                            </div>
+                        }
                     </div>
                 }
+                <div className="col-4">
+                    <div className="form-check form-switch"
+                         title="Only index Document Metadata, do not Index main Document Content">
+                        <input className="form-check-input"
+                               type="checkbox" {...props.register("onlyIndexDocumentMetadata")} />
+                        <label className="form-check-label small">Only Index Document Metadata</label>
+                    </div>
+                </div>
                 {(selected_source_type === 'database' || selected_source_type === 'restfull') &&
                     <div className="col-4">
                         <div className="form-check form-switch"

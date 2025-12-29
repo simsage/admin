@@ -2,8 +2,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {useState, useEffect} from "react";
 import {closeSynonymForm, updateSynonyms} from "./synonymSlice";
 
-
-
 export function SynonymEdit(){
 
     const dispatch = useDispatch();
@@ -13,13 +11,11 @@ export function SynonymEdit(){
     const knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const show_synonym_form = useSelector( (state) => state.synonymReducer.show_synonym_form)
     const synonym = useSelector( (state) => state.synonymReducer.edit);
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     //Synonym details
     const [synonymList, setSynonymList] = useState('');
     const [error,setError] = useState('');
-
-
-
 
 
     // Grab synonym details if editing
@@ -52,8 +48,8 @@ export function SynonymEdit(){
         }
     },[synonymList])
 
-    function handleSave(e) {
 
+    function handleSave(e) {
         e.preventDefault();
         if(synonymList.length > 0) {
             const session_id = session.id;
@@ -67,14 +63,14 @@ export function SynonymEdit(){
         }
     }
 
+    if (!show_synonym_form)
+        return (<div/>)
 
-    if (show_synonym_form === false)
-        return (<div/>);
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header px-5 pt-4 bg-light">
+                    <div className="modal-header px-5 pt-4">
                         <h4 className="mb-0">{synonym ? "Edit Synonym" : "New Synonym"}</h4>
                     </div>
                     <div className="modal-body p-0">
@@ -82,7 +78,7 @@ export function SynonymEdit(){
 
                             <div className="row mb-3">
                                 <div className="control-row col-12">
-                                    <label className="label-2 small required">Synonyms <span className="small text-black-50 fst-italic fw-light">(Separate by comma) </span>
+                                    <label className="label-2 small required">Synonyms <span className={(theme==="light" ? "text-black-50" : "text-white-50") + " small fst-italic fw-light"}>(Separate by comma) </span>
                                     </label>
                                     <span className="text">
                                         <form>

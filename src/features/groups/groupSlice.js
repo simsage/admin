@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import axios from "axios";
+import {filter_esc, uri_esc} from "../../common/api";
 
 const initialState = {
     group_list: [],
@@ -26,10 +27,10 @@ export const getGroupList = createAsyncThunk(
     'groups/getGroupList',
     async ({session_id, organization_id, page, page_size, filter}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/groups-paginated/' + encodeURIComponent(organization_id) + '/' +
-            encodeURIComponent(page ? page : 0) + '/' +
-            encodeURIComponent(page_size ? page_size : 100) + '/' +
-            encodeURIComponent(filter ? filter : 'null');
+        const url = api_base + '/auth/groups-paginated/' + uri_esc(organization_id) + '/' +
+            uri_esc(page ? page : 0) + '/' +
+            uri_esc(page_size ? page_size : 100) + '/' +
+            filter_esc(filter);
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -57,7 +58,7 @@ export const deleteGroup = createAsyncThunk(
     'group/delete',
     async ({session_id, organisation_id, name}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + `/auth/group/${encodeURIComponent(organisation_id)}/${encodeURIComponent(name)}`;
+        const url = api_base + `/auth/group/${uri_esc(organisation_id)}/${filter_esc(name)}`;
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
@@ -103,7 +104,7 @@ export const getACLEditInformation = createAsyncThunk(
             "availableGroupsFilter": available_groups_filter,
             "pageSize": page_size
         };
-        const url = api_base + '/auth/acl-edit-info/' + encodeURIComponent(organization_id);
+        const url = api_base + '/auth/acl-edit-info/' + uri_esc(organization_id);
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data

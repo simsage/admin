@@ -3,6 +3,8 @@ import {BsFilePdf} from 'react-icons/bs'
 import SensitiveCredential from "../../../components/SensitiveCredential";
 import {OneDriveUserAndLibraries} from "./OneDriveUserAndLibraries";
 import {DOCUMENTATION, useSelectedSource} from "./common";
+import {useSelector} from "react-redux";
+import ResetDeltaControl from "../../../common/ResetDeltaControl";
 
 export default function CrawlerOneDriveForm(props) {
 
@@ -16,6 +18,7 @@ export default function CrawlerOneDriveForm(props) {
         l_form_data
     } = useSelectedSource(props);
 
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -72,7 +75,7 @@ export default function CrawlerOneDriveForm(props) {
     // this crawler doesn't need the verify system
     useEffect(() => {
         if (props.set_verify) props.set_verify('n/a')
-    }, [props.set_verify])
+    }, [props])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
@@ -140,11 +143,11 @@ export default function CrawlerOneDriveForm(props) {
                                 &nbsp;
                             </div>
                             <div className={"drive_row col-12"}>
-                                <div className={"col-4 small text-black-50"}>
+                                <div className={(theme==="light" ? "text-black-50" : "text-white-50") + " col-4 small"}>
                                     User / Group
                                 </div>
-                                <div className={"col-6 small text-black-50"}>Libraries</div>
-                                <div className={"col-2 small text-black-50"}>
+                                <div className={(theme==="light" ? "text-black-50" : "text-white-50") + " col-6 small"}>Libraries</div>
+                                <div className={(theme==="light" ? "text-black-50" : "text-white-50") + " col-2 small"}>
                                     <button className="btn text-primary btn-sm fw-500"
                                             onClick={(e) => {
                                                 setCurrentRow(-1)
@@ -191,6 +194,9 @@ export default function CrawlerOneDriveForm(props) {
                             </div>
                         </div>
                     }
+
+                    <ResetDeltaControl />
+
                 </div>
                 <div className="col-2 offset-1">
                     <a href={DOCUMENTATION.ONE_DRIVE} id="dlsharepoint" target="_blank" rel="noreferrer"

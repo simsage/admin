@@ -1,13 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import React from 'react';
-import {useKeycloak} from "@react-keycloak/web";
 import {simsageLogOut} from "../features/auth/authSlice";
+import {useAuth} from "react-oidc-context";
 
 
 export default function ErrorMessage( {error, close} ){
 
+    const auth = useAuth();
     const dispatch = useDispatch();
-    const keycloak = useKeycloak();
     const session = useSelector((state) => state.authReducer.session)
 
     if (!error || !error.message || !error.code) {
@@ -23,8 +23,8 @@ export default function ErrorMessage( {error, close} ){
      */
     function on_close() {
         if (error_text && error_text.indexOf("insufficient permissions") >= 0) {
-            if (keycloak && keycloak.authenticated) {
-                dispatch(simsageLogOut({session_id: session?.id, keycloak}))
+            if (auth.isAuthenticated && auth.user && auth.user.access_token) {
+                dispatch(simsageLogOut({session_id: session?.id, auth: auth}))
             }
         } else if (close) {
             close()
@@ -34,7 +34,7 @@ export default function ErrorMessage( {error, close} ){
     return (
         <div className="modal"  tabIndex="-1" role="dialog" style={{display: "inline", zIndex: 1061}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
-                <div className="modal-content shadow p-3 mb-5 bg-white rounded">
+                <div className="modal-content shadow p-3 mb-5rounded">
                     <div className="modal-header">
                         <h5 className="modal-title" id="staticBackdropLabel" title={error_title}>{error_title}</h5>
                         <button onClick={close} type="button" className="btn-close" data-bs-dismiss="modal"

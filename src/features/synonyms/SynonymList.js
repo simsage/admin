@@ -6,24 +6,27 @@ import {
     loadSynonyms,
     showAddSynonymForm,
     showEditSynonymForm,
-    showDeleteSynonymForm,
+    showDeleteSynonymForm, showImportSynonymForm,
 } from "./synonymSlice";
 import {SynonymEdit} from "./SynonymEdit";
 import SynonymDeleteAsk from "./SynonymDeleteAsk";
-import api, {IMAGES} from "../../common/api";
+import api from "../../common/api";
+import {SynonymImport} from "./SynonymImport";
+import InfoTooltip from "../../components/InfoTooltip";
 
 export default function SynonymsHome() {
 
-    const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
     const load_data = useSelector( (state) => state.synonymReducer.data_status)
+    const theme = useSelector((state) => state.homeReducer.theme);
+    const REFRESH_IMAGE = (theme === "light" ? "images/refresh.svg" : "images/refresh-dark.svg")
 
     const synonym_list = useSelector((state)=>state.synonymReducer.synonym_list)
-    const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms)
+    const num_synonyms = useSelector((state)=>state.synonymReducer.num_synonyms) ?? 0
     const synonyms_busy = useSelector((state)=>state.synonymReducer.synonyms_busy)
 
     const [page, setPage] = useState(api.initial_page);
@@ -46,9 +49,11 @@ export default function SynonymsHome() {
 
 
     useEffect(() => {
-            dispatch(loadSynonyms({session_id, data }));
+        data.filter = filter
+        data.pageSize = page_size
+        dispatch(loadSynonyms({session_id, data }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [load_data === "load_now",page, page_size])
+    }, [load_data === "load_now", page, page_size])
 
 
     function handlePageChange(next_page){
@@ -79,23 +84,6 @@ export default function SynonymsHome() {
     function getSynonymList() {
         return synonym_list ? synonym_list : [];
     }
-    const handleRefresh = () => {
-        if (!synonyms_busy) {
-            dispatch(loadSynonyms({session_id, data}))
-        }
-    }
-
-    //
-    // function handleKeyDown(event) {
-    //     if (event.key === "Enter") {
-    //         filterSynonyms()
-    //     }
-    // }
-    // function filterSynonyms() {
-    //
-    //     // data.filter = synonym_filter
-    //     // dispatch(loadSynonyms( {session_id, data } ))
-    // }
 
     function editSynonym(s) {
        dispatch(showEditSynonymForm({show:true, syn: s}))
@@ -103,6 +91,10 @@ export default function SynonymsHome() {
 
     function newSynonym() {
         dispatch(showAddSynonymForm(true));
+    }
+
+    function importSynonyms() {
+        dispatch(showImportSynonymForm())
     }
 
     function deleteSynonymAsk(synonym) {
@@ -117,15 +109,21 @@ export default function SynonymsHome() {
 
 
     function filterRecords(e) {
-        e.preventDefault()
+        if (e) e.preventDefault()
+        setPrevID(0)
+        setPageHistory([])
+        setPage(0)
         data.filter = filter
         data.pageSize = page_size
-        dispatch(loadSynonyms({ session_id, data }));
+        dispatch(loadSynonyms({session_id, data}));
     }
 
 
     return (
         <div className="section px-5 pt-4">
+
+            <SynonymImport />
+
             <div className="d-flex justify-content-between w-100 mb-4">
                 <div className="d-flex w-100">
                     <div className="d-flex form-group me-2">
@@ -133,7 +131,7 @@ export default function SynonymsHome() {
                             type="text"
                             placeholder={"Search Synonym..."}
                             autoFocus={true}
-                            className={"form-control me-2 filter-search-input " + theme}
+                            className={"form-control me-2 filter-search-input "}
                             value={filter}
                             onChange={(e) => {setFilter(e.target.value)}}
                             onKeyDown={(e) => {if(e.key === 'Enter') filterRecords(e)}}
@@ -145,9 +143,14 @@ export default function SynonymsHome() {
                 </div>
 
                 <div className="form-group d-flex col ms-auto">
-                    <div className="btn" onClick={() => handleRefresh()} >
-                        <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of synonyms" />
+                    <div className="btn" onClick={(e) => filterRecords(e)} >
+                        <img src={REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of synonyms" />
                     </div>
+                    <button className="btn btn-outline-primary text-nowrap me-2"
+                            disabled={synonyms_busy}
+                            onClick={() => importSynonyms()}>
+                        Import Synonyms
+                    </button>
                     <button className="btn btn-primary text-nowrap"
                             disabled={synonyms_busy}
                             onClick={() => newSynonym()}>
@@ -156,16 +159,20 @@ export default function SynonymsHome() {
                 </div>
             </div>
 
-            {/* <br clear="both"/> */}
             {
                 isVisible() &&
                 <div>
-                    <table className="table">
+                    <table className={theme === "light" ? "table" : "table-dark"}>
                         <thead>
-                        <tr className=''>
-                             {/*<td className='small text-black-50 px-4'>ID</td>*/}
-                            <td className='small text-black-50 px-4 synonym-column-width'>Synonyms</td>
-                            <td className='small text-black-50 px-4'></td>
+                        <tr>
+                            <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4 synonym-column-width"}>
+                                Synonyms
+                                <InfoTooltip
+                                    text="Here you can define synonyms and other relationships between words.  Synonyms are not case sensitive (use lower-case).  Here you can define words that are related (be it exactly, or loosely)."
+                                    placement="right"
+                                />
+                            </td>
+                            <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}></td>
                         </tr>
                         </thead>
                         <tbody>
@@ -173,20 +180,12 @@ export default function SynonymsHome() {
                             getSynonymList().map((synonym) => {
                                 return (
                                     <tr key={synonym.id}>
-                                        {/*<td className="pt-3 px-4 pb-3">*/}
-                                        {/*    <div>{synonym.id}</div>*/}
-                                        {/*</td>*/}
                                         <td className="pt-3 px-4 pb-2">
                                             <div className="d-flex flex-wrap">
-                                            {/*<div className="me-2">{synonym.words}</div>*/}
-                                            {synonym.words && synonym.words.split(',').map((word)=>{
-                                                return <div className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill text-nowrap">{word}</div>
+                                            {synonym.words && synonym.words.split(',').map((word, index)=>{
+                                                return <div key={word + "_" + index} className="small table-pill px-3 py-1 me-2 mb-2 rounded-pill text-nowrap">{word}</div>
                                             })
-
                                             }
-                                            {/*<div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word1</div>*/}
-                                            {/*<div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word2</div>*/}
-                                            {/*<div className="small text-capitalize table-pill px-3 py-2 me-2 mb-2 rounded-pill">word3</div>*/}
                                             </div>
                                         </td>
                                         <td className="pt-3 px-4 pb-0">
@@ -199,15 +198,6 @@ export default function SynonymsHome() {
                                 )
                             })
                         }
-                        {/* <tr>
-                            <td/>
-                            <td/>
-                            <td>
-                                {isVisible() &&
-                                    <button className="btn btn-outline-primary" title="add new synonym" onClick={() => newSynonym()}>new synonym</button>
-                                }
-                            </td>
-                        </tr> */}
 
                         </tbody>
 
@@ -216,7 +206,6 @@ export default function SynonymsHome() {
 
                     <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
-                        theme={theme}
                         component="div"
                         count={num_synonyms}
                         rowsPerPage={page_size}
@@ -229,6 +218,7 @@ export default function SynonymsHome() {
 
                 </div>
             }
+
             <SynonymEdit />
             <SynonymDeleteAsk />
         </div>

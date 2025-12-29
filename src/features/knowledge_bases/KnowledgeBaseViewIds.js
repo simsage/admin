@@ -39,7 +39,7 @@ export default function KnowledgeBaseViewIds() {
             <div className="modal" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
                 <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                     <div className="modal-content">
-                        <div className="modal-header px-5 pt-4 bg-light">
+                        <div className="modal-header px-5 pt-4">
                             <h4 className="mb-0" id="staticBackdropLabel">{kb && kb.name ? kb.name : ""} </h4>
                         </div>
                         <div className="modal-body">

@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
+import {uri_esc} from "../../common/api";
 
 
 const initialState = {
@@ -37,7 +38,7 @@ export const addOrUpdateTextToSearch = createAsyncThunk( "TextToSearch/update",
     async({session_id, organisation_id, kb_id, data}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
-        const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}`
+        const url = api_base + `/semantic/text-to-search/${uri_esc(organisation_id)}/${uri_esc(kb_id)}`
 
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
@@ -52,7 +53,7 @@ export const deleteTextToSearch = createAsyncThunk( "TextToSearch/delete",
     async({session_id, organisation_id, kb_id, word}, {rejectWithValue}) => {
 
         const api_base = window.ENV.api_base;
-        const url = api_base + `/semantic/text-to-search/${encodeURIComponent(organisation_id)}/${encodeURIComponent(kb_id)}/${encodeURIComponent(word)}`
+        const url = api_base + `/semantic/text-to-search/${uri_esc(organisation_id)}/${uri_esc(kb_id)}/${uri_esc(word)}`
 
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {

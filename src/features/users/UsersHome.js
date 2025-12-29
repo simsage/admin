@@ -6,7 +6,6 @@ import {
     showEditUserForm,
     showUserBulkForm,
     getUserListPaginated,
-    showPasswordResetForm,
     setUserTextFilter,
 } from "./usersSlice"
 import { Pagination } from "../../common/pagination"
@@ -28,8 +27,8 @@ export function UsersHome() {
 
     const [userFilter, setUserFilter] = useState("all-users")
 
-    const theme = null
     const dispatch = useDispatch()
+    const theme = useSelector((state) => state.homeReducer.theme);
     const user_account = useSelector((state) => state.authReducer.user)
     const user_list = useSelector((state) => state.usersReducer.user_list)
     const session = useSelector((state) => state.authReducer.session)
@@ -91,10 +90,6 @@ export function UsersHome() {
     function handleEditUser(u) {
         if (!session || !selected_organisation_id) return;
         dispatch(showEditUserForm({ show: true, user_id: u.id }))
-    }
-
-    function handlePasswordReset(u) {
-        dispatch(showPasswordResetForm({ show: true, user_id: u.id }))
     }
 
     function handleUserBulk() {
@@ -170,7 +165,7 @@ export function UsersHome() {
                             placeholder={"Filter..."}
                             value={user_text_filter}
                             autoFocus={true}
-                            className={"form-control filter-search-input " + theme}
+                            className={"form-control filter-search-input "}
                             onKeyDown={(e) => handleSearchTextKeydown(e)}
                             onChange={(e) => handleSearchTextChange(e)}
                         />
@@ -198,12 +193,13 @@ export function UsersHome() {
 
             <div>
                 {!user_list && <div>Loading...</div>}
-                <table className="table">
+                <table className={theme === "light" ? "table" : "table-dark"}>
                     <thead>
                     <tr>
-                        <td className="small text-black-50 px-4">Name</td>
-                        <td className="small text-black-50 px-4">Email</td>
-                        <td className="small text-black-50 px-4">Roles</td>
+                        <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Name</td>
+                        <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Email</td>
+                        <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Roles</td>
+                        <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}></td>
                     </tr>
                     </thead>
                     <tbody>
@@ -220,9 +216,9 @@ export function UsersHome() {
                             <tr key={user.id}>
                                 <td className="pt-3 px-4 pb-3 fw-500">
                                     {user.firstName} {user.surname}{" "}
-                                    <span className="fw-light fst-italic pt-2 text-black-50">
-                      {user.email === user_account.email ? "(you)" : ""}
-                    </span>
+                                    <span className={(theme==="light" ? "text-black-50" : "text-white-50") + " fw-light fst-italic pt-2"}>
+                                      {user.email === user_account.email ? "(you)" : ""}
+                                    </span>
                                 </td>
                                 <td className="pt-3 px-4 pb-3 fw-light">{user.email}</td>
                                 <td className="pt-3 px-4 pb-2">
@@ -232,7 +228,7 @@ export function UsersHome() {
                                                 key="-1"
                                                 className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill"
                                             >
-                                                {api.getPrettyRole('SimSage Administrator')}
+                                                {api.getPrettyRole('admin')}
                                             </div>
                                         ) : (
                                             <></>
@@ -248,7 +244,7 @@ export function UsersHome() {
                                                             key={r + key}
                                                             className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill"
                                                         >
-                                                            {r.role}
+                                                            {api.getPrettyRole(r.role)}
                                                         </div>
                                                     );
                                                 } else {
@@ -260,13 +256,6 @@ export function UsersHome() {
                                 </td>
                                 <td className="pt-3 px-4 pb-0">
                                     <div className="d-flex  justify-content-end">
-                                        <button
-                                            disabled={editYes ? "" : "true"}
-                                            className={editYes ? "btn text-primary btn-sm" : "btn text-secondary btn-sm"}
-                                            onClick={() => handlePasswordReset(user)}
-                                        >
-                                            Reset password
-                                        </button>
                                         <button
                                             disabled={editYes ? "" : "true"}
                                             className={editYes ? "btn text-primary btn-sm" : "btn text-secondary btn-sm "}
@@ -290,7 +279,6 @@ export function UsersHome() {
                 {paginatedUserList.length > 0 && (
                     <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
-                        theme={theme}
                         component="div"
                         count={total_size}
                         rowsPerPage={page_size}

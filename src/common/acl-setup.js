@@ -10,6 +10,7 @@ export default function ACLSetup(props) {
     const dispatch = useDispatch();
     const session = useSelector((state) => state.authReducer.session)
     const select_crud = props.select_acl_crud // use RWDM / CRUD selector?
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     const {available_group_list, available_group_list_size,
         active_group_list, active_group_list_size} = useSelector((state) => state.groupReducer)
@@ -68,11 +69,13 @@ export default function ACLSetup(props) {
             e.stopPropagation();
         } else if (text !== null) {
             setActiveFilter(text)
+            setActivePage(0)
         }
     }
 
     function clearFilter1() {
         setActiveFilter('')
+        setActivePage(0)
     }
 
     function setFilter2(e, text) {
@@ -81,10 +84,12 @@ export default function ACLSetup(props) {
             e.stopPropagation();
         } else if (text !== null) {
             setAvailableFilter(text)
+            setAvailablePage(0)
         }
     }
 
     function clearFilter2() {
+        setAvailablePage(0)
         setAvailableFilter('')
     }
 
@@ -164,8 +169,8 @@ export default function ACLSetup(props) {
         <div className="row pb-5">
             <div className="role-block col-6">
                 <h6 className="role-label text-center">{props.left_title ? props.left_title : "ACLs"} </h6>
-                <div className="role-area bg-light border rounded h-100">
-                    <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center bg-white'>
+                <div className={"role-area " + (theme==="light" ? "bg-light" : "bg-dark") + " border rounded h-100"}>
+                    <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center'>
                         <input type="text" className="filter-text w-100 px-2 py-2 border-0" placeholder="Filter..."
                                value={active_filter}
                                onKeyDown={(event) => setFilter1(event, null)}
@@ -178,7 +183,7 @@ export default function ACLSetup(props) {
                                          title={"group " + acl.displayName ? acl.displayName : acl.name}>
                                     <span className="w-100" onClick={() => removeGroup(acl)}>
                                         <span className="user-group-image-box"><img className="user-group-image me-3"
-                                                                                    src={"images/group.svg"}
+                                                                                    src={theme==="light" ? "images/group.svg" : "images/group-dark.svg"}
                                                                                     alt="group"/></span><span>{acl.displayName ? acl.displayName : acl.name}</span>
                                     </span>
                                 { select_crud &&
@@ -201,7 +206,6 @@ export default function ACLSetup(props) {
                     rowsPerPageOptions={[]}
                     component="div"
                     count={active_group_list_size}
-                    theme={null}
                     rowsPerPage={page_size}
                     page={active_page}
                     backIconButtonProps={{'aria-label': 'Previous Page',}}
@@ -212,20 +216,20 @@ export default function ACLSetup(props) {
 
             <div className="role-block col-6">
                 <h6 className="role-label text-center">{props.right_title ? props.right_title : "Available"}</h6>
-                <div className="role-area bg-light border rounded h-100">
-                    <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center bg-white'>
+                <div className={"role-area " + (theme==="light" ? "bg-light" : "bg-dark") + " border rounded h-100"}>
+                    <div className='mb-3 w-100 border-0 border-bottom d-flex align-items-center'>
                         <input type="text" className="filter-text w-100 px-2 py-2 border-0" placeholder="Filter..."
                                value={available_filter}
                                onKeyDown={(event) => setFilter2(event, null)}
                                onChange={(event) => setFilter2(event, event.target.value)}/>
-                        <span className="clear px-3" title="clear filter" onClick={() => clearFilter2()}>&times;</span>
+                        <span className={"clear px-3"} title="clear filter" onClick={() => clearFilter2()}>&times;</span>
                     </div>
                     {
                         available_group_list.map((u_group, i) => {
                             return (<div key={i} className="role-chip" onClick={() => addGroup(u_group)}
                                          title={"group " + u_group.name}>
                                 <span className="user-group-image-box me-3"><img className="user-group-image"
-                                                                                 src={"images/group.svg"}
+                                                                                 src={theme==="light" ? "images/group.svg" : "images/group-dark.svg"}
                                                                                  alt="group"/></span>
                                 <span>
                                     {u_group.displayName ? u_group.displayName : u_group.name}
@@ -238,7 +242,6 @@ export default function ACLSetup(props) {
                     rowsPerPageOptions={[]}
                     component="div"
                     count={available_group_list_size}
-                    theme={null}
                     rowsPerPage={page_size}
                     page={available_page}
                     backIconButtonProps={{'aria-label': 'Previous Page',}}

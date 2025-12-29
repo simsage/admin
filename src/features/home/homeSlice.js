@@ -1,14 +1,20 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from "axios";
 import Comms from "../../common/comms";
+import {filter_esc, get_cookie_value, update_cookie_value, uri_esc} from "../../common/api";
+
+// name of the ux cookie
+const ux_cookie = "ux-cookie";
+// cookie values for init store
+const theme = get_cookie_value(ux_cookie, "theme");
 
 const initialState = {
     selected_tab: 'home',
     status_list: undefined,
-    theme: null,
     busy: false,            // system busy
-    error_title: "Error",       // application error messages
+    error_title: "Error",   // application error messages
     error: "",
+    theme: theme ? theme : "light",         // light or dark
 
     // log settings
     log_list: [],           // list of all the logs
@@ -27,24 +33,15 @@ export const getLogs = createAsyncThunk(
            {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
 
-        const url = '/stats/system-logs/' + encodeURIComponent(organisation_id) + '/' +
-            encodeURIComponent(log_service) + '/' + encodeURIComponent(log_lines) + '/' +
-            encodeURIComponent(filter ? filter : 'null')
+        const url = '/stats/system-logs/' +
+            uri_esc(organisation_id) + '/' +
+            uri_esc(log_service) + '/' +
+            uri_esc(log_lines) + '/' +
+            filter_esc(filter ? filter : 'null')
 
         return axios.get(api_base + url, Comms.getHeaders(session_id))
             .then((response) => {
-                const log_list = response.data.logList ? response.data.logList : [];
-                const list = [];
-                const log_type_lwr = log_type.toLowerCase();
-                const log_service_lwr = log_service.toLowerCase();
-                for (let i = 0; i < log_list.length; i++) {
-                    const item = log_list[i];
-                    if ((log_type_lwr === 'all' || item.type.toLowerCase() === log_type_lwr) &&
-                        item.service.toLowerCase() === log_service_lwr) {
-                        list.push(item);
-                    }
-                }
-                response.data.list = list;
+                response.data.log_type = log_type
                 return response.data;
             }).catch((err) => {
                 return rejectWithValue(err?.response?.data)
@@ -64,12 +61,21 @@ const extraReducers = (builder) => {
             }
         })
         .addCase(getLogs.fulfilled, (state, action) => {
+            const log_list = action.payload?.logList ? action.payload.logList : [];
+            const list = [];
+            const log_type_lwr = action.payload?.log_type?.toLowerCase() ?? "all"
+            for (let i = 0; i < log_list.length; i++) {
+                const item = log_list[i];
+                if (log_type_lwr === 'all' || item.type.toLowerCase() === log_type_lwr) {
+                    list.push(item);
+                }
+            }
             return {
                 ...state,
                 busy: false,
                 status: "fulfilled",
                 data_status: "loaded",
-                log_list: action?.payload?.list ?? []
+                log_list: list
             }
 
         })
@@ -93,6 +99,15 @@ export const homeSlice = createSlice({
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
+        toggleTheme: (state, action) => {
+            const new_theme = (state.theme === "light" ? "dark" : "light")
+            update_cookie_value(ux_cookie, 'theme', new_theme)
+            return {
+                ...state,
+                theme: new_theme
+            }
+        },
+
         selectTab: (state, action) => {
             return {
                 ...state,
@@ -141,6 +156,7 @@ export const {
     setNumLogLines,
     setLogService,
     setLogType,
+    toggleTheme,
     searchForLogs
 } = homeSlice.actions
 

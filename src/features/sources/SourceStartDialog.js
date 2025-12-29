@@ -14,7 +14,7 @@ export function SourceStartDialog() {
 
     const session_id = session.id;
 
-    if(!selected_source) {
+    if (!selected_source) {
         dispatch(closeForm());
     }
 

@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import {BsFilePdf} from 'react-icons/bs'
 import SensitiveCredential from "../../../components/SensitiveCredential";
 import {DOCUMENTATION, useSelectedSource} from './common.js';
+import ResetDeltaControl from "../../../common/ResetDeltaControl";
 
 
 export default function CrawlerExchange365Form(props) {
@@ -31,7 +32,7 @@ export default function CrawlerExchange365Form(props) {
     // this crawler doesn't need the verify system
     useEffect(() => {
         if (props.set_verify) props.set_verify('n/a')
-    }, [props.set_verify])
+    }, [props])
 
     return (
 
@@ -108,6 +109,9 @@ export default function CrawlerExchange365Form(props) {
                             </div>
                         </div>
                     </div>
+
+                    <ResetDeltaControl />
+
                 </div>
                 <div className="col-2 offset-1">
                     <a href={DOCUMENTATION.EXCHANGE365} id="dlOffice365" target="_blank" rel="noreferrer"

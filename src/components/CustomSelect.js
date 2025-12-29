@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import {limit} from "../common/api";
 
-function CustomSelect({ options, defaultValue, disabled, onChange, label }) {
+function CustomSelect({ options, defaultValue, disabled, onChange, label, useKeyInHints }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedValue, setSelectedValue] = useState(defaultValue || options[0]?.key);
     const dropdownRef = useRef(null);
@@ -34,17 +35,20 @@ function CustomSelect({ options, defaultValue, disabled, onChange, label }) {
         setSelectedValue(defaultValue)
     }, [defaultValue])
 
+    const select_str = 'Select Knowledge Base'
+    const option_str = options.find(option => option.key === selectedValue)?.value ?? label ?? select_str
+
     return (
         <div className="dropdown">
-            <button className={`btn ${disabled ? 'disabled' : 'btn-light'} 
+            <button className={`btn ${disabled ? 'disabled' : ''} 
             dropdown-toggle d-flex align-items-center justify-content-between w-100`}
                     id="kb-selector"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                     onClick={handleToggleDropdown}
             >
-                <span>
-                    {options.find(option => option.key === selectedValue)?.value ?? label ?? 'Select Knowledge Base'}
+                <span title={option_str !== select_str ? ("Active Knowledge Base: " + option_str) : ("Select a Knowledge Base from this dropdown list")}>
+                    {limit(option_str)}
                 </span>
             </button>
             <ul className={`dropdown-menu w-100 ${isOpen ? 'show' : ''}`}
@@ -55,8 +59,9 @@ function CustomSelect({ options, defaultValue, disabled, onChange, label }) {
                 {options.map((item) => (
                     <li key={item.key}
                         className={`dropdown-item ${item.key === selectedValue ? 'active' : ''}`}
+                        title={useKeyInHints ? (item.value + " (" + item.key + ")") : item.value}
                         onClick={() => handleSelectOption(item.key)}
-                        style={{ margin: "5px 0", paddingRight: "1rem" }}>{item.value}</li>
+                        style={{ margin: "5px 0", paddingRight: "1rem" }}>{limit(item.value)}</li>
                 ))}
             </ul>
         </div>

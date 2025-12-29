@@ -12,13 +12,13 @@ import api from "../../common/api";
 const TextToSearchList = () => {
 
     const dispatch = useDispatch();
-    const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const session = useSelector((state) => state.authReducer.session)
     const session_id = session.id
     const load_data = useSelector((state) => state.textToSearchReducer.data_status)
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     const text_to_search_list = useSelector( (state) => state.textToSearchReducer.text_to_search_list)
     const num_of_text_to_search = useSelector((state) => state.textToSearchReducer.num_of_text_to_search)
@@ -115,7 +115,7 @@ const TextToSearchList = () => {
                                 type="text"
                                 placeholder={"Find advanced query language part..."}
                                 autoFocus={true}
-                                className={"form-control me-2 filter-search-input " + theme}
+                                className={"form-control me-2 filter-search-input "}
                                 value={filter}
                                 onChange={(e) => {setFilter(e.target.value)}}
                                 onKeyDown={(e) => {if(e.key === 'Enter') handleFilter(e)} }
@@ -141,13 +141,13 @@ const TextToSearchList = () => {
                 {
                     isVisible() &&
                     <div>
-                        <table className="table">
+                        <table className={theme === "light" ? "table" : "table-dark"}>
                             <thead>
                             <tr className=''>
-                                <td className='small text-black-50 px-4'>Advanced query language part</td>
-                                <td className='small text-black-50 px-4'>Sub</td>
-                                <td className='small text-black-50 px-4'>Match Words</td>
-                                <td className='small text-black-50 px-4'></td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Advanced query language part</td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Sub</td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Match Words</td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}></td>
                             </tr>
                             </thead>
                             <tbody>
@@ -193,7 +193,6 @@ const TextToSearchList = () => {
 
                         <Pagination
                             rowsPerPageOptions={[5, 10, 25]}
-                            theme={theme}
                             component="div"
                             count={num_of_text_to_search}
                             rowsPerPage={ts_page_size}

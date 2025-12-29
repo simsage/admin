@@ -11,17 +11,18 @@ import {
 import {showEditSynSetForm} from "./synsetSlice"
 import SynsetDelete from "./SynsetDelete";
 import SynsetDefault from "./SynsetDefault";
-import api, {IMAGES} from "../../common/api";
+import api from "../../common/api";
 import SynsetForm from "./SynsetForm";
+import InfoTooltip from "../../components/InfoTooltip";
 
 export default function SynsetList() {
 
-    const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation)
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id)
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     const synset_list = useSelector((state) => state.synsetReducer.synset_list)
     const synset_total_size = useSelector((state) => state.synsetReducer.synset_total_size)
@@ -36,6 +37,7 @@ export default function SynsetList() {
 
     const show_synset_form = useSelector((state) => state.synsetReducer.show_synset_form)
 
+    const REFRESH_IMAGE = (theme === "light" ? "images/refresh.svg" : "images/refresh-dark.svg")
 
     let data = {
         session_id: session_id,
@@ -114,7 +116,7 @@ export default function SynsetList() {
                                 type="text"
                                 placeholder={"Search Synset..."}
                                 autoFocus={true}
-                                className={"form-control me-2 filter-search-input " + theme}
+                                className={"form-control me-2 filter-search-input "}
                                 value={synset_filter}
                                 onChange={(e) => {
                                     setSynSetFilter(e.target.value)
@@ -131,7 +133,7 @@ export default function SynsetList() {
 
                     <div className="form-group d-flex ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
-                            <img src={IMAGES.REFRESH_IMAGE} className="refresh-image"
+                            <img src={REFRESH_IMAGE} className="refresh-image"
                                  alt="refresh" title="refresh list of synsets" />
                         </div>
                         <button className="btn btn-outline-primary text-nowrap ms-2"
@@ -150,12 +152,18 @@ export default function SynsetList() {
                 {
                     isVisible() &&
                     <div>
-                        <table className="table">
+                        <table className={theme === "light" ? "table" : "table-dark"}>
                             <thead>
                             <tr className=''>
-                                <td className='small text-black-50 px-4'>Syn-set</td>
-                                <td className='small text-black-50 px-4'>Word Clouds</td>
-                                <td className='small text-black-50 px-4'></td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>
+                                    Synset
+                                    <InfoTooltip
+                                        text="Synsets are ambiguous nouns (part of Word Sense Disambiguation).  Here you can define multiple meanings for the same word by associating a word with multiple other words.  For instance, if you need two definitions for the word 'bank' ('bank' the financial-institution vs 'bank' the side of a river).  You could define 'bank' as 'teller,building,finance...' and 'tree,grass,river...'.  That is words that point out one use of the word over another in your texts.  SimSage will then probabilistically try and determine which of the two is used in your documents and enable you to search for one over the other."
+                                        placement="right"
+                                    />
+                                </td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Word Clouds</td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}></td>
                             </tr>
                             </thead>
                             <tbody>
@@ -164,7 +172,7 @@ export default function SynsetList() {
                                     return (
                                         <tr key={synSet.word}>
                                             <td className="pt-3 px-4 pb-3">
-                                                <div className="synset-label text-capitalize fw-500">{synSet.word}</div>
+                                                <div className="synset-label fw-500">{synSet.word}</div>
                                             </td>
                                             <td className="pt-3 px-4 pb-2">
                                                 {synSet.wordCloudCsvList.map((wc, i) => {
@@ -220,7 +228,6 @@ export default function SynsetList() {
 
                         <Pagination
                             rowsPerPageOptions={[5, 10, 25]}
-                            theme={theme}
                             component="div"
                             count={synset_total_size}
                             rowsPerPage={page_size}

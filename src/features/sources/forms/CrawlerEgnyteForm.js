@@ -4,6 +4,7 @@ import SensitiveCredential from "../../../components/SensitiveCredential";
 import { DOCUMENTATION, useSelectedSource } from './common.js';
 import CustomSelect from "../../../components/CustomSelect";
 import FolderTagsInput from "./Google/FolderTagsInput";
+import ResetDeltaControl from "../../../common/ResetDeltaControl";
 
 export default function CrawlerEgnyteForm(props) {
 
@@ -160,6 +161,7 @@ export default function CrawlerEgnyteForm(props) {
                     {mode !== "all" &&
                         <div className="form-group col-12">
                             <FolderTagsInput
+                                disabled={false}
                                 value={folderList}
                                 onChange={(newFolderList) => {
                                     setFolderList(newFolderList);
@@ -177,6 +179,9 @@ export default function CrawlerEgnyteForm(props) {
                     }
                 </div>
             </div>
+
+            <ResetDeltaControl />
+
         </div>
     )
 }

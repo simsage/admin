@@ -1,5 +1,6 @@
 import React, {useEffect} from "react";
 import {useSelectedSource} from "./common";
+import {useSelector} from "react-redux";
 
 export default function CrawlerRssForm(props) {
 
@@ -11,6 +12,7 @@ export default function CrawlerRssForm(props) {
         l_form_data
     } = useSelectedSource(props);
 
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     //update local variable specific_json when data is changed
     function setData(data) {
@@ -32,7 +34,8 @@ export default function CrawlerRssForm(props) {
         }
 
         if (props.set_verify) props.set_verify(() => validate_RSS)
-    }, [props.set_verify])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props])
 
 
     return (
@@ -58,7 +61,7 @@ export default function CrawlerRssForm(props) {
                 </div>
                 <div className="form-group col-6">
                     <label className="small">Initial RSS Feed CSV list
-                        <span className="fst-italic text-black-50">(optional)</span>
+                        <span className={(theme==="light" ? "text-black-50" : "text-white-50") + " fst-italic"}>(optional)</span>
                     </label>
                     <textarea className="form-control"
                               placeholder="RSS endpoint CSV list"

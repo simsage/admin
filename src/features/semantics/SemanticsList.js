@@ -1,20 +1,29 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {Pagination} from "../../common/pagination";
-import {loadSemantics, showAddSemanticForm, showDeleteSemanticAsk, showEditSemanticForm} from "./semanticSlice";
+import {
+    loadSemantics,
+    showAddSemanticForm,
+    showDeleteSemanticAsk,
+    showEditSemanticForm,
+    showImportSemanticsForm
+} from "./semanticSlice";
 import {SemanticEdit} from "./SemanticEdit";
 import SemanticDeleteAsk from "./SemanticDeleteAsk";
-import api, {IMAGES} from "../../common/api";
+import api from "../../common/api";
+import {SemanticsImport} from "./SemanticsImport";
+import InfoTooltip from "../../components/InfoTooltip";
 
 
 export default function SemanticsHome() {
-    const theme = null;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
     const session = useSelector((state) => state.authReducer.session);
     const session_id = session.id;
     const load_data = useSelector( (state) => state.semanticReducer.data_status)
+    const theme = useSelector((state) => state.homeReducer.theme);
+    const REFRESH_IMAGE = (theme === "light" ? "images/refresh.svg" : "images/refresh-dark.svg")
 
     const semantic_list = useSelector((state) => state.semanticReducer.semantic_list);
     const num_semantics = useSelector((state) => state.semanticReducer.num_semantics);
@@ -22,7 +31,7 @@ export default function SemanticsHome() {
 
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
-    const [semantic_filter,setSemanticFilter] = useState();
+    const [semantic_filter,setSemanticFilter] = useState('');
 
     const [page_history,setPageHistory] = useState([])
     const [prev_word,setPrevWord] = useState(0)
@@ -43,7 +52,9 @@ export default function SemanticsHome() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === "load_now" ,page, page_size ,selected_organisation_id, selected_knowledge_base_id])
 
-
+    function importSemantics() {
+        dispatch(showImportSemanticsForm())
+    }
 
     function handlePageChange(next_page){
         if(next_page > page){
@@ -70,13 +81,12 @@ export default function SemanticsHome() {
     }
 
 
-    function getSemanticList()
-    {
-        return semantic_list;
+    function getSemanticList() {
+        return semantic_list ?? [];
     }
 
     function filterSemantic(e) {
-        e.preventDefault()
+        if (e) e.preventDefault()
         data.filter = semantic_filter
         data.pageSize = page_size
         dispatch(loadSemantics({ session_id, data }));
@@ -88,14 +98,14 @@ export default function SemanticsHome() {
         }
     }
 
-    function handleEditSemantic(semantic)
-    {
-    dispatch(showEditSemanticForm( {session_id, semantic}))
+    function handleEditSemantic(semantic) {
+        dispatch(showEditSemanticForm( {semantic: semantic}))
     }
 
     function handleAddSemantic() {
-        dispatch(showAddSemanticForm(true));
+        dispatch(showAddSemanticForm({show: true}));
     }
+
     function deleteSemanticAsk(semantic) {
         dispatch(showDeleteSemanticAsk({show:true, semantic: semantic}));
     }
@@ -109,6 +119,9 @@ export default function SemanticsHome() {
 
     return (
         <div className="section px-5 pt-4">
+
+            <SemanticsImport />
+
             <div>
 
                 <div className="d-flex justify-content-between w-100 mb-4">
@@ -116,9 +129,10 @@ export default function SemanticsHome() {
                         <div className="d-flex form-group me-2">
                             <input
                                 type="text"
-                                placeholder={"Search Semantic..."}
+                                placeholder={"Search for a Word..."}
+                                title={"these words are case-sensitive (e.g. Paris is a capital)"}
                                 autoFocus={true}
-                                className={"form-control me-2 filter-search-input " + theme}
+                                className={"form-control me-2 filter-search-input "}
                                 value={semantic_filter}
                                 onChange={(e) => {setSemanticFilter(e.target.value)}}
                                 onKeyDown={(e) => {if(e.key === 'Enter') filterSemantic(e)}}
@@ -131,8 +145,13 @@ export default function SemanticsHome() {
 
                     <div className="form-group d-flex col ms-auto">
                         <div className="btn" onClick={() => handleRefresh()}>
-                            <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of semantics" />
+                            <img src={REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh list of semantics" />
                         </div>
+                        <button className="btn btn-outline-primary text-nowrap me-2"
+                                disabled={semantics_busy}
+                                onClick={() => importSemantics()}>
+                            Import Semantics
+                        </button>
                         <button className="btn btn-primary text-nowrap"
                                 disabled={semantics_busy}
                                 onClick={() => handleAddSemantic()}>
@@ -141,17 +160,21 @@ export default function SemanticsHome() {
                     </div>
                 </div>
 
-                {/* <br clear="both"/> */}
-
                 {
                     isVisible() &&
                     <div>
-                        <table className="table">
+                        <table className={theme === "light" ? "table" : "table-dark"}>
                             <thead>
                             <tr className=''>
-                                <td className='small text-black-50 px-4'>Word</td>
-                                <td className='small text-black-50 px-4'>Semantic</td>
-                                <td className='small text-black-50 px-4'></td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>
+                                    Word
+                                    <InfoTooltip
+                                        text="Semantics are generalizations.  You can for instance define 'Paris' as a 'city', and then search for 'entity: city' in SimSage.  This applies to whole categories of words.  SimSage has a large set of semantics built in.  Search for your word first. Semantic words are case sensitive.  The semantic itself should be lower-case (e.g. 'city')."
+                                        placement="right"
+                                    />
+                                </td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Semantic</td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}></td>
                             </tr>
                             </thead>
                             <tbody>
@@ -164,7 +187,7 @@ export default function SemanticsHome() {
                                             </td>
                                             <td className="pt-3 px-4 pb-2">
                                                 <div className="d-flex">
-                                                    <div className="small text-capitalize table-pill px-3 py-1 me-2 mb-2 rounded-pill">{semantic.semantic}</div>
+                                                    <div className="small table-pill px-3 py-1 me-2 mb-2 rounded-pill">{semantic.semantic}</div>
                                                 </div>
                                             </td>
                                             <td className="pt-3 px-4 pb-0">
@@ -184,11 +207,8 @@ export default function SemanticsHome() {
                             </tbody>
                         </table>
 
-
-
                         <Pagination
                             rowsPerPageOptions={[5, 10, 25]}
-                            theme={theme}
                             component="div"
                             count={num_semantics}
                             rowsPerPage={page_size}
@@ -202,8 +222,10 @@ export default function SemanticsHome() {
                 }
 
             </div>
+
             <SemanticEdit />
             <SemanticDeleteAsk />
+
         </div>
     )
 

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
-import Api, {IMAGES} from "../../common/api"
+import Api, {convert_gmt_to_local, uri_esc} from "../../common/api"
 import {
     getLogs,
     setLogType,
@@ -17,14 +17,13 @@ const service_list = [
     {key: "Auth", value: "Auth Service"},
     {key: "Conv", value: "Conversion Service"},
     {key: "Crawler", value: "Crawler Service"},
-    {key: "DataProject", value: "Data Project Service"},
     {key: "Document", value: "Document Service"},
-    {key: "Discovery", value: "Discovery Service"},
     {key: "Index", value: "Index Service"},
     {key: "KB", value: "Knowledge Base Service"},
     {key: "Language", value: "Language Service"},
     {key: "Search", value: "Search Service"},
     {key: "Stats", value: "Stats Service"},
+    {key: "Stepwise", value: "Stepwise Service"},
     {key: "Cloud", value: "Web/Cloud Service"},
 ]
 
@@ -38,6 +37,9 @@ export default function LogHome() {
     const log_list = useSelector((state) => state.homeReducer.log_list)
     const filtered_list = useSelector((state) => state.homeReducer.log_filtered_list)
     const busy = useSelector((state) => state.homeReducer.busy)
+    const theme = useSelector((state) => state.homeReducer.theme);
+
+    const REFRESH_IMAGE = (theme === "light" ? "images/refresh.svg" : "images/refresh-dark.svg")
 
     // log filter text
     const [filter, setFilter] = useState('')
@@ -105,7 +107,7 @@ export default function LogHome() {
     // download the log file for a given service by service-name from the server
     const download = (log) => {
         if (session && session.id) {
-            const url = window.ENV.api_base + '/stats/system-log-download/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(log)
+            const url = window.ENV.api_base + '/stats/system-log-download/' + uri_esc(organisation_id) + '/' + uri_esc(log)
             Api.do_fetch(url, session.id)
         }
     }
@@ -141,7 +143,7 @@ export default function LogHome() {
             <div className="d-flex justify-content-between align-items-center mb-4 px-5 pt-4">
                 <div className="d-flex">
                     <div className="me-5 mb-3" style={{minWidth: "200px"}}>
-                        <h6 className="small text-black-50">Select Service</h6>
+                        <h6 className={"small " + (theme==="light" ? "text-black-50" : "text-white-50")}>Select Service</h6>
                         <CustomSelect
                             label="Select Service"
                             defaultValue={log_service}
@@ -152,7 +154,7 @@ export default function LogHome() {
                         />
                     </div>
                     <div className="me-5 mb-3">
-                        <h6 className="small text-black-50">Search</h6>
+                        <h6 className={"small " + (theme==="light" ? "text-black-50" : "text-white-50")}>Search</h6>
                         <div className="input-group">
                             <input
                                 disabled={busy}
@@ -167,7 +169,7 @@ export default function LogHome() {
                             </span>
                             <div className="btn"
                                  onClick={() => getLogsLocal(log_type, log_service, log_lines, filter)}>
-                                <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh"
+                                <img src={REFRESH_IMAGE} className="refresh-image" alt="refresh"
                                      title="get latest logs"/>
                             </div>
                         </div>
@@ -175,7 +177,7 @@ export default function LogHome() {
                 </div>
                 <div className="d-flex">
                     <div className="me-3 mb-3" title={"download logs for " + log_service + " service"}>
-                        <h6 className="small text-black-50">{log_service + " log"}</h6>
+                        <h6 className={"small " + (theme==="light" ? "text-black-50" : "text-white-50")}>{log_service + " log"}</h6>
                         <button
                             disabled={busy}
                             className="btn btn-primary text-nowrap"
@@ -183,7 +185,7 @@ export default function LogHome() {
                         </button>
                     </div>
                     <div className="me-5 mb-3">
-                        <h6 className="small text-black-50">Show Entries</h6>
+                        <h6 className={"small " + (theme==="light" ? "text-black-50" : "text-white-50")}>Show Entries</h6>
                         <div className="btn-group">
                             <button title='last 50 lines'
                                     disabled={busy}
@@ -209,7 +211,7 @@ export default function LogHome() {
                     </div>
 
                     <div className="me-5 mb-3">
-                        <h6 className="small text-black-50">Type</h6>
+                        <h6 className={"small " + (theme==="light" ? "text-black-50" : "text-white-50")}>Type</h6>
                         <div className="btn-group">
                             <button title="display all log-types"
                                     disabled={busy}
@@ -239,7 +241,7 @@ export default function LogHome() {
                         </div>
                     </div>
                     <div className="mb-3">
-                        <h6 className="small text-black-50">Auto Refresh</h6>
+                        <h6 className={"small " + (theme==="light" ? "text-black-50" : "text-white-50")}>Auto Refresh</h6>
                         <div className="btn-group">
                             <button title="do not automatically refresh the logs"
                                     disabled={busy}
@@ -260,23 +262,26 @@ export default function LogHome() {
                     </div>
                 </div>
             </div>
-            <div className="section flex-column flex-grow-1">
-                <div className="log-list-overflow overflow-auto h-100 px-5 pb-4 d-flex flex-column">
+            <div className="section ">
+                <div className="log-list-overflow px-5 pb-2">
                     <TransitionGroup>
                         {listToRender?.length > 0 &&
-                            listToRender.slice().reverse().map((line, index) => {
+                            listToRender.map((line, index) => {
                                 return (
-                                    <CSSTransition key={index} timeout={500} classNames="log-line">
-                                        <div className="log-line py-3 d-flex flex-column text-break" id={line.created}>
+                                    <CSSTransition key={index} timeout={500} classNames={theme==="light" ? "log-line" : "log-line-dark"}>
+                                        <div className={(theme==="light" ? "log-line" : "log-line-dark") + " py-3 d-flex flex-column text-break"} id={line.created}>
                                             <div className="d-flex align-items-center mb-1">
                                                 <span className={`me-2 log-type-width ${getClassForType(line.type)}`}>
                                                     {line.type}
                                                 </span>
-                                                <span className="me-2 text-black-50 small log-service-width text-truncate">
+                                                <span className={"me-2 " + (theme==="light" ? "text-black-50" : "text-white-50") + " small log-service-width text-truncate"}>
                                                     {line.service}
                                                 </span>
-                                                <span className="me-2 text-black-50 small log-time-width">
-                                                    {Api.unixTimeConvert(line.created)}
+                                                <span className={"me-2 " + (theme==="light" ? "text-black-50" : "text-white-50") + " small log-service-width text-truncate"}>
+                                                    {line.nodeId}
+                                                </span>
+                                                <span className={"me-2 " + (theme==="light" ? "text-black-50" : "text-white-50") + " small log-time-width"}>
+                                                    {Api.unixTimeConvert(convert_gmt_to_local(line.created))}
                                                 </span>
                                             </div>
                                             <p className="mb-0 text-break"

@@ -6,21 +6,21 @@ import DocumentManagementHome from "../features/document_management/DocumentMana
 import Home from "../features/home/Home";
 import OrganisationEdit from "../features/organisations/OraganisationEdit";
 import ErrorMessage from "../common/ErrorMessage";
-import {closeError} from "../features/auth/authSlice";
+import {closeError, simsageLogOut} from "../features/auth/authSlice";
 import {clearOrgErrorMessage} from "../features/organisations/organisationSlice";
-import {useKeycloak} from "@react-keycloak/web";
 import {closeErrorMessage} from "../features/sources/sourceSlice";
 import {clearDocErrorMessage} from "../features/document_management/documentSlice";
+import {useAuth} from "react-oidc-context";
 
 function MainSection(){
 
     const dispatch = useDispatch();
-    const { keycloak } = useKeycloak();
+    const auth = useAuth();
 
     const selected_tab = useSelector((state)=>state.homeReducer.selected_tab)
     const show_organisation_form = useSelector((state) => state.organisationReducer.show_organisation_form);
 
-    const {is_error, is_sign_in_error, error_text, error_title} = useSelector((state) => state.authReducer);
+    const {is_error, is_sign_in_error, error_text, error_title, session} = useSelector((state) => state.authReducer);
     const org_error_text = useSelector((state) => state.organisationReducer.error_message);
     const org_error_title = useSelector((state) => state.organisationReducer.error_title);
     const source_error_message = useSelector((state) => state.sourceReducer.error_message);
@@ -41,12 +41,10 @@ function MainSection(){
     const error_obj = {code: global_error_title, message: global_error_message};
 
     function errorClose(error_obj) {
-        if ((error_obj && error_obj.message && error_obj.message.indexOf('cannot sign-in') >= 0) ||
-            is_sign_in_error) {
-            keycloak.logout({redirectUri: window.location.protocol + "//" + window.location.host})
-                .then( () => {
-                    console.log("signed out");
-                })
+        if ((error_obj && error_obj.message && error_obj.message.indexOf('cannot sign-in') >= 0) || is_sign_in_error) {
+            if (auth.isAuthenticated && auth.user && auth.user.access_token) {
+                dispatch(simsageLogOut({session_id: session?.id, auth: auth}))
+            }
         } else {
             dispatch(closeError());
             dispatch(clearOrgErrorMessage());

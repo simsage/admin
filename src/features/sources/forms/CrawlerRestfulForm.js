@@ -46,7 +46,8 @@ export default function CrawlerRestfulForm(props) {
         }
 
         if (props.set_verify) props.set_verify(() => validateRestfull)
-    }, [props.set_verify])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props])
 
 
     return (

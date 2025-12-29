@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./FolderTagsInput.css";
 
-const FolderTagsInput = ({ value, onChange }) => {
+const FolderTagsInput = ({ disabled, value, onChange }) => {
     // Initialize the tags state, filtering out any empty or whitespace-only tags
     const [inputValue, setInputValue] = useState("")
     const [tags, setTags] = useState(
@@ -39,18 +39,21 @@ const FolderTagsInput = ({ value, onChange }) => {
             {tags.map((tag, index) => (
                 <div key={index} className="tag-bubble">
                     {tag}
+                    {!disabled &&
                     <span className="remove-tag" onClick={() => handleRemoveTag(index)}>
                         &times;
                     </span>
+                    }
                 </div>
             ))}
             <input
                 type="text"
                 value={inputValue}
+                disabled={disabled}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 className="tags-input"
-                placeholder="Press 'enter' to add..."
+                placeholder={disabled ? "" : "Press 'enter' to add..."}
             />
         </div>
     )

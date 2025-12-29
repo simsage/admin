@@ -44,13 +44,14 @@ export function SemanticEdit(){
         dispatch(closeSemanticForm());
     }
 
-    if (show_semantic_form === false)
+    if (!show_semantic_form)
         return (<div/>);
+
     return (
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header px-5 pt-4 bg-light">
+                    <div className="modal-header px-5 pt-4">
                         <h4 className="mb-0">{selectedSemantic ? "Edit Semantic" : "New Semantic"}</h4>
                     </div>
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -79,7 +80,6 @@ export function SemanticEdit(){
                                         <span className="text">
                                         {/*<form>*/}
                                             <input type="text" className="form-control"
-                                                   autoFocus={true}
                                                    autoComplete="false"
                                                    placeholder="e.g. City"
                                                    onKeyDown={(e) => {if(e.key === 'Enter') e.preventDefault()}}
@@ -92,6 +92,21 @@ export function SemanticEdit(){
                                         {errors.semantic && <span className="text-danger fst-italic small"> Semantic is required</span>}
                                     </div>
                                 </div>
+
+                                <div className="row mt-3 mb-3">
+                                    <div className="alert alert-warning small py-2" role="alert">
+                                        Semantics are case sensitive.  Semantics are "is a" relationships, e.g.,
+                                        "Word: Wellington is a Semantic: city".  The semantic itself must be
+                                        lower-case and not include any patterns.<br /><br />
+                                        You can use matching patterns in the Word-part for more general types, provided
+                                        the word starts with (at least) two constant consecutive letters, where:<br/>
+                                        # (hash) to match a single digit 0..9< br/>
+                                        * (asterisk / star) to match single letters a..z or A..Z<br/>
+                                        + (plus) to match a single digit 0..9 or letter a..z, A..Z<br/>
+                                        e.g., MIMR-####-#### will match MIMR-2020-0128 and MIMR-2025-0125
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 

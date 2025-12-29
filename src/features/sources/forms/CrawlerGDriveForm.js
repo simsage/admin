@@ -7,6 +7,7 @@ import {getSessionId} from "../../auth/authSlice";
 import {DOCUMENTATION, invalid_credential, useSelectedSource} from './common.js';
 import {synchronizeGroups} from "../sourceSlice";
 import ErrorMessage from "../../../common/ErrorMessage";
+import ResetDeltaControl from "../../../common/ResetDeltaControl";
 
 
 export default function CrawlerGDriveForm(props) {
@@ -15,10 +16,13 @@ export default function CrawlerGDriveForm(props) {
 
     // Fetch selected source and calculate source_saved using custom hook
     const {
+        selected_source,
         specific_json,
         setSpecificJson,
         l_form_data
     } = useSelectedSource(props);
+
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     // for editing a drive item (undefined if not editing)
     const [current_drive_details, setCurrentDriveDetails] = useState(undefined)
@@ -38,6 +42,7 @@ export default function CrawlerGDriveForm(props) {
     const syncMessage = canSynchronize ? "Synchronize Group memberships" :
         "Please set Service User, Customer Id, Json Token values\nand save source before synchronizing Group memberships"
 
+    const created = selected_source.sourceId > 0
 
     // Update local variable specific_json when data is changed
     function setData(data) {
@@ -197,6 +202,8 @@ export default function CrawlerGDriveForm(props) {
 
             {current_drive_details &&
                 <GoogleDrivesAndFolders handleClosed={closeEditForm}
+                                        sourceCreated={created}
+                                        driveIndex={current_drive_index}
                                         driveDetails={current_drive_details}
                                         setDriveValue={setDriveValue} />
             }
@@ -255,7 +262,7 @@ export default function CrawlerGDriveForm(props) {
                                          style={{display: "inline", zIndex: 1061}}>
                                         <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                                             <div
-                                                className="modal-content shadow p-3 mb-5 bg-white rounded">
+                                                className="modal-content shadow p-3 mb-5rounded">
 
                                                 <div className="modal-header">
                                                     <h5 className="modal-title" id="staticBackdropLabel"
@@ -306,11 +313,11 @@ export default function CrawlerGDriveForm(props) {
                             </label>
                         </div>
                         <div className={"drive_row col-12"}>
-                            <div className={"col-4 small text-black-50 px-4"}>
+                            <div className={(theme==="light" ? "text-black-50" : "text-white-50") + " col-4 small px-4"}>
                                 User / Shared Drive Id
                             </div>
-                            <div className={"col-6 small text-black-50"}>Folders</div>
-                            <div className={"col-2 small text-black-50"}>
+                            <div className={(theme==="light" ? "text-black-50" : "text-white-50") + " col-6 small"}>Folders</div>
+                            <div className={(theme==="light" ? "text-black-50" : "text-white-50") + " col-2 small"}>
                                 <button className="btn text-primary btn-sm fw-500"
                                         onClick={(e) => {
                                             setCurrentDriveIndex(-1)
@@ -368,25 +375,7 @@ export default function CrawlerGDriveForm(props) {
 
                     </div>
 
-                    {/**
-                     DISABLED FOR NOW - bring back upon request (NOT WORKING!)
-                     <div className="row mb-4">
-                     <div className="col-6">
-                     <div className="form-check form-switch">
-                     <input className="form-check-input" type="checkbox"
-                     checked={specific_json.sites_only}
-                     onChange={(event) => {
-                     setData({sites_only: event.target.checked});
-                     }}
-                     title="Crawl only Google site data from these Drives"
-                     />
-                     <label className="form-check-label small">
-                     Crawl only Google site data from these Drives
-                     </label>
-                     </div>
-                     </div>
-                     </div>
-                     */}
+                    <ResetDeltaControl />
 
                 </div>
                 <div className="col-2 offset-1">

@@ -14,7 +14,7 @@ export function Pagination(props) {
     const options = props.rowsPerPageOptions.map(rows => ({key: rows, value: rows}));
 
     return (
-        <div className="d-flex justify-content-between mb-1 pt-1" aria-label="Page navigation example">
+        <div className="d-flex justify-content-between mt-4 mb-1 pt-1" aria-label="Page Navigation">
             <ul className="pagination">
                 <li className="page-item">
                     {props.onChangeRowsPerPage &&

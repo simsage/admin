@@ -1,9 +1,8 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {
-     getOrganisationBackupList,
     getOrganisationList,
-    showAddOrganisationForm, showBackupForm, showDeleteForm,
+    showAddOrganisationForm, showDeleteForm,
     showEditOrganisationForm, showOrganisationId
 } from "./organisationSlice";
 import {setSelectedKB, setSelectedOrganisation, simsageLogOut} from "../auth/authSlice";
@@ -11,34 +10,25 @@ import {Pagination} from "../../common/pagination";
 import {selectTab} from "../home/homeSlice";
 import {search} from "./organisationSlice";
 import { getKBList} from "../knowledge_bases/knowledgeBaseSlice";
-import BkOrganisationBackupHome from "./BkOrganisationBackupHome";
-import BkOrganisationBackupDialog from "./BkOrganisationBackupDialog";
-import BkOrganisationBackupProgressDialog from "./BkOrganisationBackupProgressDialog";
-import BkOrganisationBackupDeleteDialog from "./BkOrganisationBackupDeleteDialog";
-import BkOrganisationBackupDownloadDialog from "./BkOrganisationBackupDownloadDialog";
 import {OrganisationViewId} from "./OrganisationViewId";
 import OrganisationDeleteAsk from "./OrganisationDeleteAsk";
 import OrganisationError from "./OrganisationError";
-import BkOrganisationRestore from "./BkOrganisationRestore";
-import {hasRole} from "../../common/helpers";
-import api, {IMAGES} from "../../common/api";
+import api from "../../common/api";
 import {ShowInvalidSession} from "./ShowInvalidSession";
 import {getGroupList} from "../groups/groupSlice";
-import {useKeycloak} from "@react-keycloak/web";
+import {useAuth} from "react-oidc-context";
 
 
 export function OrganisationHome() {
-    const { keycloak } = useKeycloak();
-    const theme = null
     const organisation_list = useSelector((state) => state.organisationReducer.organisation_list)
     const load_data = useSelector((state) => state.organisationReducer.data_status)
-    const backup_data_status = useSelector((state) => state.organisationReducer.backup_data_status)
-    const user = useSelector((state) => state.authReducer.user);
     let busy = useSelector((state) => state.authReducer.busy);
     const selected_organisation = useSelector((state) => state.authReducer.selected_organisation);
     const kb_list_loaded = useSelector((state) => state.kbReducer.kb_list_loaded);
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    const theme = useSelector((state) => state.homeReducer.theme);
+    const REFRESH_IMAGE = (theme === "light" ? "images/refresh.svg" : "images/refresh-dark.svg")
 
     busy = busy | useSelector((state) => state.organisationReducer.organisation_busy);
 
@@ -49,6 +39,7 @@ export function OrganisationHome() {
 
     const session = useSelector((state) => state.authReducer.session)
     const dispatch = useDispatch();
+    const auth = useAuth();
 
     const filter = null;
 
@@ -56,16 +47,12 @@ export function OrganisationHome() {
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
-    const isAdmin = hasRole(user, ['admin']);
-    //
-    const [show_restore_organisation_form, setShowRestoreOrganisationForm] = useState(false);
-
     const error = useSelector((state) => state.organisationReducer.error);
 
     // const group_data_status = useSelector((state) => state.groupReducer.data_status)
 
     function  handleSignOut() {
-        dispatch(simsageLogOut({session_id: session.id, keycloak}))
+        dispatch(simsageLogOut({session_id: session.id, auth: auth}))
     }
 
     useEffect(() => {
@@ -73,12 +60,6 @@ export function OrganisationHome() {
         dispatch(getOrganisationList({session: session, filter: filter}))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load_data === 'load_now'])
-
-    useEffect(() => {
-        if (!session || !org_id || !session.id) return;
-        dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [backup_data_status === 'load_now', org_id != null])
 
     // load kbs?
     useEffect(() => {
@@ -102,7 +83,6 @@ export function OrganisationHome() {
     const handleRefresh = () => {
         if (!org_id) return;
         dispatch(getOrganisationList({session: session, filter: filter}))
-        dispatch(getOrganisationBackupList({session: session, organisation_id: org_id}))
     }
 
 
@@ -137,12 +117,6 @@ export function OrganisationHome() {
     }
 
 
-    function handleBackupOrganisation(org_id) {
-        if (!session || !org_id) return;
-        dispatch(showBackupForm({show_form: true, org_id: org_id}))
-    }
-
-
     function getOrganisations() {
         const paginated_list = [];
         const first = page * page_size;
@@ -173,13 +147,8 @@ export function OrganisationHome() {
                     </div>
                     <div className="form-group d-flex ms-auto">
                         <div className="btn" onClick={() => handleRefresh()} >
-                            <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh organisations" />
+                            <img src={REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh organisations" />
                         </div>
-                        <button data-testid="add-new-organisation"
-                                disabled={busy}
-                                onClick={() => setShowRestoreOrganisationForm(!show_restore_organisation_form)}
-                                className="btn btn-outline-primary text-nowrap ms-2">Import
-                        </button>
 
                         <button data-testid="add-new-organisation" onClick={() => handleAddOrganisation()}
                                 disabled={busy}
@@ -190,11 +159,11 @@ export function OrganisationHome() {
                 </div>
             </div>
             <div>
-                <table className="table">
+                <table className={theme === "light" ? "table pointer-cursor" : "table-dark pointer-cursor"}>
                     <thead>
                     <tr>
-                        <td className="small text-black-50 px-4">Organisation</td>
-                        <td className="small text-black-50 px-4">Enabled</td>
+                        <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Organisation</td>
+                        <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Enabled</td>
                         <td>
 
                         </td>
@@ -212,7 +181,7 @@ export function OrganisationHome() {
                             return (
                                 <tr key={item.id} className={(item.id === selected_organisation.id) ? "active" : ""}>
                                     <td className={`${(item.id === selected_organisation.id) ? "fw-500" : ""} pt-3 px-4 pb-3`}
-                                        title={"organisation " + item.name}
+                                        title={"organisation " + item.name + " (" + item.id + ")"}
                                         onClick={() => handleSelectOrganisation(session.id, item)}>
                                         {item.name}
                                     </td>
@@ -225,11 +194,6 @@ export function OrganisationHome() {
                                             <button className={"btn text-primary btn-sm"}
                                                     title={"view organisation id" + item.name}
                                                     onClick={() => handleViewOrganisationID(item.id)}>View ID
-                                            </button>
-
-                                            <button className={"btn text-primary btn-sm"}
-                                                    title={"backup organisation " + item.name}
-                                                    onClick={() => handleBackupOrganisation(item.id)}>Backup
                                             </button>
 
                                             <button className={"btn text-primary btn-sm"}
@@ -253,7 +217,7 @@ export function OrganisationHome() {
                     }
                     {!organisation_list &&
                         <tr>
-                            <td className="small text-black-50 px-4" colSpan={3}>No records found.</td>
+                            <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"} colSpan={3}>No records found.</td>
                         </tr>
                     }
                     </tbody>
@@ -261,7 +225,6 @@ export function OrganisationHome() {
 
                 <Pagination
                     rowsPerPageOptions={[5, 10, 25]}
-                    theme={theme}
                     component="div"
                     count={organisation_list.length}
                     rowsPerPage={page_size}
@@ -284,22 +247,6 @@ export function OrganisationHome() {
                 <OrganisationDeleteAsk/>
 
                 <OrganisationError/>
-
-                <BkOrganisationBackupHome/>
-
-                <BkOrganisationBackupDialog/>
-
-                <BkOrganisationBackupProgressDialog/>
-
-                <BkOrganisationBackupDeleteDialog/>
-
-                <BkOrganisationBackupDownloadDialog/>
-
-                {isAdmin && show_restore_organisation_form &&
-                    <BkOrganisationRestore
-                        onClose={(val) => setShowRestoreOrganisationForm(val)}
-                    />
-                }
 
 
                 {error === 'invalid session id' &&

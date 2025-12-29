@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import Comms from "../../common/comms";
 import axios from "axios";
-import {Api, get_error} from "../../common/api";
+import {Api, get_error, uri_esc} from "../../common/api";
 
 
 const initialState = {
@@ -37,6 +37,13 @@ const initialState = {
     status: '',
 
     accounts_dropdown: false,
+
+    show_notifications: false,
+    notification_list: [],
+
+    show_bottom_notifications: false,
+    bottom_notifications_dismissed: {},
+    bottom_notification_list: []
 }
 
 
@@ -92,18 +99,32 @@ const login_helper = function (login_obj) {
         user: user,
         session: session,
         organisation_list: organisation_list,
-        shared_secret_salt: login_obj.sharedSecretSalt,
+        shared_secret_salt: login_obj.aes,
         stt_enabled: login_obj.sttEnabled === true,
         translate_enabled: login_obj.translateEnabled === true,
     }
 }
 
-export const logout = (keycloak) => {
-    keycloak.logout({redirectUri: window.location.protocol + "//" + window.location.host}).then((success) => {
+export const logout = (auth) => {
+    auth.signoutRedirect({redirectUri: window.location.protocol + "//" + window.location.host}).then((success) => {
         console.log("--> log: logout success ", success);
     }).catch((error) => {
         console.log("--> log: logout error ", error);
     });
+}
+
+// helper - add notifications to the bottom that haven't been seen before in the last 60 seconds
+const get_notifications_not_yet_dismissed_and_finished = (state, action_payload) => {
+    let changes_list = JSON.parse(JSON.stringify(state.bottom_notification_list))
+    const time_now = new Date().getTime()
+    for (const current of action_payload) {
+        if (current.finished > 0 && !state.bottom_notifications_dismissed.hasOwnProperty(current.taskId)) {
+            if (!changes_list.find(item => item.taskId === current.taskId)) {
+                if (current.finished + 60_000 > time_now) changes_list.push(current)
+            }
+        }
+    }
+    return changes_list
 }
 
 const authSlice = createSlice({
@@ -190,6 +211,28 @@ const authSlice = createSlice({
             return {
                 ...state,
                 accounts_dropdown: ad,
+                show_notifications: false
+            }
+        },
+
+        toggleNotifications: (state) => {
+            return {
+                ...state,
+                show_notifications: !state.show_notifications,
+                accounts_dropdown: false,
+            }
+        },
+
+        clearFinishedNotifications: (state) => {
+            let new_bottom_notifications_dismissed = JSON.parse(JSON.stringify(state.bottom_notifications_dismissed))
+            for (const n of state.bottom_notification_list) {
+                new_bottom_notifications_dismissed[n.taskId] = n.finished
+            }
+            return {
+                ...state,
+                bottom_notification_list: [],
+                show_bottom_notifications: false,
+                bottom_notifications_dismissed: new_bottom_notifications_dismissed
             }
         },
 
@@ -197,6 +240,7 @@ const authSlice = createSlice({
             return {
                 ...state,
                 accounts_dropdown: false,
+                show_notifications: false,
             }
         },
 
@@ -226,34 +270,6 @@ const authSlice = createSlice({
                     error_text: get_error(action),
                     error_title: "Sign in error",
                     is_error: true,
-                    is_sign_in_error: true,
-                    status: "rejected"
-                }
-            })
-
-            /////////////////////////////////////////////////////////////////////////////
-
-            .addCase(signInSessionId.pending, (state) => {
-                return {
-                    ...state,
-                    busy: true,
-                    is_sign_in_error: false,
-                    status: "loading"
-                }
-            })
-            .addCase(signInSessionId.fulfilled, (state, action) => {
-                return {
-                    ...state,
-                    message: '',
-                    busy: false,
-                    is_sign_in_error: false,
-                    status: 'logged_in',
-                }
-            })
-            .addCase(signInSessionId.rejected, (state) => {
-                return {
-                    ...state,
-                    busy: false,
                     is_sign_in_error: true,
                     status: "rejected"
                 }
@@ -429,22 +445,107 @@ const authSlice = createSlice({
                 }
             })
 
+            /////////////////////////////////////////////////////////////////////////////
+
+            .addCase(getNotifications.pending, (state, action) => {
+                return {
+                    ...state,
+                    error_text: '',
+                    status: "pending"
+                }
+            })
+
+
+            .addCase(getNotifications.fulfilled, (state, action) => {
+                // calculate what should be displayed at the bottom
+                const changes = get_notifications_not_yet_dismissed_and_finished(state, action.payload)
+                return {
+                    ...state,
+                    status: "",
+                    notification_list: action.payload,
+                    bottom_notification_list: changes,
+                    show_bottom_notifications: changes.length > 0
+                }
+            })
+
+            .addCase(getNotifications.rejected, (state, action) => {
+                return {
+                    ...state,
+                    status: "rejected"
+                }
+            })
+
+            /////////////////////////////////////////////////////////////////////////////
+
+            .addCase(clearNotifications.pending, (state, action) => {
+                return {
+                    ...state,
+                    error_text: '',
+                    status: "pending"
+                }
+            })
+
+
+            .addCase(clearNotifications.fulfilled, (state, action) => {
+                return {
+                    ...state,
+                    status: "",
+                    notification_list: action.payload,
+                    bottom_notification_list: []
+                }
+            })
+
+            .addCase(clearNotifications.rejected, (state, action) => {
+                return {
+                    ...state,
+                    status: "rejected"
+                }
+            })
+
+            /////////////////////////////////////////////////////////////////////////////
+
+            .addCase(clearAllNotifications.pending, (state, action) => {
+                return {
+                    ...state,
+                    error_text: '',
+                    status: "pending"
+                }
+            })
+
+
+            .addCase(clearAllNotifications.fulfilled, (state, action) => {
+                return {
+                    ...state,
+                    status: "",
+                    notification_list: [],
+                    bottom_notification_list: []
+                }
+            })
+
+            .addCase(clearAllNotifications.rejected, (state, action) => {
+                return {
+                    ...state,
+                    status: "rejected"
+                }
+            })
+
     }
 });
+
 
 // let abortController;
 export const simsageLogOut = createAsyncThunk(
     'auth/simsageLogOut',
-    async ({session_id, keycloak}) => {
+    async ({session_id, auth}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/auth/sign-out'
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
-                logout(keycloak);
+                logout(auth);
                 return response
             }).catch(
                 (error) => {
-                    logout(keycloak);
+                    logout(auth);
                     return error
                 }
             )
@@ -484,34 +585,6 @@ export const simsageSignIn = createAsyncThunk(
 export const getSessionId = (state) => {
     return state.authReducer.session.id
 };
-
-export const signInSessionId = createAsyncThunk(
-    'auth/signInSessionId',
-    async ({session_id, on_success, on_fail}, {rejectWithValue}) => {
-        const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/admin/authenticate/session-id';
-
-        axios.get(url, {
-            headers: {
-                "API-Version": window.ENV.api_version,
-                "Content-Type": "application/json",
-                "session-id": session_id,
-            },
-        })
-            .then((response) => {
-                if (on_success)
-                    on_success(response.data);
-                return response;
-            })
-            .catch((error) => {
-                if (on_fail)
-                    on_fail(error.message);
-                return rejectWithValue(error?.response?.data)
-            });
-
-    }
-)
-
 
 export const simsagePasswordSignIn = createAsyncThunk(
     'auth/simsagePasswordSignIn',
@@ -569,13 +642,61 @@ export const resetPassword = createAsyncThunk(
 );
 
 
-// password reset
+// get system status
 export const getSystemStatus = createAsyncThunk(
     'authSlice/getSystemStatus',
     async ({session_id, organisation_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/stats/status/' + encodeURIComponent(organisation_id);
+        const url = api_base + '/stats/status/' + uri_esc(organisation_id);
         return axios.put(url, null, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data;
+            }).catch((err) => {
+                return rejectWithValue(err)
+            })
+    }
+);
+
+
+// get system notifications
+export const getNotifications = createAsyncThunk(
+    'authSlice/getNotifications',
+    async ({session_id, organisation_id}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/stats/tasks/' + uri_esc(organisation_id);
+        return axios.get(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data;
+            }).catch((err) => {
+                return rejectWithValue(err)
+            })
+    }
+);
+
+
+// clear completed notifications
+export const clearNotifications = createAsyncThunk(
+    'authSlice/clearNotifications',
+    async ({session_id, organisation_id}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/stats/clear-tasks/' + uri_esc(organisation_id);
+        return axios.get(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data;
+            }).catch((err) => {
+                return rejectWithValue(err)
+            })
+    }
+);
+
+
+// clear completed notifications
+export const clearAllNotifications = createAsyncThunk(
+    'authSlice/clearAllNotifications',
+    async ({session_id, organisation_id}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/stats/clear-all-tasks/' + uri_esc(organisation_id);
+        return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data;
             }).catch((err) => {
@@ -592,6 +713,8 @@ export const {
     setSelectedOrganisation,
     closeError,
     setSelectedKB,
+    toggleNotifications,
+    clearFinishedNotifications
 } = authSlice.actions
 
 export default authSlice.reducer;

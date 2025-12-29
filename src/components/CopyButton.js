@@ -32,14 +32,12 @@ export function CopyButton({ reference }) {
     };
 
     return (
-        <button
+        <span
             onClick={handleCopy}
-            type="button"
-            className={`btn btn-secondary${copied ? ' copied' : ''}`}
-            title="Copy content"
-            style={{ width: '80px' }} // Adjust the width as needed
+            title="Copy into clipboard"
+            style={{ marginLeft: '10px', width: '80px', cursor: 'pointer' }} // Adjust the width as needed
         >
-            {copied ? 'Copied' : 'Copy'}
-        </button>
+            {copied ? '✅' : '📋'}
+        </span>
     );
 }

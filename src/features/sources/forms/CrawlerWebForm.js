@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {BsFilePdf} from "react-icons/bs";
-import {DOCUMENTATION, invalid_credential, useSelectedSource, validDropBoxFolderList} from "./common";
+import {DOCUMENTATION, invalid_credential, useSelectedSource} from "./common";
 
 export default function CrawlerWebForm(props) {
 
@@ -28,8 +28,8 @@ export default function CrawlerWebForm(props) {
 
     //update setFormData when specific_json is changed
     useEffect(() => {
-        let specific_json_stringify = JSON.stringify(specific_json)
-        props.setFormData({...l_form_data, specificJson: specific_json_stringify})
+        let specific_json_string = JSON.stringify(specific_json)
+        props.setFormData({...l_form_data, specificJson: specific_json_string})
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
@@ -38,13 +38,20 @@ export default function CrawlerWebForm(props) {
 
         const validate_web = () => {
             const {baseUrlList} = specific_json
+            const {useCookieAuth, cookieEndpoint, basicUsername} = specific_json
+            if (useCookieAuth === true) {
+                if ((cookieEndpoint ?? '').length === 0 || (basicUsername ?? '').length === 0)
+                    return "Web Crawler: use Cookie Authentication requires the basic auth username, " +
+                        "basic auth password, and Cookie authentication endpoint to be set"
+            }
             return invalid_credential(baseUrlList) || (!baseUrlList.startsWith("http://") &&
                 !baseUrlList.startsWith("https://") && !baseUrlList.startsWith("file://")) ?
                 "Web Crawler: you must supply a base url of type http://, file:// or https://" : null
         }
 
         if (props.set_verify) props.set_verify(() => validate_web)
-    }, [props.set_verify, specific_json])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [specific_json])
 
 
     return (
@@ -163,6 +170,38 @@ export default function CrawlerWebForm(props) {
                     />
                 </div>
             </div>
+
+
+            <div className="row mb-5">
+                <div className="col-3">
+                    <div className="form-check form-switch"
+                         title="check for to use Cookie based authentication using a Cookie supplying endpoint
+                         (uses basic auth username and basic auth password)">
+                        <input className="form-check-input" type="checkbox"
+                               checked={specific_json.useCookieAuth === true}
+                               onChange={(event) => {
+                                   setData({useCookieAuth: event.target.checked});
+                               }}
+                        />
+                        <label className="form-check-label small">use Cookie Authentication</label>
+                    </div>
+                </div>
+                <div className="form-group col-6">
+                    <label className="small d-flex justify-content-between">
+                        Cookie Authentication endpoint
+                    </label>
+                    <input type="text" className="form-control"
+                           placeholder="cookie authentication endpoint"
+                           disabled={specific_json.useCookieAuth !== true}
+                           title="the endpoint when using Cookie Authentication"
+                           value={specific_json.cookieEndpoint ?? ''}
+                           onChange={(event) => {
+                               setData({cookieEndpoint: event.target.value})
+                           }}
+                    />
+                </div>
+            </div>
+
 
             <div className="row mb-3 pt-5 border-top">
                 <div className="form-group col-6">

@@ -81,7 +81,7 @@ export default function CrawlerDatabaseForm(props) {
         const validate_database = () => is_valid_metadata(specific_json.metadata_list)
 
         if (props.set_verify) props.set_verify(() => validate_database)
-    }, [props.set_verify, specific_json])
+    }, [props, specific_json])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">

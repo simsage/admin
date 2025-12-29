@@ -7,10 +7,10 @@ import TextToSearchHome from "../text_to_search/TextToSearchHome";
 import LLMHome from "../llms/LLMHome";
 
 export default function MindHome(){
-    const [selected_sub_nav, setSelectedSubNav] = useState('ai')
+    const [selected_sub_nav, setSelectedSubNav] = useState('llm')
 
     const sub_nav = [
-        {label: "AI set up", slug:"ai" },
+        {label: "LLM set up", slug:"llm" },
         {label: "Synonyms", slug:"synonyms" },
         {label: "Semantics", slug:"semantics" },
         {label: "Synsets", slug:"synsets" },
@@ -28,7 +28,7 @@ export default function MindHome(){
             {selected_sub_nav === 'synonyms' && <SynonymsHome tab={selected_sub_nav} />}
             {selected_sub_nav === 'semantics' && <SemanticsHome tab={selected_sub_nav} />}
             {selected_sub_nav === 'synsets' && <SynsetsHome tab={selected_sub_nav} />}
-            {selected_sub_nav === 'ai' && <LLMHome tab={selected_sub_nav} />}
+            {selected_sub_nav === 'llm' && <LLMHome tab={selected_sub_nav} />}
             {selected_sub_nav === 'textToSearch' && <TextToSearchHome/>}
         </>
     )

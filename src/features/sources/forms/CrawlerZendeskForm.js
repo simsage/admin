@@ -26,7 +26,8 @@ export default function CrawlerZendeskForm(props) {
     // this crawler doesn't need the verify system
     useEffect(() => {
         if (props.set_verify) props.set_verify('n/a')
-    }, [props.set_verify])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">

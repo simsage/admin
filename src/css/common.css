@@ -136,7 +136,6 @@
 /* logs */
 
 .log-list-overflow {
-    height: 60vh;
     overflow: scroll;
     scroll-behavior: auto;
 }

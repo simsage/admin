@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import Comms from "../../common/comms";
 import axios from "axios";
+import {filter_esc, uri_esc} from "../../common/api";
 
 const initialState = {
     organisation_original_list: [],
@@ -28,8 +29,7 @@ const initialState = {
     backup_data_status: 'load_now',//load_now,loading,loaded
 
     //backup forms
-    show_backup_form: false,
-    backup_organisation_id: null,
+    backup_kb: null,
 
     //backup_progress
     show_backup_progress_message: false,
@@ -37,6 +37,7 @@ const initialState = {
     //remove, download backup
     show_delete_backup_form: false,
     show_download_backup_form: false,
+    show_restore_backup_form: false,
     selected_backup: {},
     downloaded_backup: null,
 
@@ -92,7 +93,7 @@ const reducers = {
         if (action.payload.keyword.length > 0) {
             const regex = new RegExp(action.payload.keyword, "i")
             let temp = state.organisation_original_list.filter(list_item => {
-                return list_item.name.match(regex) || list_item.id === action.payload.keyword
+                return list_item.name.match(regex) || list_item.id.indexOf(action.payload.keyword) >= 0
             });
             if (temp.length > 0) {
                 state.organisation_list = temp
@@ -110,16 +111,14 @@ const reducers = {
     showBackupForm: (state, action) => {
         return {
             ...state,
-            show_backup_form: action.payload.show_form,
-            backup_organisation_id: action.payload.org_id
+            backup_kb: action.payload.kb
         }
     },
 
     closeBackupForm: (state) => {
         return {
             ...state,
-            show_backup_form: false,
-            backup_organisation_id: null
+            backup_kb: null
         }
     },
 
@@ -138,10 +137,26 @@ const reducers = {
         }
     },
 
+    showRestoreBackupForm: (state, action) => {
+        return {
+            ...state,
+            show_restore_backup_form: action.payload.show_form,
+            selected_backup: action.payload.selected_backup
+        }
+    },
+
     closeBackupDeleteMessage: (state) => {
         return {
             ...state,
             show_delete_backup_form: false,
+            selected_backup: null
+        }
+    },
+
+    closeBackupRestoreMessage: (state) => {
+        return {
+            ...state,
+            show_restore_backup_form: false,
             selected_backup: null
         }
     },
@@ -317,14 +332,14 @@ const extraReducers = (builder) => {
         })
 
         //Create Backup
-        .addCase(backupOrganisation.pending, (state) => {
+        .addCase(backupKnowledgeBase.pending, (state) => {
             return {
                 ...state,
                 organisation_busy: true,
                 show_backup_progress_message: true
             }
         })
-        .addCase(backupOrganisation.fulfilled, (state) => {
+        .addCase(backupKnowledgeBase.fulfilled, (state) => {
             return {
                 ...state,
                 organisation_busy: false,
@@ -332,7 +347,7 @@ const extraReducers = (builder) => {
                 backup_data_status: 'load_now'
             }
         })
-        .addCase(backupOrganisation.rejected, (state, action) => {
+        .addCase(backupKnowledgeBase.rejected, (state, action) => {
             return {
                 ...state,
                 organisation_busy: false,
@@ -443,7 +458,7 @@ export const getOrganisationList = createAsyncThunk(
     'organisations/getOrganisationList',
     async ({session, filter}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/user/organisations/' + encodeURIComponent(filter);
+        const url = api_base + '/auth/user/organisations/' + filter_esc(filter);
         return axios.get(url, Comms.getHeaders(session.id))
             .then((response) => {
                 return response.data
@@ -475,7 +490,7 @@ export const deleteOrganisation = createAsyncThunk(
     'organisations/deleteOrganisation',
     async ({session_id, organisation_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/auth/organisation/' + encodeURIComponent(organisation_id);
+        const url = api_base + '/auth/organisation/' + uri_esc(organisation_id);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -494,7 +509,7 @@ export const getOrganisationBackupList = createAsyncThunk(
     'organisations/getOrganisationBackupList',
     async ({session, organisation_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = '/backup/backups/' + encodeURIComponent(organisation_id);
+        const url = '/backup/backups/' + uri_esc(organisation_id);
         const {id} = session
         return axios.get(api_base + url, Comms.getHeaders(id))
             .then((response) => {
@@ -508,26 +523,24 @@ export const getOrganisationBackupList = createAsyncThunk(
 
 export const downloadBackup = createAsyncThunk(
     'organisations/downloadBackup',
-    async ({session, organisation_id, backup_id}, {rejectWithValue}) => {
+    async ({session, organisation_id, kb_id, backup_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
-        const {id} = session
-        return axios.get(url, Comms.getHeaders(id))
-            .then((response) => {
-                return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
-            })
+        const url = api_base + '/backup/' + uri_esc(organisation_id) + '/' +
+                            uri_esc(kb_id) + '/' + uri_esc(backup_id);
+        Comms.download_backup(organisation_id, session.id, url)
     }
 );
 
 // /api/auth/organisation/{organisationId}
 // https://adminux.simsage.ai/api/backup/backup/{organisationId}/specific
-export const backupOrganisation = createAsyncThunk(
-    'organisations/backupOrganisation',
-    async ({session_id, organisation_id}, {rejectWithValue}) => {
+export const backupKnowledgeBase = createAsyncThunk(
+    'organisations/backupKnowledgeBase',
+    async ({session_id, organisation_id, kb_id, backup_level}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/specific';
+        const url = api_base + '/backup/backup/' +
+            uri_esc(organisation_id) + '/' +
+            uri_esc(kb_id) + '/' +
+            uri_esc(backup_level.join(','))
         const data = {};
         return axios.post(url, data, Comms.getHeaders(session_id))
             .then((response) => {
@@ -559,10 +572,30 @@ export const restoreOrganisation = createAsyncThunk(
 // https://adminux.simsage.ai/api/backup/backup/c276f883-e0c8-43ae-9119-df8b7df9c574/1675160719696
 export const deleteBackup = createAsyncThunk(
     'organisations/deleteBackup',
-    async ({session_id, organisation_id, backup_id}, {rejectWithValue}) => {
+    async ({session_id, organisation_id, kb_id, backup_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/backup/backup/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(backup_id);
+        const url = api_base + '/backup/backup/' + uri_esc(organisation_id) + '/' +
+                            uri_esc(kb_id) + '/' + uri_esc(backup_id);
         return axios.delete(url, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    }
+)
+
+
+// https://adminux.simsage.ai/api/backup/restore/c276f883-e0c8-43ae-9119-df8b7df9c574/1675160719696
+export const restoreBackup = createAsyncThunk(
+    'organisations/deleteBackup',
+    async ({session_id, organisation_id, backup_id, backup_level}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/backup/restore/' +
+            uri_esc(organisation_id) + '/' +
+            uri_esc(backup_id) + '/' +
+            uri_esc(backup_level.join(","))
+        return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
             }).catch((err) => {
@@ -592,7 +625,9 @@ export const {
     closeBackupForm,
     closeBackupProgressMessage,
     showDeleteBackupForm,
+    showRestoreBackupForm,
     closeBackupDeleteMessage,
+    closeBackupRestoreMessage,
     showDownloadBackupForm,
     closeBackupDownloadMessage,
     showOrganisationId,

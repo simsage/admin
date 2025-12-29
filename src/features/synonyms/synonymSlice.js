@@ -1,11 +1,13 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
+import {uri_esc} from "../../common/api";
 
 const initialState = {
     synonym_list: [],
     num_synonyms: 0,
     synonyms_busy: false,
+    show_import: false,
     synonym_page_size: 10,
     synonym_page: 0,
     status: null,
@@ -15,54 +17,6 @@ const initialState = {
     show_delete_form: false,
     filter: "",
 }
-
-//organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size
-export const loadSynonyms = createAsyncThunk(
-    "synonyms/getSynonym",
-    async ({session_id, data}, {rejectWithValue}) => {
-
-        const api_base = window.ENV.api_base;
-        const url = api_base + `/language/synonyms`;
-
-        return axios.put(url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
-            })
-    })
-
-export const updateSynonyms = createAsyncThunk(
-    "synonyms/updateSynonym",
-    async ({session_id, organisation_id, knowledge_base_id, data}, {rejectWithValue}) => {
-
-        const api_base = window.ENV.api_base;
-        const url = api_base + `/language/save-synonym/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}`;
-
-        return axios.put(url, data, Comms.getHeaders(session_id))
-            .then((response) => {
-                return response.data
-            }).catch((err) => {
-                return rejectWithValue(err?.response?.data)
-            })
-    }
-)
-
-export const deleteSynonym = createAsyncThunk(
-            "synonyms/deleteSynonym",
-                async ({session_id, organisation_id, knowledge_base_id , id}, {rejectWithValue}) => {
-
-                const api_base = window.ENV.api_base;
-                const url = api_base + `/language/delete-synonym/${encodeURIComponent(organisation_id)}/${encodeURIComponent(knowledge_base_id)}/${encodeURIComponent(id)}`
-
-                return axios.delete(url,Comms.getHeaders(session_id))
-                    .then((response) => {
-                        return response.data
-                    }).catch((err) => {
-                        return rejectWithValue(err?.response?.data)
-                    })
-                }
-)
 
 const extraReducers = (builder) => {
     builder
@@ -80,8 +34,8 @@ const extraReducers = (builder) => {
                 ...state,
                 status: "fulfilled",
                 synonyms_busy: false,
-                synonym_list: action.payload.synonymList?action.payload.synonymList:[],
-                num_synonyms: action.payload.numSynonyms?action.payload.numSynonyms:0,
+                synonym_list: action.payload.synonymList ? action.payload.synonymList : [],
+                num_synonyms: action.payload.numSynonyms ?? 0,
                 data_status: 'loaded'
             }
         })
@@ -156,6 +110,37 @@ const extraReducers = (builder) => {
                     action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
             }
         })
+
+        // import Synonyms
+        .addCase(importSynonyms.pending, (state) => {
+            return {
+                ...state,
+                synonyms_busy: true,
+                status: "loading"
+            }
+        })
+        .addCase(importSynonyms.fulfilled, (state) => {
+            return {
+                ...state,
+                status: "fulfilled",
+                synonyms_busy: false,
+                show_import: false,
+                data_status: 'load_now'
+            }
+        })
+        .addCase(importSynonyms.rejected, (state, action) => {
+            return {
+                status: "rejected",
+                synonyms_busy: false,
+                show_import: true,
+                show_synonym_form: false,
+                show_error_form: true,
+                error_title: "Synonym Import Failed",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
+        })
+
 }
 
 const synonymSlice = createSlice({
@@ -165,13 +150,13 @@ const synonymSlice = createSlice({
         showAddSynonymForm:(state, action) => {
             return {
                 ...state,
-                show_synonym_form: action.payload
+                show_synonym_form: true
             }
         },
         showEditSynonymForm:(state, action) => {
             return {
                 ...state,
-                show_synonym_form: action.payload.show,
+                show_synonym_form: true,
                 edit: action.payload.syn
             }
         },
@@ -179,6 +164,18 @@ const synonymSlice = createSlice({
             return {
                 show_synonym_form: false,
                 edit: undefined
+            }
+        },
+        showImportSynonymForm:(state, action) => {
+            return {
+                ...state,
+                show_import: true
+            }
+        },
+        closeImportSynonymForm:(state) => {
+            return {
+                ...state,
+                show_import: false
             }
         },
         showDeleteSynonymForm:(state, action) => {
@@ -213,7 +210,88 @@ export const {
     closeSynonymForm,
     showEditSynonymForm,
     showDeleteSynonymForm,
-    closeDeleteForm
+    closeDeleteForm,
+    showImportSynonymForm,
+    closeImportSynonymForm
 } = synonymSlice.actions;
+
+
+//organisation_id, kb_id, prev_id, synonym_filter, synonym_page_size
+export const loadSynonyms = createAsyncThunk(
+    "synonyms/getSynonym",
+    async ({session_id, data}, {rejectWithValue}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/language/synonyms`;
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    })
+
+export const updateSynonyms = createAsyncThunk(
+    "synonyms/updateSynonym",
+    async ({session_id, organisation_id, knowledge_base_id, data}, {rejectWithValue}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/language/save-synonym/${uri_esc(organisation_id)}/${uri_esc(knowledge_base_id)}`;
+
+        return axios.put(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    }
+)
+
+export const deleteSynonym = createAsyncThunk(
+    "synonyms/deleteSynonym",
+    async ({session_id, organisation_id, knowledge_base_id , id}, {rejectWithValue}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + `/language/delete-synonym/${uri_esc(organisation_id)}/${uri_esc(knowledge_base_id)}/${uri_esc(id)}`
+
+        return axios.delete(url,Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    }
+)
+
+
+export const importSynonyms = createAsyncThunk(
+    "synonyms/importSynonyms",
+    async ({
+               session_id,
+               organisation_id,
+               kb_id,
+               text
+           }, {rejectWithValue}) => {
+
+        const api_base = window.ENV.api_base;
+        const url = api_base + "/language/upload-synonyms"
+
+        const data = {
+            organisationId: organisation_id,
+            kbId: kb_id,
+            text: text
+        }
+
+        return axios.post(url, data, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    }
+)
+
+
 
 export default synonymSlice.reducer;

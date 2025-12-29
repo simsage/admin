@@ -19,7 +19,6 @@ export default function SynonymDeleteAsk(){
 
     const handleDelete = () => {
         const data = {"session_id": session_id, "organisation_id": organisation_id, "knowledge_base_id": knowledgeBase_id, "id": synonym.id };
-
             dispatch(deleteSynonym(data));
             dispatch(closeDeleteForm());
     }

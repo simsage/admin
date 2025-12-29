@@ -3,6 +3,7 @@ import Api from "../../../common/api";
 
 
 export const DOCUMENTATION = {
+    RULES_ENGINE: "resources/simsage-rules-engine.pdf",
     AWS: "resources/simsage-aws-crawler-setup.pdf",
     ZENDESK: "resources/simsage-zendesk-crawler-setup.pdf",
     XML: "resources/simsage-xml-crawler-setup.pdf",
@@ -14,15 +15,18 @@ export const DOCUMENTATION = {
     EXCHANGE365: "resources/simsage-exchange365-crawler-setup.pdf",
     MS_FILESHARE: "resources/simsage-microsoft-fileshare-setup.pdf",
     GOOGLE_DRIVE: "resources/simsage-google-drive-setup.pdf",
-    IMANAGE: "resources/imanage-setup.pdf",
+    IMANAGE: "resources/simsage-imanage-setup.pdf",
     JIRA: "resources/simsage-jira-crawler-setup.pdf",
     ALFRESCO: "resources/simsage-alfresco-crawler-setup.pdf",
     ONE_DRIVE: "resources/simsage-sharepoint365-crawler-setup.pdf",
     SFTP: "resources/simsage-sftp-crawler-setup.pdf",
     SHAREPOINT365: "resources/simsage-sharepoint365-crawler-setup.pdf",
+    SHAREPOINT365_SETUP: "https://www.simsage.co.uk/auth0/",
+    ARC_GIS: "resources/simsage-arc-gis-crawler-setup.pdf",
     SLACK: "resources/simsage-slack-crawler-setup.pdf",
     STRUCTURED: "resources/simsage-structured-data-setup.pdf",
-    WEB: "resources/simsage-web-crawler-setup.pdf"
+    WEB: "resources/simsage-web-crawler-setup.pdf",
+    OPENTEXT: "resources/simsage-opentext-crawler-setup.pdf"
 }
 
 /**

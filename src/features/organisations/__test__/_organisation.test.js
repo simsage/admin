@@ -12,7 +12,7 @@ import {fetch_data} from "./_test_data";
 
 const filter = null;
 // const api_base = 'https://adminux.simsage.ai/api';
-const url = 'https://adminux.simsage.ai/api/auth/user/organisations/' + encodeURIComponent(filter);
+const url = 'https://adminux.simsage.ai/api/auth/user/organisations/' + uri_esc(filter);
 
 export const handlers = [
     rest.get(url, (req, res, ctx) => {

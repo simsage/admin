@@ -33,7 +33,7 @@ export function OneDriveUserAndLibraries(props) {
 
         <div className={"modal-dialog modal-lg"} role="document">
             <div className="modal-content">
-                <div className="modal-header px-5 pt-4 bg-light">
+                <div className="modal-header px-5 pt-4">
                     <h4 className="mb-0">{"Drive User/Group Details"}</h4>
                 </div>
                 <div className="modal-body p-10">

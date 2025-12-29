@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
+import {uri_esc} from "../../common/api";
 
 const initialState = {
     synset_total_size: 0,
@@ -55,7 +56,7 @@ export const addOrUpdate = createAsyncThunk(
     "synsets/addOrUpdate",
     async ({organisation_id, kb_id, session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/language/save-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        const url = api_base + '/language/save-syn-set/' + uri_esc(organisation_id) + '/' + uri_esc(kb_id);
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -70,7 +71,7 @@ export const deleteRecord = createAsyncThunk(
     "synsets/deleteRecord",
     async ({organisation_id, kb_id, session_id, lemma}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/language/delete-syn-set/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/' + encodeURIComponent(lemma);
+        const url = api_base + '/language/delete-syn-set/' + uri_esc(organisation_id) + '/' + uri_esc(kb_id) + '/' + uri_esc(lemma);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -85,7 +86,7 @@ export const addDefaultSynsets = createAsyncThunk(
     "synsets/addDefaultSynsets",
     async ({organisation_id, kb_id, session_id, data}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/language/default-syn-sets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id);
+        const url = api_base + '/language/default-syn-sets/' + uri_esc(organisation_id) + '/' + uri_esc(kb_id);
         return axios.put(url, data, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data

@@ -48,7 +48,7 @@ const TextToSearchTest = () => {
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header px-5 pt-4 bg-light">
+                    <div className="modal-header px-5 pt-4">
                         <h4 className="mb-0">Test Text-To-Search Query</h4>
                     </div>
                     <div className="modal-body p-0">

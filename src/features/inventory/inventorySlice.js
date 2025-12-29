@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Comms from "../../common/comms";
+import {uri_esc} from "../../common/api";
 
 const initialState = {
     inventory_list: [],
@@ -15,6 +16,7 @@ const initialState = {
     show_index_snapshot_form: false,
     show_delete_form: false,
     show_add_info_form: false,
+    show_health_check_form: false
 };
 
 const reducers = {
@@ -56,6 +58,13 @@ const reducers = {
         }
     },
 
+    showHealthCheckForm(state,action) {
+        return {
+            ...state,
+            show_health_check_form: true
+        }
+    },
+
     showAddInfoForm(state, action) {
         return {
             ...state,
@@ -71,6 +80,7 @@ const reducers = {
             selected_inventory: {},
             show_document_snapshot_form: false,
             show_index_snapshot_form: false,
+            show_health_check_form: false,
             show_delete_form: false,
             show_add_info_form: false
         }
@@ -197,6 +207,37 @@ const extraReducers = (builder) => {
                     action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
             }
         })
+
+        ///////////////////////////////////////////////////////////////////////////////
+
+        // Knowledge base health check
+        .addCase(healthCheck.pending, (state) => {
+            return {
+                ...state,
+                status: "loading"
+            }
+        })
+        .addCase(healthCheck.fulfilled, (state) => {
+            return {
+                ...state,
+                status: "fulfilled",
+                data_status: "load_now"
+            }
+        })
+        .addCase(healthCheck.rejected, (state, action) => {
+            return {
+                ...state,
+                status: "rejected",
+                data_status: "rejected",
+                show_add_info_form: false,
+                show_error_form: true,
+                error_title: "Failed to perform health-check",
+                error_message:
+                    action?.payload?.error ?? "Please contact the SimSage Support team if the problem persists"
+            }
+        })
+
+
 }
 
 
@@ -212,7 +253,7 @@ export const loadInventoryList = createAsyncThunk(
     'inventories/loadInventoryList',
     async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
         const api_base = window.ENV.api_base;
-        const url = api_base + '/document/parquets/' + encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id) + '/0/10';
+        const url = api_base + '/document/parquets/' + uri_esc(organisation_id) + '/' + uri_esc(kb_id) + '/0/10';
         return axios.get(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -252,6 +293,21 @@ export const createIndexSnapshot = createAsyncThunk(
     });
 
 
+// POST api/document/health-check/org-id/kb-id
+export const healthCheck = createAsyncThunk(
+    'healthCheck',
+    async ({session_id, organisation_id, kb_id}, {rejectWithValue}) => {
+        const api_base = window.ENV.api_base;
+        const url = api_base + '/document/health-check/' + uri_esc(organisation_id) + "/" + uri_esc(kb_id);
+        return axios.post(url, {}, Comms.getHeaders(session_id))
+            .then((response) => {
+                return response.data
+            }).catch((err) => {
+                return rejectWithValue(err?.response?.data)
+            })
+    });
+
+
 //document/parquet/01866e90-94c4-34bc-4fdd-56c20770b2d7/018674f9-8b4e-7a9f-577d-33a6726913a8/1677053053812
 ///document/parquet/{organisationId}/{kbId}/{dateTime}
 export const deleteRecord = createAsyncThunk(
@@ -259,7 +315,7 @@ export const deleteRecord = createAsyncThunk(
     async ({session_id, organisation_id, kb_id, inventory_date_time} ,{rejectWithValue}) => {
         const api_base = window.ENV.api_base;
         const url = api_base + '/document/parquet/' +
-            encodeURIComponent(organisation_id) + '/' + encodeURIComponent(kb_id)+ '/' + encodeURIComponent(inventory_date_time);
+            uri_esc(organisation_id) + '/' + uri_esc(kb_id)+ '/' + uri_esc(inventory_date_time);
         return axios.delete(url, Comms.getHeaders(session_id))
             .then((response) => {
                 return response.data
@@ -276,6 +332,7 @@ export const {
     showDocumentSnapshotForm,
     showIndexSnapshotForm,
     showDeleteInventoryForm,
-    showAddInfoForm
+    showAddInfoForm,
+    showHealthCheckForm
 } = inventorySlice.actions;
 export default inventorySlice.reducer;

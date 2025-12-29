@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {getDocumentByUrl} from "../document_management/documentSlice";
-import Api from "../../common/api";
+import Api, {convert_gmt_to_local} from "../../common/api";
 import '../../css/documents.css';
 import {CopyButton} from "../../components/CopyButton";
 
@@ -51,7 +51,8 @@ export function CheckDocument(props) {
 
         if (document && props.source && props.source.sourceId === document.sourceId) {
             let key_list = [
-                'url', 'url id', 'source ACLs', 'document ACLs', 'title', 'author', 'binary size', 'change hash',
+                'url', 'url id', 'source ACLs', 'document ACLs', 'title', 'author', 'binary size',
+                'inventory only', 'change hash',
                 'content hash', 'uploaded', 'crawled', 'converted', 'parsed', 'indexed', 'previewed', 'created',
                 'last modified', 'document type', 'filename', 'folder id', 'number of relationships',
                 'number of sentences', 'number of tokens', 'parent url', 'type description', '-eod-'
@@ -65,17 +66,18 @@ export function CheckDocument(props) {
             document_key_values['title'] = document.title;
             document_key_values['author'] = document.author;
             document_key_values['binary size'] = Api.formatSizeUnits(document.binarySize);
+            document_key_values['inventory only'] = document.inventoryOnly ? "yes" : "no"
             document_key_values['change hash'] = document.changeHash;
             document_key_values['content hash'] = document.contentHash;
 
-            document_key_values['uploaded'] = document.uploaded + "  (" + ((document.uploaded > 0) ? Api.unixTimeConvert(document.uploaded) : 'n/a') + ")";
-            document_key_values['crawled'] = document.crawled + "  (" + ((document.crawled > 0) ? Api.unixTimeConvert(document.crawled) : 'n/a') + ")";
-            document_key_values['converted'] = document.converted + "  (" + ((document.converted > 0) ? Api.unixTimeConvert(document.converted) : 'n/a') + ")";
-            document_key_values['parsed'] = document.parsed + "  (" + ((document.parsed > 0) ? Api.unixTimeConvert(document.parsed) : 'n/a') + ")";
-            document_key_values['indexed'] = document.indexed + "  (" + ((document.indexed > 0) ? Api.unixTimeConvert(document.indexed) : 'n/a') + ")";
-            document_key_values['previewed'] = document.previewed + "  (" + ((document.previewed > 0) ? Api.unixTimeConvert(document.previewed) : 'n/a') + ")";
-            document_key_values['created'] = document.created + "  (" + ((document.created > 0) ? Api.unixTimeConvert(document.created) : 'n/a') + ")";
-            document_key_values['last modified'] = document.lastModified + "  (" + ((document.lastModified > 0) ? Api.unixTimeConvert(document.lastModified) : 'n/a') + ")";
+            document_key_values['uploaded'] = document.uploaded + "  (" + ((document.uploaded > 0) ? Api.unixTimeConvert(convert_gmt_to_local(document.uploaded)) : 'n/a') + ")";
+            document_key_values['crawled'] = document.crawled + "  (" + ((document.crawled > 0) ? Api.unixTimeConvert(convert_gmt_to_local(document.crawled)) : 'n/a') + ")";
+            document_key_values['converted'] = document.converted + "  (" + ((document.converted > 0) ? Api.unixTimeConvert(convert_gmt_to_local(document.converted)) : 'n/a') + ")";
+            document_key_values['parsed'] = document.parsed + "  (" + ((document.parsed > 0) ? Api.unixTimeConvert(convert_gmt_to_local(document.parsed)) : 'n/a') + ")";
+            document_key_values['indexed'] = document.indexed + "  (" + ((document.indexed > 0) ? Api.unixTimeConvert(convert_gmt_to_local(document.indexed)) : 'n/a') + ")";
+            document_key_values['previewed'] = document.previewed + "  (" + ((document.previewed > 0) ? Api.unixTimeConvert(convert_gmt_to_local(document.previewed)) : 'n/a') + ")";
+            document_key_values['created'] = document.created + "  (" + ((document.created > 0) ? Api.unixTimeConvert(convert_gmt_to_local(document.created)) : 'n/a') + ")";
+            document_key_values['last modified'] = document.lastModified + "  (" + ((document.lastModified > 0) ? Api.unixTimeConvert(convert_gmt_to_local(document.lastModified)) : 'n/a') + ")";
 
             document_key_values['document type'] = document.documentType;
             document_key_values['filename'] = document.filename;
@@ -91,12 +93,19 @@ export function CheckDocument(props) {
                 if (document.metadata.hasOwnProperty(key)) {
                     let value = document.metadata[key];
                     if ((key === '{created}' || key === '{lastmod}') && parseInt(value) > 0) {
-                        value = value + "  (" + Api.unixTimeConvert(parseInt(value)) + ")";
+                        value = value + "  (" + Api.unixTimeConvert(convert_gmt_to_local(parseInt(value))) + ")";
                     }
                     // skip user defined values here
                     if (key.indexOf(Api.user_metadata_marker) === 0) continue
-                    document_key_values[key] = value;
-                    key_list.push(key);
+
+                    // make sure we aren't overwriting existing data (like 'url')
+                    if (!document_key_values.hasOwnProperty(key)) {
+                        document_key_values[key] = value;
+                        key_list.push(key);
+                    } else {
+                        document_key_values["md-" + key] = value;
+                        key_list.push("md-" + key);
+                    }
                 }
             }
 
@@ -230,7 +239,7 @@ export function CheckDocument(props) {
 
                         <div className="row mb-2 mt-4">
                             <div className="col-12">
-                                <label className="fw-bold small">SimSage data</label>
+                                <label className="fw-bold small">{"SimSage data" + (document.inventoryOnly ? " -- this document only exists in the inventory and is not searchable" : "")}</label>
                             </div>
                         </div>
 

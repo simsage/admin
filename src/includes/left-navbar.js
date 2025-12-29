@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 by Rock de Vocht
+ * Copyright (c) 2025 by Rock de Vocht
  *
  * All rights reserved. No part of this publication may be reproduced, distributed, or
  * transmitted in any form or by any means, including photocopying, recording, or other
@@ -20,13 +20,14 @@ export default function LeftNavbar() {
     const dispatch = useDispatch();
     const kb_list = useSelector((state) => state.kbReducer.kb_list);
     let selected_kb_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     const ICONS = {
-        OVERVIEW:            "images/icon/icon_overview.svg",
-        USER_MANAGEMENT:     "images/icon/icon_user_management.svg",
-        DOCUMENT_SRC:        "images/icon/icon_document_sources.svg",
-        MIND:                "images/icon/icon_the_mind.svg",
-        SIMSAGE_LOGO:        "images/brand/simsage-logo-no-strapline.svg"
+        OVERVIEW:            (theme === "light" ? "images/icon/icon_overview.svg" : "images/icon/icon_overview_dark.svg"),
+        USER_MANAGEMENT:     (theme === "light" ? "images/icon/icon_user_management.svg" : "images/icon/icon_user_management_dark.svg"),
+        DOCUMENT_SRC:        (theme === "light" ? "images/icon/icon_document_sources.svg" : "images/icon/icon_document_sources_dark.svg"),
+        MIND:                (theme === "light" ? "images/icon/icon_the_mind.svg" : "images/icon/icon_the_mind_dark.svg"),
+        SIMSAGE_LOGO:        (theme === "light" ? "images/brand/simsage-logo-no-strapline.svg" : "images/brand/simsage-logo-dark-no-strapline.svg")
     }
 
     const nav1 = [
@@ -48,7 +49,7 @@ export default function LeftNavbar() {
 
     const nav2 = [
         {
-            label: "Document Management",
+            label: "Knowledge Base Content",
             slug: "document-management",
             logo: ICONS.DOCUMENT_SRC,
             separator: false,
@@ -89,6 +90,7 @@ export default function LeftNavbar() {
                             <CustomSelect
                                 defaultValue={selected_kb_id || ""}
                                 disabled={false}
+                                useKeyInHints={true}
                                 onChange={(value) => handleSelectKB({ target: { value } })}
                                 options={[{key: "", value: "Select Knowledge Base"}, ...kb_list.map(item => ({ key: item.kbId, value: item.name }))]}
                                 label="Select Knowledge Base"
@@ -109,14 +111,16 @@ export default function LeftNavbar() {
 export const LeftSidebarNavItem = ({ logo, label, slug }) => {
 
     const selected_tab = useSelector((state) => state.homeReducer)
-    const is_active = selected_tab === slug
+    const is_active = selected_tab.selected_tab === slug
+
     const dispatch = useDispatch()
     const handleClick = () => dispatch(selectTab(slug))
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     return (
         <li onClick={handleClick}
-            className={`sb-item d-flex align-items-center px-4 py-3 ${is_active ? 'active' : ''}`}>
-            <img src={logo} alt="" className="me-2 sb-icon" />
+            className={`${theme === "light" ? "sb-item" : "sb-item-dark"} d-flex align-items-center px-4 py-3 ${is_active ? 'active' : ''}`}>
+            <img src={logo} alt="" className={theme === "light" ? "me-2 sb-icon" : "me-2 sb-icon sb-icon-dark"} />
             <label>{label}</label>
         </li>
     )

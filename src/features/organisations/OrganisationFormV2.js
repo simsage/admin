@@ -17,6 +17,7 @@ export default function OrganisationFormV2(props) {
 
     const show_error_form = useSelector((state) => state.organisationReducer.show_error_form)
     const error_message = useSelector((state) => state.organisationReducer.error)
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     const [selected_tab, setSelectedTab] = useState('general');
     const group_data_status = useSelector((state) => state.groupReducer.data_status);
@@ -200,7 +201,7 @@ export default function OrganisationFormV2(props) {
                     <div className="modal-content">
                         <form onSubmit={handleSubmit(onSubmit)}>
 
-                            <div className="modal-header px-5 pt-4 bg-light">
+                            <div className="modal-header px-5 pt-4">
                                 <h4 className="modal-title" id="staticBackdropLabel">{title}</h4>
                             </div>
                             <div className="modal-body p-0">
@@ -260,7 +261,7 @@ export default function OrganisationFormV2(props) {
                                         <div className="row mb-5">
                                             <div className="form-group col-12">
                                                 <label className="label-2 small">Domain CSV <span
-                                                    className="small text-black-50 fst-italic fw-light">(Separate by comma) </span>
+                                                    className={(theme==="light" ? "text-black-50" : "text-white-50") + " small fst-italic fw-light"}>(Separate by comma) </span>
                                                 </label>
                                                 <textarea className="form-control"
                                                           placeholder="Valid domain names (e.g. simsage.co.uk)"
@@ -279,7 +280,7 @@ export default function OrganisationFormV2(props) {
                                                     <h6 className="role-label text-center">SSO assigned
                                                         Roles</h6>
                                                     <div
-                                                        className="role-area bg-light border rounded h-100">
+                                                        className="role-area border rounded h-100">
                                                         <input
                                                             className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
                                                             placeholder="Filter..."
@@ -303,7 +304,7 @@ export default function OrganisationFormV2(props) {
                                                 <div className="role-block col-6">
                                                     <h6 className="role-label text-center">Available Roles</h6>
                                                     <div
-                                                        className="role-area bg-light border rounded h-100">
+                                                        className="role-area border rounded h-100">
                                                         <input
                                                             className="mb-3 px-2 py-2 w-100 border-0 border-bottom"
                                                             placeholder="Filter..."

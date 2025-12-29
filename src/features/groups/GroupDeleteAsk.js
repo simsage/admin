@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {closeDeleteForm, deleteGroup, getGroupList} from "./groupSlice";
+import {closeDeleteForm, deleteGroup} from "./groupSlice";
 
 
 export default function GroupDeleteAsk(){

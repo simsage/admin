@@ -40,5 +40,9 @@ export const store = configureStore({
     llmReducer: llmSlice,
 
   },
-  middleware:(getDefaultMiddleware => getDefaultMiddleware().concat(logger))
+  middleware: (getDefaultMiddleware =>
+                window.ENV.debug ? getDefaultMiddleware({serializableCheck: false}).concat(logger) :
+                                   getDefaultMiddleware({serializableCheck: false})
+              )
+
 })

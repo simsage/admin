@@ -25,6 +25,14 @@
     background-color: #f9f9f9;
 }
 
+.log-line-dark {
+    /* Additional styles for your log line */
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
 
 .log-type-debug,
 .log-type-info,

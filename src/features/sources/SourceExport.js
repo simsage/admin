@@ -61,7 +61,7 @@ export function SourceExport() {
         >
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header px-5 pt-4 bg-light">
+                    <div className="modal-header px-5 pt-4">
                         <h5 className="modal-title" id="staticBackdropLabel">{title}</h5>
                     </div>
                     <div className="tab-content px-5 py-4 overflow-auto">
@@ -80,7 +80,6 @@ export function SourceExport() {
                                 padding: '10px',
                                 border: '1px solid #ced4da',
                                 borderRadius: '5px',
-                                backgroundColor: '#f8f9fa',
                                 resize: 'vertical',
                             }}
                             defaultValue={JSON.stringify(safeSourceForImportOrExport(selected_source), null, 5)}

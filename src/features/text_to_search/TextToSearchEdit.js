@@ -16,6 +16,7 @@ export function TextToSearchEdit(){
     const selected_item = useSelector( (state) => state.textToSearchReducer.edit);
     const show_error_form = useSelector( (state) => state.textToSearchReducer.show_error_form);
     const error = useSelector( (state) => state.textToSearchReducer.error);
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     const {register, handleSubmit, formState: {errors}, reset} = useForm();
 
@@ -44,7 +45,8 @@ export function TextToSearchEdit(){
         <div className="modal user-display" tabIndex="-1" role="dialog" style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header px-5 pt-4 bg-light"><h4 className="mb-0">{selected_item ? "Edit Text to Search" : "New Text to Search"}</h4></div>
+                    <div className="modal-header px-5 pt-4">
+                        <h4 className="mb-0">{selected_item ? "Edit Text to Search" : "New Text to Search"}</h4></div>
 
                     <form onSubmit={handleSubmit(onSubmit)} >
 
@@ -93,7 +95,7 @@ export function TextToSearchEdit(){
 
                                         <div className="row mb-3">
                                             <div className="control-row col-12">
-                                                <span className="label-2 small">Match Words <span className="small text-black-50 fst-italic fw-light">(Separate by comma) (csv) </span></span>
+                                                <span className="label-2 small">Match Words <span className={(theme==="light" ? "text-black-50" : "text-white-50") + " small fst-italic fw-light"}>(Separate by comma) (csv) </span></span>
                                                 <span className="text">
                                                     <textarea className="form-control"
                                                               autoComplete="false"

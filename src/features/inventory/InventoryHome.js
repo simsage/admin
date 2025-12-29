@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import Api, {IMAGES} from "../../common/api";
+import Api, {convert_gmt_to_local} from "../../common/api";
 import Comms from "../../common/comms";
 import {
     loadInventoryList,
     showDeleteInventoryForm,
-    showDocumentSnapshotForm,
-    showIndexSnapshotForm
+    showDocumentSnapshotForm
 } from "./inventorySlice";
 import {InventoryDocumentSnapshotPrompt} from "./InventoryDocumentSnapshotPrompt";
 import {InventoryIndexSnapshotPrompt} from "./InventoryIndexSnapshotPrompt";
@@ -15,10 +14,10 @@ import {Pagination} from "../../common/pagination";
 import api from "../../common/api";
 import InventorySuccessMessage from "./InventorySuccessMessage";
 import {InventoryErrorDialog} from "./InventoryErrorDialog";
+import {HealthCheckFormPrompt} from "./HealthCheckFormPrompt";
 
 
 export default function InventoryHome(props) {
-    const theme = '';
     const selected_organisation = "ORg1"
 
     const dispatch = useDispatch();
@@ -26,11 +25,14 @@ export default function InventoryHome(props) {
     const session_id = session.id;
     const selected_organisation_id = useSelector((state) => state.authReducer.selected_organisation_id);
     const selected_knowledge_base_id = useSelector((state) => state.authReducer.selected_knowledge_base_id);
+    const theme = useSelector((state) => state.homeReducer.theme);
+    const REFRESH_IMAGE = (theme === "light" ? "images/refresh.svg" : "images/refresh-dark.svg")
 
     const show_document_snapshot_form = useSelector((state) => state.inventoryReducer.show_document_snapshot_form)
     const show_index_snapshot_form = useSelector((state) => state.inventoryReducer.show_index_snapshot_form)
     const show_delete_form = useSelector((state) => state.inventoryReducer.show_delete_form)
     const show_add_info_form = useSelector((state) => state.inventoryReducer.show_add_info_form)
+    const show_health_check_form = useSelector((state) => state.inventoryReducer.show_health_check_form)
 
     const inventory_list = useSelector((state) => state.inventoryReducer.inventory_list);
     const num_inventory_list_items = (inventory_list && inventory_list.totalCount) ? inventory_list.totalCount : 0
@@ -81,11 +83,6 @@ export default function InventoryHome(props) {
             Comms.download_inventorize_dump(selected_organisation_id, selected_knowledge_base_id, dateTime, session.id);
     }
 
-    function inventorizeDumpSpreadsheet(dateTime) {
-        if (session && session.id)
-            Comms.download_inventorize_dump_spreadhseet(selected_organisation_id, selected_knowledge_base_id, dateTime, session.id);
-    }
-
     function isVisible() {
         return selected_organisation_id && selected_organisation_id.length > 0 &&
             selected_organisation && selected_organisation.length > 0 &&
@@ -104,10 +101,6 @@ export default function InventoryHome(props) {
         dispatch(showDocumentSnapshotForm())
     }
 
-    function handleCreateIndexSnapshot() {
-        dispatch(showIndexSnapshotForm())
-    }
-
     function handleDelete(inventory) {
         dispatch(showDeleteInventoryForm({inventory}))
     }
@@ -116,7 +109,7 @@ export default function InventoryHome(props) {
     return (
         <div className="section px-5 pt-4">
             {isVisible() &&
-                <div className={theme === 'light' ? "hr" : "hr_dark"}/>
+                <div className={"hr"}/>
             }
 
             <div className="d-flex justify-content-beteween w-100 mb-4">
@@ -129,7 +122,7 @@ export default function InventoryHome(props) {
                         <div className="d-flex">
                             {selected_organisation_id.length > 0 &&
                                 <div className="btn" onClick={() => refresh_inventory()} >
-                                    <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh inventory-list" />
+                                    <img src={REFRESH_IMAGE} className="refresh-image" alt="refresh" title="refresh inventory-list" />
                                 </div>
                             }
                             {selected_organisation_id.length > 0 &&
@@ -140,14 +133,6 @@ export default function InventoryHome(props) {
                                 }} title="create a new document snapshot">New Document Snapshot
                                 </button>
                             }
-                            {selected_organisation_id.length > 0 &&
-                                <button className="btn btn-primary text-nowrap ms-2"
-                                        disabled={inventor_busy}
-                                        onClick={() => {
-                                    handleCreateIndexSnapshot();
-                                }} title="create a new index snapshot">New Index Snapshot
-                                </button>
-                            }
                         </div>
                     }
 
@@ -155,12 +140,12 @@ export default function InventoryHome(props) {
             </div>
             {isVisible() && 
                 <div>
-                    <table className="table">
+                    <table className={theme === "light" ? "table" : "table-dark"}>
                         <thead>
                         <tr className='table-header'>
-                            <td className='small text-black-50 px-4'>Type</td>
-                            <td className='small text-black-50 px-4'>Created</td>
-                            <td className='small text-black-50 px-4'></td>
+                            <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Type</td>
+                            <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Created</td>
+                            <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}></td>
                         </tr>
                         </thead>
                         <tbody>
@@ -174,7 +159,7 @@ export default function InventoryHome(props) {
                                     </td>
                                     <td className="pt-3 px-4 pb-3 fw-light">
                                         <div className="snapshot-item">
-                                            {Api.unixTimeConvert(item.time)}
+                                            {Api.unixTimeConvert(convert_gmt_to_local(item.time))}
                                         </div>
                                     </td>
                                     <td className="pt-3 px-4 pb-0">
@@ -186,14 +171,6 @@ export default function InventoryHome(props) {
                                                         title="download as parquet-file">Download parquet
                                                 </button>
 
-                                            </div>
-                                        }
-                                        {(item.name === "content spreadsheet" || item.name === "indexes spreadsheet") &&
-                                            <div className="link-button">
-                                                <button className="btn text-primary btn-sm"
-                                                        onClick={() => inventorizeDumpSpreadsheet(item.time)}
-                                                        title="download as spreadsheet-xlsx">Download spreadsheet
-                                                </button>
                                             </div>
                                         }
                                         <div className="link-button">
@@ -210,7 +187,6 @@ export default function InventoryHome(props) {
                     </table>
                     <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
-                        theme={theme}
                         component="div"
                         count={num_inventory_list_items}
                         rowsPerPage={page_size}
@@ -236,6 +212,11 @@ export default function InventoryHome(props) {
             {
                 show_index_snapshot_form &&
                 <InventoryIndexSnapshotPrompt />
+            }
+
+            {
+                show_health_check_form &&
+                <HealthCheckFormPrompt />
             }
 
             {

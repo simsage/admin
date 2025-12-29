@@ -38,15 +38,9 @@
     width: 22px;
 }
 
-.app-menu .theme-select {
+.app-menu {
     margin-right: 20px;
     margin-top: 4px;
     float: right;
 }
-
-.app-menu .theme-select-logged-in {
-    float: right;
-    margin-right: 10px;
-}
-
 

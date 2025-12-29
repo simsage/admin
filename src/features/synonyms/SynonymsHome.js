@@ -1,7 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect} from "react";
 import {loadSynonyms} from "./synonymSlice";
-import SynonymIntro from "./SynonymIntro";
 import SynonymList from "./SynonymList";
 
 import {SynonymErrorDialog} from "./SynonymErrorDialog";
@@ -34,7 +33,6 @@ export default function SynonymsHome(props) {
 
     return (
         <>
-            {status === null && <SynonymIntro />}
             {/*Intro message when there are no bot items loaded*/}
             {status !== null && <SynonymList />}
             <SynonymErrorDialog/>

@@ -55,7 +55,7 @@ export function SourceImport() {
 
     const onSubmit = (data) => {
         const dataJson = JSON.parse(data.source_str);
-        dataJson.schedule = "";
+        dataJson.scheduleEnable = false;
 
         const crawler = safeSourceForImportOrExport(dataJson, {
             organisationId: selected_organisation_id,
@@ -81,7 +81,7 @@ export function SourceImport() {
             <div className={"modal-dialog modal-dialog-centered modal-lg"} role="document">
                 <div className="modal-content">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <h4 className="modal-header px-5 pt-4 bg-light" id="staticBackdropLabel">Import Crawler</h4>
+                        <h4 className="modal-header px-5 pt-4" id="staticBackdropLabel">Import Crawler</h4>
                         <div
                             className="tab-content px-5 py-4 overflow-auto"
                             onDrop={handleDrop}
@@ -103,7 +103,6 @@ export function SourceImport() {
                                         padding: '10px',
                                         border: '1px solid #ced4da',
                                         borderRadius: '5px',
-                                        backgroundColor: '#f8f9fa',
                                         resize: 'vertical',
                                     }}
                                     {...register("source_str", { required: true })}

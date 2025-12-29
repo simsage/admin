@@ -24,25 +24,16 @@ export default function CrawlerXmlForm(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
 
-    // this crawler doesn't need the verify system
     useEffect(() => {
-        if (props.set_verify) props.set_verify('n/a')
-    }, [props])
-
-    useEffect(() => {
-
         const validate_sharepoint = () => {
             const {seedList} = specific_json
             let missing = []
-
             if (invalid_credential(seedList))
                 missing.push("seedList")
-
             return (missing.length > 0) ? `XML Crawler: please provide the ${missing.join(", ")}` : null
         }
-
         if (props.set_verify) props.set_verify(() => validate_sharepoint)
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.set_verify, specific_json])
 
     return (

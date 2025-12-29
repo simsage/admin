@@ -15,7 +15,9 @@ export function GoogleDrivesAndFolders(props) {
     const [crawlRootFiles, setCrawlRootFiles] = useState(true)
     const [crawlShortcuts, setCrawlShortcuts] = useState(false)
     const [mode, setMode] = useState('all')
+    const [sourceCreated, setSourceCreated] = useState(false)
     const [isSharedDrive, setSharedDrive] = useState(false)
+    const [current_drive_index, setCurrentDriveIndex] = useState(-1)
 
     // set up
     useEffect(() => {
@@ -30,6 +32,8 @@ export function GoogleDrivesAndFolders(props) {
             setCrawlRootFiles(!!props.driveDetails.crawlRootFiles)
             setCrawlShortcuts(!!props.driveDetails.crawlShortcuts)
             setMode(props.driveDetails.mode ?? 'all')
+            setSourceCreated(props.sourceCreated === true)
+            setCurrentDriveIndex(props.driveIndex)
             setSharedDrive(!!drive_id && drive_id.trim().length > 0)
         }
     }, [props, initialized]);
@@ -39,6 +43,10 @@ export function GoogleDrivesAndFolders(props) {
         {"key": "include", "value": "Include Folders..."},
         {"key": "exclude", "value": "Exclude Folders..."}
     ]
+
+    // this item is disabled if this is an existing source, not adding a new item, in exclude mode
+    const disabled = sourceCreated && mode === "exclude" &&
+        current_drive_index >= 0 && props.driveDetails.mode === "exclude"
 
     const updateDriveConfig = (e) => {
         e.preventDefault()
@@ -98,7 +106,7 @@ export function GoogleDrivesAndFolders(props) {
     >
         <div className={"modal-dialog modal-lg"} role="document">
             <div className="modal-content">
-                <div className="modal-header px-5 pt-4 bg-light">
+                <div className="modal-header px-5 pt-4">
                     <h4 className="mb-0">{"Drive details"}</h4>
                 </div>
 
@@ -111,6 +119,7 @@ export function GoogleDrivesAndFolders(props) {
                                         &nbsp;User Email
                                     </label>
                                     <input
+                                        disabled={disabled}
                                         tabIndex={0}
                                         value={driveEmail}
                                         onChange={(e) => {
@@ -128,6 +137,7 @@ export function GoogleDrivesAndFolders(props) {
                                         size={16}/>&nbsp;Drive
                                         Id</label>
                                     <input
+                                        disabled={disabled}
                                         tabIndex={0}
                                         value={driveId}
                                         onChange={(e) => {
@@ -143,7 +153,7 @@ export function GoogleDrivesAndFolders(props) {
                                 <label className="label-left small">Crawl Mode</label>
                                 <CustomSelect
                                     defaultValue={(mode) ? mode : "all"}
-                                    disabled={false}
+                                    disabled={disabled}
                                     onChange={(key) => setMode(key)}
                                     options={modes}
                                 />
@@ -156,6 +166,7 @@ export function GoogleDrivesAndFolders(props) {
                                         name={"driveType"}
                                         value={"SharedDrive"}
                                         checked={isSharedDrive}
+                                        disabled={disabled}
                                         type={"checkbox"}
                                         onChange={() => setSharedDrive(!isSharedDrive)}
                                     />
@@ -172,6 +183,7 @@ export function GoogleDrivesAndFolders(props) {
                             <div className="control-row col-12">
                                 <label className="small d-flex justify-content-between">Folders (inclusive)</label>
                                 <FolderTagsInput
+                                    disabled={false}
                                     value={folderCsv ?? ''}
                                     onChange={setFolderCsv}
                                 />
@@ -181,6 +193,7 @@ export function GoogleDrivesAndFolders(props) {
                             <div className="control-row col-12 py-2">
                                 <label className="small d-flex justify-content-between">Folders (exclusive)</label>
                                 <FolderTagsInput
+                                    disabled={disabled}
                                     value={folderCsvExclude ?? ''}
                                     onChange={setFolderCsvExclude}
                                 />
@@ -194,6 +207,7 @@ export function GoogleDrivesAndFolders(props) {
                                     name={"crawlShortCuts"}
                                     value={"crawlShortCuts"}
                                     checked={crawlShortcuts}
+                                    disabled={disabled}
                                     type={"checkbox"}
                                     onChange={() => setCrawlShortcuts(!crawlShortcuts)}
                                 />
@@ -221,8 +235,13 @@ export function GoogleDrivesAndFolders(props) {
 
                     </div>
                     <ul className="alert alert-warning small py-2 mt-3 ps-4" role="alert">
+                        <li>Exclude Folders can only be set once.</li>
+                        { !disabled &&
                         <li>Please refer to each folder by it's ID.</li>
+                        }
+                        { !disabled &&
                         <li>Changing the <i>mode</i> will reset the crawler.</li>
+                        }
                         {!isSharedDrive && mode === "include" &&
                             <li>
                                 'Crawl local drive root' will crawl files specifically located in URL ending 'my-drive'.

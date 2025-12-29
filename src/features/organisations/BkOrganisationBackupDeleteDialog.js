@@ -19,9 +19,10 @@ export default function BkOrganisationBackupDeleteDialog() {
 
     const handleDelete = () => {
         const data = {
-            session_id:session.id,
-            organisation_id:selected_backup.organisationId,
-            backup_id:selected_backup.backupId
+            session_id: session.id,
+            organisation_id: selected_backup.organisationId,
+            kb_id: selected_backup.kbId,
+            backup_id: selected_backup.backupId
         }
         dispatch(deleteBackup(data))
         dispatch(closeBackupDeleteMessage());

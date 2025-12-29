@@ -115,7 +115,6 @@
 }
 .crawler-meta {
     font-size: 12px;
-    color: #20273185;
 }
 .folder-tile .folder-label, .file-tile .file-label {
     font-weight: 500;
@@ -236,7 +235,6 @@
 .folder-sm-desc, .file-sm-desc {
     font-weight: 400;
     font-size: 12px;
-    color: #20273185;
     transition: padding .5s ease;
 }
 .crawler-sm-desc {
@@ -255,6 +253,9 @@ thead th {
 .table > :not(:first-child) {
     border-top: none !important;
 }
+.table-dark > :not(:first-child) {
+    border-top: none !important;
+}
 .favourite-col {
     min-width: 32px;
 }
@@ -262,12 +263,6 @@ thead th {
     width: 100%;
     min-width: 300px;
 }
-/* .file-size-col {
-    min-width: 150px;
-}
-.last-modified-col {
-    min-width: 200px;
-} */
 .options-col {
     min-width: 40px;
 }

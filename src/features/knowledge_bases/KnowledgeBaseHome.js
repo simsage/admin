@@ -3,7 +3,6 @@ import {useDispatch, useSelector} from "react-redux";
 import KnowledgeBaseList from "./KnowledgeBaseList";
 import KnowledgeBaseEdit from "./KnowledgeBaseEdit";
 import KnowledgeBaseDelete from "./KnowledgeBaseDelete";
-import KnowledgeBaseDeleteInfo from "./KnowledgeBaseDeleteInfo";
 import KnowledgeBaseOptimize from "./KnowledgeBaseOptimize";
 import KnowledgeBaseViewIds from "./KnowledgeBaseViewIds";
 import {getKBList} from "./knowledgeBaseSlice";
@@ -18,7 +17,6 @@ export default function KnowledgeBaseHome() {
     const status = useSelector((state) => state.kbReducer.status);
     const kb_show_form = useSelector((state) => state.kbReducer.show_form)
     const kb_show_delete_form = useSelector((state) => state.kbReducer.show_delete_form)
-    const kb_show_delete_info_form = useSelector((state) => state.kbReducer.show_delete_info_form)
     const kb_show_optimize_form = useSelector((state) => state.kbReducer.show_optimize_form)
     const kb_show_truncate_indexes_form = useSelector((state) => state.kbReducer.show_truncate_indexes_form)
     const kb_view_id = useSelector((state) => state.kbReducer.view_id)
@@ -44,7 +42,6 @@ export default function KnowledgeBaseHome() {
             {/*show kb add/edit form*/}
             {kb_show_form === true && <KnowledgeBaseEdit/>}
             {kb_show_delete_form === true && <KnowledgeBaseDelete/>}
-            {kb_show_delete_info_form === true && <KnowledgeBaseDeleteInfo/>}
 
             {/*show view list*/}
             { (kb_view_id !== null) && <KnowledgeBaseViewIds/>}

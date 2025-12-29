@@ -2,6 +2,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {closeForm, getFailedDocuments} from "./sourceSlice";
 import React, {useEffect, useState} from "react";
 import {Pagination} from "../../common/pagination";
+import {limit} from "../../common/api";
+import {CopyButton} from "../../components/CopyButton";
 // import {data} from "msw";
 
 
@@ -15,6 +17,7 @@ export default function SourceFailures() {
 
     const documentList = useSelector((state) => state.sourceReducer.failed_documents);
     const documentTotal = useSelector((state) => state.sourceReducer.failed_document_total)
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     const [pageSize, setPageSize] = useState(5)
     const [page, setPage] = useState(0)
@@ -40,16 +43,16 @@ export default function SourceFailures() {
                  style={{display: "inline", 'zIndex': 1060, background: "#202731bb"}}>
                 <div className={"modal-dialog modal-xl"} role="document">
                     <div className="modal-content">
-                        <div className="modal-header px-5 pt-4 bg-light">
+                        <div className="modal-header px-5 pt-4">
                             <h4 className="mb-0" id="staticBackdropLabel">Failed documents
                                 in {selected_source.name}</h4>
                         </div>
                         <div className={"failed_documents"}>
-                            <table className="table">
+                            <table className={theme === "light" ? "table" : "table-dark"}>
                                 <thead>
                                 <tr>
-                                    <td className="small text-black-50 px-4 ssi">Document</td>
-                                    <td className="small text-black-50 px-4 error_message">Error Message</td>
+                                    <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4 ssi"}>Document</td>
+                                    <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4 error_message"}>Error Message</td>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -64,7 +67,7 @@ export default function SourceFailures() {
                                         {doc.webUrl &&
                                             <td
                                                 title={doc.webUrl}
-                                                className="small text-black-50 px-4 ssi">
+                                                className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4 ssi"}>
                                                 <a href={doc.webUrl} target={"_blank"}
                                                    rel="noreferrer">{doc.webUrl}</a>
                                             </td>
@@ -72,7 +75,7 @@ export default function SourceFailures() {
                                         {!doc.webUrl && is_url &&
                                             <td
                                                 title={doc.sourceSystemId}
-                                                className="small text-black-50 px-4 ssi">
+                                                className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4 ssi"}>
                                                 <a href={doc_url} target={"_blank"}
                                                    rel="noreferrer">{doc.sourceSystemId}</a>
                                             </td>
@@ -80,11 +83,14 @@ export default function SourceFailures() {
                                         {!doc.webUrl && !is_url &&
                                             <td
                                                 title={doc.sourceSystemId}
-                                                className="small text-black-50 px-4 ssi">
+                                                className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4 ssi"}>
                                                 <div>{doc.sourceSystemId}</div>
                                             </td>
                                         }
-                                        <td className="small text-black-50 px-4 error_message">{doc.errorMessage}</td>
+                                        <td className={"small pointer-default " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4 error_message"} title={doc.errorMessage}>
+                                            {limit(doc.errorMessage, 200)}
+                                            <CopyButton reference={doc.errorMessage} />
+                                        </td>
                                     </tr>
                                 })}
                                 </tbody>
@@ -94,7 +100,6 @@ export default function SourceFailures() {
                                 rowsPerPageOptions={[5, 10]}
                                 component="div"
                                 count={documentTotal}
-                                theme={null}
                                 rowsPerPage={pageSize}
                                 page={page}
                                 backIconButtonProps={{'aria-label': 'Previous Page',}}

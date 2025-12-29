@@ -1,12 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
-import {closeForm, getSources, resetSourceDelta, testSource, updateSource} from "./sourceSlice";
+import {closeForm, getSources, testSource, updateSource} from "./sourceSlice";
 import SourceTabs from "./SourceTabs";
 import React, {useEffect, useState} from "react";
 import GeneralForm from "./forms/GeneralForm";
 import CrawlerMetadataForm from "./forms/CrawlerMetadataForm";
 import ACLSetup from "../../common/acl-setup";
 import TimeSelect from "../../common/time-select";
+import ArcGISForm from "./forms/ArcGISForm";
 import CrawlerRssForm from "./forms/CrawlerRssForm";
 import CrawlerBoxForm from "./forms/CrawlerBoxForm";
 import CrawlerDatabaseForm from "./forms/CrawlerDatabaseForm";
@@ -32,15 +33,20 @@ import CrawlerServiceNow from "./forms/CrawlerServiceNow";
 import CrawlerExternalCrawlerConfigurationForm from "./forms/CrawlerExternalCrawlerConfigurationForm";
 import CrawlerStructuredDataForm from "./forms/CrawlerStructuredDataForm";
 import CrawlerEgnyteForm from "./forms/CrawlerEgnyteForm";
+import CrawlerOpenTextForm from "./forms/CrawlerOpenTextForm";
 import CrawlerSFTPForm from "./forms/CrawlerSFTPForm";
 import CrawlerXmlForm from "./forms/CrawlerXmlForm";
 import CrawlerSlackForm from "./forms/CrawlerSlackForm";
 import {CheckDocument} from "./CheckDocument";
 import {is_valid_metadata} from "./forms/common";
 import CrawlerAlfrecoForm from "./forms/CrawlerAlfrescoForm";
+import MimeTypeForm from "./forms/MimeTypeForm";
+import CrawlerRulesForm from "./forms/CrawlerRulesForm";
+import CrawlerAITrainingForm from "./forms/CrawlerAITrainingForm";
 
 
 const externalCrawlers = ['localfile']
+const default_expected_file_count = 0;
 
 export default function SourceForm() {
 
@@ -56,33 +62,30 @@ export default function SourceForm() {
         "weight": 1.0,
         "numResults": 5,
         "numFragments": 3,
-        "errorThreshold": 10,
-        "specificJson":
-            "{\"metadata_list\":[" +
-            "{\"extMetadata\":\"created\",\"display\":\"created\",\"metadata\":\"created\"}," +
-            "{\"extMetadata\":\"last-modified\",\"display\":\"last modified\",\"metadata\":\"last-modified\"}," +
-            "{\"extMetadata\":\"document-type\",\"display\":\"document type\",\"metadata\":\"document-type\"}]}",
+        "expectedFileCount": default_expected_file_count,
+        "specificJson": "{}",
         "schedule": "",
         "scheduleEnable": true,
         "acls": [],
         "kbId": "",
-        "documentSimilarityThreshold": 95,
         "processorConfig": "",
 
         "deleteFiles": true,
         "allowAnonymous": true,
-        "enablePreview": true,
+        "enablePreview": false,
         "customRender": false,
         "useDefaultRelationships": true,
+        "useInTraining": false,
         "storeBinary": true,
         "writeToCassandra": true,
         "useOCR": false,
         "useSTT": false,
         "enableDocumentSimilarity": false,
         "isExternal": false,
-        "sortByNewestFirst": false,
+        "sortByNewestFirst": false, // no longer used per source
         "transmitExternalLogs": false,
         "translateForeignLanguages": false,
+        "onlyIndexDocumentMetadata": false,
 
         // these aren't inputs - just info values coming back from SimSage
         "maxBotItems": 0,
@@ -104,11 +107,9 @@ export default function SourceForm() {
     const dispatch = useDispatch();
 
     // a few defaults
-    const default_error_threshold = 10;
     const default_num_results = 5;
     const default_num_fragments = 3;
     const default_weight = 1.0;
-
 
     let [verify, set_verify] = useState(null);
 
@@ -143,9 +144,10 @@ export default function SourceForm() {
     }
 
     //set the selected source as the form_data
-    const [form_data, setFormData] = useState(selected_source);
+    const [source_data, setSourceData] = useState(selected_source);
     const [suggest_close_form, setSuggestCloseForm] = useState(false);
 
+    const use_training = window.ENV.show_ai_training === true
 
     /**
      Menu/Tabs for the Form
@@ -155,6 +157,7 @@ export default function SourceForm() {
 
         //crawlers
         {label: "box crawler", slug: "box", type: "optional"},
+        {label: "ArcGIS crawler", slug: "arc", type: "optional"},
         {label: "confluence crawler", slug: "confluence", type: "optional"},
         {label: "database crawler", slug: "database", type: "optional"},
 
@@ -175,6 +178,7 @@ export default function SourceForm() {
         {label: "Egnyte crawler", slug: "egnyte", type: "optional"},
         {label: "SFTP crawler", slug: "sftp", type: "optional"},
         {label: "Slack", slug: "slack", type: "optional"},
+        {label: "Content Manager", slug: "opentext", type: "optional"},
 
         {label: "local file crawler", slug: "localfile", type: "optional"},
         {label: "microsoft file share crawler", slug: "file", type: "optional"},
@@ -195,8 +199,11 @@ export default function SourceForm() {
 
         //rest
         {label: "ACLs", slug: "acls", type: "core"},
+        {label: "MimeTypes", slug: "mimetypes", type: "core"},
+        {label: "Rules", slug: "rules", type: "core"},
+        {label: "AI Training", slug: "training", type: use_training ? "core" : "optional"},
         {label: "Check document", slug: "check", type: "core"},
-        {label: "Set up", slug: "external-crawler", type: "external-crawler"},
+        {label: "External source", slug: "external-crawler", type: "external-crawler"},
         {label: "schedule", slug: "schedule", type: "core"},
 
     ]
@@ -213,6 +220,8 @@ export default function SourceForm() {
                 return <CrawlerRssForm {...props} />
             case "box":
                 return <CrawlerBoxForm {...props} />
+            case "arc":
+                return <ArcGISForm {...props} />
             case "database":
                 return <CrawlerDatabaseForm {...props} />
             case "dropbox":
@@ -241,6 +250,8 @@ export default function SourceForm() {
                 return <CrawlerZendeskForm {...props} />
             case "egnyte":
                 return <CrawlerEgnyteForm {...props} />
+            case "opentext":
+                return <CrawlerOpenTextForm {...props} />
             case "localfile":
                 return <CrawlerLocalFileForm {...props} />
             case "onedrive":
@@ -279,7 +290,6 @@ export default function SourceForm() {
         formState: {errors},
         reset,
         // control,
-        setValue,
         getValues,
     } = useForm({mode: 'onChange'});
 
@@ -298,12 +308,10 @@ export default function SourceForm() {
         defaultValues.numFragments = selected_source ? selected_source.numFragments : default_num_fragments;
 
         defaultValues.weight = selected_source ? selected_source.weight : default_weight;
-        defaultValues.errorThreshold = selected_source ? selected_source.errorThreshold : default_error_threshold;
+        defaultValues.expectedFileCount = selected_source ? selected_source.expectedFileCount : default_expected_file_count;
         defaultValues.numResults = selected_source ? selected_source.numResults : default_num_results;
         //
         defaultValues.sourceId = selected_source ? selected_source.sourceId : 0;
-        defaultValues.documentSimilarityThreshold =
-            (selected_source ? selected_source.documentSimilarityThreshold : 95);
 
         // boolean flags
         defaultValues.customRender = selected_source && selected_source.customRender === true;
@@ -311,13 +319,15 @@ export default function SourceForm() {
         defaultValues.allowAnonymous = selected_source && selected_source.allowAnonymous === true;
         defaultValues.enablePreview = selected_source && selected_source.enablePreview === true;
         defaultValues.useDefaultRelationships = selected_source && selected_source.useDefaultRelationships === true;
+        defaultValues.useInTraining = selected_source && selected_source.useInTraining === true;
         defaultValues.storeBinary = selected_source && selected_source.storeBinary === true;
         defaultValues.writeToCassandra = selected_source && selected_source.writeToCassandra === true;
         defaultValues.useOCR = selected_source && selected_source.useOCR === true;
         defaultValues.useSTT = selected_source && selected_source.useSTT === true && stt_enabled;
-        defaultValues.sortByNewestFirst = selected_source && selected_source.sortByNewestFirst === true;
+        defaultValues.sortByNewestFirst = false; // no longer used per source
         defaultValues.transmitExternalLogs = selected_source && selected_source.transmitExternalLogs === true;
         defaultValues.translateForeignLanguages = selected_source && selected_source.translateForeignLanguages === true && translate_enabled;
+        defaultValues.onlyIndexDocumentMetadata = selected_source && selected_source.onlyIndexDocumentMetadata === true;
         defaultValues.enableDocumentSimilarity = selected_source && selected_source.enableDocumentSimilarity === true;
         defaultValues.isExternal = (selected_source && selected_source.isExternal === true) || (selected_source && externalCrawlers.includes(selected_source.crawlerType));
 
@@ -327,6 +337,7 @@ export default function SourceForm() {
 
 
     const [has_error, setError] = useState({title: "", message: ""});
+
     useEffect(() => {
         if (has_error && has_error.message && has_error.message.length > 0)
             dispatch(showErrorAlert(has_error))
@@ -357,11 +368,11 @@ export default function SourceForm() {
         let data = getValues()
 
         if (data.crawlerType === undefined) {
-            data = {...data, crawlerType: form_data.crawlerType}
+            data = {...data, crawlerType: source_data.crawlerType}
         }
 
         // Properties in data will overwrite those in form_data.
-        let new_data = {...form_data, ...data}
+        let new_data = {...source_data, ...data}
 
         let is_valid = onSubmitValidate(new_data)
         if (is_valid) {
@@ -377,22 +388,12 @@ export default function SourceForm() {
     }
 
 
-    const handleResetDelta = () => {
-        setFormData({...form_data, deltaIndicator: ''}) // clear delta locally
-        dispatch(resetSourceDelta({
-            session_id: session_id,
-            organisation_id: selected_organisation_id,
-            knowledgeBase_id: selected_knowledge_base_id,
-            source_id: selected_source.sourceId
-        }));
-    }
-
     // save the source
     function handleFormSubmit(data) {
         if (data.crawlerType === undefined) {
-            data = {...data, crawlerType: form_data.crawlerType}
+            data = {...data, crawlerType: source_data.crawlerType}
         }
-        data.crawlerType = form_data.crawlerType;
+        data.crawlerType = source_data.crawlerType;
 
         // force switch-off if these are enabled system-wide on save
         if (!stt_enabled)
@@ -406,7 +407,7 @@ export default function SourceForm() {
             data.translateForeignLanguages = false;
 
         // Properties in data will overwrite those in form_data.
-        let new_data = {...form_data, ...data}
+        let new_data = {...source_data, ...data}
 
         let is_valid = onSubmitValidate(new_data)
         if (is_valid) {
@@ -422,7 +423,7 @@ export default function SourceForm() {
         'web', 'file', 'database', 'exchange365', 'dropbox', 'localfile', 'jira', 'aws',
         'egnyte', 'gdrive', 'sftp', 'onedrive', 'sharepoint365', 'restfull', 'rss', 'external',
         'box', 'imanage', 'discourse', 'googlesite', 'servicenow', 'confluence', 'xml',
-        'structured', 'zendesk', 'slack', 'alfresco'
+        'structured', 'zendesk', 'slack', 'alfresco', 'arc', 'opentext'
     ]
 
     const onSubmitValidate = data => {
@@ -443,11 +444,11 @@ export default function SourceForm() {
         // for existing data form returns data.crawlerType as undefined because the form field is disabled
         // thus merge form_data.crawlerType to data
         if (data.crawlerType === undefined) {
-            data = {...data, crawlerType: form_data.crawlerType}
+            data = {...data, crawlerType: source_data.crawlerType}
         }
 
         // Properties in data will overwrite those in form_data.
-        let new_data = {...form_data, ...data}
+        let new_data = {...source_data, ...data}
 
         let sj = {};
         if (new_data && new_data.specificJson &&
@@ -461,6 +462,11 @@ export default function SourceForm() {
 
         if (new_data.name.length === 0) {
             setError({title: 'invalid parameters', message: 'you must supply a crawler name.'});
+            return false
+        }
+
+        if (new_data.name.indexOf('+') >= 0) {
+            setError({title: 'invalid parameters', message: 'crawler name must not contain \'+\'.'});
             return false
         }
 
@@ -486,47 +492,89 @@ export default function SourceForm() {
     //update the crawlerType
     useEffect(() => {
         let selected_val = getValues("crawlerType")
-        if (selected_val) setFormData({...form_data, crawlerType: selected_val})
+        if (selected_val) setSourceData({...source_data, crawlerType: selected_val})
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [watch("crawlerType")])
 
 
     //set acl data to form_data
     function updateAclList(list) {
-        setFormData({...form_data, acls: list})
+        setSourceData({...source_data, acls: list})
+    }
+
+    //set mime-type data to form_data
+    function updateMimeTypeList(list) {
+        setSourceData({...source_data, inventoryOnlyMimeTypes: list})
+    }
+
+    //set rules on form_data (source)
+    function updateRules(list) {
+        setSourceData({...source_data, rules: JSON.stringify(list)})
+    }
+
+    // set mime-type data included mode
+    function updateMimeTypeIncludedMode(mode) {
+        setSourceData({...source_data, inventoryOnlyInclude: mode})
     }
 
     //set schedule data to form_data
     function updateSchedule(time, scheduleEnable) {
         if (time !== null) {
-            setFormData({...form_data, schedule: time, scheduleEnable: scheduleEnable})
+            setSourceData({...source_data, schedule: time, scheduleEnable: scheduleEnable})
+        }
+    }
+
+    const describe_what_will_happen = (source, include_flag, mime_type_list) => {
+        if (!mime_type_list) return ""
+        if (mime_type_list.length === 0) {
+            if (include_flag) {
+                return "All files are put in the SimSage inventory.  No files will be processed."
+            } else {
+                return "All files are processed.  No files are put into the SimSage inventory."
+            }
+        } else {
+            if (mime_type_list.length === 1) {
+                if (include_flag) {
+                    return "The file-type listed below will be put in the SimSage inventory.  All other files are processed."
+                } else {
+                    return "The file-type listed below will be processed.  All other files are put into the SimSage inventory."
+                }
+            } else if (mime_type_list.length > 1) {
+                if (include_flag) {
+                    return mime_type_list.length + " file-types listed below will be put in the SimSage inventory.  All other files are processed."
+                } else {
+                    return mime_type_list.length + " file-types listed below will be processed.  All other files are put into the SimSage inventory."
+                }
+            }
         }
     }
 
     if (!show_form)
         return <div/>
 
+    const current_form_values = getValues()
+    const is_external = current_form_values && current_form_values.isExternal === true;
+
     return (
         <div>
             <div className="modal" tabIndex="-1" role="dialog"
                  style={{display: "inline", 'zIndex': 1060, background: "#202731bb"}}>
-                <div className={"modal-dialog modal-xl"} role="document">
+                <div className={"modal-dialog modal-xl model-extra-size"} role="document">
                     <div className="modal-content">
                         <form onSubmit={handleSubmit(handleFormSubmit)}>
-                            <div className="modal-header px-5 pt-4 bg-light">
+                            <div className="modal-header px-5 pt-4">
                                 <h4 className="mb-0" id="staticBackdropLabel">{title}</h4>
                             </div>
                             <div className="modal-body p-0">
 
                                 {/* Menu */}
-                                <div className="nav nav-tabs overflow-auto">
-                                    <SourceTabs
-                                        source_tabs={source_tabs}
-                                        selected_source_tab={selected_source_tab}
-                                        isExternal={selected_source.isExternal}
-                                        onClick={changeNav}
-                                        crawler_type={form_data ? form_data.crawlerType : null}/>
-                                </div>
+                                <SourceTabs
+                                    source_tabs={source_tabs}
+                                    selected_source_tab={selected_source_tab}
+                                    isExternal={is_external}
+                                    onClick={changeNav}
+                                    crawler_type={source_data ? source_data.crawlerType : null}
+                                />
 
 
                                 {/* Page 1: GeneralForm */}
@@ -535,10 +583,10 @@ export default function SourceForm() {
                                         errors={errors}
                                         register={register}
                                         source={selected_source}
-                                        crawler_type={form_data ? form_data.crawlerType : null}
-                                        form_data={form_data}
-                                        setFormData={setFormData}
-                                        setValue={setValue}
+                                        crawler_type={source_data ? source_data.crawlerType : null}
+                                        is_external={is_external}
+                                        form_data={source_data}
+                                        setFormData={setSourceData}
                                         getValues={getValues}
                                     />
                                 }
@@ -551,8 +599,8 @@ export default function SourceForm() {
                                             renderCrawlerForm(
                                                 {
                                                     source: selected_source,
-                                                    form_data: form_data,
-                                                    setFormData: setFormData,
+                                                    form_data: source_data,
+                                                    setFormData: setSourceData,
                                                     set_verify: set_verify
                                                 }
                                             )
@@ -565,15 +613,15 @@ export default function SourceForm() {
                                 {selected_source_tab === 'metadata' &&
                                     <CrawlerMetadataForm
                                         source={selected_source}
-                                        form_data={form_data}
-                                        setFormData={setFormData}/>
+                                        form_data={source_data}
+                                        setFormData={setSourceData}/>
                                 }
 
 
                                 {/* Page: AclSetup  */}
                                 {selected_source_tab === 'acls' &&
                                     <div className="tab-content px-5 py-4 overflow-auto"
-                                         style={{maxHeight: "600px", minHeight: "400px"}}>
+                                         style={{maxHeight: "600px", minHeight: "505px"}}>
                                         <div className="row mb-3">
                                             <div className="col-6 d-flex">
                                                 <div className="alert alert-warning small py-2" role="alert">
@@ -584,7 +632,7 @@ export default function SourceForm() {
 
                                         <ACLSetup
                                             select_acl_crud={true}
-                                            active_acl_list={form_data.acls}
+                                            active_acl_list={source_data.acls}
                                             on_update={(ACLs) => updateAclList(ACLs)}
                                             organisation_id={selected_organisation_id}
                                             is_admin={isUserAdmin}
@@ -595,11 +643,53 @@ export default function SourceForm() {
                                 }
 
 
+                                {/* Page: MimeTypeSetup  */}
+                                {selected_source_tab === 'mimetypes' &&
+                                    <div className="tab-content px-5 py-4 overflow-auto"
+                                         style={{maxHeight: "600px", minHeight: "505px"}}>
+                                        <div className="row mb-3">
+                                            <span className="col-6 d-flex">
+                                                <div className="alert alert-warning small py-2" role="alert">
+                                                    {describe_what_will_happen(selected_source, source_data.inventoryOnlyInclude, source_data.inventoryOnlyMimeTypes)}
+                                                </div>
+                                            </span>
+                                            <span className="form-check form-switch col-6 d-flex">
+                                                <input className="form-check-input" type="checkbox"
+                                                       checked={source_data.inventoryOnlyInclude === true}
+                                                       onChange={(event) => updateMimeTypeIncludedMode(event.target.checked)} />
+                                                <label className="ms-2 form-check-label small">
+                                                    {source_data.inventoryOnlyInclude ? "only mime-types listed are included" : "mime-types listed are excluded"}
+                                                </label>
+                                            </span>
+                                        </div>
+
+                                        <MimeTypeForm
+                                            mime_type_list={source_data.inventoryOnlyMimeTypes ?? []}
+                                            included_mode={source_data.inventoryOnlyInclude}
+                                            on_update={(mime_type_list) => updateMimeTypeList(mime_type_list)}
+                                        />
+
+                                    </div>
+                                }
+
+
+                                {/* Page: Rules  */}
+                                {selected_source_tab === 'rules' &&
+                                    <CrawlerRulesForm rules={source_data.rules ?? ""} onUpdate={updateRules} />
+                                }
+
+
+                                {/* Page: AI training  */}
+                                {selected_source_tab === 'training' && window.ENV.show_ai_training &&
+                                    <CrawlerAITrainingForm register={register} />
+                                }
+
+
                                 {/* Page: check document  */}
                                 {selected_source_tab === 'check' &&
-                                    <div className="time-tab-content px-5 py-4 overflow-auto">
+                                    <div className="time-tab-content px-5 py-4 overflow-auto" style={{minHeight: "505px"}}>
                                         <CheckDocument
-                                            source={form_data}
+                                            source={source_data}
                                         />
                                     </div>
                                 }
@@ -613,9 +703,9 @@ export default function SourceForm() {
 
                                 {/* Page 6: schedule TimeSelect  */}
                                 {selected_source_tab === 'schedule' &&
-                                    <div className="time-tab-content px-5 py-4">
-                                        <TimeSelect time={form_data.schedule}
-                                                    scheduleEnable={form_data.scheduleEnable}
+                                    <div className="time-tab-content px-5 py-4" style={{minHeight: "505px"}}>
+                                        <TimeSelect time={source_data.schedule}
+                                                    scheduleEnable={source_data.scheduleEnable}
                                                     onSave={(time, scheduleEnable) =>
                                                         updateSchedule(time, scheduleEnable)
                                         }/>
@@ -623,20 +713,14 @@ export default function SourceForm() {
                                 }
 
                             </div>
-                            <div className="modal-footer px-5 pb-3">
+                            <div className="modal-footer bottom-footer px-5 pb-3">
                                 <button onClick={handleClose} type="button" className="btn btn-white px-4"
-                                        data-bs-dismiss="modal">Close
+                                        data-bs-dismiss="modal">Cancel
                                 </button>
-                                {selected_source && selected_source.sourceId > 0 &&
+                                {selected_source && selected_source.sourceId > 0 && !selected_source.isExternal &&
                                     <button onClick={handleTest} type="button" title='Test Source Connection'
                                             className={`btn btn-primary px-4 ${(externalCrawlers.includes(selected_source.crawlerType)) ? 'disabled' : ''}`}
                                             data-bs-dismiss="modal">Test
-                                    </button>
-                                }
-                                {selected_source && selected_source.sourceId > 0 &&
-                                    <button onClick={handleResetDelta} type="button" title='Reset Source Delta'
-                                            className='btn btn-primary px-4'
-                                            data-bs-dismiss="modal">Reset Delta
                                     </button>
                                 }
                                 <input type="submit" value="Save" className={"btn btn-primary px-4"}/>

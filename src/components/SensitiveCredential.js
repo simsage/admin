@@ -23,6 +23,7 @@ const ApiTokenInput = ({ selected_source, specific_json, onChange, name, placeho
                     autoComplete="off"
                     className="form-control"
                     placeholder={placeholder}
+                    title={placeholder}
                     value={specific_json}
                     onChange={onChange}
                     required
@@ -34,6 +35,7 @@ const ApiTokenInput = ({ selected_source, specific_json, onChange, name, placeho
                         autoComplete="off"
                         className="form-control"
                         placeholder={placeholder}
+                        title={placeholder}
                         value={specific_json}
                         onChange={onChange}
                     />

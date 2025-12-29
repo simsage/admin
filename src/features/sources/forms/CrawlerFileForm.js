@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import SensitiveCredential from "../../../components/SensitiveCredential";
 import {BsFilePdf} from "react-icons/bs";
 import {DOCUMENTATION, useSelectedSource} from './common.js';
+import ResetDeltaControl from "../../../common/ResetDeltaControl";
 
 
 export default function CrawlerFileForm(props) {
@@ -26,6 +27,12 @@ export default function CrawlerFileForm(props) {
         props.setFormData({...l_form_data, specificJson: specific_json_stringify})
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [specific_json])
+
+    // This crawler doesn't need the verify system
+    useEffect(() => {
+        if (props.set_verify) props.set_verify(() => "n/a")
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.set_verify]);
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
@@ -88,8 +95,10 @@ export default function CrawlerFileForm(props) {
                            required
                     />
                 </div>
+
             </div>
             {/*************************************-SHARE & PATH-*************************************/}
+
             <div className="row mb-4">
                 <div className="form-group col-4">
                     <label className="small">Share path</label>
@@ -102,11 +111,15 @@ export default function CrawlerFileForm(props) {
                     />
                 </div>
             </div>
+
+            <ResetDeltaControl />
+
             <hr/>
             {/*************************************-USE AD & SERVER-*************************************/}
-            <div className="row mb-4">
-                <div className="form-group col-4">
-                    <label className="small">Use Active Directory (Optional)</label>
+            <div className="row mb-2">
+
+                <div className="form-group col-2">
+                    <label className="small">Use Active Directory</label>
                     <div className="form-check form-switch"
                          title="Enable to establish active directory connection">
                         <input className="form-check-input"
@@ -118,61 +131,29 @@ export default function CrawlerFileForm(props) {
                         />
                     </div>
                 </div>
-                <div className="form-group col-4">
-                    <label className="small">Active Server</label>
-                    <input type="text" className="form-control"
-                           disabled={!specific_json.useAD}
-                           placeholder="AD server address"
-                           value={specific_json.activeServer}
-                           onChange={(event) => {
-                               setData({activeServer: event.target.value})
-                           }}
-                    />
-                </div>
-            </div>
-            {/*************************************-ENABLE SSL & DOMAIN NAME-*************************************/}
-            <div className="row mb-4">
-                <div className="form-group col-4">
-                    <label className="small">Enable SSL Connection</label>
-                    <div className="form-check form-switch"
-                         title="If enabled, SSL connection will be established, more secure.">
-                        <input className="form-check-input"
-                               disabled={!specific_json.useAD}
-                               type="checkbox"
-                               checked={specific_json.useSSL}
-                               onChange={(event) => {
-                                   setData({useSSL: event.target.checked})
-                               }}
-                        />
-                    </div>
-                </div>
-                <div className="form-group col-4">
-                    <label className="small">Domain name</label>
-                    <input type="text" className="form-control"
-                           disabled={!specific_json.useAD}
-                           placeholder="domain (e.g. SIMSAGE)"
-                           value={specific_json.domain}
-                           onChange={(event) => {
-                               setData({domain: event.target.value})
-                           }}
-                    />
-                </div>
-            </div>
-            {/*************************************-ACTIVE DIRECTORY PATH-*************************************/}
-            <div className="row mb-4">
-                <div className="form-group col-4"/>
+
                 <div className="form-group col-4">
                     <label className="small">Active Directory Path</label>
                     <input type="text" className="form-control"
                            disabled={!specific_json.useAD}
-                           placeholder="AD Path (e.g. DC=simsage,DC=co,DC=uk)"
+                           placeholder="AD Path (e.g. DC=simsage,DC=local)"
                            value={specific_json.adPath}
                            onChange={(event) => {
                                setData({adPath: event.target.value})
                            }}
                     />
                 </div>
+
+                <div className="col-6">
+                    <div className="alert alert-warning small py-2" role="alert">
+                        Use "(Get-ADDomain).DistinguishedName" in PowerShell on your<br/>
+                        Active Directory Domain Controller to get this <i>Active Directory Path</i>
+                    </div>
+                </div>
+
             </div>
+
+
         </div>
     )
 }

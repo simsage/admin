@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '../css/time-select.css'
+import {useSelector} from "react-redux";
+import Api from "./api";
 
 const time_list = [
     '00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00',
@@ -7,7 +9,8 @@ const time_list = [
 ]
 
 const day_list = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-
+const day_lookup = {'mon':0, 'tue':1, 'wed':2, 'thu':3, 'fri':4, 'sat':5, 'sun':6};
+const date_dow = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const defaultAllTimesSelected = 'mon-0,tue-0,wed-0,thu-0,fri-0,sat-0,sun-0,mon-1,tue-1,wed-1,thu-1,' +
     'fri-1,sat-1,sun-1,mon-2,tue-2,wed-2,thu-2,fri-2,sat-2,sun-2,mon-3,tue-3,wed-3,thu-3,fri-3,sat-3,sun-3,' +
     'mon-4,tue-4,wed-4,thu-4,fri-4,sat-4,sun-4,mon-5,tue-5,wed-5,thu-5,fri-5,sat-5,sun-5,mon-6,tue-6,wed-6,' +
@@ -28,6 +31,7 @@ export default function TimeSelect(props) {
 
     const [timeMap, setTimeMap] = useState({})
     const [scheduleEnable, setScheduleEnable] = useState(false)
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     useEffect(() => {
         if (props.time)
@@ -39,6 +43,31 @@ export default function TimeSelect(props) {
             setScheduleEnable(props.scheduleEnable)
         }
     }, [props.scheduleEnable])
+
+
+    /**
+     * Converts a local day and hour to its GMT/UTC equivalent.
+     * @param {number} localDay - The day of the week ('sun', 'mon', etc.).
+     * @param {number} localHour - The hour of the day in local time (0-23).
+     * @returns {{gmtDay: string, gmtHour: number}} - The corresponding day and hour in GMT.
+     */
+    function convert_local_to_gmt(localDay, localHour) {
+        // The formula to get GMT hour is: localHour + timezoneOffset
+        const local_day_number = day_lookup[localDay]; // localDay is a string
+        let gmtHour = localHour + Api.tz_offset;
+        let gmtDay = local_day_number;
+        // Handle day rollover
+        if (gmtHour >= 24) {
+            // Crossed into the next day
+            gmtHour = gmtHour % 24;
+            gmtDay = (gmtDay + 1) % 7; // Wrap around from Saturday (6) to Sunday (0)
+        } else if (gmtHour < 0) {
+            // Crossed into the previous day
+            gmtHour = (gmtHour + 24) % 24;
+            gmtDay = ((gmtDay - 1) + 7) % 7; // Wrap around from Sunday (0) to Saturday (6)
+        }
+        return { gmtDay: day_list[gmtDay], gmtHour: gmtHour };
+    }
 
 
     // use new_time_map to build a string (new schedule) and callback to parent to save
@@ -69,16 +98,6 @@ export default function TimeSelect(props) {
     }
 
 
-    // get the status of a "cell" in the dow schedule for a given day/hour by string
-    // this is used to set the CSS of each hour cell to either active / inactive
-    function gs(cell) {
-        if (!scheduleEnable)
-            return timeMap[cell] === 1 ? "dim-active" : "dim-inactive";
-        return timeMap[cell] === 1 ? "active" : "inactive";
-    }
-
-
-
     // clear the entire schedule
     function clearAll(e) {
         e.preventDefault();
@@ -103,28 +122,25 @@ export default function TimeSelect(props) {
 
         let tm = { ...timeMap };
 
-        const toggleValue = (key) => {
+        const toggleValue = (day, hour) => {
+            const { gmtDay, gmtHour } = convert_local_to_gmt(day, hour);
+            const key = `${gmtDay}-${gmtHour}`
             tm[key] = tm[key] === 1 ? 0 : 1;
         };
 
         if (item === "all") { // click select all
             for (let i = 0; i < 24; i++) {
                 day_list.forEach(dow => {
-                    const key = `${dow}-${i}`;
-                    toggleValue(key);
+                    toggleValue(dow, i);
                 });
             }
-        } else if (item.includes('-')) { // single cell toggle
-            toggleValue(item);
         } else if (day_list.includes(item)) { // 24 hour selector
             for (let i = 0; i < 24; i++) {
-                const key = `${item}-${i}`;
-                toggleValue(key);
+                toggleValue(item, i);
             }
-        } else { // day of week selector
+        } else { // day of week selector (7 hour selector)
             day_list.forEach(dow => {
-                const key = `${dow}-${item}`;
-                toggleValue(key);
+                toggleValue(dow, parseInt(item));
             });
         }
 
@@ -133,13 +149,40 @@ export default function TimeSelect(props) {
     }
 
 
-    // display the current time in GMT (returns a string of the time)
+    // click on an item and change the time-map accordingly
+    // select all, select columns, select single values, select rows
+    function select_day_hour(day, hour) {
+        if (props.scheduleEnable === false)
+            return
+        let tm = { ...timeMap };
+        // Convert the local day/hour from the UI to GMT before updating the map
+        const { gmtDay, gmtHour } = convert_local_to_gmt(day, hour);
+        const key = `${gmtDay}-${gmtHour}`;
+        tm[key] = tm[key] === 1 ? 0 : 1;
+
+        setTimeMap(tm);
+        handle_save(tm, scheduleEnable);
+    }
+
+
+    // get the status of a "cell" in the dow schedule for a given day/hour by string
+    // this is used to set the CSS of each hour cell to either active / inactive
+    function get_day_hour_style(day, hour) {
+        const { gmtDay, gmtHour } = convert_local_to_gmt(day, hour);
+        const key = `${gmtDay}-${gmtHour}`;
+        if (!scheduleEnable)
+            return timeMap[key] === 1 ? "dim-active" : "dim-inactive";
+        return timeMap[key] === 1 ? "active" : "inactive";
+    }
+
+
+    // display the local time (returns a string of the time)
     function display_time() {
-        const gmtTime = new Date().toGMTString()
-        const day = gmtTime.split(",")[0]
-        const time = gmtTime.split(" ")[4].split(":")
-        const time_no_seconds = time[0] + ":" + time[1]
-        return day + ", " + time_no_seconds
+        const localDate = new Date()
+        const day = date_dow[localDate.getDay()]
+        return day + " " +
+            String(localDate.getHours()).padStart(2, '0') + ":" +
+            String(localDate.getMinutes()).padStart(2, '0')
     }
 
     function handleScheduleEnabler(e) {
@@ -149,7 +192,7 @@ export default function TimeSelect(props) {
     }
 
     return (
-        <div className="time-select">
+        <div className={theme === "light" ? "time-select" : "time-select-dark"}>
             <div className="form-check form-switch"
                  title="If checked, SimSage perform similarity calculations on all items in this source against all other enabled sources and itself.">
                 <input
@@ -161,7 +204,7 @@ export default function TimeSelect(props) {
                 <label className="form-check-label small">Schedule Enabled</label>
             </div>
             <div className="labelTop text-center">
-                <h6>All times in GMT (now {display_time()})</h6>
+                <h6>now {display_time()}</h6>
             </div>
             <table className="tableStyle">
                 <tbody>
@@ -183,8 +226,8 @@ export default function TimeSelect(props) {
                             {day.charAt(0).toUpperCase() + day.slice(1)}
                         </td>
                         {time_list.map((str, value) => (
-                            <td key={`${day}-${value}`} onClick={() => select(`${day}-${value}`)}
-                                className={`cell-spacing ${gs(`${day}-${value}`)}`} />
+                            <td key={`${day}-${value}`} onClick={() => select_day_hour(day, value)}
+                                className={`cell-spacing ${get_day_hour_style(day, value)}`} />
                         ))}
                     </tr>
                 ))}

@@ -10,18 +10,33 @@ import {
     search, getKBList, showOptimizeAbortDialog
 } from "./knowledgeBaseSlice";
 import {setSelectedKB} from "../auth/authSlice";
-import api, {IMAGES} from "../../common/api";
+import api, {Api, convert_gmt_to_local} from "../../common/api";
 import {ProgressBar} from "../../common/progress-bar";
+import {getOrganisationBackupList, showBackupForm} from "../organisations/organisationSlice";
+import BkOrganisationBackupHome from "../organisations/BkOrganisationBackupHome";
+import BkOrganisationBackupDialog from "../organisations/BkOrganisationBackupDialog";
+import BkOrganisationBackupProgressDialog from "../organisations/BkOrganisationBackupProgressDialog";
+import BkOrganisationBackupDeleteDialog from "../organisations/BkOrganisationBackupDeleteDialog";
+import BkOrganisationBackupRestoreDialog from "../organisations/BkOrganisationBackupRestoreDialog";
+import BkOrganisationBackupDownloadDialog from "../organisations/BkOrganisationBackupDownloadDialog";
+import BkOrganisationRestore from "../organisations/BkOrganisationRestore";
+import {hasRole} from "../../common/helpers";
 
 export default function KnowledgeBaseList() {
 
-    const theme = ''
     const data_status = useSelector((state) => state.kbReducer.data_status)
     const kb_list = useSelector((state) => state.kbReducer.kb_list)
     const organisation_id = useSelector((state) => state.authReducer.selected_organisation_id)
     const session = useSelector((state) => state.authReducer.session)
     const session_id = (session && session.id) ? session.id : ""
     const busy = useSelector((state) => state.kbReducer.busy);
+    const theme = useSelector((state) => state.homeReducer.theme);
+    const REFRESH_IMAGE = (theme === "light" ? "images/refresh.svg" : "images/refresh-dark.svg")
+
+    const user = useSelector((state) => state.authReducer.user);
+    const isAdmin = hasRole(user, ['admin']);
+
+    const [show_restore_organisation_form, setShowRestoreOrganisationForm] = useState(false);
 
     const [page, setPage] = useState(api.initial_page)
     const [page_size, setPageSize] = useState(api.initial_page_size)
@@ -29,8 +44,10 @@ export default function KnowledgeBaseList() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (organisation_id && data_status === 'load_now')
+        if (organisation_id && data_status === 'load_now') {
             dispatch(getKBList({session_id: session_id, organization_id: organisation_id}));
+            dispatch(getOrganisationBackupList({session: session, organisation_id: organisation_id}))
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session_id, organisation_id, data_status])
 
@@ -53,11 +70,11 @@ export default function KnowledgeBaseList() {
     const handleAddForm = () => dispatch(showAddForm(true))
     const handleEditForm = (kb_id) => dispatch(showEditForm({kb_id: kb_id}))
     const handleDeleteFormAsk = (kb) => dispatch(showDeleteAskForm({session_id, kb}))
+    const handleBackupKb = (kb) => dispatch(showBackupForm({session_id, kb}))
     const handleRefresh = () => {
         if (!busy) {
-            dispatch(
-                getKBList({session_id: session_id, organization_id: organisation_id})
-            )
+            dispatch(getKBList({session_id: session_id, organization_id: organisation_id}))
+            dispatch(getOrganisationBackupList({session: session, organisation_id: organisation_id}))
         }
     }
 
@@ -111,7 +128,7 @@ export default function KnowledgeBaseList() {
                         <div className="form-group d-flex ms-auto">
                             <div className="btn"
                                  onClick={() => handleRefresh()}>
-                                 <img src={IMAGES.REFRESH_IMAGE} className="refresh-image" alt="refresh"
+                                 <img src={REFRESH_IMAGE} className="refresh-image" alt="refresh"
                                       title="refresh knowledge-base list"/>
                             </div>
                             {organisation_id && organisation_id.length > 0 &&
@@ -124,12 +141,15 @@ export default function KnowledgeBaseList() {
                     </div>
 
                     <div>
-                        <table className="table">
+                        <table className={theme === "light" ? "table" : "table-dark"}>
                             <thead>
-                                <tr>
-                                    <td className="small text-black-50 px-4">Knowledge Base</td>
-                                    <td className="small text-black-50 px-4">Email Queries</td>
-                                </tr>
+                            <tr>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Knowledge Base</td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Email Capacity</td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Last Optimized</td>
+                                <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Auto Optimize</td>
+                                <td></td>
+                            </tr>
                             </thead>
                             <tbody>
 
@@ -145,11 +165,22 @@ export default function KnowledgeBaseList() {
                                             {/* <td className="pt-3 ps-4 pe-0 pb-3"></td> */}
                                             <td className="pt-3 px-4 pb-3 pointer-cursor">
                                                 <div className="kb-label fw-500"
+                                                     title={knowledge_base.name + " (" + knowledge_base.kbId + ")"}
                                                      onClick={() => handleSelectKb(knowledge_base)}>{knowledge_base.name}</div>
                                             </td>
                                             <td className="pt-3 px-4 pb-3 fw-light pointer-cursor">
                                                 <div className="kb-label"
                                                      onClick={() => handleSelectKb(knowledge_base)}>{knowledge_base.email}</div>
+                                            </td>
+                                            <td className="pt-3 px-4 pb-3 fw-light pointer-cursor">
+                                                <div className="kb-label">
+                                                    {(knowledge_base.lastIndexOptimizationTime > 0) ? Api.unixTimeConvert(convert_gmt_to_local(knowledge_base.lastIndexOptimizationTime)) : "never"}
+                                                </div>
+                                            </td>
+                                            <td className="pt-3 px-4 pb-3 fw-light pointer-cursor">
+                                                <div className="kb-label">
+                                                    {knowledge_base.autoOptimizationEnabled ? "on" : "off"}
+                                                </div>
                                             </td>
 
                                             <td className="pt-3 px-4 pb-0">
@@ -185,6 +216,10 @@ export default function KnowledgeBaseList() {
                                                             onClick={() => handleEditForm(knowledge_base.kbId)}
                                                             className={"btn text-primary btn-sm"}>Edit
                                                     </button>
+                                                    <button title="backup knowledge base"
+                                                            onClick={() => handleBackupKb(knowledge_base)}
+                                                            className={"btn text-primary btn-sm"}>Backup
+                                                    </button>
                                                     <button title="remove knowledge base"
                                                             onClick={() => handleDeleteFormAsk(knowledge_base)}
                                                             className={"btn text-danger btn-sm"}>Delete
@@ -200,7 +235,6 @@ export default function KnowledgeBaseList() {
                         </table>
                         <Pagination
                             rowsPerPageOptions={[5, 10, 25]}
-                            theme={theme}
                             component="div"
                             count={kb_list.length}
                             rowsPerPage={page_size}
@@ -213,6 +247,25 @@ export default function KnowledgeBaseList() {
                     </div>
                 </div>
             }
+
+            <BkOrganisationBackupHome/>
+
+            <BkOrganisationBackupDialog/>
+
+            <BkOrganisationBackupProgressDialog/>
+
+            <BkOrganisationBackupDeleteDialog/>
+
+            <BkOrganisationBackupRestoreDialog/>
+
+            <BkOrganisationBackupDownloadDialog/>
+
+            {isAdmin && show_restore_organisation_form &&
+                <BkOrganisationRestore
+                    onClose={(val) => setShowRestoreOrganisationForm(val)}
+                />
+            }
+
         </div>
     )
 }

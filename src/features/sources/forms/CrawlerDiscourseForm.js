@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import {BsFilePdf} from 'react-icons/bs'
 import SensitiveCredential from "../../../components/SensitiveCredential";
 import {DOCUMENTATION, invalid_credential, useSelectedSource} from './common.js';
+import ResetDeltaControl from "../../../common/ResetDeltaControl";
 
 
 export default function CrawlerDiscourseForm(props) {
@@ -43,7 +44,7 @@ export default function CrawlerDiscourseForm(props) {
 
         if (props.set_verify) props.set_verify(() => validate_discourse)
 
-    }, [props.set_verify, specific_json])
+    }, [props, specific_json])
 
 
     return (
@@ -74,6 +75,9 @@ export default function CrawlerDiscourseForm(props) {
                             />
                         </div>
                     </div>
+
+                    <ResetDeltaControl />
+
                 </div>
                 <div className="col-2 offset-1">
                     <a href={DOCUMENTATION.DISCOURSE} id="dlDiscourse" target="_blank" rel="noreferrer"

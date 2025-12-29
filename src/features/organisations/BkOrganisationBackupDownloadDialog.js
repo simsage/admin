@@ -3,7 +3,7 @@ import {
     closeBackupDownloadMessage,
     downloadBackup,
 } from "./organisationSlice";
-import Api from "../../common/api";
+import Api, {uri_esc} from "../../common/api";
 import {useEffect} from "react";
 
 export default function BkOrganisationBackupDownloadDialog() {
@@ -21,7 +21,12 @@ export default function BkOrganisationBackupDownloadDialog() {
     }
 
     const handleDownload = () => {
-        dispatch(downloadBackup({session:session, organisation_id: selected_backup.organisationId, backup_id:selected_backup.backupId}))
+        dispatch(downloadBackup({
+            session: session,
+            organisation_id: selected_backup.organisationId,
+            kb_id: selected_backup.kbId,
+            backup_id: selected_backup.backupId
+        }))
     }
 
     useEffect(() => {
@@ -31,7 +36,7 @@ export default function BkOrganisationBackupDownloadDialog() {
             let dateStr = 'org'
             const filename = "backup-" +  dateStr + ".txt"
 
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(downloaded_backup.data));
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + uri_esc(downloaded_backup.data));
             element.setAttribute('download', filename);
             element.style.display = 'none';
             document.body.appendChild(element);
@@ -53,13 +58,24 @@ export default function BkOrganisationBackupDownloadDialog() {
                 <div className={"modal-dialog modal-dialog-centered"} role="document">
                     <div className="modal-content p-4">
                         <div className="modal-body text-center">
+                            <div className="control-row mb-1">
+                                <span
+                                    className="label-wide">Are you sure you want to download backup </span>
+                            </div>
                             <div className="control-row mb-4">
                                 <span
-                                    className="label-wide">Are you sure you want to download backup "{selected_backup.name}" ({Api.unixTimeConvert(selected_backup.backupId)})?</span>
+                                    className="label-wide">"{selected_backup.knowledgeBaseName}" ({Api.unixTimeConvert(selected_backup.backupId)})?</span>
+                            </div>
+                            <div className="control-row mb-4">
+                                <span
+                                    className="label-wide">This will pop up a save-file dialog when ready.  Please be patient.</span>
                             </div>
                             <div className="control-row">
-                                <button onClick={handleClose} type="button" className="btn btn-white px-4">Cancel</button>
-                                <button onClick={handleDownload} type="button" className="btn btn-primary px-4">Download</button>
+                                <button onClick={handleClose} type="button" className="btn btn-white px-4">Cancel
+                                </button>
+                                <button onClick={handleDownload} type="button"
+                                        className="btn btn-primary px-4">Download
+                                </button>
                             </div>
                         </div>
                     </div>

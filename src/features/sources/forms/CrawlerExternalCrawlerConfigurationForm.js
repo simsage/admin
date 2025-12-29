@@ -144,6 +144,16 @@ const bat = "REM\n" +
     "    -Xms2G -Xmx2G ^\n" +
     "     nz.simsage.external.crawler.MainKt\n";
 
+
+// Crawlers.exe i aes 199b7b02-4acb-4746-8399-50a72acfe124 -source 1
+const dotnet = "Crawlers.exe /debug -server <server> \\\n" +
+    "     -crawler <ct> \\\n" +
+    "     -source <source> \\\n" +
+    "     -org <org>  \\\n" +
+    "     -kb <kb> \\\n" +
+    "     -sid <sid>  \\\n" +
+    "     -aes <secret>\n";
+
 export default function CrawlerExternalCrawlerConfigurationForm(props) {
 
     const source = props.source;
@@ -173,8 +183,9 @@ export default function CrawlerExternalCrawlerConfigurationForm(props) {
         if (selected_kb) {
             sid = selected_kb.securityId;
         }
+        const source_id = parseInt("" + source.sourceId) !== 0 ? ("" + source.sourceId) : "UNKNOWN";
         return str
-            .replaceAll("<source>", "" + source.sourceId)
+            .replaceAll("<source>", source_id)
             .replaceAll("<org>", "" + source.organisationId)
             .replaceAll("<kb>", "" + source.kbId)
             .replaceAll("<sid>", "" + sid)
@@ -198,6 +209,8 @@ export default function CrawlerExternalCrawlerConfigurationForm(props) {
         selected_code = contentToText(bash);
     else if (menu === "bat")
         selected_code = contentToText(bat);
+    else if (menu === "dotnet")
+        selected_code = contentToText(dotnet);
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
@@ -206,6 +219,11 @@ export default function CrawlerExternalCrawlerConfigurationForm(props) {
                         onClick={(e) => selectMenu(e, "compose")}>
                     Docker compose
                 </button>
+                { source.crawlerType === "file" &&
+                    <button className={"tablinks " + (menu === 'dotnet' ? "active" : "")}
+                            onClick={(e) => selectMenu(e, "dotnet")}>Dotnet Crawler
+                    </button>
+                }
                 <button className={"tablinks " + (menu === 'docker' ? "active" : "")}
                         onClick={(e) => selectMenu(e, "docker")}>Docker
                 </button>

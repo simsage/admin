@@ -69,7 +69,7 @@ export function UserPasswordResetForm() {
              style={{display: "inline", background: "#202731bb"}}>
             <div className={"modal-dialog modal-lg"} role="document">
                 <div className="modal-content">
-                    <div className="modal-header px-5 pt-4 bg-light">
+                    <div className="modal-header px-5 pt-4">
                         <h4 className="mb-0">Reset password</h4>
                     </div>
                     <form onSubmit={handleSubmit(onSubmit)}>

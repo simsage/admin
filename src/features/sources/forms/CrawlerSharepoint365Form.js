@@ -3,6 +3,8 @@ import {BsFilePdf} from 'react-icons/bs'
 import SensitiveCredential from "../../../components/SensitiveCredential";
 import {SharepointSiteAndLibraries} from "./SharepointSiteAndLibraries";
 import {DOCUMENTATION, invalid_credential, useSelectedSource} from "./common";
+import {useSelector} from "react-redux";
+import ResetDeltaControl from "../../../common/ResetDeltaControl";
 
 export default function CrawlerSharepoint365Form(props) {
 
@@ -19,6 +21,8 @@ export default function CrawlerSharepoint365Form(props) {
     function setData(data) {
         setSpecificJson({...specific_json, ...data})
     }
+
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     const [editSiteDetails, setEditSiteDetails] = useState(false)
     const [currentSiteDetails, setCurrentSiteDetails] = useState({})
@@ -89,10 +93,12 @@ export default function CrawlerSharepoint365Form(props) {
 
         if (props.set_verify) props.set_verify(() => validate_sharepoint)
 
-    }, [props.set_verify, specific_json])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.set_verify])
 
     return (
         <div className="tab-content px-5 py-4 overflow-auto">
+
             {editSiteDetails &&
                 <SharepointSiteAndLibraries
                     handleClosed={closeEditForm} siteDetails={currentSiteDetails} setSiteValue={setSiteValue}
@@ -157,11 +163,11 @@ export default function CrawlerSharepoint365Form(props) {
                                 &nbsp;
                             </div>
                             <div className={"drive_row col-12"}>
-                                <div className={"col-4 small text-black-50"}>
+                                <div className={(theme==="light" ? "text-black-50" : "text-white-50") + " col-4 small"}>
                                     Site Name
                                 </div>
-                                <div className={"col-6 small text-black-50"}>Libraries</div>
-                                <div className={"col-2 small text-black-50"}>
+                                <div className={(theme==="light" ? "text-black-50" : "text-white-50") + " col-6 small"}>Libraries</div>
+                                <div className={(theme==="light" ? "text-black-50" : "text-white-50") + " col-2 small"}>
                                     <button className="btn text-primary btn-sm fw-500"
                                             onClick={(e) => {
                                                 setCurrentSiteRow(-1)
@@ -179,7 +185,7 @@ export default function CrawlerSharepoint365Form(props) {
                             </div>
                             <div className={"gdrive-drives-scroll-section"}>
                                 {getSites().map((site, index) => {
-                                    return <div className={"drive_row col-12"}>
+                                    return <div className={"drive_row col-12"} key={"sp_site_" + index}>
                                         <div className={"col-4"}>
                                             <div>{site.siteName}</div>
                                         </div>
@@ -208,15 +214,28 @@ export default function CrawlerSharepoint365Form(props) {
                             </div>
                         </div>
                     }
+                    <ResetDeltaControl />
                 </div>
                 <div className="col-2 offset-1">
+
+                    { window.ENV.use_azure_app &&
+                    <a href={DOCUMENTATION.SHAREPOINT365_SETUP} id="setupSharePoint" target="_blank" rel="noreferrer"
+                       title="Use the SimSage Sharepoint365 set up application"
+                       className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
+                        <img src="images/icon/icon_sharepoint.svg" alt="SharePoint icon" />
+                        <span className="me-2 mt-2"></span>Sharepoint 365 <br/>Setup Application
+                    </a>
+                    }
+
                     <a href={DOCUMENTATION.SHAREPOINT365} id="dlsharepoint" target="_blank" rel="noreferrer"
                        title="Download the SimSage Sharepoint365 setup guide"
                        className="d-flex align-items-center flex-column text-center small alert alert-primary small py-2">
                         <BsFilePdf size={25}/>
                         <span className="me-2 mt-2"></span>Sharepoint 365 <br/>Setup Guide
                     </a>
+
                 </div>
+
             </div>
 
         </div>

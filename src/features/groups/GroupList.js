@@ -15,11 +15,11 @@ export default function GroupList(){
     const [page, setPage] = useState(api.initial_page);
     const [page_size, setPageSize] = useState(api.initial_page_size);
 
-    const theme = null;
     const dispatch = useDispatch();
     const load_data = useSelector((state) => state.groupReducer.data_status)
     const session = useSelector((state) => state.authReducer.session)
     const group_text_filter = useSelector((state) => state.groupReducer.group_text_filter)
+    const theme = useSelector((state) => state.homeReducer.theme);
 
     const user = useSelector((state) => state.authReducer.user)
     const {group_list, group_count} = useSelector((state) => state.groupReducer)
@@ -61,7 +61,11 @@ export default function GroupList(){
     }
 
     function handleEditGroup(group) {
-        dispatch(showEditGroupForm({show: true, name: group.displayName, userIdList: group.userIdList, ssoSource: group.ssoSource}));
+        let group_name = group.displayName
+        if (!group_name || group_name.trim() === "") {
+            group_name = group.name;
+        }
+        dispatch(showEditGroupForm({show: true, name: group_name, userIdList: group.userIdList, ssoSource: group.ssoSource}));
     }
     function handleAddGroup() {
         dispatch(showAddGroupForm(true));
@@ -77,7 +81,7 @@ export default function GroupList(){
                 <div className="d-flex w-100">
                     <div className="form-group me-2">
                         <input type="text" placeholder={"Filter..."} autoFocus={true}
-                               className={"form-control filter-search-input " + theme}
+                               className={"form-control filter-search-input "}
                                value={group_text_filter}
                                onKeyDown={(e) => handleSearchTextKeydown(e)}
                                onChange={(e) => handleSearchTextChange(e)}
@@ -98,10 +102,11 @@ export default function GroupList(){
                     <div>Loading...</div>
                 }
 
-                <table className="table">
+                <table className={theme === "light" ? "table" : "table-dark"}>
                     <thead>
                     <tr>
-                        <td className="small text-black-50 px-4">Name</td>
+                        <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}>Name</td>
+                        <td className={"small " + (theme==="light" ? "text-black-50" : "text-white-50") + " px-4"}></td>
                     </tr>
                     </thead>
                     <tbody>
@@ -109,6 +114,10 @@ export default function GroupList(){
                         group_list.map(group => {
                             const editYes = isAdmin || isManager;
                             const deleteYes = isAdmin || isManager;
+                            let group_name = group.displayName
+                            if (!group_name || group_name.trim() === "") {
+                                group_name = group.name;
+                            }
                             return (
                                 <tr key={group.name} >
                                     <td className="pt-3 px-4 pb-2 d-flex">
@@ -117,13 +126,13 @@ export default function GroupList(){
                                             {group.ssoSource &&
                                                 <img alt="icon" src={ICON} className={"sso_icon"}
                                                      title="SSO Group"/>}
-                                            {group.displayName}
+                                            {group_name}
                                         </div>
-                                                </td>
-                                                <td className="pt-3 px-4 pb-0">
-                                                <div className="d-flex  justify-content-end">
-                                                <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"}
-                                            onClick={() => handleEditGroup(group)}>{group.ssoSource?"View":"Edit"}
+                                    </td>
+                                    <td className="pt-3 px-4 pb-0">
+                                        <div className="d-flex  justify-content-end">
+                                            <button className={(editYes)? "btn text-primary btn-sm": "btn btn-secondary disabled"}
+                                                onClick={() => handleEditGroup(group)}>{group.ssoSource?"View":"Edit"}
                                         </button>
                                         <button className={(deleteYes)? "btn text-danger btn-sm" : "d-none"} onClick={ () => deleteGroupAsk(group)}>Delete</button>
                                         </div>
@@ -139,7 +148,6 @@ export default function GroupList(){
                 { group_list &&
                     <Pagination
                         rowsPerPageOptions={[5, 10, 25]}
-                        theme={theme}
                         component="div"
                         count={group_count}
                         rowsPerPage={page_size}
